@@ -6,8 +6,8 @@
 set -euo pipefail
 
 # Configuration
-PROJECT_DIR="/Users/***REMOVED***/repos/platform-eng-leader-claude-config"
-CLAUDE_GLOBAL_DIR="/Users/***REMOVED***/.claude"
+PROJECT_DIR="${PROJECT_DIR:-$(dirname "$(dirname "$(realpath "$0")")")}"
+CLAUDE_GLOBAL_DIR="${CLAUDE_GLOBAL_DIR:-$HOME/.claude}"
 
 # Color codes for output
 RED='\033[0;31m'
