@@ -4,6 +4,7 @@ ClaudeDirector - Unified Strategic Leadership AI Framework
 Single entry point for all strategic AI and task management capabilities
 """
 
+import os
 import sys
 from pathlib import Path
 
@@ -126,6 +127,17 @@ Examples:
 
         # Validation demo
         demo_validate_parser = demo_subparsers.add_parser('validate', help='Validate strategic usage patterns')
+
+        # Database optimization subcommands
+        db_parser = subparsers.add_parser('db-optimize', help='Database performance optimization')
+        db_parser.add_argument('--stats-only', action='store_true', help='Show statistics only')
+        db_parser.add_argument('--maintenance-only', action='store_true', help='Run maintenance only')
+        
+        # Architecture health monitoring
+        arch_parser = subparsers.add_parser('arch-health', help='Architecture health monitoring and migration alerts')
+        arch_parser.add_argument('--assess', action='store_true', help='Run architecture health assessment')
+        arch_parser.add_argument('--trends', action='store_true', help='Show migration readiness trends')
+        arch_parser.add_argument('--criteria', action='store_true', help='Show PostgreSQL migration criteria')
 
         return parser
 
@@ -521,8 +533,91 @@ Examples:
             self.handle_git(args)
         elif args.command == 'demo':
             self.handle_demo(args)
+        
+        elif args.command == 'db-optimize':
+            self.handle_db_optimize(args)
+        
+        elif args.command == 'arch-health':
+            self.handle_arch_health(args)
+        
         else:
             parser.print_help()
+
+    def handle_db_optimize(self, args):
+        """Handle database optimization commands"""
+        try:
+            import subprocess
+
+            if args.stats_only:
+                # Show database statistics
+                result = subprocess.run([
+                    sys.executable,
+                    str(self.project_root / "bin" / "optimize-database.py"),
+                    "--stats"
+                ])
+            elif args.maintenance_only:
+                # Run maintenance only
+                result = subprocess.run([
+                    sys.executable,
+                    str(self.project_root / "bin" / "optimize-database.py"),
+                    "--maintenance"
+                ])
+            else:
+                # Full optimization
+                result = subprocess.run([
+                    sys.executable,
+                    str(self.project_root / "bin" / "optimize-database.py"),
+                    "--optimize"
+                ])
+
+            if result.returncode != 0:
+                print("❌ Database optimization failed")
+        
+        except Exception as e:
+            print(f"❌ Database optimization command failed: {e}")
+
+    def handle_arch_health(self, args):
+        """Handle architecture health monitoring commands"""
+        try:
+            import subprocess
+            
+            # Set PYTHONPATH for subprocess calls
+            env = os.environ.copy()
+            env['PYTHONPATH'] = str(self.project_root)
+            
+            if args.assess:
+                # Run architecture health assessment
+                result = subprocess.run([
+                    sys.executable, 
+                    str(self.project_root / "memory" / "architecture_health_monitor.py"),
+                    "--assess"
+                ], env=env)
+            elif args.trends:
+                # Show migration readiness trends
+                result = subprocess.run([
+                    sys.executable, 
+                    str(self.project_root / "memory" / "architecture_health_monitor.py"), 
+                    "--trends"
+                ], env=env)
+            elif args.criteria:
+                # Show migration criteria
+                result = subprocess.run([
+                    sys.executable, 
+                    str(self.project_root / "memory" / "architecture_health_monitor.py"), 
+                    "--criteria"
+                ], env=env)
+            else:
+                # Run daily architecture alerts
+                result = subprocess.run([
+                    sys.executable, 
+                    str(self.project_root / "bin" / "daily" / "daily_architecture_alerts.py")
+                ], env=env)
+            
+            if result.returncode != 0:
+                print("❌ Architecture health command failed")
+        
+        except Exception as e:
+            print(f"❌ Architecture health command failed: {e}")
 
 
 def main():
