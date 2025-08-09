@@ -53,6 +53,12 @@ class ClaudeDirectorCLI:
   claudedirector tasks followups          # Show follow-ups due
   claudedirector tasks assigned           # Tasks I've assigned
 
+📊 Organizational Intelligence (P1):
+  claudedirector org-intelligence setup   # Configure your director profile
+  claudedirector org-intelligence status  # View current configuration
+  claudedirector org-intelligence customize # Interactive customization
+  claudedirector org-intelligence quick-setup # Template-based setup
+
 ⚡ Smart Git (Development):
   claudedirector git setup                # Setup intelligent git hooks
   claudedirector git commit               # Smart commit with optimized hooks
@@ -132,12 +138,41 @@ Examples:
         db_parser = subparsers.add_parser('db-optimize', help='Database performance optimization')
         db_parser.add_argument('--stats-only', action='store_true', help='Show statistics only')
         db_parser.add_argument('--maintenance-only', action='store_true', help='Run maintenance only')
-        
+
         # Architecture health monitoring
         arch_parser = subparsers.add_parser('arch-health', help='Architecture health monitoring and migration alerts')
         arch_parser.add_argument('--assess', action='store_true', help='Run architecture health assessment')
         arch_parser.add_argument('--trends', action='store_true', help='Show migration readiness trends')
-        arch_parser.add_argument('--criteria', action='store_true', help='Show PostgreSQL migration criteria')
+
+        # P1 Organizational Intelligence
+        org_intel_parser = subparsers.add_parser('org-intelligence', help='Organizational Leverage Intelligence (P1)')
+        org_intel_sub = org_intel_parser.add_subparsers(dest='org_intel_action', help='Organizational intelligence actions')
+
+        # Org intelligence setup
+        org_setup_parser = org_intel_sub.add_parser('setup', help='Configure your director profile')
+        org_setup_parser.add_argument('--profile-type',
+                                     choices=['platform_director', 'backend_director', 'product_director', 'custom'],
+                                     default='platform_director',
+                                     help='Select director profile type')
+        org_setup_parser.add_argument('--role-title',
+                                     default='Director of Engineering',
+                                     help='Your specific role title')
+
+        # Org intelligence status
+        org_intel_sub.add_parser('status', help='Show current configuration status')
+
+        # Org intelligence customization
+        org_intel_sub.add_parser('customize', help='Interactive profile customization')
+
+        # Quick setup with templates
+        org_quick_setup_parser = org_intel_sub.add_parser('quick-setup', help='Template-based setup')
+        org_quick_setup_parser.add_argument('--template',
+                                           choices=['design_system', 'platform_infrastructure', 'backend_services', 'product_delivery'],
+                                           help='Use predefined template')
+
+        # Domain configuration
+        org_domain_parser = org_intel_sub.add_parser('configure-domain', help='Configure specific measurement domains')
+        org_domain_parser.add_argument('--domain', help='Specific domain to configure')
 
         return parser
 
@@ -533,13 +568,16 @@ Examples:
             self.handle_git(args)
         elif args.command == 'demo':
             self.handle_demo(args)
-        
+
         elif args.command == 'db-optimize':
             self.handle_db_optimize(args)
-        
+
         elif args.command == 'arch-health':
             self.handle_arch_health(args)
-        
+
+        elif args.command == 'org-intelligence':
+            self.handle_org_intelligence(args)
+
         else:
             parser.print_help()
 
@@ -572,7 +610,7 @@ Examples:
 
             if result.returncode != 0:
                 print("❌ Database optimization failed")
-        
+
         except Exception as e:
             print(f"❌ Database optimization command failed: {e}")
 
@@ -580,44 +618,125 @@ Examples:
         """Handle architecture health monitoring commands"""
         try:
             import subprocess
-            
+
             # Set PYTHONPATH for subprocess calls
             env = os.environ.copy()
             env['PYTHONPATH'] = str(self.project_root)
-            
+
             if args.assess:
                 # Run architecture health assessment
                 result = subprocess.run([
-                    sys.executable, 
+                    sys.executable,
                     str(self.project_root / "memory" / "architecture_health_monitor.py"),
                     "--assess"
                 ], env=env)
             elif args.trends:
                 # Show migration readiness trends
                 result = subprocess.run([
-                    sys.executable, 
-                    str(self.project_root / "memory" / "architecture_health_monitor.py"), 
+                    sys.executable,
+                    str(self.project_root / "memory" / "architecture_health_monitor.py"),
                     "--trends"
                 ], env=env)
             elif args.criteria:
                 # Show migration criteria
                 result = subprocess.run([
-                    sys.executable, 
-                    str(self.project_root / "memory" / "architecture_health_monitor.py"), 
+                    sys.executable,
+                    str(self.project_root / "memory" / "architecture_health_monitor.py"),
                     "--criteria"
                 ], env=env)
             else:
                 # Run daily architecture alerts
                 result = subprocess.run([
-                    sys.executable, 
+                    sys.executable,
                     str(self.project_root / "bin" / "daily" / "daily_architecture_alerts.py")
                 ], env=env)
-            
+
             if result.returncode != 0:
                 print("❌ Architecture health command failed")
-        
+
         except Exception as e:
             print(f"❌ Architecture health command failed: {e}")
+
+    def handle_org_intelligence(self, args):
+        """Handle organizational intelligence commands"""
+        print("📊 Organizational Leverage Intelligence (P1)")
+        print("=" * 45)
+
+        try:
+            # Import the CLI customization module
+            from lib.claudedirector.p1_features.organizational_intelligence.cli_customization import org_intelligence
+            from lib.claudedirector.p1_features.organizational_intelligence import DirectorProfileManager
+
+            # Handle different subcommands
+            if args.org_intel_action == 'setup':
+                # Run setup command
+                from click.testing import CliRunner
+                runner = CliRunner()
+
+                setup_args = ['setup']
+                if hasattr(args, 'profile_type'):
+                    setup_args.extend(['--profile-type', args.profile_type])
+                if hasattr(args, 'role_title'):
+                    setup_args.extend(['--role-title', args.role_title])
+
+                result = runner.invoke(org_intelligence, setup_args)
+                print(result.output)
+
+            elif args.org_intel_action == 'status':
+                # Show current status
+                from click.testing import CliRunner
+                runner = CliRunner()
+                result = runner.invoke(org_intelligence, ['status'])
+                print(result.output)
+
+            elif args.org_intel_action == 'customize':
+                # Interactive customization
+                from click.testing import CliRunner
+                runner = CliRunner()
+                result = runner.invoke(org_intelligence, ['customize'])
+                print(result.output)
+
+            elif args.org_intel_action == 'quick-setup':
+                # Template-based setup
+                from click.testing import CliRunner
+                runner = CliRunner()
+
+                quick_args = ['quick-setup']
+                if hasattr(args, 'template') and args.template:
+                    quick_args.extend(['--template', args.template])
+
+                result = runner.invoke(org_intelligence, quick_args)
+                print(result.output)
+
+            elif args.org_intel_action == 'configure-domain':
+                # Domain configuration
+                from click.testing import CliRunner
+                runner = CliRunner()
+
+                domain_args = ['configure-domain']
+                if hasattr(args, 'domain') and args.domain:
+                    domain_args.extend(['--domain', args.domain])
+
+                result = runner.invoke(org_intelligence, domain_args)
+                print(result.output)
+
+            else:
+                # Default: show status
+                manager = DirectorProfileManager()
+                profile = manager.current_profile
+
+                print(f"👤 Current Profile: {profile.role_title}")
+                print(f"🔍 Primary Focus: {profile.primary_focus}")
+                print(f"📊 Enabled Domains: {len(profile.enabled_domains)}")
+                print(f"💰 Investment Categories: {len(profile.investment_categories)}")
+                print("\n💡 Run 'claudedirector org-intelligence setup' to get started")
+                print("🔧 Run 'claudedirector org-intelligence --help' for all options")
+
+        except ImportError as e:
+            print(f"❌ Organizational Intelligence not available: {e}")
+            print("💡 This is a P1 feature - ensure P1 modules are installed")
+        except Exception as e:
+            print(f"❌ Organizational Intelligence command failed: {e}")
 
 
 def main():
