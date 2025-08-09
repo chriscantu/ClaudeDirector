@@ -40,6 +40,13 @@ cd ClaudeDirector
 - **rachel**: Design systems, cross-functional alignment
 - **alvaro**: Platform ROI, business value communication
 
+### 📊 **Executive Business Intelligence**
+Transform technical work into business outcomes:
+- **Strategic Metrics**: Decision velocity, platform ROI, initiative health
+- **Executive Dashboards**: Real-time KPIs for leadership meetings
+- **Investment Tracking**: ROI analysis and portfolio optimization
+- **Board Reports**: Quarterly reviews and stakeholder updates
+
 ### 🎯 **Intelligent Meeting Tracking**
 - Automatically detects new meeting prep directories
 - Extracts strategic intelligence from meeting notes
@@ -60,6 +67,8 @@ All ClaudeDirector features accessible through single `claudedirector` command:
 ```bash
 ./claudedirector alerts              # Daily executive alerts
 ./claudedirector status              # System health overview
+./claudedirector metrics             # Business metrics summary
+./claudedirector dashboard           # Executive KPI dashboard
 ```
 
 ### **🧠 Meeting Intelligence**
@@ -89,11 +98,14 @@ All ClaudeDirector features accessible through single `claudedirector` command:
 ./claudedirector git commit -m "msg" # Optimized commits
 ```
 
-### **🎯 Strategic Validation**
+### **💼 Business Intelligence**
 ```bash
-./claudedirector demo validate       # Quick strategic workflow validation
-./claudedirector demo scenario       # Comprehensive director scenario testing
+./claudedirector roi calculate       # Calculate investment ROI
+./claudedirector reports quarterly   # Generate quarterly business review
+./claudedirector reports board       # Create board presentation
 ```
+
+
 
 ## 🏗️ Architecture
 
@@ -101,16 +113,15 @@ ClaudeDirector provides **unified strategic leadership AI** through:
 
 1. **🎭 Strategic AI Foundation**: 12 specialized personas for different leadership contexts
 2. **🧠 Intelligent Automation**: AI-powered stakeholder detection and task extraction
-3. **📊 Executive Intelligence**: Proactive alerts and accountability tracking
-4. **💾 Persistent Memory**: SQLite-based organizational intelligence that persists across sessions
+3. **📊 Executive Intelligence**: Business metrics, ROI tracking, and executive reporting
+4. **💾 Persistent Memory**: Strategic intelligence that persists across sessions
 
 ### **🏗️ Clean Architecture**
-Enterprise-grade organization with **12 root directories** (down from 16+):
-- `bin/` - All executables organized by function
-- `lib/` - Core platform code (standard convention)
-- `docs/` - Unified documentation hierarchy
-- `archive/` - Clean separation of legacy code
-- Strategic validation framework with 🌟 **EXECUTIVE READY** performance
+Enterprise-grade organization optimized for strategic leadership:
+- **Strategic Intelligence**: Persistent memory across leadership sessions
+- **Business Intelligence**: ROI tracking and executive reporting
+- **Meeting Intelligence**: Automated stakeholder and task extraction
+- **Unified Interface**: Single command for all strategic operations
 
 ## 📚 Advanced Features (Optional)
 
@@ -157,90 +168,53 @@ sis-weekly-report --output workspace/weekly-slt-report.md
 
 You can extend ClaudeDirector with your own strategic personas:
 
-1. Add to `claude_config.yaml`:
+**Quick Setup:**
+1. Edit `claude_config.yaml` in the project root
+2. Add your custom personas and strategic context
+3. Define auto-activation rules and business priorities
+
+**Example Configuration:**
 ```yaml
 personas:
-  your_persona:
-    description: "Your custom leadership context"
-    context: "Specific domain expertise and communication style"
-```
+  custom_cto:
+    description: "CTO-level strategic technology leadership"
+    context: "Technology vision and architectural decisions"
+    triggers: ["technical strategy", "architecture roadmap"]
 
-2. Reference in conversations:
-```
-@your_persona: How should we approach this technical decision?
-```
-
-</details>
-
-### Development Workflow Optimization
-
-<details>
-<summary>⚡ Smart Git Hooks for Contributors (Click to expand)</summary>
-
-If you're contributing to ClaudeDirector or customizing the codebase:
-
-```bash
-# Smart commit that skips irrelevant checks
-./claudedirector git commit -m "Update meeting notes"  # Saves ~45s for documentation
-
-# Traditional commit for code changes (full validation)
-git commit -m "Fix critical bug"  # Full security + quality checks
-
-# Analyze what would be optimized
-./claudedirector demo validate  # Strategic workflow validation
+strategic_context:
+  priorities:
+    - "Platform scalability and developer experience"
+    - "Design system adoption and consistency"
 ```
 
 **Features:**
-- File-type-aware git hooks that save 10-45 seconds per commit
-- Skips Python tests for documentation changes
-- Maintains quality with security scanning where critical
-- Intelligent hook filtering based on changed file types
+- Organization-specific strategic priorities
+- Custom stakeholder relationship mapping
+- Tailored business metrics and KPI focus
+- Context-aware persona auto-activation
 
-**When useful:**
-- Contributing to the ClaudeDirector codebase
-- Customizing strategic integration scripts
-- Frequent documentation updates
-- Development workflow optimization
+See `claude_config.yaml` for detailed configuration examples.
 
 </details>
 
-### Performance Monitoring
 
-<details>
-<summary>📊 System Health and Performance (Click to expand)</summary>
-
-Monitor ClaudeDirector's performance and strategic intelligence:
-
-```bash
-# Strategic workflow validation
-./claudedirector demo validate      # Quick performance validation
-./claudedirector demo scenario      # Comprehensive director testing
-
-# System health overview
-./claudedirector status             # Overall system health
-
-# Database integrity
-sqlite3 memory/strategic_memory.db "PRAGMA integrity_check;"
-```
-
-</details>
 
 ## 🚀 Next Steps
 
 ### Immediate Value (Day 1)
 1. ✅ **Set up meeting tracking** - Let ClaudeDirector learn your meeting patterns
-2. ✅ **Try strategic personas** - Use `@diego` for platform decisions, `@camille` for scaling
-3. ✅ **Create first meeting prep** - `mkdir workspace/meeting-prep/weekly-1on1`
+2. ✅ **Try strategic personas** - Use `@diego` for platform decisions, `@alvaro` for business metrics
+3. ✅ **View business metrics** - `./claudedirector metrics` for instant ROI insights
 
 ### Strategic Value (Week 1)
-1. **Build meeting intelligence** - Create 3-5 meeting prep directories
-2. **Leverage persistent memory** - Reference past strategic decisions in Claude conversations
-3. **Optimize persona usage** - Use appropriate personas for different meeting contexts
+1. **Generate business reports** - Use `./claudedirector reports quarterly` for executive summaries
+2. **Track ROI performance** - Monitor platform investment returns and optimization opportunities
+3. **Leverage AI insights** - Use `@alvaro` for translating technical work into business value
 
 ### Enterprise Value (Month 1)
-1. **Consider Jira integration** - Automate strategic reporting
-2. **Customize personas** - Add org-specific strategic contexts
-3. **Scale team adoption** - Share meeting intelligence patterns across leadership team
+1. **Executive dashboard adoption** - Regular KPI monitoring and strategic decision support
+2. **Board presentation ready** - Generate professional reports with `./claudedirector reports board`
+3. **Scale team adoption** - Share business intelligence patterns across leadership team
 
 ## 🆘 Getting Help
 
@@ -249,8 +223,8 @@ sqlite3 memory/strategic_memory.db "PRAGMA integrity_check;"
 # Check system health
 ./claudedirector status
 
-# Verify strategic workflows
-./claudedirector demo validate
+# Test business metrics
+./claudedirector metrics
 
 # Re-setup if needed
 ./claudedirector setup
@@ -259,11 +233,12 @@ sqlite3 memory/strategic_memory.db "PRAGMA integrity_check;"
 ### Common Issues
 - **Import errors**: Run from project root directory
 - **Setup issues**: Re-run `./claudedirector setup`
-- **Strategic validation fails**: Check `./claudedirector demo validate` output
+- **Business metrics not showing**: Check `./claudedirector metrics` output
+- **Persona customization**: Edit `claude_config.yaml` for organization-specific personas
 - **Meeting tracking not working**: Verify `workspace/meeting-prep/` directory exists
 
 ---
 
 **ClaudeDirector**: From AI assistant to strategic platform engineering partner.
 
-*Built for engineering directors who want strategic AI that remembers, learns, and optimizes for leadership effectiveness.*
+*Built for engineering directors who want strategic AI that remembers, learns, and delivers measurable business value.*
