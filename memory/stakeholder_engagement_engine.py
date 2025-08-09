@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import structlog
+from memory.optimized_db_manager import get_db_manager
 
 logger = structlog.get_logger()
 
@@ -30,8 +31,9 @@ class StakeholderEngagementEngine:
         self.logger = logger.bind(component="stakeholder_engagement")
 
     def get_connection(self):
-        """Get database connection"""
-        return sqlite3.connect(self.db_path)
+        """Get optimized database connection"""
+        db_manager = get_db_manager(str(self.db_path))
+        return db_manager.get_connection()
 
     def apply_engagement_schema(self):
         """Apply the stakeholder engagement schema to the database"""
@@ -47,8 +49,13 @@ class StakeholderEngagementEngine:
                 return True
 
         except Exception as e:
-            self.logger.error("Failed to apply engagement schema", error=str(e))
-            return False
+            error_msg = str(e)
+            if "already exists" in error_msg:
+                self.logger.info("Stakeholder engagement schema already exists - skipping")
+                return True
+            else:
+                self.logger.error("Failed to apply engagement schema", error=str(e))
+                return False
 
     def add_stakeholder(
         self,

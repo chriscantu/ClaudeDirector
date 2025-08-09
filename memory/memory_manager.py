@@ -11,6 +11,8 @@ import sqlite3
 from datetime import date, datetime
 from typing import Any, Dict, List, Optional
 
+from memory.optimized_db_manager import get_db_manager
+
 
 class StrategicMemoryManager:
     """Manages strategic memory database operations for SuperClaude framework"""
@@ -28,10 +30,9 @@ class StrategicMemoryManager:
             print(f"Database {self.db_path} will be created on first use")
 
     def get_connection(self) -> sqlite3.Connection:
-        """Get database connection with JSON support"""
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row  # Enable column access by name
-        return conn
+        """Get optimized database connection with JSON support"""
+        db_manager = get_db_manager(self.db_path)
+        return db_manager.get_connection()
 
     def store_executive_session(
         self,
