@@ -86,6 +86,52 @@ See `config/director_templates.yaml` for advanced configuration options.
 
 *Directors automatically activate based on your conversation context.*
 
+### 🎯 **Easy Customization for Your Context**
+
+**Your industry, team size, and priorities are unique.** Customize directors in 2 minutes:
+
+```bash
+# Discover directors for your specific domain
+./claudedirector templates discover "fintech mobile security compliance"
+
+# Get industry-specific guidance
+./claudedirector templates summary mobile_director --industry fintech --team startup
+
+# See all director types available
+./claudedirector templates list
+```
+
+**What you can customize:**
+- **Industry focus**: Fintech, healthcare, enterprise SaaS, e-commerce
+- **Team context**: Startup constraints vs enterprise scale challenges
+- **Domain expertise**: Mobile, backend, data, infrastructure, product
+- **Strategic priorities**: What matters most to your organization
+
+**Customize your strategic personas:**
+```yaml
+# framework/PERSONAS.md - Edit any persona for your context
+--persona-rachel
+**Identity**: Your Design System Director (customize role as needed)
+**Priorities**: Your specific design/UX priorities
+**Strategic Focus**: Your cross-functional alignment challenges
+```
+
+**Or create new director templates:**
+```yaml
+# config/director_templates.yaml
+your_custom_director:
+  domain: "your_domain"
+  personas:
+    primary: ["rachel", "martin"]  # Your preferred strategic leaders
+  activation_keywords:
+    "your specific challenge": 0.9
+  strategic_priorities:
+    - "your_top_priority"
+    - "your_secondary_priority"
+```
+
+*Customize existing personas OR create new director types - your choice.*
+
 ### 📊 **Advanced Features Available**
 - Executive business intelligence and strategic metrics
 - Intelligent meeting tracking and organizational memory
