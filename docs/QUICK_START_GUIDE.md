@@ -1,12 +1,23 @@
 # ClaudeDirector Quick Start - Your AI Director Team
 
-**Get your entire AI engineering director team working in 30 seconds.**
+**Zero-setup AI directors ready in seconds.**
 
-## 🚀 Instant Start (No Setup Required)
+## ✨ Choose Your Path
 
-### Just Start Talking to Claude
+### 🎯 **Cursor Users** (Recommended)
+1. **Open this repo in Cursor**
+2. **Start any conversation**
+3. **Directors activate automatically**
 
-**ClaudeDirector automatically activates the right director based on what you're discussing:**
+*Native Cursor integration - no setup needed.*
+
+### 💬 **Claude Chat Users**
+1. **Share repo URL**: `https://github.com/chriscantu/ClaudeDirector`
+2. **Start asking strategic questions**
+
+## 🤖 What Happens Automatically
+
+**ClaudeDirector activates the right director based on what you're discussing:**
 
 ```
 👤 "Our mobile platform strategy lacks organizational alignment between iOS and Android teams"
