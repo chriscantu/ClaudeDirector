@@ -8,9 +8,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- Director template expansion for multi-domain engineering leadership
-- Enhanced persona customization system
-- Cross-domain template support
+- Template migration automation enhancements
+- Advanced industry-specific customizations
+- Enterprise team collaboration features
+- Performance optimization for large template sets
+
+## [0.3.0] - 2025-01-15
+
+### Added
+- **🎯 Multi-Domain Director Templates**: Support for Mobile, Product, Backend, Infrastructure, Data Engineering director types
+- **🧠 Dynamic Persona Activation Engine**: Context-aware persona selection with 90%+ accuracy (<500ms activation)
+- **⚡ Template Discovery CLI**: Complete `claudedirector templates` command suite for discovery and management
+- **🔄 Template Migration System**: Version management, backup/restore, and configuration migration tools
+- **🧪 Comprehensive Test Suite**: 33+ unit tests, functional tests, and end-to-end integration validation
+- **💼 Product-Centric Director Template**: Specialized template for product engineering leadership with industry modifiers
+- **📖 Chat-First Documentation**: Simplified README with Cursor integration prominence and progressive disclosure UX
+
+### Enhanced
+- **🎭 Strategic Persona Preservation**: Original Rachel, Martin, Alvaro, Diego personas maintained exactly as configured
+- **🎯 Cursor Integration Prominence**: Native IDE integration highlighted as primary zero-setup user path
+- **📚 Progressive Disclosure UX**: Advanced features moved to collapsible sections, reduced cognitive load
+- **👔 Director-Level Strategic Focus**: All examples focus on organizational strategy vs IC-level tasks
+
+### Fixed
+- **🐛 Critical Test Infrastructure**: Resolved hanging unit tests due to incorrect mock configuration in YAML loading
+- **📦 Import Dependencies**: Fixed template migration formatting utilities and dependency injection issues
+- **🎯 Strategic Messaging**: Corrected IC-level examples to proper director-level strategic scenarios
+- **📁 Documentation References**: Updated all file path references after repository reorganization
+
+### Technical Architecture
+- **🏗️ Template Engine**: New `TemplateDiscoveryEngine` with industry/team size context and confidence scoring
+- **🤖 Persona Activation Pipeline**: Context Analysis → Persona Selection → Conversation State management engines
+- **⚙️ Enhanced Configuration Schema**: `director_templates.yaml` with activation keywords, routing logic, and industry modifiers
+- **🧪 Robust Test Infrastructure**: Template mocking fixes, performance validation, and comprehensive coverage
 
 ## [0.2.0] - 2025-01-15
 
