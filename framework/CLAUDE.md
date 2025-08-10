@@ -1,14 +1,14 @@
 # SuperClaude Entry Point
 
-@COMMANDS.md
-@FLAGS.md
-@PRINCIPLES.md
-@RULES.md
-@MCP.md
-@PERSONAS.md
-@ORCHESTRATOR.md
-@MODES.md
-@MODEL-SELECTION.md
+@framework/COMMANDS.md
+@framework/FLAGS.md
+@framework/PRINCIPLES.md
+@framework/RULES.md
+@framework/MCP.md
+@framework/PERSONAS.md
+@framework/ORCHESTRATOR.md
+@framework/MODES.md
+@framework/MODEL-SELECTION.md
 
 ## UI Foundation Context
 

@@ -31,7 +31,7 @@ You should see responses that demonstrate persona-specific expertise and platfor
 
 When you open this directory in Cursor, these files automatically provide context:
 
-- **`CLAUDE.md`**: Main entry point that loads all framework components
+- **`framework/CLAUDE.md`**: Main entry point that loads all framework components
 - **`framework/PERSONAS.md`**: All 12 strategic personas and their expertise
 - **`framework/COMMANDS.md`**: Strategic command system and workflows
 - **All framework files**: Principles, rules, flags, and strategic tools
@@ -160,7 +160,7 @@ workspace/
 
 ### Framework Not Loading
 - Ensure you opened the `claudedirector` directory (not a subdirectory)
-- Check that `CLAUDE.md` is in the root directory
+- Check that `framework/CLAUDE.md` exists and loads properly
 - Restart Cursor if needed
 
 ### Personas Not Activating
