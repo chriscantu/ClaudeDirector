@@ -7,6 +7,8 @@ Rachel's design system principles applied to organizational intelligence dashboa
 from dataclasses import dataclass
 from typing import Dict, List, Tuple, Optional
 from enum import Enum
+from .interfaces import DesignSystemInterface
+from .config_manager import visualization_config
 
 
 class ColorScale(Enum):
@@ -120,11 +122,18 @@ class DesignTokens:
             }
 
         if self.shadows is None:
+            # Use configuration manager for shadow opacity values
+            config = visualization_config
+            sm_opacity = config.get_shadow_opacity("sm")
+            md_opacity = config.get_shadow_opacity("md")
+            lg_opacity = config.get_shadow_opacity("lg")
+            xl_opacity = config.get_shadow_opacity("xl")
+
             self.shadows = {
-                "sm": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-                "md": "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                "lg": "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-                "xl": "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+                "sm": f"0 1px 2px 0 rgba(0, 0, 0, {sm_opacity})",
+                "md": f"0 4px 6px -1px rgba(0, 0, 0, {md_opacity})",
+                "lg": f"0 10px 15px -3px rgba(0, 0, 0, {lg_opacity})",
+                "xl": f"0 20px 25px -5px rgba(0, 0, 0, {xl_opacity})",
             }
 
 
@@ -151,15 +160,17 @@ class ChartConfiguration:
     description: Optional[str] = None
 
 
-class VisualizationDesignSystem:
+class VisualizationDesignSystem(DesignSystemInterface):
     """
     Rachel's design system for organizational intelligence visualizations
     Ensures consistency, accessibility, and scalability across all charts
+    Implements DesignSystemInterface (Interface Segregation Principle)
     """
 
-    def __init__(self):
+    def __init__(self, config_manager=None):
         self.tokens = DesignTokens()
         self.chart_config = ChartConfiguration()
+        self.config = config_manager or visualization_config
 
     def get_color_for_score(self, score: float, context: str = "performance") -> str:
         """
@@ -167,9 +178,13 @@ class VisualizationDesignSystem:
         Rachel's accessibility-first approach with semantic colors
         """
         if context == "performance":
-            if score >= 0.8:
+            # Use configuration values instead of hard-coded thresholds
+            excellent_threshold = self.config.get_performance_threshold("good")
+            moderate_threshold = self.config.get_performance_threshold("moderate")
+
+            if score >= excellent_threshold:
                 return self.tokens.colors["success"]["500"]
-            elif score >= 0.6:
+            elif score >= moderate_threshold:
                 return self.tokens.colors["warning"]["500"]
             else:
                 return self.tokens.colors["error"]["500"]
@@ -216,21 +231,34 @@ class VisualizationDesignSystem:
 
         performance_ratio = value / target
 
-        if performance_ratio >= 0.95:
+        # Use configuration values instead of hard-coded thresholds
+        excellent_key = self.config.get_threshold_key("excellent")
+        good_key = self.config.get_threshold_key("good")
+        moderate_key = self.config.get_threshold_key("moderate")
+
+        excellent_name = self.config.get_threshold_name(excellent_key)
+        good_name = self.config.get_threshold_name(good_key)
+        moderate_name = self.config.get_threshold_name(moderate_key)
+
+        excellent_threshold = self.config.get_performance_threshold(excellent_name)
+        good_threshold = self.config.get_performance_threshold(good_name)
+        moderate_threshold = self.config.get_performance_threshold(moderate_name)
+
+        if performance_ratio >= excellent_threshold:
             return {
                 "color": self.tokens.colors["success"]["500"],
                 "icon": "●",
                 "label": "Exceeding Target",
                 "status": "success",
             }
-        elif performance_ratio >= 0.8:
+        elif performance_ratio >= good_threshold:
             return {
                 "color": self.tokens.colors["success"]["500"],
                 "icon": "●",
                 "label": "On Target",
                 "status": "success",
             }
-        elif performance_ratio >= 0.6:
+        elif performance_ratio >= moderate_threshold:
             return {
                 "color": self.tokens.colors["warning"]["500"],
                 "icon": "●",

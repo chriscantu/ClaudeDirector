@@ -24,6 +24,14 @@ from .visual_components import (
     visualization_factory,
 )
 from .design_system import design_system, ComponentSize
+from .interfaces import (
+    DashboardEngineInterface,
+    ProfileManagerInterface,
+    DataGeneratorInterface,
+    DesignSystemInterface,
+)
+from .data_generator import SampleDataGenerator
+from .config_manager import visualization_config
 
 
 @dataclass
@@ -45,18 +53,28 @@ class DashboardLayout:
     compact_mode: bool = False
 
 
-class DashboardEngine:
+class DashboardEngine(DashboardEngineInterface):
     """
     Main dashboard engine coordinating all visual components
     Rachel's design: Consistent, accessible, executive-focused
+    Implements dependency injection (Dependency Inversion Principle)
     """
 
-    def __init__(self, config_path: Optional[str] = None):
-        self.profile_manager = DirectorProfileManager(
+    def __init__(
+        self,
+        profile_manager: Optional[ProfileManagerInterface] = None,
+        data_generator: Optional[DataGeneratorInterface] = None,
+        design_system_impl: Optional[DesignSystemInterface] = None,
+        config_path: Optional[str] = None,
+    ):
+        # Dependency injection - follows Dependency Inversion Principle
+        self.profile_manager = profile_manager or DirectorProfileManager(
             config_path or "config/p1_organizational_intelligence.yaml"
         )
-        self.design_system = design_system
+        self.data_generator = data_generator or SampleDataGenerator()
+        self.design_system = design_system_impl or design_system
         self.layout = DashboardLayout()
+        self.config = visualization_config
 
     def render_executive_dashboard(self, sample_data: bool = False) -> str:
         """
@@ -112,102 +130,25 @@ class DashboardEngine:
     def _get_organizational_data(self, sample_data: bool = False) -> Dict[str, Any]:
         """Get or generate organizational data for visualization"""
         if sample_data:
-            return self._generate_sample_data()
+            # Use the data generator (follows Single Responsibility Principle)
+            org_data = self.data_generator.generate_sample_data(self.profile_manager)
+            return self._convert_to_dict(org_data)
         else:
-            return self._collect_real_data()
+            # Use the data generator for real data collection
+            org_data = self.data_generator.collect_real_data(self.profile_manager)
+            return self._convert_to_dict(org_data)
 
-    def _generate_sample_data(self) -> Dict[str, Any]:
-        """
-        Generate realistic sample data for demonstration
-        Rachel approved: Realistic scenarios for accurate visualization testing
-        """
-        profile = self.profile_manager.current_profile
-
-        # Sample current metrics
-        sample_metrics = {
-            "component_usage_consistency": 0.78,
-            "design_debt_reduction": 0.12,
-            "cross_team_design_velocity": 0.22,
-            "adoption_rate_percentage": 0.75,
-            "developer_satisfaction_score": 4.3,
-            "time_to_onboard_new_teams": 2.8,
-            "api_response_times": 180,
-            "service_dependency_health": 0.95,
-        }
-
-        # Calculate impact score
-        impact_score = self.profile_manager.calculate_organizational_impact_score(
-            sample_metrics
-        )
-
-        # Domain performance data
-        domain_data = []
-        for domain_name, metrics in profile.enabled_domains.items():
-            if metrics:
-                weight = metrics[0].weight
-                target = metrics[0].target_value if metrics[0].target_value > 0 else 0.8
-
-                # Simulate current performance
-                if "design" in domain_name:
-                    current = 0.78
-                elif "platform" in domain_name:
-                    current = 0.75
-                elif "api" in domain_name:
-                    current = 0.85
-                else:
-                    current = 0.70
-
-                domain_data.append(
-                    {
-                        "name": domain_name,
-                        "current": current,
-                        "target": target,
-                        "weight": weight,
-                    }
-                )
-
-        # Trend data (last 8 weeks)
-        trend_data = {
-            "design_system_leverage": [0.65, 0.68, 0.71, 0.73, 0.75, 0.77, 0.78, 0.78],
-            "platform_adoption": [0.68, 0.70, 0.71, 0.72, 0.73, 0.74, 0.75, 0.75],
-            "api_service_efficiency": [0.80, 0.82, 0.83, 0.84, 0.85, 0.85, 0.85, 0.85],
-        }
-
-        # Investment ROI data
-        investment_data = []
-        for name, investment in profile.investment_categories.items():
-            roi_multiplier = {
-                "design_system_enhancement": 1.25,
-                "platform_infrastructure": 1.18,
-                "developer_experience": 1.30,
-                "cross_team_tooling": 1.15,
-            }.get(name, 1.20)
-
-            invested = 50000 * investment.priority_weight
-            projected_return = invested * roi_multiplier
-
-            investment_data.append(
-                {
-                    "name": name,
-                    "invested": invested,
-                    "projected_return": projected_return,
-                    "measurement_period": investment.measurement_period_months,
-                }
-            )
-
+    def _convert_to_dict(self, org_data) -> Dict[str, Any]:
+        """Convert OrganizationalData to dictionary format"""
         return {
-            "impact_score": max(impact_score, 0.65),  # Ensure realistic demo score
-            "domains": domain_data,
-            "trends": trend_data,
-            "investments": investment_data,
-            "sample_metrics": sample_metrics,
+            "impact_score": org_data.impact_score,
+            "domains": org_data.domains,
+            "trends": org_data.trends,
+            "investments": org_data.investments,
+            "sample_metrics": org_data.sample_metrics,
         }
 
-    def _collect_real_data(self) -> Dict[str, Any]:
-        """Collect real organizational data (placeholder for future integration)"""
-        # For now, return sample data
-        # In production, this would integrate with actual data sources
-        return self._generate_sample_data()
+    # NOTE: Sample data generation moved to SampleDataGenerator class (SRP)
 
     def _render_impact_score_section(self, org_data: Dict[str, Any]) -> str:
         """Render the impact score visualization"""
@@ -302,14 +243,14 @@ class DashboardEngine:
             },
             "impact_score": {
                 "value": org_data["impact_score"],
-                "status": design_system.get_status_indicator(
+                "status": self.design_system.get_status_indicator(
                     org_data["impact_score"], 1.0
                 ),
             },
             "domains": [
                 {
                     **domain,
-                    "status": design_system.get_status_indicator(
+                    "status": self.design_system.get_status_indicator(
                         domain["current"], domain["target"]
                     ),
                 }
@@ -328,9 +269,9 @@ class DashboardEngine:
                 },
             },
             "design_system": {
-                "colors": design_system.tokens.colors,
-                "typography": design_system.tokens.typography,
-                "spacing": design_system.tokens.spacing,
+                "colors": self.design_system.tokens.colors,
+                "typography": self.design_system.tokens.typography,
+                "spacing": self.design_system.tokens.spacing,
             },
         }
 
@@ -341,9 +282,9 @@ class DashboardEngine:
         Quick status view for daily use
         Rachel approved: Minimal, scannable, actionable
         """
-        org_data = self._generate_sample_data()
+        org_data = self._get_organizational_data(sample_data=True)
         score = org_data["impact_score"]
-        status = design_system.get_status_indicator(score, 1.0)
+        status = self.design_system.get_status_indicator(score, 1.0)
 
         # Find top and bottom performing domains
         domains = org_data["domains"]

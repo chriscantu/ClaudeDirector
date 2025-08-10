@@ -8,6 +8,8 @@ from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass
 import math
 from .design_system import design_system, ColorScale, ComponentSize
+from .interfaces import VisualizationComponentInterface
+from .config_manager import visualization_config
 
 
 @dataclass
@@ -115,7 +117,10 @@ class DomainPerformanceChart:
             name = domain["name"]
             current = domain["current"]
             target = domain.get("target", 1.0)
-            weight = domain.get("weight", 0.0)
+            weight = domain.get(
+                "weight",
+                visualization_config.get_default_value("division_by_zero_fallback"),
+            )
 
             # Get status and formatting
             status = self.design_system.get_status_indicator(current, target)
@@ -175,7 +180,12 @@ class DomainPerformanceChart:
                     "name": domain["name"].replace("_", " ").title(),
                     "current": domain["current"],
                     "target": domain.get("target", 1.0),
-                    "weight": domain.get("weight", 0.0),
+                    "weight": domain.get(
+                        "weight",
+                        visualization_config.get_default_value(
+                            "division_by_zero_fallback"
+                        ),
+                    ),
                     "color": status["color"],
                     "status": status["status"],
                 }
@@ -291,7 +301,10 @@ class ExecutiveSummaryWidget:
         Rachel approved: Clear hierarchy, actionable insights
         """
         role = summary_data.get("role", "Director")
-        impact_score = summary_data.get("impact_score", 0.0)
+        impact_score = summary_data.get(
+            "impact_score",
+            visualization_config.get_default_value("division_by_zero_fallback"),
+        )
         top_domain = summary_data.get("top_performing_domain", "N/A")
         attention_domain = summary_data.get("needs_attention_domain", "N/A")
 
@@ -321,11 +334,14 @@ class ExecutiveSummaryWidget:
         return output
 
 
-class ROIVisualization:
+class ROIVisualization(VisualizationComponentInterface):
     """
     Investment ROI visualization
     Rachel's design: Financial clarity, investment insights
     """
+
+    def __init__(self, config_manager=None):
+        self.config = config_manager or visualization_config
 
     def render_ascii(self, investments: List[Dict[str, Any]]) -> str:
         """
@@ -355,19 +371,33 @@ class ROIVisualization:
             projected = inv.get("projected_return", 0)
             roi = ((projected - invested) / invested * 100) if invested > 0 else 0
 
-            # ROI status indicator
-            if roi > 20:
+            # ROI status indicator using configuration values
+            excellent_key = self.config.get_threshold_key("excellent")
+            good_key = self.config.get_threshold_key("good")
+            moderate_key = self.config.get_threshold_key("moderate")
+            poor_key = self.config.get_threshold_key("poor")
+
+            excellent_name = self.config.get_threshold_name(excellent_key)
+            good_name = self.config.get_threshold_name(good_key)
+            moderate_name = self.config.get_threshold_name(moderate_key)
+            poor_name = self.config.get_threshold_name(poor_key)
+
+            excellent_threshold = self.config.get_roi_threshold(excellent_name)
+            good_threshold = self.config.get_roi_threshold(good_name)
+            moderate_threshold = self.config.get_roi_threshold(moderate_name)
+
+            if roi > excellent_threshold:
                 status_icon = "🎉"
-                status = "Excellent"
-            elif roi > 10:
+                status = self.config.get_roi_label(excellent_name)
+            elif roi > good_threshold:
                 status_icon = "✅"
-                status = "Good"
-            elif roi > 0:
+                status = self.config.get_roi_label(good_name)
+            elif roi > moderate_threshold:
                 status_icon = "⚠️"
-                status = "Moderate"
+                status = self.config.get_roi_label(moderate_name)
             else:
                 status_icon = "🚨"
-                status = "Poor"
+                status = self.config.get_roi_label(poor_name)
 
             output.append(f"{status_icon} {name:<25}")
             output.append(
