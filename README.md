@@ -191,7 +191,7 @@ sis-weekly-report --output workspace/weekly-slt-report.md
 You can extend ClaudeDirector with your own strategic personas:
 
 **Quick Setup:**
-1. Edit `claude_config.yaml` in the project root
+1. Edit `config/claude_config.yaml` for configuration
 2. Add your custom personas and strategic context
 3. Define auto-activation rules and business priorities
 
@@ -215,7 +215,7 @@ strategic_context:
 - Tailored business metrics and KPI focus
 - Context-aware persona auto-activation
 
-See `claude_config.yaml` for detailed configuration examples.
+See `config/claude_config.yaml` for detailed configuration examples.
 
 </details>
 
@@ -278,7 +278,7 @@ See `claude_config.yaml` for detailed configuration examples.
 - **Import errors**: Run from project root directory
 - **Setup issues**: Re-run `./claudedirector setup`
 - **Business metrics not showing**: Check `./claudedirector metrics` output
-- **Persona customization**: Edit `claude_config.yaml` for organization-specific personas
+- **Persona customization**: Edit `config/claude_config.yaml` for organization-specific personas
 - **Meeting tracking not working**: Verify `workspace/meeting-prep/` directory exists
 
 ---

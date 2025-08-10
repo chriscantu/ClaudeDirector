@@ -218,4 +218,4 @@ python3 -m unittest tests.persona_integration.test_p2_chat_adapter
 For issues or questions:
 1. Check test cases for usage examples
 2. Review error messages for troubleshooting hints
-3. Use demo script: `python3 demo_persona_chat.py`
+3. Use demo script: `python3 bin/demo/persona_chat_demo.py`

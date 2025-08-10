@@ -7,7 +7,7 @@ This file provides context for Cursor IDE to understand and utilize the SuperCla
 When working in this directory, reference these framework files for context:
 
 ### Core Framework
-- `CLAUDE.md` - UI Foundation context and strategic priorities
+- `framework/CLAUDE.md` - UI Foundation context and strategic priorities
 - `PERSONAS.md` - Strategic leadership persona system (12 personas)
 - `COMMANDS.md` - Strategic command framework and workflows
 - `FLAGS.md` - Director-level flags and auto-activation logic
