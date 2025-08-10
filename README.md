@@ -1,47 +1,74 @@
-# ClaudeDirector: Strategic Leadership AI Framework
+# ClaudeDirector: Your AI Engineering Director Team
 
-**Claude specialized for engineering directors** - Get strategic AI assistance with persistent memory and intelligent task tracking.
+**Your entire AI engineering director team** - automatically activates the right expertise for every conversation.
 
-## 🚀 Quick Start (1 minute)
+## 🚀 Start in 30 Seconds (No Setup Required)
 
-### 1. Install ClaudeDirector
-```bash
-git clone https://github.com/chriscantu/ClaudeDirector.git
-cd ClaudeDirector
+### Just Start Talking to Claude - Directors Activate Automatically
+
+```
+👤 "Our iOS app performance is terrible, crashes on startup"
+🤖 Marcus (Mobile Director): "Let's tackle this systematically. I'll help you debug crash analytics and memory patterns..."
+
+👤 "We need to improve our product strategy and user onboarding"
+🤖 Rachel (Product Director): "Perfect! Let's design a user-centered approach. I'll guide you through conversion optimization..."
+
+👤 "Our kubernetes deployment is failing consistently"
+🤖 Martin (Infrastructure Director): "I'll help debug this infrastructure issue. Let's examine your deployment configs..."
 ```
 
-### 2. One-Command Setup
+### Want More Control? Use the CLI
 ```bash
-# Single command sets up everything
-./claudedirector setup
+# See all 6 AI director types
+./claudedirector templates list
+
+# Find the perfect director for your specific challenge
+./claudedirector templates discover "mobile app security compliance"
+
+# Get industry-specific recommendations
+./claudedirector templates summary mobile_director --industry fintech --team startup
 ```
 
-### 3. Start Using ClaudeDirector
-```bash
-# Set up your director profile (NEW P1 Feature!)
-./claudedirector org-intelligence quick-setup --template design_system
-
-# Daily executive dashboard
-./claudedirector alerts
-
-# Scan workspace for stakeholders and tasks
-./claudedirector stakeholders scan
-./claudedirector tasks scan
-
-# View your strategic intelligence
-./claudedirector status
-```
-
-**That's it!** ClaudeDirector is now your strategic leadership assistant.
+**That's it!** Your AI director team automatically provides the right expertise when you need it.
 
 ## ✨ What You Get
 
-### 🧠 **Strategic AI Personas**
-12 specialized personas for different leadership contexts:
-- **diego**: Engineering leadership, platform strategy
-- **camille**: Strategic technology, organizational scaling
-- **rachel**: Design systems, cross-functional alignment
-- **alvaro**: Platform ROI, business value communication
+### 🤖 **Your Complete AI Director Team**
+**6 specialized engineering directors** who automatically activate based on your conversation:
+
+| Director | Expertise | Auto-Activates When You Discuss |
+|----------|-----------|----------------------------------|
+| 🏗️ **Diego** - Platform Director | Developer productivity, tooling, CI/CD | "platform tools", "developer experience", "build systems" |
+| 📱 **Marcus** - Mobile Director | iOS/Android strategy, app performance | "mobile app", "iOS development", "app store optimization" |
+| 🎯 **Rachel** - Product Director | User experience, product strategy | "product roadmap", "user feedback", "feature delivery" |
+| ⚙️ **Martin** - Infrastructure Director | Cloud, DevOps, reliability, kubernetes | "infrastructure", "deployment", "monitoring", "scalability" |
+| 📊 **Data** - Data Director | Analytics, ML, data pipelines | "data pipeline", "analytics", "machine learning", "BI" |
+| 🔧 **Backend** - Backend Director | APIs, microservices, databases | "backend services", "API design", "microservices", "database" |
+
+### 🧠 **Intelligent Context Switching**
+- **90%+ accuracy** in selecting the right director for your needs
+- **<500ms activation time** - feels instant and natural
+- **Smart persona switching** as your conversation evolves
+- **Memory across sessions** - directors remember your context
+
+### 🎚️ **Organic Activation Controls**
+**Feel natural while staying responsive:**
+
+- **High Confidence (≥80%)**: Director activates immediately, seamlessly
+- **Medium Confidence (60-80%)**: Gentle suggestion, easy to accept/decline
+- **Low Confidence (<60%)**: Shows multiple director options to choose from
+- **Anti-thrashing protection**: Prevents unnecessary director switching
+
+**Tune your experience:**
+```bash
+# More responsive switching for power users
+claudedirector personas tune --sensitivity high
+
+# More stable experience for focused conversations
+claudedirector personas tune --sensitivity low
+
+# Quick overrides: @marcus, @rachel, @auto
+```
 
 ### 📊 **Executive Business Intelligence** ⭐ NEW P1 Features!
 Transform technical work into business outcomes:
@@ -241,24 +268,25 @@ See `config/claude_config.yaml` for detailed configuration examples.
 - **85%+ test coverage** with enterprise-grade quality assurance
 - **<2s initialization, <0.5s calculations** performance SLAs
 
-## 🚀 Next Steps
+## 🚀 Your Success Path
 
-### Immediate Value (Day 1)
-1. ✅ **Set up director profile** - `./claudedirector org-intelligence quick-setup --template design_system`
-2. ✅ **Set up meeting tracking** - Let ClaudeDirector learn your meeting patterns
-3. ✅ **Try strategic personas** - Use `@diego` for platform decisions, `@alvaro` for business metrics
-4. ✅ **View organizational intelligence** - `./claudedirector org-intelligence status`
+### 🎯 **Day 1: Start Conversations**
+1. ✅ **Just start talking** - Describe any engineering challenge, watch directors activate
+2. ✅ **Try different domains** - Mobile issues → Marcus, Product strategy → Rachel, Infrastructure → Martin
+3. ✅ **Explore your options** - `./claudedirector templates list` to see all director types
+4. ✅ **Get specific** - Use industry context: "fintech mobile security" or "healthcare data compliance"
 
-### Strategic Value (Week 1)
-1. **Customize your profile** - Fine-tune domains and metrics with `./claudedirector org-intelligence customize`
-2. **Generate executive summaries** - `./claudedirector reports executive-summary` for leadership insights
-3. **Track organizational impact** - Monitor platform investment returns and team velocity
-4. **Leverage AI insights** - Use `@alvaro` for translating technical work into business value
+### 📈 **Week 1: Discover & Customize**
+1. **Find your ideal directors** - `./claudedirector templates discover "your specific challenge"`
+2. **Industry optimization** - `./claudedirector templates summary mobile_director --industry fintech`
+3. **Team size context** - `--team startup/scale/enterprise` for relevant guidance
+4. **Learn the activation patterns** - Notice how directors switch as conversations evolve
 
-### Enterprise Value (Month 1)
-1. **Executive dashboard adoption** - Regular KPI monitoring and strategic decision support
-2. **Board presentation ready** - Generate professional reports with `./claudedirector reports board`
-3. **Scale team adoption** - Share business intelligence patterns across leadership team
+### 🏢 **Month 1: Scale & Optimize**
+1. **Template customization** - Create industry-specific director configurations
+2. **Team adoption** - Share director templates across your engineering organization
+3. **Advanced workflows** - Template migration, backup/restore, validation automation
+4. **Measurement** - Track director selection accuracy and conversation effectiveness
 
 ## 🆘 Getting Help
 
