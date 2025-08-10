@@ -25,5 +25,20 @@ repos:
         name: SOLID Principle Validation
         entry: python tools/architecture/solid_validator.py
         language: python
-        files: ^lib/claudedirector/p0_features/.*\.py$
+        files: ^lib/claudedirector/(p0_features|p1_features)/.*\.py$
         pass_filenames: true
+
+      # P1 Feature Testing
+      - id: p1-unit-tests
+        name: P1 Unit Tests
+        entry: python tools/testing/run_p1_unit_tests.py
+        language: python
+        files: ^(lib/claudedirector/p1_features/.*\.py|tests/p1_features/unit/.*\.py)$
+        pass_filenames: false
+
+      - id: p1-test-coverage
+        name: P1 Test Coverage Check
+        entry: python tools/testing/check_p1_coverage.py
+        language: python
+        files: ^lib/claudedirector/p1_features/.*\.py$
+        pass_filenames: false
