@@ -1,0 +1,5 @@
+Collecting structlog
+  Using cached structlog-25.4.0-py3-none-any.whl.metadata (7.6 kB)
+Using cached structlog-25.4.0-py3-none-any.whl (68 kB)
+Installing collected packages: structlog
+Successfully installed structlog-25.4.0
