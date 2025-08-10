@@ -9,26 +9,26 @@
 **ClaudeDirector automatically activates the right director based on what you're discussing:**
 
 ```
-👤 "Our iOS app performance is terrible, crashes on startup"
-🤖 Marcus (Mobile Director): "Let's tackle this systematically. First, let's check your crash analytics and memory usage patterns..."
+👤 "Our mobile platform strategy lacks organizational alignment between iOS and Android teams"
+🤖 Rachel (UX Strategy): "Let's design a cross-functional governance framework. I'll help you create alignment strategies for platform unification..."
 
-👤 "We need to improve our product strategy and user onboarding"
-🤖 Rachel (Product Director): "I'll help you design a user-centered approach. Let's start with your current conversion funnel..."
+👤 "We need to translate our platform engineering investments into business value for stakeholders"
+🤖 Alvaro (Business Strategy): "I'll help you build the ROI narrative. Let's quantify platform impact on developer productivity and business outcomes..."
 
-👤 "Our kubernetes deployment is failing consistently"
-🤖 Martin (Infrastructure Director): "Let's debug this infrastructure issue. Can you share your deployment config and error logs?"
+👤 "Our platform architecture is creating technical debt across multiple teams and needs strategic oversight"
+🤖 Martin (Platform Architecture): "Let's analyze the organizational impacts and create a strategic refactoring roadmap with governance frameworks..."
 ```
 
-## 🎭 Meet Your AI Director Team
+## 🎭 Meet Your Strategic AI Director Team
 
-| Director | Expertise | Activates When You Mention |
-|----------|-----------|----------------------------|
-| 🤖 **Marcus** - Mobile Director | iOS/Android, App Store optimization | "mobile app", "iOS", "android", "app performance" |
-| 🎯 **Rachel** - Product Director | Product strategy, user experience | "product roadmap", "user experience", "customer feedback" |
-| 🏗️ **Diego** - Platform Director | Developer tools, CI/CD, productivity | "platform", "developer experience", "CI/CD", "tooling" |
-| ⚙️ **Martin** - Infrastructure Director | DevOps, cloud, reliability | "kubernetes", "infrastructure", "deployment", "monitoring" |
-| 📊 **Data** - Data Director | Analytics, ML, data pipelines | "data pipeline", "analytics", "machine learning", "BI" |
-| 🔧 **Backend** - Backend Director | APIs, microservices, databases | "backend", "microservices", "API", "database scaling" |
+| Strategic Persona | Leadership Expertise | Activates When You Mention |
+|-------------------|---------------------|----------------------------|
+| 🎨 **Rachel** - UX Strategy | Design systems strategy, cross-functional alignment | "design system adoption", "UX organizational strategy", "cross-team alignment" |
+| 💼 **Alvaro** - Business Strategy | Platform ROI, business value translation | "platform investment", "business impact", "board presentation", "ROI analysis" |
+| 🏗️ **Diego** - Engineering Leadership | Platform strategy, multinational coordination | "engineering strategy", "team scaling", "platform governance" |
+| ⚙️ **Martin** - Platform Architecture | Technical debt strategy, evolutionary design | "platform architecture", "technical debt governance", "strategic refactoring" |
+| 🌟 **Camille** - Executive Strategy | Technology vision, organizational scaling | "technology strategy", "executive communication", "organizational transformation" |
+| 📊 **Data** - Analytics Strategy | Data governance, metrics frameworks | "data strategy", "analytics governance", "metrics frameworks" |
 
 ## 🔍 Discover Your Options
 

@@ -4,17 +4,17 @@
 
 ## 🚀 Start in 30 Seconds (No Setup Required)
 
-### Just Start Talking to Claude - Directors Activate Automatically
+### Just Start Talking to Claude - Strategic Directors Activate Automatically
 
 ```
-👤 "Our iOS app performance is terrible, crashes on startup"
-🤖 Marcus (Mobile Director): "Let's tackle this systematically. I'll help you debug crash analytics and memory patterns..."
+👤 "Our mobile platform strategy isn't aligned across iOS and Android teams, affecting our product roadmap"
+🤖 Rachel (UX Strategy): "Let's design a cross-functional alignment strategy. I'll help you create governance frameworks for platform unification..."
 
-👤 "We need to improve our product strategy and user onboarding"
-🤖 Rachel (Product Director): "Perfect! Let's design a user-centered approach. I'll guide you through conversion optimization..."
+👤 "We need to translate our platform investments into business value for the board presentation"
+🤖 Alvaro (Business Strategy): "I'll help you build the ROI narrative. Let's quantify platform impact on developer productivity and business outcomes..."
 
-👤 "Our kubernetes deployment is failing consistently"
-🤖 Martin (Infrastructure Director): "I'll help debug this infrastructure issue. Let's examine your deployment configs..."
+👤 "Our platform architecture is creating technical debt across multiple teams, need strategic oversight"
+🤖 Martin (Platform Architecture): "Let's analyze the organizational impacts and create a strategic refactoring roadmap..."
 ```
 
 ### Want More Control? Use the CLI
@@ -33,23 +33,45 @@
 
 ## ✨ What You Get
 
-### 🤖 **Your Complete AI Director Team**
-**6 specialized engineering directors** who automatically activate based on your conversation:
+### 🤖 **Your Strategic AI Director Team**
+**Strategic engineering leadership personas** who automatically activate based on your conversation context:
 
-| Director | Expertise | Auto-Activates When You Discuss |
-|----------|-----------|----------------------------------|
-| 🏗️ **Diego** - Platform Director | Developer productivity, tooling, CI/CD | "platform tools", "developer experience", "build systems" |
-| 📱 **Marcus** - Mobile Director | iOS/Android strategy, app performance | "mobile app", "iOS development", "app store optimization" |
-| 🎯 **Rachel** - Product Director | User experience, product strategy | "product roadmap", "user feedback", "feature delivery" |
-| ⚙️ **Martin** - Infrastructure Director | Cloud, DevOps, reliability, kubernetes | "infrastructure", "deployment", "monitoring", "scalability" |
-| 📊 **Data** - Data Director | Analytics, ML, data pipelines | "data pipeline", "analytics", "machine learning", "BI" |
-| 🔧 **Backend** - Backend Director | APIs, microservices, databases | "backend services", "API design", "microservices", "database" |
+| Strategic Persona | Leadership Focus | Auto-Activates When You Discuss |
+|-------------------|------------------|----------------------------------|
+| 🏗️ **Diego** - Engineering Leadership | Platform strategy, multinational coordination | "engineering strategy", "team scaling", "platform governance" |
+| 🎨 **Rachel** - UX Strategy | Design systems strategy, cross-functional alignment | "design system adoption", "UX organizational strategy", "cross-team alignment" |
+| 💼 **Alvaro** - Business Strategy | Platform ROI, business value translation | "platform investment", "business impact", "board presentation", "ROI analysis" |
+| ⚙️ **Martin** - Platform Architecture | Technical debt strategy, evolutionary design | "platform architecture", "technical debt governance", "strategic refactoring" |
+| 🌟 **Camille** - Executive Strategy | Technology vision, organizational scaling | "technology strategy", "executive communication", "organizational transformation" |
+| 📊 **Data** - Analytics Strategy | Data governance, metrics frameworks | "data strategy", "analytics governance", "metrics frameworks" |
 
 ### 🧠 **Intelligent Context Switching**
 - **90%+ accuracy** in selecting the right director for your needs
 - **<500ms activation time** - feels instant and natural
 - **Smart persona switching** as your conversation evolves
 - **Memory across sessions** - directors remember your context
+
+### 🎯 **How It Works: Strategic Personas + Domain Intelligence**
+
+**Two-Layer Intelligence System:**
+
+1. **Strategic Personas** (Your Core Team):
+   - **Rachel, Martin, Alvaro, Diego, Camille** - Your original strategic leadership team
+   - **Director-level expertise**: Organizational strategy, business impact, technical governance
+   - **Preserved exactly as you configured them** for your specific needs
+
+2. **Domain Context Analysis**:
+   - **Analyzes your conversation** to understand the engineering domain (mobile, platform, etc.)
+   - **Routes to the right strategic persona** based on the type of leadership challenge
+   - **Maintains your original personas** while adding intelligent domain routing
+
+**Example Flow:**
+```
+👤 "Our mobile platform needs better cross-team governance"
+🔍 Domain Analysis: Mobile + Organizational Strategy
+🎯 Routes to: Rachel (UX Strategy) - for cross-functional alignment expertise
+🤖 Rachel: "Let's design a governance framework for mobile platform alignment..."
+```
 
 ### 🎚️ **Organic Activation Controls**
 **Feel natural while staying responsive:**
