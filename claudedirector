@@ -178,6 +178,44 @@ Examples:
         reports_board_parser = reports_sub.add_parser('board', help='Board presentation report')
         reports_board_parser.add_argument('--quarter', help='Specific quarter (e.g., Q1-2024)')
 
+        # Director Templates (Phase 1 Feature)
+        templates_parser = subparsers.add_parser('templates', help='Director template management (P1 Feature)')
+        templates_sub = templates_parser.add_subparsers(dest='templates_action', help='Template management actions')
+
+        # Template listing
+        list_parser = templates_sub.add_parser('list', help='List available director templates')
+        list_parser.add_argument('--domain', help='Filter by template domain')
+        list_parser.add_argument('--format', choices=['table', 'json'], default='table', help='Output format')
+
+        # Template details
+        show_parser = templates_sub.add_parser('show', help='Show detailed template information')
+        show_parser.add_argument('template_id', help='Template ID to show details for')
+        show_parser.add_argument('--format', choices=['yaml', 'json'], default='yaml', help='Output format')
+
+        # Template discovery
+        discover_parser = templates_sub.add_parser('discover', help='Discover templates by context')
+        discover_parser.add_argument('context', help='Context keywords for template discovery')
+        discover_parser.add_argument('--threshold', type=float, default=0.6, help='Confidence threshold (0.0-1.0)')
+
+        # Template validation
+        validate_parser = templates_sub.add_parser('validate', help='Validate template selection')
+        validate_parser.add_argument('template_id', help='Template ID to validate')
+        validate_parser.add_argument('--industry', help='Industry modifier')
+        validate_parser.add_argument('--team-size', help='Team size context')
+
+        # Template summary
+        summary_parser = templates_sub.add_parser('summary', help='Generate template configuration summary')
+        summary_parser.add_argument('template_id', help='Template ID for summary')
+        summary_parser.add_argument('--industry', help='Industry modifier')
+        summary_parser.add_argument('--team-size', help='Team size context')
+
+        # Template comparison
+        compare_parser = templates_sub.add_parser('compare', help='Compare multiple templates')
+        compare_parser.add_argument('template_ids', nargs='+', help='Template IDs to compare (2-4 templates)')
+
+        # Available domains
+        templates_sub.add_parser('domains', help='List available template domains')
+
         # P1 Organizational Intelligence
         org_intel_parser = subparsers.add_parser('org-intelligence', help='Organizational Leverage Intelligence (P1)')
         org_intel_sub = org_intel_parser.add_subparsers(dest='org_intel_action', help='Organizational intelligence actions')
@@ -696,6 +734,9 @@ Examples:
         elif args.command == 'arch-health':
             self.handle_arch_health(args)
 
+        elif args.command == 'templates':
+            self.handle_templates(args)
+
         elif args.command == 'org-intelligence':
             self.handle_org_intelligence(args)
 
@@ -783,6 +824,77 @@ Examples:
 
         except Exception as e:
             print(f"❌ Architecture health command failed: {e}")
+
+    def handle_templates(self, args):
+        """Handle director template management commands"""
+        print("🎭 Director Template Management")
+        print("=" * 35)
+
+        try:
+            from lib.claudedirector.p1_features.template_commands import TemplateCommands
+
+            template_commands = TemplateCommands()
+
+            if args.templates_action == 'list':
+                result = template_commands.list_templates(
+                    domain=getattr(args, 'domain', None),
+                    format_type=getattr(args, 'format', 'table')
+                )
+                print(result)
+
+            elif args.templates_action == 'show':
+                result = template_commands.get_template_details(
+                    template_id=args.template_id,
+                    format_type=getattr(args, 'format', 'yaml')
+                )
+                print(result)
+
+            elif args.templates_action == 'discover':
+                result = template_commands.discover_by_context(
+                    context=args.context,
+                    threshold=getattr(args, 'threshold', 0.6)
+                )
+                print(result)
+
+            elif args.templates_action == 'validate':
+                result = template_commands.validate_selection(
+                    template_id=args.template_id,
+                    industry=getattr(args, 'industry', None),
+                    team_size=getattr(args, 'team_size', None)
+                )
+                print(result)
+
+            elif args.templates_action == 'summary':
+                result = template_commands.generate_summary(
+                    template_id=args.template_id,
+                    industry=getattr(args, 'industry', None),
+                    team_size=getattr(args, 'team_size', None)
+                )
+                print(result)
+
+            elif args.templates_action == 'compare':
+                if len(args.template_ids) < 2:
+                    print("❌ Need at least 2 templates to compare")
+                    return
+                if len(args.template_ids) > 4:
+                    print("❌ Cannot compare more than 4 templates at once")
+                    return
+
+                result = template_commands.compare_templates(args.template_ids)
+                print(result)
+
+            elif args.templates_action == 'domains':
+                result = template_commands.list_domains()
+                print(result)
+
+            else:
+                print("❌ Unknown template action. Use --help for available commands.")
+
+        except ImportError as e:
+            print(f"❌ Template system not available: {e}")
+            print("   Run './claudedirector setup' to initialize all components.")
+        except Exception as e:
+            print(f"❌ Template command failed: {e}")
 
     def handle_org_intelligence(self, args):
         """Handle organizational intelligence commands"""
