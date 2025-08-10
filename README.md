@@ -1,35 +1,35 @@
 # ClaudeDirector: Your AI Engineering Director Team
 
-**Your entire AI engineering director team** - automatically activates the right expertise for every conversation.
+**Zero-setup AI directors** that automatically provide strategic expertise when you need it.
 
-## 🚀 Start in 30 Seconds (No Setup Required)
+## ✨ Works Out of the Box
 
-### Just Start Talking to Claude - Strategic Directors Activate Automatically
+### 🎯 **Cursor Users** (Recommended - Native Integration)
+1. **Open this repo in Cursor**
+2. **Start any conversation** - ClaudeDirector auto-detects and activates
+3. **Talk naturally** - your AI director team responds automatically
+
+*No installation, no configuration, no CLI commands needed.*
+
+### 💬 **Claude Chat Users** (Also Zero Setup)
+1. **Copy this repo URL**: `https://github.com/chriscantu/ClaudeDirector`
+2. **Paste into any Claude conversation**
+3. **Start asking strategic questions** - directors activate automatically
+
+### 🤖 **What Happens Automatically:**
 
 ```
-👤 "Our mobile platform strategy isn't aligned across iOS and Android teams, affecting our product roadmap"
-🤖 Rachel (UX Strategy): "Let's design a cross-functional alignment strategy. I'll help you create governance frameworks for platform unification..."
+👤 "Our mobile platform strategy isn't aligned across iOS and Android teams"
+🤖 Rachel (UX Strategy): "Let's design a cross-functional alignment strategy..."
 
-👤 "We need to translate our platform investments into business value for the board presentation"
-🤖 Alvaro (Business Strategy): "I'll help you build the ROI narrative. Let's quantify platform impact on developer productivity and business outcomes..."
+👤 "Need to translate platform investments into business value for the board"
+🤖 Alvaro (Business Strategy): "I'll help you build the ROI narrative..."
 
-👤 "Our platform architecture is creating technical debt across multiple teams, need strategic oversight"
-🤖 Martin (Platform Architecture): "Let's analyze the organizational impacts and create a strategic refactoring roadmap..."
+👤 "Platform architecture creating technical debt across multiple teams"
+🤖 Martin (Platform Architecture): "Let's create a strategic refactoring roadmap..."
 ```
 
-### Want More Control? Use the CLI
-```bash
-# See all 6 AI director types
-./claudedirector templates list
-
-# Find the perfect director for your specific challenge
-./claudedirector templates discover "mobile app security compliance"
-
-# Get industry-specific recommendations
-./claudedirector templates summary mobile_director --industry fintech --team startup
-```
-
-**That's it!** Your AI director team automatically provides the right expertise when you need it.
+**That's it!** Your AI director team is ready to provide strategic expertise.
 
 ## ✨ What You Get
 
@@ -81,16 +81,38 @@
 - **Low Confidence (<60%)**: Shows multiple director options to choose from
 - **Anti-thrashing protection**: Prevents unnecessary director switching
 
-**Tune your experience:**
+<details>
+<summary><strong>🔧 Want More Control?</strong> (Click to expand advanced options)</summary>
+
+### Command Line Interface (Optional)
 ```bash
-# More responsive switching for power users
-claudedirector personas tune --sensitivity high
+# See all director types available
+./claudedirector templates list
 
-# More stable experience for focused conversations
-claudedirector personas tune --sensitivity low
+# Find the perfect director for your specific challenge
+./claudedirector templates discover "mobile app security compliance"
 
-# Quick overrides: @marcus, @rachel, @auto
+# Get industry-specific recommendations
+./claudedirector templates summary mobile_director --industry fintech --team startup
+
+# Tune activation sensitivity
+claudedirector personas tune --sensitivity high    # More responsive
+claudedirector personas tune --sensitivity low     # More stable
+
+# Quick overrides in chat
+# @marcus, @rachel, @auto
 ```
+
+### Configuration (Optional)
+Most users never need this, but you can customize:
+- Director activation thresholds
+- Industry-specific priorities
+- Team size contexts
+- Persona routing preferences
+
+See `config/director_templates.yaml` for advanced configuration options.
+
+</details>
 
 ### 📊 **Executive Business Intelligence** ⭐ NEW P1 Features!
 Transform technical work into business outcomes:
