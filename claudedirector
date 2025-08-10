@@ -98,7 +98,7 @@ Examples:
         # Alerts command
         alerts_parser = subparsers.add_parser('alerts', help='Daily executive alerts dashboard')
         alerts_parser.add_argument('--quiet', action='store_true', help='Quiet summary output')
-        alerts_parser.add_argument('--type', choices=['all', 'stakeholder', 'task'],
+        alerts_parser.add_argument('--type', choices=['all', 'executive', 'stakeholder', 'task'],
                                   default='all', help='Alert type filter')
 
         # Meeting intelligence subcommands
@@ -286,36 +286,100 @@ Examples:
         return True
 
     def handle_alerts(self, args):
-        """Handle alerts command"""
+        """Handle alerts command with P2.1 intelligent alerting"""
+        print("🚨 ClaudeDirector Intelligent Alerts")
+        print("=" * 35)
+
+        try:
+            # Try P2.1 intelligent alerts first
+            from lib.claudedirector.p2_communication.integrations.alert_system import IntelligentAlertSystem
+            from lib.claudedirector.p2_communication.integrations.demo_data_source import DemoDataSource
+            from lib.claudedirector.p2_communication.interfaces.report_interface import StakeholderType
+
+            # Initialize alert system with demo data
+            data_source = DemoDataSource()
+            alert_system = IntelligentAlertSystem(data_source)
+
+            # Get current data for analysis
+            current_data = data_source.get_data("current_status", ["team_velocity", "risk_indicators", "initiative_health", "team_health"])
+
+            if args.type == 'executive':
+                # Executive-level alerts for leadership
+                stakeholder_type = StakeholderType.VP_ENGINEERING
+                stakeholder_alerts = alert_system.get_stakeholder_alerts(stakeholder_type, current_data)
+                formatted_alerts = alert_system.format_alerts_for_cli(stakeholder_alerts)
+                print(formatted_alerts)
+
+            elif args.type == 'stakeholder':
+                # Legacy stakeholder alerts
+                self._handle_legacy_stakeholder_alerts(args)
+
+            elif args.type == 'task':
+                # Legacy task alerts
+                self._handle_legacy_task_alerts(args)
+
+            else:  # 'all' or default
+                # Show intelligent alerts for all stakeholders
+                all_alerts = alert_system.generate_alerts(current_data)
+                formatted_alerts = alert_system.format_alerts_for_cli(all_alerts)
+                print(formatted_alerts)
+
+                if not args.quiet:
+                    print("\n💡 P2.1 INTELLIGENT ALERTING")
+                    print("   Enhanced executive-focused alerts with:")
+                    print("   • Smart priority scoring and cooldown management")
+                    print("   • Stakeholder-specific routing and content")
+                    print("   • Actionable recommendations and context")
+                    print("   • CLI integration with rich formatting")
+                    print()
+                    print("   Try: ./claudedirector alerts executive")
+
+        except ImportError as e:
+            print(f"⚠️  P2.1 intelligent alerts not available: {e}")
+            print("💡 Falling back to legacy alert system...")
+            self._handle_legacy_alerts(args)
+        except Exception as e:
+            print(f"❌ Alert system error: {e}")
+            self._handle_legacy_alerts(args)
+
+    def _handle_legacy_stakeholder_alerts(self, args):
+        """Handle legacy stakeholder alerts."""
+        try:
+            sys.path.insert(0, str(self.project_root / "bin" / "daily"))
+            from daily_stakeholder_alerts import DailyStakeholderAlerts
+
+            stakeholder_alerts = DailyStakeholderAlerts()
+            if args.quiet:
+                alerts = stakeholder_alerts.generate_daily_alerts()
+                print(f"Stakeholder alerts: {alerts['summary']['total_alerts']}")
+            else:
+                stakeholder_alerts.display_daily_alerts()
+
+        except ImportError:
+            print("⚠️  Stakeholder alerts not available - run setup first")
+
+    def _handle_legacy_task_alerts(self, args):
+        """Handle legacy task alerts."""
+        try:
+            sys.path.insert(0, str(self.project_root / "bin" / "daily"))
+            from daily_task_alerts import DailyTaskAlerts
+
+            task_alerts = DailyTaskAlerts()
+            if args.quiet:
+                alerts = task_alerts.generate_daily_alerts()
+                print(f"Task alerts: {alerts['summary']['total_alerts']}")
+            else:
+                task_alerts.display_daily_alerts()
+
+        except ImportError:
+            print("⚠️  Task alerts not available - run setup first")
+
+    def _handle_legacy_alerts(self, args):
+        """Handle legacy alert system."""
         if args.type in ['all', 'stakeholder']:
-            try:
-                sys.path.insert(0, str(self.project_root / "bin" / "daily"))
-                from daily_stakeholder_alerts import DailyStakeholderAlerts
-
-                stakeholder_alerts = DailyStakeholderAlerts()
-                if args.quiet:
-                    alerts = stakeholder_alerts.generate_daily_alerts()
-                    print(f"Stakeholder alerts: {alerts['summary']['total_alerts']}")
-                else:
-                    stakeholder_alerts.display_daily_alerts()
-
-            except ImportError:
-                print("⚠️  Stakeholder alerts not available - run setup first")
-
+            self._handle_legacy_stakeholder_alerts(args)
         if args.type in ['all', 'task']:
-            try:
-                sys.path.insert(0, str(self.project_root / "bin" / "daily"))
-                from daily_task_alerts import DailyTaskAlerts
-
-                task_alerts = DailyTaskAlerts()
-                if args.quiet:
-                    alerts = task_alerts.generate_daily_alerts()
-                    print(f"Task alerts: {alerts['summary']['total_alerts']}")
-                else:
-                    task_alerts.display_daily_alerts()
-
-            except ImportError:
-                print("⚠️  Task alerts not available - run setup first")
+            self._handle_legacy_task_alerts(args)
 
     def handle_meetings(self, args):
         """Handle meeting intelligence commands"""

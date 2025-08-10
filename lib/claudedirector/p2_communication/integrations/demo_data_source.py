@@ -73,12 +73,12 @@ class DemoDataSource(IDataSource):
                 "sprint_commitment_accuracy": 0.85,
             },
             "risk_indicators": {
-                "blocked_issues": 2,
-                "overdue_issues": 3,
-                "critical_bugs": 1,
-                "security_vulnerabilities": 0,
-                "technical_debt_items": 8,
-                "dependency_risks": 1,
+                "blocked_issues": 4,  # Trigger critical alert (>= 3)
+                "overdue_issues": 6,
+                "critical_bugs": 2,  # Trigger critical alert (>= 2)
+                "security_vulnerabilities": 1,  # Trigger security alert (> 0)
+                "technical_debt_items": 12,
+                "dependency_risks": 2,
             },
             "initiative_health": {
                 "on_track": 8,
@@ -95,11 +95,11 @@ class DemoDataSource(IDataSource):
                 "dependency_resolution_time_avg": "3.2 days",
             },
             "team_health": {
-                "overall_score": 82,
-                "velocity_consistency": 85,
-                "quality_metrics": 78,
-                "collaboration_score": 88,
-                "technical_debt_ratio": 0.12,
+                "overall_score": 65,  # Trigger team health alert (< 70)
+                "velocity_consistency": 75,
+                "quality_metrics": 68,
+                "collaboration_score": 78,
+                "technical_debt_ratio": 0.28,  # Trigger tech debt alert (> 0.25)
             },
             "delivery_metrics": {
                 "stories_completed": 15,
