@@ -1,0 +1,332 @@
+# ClaudeDirector Template System Configuration
+# Enhanced director templates for multi-domain engineering leadership
+
+# Template Schema Version
+schema_version: "1.0.0"
+
+# Template Metadata
+metadata:
+  generated_at: "2025-01-15T12:00:00Z"
+  generated_by: "ClaudeDirector Template Engine v0.3.0"
+  total_templates: 8
+  supported_domains: ["platform", "mobile", "backend", "infrastructure", "data", "security", "product", "frontend"]
+
+# Director Template Definitions
+templates:
+
+  # Mobile Engineering Director
+  mobile_director:
+    domain: "mobile_platforms"
+    display_name: "Mobile Engineering Director"
+    description: "iOS/Android platform strategy, mobile DevOps, and app performance optimization"
+
+    # Industry-specific modifiers
+    industry_modifiers:
+      fintech:
+        priorities: ["security_compliance", "payment_processing", "regulatory_requirements"]
+        metrics: ["transaction_security", "compliance_audit_score", "regulatory_response_time"]
+      consumer:
+        priorities: ["user_experience", "app_store_optimization", "viral_growth"]
+        metrics: ["app_store_rating", "user_retention", "download_velocity"]
+      enterprise:
+        priorities: ["enterprise_integration", "device_management", "security_policies"]
+        metrics: ["enterprise_adoption", "device_compliance", "integration_success"]
+
+    # Team size contexts
+    team_size_contexts:
+      startup: # 5-15 engineers
+        focus: ["mvp_velocity", "platform_foundation", "market_validation"]
+        challenges: ["resource_constraints", "technical_debt", "rapid_iteration"]
+      scale: # 15-50 engineers
+        focus: ["platform_unification", "team_coordination", "quality_systems"]
+        challenges: ["cross_platform_consistency", "team_scaling", "process_establishment"]
+      enterprise: # 50+ engineers
+        focus: ["platform_governance", "compliance_management", "organizational_alignment"]
+        challenges: ["legacy_system_integration", "regulatory_compliance", "cross_team_coordination"]
+
+    # Persona activation strategy
+    personas:
+      primary: ["marcus", "sofia", "elena"]  # Mobile focus, vendor relations, compliance
+      contextual: ["diego", "martin", "security"]  # Platform strategy, architecture, security
+      fallback: ["camille", "rachel"]  # Strategic scaling, design systems
+
+    # Context-aware activation keywords
+    activation_keywords:
+      "mobile app": 0.9
+      "ios development": 0.95
+      "android platform": 0.95
+      "app store": 0.8
+      "mobile performance": 0.85
+      "device testing": 0.8
+      "mobile devops": 0.9
+      "cross-platform": 0.85
+
+    # Strategic priorities for this director type
+    strategic_priorities:
+      - "platform_unification"      # iOS/Android consistency
+      - "developer_experience"      # Mobile dev tooling
+      - "market_speed"              # App release velocity
+      - "performance_optimization"  # App performance/battery
+      - "security_compliance"       # Mobile security standards
+
+    # Success metrics focus areas
+    metrics_focus:
+      - "app_performance"           # Load time, crash rate, battery usage
+      - "release_velocity"          # Time to app store, deployment frequency
+      - "user_adoption"            # Download rate, retention, engagement
+      - "platform_consistency"     # Cross-platform feature parity
+      - "developer_productivity"   # Mobile dev team velocity
+
+  # Infrastructure/DevOps Director
+  infrastructure_director:
+    domain: "infrastructure_devops"
+    display_name: "Infrastructure & DevOps Director"
+    description: "Cloud platforms, reliability engineering, and DevOps transformation"
+
+    industry_modifiers:
+      fintech:
+        priorities: ["regulatory_compliance", "financial_security", "audit_requirements"]
+        metrics: ["compliance_coverage", "security_incidents", "audit_readiness"]
+      healthcare:
+        priorities: ["hipaa_compliance", "data_privacy", "system_reliability"]
+        metrics: ["hipaa_audit_score", "privacy_breach_incidents", "system_uptime"]
+      gaming:
+        priorities: ["global_scaling", "latency_optimization", "peak_load_handling"]
+        metrics: ["global_latency", "peak_capacity", "scaling_efficiency"]
+
+    team_size_contexts:
+      startup:
+        focus: ["cloud_foundation", "automation_basics", "cost_optimization"]
+        challenges: ["limited_budget", "skill_gaps", "vendor_selection"]
+      scale:
+        focus: ["platform_reliability", "team_processes", "monitoring_systems"]
+        challenges: ["scaling_infrastructure", "team_coordination", "incident_management"]
+      enterprise:
+        focus: ["enterprise_governance", "compliance_frameworks", "organizational_alignment"]
+        challenges: ["legacy_migration", "regulatory_requirements", "cross_team_coordination"]
+
+    personas:
+      primary: ["martin", "security", "david"]  # Architecture, security, cost optimization
+      contextual: ["diego", "camille", "sofia"]  # Platform strategy, scaling, vendor relations
+      fallback: ["alvaro", "elena"]  # Business value, compliance
+
+    activation_keywords:
+      "infrastructure": 0.95
+      "devops": 0.9
+      "cloud platform": 0.9
+      "kubernetes": 0.85
+      "aws": 0.8
+      "reliability": 0.85
+      "monitoring": 0.8
+      "incident response": 0.9
+
+    strategic_priorities:
+      - "platform_reliability"      # Uptime, incident response
+      - "cost_optimization"         # Cloud spend, resource efficiency
+      - "security_posture"          # Infrastructure security
+      - "operational_excellence"    # DevOps processes, automation
+      - "scalability_planning"      # Growth capacity, performance
+
+    metrics_focus:
+      - "system_reliability"        # Uptime, MTTR, incident frequency
+      - "cost_efficiency"          # Cloud spend per transaction
+      - "deployment_velocity"      # Deployment frequency, lead time
+      - "security_posture"         # Vulnerability remediation, compliance
+      - "operational_efficiency"   # Automation coverage, manual work reduction
+
+  # Data Engineering Director
+  data_director:
+    domain: "data_analytics_ml"
+    display_name: "Data Engineering Director"
+    description: "ML platforms, data infrastructure, and analytics strategy"
+
+    industry_modifiers:
+      ecommerce:
+        priorities: ["recommendation_systems", "personalization", "conversion_optimization"]
+        metrics: ["recommendation_accuracy", "personalization_lift", "conversion_rate"]
+      healthcare:
+        priorities: ["data_privacy", "regulatory_compliance", "clinical_outcomes"]
+        metrics: ["privacy_compliance", "clinical_accuracy", "regulatory_readiness"]
+      fintech:
+        priorities: ["fraud_detection", "risk_modeling", "regulatory_reporting"]
+        metrics: ["fraud_detection_rate", "risk_model_accuracy", "regulatory_compliance"]
+
+    team_size_contexts:
+      startup:
+        focus: ["data_foundation", "analytics_basics", "ml_experimentation"]
+        challenges: ["data_quality", "infrastructure_costs", "talent_acquisition"]
+      scale:
+        focus: ["platform_scaling", "ml_operationalization", "data_governance"]
+        challenges: ["data_complexity", "model_deployment", "team_scaling"]
+      enterprise:
+        focus: ["enterprise_governance", "compliance_frameworks", "strategic_alignment"]
+        challenges: ["legacy_integration", "regulatory_requirements", "organizational_silos"]
+
+    personas:
+      primary: ["martin", "data", "camille"]  # Architecture, data strategy, scaling
+      contextual: ["diego", "security", "alvaro"]  # Platform strategy, security, business value
+      fallback: ["sofia", "elena"]  # Vendor relations, compliance
+
+    activation_keywords:
+      "data platform": 0.95
+      "machine learning": 0.9
+      "analytics": 0.85
+      "data pipeline": 0.9
+      "ml model": 0.85
+      "data warehouse": 0.8
+      "business intelligence": 0.8
+      "data governance": 0.85
+
+    strategic_priorities:
+      - "data_platform_excellence"  # Infrastructure, pipelines, quality
+      - "ml_operationalization"     # Model deployment, monitoring, lifecycle
+      - "analytics_self_service"    # Tools, democratization, adoption
+      - "data_governance"          # Privacy, security, compliance
+      - "business_impact"          # ROI, decision support, insights
+
+    metrics_focus:
+      - "data_quality"             # Accuracy, completeness, timeliness
+      - "ml_model_performance"     # Accuracy, drift detection, uptime
+      - "analytics_adoption"       # Tool usage, self-service metrics
+      - "data_governance_score"    # Compliance, security, privacy
+      - "business_impact"          # Revenue impact, decision velocity
+
+  # Backend Services Director
+  backend_director:
+    domain: "backend_services"
+    display_name: "Backend Services Director"
+    description: "Microservices architecture, API strategy, and service reliability"
+
+    industry_modifiers:
+      saas:
+        priorities: ["api_reliability", "multi_tenancy", "integration_ecosystem"]
+        metrics: ["api_uptime", "tenant_isolation", "integration_adoption"]
+      marketplace:
+        priorities: ["transaction_processing", "payment_systems", "merchant_experience"]
+        metrics: ["transaction_success_rate", "payment_latency", "merchant_satisfaction"]
+      gaming:
+        priorities: ["real_time_systems", "global_scaling", "player_experience"]
+        metrics: ["latency", "concurrent_users", "game_session_quality"]
+
+    team_size_contexts:
+      startup:
+        focus: ["service_foundation", "api_design", "scalability_planning"]
+        challenges: ["architecture_decisions", "resource_constraints", "technical_debt"]
+      scale:
+        focus: ["microservices_transition", "service_reliability", "team_coordination"]
+        challenges: ["service_boundaries", "data_consistency", "operational_complexity"]
+      enterprise:
+        focus: ["enterprise_integration", "governance_frameworks", "platform_strategy"]
+        challenges: ["legacy_modernization", "compliance_requirements", "organizational_alignment"]
+
+    personas:
+      primary: ["martin", "diego", "security"]  # Architecture, platform strategy, security
+      contextual: ["camille", "david", "alvaro"]  # Scaling, cost optimization, business value
+      fallback: ["sofia", "elena"]  # Vendor relations, compliance
+
+    activation_keywords:
+      "microservices": 0.9
+      "api design": 0.85
+      "backend services": 0.95
+      "service mesh": 0.8
+      "database": 0.8
+      "service reliability": 0.9
+      "integration": 0.8
+      "scalability": 0.85
+
+    strategic_priorities:
+      - "service_reliability"       # Uptime, performance, resilience
+      - "api_excellence"            # Design, documentation, adoption
+      - "platform_scalability"     # Growth capacity, performance optimization
+      - "developer_experience"     # Tooling, documentation, productivity
+      - "operational_excellence"   # Monitoring, alerting, incident response
+
+    metrics_focus:
+      - "service_reliability"      # Uptime, response time, error rate
+      - "api_adoption"             # Usage growth, developer satisfaction
+      - "performance_optimization" # Latency, throughput, resource utilization
+      - "operational_efficiency"   # Deployment frequency, MTTR
+      - "developer_productivity"   # Feature velocity, tech debt ratio
+
+  # Platform Engineering Director (Enhanced)
+  platform_director:
+    domain: "platform_engineering"
+    display_name: "Platform Engineering Director"
+    description: "Developer platforms, internal tooling, and engineering productivity"
+
+    industry_modifiers:
+      enterprise_saas:
+        priorities: ["enterprise_compliance", "security_frameworks", "integration_platforms"]
+        metrics: ["compliance_score", "security_audit_results", "integration_success_rate"]
+      startup_tech:
+        priorities: ["developer_velocity", "platform_foundation", "technical_debt_management"]
+        metrics: ["feature_delivery_speed", "platform_adoption", "tech_debt_ratio"]
+      marketplace:
+        priorities: ["multi_tenant_platforms", "partner_integration", "transaction_reliability"]
+        metrics: ["tenant_isolation", "partner_onboarding_time", "transaction_success_rate"]
+
+    team_size_contexts:
+      startup:
+        focus: ["platform_foundation", "developer_tooling", "automation_basics"]
+        challenges: ["resource_prioritization", "technical_debt", "skill_development"]
+      scale:
+        focus: ["platform_governance", "team_productivity", "standardization"]
+        challenges: ["platform_adoption", "cross_team_coordination", "legacy_migration"]
+      enterprise:
+        focus: ["enterprise_platforms", "compliance_integration", "organizational_scaling"]
+        challenges: ["regulatory_requirements", "legacy_system_integration", "change_management"]
+
+    personas:
+      primary: ["diego", "martin", "marcus"]  # Platform strategy, architecture, internal adoption
+      contextual: ["camille", "rachel", "alvaro"]  # Scaling, design systems, business value
+      fallback: ["security", "elena"]  # Security, compliance
+
+    activation_keywords:
+      "platform engineering": 0.95
+      "developer tools": 0.9
+      "internal platforms": 0.9
+      "developer productivity": 0.85
+      "tooling": 0.8
+      "automation": 0.8
+      "ci/cd": 0.85
+      "platform adoption": 0.9
+
+    strategic_priorities:
+      - "developer_productivity"    # Tooling, automation, self-service
+      - "platform_adoption"        # Internal usage, developer satisfaction
+      - "engineering_excellence"   # Standards, practices, quality
+      - "operational_efficiency"   # Automation, reliability, cost optimization
+      - "innovation_enablement"    # Platform capabilities, team empowerment
+
+    metrics_focus:
+      - "developer_productivity"   # Feature velocity, deployment frequency
+      - "platform_adoption"       # Tool usage, developer satisfaction
+      - "operational_excellence"  # Reliability, automation coverage
+      - "engineering_quality"     # Code quality, security, compliance
+      - "innovation_velocity"     # Time to market, experimentation rate
+
+# Global Configuration
+global_settings:
+
+  # Default persona fallback hierarchy
+  default_fallback_personas: ["camille", "diego", "alvaro"]
+
+  # Activation confidence thresholds
+  activation_thresholds:
+    high_confidence: 0.8      # Direct persona activation
+    medium_confidence: 0.6    # Suggest persona with confirmation
+    low_confidence: 0.4       # Show multiple options
+
+  # Template selection criteria weighting
+  selection_weights:
+    domain_match: 0.4         # Primary domain alignment
+    industry_match: 0.3       # Industry-specific context
+    team_size_match: 0.2      # Team size appropriateness
+    keyword_confidence: 0.1   # Keyword activation strength
+
+  # Feature flags for progressive rollout
+  feature_flags:
+    template_discovery: true
+    auto_activation: true
+    cross_domain_suggestions: false  # Phase 2 feature
+    ml_enhanced_matching: false      # Future enhancement
