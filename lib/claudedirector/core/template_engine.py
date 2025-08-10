@@ -32,8 +32,8 @@ class TemplateDomain(Enum):
     BACKEND = "backend_services"
     INFRASTRUCTURE = "infrastructure_devops"
     DATA = "data_analytics_ml"
-    SECURITY = "security_engineering"
     PRODUCT = "product_engineering"
+    SECURITY = "security_engineering"
     FRONTEND = "frontend_engineering"
 
 

@@ -8,7 +8,7 @@ schema_version: "1.0.0"
 metadata:
   generated_at: "2025-01-15T12:00:00Z"
   generated_by: "ClaudeDirector Template Engine v0.3.0"
-  total_templates: 8
+  total_templates: 6
   supported_domains: ["platform", "mobile", "backend", "infrastructure", "data", "security", "product", "frontend"]
 
 # Director Template Definitions
@@ -304,6 +304,71 @@ templates:
       - "operational_excellence"  # Reliability, automation coverage
       - "engineering_quality"     # Code quality, security, compliance
       - "innovation_velocity"     # Time to market, experimentation rate
+
+  # Product Engineering Director
+  product_engineering_director:
+    domain: "product_engineering"
+    display_name: "Product Engineering Director"
+    description: "Product strategy execution, user experience optimization, and customer-driven engineering delivery"
+
+    # Industry-specific modifiers
+    industry_modifiers:
+      saas:
+        priorities: ["customer_retention_engineering", "product_analytics", "feature_flag_management"]
+        metrics: ["monthly_active_users", "feature_adoption_rate", "customer_lifetime_value"]
+      ecommerce:
+        priorities: ["conversion_optimization", "personalization_systems", "checkout_experience"]
+        metrics: ["conversion_rate", "cart_abandonment", "recommendation_click_through"]
+      fintech:
+        priorities: ["compliance_by_design", "user_trust_engineering", "financial_ux_optimization"]
+        metrics: ["regulatory_compliance", "user_trust_scores", "transaction_completion_rate"]
+
+    # Team size contexts
+    team_size_contexts:
+      startup: # 5-15 engineers
+        focus: ["mvp_product_fit", "user_feedback_loops", "rapid_iteration"]
+        challenges: ["feature_prioritization", "technical_debt_vs_features", "user_research_constraints"]
+      scale: # 15-50 engineers
+        focus: ["product_scalability", "user_experience_consistency", "data_driven_decisions"]
+        challenges: ["feature_coordination", "product_quality_vs_velocity", "cross_functional_alignment"]
+      enterprise: # 50+ engineers
+        focus: ["product_portfolio_strategy", "enterprise_customer_success", "platform_product_integration"]
+        challenges: ["legacy_product_modernization", "enterprise_compliance", "multi_product_coordination"]
+
+    # Persona activation strategy
+    personas:
+      primary: ["alvaro", "rachel", "camille"]  # Product value, UX leadership, strategic scaling
+      contextual: ["diego", "marcus", "data"]  # Platform coordination, internal adoption, analytics
+      fallback: ["martin", "security"]  # Technical architecture, product security
+
+    # Context-aware activation keywords
+    activation_keywords:
+      "product strategy": 0.95
+      "user experience": 0.9
+      "product roadmap": 0.9
+      "customer feedback": 0.85
+      "feature delivery": 0.85
+      "product analytics": 0.8
+      "user research": 0.8
+      "product metrics": 0.85
+      "customer success": 0.8
+      "product market fit": 0.9
+
+    # Strategic priorities for this director type
+    strategic_priorities:
+      - "product_market_fit_engineering"    # Technical execution of product strategy
+      - "user_experience_optimization"      # UX-driven engineering decisions
+      - "feature_delivery_velocity"         # Speed of product feature deployment
+      - "data_driven_development"          # Analytics-informed engineering choices
+      - "customer_feedback_integration"     # Customer input driving technical decisions
+
+    # Success metrics focus areas
+    metrics_focus:
+      - "feature_adoption_rate"            # % users adopting new features
+      - "user_satisfaction_scores"         # NPS, CSAT, user feedback ratings
+      - "product_velocity_metrics"         # Feature delivery speed, cycle time
+      - "customer_conversion_impact"       # Engineering impact on business metrics
+      - "technical_debt_vs_feature_ratio"  # Balance of maintenance vs new features
 
 # Global Configuration
 global_settings:
