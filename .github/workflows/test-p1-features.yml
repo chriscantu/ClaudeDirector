@@ -1,0 +1,415 @@
+name: P1 Organizational Intelligence Tests
+
+on:
+  push:
+    branches: [ main, feature/p1-features ]
+    paths:
+      - 'lib/claudedirector/p1_features/**'
+      - 'tests/p1_features/**'
+      - 'config/p1_organizational_intelligence.yaml'
+      - '.github/workflows/test-p1-features.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'lib/claudedirector/p1_features/**'
+      - 'tests/p1_features/**'
+      - 'config/p1_organizational_intelligence.yaml'
+
+jobs:
+  test-p1-features:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, '3.10', '3.11']
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-cov pytest-mock pyyaml click
+        # Install project dependencies if they exist
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        if [ -f requirements-test.txt ]; then pip install -r requirements-test.txt; fi
+
+    - name: Install project in editable mode
+      run: |
+        # Add project root to Python path for imports
+        echo "PYTHONPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+
+    - name: Lint P1 features with flake8
+      run: |
+        pip install flake8
+        # Stop the build if there are Python syntax errors or undefined names
+        flake8 lib/claudedirector/p1_features --count --select=E9,F63,F7,F82 --show-source --statistics
+        # Exit-zero treats all errors as warnings. GitHub editor is 127 chars wide
+        flake8 lib/claudedirector/p1_features --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    - name: Type checking with mypy
+      run: |
+        pip install mypy types-PyYAML
+        mypy lib/claudedirector/p1_features --ignore-missing-imports --no-strict-optional
+
+    - name: Run P1 unit tests
+      run: |
+        pytest tests/p1_features/unit/ -v --tb=short --durations=10 \
+          --cov=lib/claudedirector/p1_features \
+          --cov-report=xml \
+          --cov-report=term-missing \
+          --cov-fail-under=85
+
+    - name: Run P1 functional tests
+      run: |
+        pytest tests/p1_features/functional/ -v --tb=short --durations=10
+
+    - name: Run CLI integration tests
+      run: |
+        pytest tests/p1_features/ -m cli -v --tb=short
+
+    - name: Test configuration validation
+      run: |
+        python -c "
+        import yaml
+        import sys
+        from pathlib import Path
+
+        # Validate P1 configuration file
+        config_path = Path('config/p1_organizational_intelligence.yaml')
+        if config_path.exists():
+            with open(config_path, 'r') as f:
+                config = yaml.safe_load(f)
+            print('✅ P1 configuration file is valid YAML')
+
+            # Basic structure validation
+            required_sections = ['director_profile', 'organizational_intelligence']
+            for section in required_sections:
+                if section not in config:
+                    print(f'❌ Missing required section: {section}')
+                    sys.exit(1)
+
+            print('✅ P1 configuration has required sections')
+        else:
+            print('❌ P1 configuration file not found')
+            sys.exit(1)
+        "
+
+    - name: Performance benchmarks
+      run: |
+        python -c "
+        import time
+        import sys
+        from pathlib import Path
+
+        # Add project root to path
+        sys.path.insert(0, '.')
+
+        try:
+            from lib.claudedirector.p1_features.organizational_intelligence import DirectorProfileManager
+
+            # Test initialization performance
+            start_time = time.time()
+            manager = DirectorProfileManager()
+            init_time = time.time() - start_time
+
+            print(f'DirectorProfileManager initialization: {init_time:.3f}s')
+
+            # Performance assertions
+            if init_time > 2.0:
+                print(f'❌ Initialization too slow: {init_time:.3f}s > 2.0s')
+                sys.exit(1)
+
+            # Test calculation performance
+            test_metrics = {'test_metric': 0.7}
+            start_time = time.time()
+            score = manager.calculate_organizational_impact_score(test_metrics)
+            calc_time = time.time() - start_time
+
+            print(f'Impact score calculation: {calc_time:.3f}s')
+
+            if calc_time > 0.5:
+                print(f'❌ Calculation too slow: {calc_time:.3f}s > 0.5s')
+                sys.exit(1)
+
+            print('✅ Performance benchmarks passed')
+
+        except Exception as e:
+            print(f'❌ Performance benchmark failed: {e}')
+            sys.exit(1)
+        "
+
+    - name: Upload coverage to Codecov
+      if: matrix.python-version == '3.10'
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: p1-features
+        name: codecov-p1-features
+        fail_ci_if_error: false
+
+    - name: Generate test report
+      if: always()
+      run: |
+        pytest tests/p1_features/ --tb=short --junit-xml=test-results-p1.xml
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results-p1-${{ matrix.python-version }}
+        path: test-results-p1.xml
+
+  test-coverage-report:
+    runs-on: ubuntu-latest
+    needs: test-p1-features
+    if: always()
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-cov pytest-mock pyyaml click coverage
+
+    - name: Install project in editable mode
+      run: |
+        echo "PYTHONPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+
+    - name: Generate comprehensive coverage report
+      run: |
+        pytest tests/p1_features/ \
+          --cov=lib/claudedirector/p1_features \
+          --cov-report=html \
+          --cov-report=term \
+          --cov-report=json \
+          --cov-branch
+
+    - name: Coverage summary
+      run: |
+        python -c "
+        import json
+        with open('coverage.json', 'r') as f:
+            coverage_data = json.load(f)
+
+        total_coverage = coverage_data['totals']['percent_covered']
+        print(f'🎯 Total P1 Feature Coverage: {total_coverage:.1f}%')
+
+        # Coverage by module
+        for filename, file_data in coverage_data['files'].items():
+            if 'p1_features' in filename:
+                coverage_pct = file_data['summary']['percent_covered']
+                print(f'   {filename}: {coverage_pct:.1f}%')
+
+        # Quality gate
+        if total_coverage < 85:
+            print(f'❌ Coverage below 85%: {total_coverage:.1f}%')
+            exit(1)
+        else:
+            print(f'✅ Coverage target met: {total_coverage:.1f}% >= 85%')
+        "
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report-p1
+        path: htmlcov/
+
+  security-audit:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install security tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install bandit safety
+
+    - name: Security audit with Bandit
+      run: |
+        bandit -r lib/claudedirector/p1_features/ -f json -o bandit-report.json || true
+        bandit -r lib/claudedirector/p1_features/ -f txt
+
+    - name: Dependency security check
+      run: |
+        pip freeze > requirements-current.txt
+        safety check -r requirements-current.txt --json || true
+        safety check -r requirements-current.txt
+
+    - name: Upload security reports
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-reports-p1
+        path: |
+          bandit-report.json
+          requirements-current.txt
+
+  integration-test:
+    runs-on: ubuntu-latest
+    needs: test-p1-features
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pyyaml click
+        echo "PYTHONPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+
+    - name: Test CLI integration
+      run: |
+        # Test that main CLI can import P1 features
+        python -c "
+        import sys
+        sys.path.insert(0, '.')
+
+        try:
+            from lib.claudedirector.p1_features.organizational_intelligence import DirectorProfileManager
+            print('✅ P1 features importable')
+
+            # Test CLI import
+            from lib.claudedirector.p1_features.organizational_intelligence.cli_customization import org_intelligence
+            print('✅ P1 CLI importable')
+
+        except ImportError as e:
+            print(f'❌ Import failed: {e}')
+            sys.exit(1)
+        "
+
+    - name: Test end-to-end workflow
+      run: |
+        python -c "
+        import tempfile
+        import yaml
+        import sys
+        import os
+        from pathlib import Path
+
+        sys.path.insert(0, '.')
+
+        # Create test environment
+        test_dir = Path(tempfile.mkdtemp())
+        config_dir = test_dir / 'config'
+        config_dir.mkdir()
+
+        # Create test config
+        config = {
+            'director_profile': {
+                'profile_type': 'custom',
+                'custom_profile': {
+                    'role_title': 'Test Director',
+                    'primary_focus': 'Testing',
+                    'strategic_priorities': ['Test Priority'],
+                    'success_metrics': ['Test Metric']
+                }
+            },
+            'organizational_intelligence': {
+                'velocity_tracking': {
+                    'measurement_domains': {
+                        'test_domain': {
+                            'enabled': True,
+                            'weight': 1.0,
+                            'metrics': ['test_metric'],
+                            'targets': {'test_metric': 0.8}
+                        }
+                    }
+                }
+            }
+        }
+
+        config_path = config_dir / 'p1_organizational_intelligence.yaml'
+        with open(config_path, 'w') as f:
+            yaml.dump(config, f)
+
+        # Change to test directory
+        original_cwd = os.getcwd()
+        os.chdir(test_dir)
+
+        try:
+            from lib.claudedirector.p1_features.organizational_intelligence import DirectorProfileManager
+
+            # Test initialization
+            manager = DirectorProfileManager(str(config_path))
+            print(f'✅ Manager initialized: {manager.current_profile.role_title}')
+
+            # Test calculation
+            score = manager.calculate_organizational_impact_score({'test_metric': 0.7})
+            print(f'✅ Impact score calculated: {score:.2f}')
+
+            # Test summary generation
+            summary = manager.generate_executive_summary()
+            print(f'✅ Executive summary generated: {len(summary)} sections')
+
+        except Exception as e:
+            print(f'❌ End-to-end test failed: {e}')
+            sys.exit(1)
+        finally:
+            os.chdir(original_cwd)
+            import shutil
+            shutil.rmtree(test_dir)
+
+        print('✅ End-to-end workflow test passed')
+        "
+
+  quality-gate:
+    runs-on: ubuntu-latest
+    needs: [test-p1-features, test-coverage-report, security-audit, integration-test]
+    if: always()
+
+    steps:
+    - name: Quality Gate Summary
+      run: |
+        echo "🎯 P1 Organizational Intelligence Quality Gate Summary"
+        echo "=================================================="
+
+        # Check if all required jobs passed
+        if [[ "${{ needs.test-p1-features.result }}" == "success" ]] && \
+           [[ "${{ needs.test-coverage-report.result }}" == "success" ]] && \
+           [[ "${{ needs.security-audit.result }}" == "success" ]] && \
+           [[ "${{ needs.integration-test.result }}" == "success" ]]; then
+          echo "✅ All quality gates passed"
+          echo "✅ Unit tests: PASSED"
+          echo "✅ Coverage target (85%): PASSED"
+          echo "✅ Security audit: PASSED"
+          echo "✅ Integration tests: PASSED"
+          echo ""
+          echo "🚀 P1 features ready for merge/deployment"
+        else
+          echo "❌ Quality gate FAILED"
+          echo "Test results: ${{ needs.test-p1-features.result }}"
+          echo "Coverage: ${{ needs.test-coverage-report.result }}"
+          echo "Security: ${{ needs.security-audit.result }}"
+          echo "Integration: ${{ needs.integration-test.result }}"
+          exit 1
+        fi
