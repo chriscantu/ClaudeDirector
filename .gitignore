@@ -10,12 +10,34 @@
 *password*
 *credential*
 
-# === MEMORY DATABASE ===
-# SQLite database contains sensitive strategic information
+# === SENSITIVE DATA - ZERO TOLERANCE ===
+# Strategic and organizational databases - NEVER commit these
 memory/strategic_memory.db
+workspace/memory/strategic_memory.db
+**/strategic_memory.*
+**/stakeholder*.db
+**/meeting*.db
+**/intelligence*.db
+
+# All database files
 *.db
 *.sqlite
 *.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Credentials and secrets
+*.key
+*.pem
+*.p12
+*.pfx
+*password*
+*credential*
+*secret*
+*.env
+!*.env.template
+!*.env.example
 
 # === TEMPORARY FILES ===
 # Build artifacts and temporary files
