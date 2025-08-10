@@ -20,11 +20,11 @@ from typing import Dict, List, Any
 import json
 
 # Import all test suites
-from test_dynamic_persona_activation_e2e import (
+from .test_dynamic_persona_activation_e2e import (
     TestDynamicPersonaActivationE2E,
     TestCLIIntegrationE2E
 )
-from test_chat_interface_e2e import TestChatInterfaceE2E
+from .test_chat_interface_e2e import TestChatInterfaceE2E
 
 
 class E2ETestResult:
