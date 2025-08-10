@@ -36,6 +36,12 @@ class ClaudeDirectorCLI:
   claudedirector status                   # System health and overview
   claudedirector alerts                   # Daily executive alerts
 
+📊 P2.1 Executive Communication:
+  claudedirector reports executive        # AI-generated executive summary
+  claudedirector reports stakeholder      # Stakeholder-specific reports
+  claudedirector reports board            # Board presentation report
+  claudedirector dashboard --rich         # Rich CLI dashboard
+
 🧠 Meeting Intelligence:
   claudedirector meetings scan            # Process meeting files
   claudedirector meetings demo            # Demo meeting intelligence
@@ -149,6 +155,28 @@ Examples:
         arch_parser = subparsers.add_parser('arch-health', help='Architecture health monitoring and migration alerts')
         arch_parser.add_argument('--assess', action='store_true', help='Run architecture health assessment')
         arch_parser.add_argument('--trends', action='store_true', help='Show migration readiness trends')
+
+        # P2.1 Executive Communication
+        reports_parser = subparsers.add_parser('reports', help='P2.1 Executive Communication & Reports')
+        reports_sub = reports_parser.add_subparsers(dest='reports_action', help='Report types')
+
+        # Executive reports
+        reports_executive_parser = reports_sub.add_parser('executive', help='AI-generated executive summary')
+        reports_executive_parser.add_argument('--stakeholder', choices=['ceo', 'vp_engineering', 'board', 'product_team'],
+                                            default='vp_engineering', help='Target stakeholder type')
+        reports_executive_parser.add_argument('--period', default='current_week', help='Time period for report')
+        reports_executive_parser.add_argument('--format', choices=['cli_rich', 'cli_plain', 'markdown'],
+                                            default='cli_rich', help='Output format')
+
+        # Stakeholder-specific reports
+        reports_stakeholder_parser = reports_sub.add_parser('stakeholder', help='Stakeholder-specific reports')
+        reports_stakeholder_parser.add_argument('--type', required=True, choices=['ceo', 'vp_engineering', 'board', 'product_team'],
+                                               help='Stakeholder type')
+        reports_stakeholder_parser.add_argument('--period', default='current_week', help='Time period for report')
+
+        # Board reports
+        reports_board_parser = reports_sub.add_parser('board', help='Board presentation report')
+        reports_board_parser.add_argument('--quarter', help='Specific quarter (e.g., Q1-2024)')
 
         # P1 Organizational Intelligence
         org_intel_parser = subparsers.add_parser('org-intelligence', help='Organizational Leverage Intelligence (P1)')
@@ -610,6 +638,9 @@ Examples:
         elif args.command == 'dashboard':
             self.handle_dashboard(args)
 
+        elif args.command == 'reports':
+            self.handle_reports(args)
+
         else:
             parser.print_help()
 
@@ -830,6 +861,175 @@ Examples:
             print(f"❌ Dashboard error: {e}")
             import traceback
             traceback.print_exc()
+
+    def handle_reports(self, args):
+        """Handle P2.1 Executive Communication reports"""
+        print("📊 P2.1 Executive Communication")
+        print("=" * 35)
+
+        try:
+            # Import P2.1 modules
+            from lib.claudedirector.p2_communication.integrations.jira_client import create_jira_client_from_env
+            from lib.claudedirector.p2_communication.report_generation.executive_summary import ExecutiveSummaryGenerator
+            from lib.claudedirector.p2_communication.report_generation.cli_formatter import CLIReportFormatter
+            from lib.claudedirector.p2_communication.interfaces.report_interface import (
+                ReportContext, StakeholderType, ReportFormat
+            )
+
+            if not args.reports_action:
+                print("Available report types:")
+                print("  executive    - AI-generated executive summary")
+                print("  stakeholder  - Stakeholder-specific reports")
+                print("  board        - Board presentation report")
+                print()
+                print("💡 Try: ./claudedirector reports executive --stakeholder vp_engineering")
+                return
+
+            # Force demo data for now (JIRA integration development)
+            print("⚠️  Using demo data for P2.1 development")
+            from lib.claudedirector.p2_communication.integrations.demo_data_source import DemoDataSource
+            jira_client = DemoDataSource()
+
+            # Initialize report generator and formatter
+            report_generator = ExecutiveSummaryGenerator(jira_client)
+            formatter = CLIReportFormatter()
+
+            if args.reports_action == 'executive':
+                self._handle_executive_report(args, report_generator, formatter)
+            elif args.reports_action == 'stakeholder':
+                self._handle_stakeholder_report(args, report_generator, formatter)
+            elif args.reports_action == 'board':
+                self._handle_board_report(args, report_generator, formatter)
+            else:
+                print(f"❌ Unknown report action: {args.reports_action}")
+
+        except ImportError as e:
+            print(f"❌ P2.1 features not available: {e}")
+            print("💡 This is a P2.1 feature - ensure communication modules are installed")
+        except Exception as e:
+            print(f"❌ Report generation error: {e}")
+            import traceback
+            traceback.print_exc()
+
+    def _handle_executive_report(self, args, report_generator, formatter):
+        """Handle executive report generation"""
+        print(f"🎯 Generating executive summary for {args.stakeholder}...")
+
+        # Import enums for mapping
+        from lib.claudedirector.p2_communication.interfaces.report_interface import (
+            StakeholderType, ReportFormat, ReportContext
+        )
+
+        # Map CLI args to enum
+        stakeholder_map = {
+            'ceo': StakeholderType.CEO,
+            'vp_engineering': StakeholderType.VP_ENGINEERING,
+            'board': StakeholderType.BOARD,
+            'product_team': StakeholderType.PRODUCT_TEAM
+        }
+
+        format_map = {
+            'cli_rich': ReportFormat.CLI_RICH,
+            'cli_plain': ReportFormat.CLI_PLAIN,
+            'markdown': ReportFormat.MARKDOWN
+        }
+
+        # Create report context
+        context = ReportContext(
+            stakeholder_type=stakeholder_map[args.stakeholder],
+            time_period=args.period,
+            include_predictions=True,
+            include_risks=True,
+            format=format_map[args.format]
+        )
+
+        # Generate and format report
+        try:
+            report = report_generator.generate_report(context)
+            formatted_output = formatter.format_report(report)
+
+            print("\n" + "="*80)
+            print(formatted_output)
+            print("="*80)
+
+            print(f"\n✅ Executive summary generated successfully")
+            print(f"📊 Confidence: {report.confidence_score:.1%}")
+            print(f"📅 Data period: {args.period}")
+
+        except Exception as e:
+            print(f"❌ Failed to generate executive report: {e}")
+
+    def _handle_stakeholder_report(self, args, report_generator, formatter):
+        """Handle stakeholder-specific report generation"""
+        print(f"👥 Generating {args.type} stakeholder report...")
+
+        # Import enums for mapping
+        from lib.claudedirector.p2_communication.interfaces.report_interface import (
+            StakeholderType, ReportFormat, ReportContext
+        )
+
+        # Similar to executive report but with stakeholder-specific logic
+        stakeholder_map = {
+            'ceo': StakeholderType.CEO,
+            'vp_engineering': StakeholderType.VP_ENGINEERING,
+            'board': StakeholderType.BOARD,
+            'product_team': StakeholderType.PRODUCT_TEAM
+        }
+
+        context = ReportContext(
+            stakeholder_type=stakeholder_map[args.type],
+            time_period=args.period,
+            include_predictions=True,
+            include_risks=True,
+            format=ReportFormat.CLI_RICH
+        )
+
+        try:
+            report = report_generator.generate_report(context)
+            formatted_output = formatter.format_report(report)
+
+            print("\n" + "="*80)
+            print(formatted_output)
+            print("="*80)
+
+            print(f"\n✅ {args.type} report generated successfully")
+
+        except Exception as e:
+            print(f"❌ Failed to generate stakeholder report: {e}")
+
+    def _handle_board_report(self, args, report_generator, formatter):
+        """Handle board presentation report generation"""
+        print("📋 Generating board presentation report...")
+
+        # Import enums for mapping
+        from lib.claudedirector.p2_communication.interfaces.report_interface import (
+            StakeholderType, ReportFormat, ReportContext
+        )
+
+        period = args.quarter if args.quarter else "current_quarter"
+
+        context = ReportContext(
+            stakeholder_type=StakeholderType.BOARD,
+            time_period=period,
+            include_predictions=False,  # Board reports focus on actual results
+            include_risks=True,
+            format=ReportFormat.CLI_RICH
+        )
+
+        try:
+            report = report_generator.generate_report(context)
+            formatted_output = formatter.format_report(report)
+
+            print("\n" + "="*80)
+            print(formatted_output)
+            print("="*80)
+
+            print(f"\n✅ Board report generated successfully")
+            print(f"📊 Period: {period}")
+            print(f"💡 Use --quarter Q1-2024 to specify different quarter")
+
+        except Exception as e:
+            print(f"❌ Failed to generate board report: {e}")
 
 
 def main():
