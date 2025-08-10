@@ -33,9 +33,56 @@
 
 ---
 
-## 🎯 Ready to Start?
+## 🎯 **Instantly Customize for YOUR Context**
 
-**Just start a conversation** - your AI directors will automatically activate when you need strategic expertise for engineering leadership challenges.
+**Make it yours in under 2 minutes!** Every engineering team is unique - customize directors for your industry, team size, and strategic priorities.
+
+### ⚡ **Super Easy Customization**
+
+**Option 1: Quick CLI Discovery** (30 seconds)
+```bash
+# Find directors perfect for your specific challenges
+./claudedirector templates discover "fintech mobile security compliance"
+./claudedirector templates summary mobile_director --industry fintech --team startup
+```
+
+**Option 2: Edit Your Strategic Personas** (2 minutes)
+```yaml
+# framework/PERSONAS.md - Make any persona fit your context perfectly
+--persona-rachel
+**Identity**: Your Design System Director (edit role for your needs)
+**Priorities**: Your specific UX/design system priorities
+**Strategic Focus**: Your unique cross-team alignment challenges
+```
+
+**Option 3: Create Custom Director Templates** (5 minutes)
+```yaml
+# config/director_templates.yaml - Build directors for your exact domain
+your_fintech_mobile_director:
+  domain: "fintech_mobile_security"
+  personas: ["rachel", "martin"]  # Your preferred strategic leaders
+  activation_keywords:
+    "fintech mobile compliance": 0.95
+    "financial app security": 0.9
+  strategic_priorities:
+    - "regulatory_compliance_by_design"
+    - "mobile_security_architecture"
+```
+
+### 🏆 **What You Can Customize:**
+- **Industry expertise**: Fintech, healthcare, enterprise SaaS, e-commerce, gaming
+- **Team dynamics**: Startup constraints vs enterprise scale challenges
+- **Domain focus**: Mobile, backend, data, infrastructure, product, DevOps
+- **Strategic priorities**: What matters most to YOUR organization
+- **Leadership style**: How you prefer strategic guidance delivered
+
+**✨ Your customizations work instantly - no restart, no setup, just better strategic guidance!**
+
+---
+
+## 🚀 Ready to Start?
+
+**Just start a conversation** - directors will automatically provide strategic expertise tailored to your context.
 
 ### 💡 **Try asking about:**
 - Platform strategy and technical debt governance
@@ -84,53 +131,7 @@ See `config/director_templates.yaml` for advanced configuration options.
 - **Camille**: Executive strategy, organizational transformation
 - **Data**: Analytics governance, metrics frameworks
 
-*Directors automatically activate based on your conversation context.*
-
-### 🎯 **Easy Customization for Your Context**
-
-**Your industry, team size, and priorities are unique.** Customize directors in 2 minutes:
-
-```bash
-# Discover directors for your specific domain
-./claudedirector templates discover "fintech mobile security compliance"
-
-# Get industry-specific guidance
-./claudedirector templates summary mobile_director --industry fintech --team startup
-
-# See all director types available
-./claudedirector templates list
-```
-
-**What you can customize:**
-- **Industry focus**: Fintech, healthcare, enterprise SaaS, e-commerce
-- **Team context**: Startup constraints vs enterprise scale challenges
-- **Domain expertise**: Mobile, backend, data, infrastructure, product
-- **Strategic priorities**: What matters most to your organization
-
-**Customize your strategic personas:**
-```yaml
-# framework/PERSONAS.md - Edit any persona for your context
---persona-rachel
-**Identity**: Your Design System Director (customize role as needed)
-**Priorities**: Your specific design/UX priorities
-**Strategic Focus**: Your cross-functional alignment challenges
-```
-
-**Or create new director templates:**
-```yaml
-# config/director_templates.yaml
-your_custom_director:
-  domain: "your_domain"
-  personas:
-    primary: ["rachel", "martin"]  # Your preferred strategic leaders
-  activation_keywords:
-    "your specific challenge": 0.9
-  strategic_priorities:
-    - "your_top_priority"
-    - "your_secondary_priority"
-```
-
-*Customize existing personas OR create new director types - your choice.*
+*Directors automatically activate based on your conversation context - and they're fully customizable for your unique needs!*
 
 ### 📊 **Advanced Features Available**
 - Executive business intelligence and strategic metrics
