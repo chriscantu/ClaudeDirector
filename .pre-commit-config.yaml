@@ -18,6 +18,18 @@ repos:
         args: [--line-length=88]
         files: ^lib/claudedirector/.*\.py$
 
+  # CRITICAL SECURITY ENFORCEMENT
+  - repo: local
+    hooks:
+      - id: sensitive-data-scanner
+        name: 🚨 CRITICAL SECURITY SCAN
+        entry: python3 tools/security/sensitive_data_scanner.py
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+        always_run: true
+        verbose: true
+
   # Architectural governance
   - repo: local
     hooks:
