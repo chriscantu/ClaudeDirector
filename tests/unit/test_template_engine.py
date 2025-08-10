@@ -274,13 +274,12 @@ class TestTemplateDiscoveryEngine(unittest.TestCase):
         self.config_yaml = yaml.dump(self.test_config)
 
     @patch('pathlib.Path.exists')
-    @patch('builtins.open', new_callable=mock_open)
-    def test_load_templates_success(self, mock_file, mock_exists):
+    def test_load_templates_success(self, mock_exists):
         """Test successful template loading from configuration file"""
         mock_exists.return_value = True
-        mock_file.return_value.read.return_value = self.config_yaml
 
-        engine = TemplateDiscoveryEngine()
+        with patch('builtins.open', mock_open(read_data=self.config_yaml)):
+            engine = TemplateDiscoveryEngine()
 
         self.assertEqual(len(engine.templates), 2)
         self.assertIn("mobile_director", engine.templates)
@@ -297,13 +296,12 @@ class TestTemplateDiscoveryEngine(unittest.TestCase):
             self.assertEqual(len(engine.templates), 0)
 
     @patch('pathlib.Path.exists')
-    @patch('builtins.open', new_callable=mock_open)
-    def test_list_templates(self, mock_file, mock_exists):
+    def test_list_templates(self, mock_exists):
         """Test template listing functionality"""
         mock_exists.return_value = True
-        mock_file.return_value.read.return_value = self.config_yaml
 
-        engine = TemplateDiscoveryEngine()
+        with patch('builtins.open', mock_open(read_data=self.config_yaml)):
+            engine = TemplateDiscoveryEngine()
         templates = engine.list_templates()
 
         self.assertEqual(len(templates), 2)
@@ -312,26 +310,24 @@ class TestTemplateDiscoveryEngine(unittest.TestCase):
         self.assertEqual(templates[1].display_name, "Product Engineering Director")
 
     @patch('pathlib.Path.exists')
-    @patch('builtins.open', new_callable=mock_open)
-    def test_list_templates_with_domain_filter(self, mock_file, mock_exists):
+    def test_list_templates_with_domain_filter(self, mock_exists):
         """Test template listing with domain filtering"""
         mock_exists.return_value = True
-        mock_file.return_value.read.return_value = self.config_yaml
 
-        engine = TemplateDiscoveryEngine()
+        with patch('builtins.open', mock_open(read_data=self.config_yaml)):
+            engine = TemplateDiscoveryEngine()
         templates = engine.list_templates(domain_filter="mobile_platforms")
 
         self.assertEqual(len(templates), 1)
         self.assertEqual(templates[0].template_id, "mobile_director")
 
     @patch('pathlib.Path.exists')
-    @patch('builtins.open', new_callable=mock_open)
-    def test_get_template(self, mock_file, mock_exists):
+    def test_get_template(self, mock_exists):
         """Test template retrieval by ID"""
         mock_exists.return_value = True
-        mock_file.return_value.read.return_value = self.config_yaml
 
-        engine = TemplateDiscoveryEngine()
+        with patch('builtins.open', mock_open(read_data=self.config_yaml)):
+            engine = TemplateDiscoveryEngine()
         template = engine.get_template("mobile_director")
 
         self.assertIsNotNone(template)
@@ -339,26 +335,24 @@ class TestTemplateDiscoveryEngine(unittest.TestCase):
         self.assertEqual(template.domain, "mobile_platforms")
 
     @patch('pathlib.Path.exists')
-    @patch('builtins.open', new_callable=mock_open)
-    def test_get_template_not_found(self, mock_file, mock_exists):
+    def test_get_template_not_found(self, mock_exists):
         """Test template retrieval for non-existent template"""
         mock_exists.return_value = True
-        mock_file.return_value.read.return_value = self.config_yaml
 
-        engine = TemplateDiscoveryEngine()
+        with patch('builtins.open', mock_open(read_data=self.config_yaml)):
+            engine = TemplateDiscoveryEngine()
         template = engine.get_template("nonexistent_template")
 
         self.assertIsNone(template)
 
     @patch('pathlib.Path.exists')
-    @patch('builtins.open', new_callable=mock_open)
-    def test_discover_templates_by_context(self, mock_file, mock_exists):
+    def test_discover_templates_by_context(self, mock_exists):
         """Test template discovery by context"""
         mock_exists.return_value = True
-        mock_file.return_value.read.return_value = self.config_yaml
 
-        engine = TemplateDiscoveryEngine()
-        results = engine.discover_templates_by_context("mobile app development", threshold=0.8)
+        with patch('builtins.open', mock_open(read_data=self.config_yaml)):
+            engine = TemplateDiscoveryEngine()
+            results = engine.discover_templates_by_context("mobile app development", threshold=0.8)
 
         self.assertEqual(len(results), 1)
         template, confidence = results[0]
@@ -366,25 +360,23 @@ class TestTemplateDiscoveryEngine(unittest.TestCase):
         self.assertGreaterEqual(confidence, 0.8)
 
     @patch('pathlib.Path.exists')
-    @patch('builtins.open', new_callable=mock_open)
-    def test_discover_templates_no_match(self, mock_file, mock_exists):
+    def test_discover_templates_no_match(self, mock_exists):
         """Test template discovery when no templates match threshold"""
         mock_exists.return_value = True
-        mock_file.return_value.read.return_value = self.config_yaml
 
-        engine = TemplateDiscoveryEngine()
-        results = engine.discover_templates_by_context("database optimization", threshold=0.8)
+        with patch('builtins.open', mock_open(read_data=self.config_yaml)):
+            engine = TemplateDiscoveryEngine()
+            results = engine.discover_templates_by_context("database optimization", threshold=0.8)
 
         self.assertEqual(len(results), 0)
 
     @patch('pathlib.Path.exists')
-    @patch('builtins.open', new_callable=mock_open)
-    def test_get_domains(self, mock_file, mock_exists):
+    def test_get_domains(self, mock_exists):
         """Test getting available template domains"""
         mock_exists.return_value = True
-        mock_file.return_value.read.return_value = self.config_yaml
 
-        engine = TemplateDiscoveryEngine()
+        with patch('builtins.open', mock_open(read_data=self.config_yaml)):
+            engine = TemplateDiscoveryEngine()
         domains = engine.get_domains()
 
         self.assertEqual(len(domains), 2)
@@ -393,13 +385,12 @@ class TestTemplateDiscoveryEngine(unittest.TestCase):
         self.assertEqual(domains, sorted(domains))  # Should be sorted
 
     @patch('pathlib.Path.exists')
-    @patch('builtins.open', new_callable=mock_open)
-    def test_validate_template_selection_valid(self, mock_file, mock_exists):
+    def test_validate_template_selection_valid(self, mock_exists):
         """Test template selection validation for valid selection"""
         mock_exists.return_value = True
-        mock_file.return_value.read.return_value = self.config_yaml
 
-        engine = TemplateDiscoveryEngine()
+        with patch('builtins.open', mock_open(read_data=self.config_yaml)):
+            engine = TemplateDiscoveryEngine()
         result = engine.validate_template_selection("mobile_director", "fintech", "startup")
 
         self.assertTrue(result["valid"])
@@ -407,13 +398,12 @@ class TestTemplateDiscoveryEngine(unittest.TestCase):
         self.assertEqual(len(result["warnings"]), 0)
 
     @patch('pathlib.Path.exists')
-    @patch('builtins.open', new_callable=mock_open)
-    def test_validate_template_selection_invalid_template(self, mock_file, mock_exists):
+    def test_validate_template_selection_invalid_template(self, mock_exists):
         """Test template selection validation for invalid template"""
         mock_exists.return_value = True
-        mock_file.return_value.read.return_value = self.config_yaml
 
-        engine = TemplateDiscoveryEngine()
+        with patch('builtins.open', mock_open(read_data=self.config_yaml)):
+            engine = TemplateDiscoveryEngine()
         result = engine.validate_template_selection("nonexistent_template")
 
         self.assertFalse(result["valid"])
@@ -421,13 +411,12 @@ class TestTemplateDiscoveryEngine(unittest.TestCase):
         self.assertIn("Template not found", result["error"])
 
     @patch('pathlib.Path.exists')
-    @patch('builtins.open', new_callable=mock_open)
-    def test_validate_template_selection_unsupported_modifiers(self, mock_file, mock_exists):
+    def test_validate_template_selection_unsupported_modifiers(self, mock_exists):
         """Test template selection validation with unsupported modifiers"""
         mock_exists.return_value = True
-        mock_file.return_value.read.return_value = self.config_yaml
 
-        engine = TemplateDiscoveryEngine()
+        with patch('builtins.open', mock_open(read_data=self.config_yaml)):
+            engine = TemplateDiscoveryEngine()
         result = engine.validate_template_selection("mobile_director", "unsupported_industry", "unsupported_size")
 
         self.assertTrue(result["valid"])
@@ -436,13 +425,12 @@ class TestTemplateDiscoveryEngine(unittest.TestCase):
         self.assertIn("Team size 'unsupported_size' not specifically supported", result["warnings"][1])
 
     @patch('pathlib.Path.exists')
-    @patch('builtins.open', new_callable=mock_open)
-    def test_generate_template_summary(self, mock_file, mock_exists):
+    def test_generate_template_summary(self, mock_exists):
         """Test template summary generation"""
         mock_exists.return_value = True
-        mock_file.return_value.read.return_value = self.config_yaml
 
-        engine = TemplateDiscoveryEngine()
+        with patch('builtins.open', mock_open(read_data=self.config_yaml)):
+            engine = TemplateDiscoveryEngine()
         summary = engine.generate_template_summary("mobile_director", "fintech", "startup")
 
         self.assertEqual(summary["template_id"], "mobile_director")
@@ -451,13 +439,12 @@ class TestTemplateDiscoveryEngine(unittest.TestCase):
         self.assertIn("team_size_context", summary)
 
     @patch('pathlib.Path.exists')
-    @patch('builtins.open', new_callable=mock_open)
-    def test_get_template_comparison(self, mock_file, mock_exists):
+    def test_get_template_comparison(self, mock_exists):
         """Test template comparison functionality"""
         mock_exists.return_value = True
-        mock_file.return_value.read.return_value = self.config_yaml
 
-        engine = TemplateDiscoveryEngine()
+        with patch('builtins.open', mock_open(read_data=self.config_yaml)):
+            engine = TemplateDiscoveryEngine()
         comparison = engine.get_template_comparison(["mobile_director", "product_engineering_director"])
 
         self.assertIn("templates", comparison)
@@ -466,13 +453,12 @@ class TestTemplateDiscoveryEngine(unittest.TestCase):
         self.assertIn("product_engineering_director", comparison["templates"])
 
     @patch('pathlib.Path.exists')
-    @patch('builtins.open', new_callable=mock_open)
-    def test_get_template_comparison_too_many(self, mock_file, mock_exists):
+    def test_get_template_comparison_too_many(self, mock_exists):
         """Test template comparison with too many templates"""
         mock_exists.return_value = True
-        mock_file.return_value.read.return_value = self.config_yaml
 
-        engine = TemplateDiscoveryEngine()
+        with patch('builtins.open', mock_open(read_data=self.config_yaml)):
+            engine = TemplateDiscoveryEngine()
         comparison = engine.get_template_comparison(["t1", "t2", "t3", "t4", "t5"])
 
         self.assertIn("error", comparison)
