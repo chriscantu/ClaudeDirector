@@ -170,3 +170,5 @@ workspace/meeting-prep/procore-ai-trainer-framework-demo.md
 # User workspace data (not tracked in source control)
 engineering-director-workspace/
 !engineering-director-workspace/.gitkeep
+# Prevent pip installation artifact files
+=*
