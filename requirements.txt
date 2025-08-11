@@ -1,0 +1,32 @@
+# ClaudeDirector Core Dependencies
+# Essential packages for strategic leadership AI framework
+
+# Configuration and data handling
+PyYAML>=6.0.0
+
+# Data validation and serialization
+pydantic>=2.0.0
+
+# CLI framework
+click>=8.0.0
+
+# HTTP requests for integrations
+requests>=2.28.0
+
+# Logging and structured output
+structlog>=23.0.0
+
+# Database management (SQLite optimizations)
+sqlite3  # Built-in, but documenting for clarity
+
+# Date and time utilities
+python-dateutil>=2.8.0
+
+# JSON handling enhancements
+jsonschema>=4.0.0
+
+# Optional: Enhanced terminal output
+rich>=13.0.0
+
+# Development and debugging support
+colorama>=0.4.6  # Cross-platform colored terminal text
