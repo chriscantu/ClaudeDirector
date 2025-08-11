@@ -1,0 +1,167 @@
+# P0 Features Configuration - Base Settings
+# Martin's configuration-driven architecture eliminates hard-coded strings
+
+environment: development
+debug_mode: true
+
+# Feature flags for controlled rollout
+enable_decision_intelligence: true
+enable_health_prediction: true  
+enable_pattern_recognition: false  # P1 feature
+
+# Decision Intelligence Configuration
+decision_detection:
+  model_name: "decision_intelligence_v1"
+  accuracy_threshold: 0.85
+  confidence_threshold: 0.60
+  max_inference_time_ms: 200
+  
+  # Decision type classification keywords
+  classification_keywords:
+    strategic: ["vision", "strategy", "roadmap", "architecture", "investment"]
+    operational: ["process", "workflow", "procedure", "policy"]
+    technical: ["technology", "platform", "system", "infrastructure"]
+    organizational: ["team", "hiring", "structure", "role"]
+    financial: ["budget", "cost", "investment", "funding"]
+  
+  # Lifecycle detection patterns
+  lifecycle_patterns:
+    identified: ["proposed", "considering", "evaluating"]
+    analyzed: ["analyzing", "reviewing", "discussing"]
+    decided: ["decided", "approved", "chosen", "selected"]
+    implemented: ["implementing", "executing", "started"]
+  
+  # Urgency classification
+  urgency_keywords:
+    urgent: ["urgent", "critical", "immediate", "asap"]
+    high: ["critical", "major", "significant", "strategic", "enterprise"]
+    medium: ["important", "moderate", "substantial"]
+    low: ["minor", "small", "limited"]
+
+# Health Prediction Configuration
+health_prediction:
+  model_name: "health_prediction_v1"
+  accuracy_threshold: 0.80
+  max_inference_time_ms: 200
+  
+  # Health scoring component weights (must sum to 1.0)
+  scoring_weights:
+    progress_completion: 0.25
+    stakeholder_engagement: 0.20
+    milestone_completion: 0.20
+    budget_health: 0.15
+    timeline_adherence: 0.10
+    risk_indicators: 0.10
+  
+  # Health status thresholds
+  status_thresholds:
+    excellent: 0.85
+    healthy: 0.70
+    at_risk: 0.50
+    failing: 0.30
+  
+  # Risk indicator weights
+  risk_weights:
+    # High impact risks
+    budget_overrun: 0.20
+    stakeholder_disengagement: 0.18
+    scope_creep: 0.15
+    resource_constraints: 0.12
+    # Medium impact risks
+    technical_blockers: 0.10
+    timeline_delays: 0.08
+    quality_issues: 0.07
+    # Low impact risks
+    external_dependencies: 0.05
+    team_turnover: 0.05
+  
+  # Optimal budget utilization range
+  optimal_budget_range: [0.70, 0.80]
+  
+  # Confidence calculation
+  base_confidence: 0.85
+  missing_field_penalty: 0.05
+  extreme_value_penalty: 0.02
+
+# Recommendation Generation
+recommendations:
+  max_recommendations: 5
+  
+  templates:
+    stakeholder_engagement:
+      descriptions:
+        - "Schedule stakeholder alignment sessions"
+        - "Improve communication frequency with key stakeholders"
+        - "Address stakeholder concerns proactively"
+      action_items:
+        - "Review current stakeholder engagement metrics"
+        - "Develop improvement plan for stakeholder engagement"
+        - "Monitor stakeholder engagement progress weekly"
+    
+    timeline_management:
+      descriptions:
+        - "Review and adjust project timeline"
+        - "Identify critical path dependencies"
+        - "Consider scope reduction to meet deadlines"
+      action_items:
+        - "Review current timeline management metrics"
+        - "Develop improvement plan for timeline management"
+        - "Monitor timeline management progress weekly"
+    
+    budget_management:
+      descriptions:
+        - "Conduct budget review and reforecasting"
+        - "Identify cost optimization opportunities"
+        - "Escalate budget variance to leadership"
+      action_items:
+        - "Review current budget management metrics"
+        - "Develop improvement plan for budget management"
+        - "Monitor budget management progress weekly"
+    
+    risk_mitigation:
+      descriptions:
+        - "Develop comprehensive risk mitigation plan"
+        - "Increase monitoring frequency for high-risk areas"
+        - "Establish contingency plans for critical risks"
+      action_items:
+        - "Review current risk mitigation metrics"
+        - "Develop improvement plan for risk mitigation"
+        - "Monitor risk mitigation progress weekly"
+    
+    resource_optimization:
+      descriptions:
+        - "Assess resource allocation and utilization"
+        - "Consider additional resource allocation"
+        - "Optimize team structure and responsibilities"
+      action_items:
+        - "Review current resource optimization metrics"
+        - "Develop improvement plan for resource optimization"
+        - "Monitor resource optimization progress weekly"
+
+# Database Configuration
+database:
+  connection_timeout: 30
+  query_timeout: 10
+  max_connections: 10
+  
+  sqlite_config:
+    journal_mode: "WAL"
+    synchronous: "NORMAL"
+    cache_size: 10000  # 10MB cache
+    mmap_size: 268435456  # 256MB mmap
+    temp_store: "MEMORY"
+
+# Performance Monitoring
+monitoring:
+  enable_performance_tracking: true
+  enable_accuracy_tracking: true
+  metrics_retention_days: 30
+  alert_on_sla_violation: true
+  performance_sample_rate: 1.0
+
+# Global Performance Thresholds
+performance:
+  max_inference_time_ms: 200
+  min_accuracy: 0.85
+  max_memory_usage_mb: 150
+  max_error_rate: 0.05
