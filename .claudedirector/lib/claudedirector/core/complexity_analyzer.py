@@ -9,7 +9,7 @@ import re
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, Set, Optional, Tuple
+from typing import Dict, List, Set, Optional, Tuple, Any
 import structlog
 
 # Configure logging
