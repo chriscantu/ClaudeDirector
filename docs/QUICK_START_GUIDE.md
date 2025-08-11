@@ -17,18 +17,46 @@
 
 ## 🤖 What Happens Automatically
 
-**ClaudeDirector activates the right director based on what you're discussing:**
+**ClaudeDirector activates the right director AND strategic framework based on your conversation:**
+
+### **🧠 Strategic Analysis Examples**
 
 ```
-👤 "Our mobile platform strategy lacks organizational alignment between iOS and Android teams"
-🤖 Rachel (UX Strategy): "Let's design a cross-functional governance framework. I'll help you create alignment strategies for platform unification..."
-
-👤 "We need to translate our platform engineering investments into business value for stakeholders"
-🤖 Alvaro (Business Strategy): "I'll help you build the ROI narrative. Let's quantify platform impact on developer productivity and business outcomes..."
-
-👤 "Our platform architecture is creating technical debt across multiple teams and needs strategic oversight"
-🤖 Martin (Platform Architecture): "Let's analyze the organizational impacts and create a strategic refactoring roadmap with governance frameworks..."
+👤 "Our strategy feels like fluff - help me create a real strategy for our engineering challenges"
+🤖 Diego + Rumelt Strategy Kernel: "Let me work through this systematically using proven strategy frameworks...
+   🎯 STRATEGIC DIAGNOSIS: Platform fragmentation creating 40% productivity loss
+   📋 GUIDING POLICY: Standardize core capabilities (choice: NOT team-specific solutions)  
+   ⚡ COHERENT ACTIONS: 3-phase consolidation with measurable outcomes..."
 ```
+
+```
+👤 "Should we go microservices or monolith? Need help making this decision"
+🤖 Martin + WRAP Decision Framework: "Let's use systematic decision-making...
+   🔍 WIDEN OPTIONS: What if neither option was available? (vanishing options test)
+   🧪 REALITY-TEST: What evidence contradicts our current assumptions?
+   ⏰ ATTAIN DISTANCE: How will this feel in 10 minutes, 10 months, 10 years?
+   🛡️ PREPARE TO BE WRONG: Pre-mortem analysis and early warning systems..."
+```
+
+```
+👤 "Need a comprehensive Q4 platform strategy with systematic stakeholder alignment"  
+🤖 Diego + Strategic Platform Assessment: "I'm drawing from proven strategic planning frameworks...
+   📊 5-Phase Systematic Approach: Current State → Stakeholder Mapping → Success Metrics → Implementation → Risk Mitigation
+   🎯 Executive-ready analysis with concrete recommendations and phased roadmap..."
+```
+
+### **📚 Embedded Strategic Frameworks**
+
+**ClaudeDirector automatically applies the right methodology:**
+
+- **"Good Strategy Bad Strategy" (Rumelt)** → Strategy development challenges
+- **"Decisive" (Heath Brothers)** → Complex decision-making scenarios  
+- **Strategic Platform Assessment** → Comprehensive planning and roadmap development
+- **Organizational Transformation** → Change management and scaling
+- **Technical Strategy** → Architecture decisions and technical debt
+- **Bad Strategy Detection** → Identifies and avoids strategic fluff
+
+**No setup required - professional frameworks activate based on your conversation context.**
 
 ## 🎭 Meet Your Strategic AI Director Team
 
@@ -40,6 +68,17 @@
 | ⚙️ **Martin** - Platform Architecture | Technical debt strategy, evolutionary design | "platform architecture", "technical debt governance", "strategic refactoring" |
 | 🌟 **Camille** - Executive Strategy | Technology vision, organizational scaling | "technology strategy", "executive communication", "organizational transformation" |
 | 📊 **Data** - Analytics Strategy | Data governance, metrics frameworks | "data strategy", "analytics governance", "metrics frameworks" |
+
+## 📚 Learn More About Strategic Frameworks
+
+Want to understand the embedded strategic intelligence?
+
+**[📖 Strategic Frameworks Guide](STRATEGIC_FRAMEWORKS_GUIDE.md)** - Complete reference for:
+- Rumelt Strategy Kernel methodology
+- Heath Brothers WRAP decision framework  
+- Strategic Platform Assessment approach
+- How framework selection works automatically
+- Tips for better framework activation
 
 ## 🔍 Discover Your Options
 
