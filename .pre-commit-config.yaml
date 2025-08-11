@@ -23,7 +23,19 @@ repos:
     hooks:
       - id: sensitive-data-scanner
         name: 🚨 CRITICAL SECURITY SCAN
-        entry: python3 tools/security/sensitive_data_scanner.py
+        entry: python3 .claudedirector/dev-tools/security/sensitive_data_scanner.py
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+        always_run: true
+        verbose: true
+
+  # MANDATORY TEST VALIDATION (BLOCKS ALL COMMITS IF TESTS FAIL)
+  - repo: local
+    hooks:
+      - id: mandatory-test-validation
+        name: 🛡️ MANDATORY TEST VALIDATION
+        entry: python3 .claudedirector/dev-tools/testing/mandatory_test_validator.py
         language: system
         pass_filenames: false
         stages: [pre-commit]
@@ -35,7 +47,7 @@ repos:
     hooks:
       - id: solid-principle-validator
         name: SOLID Principle Validation
-        entry: python tools/architecture/solid_validator.py
+        entry: python .claudedirector/dev-tools/architecture/solid_validator.py
         language: python
         files: ^lib/claudedirector/(p0_features|p1_features)/.*\.py$
         pass_filenames: true
@@ -43,14 +55,14 @@ repos:
       # P1 Feature Testing
       - id: p1-unit-tests
         name: P1 Unit Tests
-        entry: python tools/testing/run_p1_unit_tests.py
+        entry: python .claudedirector/dev-tools/testing/run_p1_unit_tests.py
         language: python
         files: ^(lib/claudedirector/p1_features/.*\.py|tests/p1_features/unit/.*\.py)$
         pass_filenames: false
 
       - id: p1-test-coverage
         name: P1 Test Coverage Check
-        entry: python tools/testing/check_p1_coverage.py
+        entry: python .claudedirector/dev-tools/testing/check_p1_coverage.py
         language: python
         files: ^lib/claudedirector/p1_features/.*\.py$
         pass_filenames: false
