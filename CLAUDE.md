@@ -1,1 +1,1 @@
-framework/CLAUDE.md
+.claudedirector/framework/CLAUDE.md
