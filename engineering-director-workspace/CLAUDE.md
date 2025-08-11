@@ -1,0 +1,1 @@
+.claudedirector/framework/CLAUDE.md
