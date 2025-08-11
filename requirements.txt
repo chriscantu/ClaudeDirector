@@ -13,11 +13,13 @@ click>=8.0.0
 # HTTP requests for integrations
 requests>=2.28.0
 
+
+
 # Logging and structured output
 structlog>=23.0.0
 
 # Database management (SQLite optimizations)
-sqlite3  # Built-in, but documenting for clarity
+# sqlite3 - Built-in with Python, no installation needed
 
 # Date and time utilities
 python-dateutil>=2.8.0

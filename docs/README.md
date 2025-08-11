@@ -18,6 +18,7 @@
 - **[Demo Visuals](demo/demo-visuals.md)** - Mermaid diagrams and visual aids
 
 ### **🔧 Advanced Features**
+- **[Strategic Frameworks Guide](STRATEGIC_FRAMEWORKS_GUIDE.md)** - Complete embedded framework reference
 - **[Persona Chat Integration](persona-chat-integration.md)** - Advanced persona system
 
 ### **🏗️ Framework Architecture**
