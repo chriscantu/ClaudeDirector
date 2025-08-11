@@ -162,7 +162,7 @@ category: "Executive Communication & Reporting"
 purpose: "Automated weekly SLT report with live Jira epic analysis and business value translation"
 wave-enabled: false
 performance-profile: "standard"
-execution: "bash ./generate-weekly-report-claude.sh"
+execution: "bash ./.claudedirector/scripts/generate-weekly-report-claude.sh"
 ---
 ```
 - **Enhanced Auto-Activation**: --executive-brief + --stakeholder-align + --weekly-report-gen always active

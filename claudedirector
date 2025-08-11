@@ -180,6 +180,12 @@ Examples:
         reports_board_parser = reports_sub.add_parser('board', help='Board presentation report')
         reports_board_parser.add_argument('--quarter', help='Specific quarter (e.g., Q1-2024)')
 
+        # Weekly reports (Jira integration)
+        reports_weekly_parser = reports_sub.add_parser('weekly', help='Generate weekly SLT report from Jira')
+        reports_weekly_parser.add_argument('--config', help='Config file for Jira integration')
+        reports_weekly_parser.add_argument('--dry-run', action='store_true', help='Show what would be done without executing')
+        reports_weekly_parser.add_argument('--verbose', action='store_true', help='Show detailed output')
+
         # Director Templates (Phase 1 Feature)
         templates_parser = subparsers.add_parser('templates', help='Director template management (P1 Feature)')
         templates_sub = templates_parser.add_subparsers(dest='templates_action', help='Template management actions')
@@ -1059,7 +1065,9 @@ Examples:
                 print("  executive    - AI-generated executive summary")
                 print("  stakeholder  - Stakeholder-specific reports")
                 print("  board        - Board presentation report")
+                print("  weekly       - Weekly SLT report from Jira")
                 print()
+                print("💡 Try: ./claudedirector reports weekly --dry-run")
                 print("💡 Try: ./claudedirector reports executive --stakeholder vp_engineering")
                 return
 
@@ -1078,6 +1086,8 @@ Examples:
                 self._handle_stakeholder_report(args, report_generator, formatter)
             elif args.reports_action == 'board':
                 self._handle_board_report(args, report_generator, formatter)
+            elif args.reports_action == 'weekly':
+                self._handle_weekly_report(args)
             else:
                 print(f"❌ Unknown report action: {args.reports_action}")
 
@@ -1208,6 +1218,43 @@ Examples:
 
         except Exception as e:
             print(f"❌ Failed to generate board report: {e}")
+
+    def _handle_weekly_report(self, args):
+        """Handle weekly SLT report generation with Jira integration"""
+        print("📊 Generating weekly SLT report from Jira...")
+
+        import subprocess
+        import os
+
+        # Build command arguments
+        cmd = ["./.claudedirector/scripts/generate-weekly-report-claude.sh"]
+
+        if args.config:
+            cmd.extend(["--config", args.config])
+        if args.dry_run:
+            cmd.append("--dry-run")
+        if args.verbose:
+            cmd.append("--verbose")
+
+        try:
+            # Run the weekly report script
+            result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+
+            # Print the output
+            print(result.stdout)
+
+            if not args.dry_run:
+                print("✅ Weekly report generated successfully!")
+                print("📁 Check your workspace: engineering-director-workspace/reports/")
+
+        except subprocess.CalledProcessError as e:
+            print(f"❌ Failed to generate weekly report: {e}")
+            if e.stdout:
+                print("STDOUT:", e.stdout)
+            if e.stderr:
+                print("STDERR:", e.stderr)
+        except Exception as e:
+            print(f"❌ Unexpected error: {e}")
 
 
 def main():
