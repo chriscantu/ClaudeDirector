@@ -151,9 +151,13 @@ class PersonaEnhancementEngine:
         
         try:
             # Analyze input complexity
+            context_dict = {"current_persona": persona_name}
+            if conversation_context:
+                context_dict.update(conversation_context)
+            
             complexity_analysis = self.complexity_detector.analyze_input_complexity(
                 user_input, 
-                context={"current_persona": persona_name, **conversation_context or {}}
+                context=context_dict
             )
             
             # Determine if enhancement should be applied
