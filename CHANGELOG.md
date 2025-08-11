@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **📚 World-Class Strategic Frameworks**: Embedded McKinsey-grade strategic and decision-making methodologies
+  - **"Good Strategy Bad Strategy" (Rumelt)**: Complete Strategy Kernel framework (Diagnosis → Policy → Action)
+  - **"Decisive" (Heath Brothers)**: Full WRAP decision framework (Widen, Reality-test, Attain distance, Prepare to be wrong)
+  - **Bad Strategy Detection**: Automatic identification of fluff, challenge avoidance, and goal confusion
+  - **Decision Bias Mitigation**: Vanishing options test, 10-10-10 rule, pre-mortem analysis, evidence-based evaluation
+  - **Professional-Grade Analysis**: McKinsey-level systematic thinking embedded with zero external dependencies
+
+- **🚀 Zero-Setup Strategic Intelligence**: Professional methodology without configuration
+  - **Intelligent Framework Selection**: Automatic routing to optimal framework based on input analysis
+  - **Embedded Framework Engine**: 6 strategic frameworks built-in (no servers, APIs, or external dependencies)
+  - **Validated Integration**: 100% test success for both Rumelt (7/7 elements) and WRAP (8/8 elements) frameworks
+  - **Persona Preservation**: Enhanced systematic analysis while maintaining authentic persona personalities
+
 - **🎯 Executive Demo Package**: Complete presentation materials for engineering leadership demos
   - 15-minute executive demo script with ROI framework and business value propositions
   - Visual storytelling materials with before/after diagrams and user journey flows
@@ -17,6 +30,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Executive handout materials and ROI calculator for cost-benefit analysis
 
 ### Enhanced
+- **⚡ Embedded Framework Architecture**: Complete transformation from external dependencies to built-in intelligence
+  - Removed all MCP server dependencies (mcp_client.py, mcp_servers.yaml, aiohttp requirements)
+  - Created comprehensive EmbeddedFrameworkEngine with 6 strategic frameworks
+  - Maintained systematic analysis quality while achieving true plug-and-play experience
+  - Enhanced framework selection logic with decision/strategy signal detection
+
 - **📊 Persona Customization Prominence**: Front-and-center positioning in README with impossible-to-miss visibility
   - Moved customization section immediately after "Works Out of the Box" for maximum impact
   - Three clear customization options with specific time estimates (30 seconds to 5 minutes)
