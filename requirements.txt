@@ -13,6 +13,9 @@ click>=8.0.0
 # HTTP requests for integrations
 requests>=2.28.0
 
+# Async HTTP for MCP integration
+aiohttp>=3.8.0
+
 # Logging and structured output
 structlog>=23.0.0
 
