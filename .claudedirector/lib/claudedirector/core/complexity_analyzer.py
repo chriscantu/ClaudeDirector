@@ -226,7 +226,10 @@ class AnalysisComplexityDetector:
                 matches = re.findall(pattern, normalized_input, re.IGNORECASE)
                 if matches:
                     complexity_scores[complexity_level] += len(matches) * 0.3
-                    trigger_keywords.extend(matches)
+                    # Ensure matches are strings (flatten any tuple results from regex groups)
+                    string_matches = [str(match) if isinstance(match, str) else str(match[0]) if isinstance(match, tuple) else str(match) 
+                                    for match in matches]
+                    trigger_keywords.extend(string_matches)
         
         # Domain keyword analysis
         for domain, keywords in self.domain_keywords.items():
@@ -423,8 +426,11 @@ class AnalysisComplexityDetector:
         
         # Trigger keywords
         if trigger_keywords:
-            top_keywords = sorted(set(trigger_keywords), key=trigger_keywords.count, reverse=True)[:3]
-            reasoning_parts.append(f"Key triggers: {', '.join(top_keywords)}")
+            # Ensure all keywords are strings (filter out any tuples)
+            string_keywords = [str(kw) for kw in trigger_keywords if isinstance(kw, (str, tuple))]
+            if string_keywords:
+                top_keywords = sorted(set(string_keywords), key=string_keywords.count, reverse=True)[:3]
+                reasoning_parts.append(f"Key triggers: {', '.join(top_keywords)}")
         
         # Strategy reasoning
         strategy_explanations = {

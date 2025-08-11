@@ -1,16 +1,15 @@
 """
-Enhanced Persona Manager with MCP Integration
-Integrates MCP-enhanced capabilities with the existing persona activation system.
+Enhanced Persona Manager with Embedded Framework Integration
+Integrates embedded framework capabilities with the existing persona activation system.
 
 This manager coordinates between:
 - Dynamic Persona Activation Engine (existing)
-- MCP Enhancement Engine (new) 
+- Embedded Framework Engine (new) 
 - Persona Enhancement Engine (new)
 
 Author: Martin (Principal Platform Architect)
 """
 
-import asyncio
 import time
 from typing import Dict, List, Optional, Any
 import structlog
@@ -23,7 +22,6 @@ from .persona_activation_engine import (
     PersonaSelection,
     PersonaActivation
 )
-from .mcp_client import MCPClient, create_mcp_client_from_config
 from .complexity_analyzer import AnalysisComplexityDetector
 from .persona_enhancement_engine import PersonaEnhancementEngine, EnhancementResult
 from .template_engine import TemplateDiscoveryEngine
@@ -34,12 +32,12 @@ logger = structlog.get_logger(__name__)
 
 class EnhancedPersonaManager:
     """
-    Enhanced Persona Manager with MCP Integration
+    Enhanced Persona Manager with Embedded Framework Integration
     
     Coordinates the complete persona activation and enhancement workflow:
     1. Context Analysis (existing)
     2. Persona Selection (existing) 
-    3. MCP Enhancement (new)
+    3. Embedded Framework Enhancement (new)
     4. Response Integration (new)
     5. State Management (existing)
     """
@@ -47,7 +45,6 @@ class EnhancedPersonaManager:
     def __init__(
         self,
         template_discovery: TemplateDiscoveryEngine,
-        mcp_config_path: Optional[str] = None,
         enhancement_config: Optional[Dict] = None
     ):
         """
@@ -55,7 +52,6 @@ class EnhancedPersonaManager:
         
         Args:
             template_discovery: Template discovery engine
-            mcp_config_path: Path to MCP server configuration 
             enhancement_config: Enhancement configuration overrides
         """
         self.template_discovery = template_discovery
@@ -65,14 +61,16 @@ class EnhancedPersonaManager:
         self.persona_engine = PersonaSelectionEngine(template_discovery)
         self.state_engine = ConversationStateEngine()
         
-        # Initialize MCP enhancement system
-        self.mcp_client: Optional[MCPClient] = None
-        self.complexity_detector: Optional[AnalysisComplexityDetector] = None
-        self.enhancement_engine: Optional[PersonaEnhancementEngine] = None
+        # Initialize embedded framework enhancement system
+        self.complexity_detector = AnalysisComplexityDetector(enhancement_config or {})
+        self.enhancement_engine = PersonaEnhancementEngine(
+            self.complexity_detector,
+            enhancement_config or {}
+        )
         
         # Configuration
         self.enhancement_config = enhancement_config or {}
-        self.mcp_enabled = False
+        self.enhancement_enabled = True  # Always enabled with embedded frameworks
         self.fallback_to_standard = True
         
         # Performance tracking
@@ -83,43 +81,13 @@ class EnhancedPersonaManager:
             "average_enhancement_time": 0.0
         }
         
-        # Initialize MCP system asynchronously if config provided
-        if mcp_config_path:
-            asyncio.create_task(self._initialize_mcp_system(mcp_config_path))
+        logger.info(
+            "embedded_framework_system_initialized",
+            enabled=True,
+            enhancement_config=bool(enhancement_config)
+        )
     
-    async def _initialize_mcp_system(self, config_path: str) -> None:
-        """Initialize MCP enhancement system asynchronously"""
-        try:
-            # Create MCP client
-            self.mcp_client = await create_mcp_client_from_config(config_path)
-            
-            # Create complexity detector
-            self.complexity_detector = AnalysisComplexityDetector(self.enhancement_config)
-            
-            # Create enhancement engine
-            self.enhancement_engine = PersonaEnhancementEngine(
-                self.mcp_client,
-                self.complexity_detector,
-                self.enhancement_config
-            )
-            
-            self.mcp_enabled = True
-            
-            logger.info(
-                "mcp_system_initialized",
-                enabled=True,
-                config_path=config_path
-            )
-            
-        except Exception as e:
-            logger.error(
-                "mcp_system_initialization_failed",
-                error=str(e),
-                config_path=config_path
-            )
-            self.mcp_enabled = False
-    
-    async def process_user_input(
+    def process_user_input(
         self,
         user_input: str,
         conversation_context: Optional[Dict[str, Any]] = None
@@ -147,12 +115,12 @@ class EnhancedPersonaManager:
             self.state_engine.update_state(persona_selection, context_result, user_input)
             
             # Step 4: Generate base persona response (simulated for now)
-            base_response = await self._generate_base_persona_response(
+            base_response = self._generate_base_persona_response(
                 persona_selection, user_input, conversation_context
             )
             
-            # Step 5: Apply MCP enhancement if enabled
-            enhancement_result = await self._apply_mcp_enhancement(
+            # Step 5: Apply embedded framework enhancement if enabled
+            enhancement_result = self._apply_embedded_enhancement(
                 persona_selection.primary,
                 user_input,
                 base_response,
@@ -190,7 +158,7 @@ class EnhancedPersonaManager:
             # Return fallback response
             return self._create_fallback_response(user_input, str(e))
     
-    async def _generate_base_persona_response(
+    def _generate_base_persona_response(
         self,
         persona_selection: PersonaSelection,
         user_input: str,
@@ -247,28 +215,28 @@ class EnhancedPersonaManager:
         """Get Camille's characteristic response style"""
         return "let's be honest about what we're dealing with here. The people problem is usually harder than the technical problem."
     
-    async def _apply_mcp_enhancement(
+    def _apply_embedded_enhancement(
         self,
         persona_name: str,
         user_input: str,
         base_response: str,
         conversation_context: Optional[Dict[str, Any]]
     ) -> EnhancementResult:
-        """Apply MCP enhancement if available and appropriate"""
+        """Apply embedded framework enhancement if appropriate"""
         
-        if not self.mcp_enabled or not self.enhancement_engine:
+        if not self.enhancement_enabled or not self.enhancement_engine:
             return EnhancementResult(
                 enhanced_response=base_response,
                 enhancement_applied=False,
-                server_used=None,
+                framework_used=None,
                 analysis_data=None,
                 processing_time_ms=0,
-                fallback_reason="MCP system not available"
+                fallback_reason="Enhancement system not available"
             )
         
         try:
-            # Apply MCP enhancement
-            enhancement_result = await self.enhancement_engine.enhance_response(
+            # Apply embedded framework enhancement
+            enhancement_result = self.enhancement_engine.enhance_response(
                 persona_name,
                 user_input,
                 base_response,
@@ -279,7 +247,7 @@ class EnhancedPersonaManager:
             
         except Exception as e:
             logger.error(
-                "mcp_enhancement_failed",
+                "embedded_framework_enhancement_error",
                 persona=persona_name,
                 error=str(e)
             )
@@ -288,7 +256,7 @@ class EnhancedPersonaManager:
             return EnhancementResult(
                 enhanced_response=base_response,
                 enhancement_applied=False,
-                server_used=None,
+                framework_used=None,
                 analysis_data=None,
                 processing_time_ms=0,
                 fallback_reason=f"Enhancement error: {str(e)}"
@@ -340,7 +308,7 @@ class EnhancedPersonaManager:
             # Enhancement information
             "enhancement": {
                 "applied": enhancement_result.enhancement_applied,
-                "server_used": enhancement_result.server_used,
+                "framework_used": enhancement_result.framework_used,
                 "analysis_data": enhancement_result.analysis_data,
                 "processing_time_ms": enhancement_result.processing_time_ms,
                 "fallback_reason": enhancement_result.fallback_reason
@@ -359,8 +327,8 @@ class EnhancedPersonaManager:
             
             # System capabilities
             "capabilities": {
-                "mcp_enabled": self.mcp_enabled,
-                "enhanced_personas": ["diego", "martin", "rachel", "camille", "alvaro"] if self.mcp_enabled else [],
+                "enhancement_enabled": self.enhancement_enabled,
+                "enhanced_personas": ["diego", "martin", "rachel", "camille", "alvaro"] if self.enhancement_enabled else [],
                 "available_templates": [t.template_id for t in self.template_discovery.list_templates()]
             }
         }
@@ -377,7 +345,7 @@ class EnhancedPersonaManager:
             "enhancement": {"applied": False, "fallback_reason": f"System error: {error_message}"},
             "performance": {"total_processing_time_ms": 0},
             "conversation_state": self.state_engine.get_current_state(),
-            "capabilities": {"mcp_enabled": False, "error": error_message}
+            "capabilities": {"enhancement_enabled": False, "error": error_message}
         }
     
     # Public interface methods
@@ -398,7 +366,7 @@ class EnhancedPersonaManager:
                 self.enhancement_stats["enhanced_requests"] / 
                 max(self.enhancement_stats["total_requests"], 1)
             ),
-            "mcp_enabled": self.mcp_enabled
+            "enhancement_enabled": self.enhancement_enabled
         }
     
     async def get_mcp_server_status(self) -> Dict[str, Any]:
@@ -423,7 +391,7 @@ class EnhancedPersonaManager:
             "average_enhancement_time": 0.0
         }
         
-        logger.info("conversation_reset", mcp_enabled=self.mcp_enabled)
+        logger.info("conversation_reset", enhancement_enabled=self.enhancement_enabled)
     
     async def close(self) -> None:
         """Clean up resources"""
