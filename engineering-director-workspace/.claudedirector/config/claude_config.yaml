@@ -1,0 +1,105 @@
+# ClaudeDirector Strategic Persona Configuration
+#
+# This file defines custom strategic personas for your organization.
+# Add your own personas here to extend ClaudeDirector's capabilities.
+
+personas:
+  # Example: Add your organization-specific personas
+  #
+  # custom_cto:
+  #   description: "CTO-level strategic technology leadership"
+  #   context: "Focus on technology vision, architectural decisions, and technical roadmap alignment with business strategy"
+  #   triggers: ["technical strategy", "architecture roadmap", "technology vision"]
+  #   escalation_criteria: ["major architectural decisions", "technology investment >$1M", "platform strategy shifts"]
+  #
+  # custom_vp_engineering:
+  #   description: "VP Engineering operational excellence"
+  #   context: "Team scaling, delivery optimization, engineering culture, cross-functional collaboration"
+  #   triggers: ["team scaling", "delivery metrics", "engineering culture", "org design"]
+  #   escalation_criteria: ["team performance issues", "delivery timeline risks", "culture problems"]
+
+# Strategic Context Configuration
+strategic_context:
+  # Your organization's strategic priorities
+  priorities:
+    - "Platform scalability and developer experience"
+    - "Design system adoption and consistency"
+    - "International expansion support"
+    - "Business value and ROI demonstration"
+
+  # Key stakeholders and their contexts
+  stakeholder_mapping:
+    # Example:
+    # vp_product: "Product strategy alignment, user experience outcomes"
+    # vp_design: "Design system strategy, user research integration"
+    # cto: "Technical architecture, platform evolution"
+
+  # Business metrics that matter to your organization
+  business_metrics:
+    - "Platform adoption rates"
+    - "Developer satisfaction scores"
+    - "Design system component usage"
+    - "Time-to-market improvements"
+    - "International market penetration"
+
+# Persona Auto-Activation Rules
+auto_activation:
+  # Customize when personas activate based on context
+  context_triggers:
+    budget_discussion: ["alvaro", "david", "camille"]
+    compliance_review: ["elena", "rachel"]
+    platform_strategy: ["diego", "marcus", "martin"]
+    executive_presentation: ["camille", "alvaro"]
+    design_system: ["rachel", "marcus"]
+    vendor_evaluation: ["sofia", "david"]
+
+# Advanced Configuration
+advanced:
+  # Enable experimental features
+  experimental_features: false
+
+  # Performance optimization
+  response_optimization: true
+
+  # Strategic memory retention (days)
+  memory_retention: 90
+
+  # Business intelligence refresh rate (hours)
+  metrics_refresh_rate: 24
+
+# Integration Settings
+integrations:
+  # Jira integration (optional)
+  jira:
+    enabled: false
+    # base_url: "https://your-company.atlassian.net"
+    # project_key: "PLATFORM"
+
+  # Google Drive integration (optional)
+  google_drive:
+    enabled: false
+    # service_account_path: "path/to/service-account.json"
+
+  # Slack integration (optional)
+  slack:
+    enabled: false
+    # webhook_url: "https://hooks.slack.com/services/..."
+
+# Configuration Notes:
+#
+# 1. Persona Development:
+#    - Focus on strategic leadership contexts
+#    - Define clear escalation criteria
+#    - Align with organizational hierarchy
+#
+# 2. Strategic Context:
+#    - Reflect your actual business priorities
+#    - Map real stakeholder relationships
+#    - Use measurable business metrics
+#
+# 3. Auto-Activation:
+#    - Based on conversation context
+#    - Supports multi-persona scenarios
+#    - Optimized for director-level decisions
+#
+# For detailed persona development guide, see: docs/persona-development.md

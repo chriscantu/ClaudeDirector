@@ -1,151 +1,139 @@
 # ClaudeDirector: Your AI Engineering Director Team
 
-**Zero-setup AI directors** that automatically provide strategic expertise when you need it.
+**Just paste this URL into Claude and start getting strategic guidance immediately.**
+
+**`https://github.com/chriscantu/ClaudeDirector`**
 
 ---
 
-## ✨ **Quick Start** 
+## ✨ **Zero Setup, Immediate Value**
 
-### **🎯 Cursor Users** (Native Integration)
-1. **Open this repo in Cursor**
-2. **Start any conversation** - ClaudeDirector auto-detects and activates
-3. **Talk naturally** - your AI director team responds automatically
+### **All You Need to Do:**
+1. **Copy the repo URL above**
+2. **Paste it into any Claude conversation** 
+3. **Start talking about your strategic challenges**
 
-### **💬 Claude Chat Users** (Also Zero Setup)
-1. **Copy this repo URL**: `https://github.com/chriscantu/ClaudeDirector`
-2. **Paste into any Claude conversation**
-3. **Start asking strategic questions** - directors activate automatically
-
-### **🤖 What Happens Automatically:**
+### **What Happens Next:**
 
 ```
-👤 "Our mobile platform strategy isn't aligned across iOS and Android teams"
-🤖 Rachel (UX Strategy): "Let's design a cross-functional alignment strategy..."
+👤 "Our mobile and web teams aren't aligned on platform strategy"
+🤖 Diego: "Let's design a cross-functional alignment approach. I recommend starting with shared metrics and regular architecture reviews..."
 
-👤 "Need to translate platform investments into business value for the board"
-🤖 Alvaro (Business Strategy): "I'll help you build the ROI narrative..."
+👤 "I need to present platform ROI to the board next week"
+🤖 Alvaro: "I'll help you build a compelling business value narrative. Let's focus on cost avoidance, developer velocity, and strategic enablement..."
 
-👤 "Platform architecture creating technical debt across multiple teams"
-🤖 Martin (Platform Architecture): "Let's create a strategic refactoring roadmap..."
+👤 "Technical debt is creating friction across multiple teams"
+🤖 Martin: "Let's create a strategic refactoring roadmap. I suggest prioritizing by business impact and team autonomy..."
 ```
 
----
-
-## 🎯 **Instantly Customize for YOUR Context** 
-
-**Make it yours in under 2 minutes!** Every engineering team is unique - customize directors for your industry, team size, and strategic priorities.
-
-### ⚡ **Super Easy Customization**
-
-**Option 1: Quick CLI Discovery** (30 seconds)
-```bash
-# Find directors perfect for your specific challenges
-./claudedirector templates discover "fintech mobile security compliance"
-./claudedirector templates summary mobile_director --industry fintech --team startup
-```
-
-**Option 2: Edit Your Strategic Personas** (2 minutes)
-```yaml
-# CLAUDE.md - Make any persona fit your context perfectly
---persona-rachel
-**Identity**: Your Design System Director (edit role for your needs)
-**Priorities**: Your specific UX/design system priorities
-**Strategic Focus**: Your unique cross-team alignment challenges
-```
-
-**Option 3: Create Custom Director Templates** (5 minutes)
-```yaml
-# config/director_templates.yaml - Build directors for your exact domain
-your_fintech_mobile_director:
-  domain: "fintech_mobile_security"
-  personas: ["rachel", "martin"]  # Your preferred strategic leaders
-  activation_keywords:
-    "fintech mobile compliance": 0.95
-    "financial app security": 0.9
-  strategic_priorities:
-    - "regulatory_compliance_by_design"
-    - "mobile_security_architecture"
-```
-
-### 🏆 **What You Can Customize:**
-- **Industry expertise**: Fintech, healthcare, enterprise SaaS, e-commerce, gaming
-- **Team dynamics**: Startup constraints vs enterprise scale challenges
-- **Domain focus**: Mobile, backend, data, infrastructure, product, DevOps
-- **Strategic priorities**: What matters most to YOUR organization
-- **Leadership style**: How you prefer strategic guidance delivered
-
-**✨ Your customizations work instantly - no restart, no setup, just better strategic guidance!**
-
----
-
-## 🚀 Ready to Start?
-
-**Just start a conversation** - directors will automatically provide strategic expertise tailored to your context.
-
-### 💡 **Try asking about:**
-- Platform strategy and technical debt governance  
-- Cross-team alignment and organizational challenges
-- Business value translation and ROI analysis
-- Executive communication and stakeholder management
-
----
-
-## 📂 **Your Workspace**
-
-**ClaudeDirector keeps your work separate from the framework:**
-
-- **Your work**: `~/engineering-director-workspace/` (your projects, meetings, planning)
-- **Framework**: This directory (AI directors, configuration, tools)
-
-**[→ Workspace Setup Guide](docs/WORKSPACE_GUIDE.md)**
+**That's it. No installation, no setup, no configuration - just strategic intelligence.**
 
 ---
 
 ## 🎯 **Your Complete AI Director Team**
 
-- **Rachel**: Design systems strategy, cross-functional alignment
-- **Martin**: Platform architecture, technical debt governance  
-- **Alvaro**: Business strategy, ROI analysis, executive communication
-- **Diego**: Engineering leadership, team scaling, platform governance
-- **Camille**: Executive strategy, organizational transformation
-- **Data**: Analytics governance, metrics frameworks
+**Meet your strategic intelligence team - they activate automatically based on your conversation:**
 
-*Directors automatically activate based on your conversation context - and they're fully customizable for your unique needs!*
+- **🎯 Diego**: Engineering leadership, cross-team coordination, platform strategy
+- **💼 Alvaro**: Business strategy, ROI analysis, executive communication  
+- **🎨 Rachel**: UX strategy, design systems, cross-functional alignment
+- **🏗️ Martin**: Technical architecture, platform governance, technical debt strategy
+- **📊 Camille**: Executive strategy, organizational transformation
+- **📈 Data**: Analytics strategy, metrics frameworks, data-driven decisions
+
+### **They Know Your Context:**
+```
+👤 "We're a fintech startup struggling with mobile security compliance"
+🤖 Martin: "For fintech mobile apps, I recommend a security-first architecture with..."
+
+👤 "Need to scale our design system across 12 product teams"  
+🤖 Rachel: "For design system adoption at scale, let's focus on governance and tooling..."
+
+👤 "Board wants to see ROI on our platform investments"
+🤖 Alvaro: "Let's build a compelling financial narrative around developer productivity and time-to-market..."
+```
+
+**✨ Want even more personalized guidance?** Just mention your industry, team size, or specific challenges in conversation.
+
+---
+
+## 🚀 **Try These Strategic Conversations**
+
+**Just copy the repo URL into Claude and ask about:**
+
+### **💼 Strategic Challenges:**
+- *"Help me align platform strategy across iOS, Android, and web teams"*
+- *"I need to present technical debt ROI to executive leadership"*
+- *"Our design system adoption is slow - how do we accelerate it?"*
+- *"Platform costs are growing faster than value - how do we optimize?"*
+
+### **🎯 Leadership Scenarios:**  
+- *"Preparing for board presentation on platform investments"*
+- *"Cross-functional team coordination is breaking down"*
+- *"Need to scale engineering org from 50 to 150 people"*
+- *"Technical decisions are creating business bottlenecks"*
+
+### **🏗️ Architecture Questions:**
+- *"How do we reduce technical debt without stopping feature development?"*
+- *"Platform architecture creating team dependencies - how to fix?"*
+- *"Migration strategy from monolith to microservices for our scale"*
+- *"Security architecture for fintech/healthcare/enterprise compliance"*
+
+**Start any conversation - your AI director team adapts to your specific context and challenges.**
 
 ---
 
 <details>
-<summary><strong>🔧 Advanced Options</strong> (Click to expand)</summary>
+<summary><strong>🔧 Advanced Features & Customization</strong> (Click to expand)</summary>
 
-### Command Line Interface
+### **📂 Local Workspace Setup** (Optional)
+For advanced users who want persistent context and file analysis:
 
 ```bash
-# Main command interface
-./claudedirector --help
-
-# Template management
-./claudedirector templates list
-./claudedirector templates discover "your domain"
-
-# Workspace management  
-./claudedirector workspace status
-./claudedirector workspace migrate
+# Set up local workspace for enhanced features
+git clone https://github.com/chriscantu/ClaudeDirector
+cd ClaudeDirector
+./claudedirector workspace setup
 ```
 
-### Configuration Files
+### **⚙️ Deep Customization**
 
-- `config/claude_config.yaml` - Core ClaudeDirector settings
-- `config/director_templates.yaml` - Director template definitions
-- `CLAUDE.md` - Framework entry point and persona definitions
+**Persona Customization:**
+```yaml
+# CLAUDE.md - Customize any director for your context
+--persona-rachel
+**Identity**: Your Design System Director (edit for your needs)  
+**Strategic Focus**: Your specific cross-functional challenges
+```
 
-### Advanced Features Available
+**Director Templates:**
+```yaml
+# config/director_templates.yaml - Create domain-specific directors
+your_fintech_director:
+  domain: "fintech_mobile_security" 
+  personas: ["rachel", "martin"]
+  strategic_priorities:
+    - "regulatory_compliance_by_design"
+    - "mobile_security_architecture"
+```
 
-- Executive business intelligence and strategic metrics
-- Intelligent meeting tracking and organizational memory
-- Persistent context across conversations
-- Industry-specific customizations
-- Team size contexts
-- Persona routing preferences
+### **🛠️ Command Line Interface**
+```bash
+# Template discovery and management
+./claudedirector templates discover "fintech mobile security"
+./claudedirector templates list
+
+# Workspace analysis  
+./claudedirector workspace status
+./claudedirector analyze stakeholders
+```
+
+### **🎯 Power User Features**
+- **Persistent Context**: Conversations remember your strategic context
+- **File Analysis**: Upload documents for specific guidance
+- **Industry Specialization**: Deep customization for fintech, healthcare, etc.
+- **Team Collaboration**: Share templates and strategies
+- **Executive Intelligence**: Advanced metrics and business intelligence
 
 </details>
 
@@ -153,12 +141,20 @@ your_fintech_mobile_director:
 
 ## 📊 **Executive Demo Materials**
 
-**Need to present ClaudeDirector to leadership?**
-
-**[→ Complete Demo Package](docs/demo/)** - Ready-to-use presentation materials with ROI frameworks and business value propositions.
+**Presenting ClaudeDirector to leadership?** **[→ Complete Demo Package](docs/demo/)** with ROI frameworks and business value propositions.
 
 ---
 
-**🎉 Your AI engineering director team is ready to transform your strategic effectiveness!**
+## 🎉 **Start Your Strategic Transformation Now**
 
-*Zero setup, immediate value, customizable in minutes.*
+**Copy this URL and paste it into Claude:**
+
+**`https://github.com/chriscantu/ClaudeDirector`**
+
+**Then ask about any strategic challenge you're facing.**
+
+*Your AI engineering director team is ready to provide immediate strategic guidance - no setup required.*
+
+---
+
+**✨ Zero setup. Immediate strategic intelligence. Transformational results.**

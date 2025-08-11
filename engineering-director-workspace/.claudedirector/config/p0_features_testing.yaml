@@ -1,0 +1,39 @@
+# P0 Features Configuration - Testing Environment
+# Martin's test-specific overrides for reliable CI/CD
+
+environment: testing
+debug_mode: false
+
+# Faster performance thresholds for testing
+decision_detection:
+  max_inference_time_ms: 100  # Faster for tests
+  accuracy_threshold: 0.80    # Slightly lower for mock models
+
+health_prediction:
+  max_inference_time_ms: 100  # Faster for tests
+  accuracy_threshold: 0.75    # Lower for mock models
+
+# Minimal recommendations for test speed
+recommendations:
+  max_recommendations: 3
+
+# Test database settings
+database:
+  connection_timeout: 5
+  query_timeout: 2
+  max_connections: 5
+
+# Reduced monitoring for tests  
+monitoring:
+  enable_performance_tracking: false
+  enable_accuracy_tracking: false
+  metrics_retention_days: 1
+  alert_on_sla_violation: false
+  performance_sample_rate: 0.1  # Sample less in tests
+
+# Relaxed performance thresholds for testing
+performance:
+  max_inference_time_ms: 100
+  min_accuracy: 0.75
+  max_memory_usage_mb: 100
+  max_error_rate: 0.10
