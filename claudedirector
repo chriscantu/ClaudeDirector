@@ -8,9 +8,11 @@ import os
 import sys
 from pathlib import Path
 
-# Add project root to Python path for imports
+# Add project root and .claudedirector/lib to Python path for imports
 project_root = Path(__file__).parent
+claudedirector_lib = project_root / ".claudedirector" / "lib"
 sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(claudedirector_lib))
 
 import argparse
 import json
@@ -330,9 +332,9 @@ Examples:
 
         try:
             # Try P2.1 intelligent alerts first
-            from lib.claudedirector.p2_communication.integrations.alert_system import IntelligentAlertSystem
-            from lib.claudedirector.p2_communication.integrations.demo_data_source import DemoDataSource
-            from lib.claudedirector.p2_communication.interfaces.report_interface import StakeholderType
+            from claudedirector.p2_communication.integrations.alert_system import IntelligentAlertSystem
+            from claudedirector.p2_communication.integrations.demo_data_source import DemoDataSource
+            from claudedirector.p2_communication.interfaces.report_interface import StakeholderType
 
             # Initialize alert system with demo data
             data_source = DemoDataSource()
@@ -831,7 +833,7 @@ Examples:
         print("=" * 35)
 
         try:
-            from lib.claudedirector.p1_features.template_commands import TemplateCommands
+            from claudedirector.p1_features.template_commands import TemplateCommands
 
             template_commands = TemplateCommands()
 
@@ -903,8 +905,8 @@ Examples:
 
         try:
             # Import the CLI customization module
-            from lib.claudedirector.p1_features.organizational_intelligence.cli_customization import org_intelligence
-            from lib.claudedirector.p1_features.organizational_intelligence import DirectorProfileManager
+            from claudedirector.p1_features.organizational_intelligence.cli_customization import org_intelligence
+            from claudedirector.p1_features.organizational_intelligence import DirectorProfileManager
 
             # Handle different subcommands
             if args.org_intel_action == 'setup':
@@ -983,7 +985,7 @@ Examples:
         print("=" * 42)
 
         try:
-            from lib.claudedirector.p1_features.visualization.dashboard_engine import DashboardEngine
+            from claudedirector.p1_features.visualization.dashboard_engine import DashboardEngine
 
             # Initialize dashboard engine
             dashboard = DashboardEngine()
@@ -1045,10 +1047,10 @@ Examples:
 
         try:
             # Import P2.1 modules
-            from lib.claudedirector.p2_communication.integrations.jira_client import create_jira_client_from_env
-            from lib.claudedirector.p2_communication.report_generation.executive_summary import ExecutiveSummaryGenerator
-            from lib.claudedirector.p2_communication.report_generation.cli_formatter import CLIReportFormatter
-            from lib.claudedirector.p2_communication.interfaces.report_interface import (
+            from claudedirector.p2_communication.integrations.jira_client import create_jira_client_from_env
+            from claudedirector.p2_communication.report_generation.executive_summary import ExecutiveSummaryGenerator
+            from claudedirector.p2_communication.report_generation.cli_formatter import CLIReportFormatter
+            from claudedirector.p2_communication.interfaces.report_interface import (
                 ReportContext, StakeholderType, ReportFormat
             )
 
@@ -1063,7 +1065,7 @@ Examples:
 
             # Force demo data for now (JIRA integration development)
             print("⚠️  Using demo data for P2.1 development")
-            from lib.claudedirector.p2_communication.integrations.demo_data_source import DemoDataSource
+            from claudedirector.p2_communication.integrations.demo_data_source import DemoDataSource
             jira_client = DemoDataSource()
 
             # Initialize report generator and formatter
@@ -1092,7 +1094,7 @@ Examples:
         print(f"🎯 Generating executive summary for {args.stakeholder}...")
 
         # Import enums for mapping
-        from lib.claudedirector.p2_communication.interfaces.report_interface import (
+        from claudedirector.p2_communication.interfaces.report_interface import (
             StakeholderType, ReportFormat, ReportContext
         )
 
@@ -1140,7 +1142,7 @@ Examples:
         print(f"👥 Generating {args.type} stakeholder report...")
 
         # Import enums for mapping
-        from lib.claudedirector.p2_communication.interfaces.report_interface import (
+        from claudedirector.p2_communication.interfaces.report_interface import (
             StakeholderType, ReportFormat, ReportContext
         )
 
@@ -1178,7 +1180,7 @@ Examples:
         print("📋 Generating board presentation report...")
 
         # Import enums for mapping
-        from lib.claudedirector.p2_communication.interfaces.report_interface import (
+        from claudedirector.p2_communication.interfaces.report_interface import (
             StakeholderType, ReportFormat, ReportContext
         )
 

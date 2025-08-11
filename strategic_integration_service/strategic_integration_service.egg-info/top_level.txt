@@ -1,7 +1,0 @@
-config
-executive
-htmlcov
-strategic_integration_service
-tests
-venv
-workspace

@@ -2,21 +2,21 @@
 
 **Zero-setup AI directors** that automatically provide strategic expertise when you need it.
 
-## ✨ Works Out of the Box
+---
 
-### 🎯 **Cursor Users** (Recommended - Native Integration)
+## ✨ **Quick Start** 
+
+### **🎯 Cursor Users** (Native Integration)
 1. **Open this repo in Cursor**
 2. **Start any conversation** - ClaudeDirector auto-detects and activates
 3. **Talk naturally** - your AI director team responds automatically
 
-*No installation, no configuration, no CLI commands needed.*
-
-### 💬 **Claude Chat Users** (Also Zero Setup)
+### **💬 Claude Chat Users** (Also Zero Setup)
 1. **Copy this repo URL**: `https://github.com/chriscantu/ClaudeDirector`
 2. **Paste into any Claude conversation**
 3. **Start asking strategic questions** - directors activate automatically
 
-### 🤖 **What Happens Automatically:**
+### **🤖 What Happens Automatically:**
 
 ```
 👤 "Our mobile platform strategy isn't aligned across iOS and Android teams"
@@ -29,11 +29,9 @@
 🤖 Martin (Platform Architecture): "Let's create a strategic refactoring roadmap..."
 ```
 
-**That's it!** Your AI director team is ready to provide strategic expertise.
-
 ---
 
-## 🎯 **Instantly Customize for YOUR Context**
+## 🎯 **Instantly Customize for YOUR Context** 
 
 **Make it yours in under 2 minutes!** Every engineering team is unique - customize directors for your industry, team size, and strategic priorities.
 
@@ -48,7 +46,7 @@
 
 **Option 2: Edit Your Strategic Personas** (2 minutes)
 ```yaml
-# framework/PERSONAS.md - Make any persona fit your context perfectly
+# CLAUDE.md - Make any persona fit your context perfectly
 --persona-rachel
 **Identity**: Your Design System Director (edit role for your needs)
 **Priorities**: Your specific UX/design system priorities
@@ -85,47 +83,28 @@ your_fintech_mobile_director:
 **Just start a conversation** - directors will automatically provide strategic expertise tailored to your context.
 
 ### 💡 **Try asking about:**
-- Platform strategy and technical debt governance
+- Platform strategy and technical debt governance  
 - Cross-team alignment and organizational challenges
 - Business value translation and ROI analysis
 - Executive communication and stakeholder management
 
 ---
 
-<details>
-<summary><strong>🔧 Want More Control?</strong> (Click to expand advanced options)</summary>
+## 📂 **Your Workspace**
 
-### Command Line Interface (Optional)
-```bash
-# See all director types available
-./claudedirector templates list
+**ClaudeDirector keeps your work separate from the framework:**
 
-# Find the perfect director for your specific challenge
-./claudedirector templates discover "mobile app security compliance"
+- **Your work**: `~/engineering-director-workspace/` (your projects, meetings, planning)
+- **Framework**: This directory (AI directors, configuration, tools)
 
-# Get industry-specific recommendations
-./claudedirector templates summary mobile_director --industry fintech --team startup
+**[→ Workspace Setup Guide](docs/WORKSPACE_GUIDE.md)**
 
-# Tune activation sensitivity
-claudedirector personas tune --sensitivity high    # More responsive
-claudedirector personas tune --sensitivity low     # More stable
+---
 
-# Quick overrides in chat
-# @marcus, @rachel, @auto
-```
+## 🎯 **Your Complete AI Director Team**
 
-### Configuration (Optional)
-Most users never need this, but you can customize:
-- Director activation thresholds
-- Industry-specific priorities
-- Team size contexts
-- Persona routing preferences
-
-See `config/director_templates.yaml` for advanced configuration options.
-
-### 🤖 **Meet Your Strategic AI Director Team**
 - **Rachel**: Design systems strategy, cross-functional alignment
-- **Martin**: Platform architecture, technical debt governance
+- **Martin**: Platform architecture, technical debt governance  
 - **Alvaro**: Business strategy, ROI analysis, executive communication
 - **Diego**: Engineering leadership, team scaling, platform governance
 - **Camille**: Executive strategy, organizational transformation
@@ -133,22 +112,53 @@ See `config/director_templates.yaml` for advanced configuration options.
 
 *Directors automatically activate based on your conversation context - and they're fully customizable for your unique needs!*
 
-### 📊 **Advanced Features Available**
+---
+
+<details>
+<summary><strong>🔧 Advanced Options</strong> (Click to expand)</summary>
+
+### Command Line Interface
+
+```bash
+# Main command interface
+./claudedirector --help
+
+# Template management
+./claudedirector templates list
+./claudedirector templates discover "your domain"
+
+# Workspace management  
+./claudedirector workspace status
+./claudedirector workspace migrate
+```
+
+### Configuration Files
+
+- `config/claude_config.yaml` - Core ClaudeDirector settings
+- `config/director_templates.yaml` - Director template definitions
+- `CLAUDE.md` - Framework entry point and persona definitions
+
+### Advanced Features Available
+
 - Executive business intelligence and strategic metrics
 - Intelligent meeting tracking and organizational memory
 - Persistent context across conversations
-- Industry-specific guidance and team size adaptations
-
-*All features work automatically - no configuration required.*
+- Industry-specific customizations
+- Team size contexts
+- Persona routing preferences
 
 </details>
 
 ---
 
-## 📚 **Resources**
-- **[Quick Start Guide](docs/QUICK_START_GUIDE.md)** - Detailed walkthrough
-- **[Strategic Framework](framework/PERSONAS.md)** - AI director capabilities
+## 📊 **Executive Demo Materials**
+
+**Need to present ClaudeDirector to leadership?**
+
+**[→ Complete Demo Package](docs/demo/)** - Ready-to-use presentation materials with ROI frameworks and business value propositions.
 
 ---
 
-**Ready to get strategic guidance?** Just start a conversation!
+**🎉 Your AI engineering director team is ready to transform your strategic effectiveness!**
+
+*Zero setup, immediate value, customizable in minutes.*
