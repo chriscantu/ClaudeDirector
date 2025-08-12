@@ -6,7 +6,7 @@
 
 ## 📚 **Framework Overview**
 
-ClaudeDirector embeds **7 proven strategic frameworks** from bestselling business methodology books and industry best practices. These frameworks activate automatically based on your conversation context.
+ClaudeDirector embeds **9 proven strategic frameworks** from bestselling business methodology books and industry best practices. These frameworks activate automatically based on your conversation context.
 
 ---
 
@@ -271,6 +271,176 @@ ClaudeDirector embeds **7 proven strategic frameworks** from bestselling busines
 
 ---
 
+## 🏗️ **"Team Topologies" (Skelton & Pais)**
+
+### **Organizational Structure & Team Design Framework**
+
+**When it activates:** Team structure decisions, organizational design, Conway's Law considerations, cognitive load management, platform vs. product team design
+
+**The Five-Phase Approach:**
+
+#### **1. 🎯 Team Type Assessment**
+- **Stream-Aligned Teams**: End-to-end ownership of business domain
+- **Platform Teams**: Self-service internal services for other teams
+- **Enabling Teams**: Temporary assistance to build capabilities
+- **Complicated Subsystem Teams**: Specialized knowledge for complex domains
+
+**Example Questions:**
+- "What types of teams do we need for optimal value delivery?"
+- "Which domains need stream-aligned teams vs. platform teams?"
+- "Where do we need enabling or complicated subsystem teams?"
+
+#### **2. 🔗 Interaction Mode Design**
+- **Collaboration**: Temporary for discovery and complex problem solving
+- **X-as-a-Service**: Clear API contracts for stable services
+- **Facilitating**: Knowledge transfer until capability is built
+
+**Example Questions:**
+- "How should teams interact to minimize dependencies?"
+- "Which relationships need collaboration vs. X-as-a-Service?"
+- "Where do we need facilitating interactions?"
+
+#### **3. 🏛️ Conway's Law Analysis**
+- **Team structure determines system architecture** (Conway's Law)
+- **Inverse Conway Maneuver**: Design teams to get desired architecture
+- **Alignment strategy**: Match team boundaries with architectural boundaries
+
+**Example Questions:**
+- "How does our current team structure affect our architecture?"
+- "What team structure would create our desired architecture?"
+- "Where are Conway's Law misalignments causing problems?"
+
+#### **4. 🧠 Cognitive Load Evaluation**
+- **Teams have limited cognitive capacity** (5-9 people optimal)
+- **Minimize cognitive load** through clear boundaries and responsibilities
+- **Use platform teams** to reduce complexity for stream-aligned teams
+
+**Example Questions:**
+- "What is the cognitive load on each team?"
+- "Which teams are overwhelmed vs. underutilized?"
+- "How can we optimize team focus and reduce complexity?"
+
+#### **5. 🔄 Team Evolution Strategy**
+- **Team topologies should evolve** with organizational and technical needs
+- **Plan transitions carefully** to maintain flow and minimize disruption
+- **Use sensing mechanisms** to detect when topology changes are needed
+
+**Example Questions:**
+- "How should our team structure evolve over time?"
+- "What triggers team topology changes?"
+- "How do we manage team transitions and reorganizations?"
+
+### **Engineering Applications**
+
+#### **Platform vs. Product Team Design:**
+```
+👤 "Should our design system be owned by a platform team or embedded in product teams?"
+
+🤖 Team Topologies: "Let's apply the team type assessment...
+   🏗️ PLATFORM TEAM: Design system as self-service platform for stream-aligned teams
+   🎯 STREAM-ALIGNED: Product teams consume design system without deep expertise
+   🔗 X-AS-A-SERVICE: Clear API contracts and component library
+   🧠 COGNITIVE LOAD: Reduces complexity for product teams to focus on domain logic"
+```
+
+#### **Conway's Law Organizational Design:**
+```
+👤 "Our microservices architecture isn't working - teams keep stepping on each other"
+
+🤖 Team Topologies: "This is a classic Conway's Law misalignment...
+   🏛️ INVERSE CONWAY MANEUVER: Restructure teams to match desired architecture
+   🎯 TEAM BOUNDARIES: Align team ownership with service boundaries
+   🔗 INTERACTION MODES: Move from collaboration to X-as-a-Service between teams
+   🧠 COGNITIVE LOAD: Each team owns end-to-end responsibility for their services"
+```
+
+---
+
+## ⚡ **"Accelerate" (Forsgren, Humble, Kim)**
+
+### **Team Performance & Composition Framework**
+
+**When it activates:** Team performance improvement, DORA metrics, psychological safety, team composition optimization, high-performing team characteristics
+
+**The Five-Phase Approach:**
+
+#### **1. 📊 DORA Metrics Assessment**
+- **Deployment Frequency**: Elite (multiple/day) → Low (monthly)
+- **Lead Time for Changes**: Elite (<1hr) → Low (>1 month)
+- **Change Failure Rate**: Elite (0-15%) → Low (46-60%)
+- **Recovery Time**: Elite (<1hr) → Low (>1 week)
+
+**Example Questions:**
+- "What are our current DORA metrics?"
+- "How do we compare to high-performing teams?"
+- "Which metrics need the most improvement?"
+
+#### **2. 🔍 Capability Gap Analysis**
+- **Technical practices**: CI/CD, test automation, trunk-based development
+- **Management practices**: lean product development, team empowerment
+- **Cultural practices**: psychological safety, learning culture, customer focus
+
+**Example Questions:**
+- "What technical capabilities are missing for high performance?"
+- "Which management and cultural capabilities need development?"
+- "What blockers prevent continuous delivery and deployment?"
+
+#### **3. 👥 Team Composition Optimization**
+- **Small autonomous teams** (5-9 people) with cross-functional skills
+- **Psychological safety** enables learning from failures and innovation
+- **T-shaped skills**: broad knowledge with deep specialization
+
+**Example Questions:**
+- "What is the optimal team size and skill mix?"
+- "How do we balance generalists vs. specialists?"
+- "What psychological safety and cultural factors impact performance?"
+
+#### **4. 📈 Performance Improvement Planning**
+- **Focus on capabilities** that improve flow and feedback loops
+- **Measure outcomes**, not just outputs or activity
+- **Use scientific method**: hypothesis, experiment, measure, learn
+
+**Example Questions:**
+- "What systematic approach will improve our performance metrics?"
+- "How do we prioritize capability building initiatives?"
+- "What measurement and feedback loops ensure progress?"
+
+#### **5. 🌱 Culture Development Strategy**
+- **Psychological safety is the foundation** of high performance
+- **Learning culture**: encourage experimentation, learning from failures
+- **Job satisfaction correlates** with organizational performance
+
+**Example Questions:**
+- "How do we build psychological safety and learning culture?"
+- "What practices encourage experimentation and innovation?"
+- "How do we align team incentives with organizational outcomes?"
+
+### **Team Performance Applications**
+
+#### **DORA Metrics Improvement:**
+```
+👤 "Our deployment frequency is only weekly and our change failure rate is 30%"
+
+🤖 Accelerate: "Let's systematically improve your DORA metrics...
+   📊 CURRENT STATE: Medium performer (weekly deploys, 30% failure rate)
+   🎯 TARGET: High performer (daily deploys, <15% failure rate)
+   🔧 TECHNICAL: Implement CI/CD automation and comprehensive test coverage
+   🧠 CULTURAL: Build psychological safety to address failure rate openly"
+```
+
+#### **Team Composition Optimization:**
+```
+👤 "How do we build a high-performing team? What's the right mix of skills and experience?"
+
+🤖 Accelerate: "Research shows optimal team composition patterns...
+   👥 SIZE: 5-9 people optimal (cognitive limit while maintaining cross-functionality)
+   🔀 T-SHAPED SKILLS: Broad knowledge + deep specialization for flexibility
+   🛡️ PSYCHOLOGICAL SAFETY: Foundation for learning, innovation, and performance
+   ⚡ AUTONOMY: End-to-end ownership with decision-making authority"
+```
+
+---
+
 ## ⚙️ **Technical Strategy Framework**
 
 ### **Architecture-Focused Strategic Planning**
@@ -312,6 +482,8 @@ ClaudeDirector analyzes your conversation and automatically selects the optimal 
 - **Decision signals**: "decide", "choose", "options", "alternatives", "should we"
 - **Planning signals**: "roadmap", "planning", "assessment", "stakeholder"
 - **Scaling signals**: "scaling", "adoption", "spread", "rollout", "standardization", "consistency", "excellence", "across teams"
+- **Team structure signals**: "team topology", "Conway's law", "cognitive load", "platform team", "stream-aligned", "organizational design"
+- **Performance signals**: "DORA metrics", "psychological safety", "team performance", "deployment frequency", "high performing teams"
 
 #### **🎯 Context Recognition**
 - **Domain focus**: Strategic, organizational, technical, process
