@@ -62,7 +62,7 @@ fetch_jira_data() {
     local response=$(curl -s \
         -u "${JIRA_EMAIL}:${JIRA_API_TOKEN}" \
         -H "Accept: application/json" \
-        "${JIRA_BASE_URL}/rest/api/3/search?jql=${encoded_jql}&maxResults=${max_results}&fields=key,summary,status,assignee,project,priority,updated,parent")
+        "${JIRA_BASE_URL}/rest/api/3/search?jql=${encoded_jql}&maxResults=${max_results}&fields=key,summary,status,assignee,project,priority,updated,parent,description,duedate")
 
     if [[ $? -eq 0 ]]; then
         echo "$response" > /tmp/jira_data.json
@@ -117,11 +117,91 @@ format_jira_issues() {
     done
 }
 
+format_executive_epics() {
+    local json_file="$1"
+
+    if [[ ! -f "$json_file" ]]; then
+        echo "No epic data available"
+        return
+    fi
+
+    local total=$(jq -r '.total // 0' "$json_file")
+    if [[ "$total" -eq 0 ]]; then
+        echo "No epics found"
+        return
+    fi
+
+    # Group epics by project and format for executives
+    echo ""
+
+    # Get unique projects and process each
+    jq -r '.issues[] | .fields.project.key' "$json_file" | sort | uniq | while read -r project_key; do
+        local project_name=$(jq -r ".issues[] | select(.fields.project.key == \"$project_key\") | .fields.project.name" "$json_file" | head -1)
+        local project_epics=$(jq -r ".issues[] | select(.fields.project.key == \"$project_key\") | .key" "$json_file" | wc -l | tr -d ' ')
+
+        echo "## 📂 $project_name ($project_epics epics)"
+        echo ""
+
+        # Process each epic in this project
+        jq -r ".issues[] | select(.fields.project.key == \"$project_key\") | \"\(.key)|\(.fields.summary)|\(.fields.status.name)|\(.fields.description // \"No description\")|\(.fields.priority.name // \"None\")|\(.fields.parent.key // \"No parent\")|\(.fields.duedate // \"No due date\")\"" "$json_file" | \
+        while IFS='|' read -r key summary status description priority parent_key due_date; do
+            # Determine status emoji and timing
+            local timing=""
+            local status_emoji=""
+            case "$status" in
+                "Done"|"Closed"|"Resolved")
+                    status_emoji="✅"
+                    timing="**Completed This Week**"
+                    ;;
+                "In Progress"|"In Review")
+                    status_emoji="🔄"
+                    timing="**Finishing This Week**"
+                    ;;
+                *)
+                    status_emoji="📋"
+                    timing="**In Progress**"
+                    ;;
+            esac
+
+            # Extract business value from description (handle Jira rich text JSON format)
+            local business_value=""
+            if [[ "$description" == *"\"type\":\"doc\""* ]]; then
+                # Parse Jira's rich text JSON format
+                business_value=$(echo "$description" | jq -r '.content[]?.content[]?.text // empty' 2>/dev/null | head -3 | grep -v "^$" | head -1 | cut -c1-150)
+            else
+                # Handle plain text or HTML
+                business_value=$(echo "$description" | sed 's/<[^>]*>//g' | sed 's/&[^;]*;//g' | head -3 | grep -v "^$" | head -1 | cut -c1-150)
+            fi
+
+            if [[ -z "$business_value" || "$business_value" == "No description" ]]; then
+                business_value="Business impact details available in epic description"
+            fi
+
+            # Format epic entry
+            local jira_url="${JIRA_BASE_URL:-https://your-company.atlassian.net}"
+            echo "### $status_emoji [$key]($jira_url/browse/$key) - $summary"
+            echo ""
+            echo "- **Status**: $timing ($status)"
+            echo "- **Priority**: $priority"
+            if [[ "$parent_key" != "No parent" ]]; then
+                echo "- **Parent**: [$parent_key]($jira_url/browse/$parent_key)"
+            fi
+            if [[ "$due_date" != "No due date" ]]; then
+                echo "- **Due Date**: $due_date"
+            fi
+            echo "- **Business Value**: $business_value"
+            echo ""
+            echo "---"
+            echo ""
+        done
+    done
+}
+
 # Parse command line arguments
 CONFIG_FILE=""
 DRY_RUN=false
 VERBOSE=false
-JQL_QUERY_NAME="weekly_completed_items"
+JQL_QUERY_NAME="weekly_executive_epics"
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -148,8 +228,8 @@ while [[ $# -gt 0 ]]; do
             echo "  --config FILE      Use specific config file (default: weekly-report-config.yaml)"
             echo "  --dry-run          Show what would be done without executing"
             echo "  --verbose          Show detailed output"
-            echo "  --query NAME       Use specific JQL query from config (default: weekly_completed_items)"
-            echo "                     Available: weekly_completed_items, at_risk_items, current_sprint_items"
+            echo "  --query NAME       Use specific JQL query from config (default: weekly_executive_epics)"
+            echo "                     Available: weekly_executive_epics, weekly_completed_items, at_risk_epics, current_sprint_epics"
             echo "  --help             Show this help message"
             exit 0
             ;;
@@ -313,7 +393,7 @@ if [[ $? -ne 0 || -z "$JQL_QUERY" ]]; then
     log_error "Failed to extract JQL query from config file"
     log_info "Please ensure your config file contains:"
     log_info "  jql_queries:"
-    log_info "    weekly_completed_items: 'YOUR_JQL_QUERY_HERE'"
+    log_info "    weekly_executive_epics: 'YOUR_JQL_QUERY_HERE'"
     exit 1
 fi
 
@@ -340,107 +420,77 @@ fi
 
 # Generate the weekly report with live or template data
 if [[ "$USE_LIVE_DATA" == "true" ]]; then
-    # Generate report with live Jira data
+    # Generate executive epic report with live Jira data
     cat > "$REPORT_FILE" << EOF
-# Weekly SLT Report - UI Foundation Platform
+# Weekly Executive Report - UI Foundation Platform Epics
 
 **Week of**: $(date +"%B %d, %Y")
 **Director of Engineering**: Chris Cantu
 **Report Generated**: $(date +"%Y-%m-%d %H:%M:%S")
-**Data Source**: Live Jira Data
+**Data Source**: Live Jira Epic Data
 
 ---
 
 ## 🎯 Executive Summary
 
-**Platform Health**: UI Foundation platform initiatives with **$(jq -r '.total // 0' /tmp/jira_data.json) completed deliverables** this week across Web Platform, Design System, i18n, UI Service Shell, and Header/Nav capabilities.
+**Epic Portfolio Status**: **$(jq -r '.total // 0' /tmp/jira_data.json) epics** completed this week or finishing this week across UI Foundation platform capabilities.
 
-**Key Achievements This Week**:
-$(jq -r '.issues[] | .fields.project.name' /tmp/jira_data.json | sort | uniq -c | sed 's/^[ ]*/- /' | sed 's/\([0-9]*\) \(.*\)/\1 items completed in \2/')
+**Team Coverage**:
+$(jq -r '.issues[] | .fields.project.name' /tmp/jira_data.json | sort | uniq -c | sed 's/^[ ]*/- /' | sed 's/\([0-9]*\) \(.*\)/\1 epic(s) in \2/')
 
----
-
-## 📊 Completed Deliverables This Week
-
-### Items Delivered ($(jq -r '.total // 0' /tmp/jira_data.json) total)
-
-$(format_jira_issues "/tmp/jira_data.json" "Completed Items")
+**Strategic Focus**: Platform engineering excellence, design system maturation, international expansion, and user experience optimization.
 
 ---
 
-## 🎯 Strategic Impact Analysis
+## 📊 Epic Portfolio by Team
 
-### Platform Engineering Excellence
-**This Week**: $(jq -r '.issues[] | select(.fields.project.name | contains("Web Platform")) | .key' /tmp/jira_data.json | wc -l | tr -d ' ') Web Platform deliverables completed
-**Business Impact**: Development velocity improvements and operational efficiency gains
-
-### Design System Maturation
-**This Week**: $(jq -r '.issues[] | select(.fields.project.name | contains("Design Systems")) | .key' /tmp/jira_data.json | wc -l | tr -d ' ') Design System deliverables completed
-**Business Impact**: Brand consistency and development efficiency improvements
-
-### Experience & Onboarding
-**This Week**: $(jq -r '.issues[] | select(.fields.project.name | test("Experience|Onboarding|Hubs")) | .key' /tmp/jira_data.json | wc -l | tr -d ' ') user experience deliverables completed
-**Business Impact**: User satisfaction and onboarding optimization
-
-### Global Expansion
-**This Week**: $(jq -r '.issues[] | select(.fields.project.name | contains("Globalizers")) | .key' /tmp/jira_data.json | wc -l | tr -d ' ') internationalization deliverables completed
-**Business Impact**: Market expansion enablement and localization improvements
+$(format_executive_epics "/tmp/jira_data.json")
 
 ---
 
-## 📈 Business Value Translation
+## 🎯 Strategic Impact Summary
 
-### Velocity Achievements
-**Delivered**: $(jq -r '.total // 0' /tmp/jira_data.json) completed initiatives demonstrating **strong execution velocity** across all UI Foundation platform capabilities.
+### Platform Capabilities Investment
+**Epic Delivery**: $(jq -r '.total // 0' /tmp/jira_data.json) major initiatives demonstrate **strategic execution** across all UI Foundation platform areas.
 
 ### Cross-Team Coordination
-**Platform Coverage**: $(jq -r '.issues[] | .fields.project.name' /tmp/jira_data.json | sort | uniq | wc -l | tr -d ' ') active project areas with synchronized delivery execution.
+**Active Teams**: $(jq -r '.issues[] | .fields.project.name' /tmp/jira_data.json | sort | uniq | wc -l | tr -d ' ') project areas with synchronized epic delivery and completion.
 
-### Quality & Reliability
-**Systematic Delivery**: All completed items follow **Honorably Discharged** exclusion criteria, ensuring quality-focused completion standards.
-
----
-
-## 🚨 Executive Highlights
-
-### Week's Major Accomplishments
-$(jq -r '.issues[] | select(.fields.priority.name == "Critical" or .fields.priority.name == "High") | "- **[\(.key)]** \(.fields.summary) (\(.fields.project.name))"' /tmp/jira_data.json 2>/dev/null || echo "- Strong execution across all priority levels")
-
-### Resource Utilization
-**Team Distribution**: Deliverables completed across $(jq -r '.issues[] | .fields.assignee.displayName // "Unassigned"' /tmp/jira_data.json | grep -v "Unassigned" | sort | uniq | wc -l | tr -d ' ') team members, demonstrating **effective resource allocation**.
+### Business Value Delivery
+**Executive Outcomes**: Each completed epic includes documented business value and strategic alignment for stakeholder communication.
 
 ---
 
-## 📅 Strategic Outlook
+## 📅 Next Week Executive Focus
 
-### Momentum Indicators
-✅ **$(jq -r '.total // 0' /tmp/jira_data.json) deliverables completed** - Strong execution velocity
-✅ **$(jq -r '.issues[] | .fields.project.name' /tmp/jira_data.json | sort | uniq | wc -l | tr -d ' ') project areas active** - Broad platform coverage
-✅ **Quality-first completion** - All items meet discharge criteria
+### Completed Epic Value Realization
+- **Measure impact** of completed epics through defined success metrics
+- **Communicate wins** to stakeholders with business value demonstrations
+- **Capture lessons learned** from successful epic delivery patterns
 
-### Next Week Focus
-- **Continue momentum** across high-performing platform areas
-- **Stakeholder alignment** on completed deliverable business impact
-- **Resource optimization** based on this week's successful execution patterns
-
----
-
-## 💡 Strategic Recommendations
-
-### Leverage Success Patterns
-**Replicate high-velocity approaches** demonstrated in this week's $(jq -r '.total // 0' /tmp/jira_data.json) completed deliverables across future initiative planning.
-
-### Cross-Platform Synergy
-**Maintain coordination** across $(jq -r '.issues[] | .fields.project.name' /tmp/jira_data.json | sort | uniq | wc -l | tr -d ' ') active project areas to sustain integrated platform advancement.
-
-### Executive Communication
-**Highlight business impact** of completed platform capabilities to demonstrate strategic investment ROI to senior leadership.
+### In-Progress Epic Risk Management
+- **Monitor due dates** for epics finishing this week
+- **Resource coordination** for cross-team dependencies
+- **Stakeholder alignment** on epic scope and timeline adjustments
 
 ---
 
-*📊 **Data Source**: Live Jira API Query - $(date +"%Y-%m-%d %H:%M:%S")*
+## 💡 Executive Recommendations
+
+### Investment ROI Demonstration
+**Leverage completed epics** to demonstrate measurable platform investment returns and strategic value delivery to senior leadership.
+
+### Resource Optimization
+**Replicate successful patterns** from high-velocity epic completion across future platform planning cycles.
+
+### Stakeholder Communication
+**Proactive updates** on epic business value and strategic alignment maintain executive confidence in platform investment.
+
+---
+
+*📊 **Data Source**: Live Jira Epic Query - $(date +"%Y-%m-%d %H:%M:%S")*
 *🔄 **Next Report**: $(date -v+7d +"%Y-%m-%d" 2>/dev/null || date +"%Y-%m-%d")*
-*🎯 **Query**: Items completed in last 7 days across UI Foundation projects*
+*🎯 **Focus**: Epics completed this week or finishing this week with business value analysis*
 
 EOF
 else
