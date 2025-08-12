@@ -18,6 +18,18 @@ repos:
         args: [--line-length=88]
         files: ^lib/claudedirector/.*\.py$
 
+  # CRITICAL FILE PROTECTION (MUST RUN FIRST)
+  - repo: local
+    hooks:
+      - id: readme-protection
+        name: 🛡️ README.md PROTECTION SYSTEM
+        entry: .claudedirector/git-hooks/readme-protection.sh
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+        always_run: true
+        verbose: true
+
   # CRITICAL SECURITY ENFORCEMENT
   - repo: local
     hooks:
