@@ -189,7 +189,7 @@ Examples:
                                           help='JQL query name from config (default: weekly_executive_epics)')
 
         # Director Templates (Phase 1 Feature)
-        templates_parser = subparsers.add_parser('templates', help='Director template management (P1 Feature)')
+        templates_parser = subparsers.add_parser('templates', help='Leadership template management (P1 Feature)')
         templates_sub = templates_parser.add_subparsers(dest='templates_action', help='Template management actions')
 
         # Template listing
@@ -235,9 +235,9 @@ Examples:
         org_setup_parser.add_argument('--profile-type',
                                      choices=['platform_director', 'backend_director', 'product_director', 'custom'],
                                      default='platform_director',
-                                     help='Select director profile type')
+                                                                           help='Select leadership profile type')
         org_setup_parser.add_argument('--role-title',
-                                     default='Director of Engineering',
+                                                                           default='Engineering Leadership',
                                      help='Your specific role title')
 
         # Org intelligence status
@@ -836,8 +836,8 @@ Examples:
             print(f"❌ Architecture health command failed: {e}")
 
     def handle_templates(self, args):
-        """Handle director template management commands"""
-        print("🎭 Director Template Management")
+        """Handle leadership template management commands"""
+        print("🎭 Leadership Template Management")
         print("=" * 35)
 
         try:
@@ -1249,7 +1249,20 @@ Examples:
 
             if not args.dry_run:
                 print("✅ Weekly report generated successfully!")
-                print("📁 Check your workspace: engineering-director-workspace/reports/")
+                # Detect actual workspace location for user guidance
+                workspace_path = os.environ.get('CLAUDEDIRECTOR_WORKSPACE')
+                if not workspace_path:
+                    # Check for new default location
+                    if Path.home().joinpath("leadership-workspace").exists():
+                        workspace_path = str(Path.home() / "leadership-workspace")
+                    # Check for legacy location
+                    elif Path.home().joinpath("engineering-director-workspace").exists():
+                        workspace_path = str(Path.home() / "engineering-director-workspace")
+                    else:
+                        workspace_path = "leadership-workspace"
+
+                workspace_name = Path(workspace_path).name
+                print(f"📁 Check your workspace: {workspace_name}/reports/")
 
         except subprocess.CalledProcessError as e:
             print(f"❌ Failed to generate weekly report: {e}")
