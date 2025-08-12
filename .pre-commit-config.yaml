@@ -21,9 +21,17 @@ repos:
   # CRITICAL SECURITY ENFORCEMENT
   - repo: local
     hooks:
-      - id: sensitive-data-scanner
-        name: 🚨 CRITICAL SECURITY SCAN
-        entry: python3 .claudedirector/dev-tools/security/sensitive_data_scanner.py
+      - id: enhanced-security-scanner
+        name: 🛡️ ENHANCED SECURITY SCAN
+        entry: python3 .claudedirector/dev-tools/security/enhanced_security_scanner.py
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+        always_run: true
+        verbose: true
+      - id: stakeholder-name-scanner
+        name: 🚨 STAKEHOLDER INTELLIGENCE SCAN
+        entry: python3 .claudedirector/dev-tools/security/stakeholder_name_scanner.py --staged
         language: system
         pass_filenames: false
         stages: [pre-commit]
