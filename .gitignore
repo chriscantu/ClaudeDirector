@@ -206,3 +206,47 @@ file_metadata.json
 !**/engineering-director-workspace/.gitkeep
 # Prevent pip installation artifact files
 =*
+
+# ======================================
+# TEMPORARY WORKING FILES - NEW RULE
+# ======================================
+# Keep temporary working files out of source control
+
+# Development artifacts
+*_AUDIT_REPORT.md
+*_TEST_RESULTS.md
+*_COMPLETION_SUMMARY.md
+temp_*.md
+draft_*.md
+working_*.md
+notes_*.md
+
+# Process documentation
+CLEANUP_*.md
+BACKWARDS_COMPATIBILITY_*.md
+MANUAL_TESTING_*.md
+OPTION_*_*.md
+
+# Release preparation artifacts
+RELEASE_NOTES_*.md
+temp_release_*.md
+draft_release_*.md
+
+# Development session files
+session_*.md
+debug_*.md
+scratch_*.md
+
+# Workspace data protection
+engineering-director-workspace/
+leadership-workspace/
+
+# Common workspace subdirectories (extra protection)
+**/current-initiatives/
+**/meeting-prep/
+**/analysis-results/
+**/retained-assets/
+
+# Workspace metadata files
+file_metadata.json
+file_lifecycle.yaml
