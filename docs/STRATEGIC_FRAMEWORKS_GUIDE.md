@@ -6,7 +6,7 @@
 
 ## 📚 **Framework Overview**
 
-ClaudeDirector embeds **6 proven strategic frameworks** from bestselling business methodology books and industry best practices. These frameworks activate automatically based on your conversation context.
+ClaudeDirector embeds **7 proven strategic frameworks** from bestselling business methodology books and industry best practices. These frameworks activate automatically based on your conversation context.
 
 ---
 
@@ -20,7 +20,7 @@ ClaudeDirector embeds **6 proven strategic frameworks** from bestselling busines
 
 #### **1. 🔍 Strategic Diagnosis**
 - **Identifies the true nature of the challenge** you're facing
-- **Pinpoints critical obstacles** and constraints  
+- **Pinpoints critical obstacles** and constraints
 - **Uncovers strategic insights** others might miss
 
 **Example Questions:**
@@ -53,7 +53,7 @@ ClaudeDirector embeds **6 proven strategic frameworks** from bestselling busines
 **Automatically identifies and helps you avoid:**
 
 - **🚫 Fluff**: Vague language that sounds profound but says nothing
-- **🚫 Failure to Face the Challenge**: Not identifying real obstacles  
+- **🚫 Failure to Face the Challenge**: Not identifying real obstacles
 - **🚫 Mistaking Goals for Strategy**: Wishful thinking without method
 - **🚫 Bad Strategic Objectives**: Impossible or impractical goals
 
@@ -117,7 +117,7 @@ ClaudeDirector embeds **6 proven strategic frameworks** from bestselling busines
 
 #### **Phase 1: 📊 Current State Analysis**
 - Platform capability audit and assessment
-- Technical debt quantification and impact analysis  
+- Technical debt quantification and impact analysis
 - Developer experience baseline measurement
 - Business value delivery current state evaluation
 
@@ -162,6 +162,115 @@ ClaudeDirector embeds **6 proven strategic frameworks** from bestselling busines
 
 ---
 
+## 🚀 **"Scaling Up Excellence" (Sutton & Rao)**
+
+### **Excellence Scaling Framework**
+
+**When it activates:** Platform adoption, standardization initiatives, spreading best practices across teams, organizational scaling challenges
+
+**The Six-Phase Approach:**
+
+#### **1. 🎯 Excellence Definition & Assessment**
+- **Clearly define what excellence looks like** before attempting to scale
+- **Assess current state** of adoption and consistency
+- **Identify barriers** to scaling (technical, cultural, organizational)
+
+**Example Questions:**
+- "What specific excellence are we trying to scale?"
+- "Where do we currently have excellence, and where don't we?"
+- "What's preventing consistent adoption across teams?"
+
+#### **2. ⚖️ Buddhist vs. Catholic Strategy**
+- **Catholic approach**: Strict standardization where consistency is critical
+- **Buddhist approach**: Flexible principles with local adaptation
+- **Strategic balance**: Decide what must be uniform vs. what can vary
+
+**Example Questions:**
+- "What must be standardized (Catholic) vs. locally adapted (Buddhist)?"
+- "Where do we need strict compliance vs. flexible implementation?"
+- "How do we balance consistency with team autonomy?"
+
+**Engineering Applications:**
+- **Catholic**: Security protocols, API contracts, compliance requirements
+- **Buddhist**: UX implementations, development workflows, team processes
+
+#### **3. 🔥 Hot Causes Development**
+- **Emotional engagement**: Why should people care about this excellence?
+- **Personal motivation**: Make benefits tangible and meaningful
+- **Team pride**: Connect excellence to professional identity
+
+**Example Questions:**
+- "What emotional drivers will create engagement?"
+- "How do we make this personally meaningful for teams?"
+- "What's the compelling 'why' behind this standardization?"
+
+#### **4. ❄️ Cool Solutions Implementation**
+- **Practical tools**: Make excellence easier than non-excellence
+- **Friction reduction**: Remove barriers to adoption
+- **Support systems**: Provide infrastructure for scaling
+
+**Example Questions:**
+- "What tools make the right thing easier than the wrong thing?"
+- "How do we reduce cognitive load for adoption?"
+- "What infrastructure supports scaling?"
+
+#### **5. 🔗 Connect and Cascade Planning**
+- **Connect**: Build bridges between teams and individuals
+- **Cascade**: Spread knowledge through organizational layers
+- **Knowledge sharing**: Prevent silos and isolation
+
+**Example Questions:**
+- "How do we connect people to share knowledge effectively?"
+- "What's our strategy for cascading across teams and levels?"
+- "How do we prevent knowledge silos?"
+
+#### **6. ✂️ Cut and Growth Execution**
+- **Cut**: Eliminate negative practices and patterns
+- **Growth**: Expand positive behaviors systematically
+- **Sequencing**: Often need to cut before growing
+
+**Example Questions:**
+- "What negative practices must we eliminate first?"
+- "Which positive practices should we expand?"
+- "How do we sequence elimination and growth?"
+
+### **Platform Scaling Applications**
+
+#### **Design System Adoption:**
+```
+👤 "Our design system has great Web adoption but iOS/Android teams resist it"
+
+🤖 Scaling Up Excellence: "Let's apply the Buddhist vs. Catholic approach...
+   ⚖️ CATHOLIC ELEMENTS: Core design principles and brand standards (non-negotiable)
+   🎨 BUDDHIST ELEMENTS: Platform-specific implementation patterns (flexible)
+   🔥 HOT CAUSES: Team pride in consistent user experience across platforms
+   ❄️ COOL SOLUTIONS: Platform-specific tooling that makes adoption effortless"
+```
+
+#### **API Standardization:**
+```
+👤 "How do we scale API consistency without slowing down product teams?"
+
+🤖 Scaling Up Excellence: "This requires careful Catholic vs. Buddhist balance...
+   ⚖️ CATHOLIC: Security, authentication, error handling (strict standards)
+   🎨 BUDDHIST: Response formats, pagination, filtering (team flexibility)
+   🔗 CONNECT: API guild meetings and cross-team knowledge sharing
+   ✂️ CUT: Legacy inconsistent patterns before promoting new standards"
+```
+
+#### **Code Quality Excellence:**
+```
+👤 "We want to spread our testing excellence across the entire engineering org"
+
+🤖 Scaling Up Excellence: "Let's focus on mindset over footprint...
+   🎯 EXCELLENCE DEFINITION: What does testing excellence look like specifically?
+   🔥 HOT CAUSES: Developer confidence and delivery pride
+   ❄️ COOL SOLUTIONS: Testing frameworks that are easier than manual testing
+   🔗 CASCADE: Senior engineers mentoring across teams systematically"
+```
+
+---
+
 ## ⚙️ **Technical Strategy Framework**
 
 ### **Architecture-Focused Strategic Planning**
@@ -202,6 +311,7 @@ ClaudeDirector analyzes your conversation and automatically selects the optimal 
 - **Strategy signals**: "strategy", "fluff", "challenge", "leverage", "focus"
 - **Decision signals**: "decide", "choose", "options", "alternatives", "should we"
 - **Planning signals**: "roadmap", "planning", "assessment", "stakeholder"
+- **Scaling signals**: "scaling", "adoption", "spread", "rollout", "standardization", "consistency", "excellence", "across teams"
 
 #### **🎯 Context Recognition**
 - **Domain focus**: Strategic, organizational, technical, process
@@ -219,11 +329,11 @@ ClaudeDirector analyzes your conversation and automatically selects the optimal 
 
 ### **Professional Standards Met**
 
-✅ **Rumelt Framework**: 7/7 core elements integrated (100%)  
-✅ **WRAP Framework**: 8/8 decision techniques integrated (100%)  
-✅ **Persona Integration**: Authentic personality preservation  
-✅ **Executive Quality**: Suitable for board presentation  
-✅ **Zero Dependencies**: No external servers or APIs required  
+✅ **Rumelt Framework**: 7/7 core elements integrated (100%)
+✅ **WRAP Framework**: 8/8 decision techniques integrated (100%)
+✅ **Persona Integration**: Authentic personality preservation
+✅ **Executive Quality**: Suitable for board presentation
+✅ **Zero Dependencies**: No external servers or APIs required
 
 ---
 
