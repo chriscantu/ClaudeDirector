@@ -6,7 +6,7 @@
 
 ## 📚 **Framework Overview**
 
-ClaudeDirector embeds **9 proven strategic frameworks** from bestselling business methodology books and industry best practices. These frameworks activate automatically based on your conversation context.
+ClaudeDirector embeds **11 proven strategic frameworks** from bestselling business methodology books and industry best practices. These frameworks activate automatically based on your conversation context.
 
 ---
 
@@ -441,6 +441,197 @@ ClaudeDirector embeds **9 proven strategic frameworks** from bestselling busines
 
 ---
 
+## 🤝 **"Crucial Conversations" (Patterson, Grenny, McMillan, Switzler)**
+
+### **Stakeholder Management & Executive Communication Framework**
+
+**When it activates:** Difficult stakeholder conversations, executive alignment, conflict resolution, cross-team collaboration challenges
+
+**The Seven-Step Approach:**
+
+#### **1. 🎯 Start with Heart**
+- **Focus on what you really want** for yourself, others, and the relationship
+- **Clarify your real purpose** before the conversation begins
+- **Ask yourself**: How would I behave if I really wanted these results?
+
+**Example Questions:**
+- "What do I really want for myself in this conversation?"
+- "What do I want for others and the relationship?"
+- "How would I behave if I really wanted these results?"
+
+#### **2. 👀 Learn to Look**
+- **Watch for when conversations become crucial** (high stakes, differing opinions, strong emotions)
+- **Recognize signs of safety problems**: silence (withdrawing, avoiding, masking) and violence (attacking, labeling, controlling)
+- **Learn to look at content and conditions** of conversation simultaneously
+
+**Example Questions:**
+- "What signs indicate this conversation is becoming crucial?"
+- "When is safety at risk in our dialogue?"
+- "What patterns of silence or violence am I seeing?"
+
+#### **3. 🛡️ Make it Safe**
+- **Apologize when appropriate** to restore safety
+- **Contrast to fix misunderstandings** (what you don't mean vs. what you do mean)
+- **Create mutual purpose** by finding shared goals and common ground
+
+**Example Questions:**
+- "How can I restore safety to this conversation?"
+- "What mutual purpose can we establish?"
+- "How do I demonstrate respect for others' perspectives?"
+
+#### **4. 📖 Master Your Stories**
+- **Separate facts from the stories** you create about those facts
+- **Tell the most respectful story first**, then test your assumptions
+- **Take charge of your emotions** by taking charge of your stories
+
+**Example Questions:**
+- "What story am I telling myself about this situation?"
+- "What are the facts vs. my interpretations?"
+- "What assumptions am I making that might be wrong?"
+
+#### **5. 💬 STATE Your Path**
+- **Share your facts**: Start with least controversial facts
+- **Tell your story**: Explain what you're beginning to conclude
+- **Ask for others' paths**: Encourage others to share their views
+- **Talk tentatively**: State your story as a story, not as fact
+- **Encourage testing**: Make it safe for others to express differing views
+
+**Example Questions:**
+- "How can I share my perspective persuasively, not abrasively?"
+- "What facts should I share first?"
+- "How do I encourage others to share their views?"
+
+#### **6. 🔍 Explore Others' Paths**
+- **Ask**: Start with sincere curiosity and genuine questions
+- **Mirror**: Acknowledge the emotions behind their words
+- **Paraphrase**: Restate what you've heard to confirm understanding
+- **Prime**: If they won't share, take your best guess at their perspective
+
+**Example Questions:**
+- "How can I encourage others to share their perspectives?"
+- "What am I missing from their point of view?"
+- "How do I listen when they blow up or clam up?"
+
+#### **7. ➡️ Move to Action**
+- **Decide how decisions will be made**: Command, consult, vote, or consensus
+- **Document who does what by when**
+- **Plan follow-up and create accountability systems**
+
+**Example Questions:**
+- "What specific actions will we take as a result of this conversation?"
+- "Who will do what by when?"
+- "How will we follow up and ensure accountability?"
+
+### **Executive Communication Applications**
+
+#### **Executive Platform Investment Discussion:**
+```
+👤 "The executive is questioning our platform investment ROI and I need to address their concerns"
+
+🤖 Crucial Conversations: "Let's apply the seven-step approach...
+   🎯 START WITH HEART: What outcome do you want for the platform, executive relationship, and organization?
+   👀 LEARN TO LOOK: Watch for signs the conversation is becoming crucial or safety is at risk
+   🛡️ MAKE IT SAFE: Establish mutual purpose around organizational success and platform value
+   💬 STATE YOUR PATH: Share ROI facts, tell your platform story, ask for their perspective"
+```
+
+#### **Cross-Team Conflict Resolution:**
+```
+👤 "Engineering and product teams are in conflict over technical debt vs. new features"
+
+🤖 Crucial Conversations: "This requires careful dialogue management...
+   📖 MASTER YOUR STORIES: What assumptions are each team making about the other's priorities?
+   🛡️ MAKE IT SAFE: Create mutual purpose around customer value and sustainable development
+   🔍 EXPLORE OTHERS' PATHS: Use Ask, Mirror, Paraphrase to understand each team's constraints
+   ➡️ MOVE TO ACTION: Document specific commitments with clear accountability and follow-up"
+```
+
+---
+
+## 💰 **Capital Allocation Framework**
+
+### **Technology Investment & Resource Optimization Framework**
+
+**When it activates:** Budget planning, technology investment decisions, resource allocation optimization, ROI analysis, portfolio management
+
+**The Five-Phase Approach:**
+
+#### **1. 📊 Investment Assessment**
+- **Comprehensive evaluation** of all potential technology investments
+- **Standardized criteria** for comparing diverse investment opportunities
+- **Clear categorization**: Platform (infrastructure), Product (features), Innovation (R&D)
+
+**Example Questions:**
+- "What are all our potential technology investment opportunities?"
+- "How do we categorize platform vs. product vs. innovation investments?"
+- "What resources and timelines are required for each option?"
+
+#### **2. 🎯 Strategic Alignment**
+- **Business outcome focus**: Every investment must contribute to strategic objectives
+- **Stakeholder value creation**: Clear value for customers, users, and business
+- **Strategic criticality assessment**: Must-have vs. should-have vs. could-have
+
+**Example Questions:**
+- "How do these investments support our business strategy?"
+- "What stakeholder value will each investment create?"
+- "Which investments are critical vs. nice-to-have?"
+
+#### **3. 📈 ROI Analysis & Measurement**
+- **Multiple ROI metrics**: Cost reduction, revenue generation, risk mitigation
+- **Strategic value metrics**: Time to market, developer productivity, platform adoption
+- **Innovation metrics**: Learning velocity, market position, future optionality
+
+**Example Questions:**
+- "What are the expected returns from each investment?"
+- "How do we measure both direct and strategic value?"
+- "What metrics will track actual vs. projected returns?"
+
+#### **4. ⚖️ Risk Assessment & Mitigation**
+- **Technical risk**: Implementation complexity, dependencies, skill requirements
+- **Market risk**: Technology adoption, competitive landscape, timing
+- **Organizational risk**: Change management, cultural fit, resource availability
+
+**Example Questions:**
+- "What technical, market, and organizational risks does each investment carry?"
+- "How can we mitigate the highest-impact risks?"
+- "What contingency plans do we need?"
+
+#### **5. 🔄 Portfolio Optimization**
+- **Portfolio balance**: Mix of platform stability, product growth, and innovation exploration
+- **Dynamic rebalancing**: Adjust based on performance, market changes, strategic shifts
+- **Opportunity cost evaluation**: Consider what you're not doing when making choices
+
+**Example Questions:**
+- "How should we balance our investment portfolio across categories?"
+- "Which investments should we prioritize, delay, or cancel?"
+- "How do we continuously rebalance based on performance?"
+
+### **Technology Investment Applications**
+
+#### **Annual Budget Planning:**
+```
+👤 "We're planning next year's technology budget across platform, product, and innovation"
+
+🤖 Capital Allocation: "Let's optimize your technology investment portfolio...
+   📊 INVESTMENT ASSESSMENT: Categorize all opportunities by Platform/Product/Innovation
+   🎯 STRATEGIC ALIGNMENT: Map each investment to business objectives and stakeholder value
+   📈 ROI ANALYSIS: Quantify both direct returns and strategic value (velocity, productivity)
+   🔄 PORTFOLIO OPTIMIZATION: Balance stability (60%), growth (30%), exploration (10%)"
+```
+
+#### **Platform vs. Product Trade-offs:**
+```
+👤 "Should we invest in platform infrastructure or new product features this quarter?"
+
+🤖 Capital Allocation: "This requires systematic investment evaluation...
+   ⚖️ RISK ASSESSMENT: Platform investments reduce technical debt risk, product features address market risk
+   📈 ROI MEASUREMENT: Platform improves long-term velocity, features drive short-term revenue
+   🔄 PORTFOLIO BALANCE: Consider current mix - are you over-weighted in either direction?
+   🎯 STRATEGIC ALIGNMENT: Which investment better supports your strategic objectives?"
+```
+
+---
+
 ## ⚙️ **Technical Strategy Framework**
 
 ### **Architecture-Focused Strategic Planning**
@@ -484,6 +675,8 @@ ClaudeDirector analyzes your conversation and automatically selects the optimal 
 - **Scaling signals**: "scaling", "adoption", "spread", "rollout", "standardization", "consistency", "excellence", "across teams"
 - **Team structure signals**: "team topology", "Conway's law", "cognitive load", "platform team", "stream-aligned", "organizational design"
 - **Performance signals**: "DORA metrics", "psychological safety", "team performance", "deployment frequency", "high performing teams"
+- **Stakeholder signals**: "crucial conversation", "stakeholder", "executive", "alignment", "conflict", "communication", "dialogue"
+- **Investment signals**: "budget", "capital allocation", "ROI", "investment portfolio", "resource allocation", "financial optimization"
 
 #### **🎯 Context Recognition**
 - **Domain focus**: Strategic, organizational, technical, process
