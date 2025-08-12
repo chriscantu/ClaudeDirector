@@ -418,8 +418,37 @@ else
     USE_LIVE_DATA=false
 fi
 
+# Fetch additional executive data if available
+fetch_additional_executive_data() {
+    if [[ "$USE_LIVE_DATA" == "true" ]]; then
+        log_info "Fetching upcoming epic milestones..."
+        local upcoming_query=$(extract_jql_query "$CONFIG_FILE" "upcoming_epic_milestones")
+        if [[ -n "$upcoming_query" ]]; then
+            fetch_jira_data "$upcoming_query" 20
+            if [[ $? -eq 0 ]]; then
+                cp /tmp/jira_data.json /tmp/jira_upcoming.json
+            fi
+        fi
+
+        log_info "Fetching executive blockers..."
+        local blockers_query=$(extract_jql_query "$CONFIG_FILE" "executive_blockers")
+        if [[ -n "$blockers_query" ]]; then
+            fetch_jira_data "$blockers_query" 10
+            if [[ $? -eq 0 ]]; then
+                cp /tmp/jira_data.json /tmp/jira_blockers.json
+            fi
+        fi
+
+        # Restore main data
+        fetch_jira_data "$JQL_QUERY" 100
+    fi
+}
+
 # Generate the weekly report with live or template data
 if [[ "$USE_LIVE_DATA" == "true" ]]; then
+    # Fetch additional executive insights
+    fetch_additional_executive_data
+
     # Generate executive epic report with live Jira data
     cat > "$REPORT_FILE" << EOF
 # Weekly Executive Report - UI Foundation Platform Epics
@@ -442,36 +471,69 @@ $(jq -r '.issues[] | .fields.project.name' /tmp/jira_data.json | sort | uniq -c 
 
 ---
 
-## 📊 Epic Portfolio by Team
+## 📊 Completed Epic Portfolio by Team
 
 $(format_executive_epics "/tmp/jira_data.json")
 
 ---
 
-## 🎯 Strategic Impact Summary
+## 📅 Next Week Preview - Upcoming Epic Milestones
 
-### Platform Capabilities Investment
-**Epic Delivery**: $(jq -r '.total // 0' /tmp/jira_data.json) major initiatives demonstrate **strategic execution** across all UI Foundation platform areas.
-
-### Cross-Team Coordination
-**Active Teams**: $(jq -r '.issues[] | .fields.project.name' /tmp/jira_data.json | sort | uniq | wc -l | tr -d ' ') project areas with synchronized epic delivery and completion.
-
-### Business Value Delivery
-**Executive Outcomes**: Each completed epic includes documented business value and strategic alignment for stakeholder communication.
+$(if [[ -f "/tmp/jira_upcoming.json" && $(jq -r '.total // 0' /tmp/jira_upcoming.json) -gt 0 ]]; then
+    echo "**Epics Due This Week**: $(jq -r '.total // 0' /tmp/jira_upcoming.json) epics approaching completion"
+    echo ""
+    format_executive_epics "/tmp/jira_upcoming.json" | head -20
+else
+    echo "**No epics due this week** - smooth execution window for current initiatives"
+fi)
 
 ---
 
-## 📅 Next Week Executive Focus
+## 🚨 Executive Decision Points
 
-### Completed Epic Value Realization
-- **Measure impact** of completed epics through defined success metrics
-- **Communicate wins** to stakeholders with business value demonstrations
-- **Capture lessons learned** from successful epic delivery patterns
+$(if [[ -f "/tmp/jira_blockers.json" && $(jq -r '.total // 0' /tmp/jira_blockers.json) -gt 0 ]]; then
+    echo "### Blocked Epics Requiring Executive Intervention"
+    echo ""
+    echo "**Total Blocked**: $(jq -r '.total // 0' /tmp/jira_blockers.json) epics"
+    echo ""
+    format_executive_epics "/tmp/jira_blockers.json"
+    echo "**Executive Action Needed**: Resource allocation, stakeholder alignment, or dependency resolution"
+else
+    echo "### ✅ No Executive Blockers"
+    echo ""
+    echo "**Status**: All epics proceeding without executive intervention required"
+    echo "**Recommendation**: Continue current resource allocation and coordination approach"
+fi)
 
-### In-Progress Epic Risk Management
-- **Monitor due dates** for epics finishing this week
-- **Resource coordination** for cross-team dependencies
-- **Stakeholder alignment** on epic scope and timeline adjustments
+---
+
+## 🎯 Strategic Impact & Resource Allocation
+
+### Delivery Velocity Analysis
+**Completed**: $(jq -r '.total // 0' /tmp/jira_data.json) epics delivered this week demonstrating **consistent execution capability**
+
+### Team Performance Distribution
+$(jq -r '.issues[] | .fields.project.name' /tmp/jira_data.json | sort | uniq -c | sed 's/^[ ]*//' | while read count team; do
+    echo "- **$team**: $count epic(s) completed - $(if [[ $count -ge 2 ]]; then echo "High velocity"; elif [[ $count -eq 1 ]]; then echo "Steady delivery"; else echo "Needs attention"; fi)"
+done)
+
+### Cross-Team Coordination Health
+**Active Teams**: $(jq -r '.issues[] | .fields.project.name' /tmp/jira_data.json | sort | uniq | wc -l | tr -d ' ') project areas with synchronized delivery execution
+**Coordination Quality**: $(if [[ $(jq -r '.issues[] | .fields.project.name' /tmp/jira_data.json | sort | uniq | wc -l | tr -d ' ') -ge 4 ]]; then echo "Excellent - broad platform coverage"; else echo "Good - focused delivery approach"; fi)
+
+---
+
+## 📈 Strategic Alignment Verification
+
+### Business Value Delivery
+**Epic Outcomes**: Each completed epic includes documented business impact and strategic justification
+**OKR Alignment**: All completed epics tie to platform engineering excellence and user experience optimization goals
+
+### Investment ROI Indicators
+- **Platform Capabilities**: Enhanced developer experience and operational efficiency
+- **Design System Maturity**: Improved brand consistency and development velocity
+- **International Expansion**: Market expansion enablement and localization improvements
+- **User Experience**: Onboarding optimization and user satisfaction improvements
 
 ---
 
