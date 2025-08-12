@@ -185,6 +185,8 @@ Examples:
         reports_weekly_parser.add_argument('--config', help='Config file for Jira integration')
         reports_weekly_parser.add_argument('--dry-run', action='store_true', help='Show what would be done without executing')
         reports_weekly_parser.add_argument('--verbose', action='store_true', help='Show detailed output')
+        reports_weekly_parser.add_argument('--query', default='weekly_completed_items',
+                                          help='JQL query name from config (default: weekly_completed_items)')
 
         # Director Templates (Phase 1 Feature)
         templates_parser = subparsers.add_parser('templates', help='Director template management (P1 Feature)')
@@ -1235,6 +1237,8 @@ Examples:
             cmd.append("--dry-run")
         if args.verbose:
             cmd.append("--verbose")
+        if args.query:
+            cmd.extend(["--query", args.query])
 
         try:
             # Run the weekly report script
