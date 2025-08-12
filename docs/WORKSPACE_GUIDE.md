@@ -2,7 +2,7 @@
 
 ## 🎯 **New Clean Separation: Framework vs Your Work**
 
-ClaudeDirector repository structure has been optimized for **professional presentation and maintainability**. Your actual engineering director work should now be **separate from the framework source code**.
+ClaudeDirector repository structure has been optimized for **professional presentation and maintainability**. Your actual leadership work should now be **separate from the framework source code**.
 
 ---
 
@@ -11,8 +11,8 @@ ClaudeDirector repository structure has been optimized for **professional presen
 ### **🏆 Recommended: Separate Workspace Directory**
 
 ```bash
-# Your engineering director workspace (outside ClaudeDirector repo)
-~/engineering-director-workspace/
+# Your leadership workspace (outside ClaudeDirector repo)
+~/leadership-workspace/
 ├── current-initiatives/          # Your ongoing projects
 ├── meeting-prep/                 # Meeting materials and prep
 ├── budget-planning/              # Budget analysis and planning
@@ -32,10 +32,10 @@ ClaudeDirector repository structure has been optimized for **professional presen
 
 ```bash
 # Copy your existing workspace from the old location
-cp -r ../platform-eng-leader-claude-config/workspace/* ~/engineering-director-workspace/
+cp -r ../platform-eng-leader-claude-config/workspace/* ~/leadership-workspace/
 
 # Or create symbolic link if you prefer to keep it in current location
-ln -s ../platform-eng-leader-claude-config/workspace ~/engineering-director-workspace
+ln -s ../platform-eng-leader-claude-config/workspace ~/leadership-workspace
 ```
 
 ---
@@ -45,14 +45,14 @@ ln -s ../platform-eng-leader-claude-config/workspace ~/engineering-director-work
 ### **Environment Variable (Recommended):**
 ```bash
 # Add to your ~/.bashrc or ~/.zshrc or ~/.config/fish/config.fish
-export CLAUDEDIRECTOR_WORKSPACE="$HOME/engineering-director-workspace"
+export CLAUDEDIRECTOR_WORKSPACE="$HOME/leadership-workspace"
 ```
 
 ### **Configuration File:**
 ```yaml
 # config/claude_config.yaml
 workspace:
-  path: "~/engineering-director-workspace"
+  path: "~/leadership-workspace"
   auto_discover: true
 ```
 
@@ -169,7 +169,7 @@ git push -u origin main
 
 ### **Team Sharing:**
 - **Framework**: Everyone uses same ClaudeDirector repository
-- **Workspace**: Each director has their own private workspace
+- **Workspace**: Each leader has their own private workspace
 - **Templates**: Share useful templates via team repositories
 
 ### **Multi-Environment:**
@@ -201,4 +201,4 @@ claudedirector setup workspace
 
 ---
 
-*This guide ensures your engineering director work stays organized and private while keeping the ClaudeDirector framework clean and demo-ready.*
+*This guide ensures your leadership work stays organized and private while keeping the ClaudeDirector framework clean and demo-ready.*

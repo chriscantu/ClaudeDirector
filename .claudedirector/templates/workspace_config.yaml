@@ -1,0 +1,59 @@
+# ClaudeDirector File Lifecycle Configuration
+# Controls how files are generated, organized, and archived in your workspace
+
+# File generation behavior
+generation_mode: "professional"  # minimal | professional | research
+
+# Minimal Mode:
+#   - Strategic analysis only
+#   - Consolidated session files
+#   - Minimal file creation
+
+# Professional Mode (Recommended):
+#   - Strategic analysis + meeting prep
+#   - Quarterly organization
+#   - Executive presentation materials
+
+# Research Mode:
+#   - Full strategic analysis
+#   - Framework research documents
+#   - Methodology documentation
+
+# File lifecycle settings
+auto_archive_days: 30               # Auto-archive files after N days
+consolidate_analysis: true          # Combine related insights into single files
+prompt_before_generation: true      # Ask permission before creating files
+max_session_files: 5               # Trigger consolidation prompt after N files
+
+# Directory structure
+archive_directory: "archived-sessions"     # Where archived files go
+retention_directory: "retained-assets"     # Permanently retained files
+
+# Content filtering by generation mode
+content_types:
+  minimal:
+    - "strategic_analysis"
+    - "session_summary"
+
+  professional:
+    - "strategic_analysis"
+    - "meeting_prep"
+    - "session_summary"
+    - "executive_presentation"
+    - "quarterly_planning"
+
+  research:
+    - "strategic_analysis"
+    - "meeting_prep"
+    - "session_summary"
+    - "framework_research"
+    - "methodology_documentation"
+    - "executive_presentation"
+    - "quarterly_planning"
+
+# User experience preferences
+preferences:
+  show_business_value_prompts: true         # Ask for business value context
+  auto_organize_by_quarter: true           # Organize files by business quarter
+  suggest_consolidation: true              # Proactively suggest file consolidation
+  enable_retention_reminders: true         # Remind about retention options
