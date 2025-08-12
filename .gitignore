@@ -167,8 +167,42 @@ local/
 *-live.yaml
 workspace/meeting-prep/procore-ai-trainer-framework-demo.md
 
-# User workspace data (not tracked in source control)
-engineering-director-workspace/
-!engineering-director-workspace/.gitkeep
+# === USER WORKSPACE DATA ===
+# CRITICAL: User's actual leadership work files
+# These contain sensitive business data and should NEVER be committed
+leadership-workspace/
+**/leadership-workspace/
+~/leadership-workspace/
+
+# Legacy and potential workspace directory variations
+engineering-director-workspace/  # Legacy - maintain for existing users
+**/engineering-director-workspace/
+workspace-*/
+*-workspace/
+director-workspace/
+eng-director-workspace/
+
+# User work directories that might be created
+current-initiatives/
+meeting-prep/
+budget-planning/
+strategic-docs/
+vendor-evaluations/
+analysis-results/
+archived-sessions/
+retained-assets/
+
+# File lifecycle management data
+file_metadata.json
+**/file_metadata.json
+
+# User configuration files with potentially sensitive settings
+**/config/file_lifecycle.yaml
+
+# Keep only the .gitkeep for directory structure
+!leadership-workspace/.gitkeep
+!**/leadership-workspace/.gitkeep
+!engineering-director-workspace/.gitkeep  # Legacy support
+!**/engineering-director-workspace/.gitkeep
 # Prevent pip installation artifact files
 =*
