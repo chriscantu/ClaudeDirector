@@ -250,3 +250,19 @@ leadership-workspace/
 # Workspace metadata files
 file_metadata.json
 file_lifecycle.yaml
+
+# ======================================
+# BACKUP AND ARCHIVE PROTECTION
+# ======================================
+# Prevent backup directories from being committed
+backups/
+**/backups/
+*.backup
+backup-*/
+*-backup/
+archive-*/
+*-archive/
+workspace-backup-*/
+*.tar.gz
+*.zip
+*.bak
