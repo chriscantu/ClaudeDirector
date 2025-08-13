@@ -59,7 +59,7 @@ class PatternRecognitionEngine:
                 return []
         return []
 
-    def _save_workflow_patterns(self):
+    def _save_workflow_patterns(self) -> None:
         """Save workflow patterns"""
         self.patterns_db.parent.mkdir(parents=True, exist_ok=True)
         with open(self.patterns_db, 'w') as f:
@@ -77,7 +77,7 @@ class PatternRecognitionEngine:
                 return []
         return []
 
-    def _save_template_recommendations(self):
+    def _save_template_recommendations(self) -> None:
         """Save template recommendations"""
         self.templates_db.parent.mkdir(parents=True, exist_ok=True)
         with open(self.templates_db, 'w') as f:
@@ -218,12 +218,12 @@ class PatternRecognitionEngine:
             daily_sequences[session_date].append(session['content_type'])
 
         # Analyze common sequences
-        sequence_counter = Counter()
+        sequence_counter: Counter[Tuple[str, ...]] = Counter()
         for date, sequence in daily_sequences.items():
             if len(sequence) >= 2:
                 # Create sequence tuples
                 for i in range(len(sequence) - 1):
-                    seq_tuple = tuple(sequence[i:i+2])
+                    seq_tuple: Tuple[str, ...] = tuple(sequence[i:i+2])
                     sequence_counter[seq_tuple] += 1
 
         # Identify frequent sequences
@@ -328,7 +328,7 @@ class PatternRecognitionEngine:
 
         return suggestions
 
-    def update_patterns_from_usage(self, session_data: List[Dict[str, Any]]):
+    def update_patterns_from_usage(self, session_data: List[Dict[str, Any]]) -> None:
         """Update patterns based on recent usage data"""
 
         # Analyze new patterns
