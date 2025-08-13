@@ -19,12 +19,12 @@
 Current (Problematic):
 1. cd ~/repos/ai-leadership          # Remember framework location
 2. ./claudedirector analyze          # Run command
-3. cd ~/engineering-director-workspace  # Navigate to files
+3. cd ~/leadership-workspace  # Navigate to files
 4. edit files                        # Do actual work
 5. cd ~/repos/ai-leadership          # Back to framework for commands
 
 Proposed (Intuitive):
-1. cd ~/engineering-director-workspace  # One location
+1. cd ~/leadership-workspace  # One location
 2. edit files                          # Do actual work  
 3. ./claudedirector analyze files     # Commands work here
 4. Everything in harmony
@@ -71,7 +71,7 @@ Proposed (Intuitive):
 ```bash
 # Current state assessment
 echo "📊 Current workspace structure:"
-ls -la ~/engineering-director-workspace/
+ls -la ~/leadership-workspace/
 
 echo "📊 Framework size and components:"
 du -sh .claudedirector/
@@ -81,7 +81,7 @@ ls -la .claudedirector/
 ### **Step 2: UX Design (Rachel)**
 ```
 Target workspace structure:
-~/engineering-director-workspace/
+~/leadership-workspace/
 ├── current-initiatives/       # User work (unchanged)
 ├── meeting-prep/             # User work (unchanged)  
 ├── budget-planning/          # User work (unchanged)
@@ -95,11 +95,11 @@ Target workspace structure:
 ```bash
 # 1. Copy framework to workspace (safe, no deletion)
 echo "📋 Copying ClaudeDirector framework to workspace..."
-cp -r .claudedirector ~/engineering-director-workspace/
+cp -r .claudedirector ~/leadership-workspace/
 
 # 2. Create command symlink for intuitive access
 echo "🔗 Creating user-friendly command access..."
-ln -s .claudedirector/claudedirector ~/engineering-director-workspace/claudedirector
+ln -s .claudedirector/claudedirector ~/leadership-workspace/claudedirector
 
 # 3. Update configurations for new location
 echo "⚙️ Updating configurations..."
@@ -109,7 +109,7 @@ echo "⚙️ Updating configurations..."
 ### **Step 4: UX Validation (Rachel)**
 ```bash
 # Test user workflow from workspace
-cd ~/engineering-director-workspace
+cd ~/leadership-workspace
 echo "🧪 Testing user workflow:"
 echo "1. User is in their workspace: $(pwd)"
 echo "2. User can see their files: $(ls -1 | head -3)"
@@ -119,7 +119,7 @@ echo "3. User can run commands: $(./claudedirector --help > /dev/null && echo 'S
 ### **Step 5: Full Integration Testing (Martin)**
 ```bash
 # Comprehensive functionality testing
-cd ~/engineering-director-workspace
+cd ~/leadership-workspace
 echo "🔧 Testing all core functionality..."
 ./claudedirector --help
 ./claudedirector workspace status
@@ -134,7 +134,7 @@ echo "🔧 Testing all core functionality..."
 ### **1. Intuitive Command Discovery:**
 ```bash
 # User types common commands and they work
-cd ~/engineering-director-workspace
+cd ~/leadership-workspace
 ./claudedirector --help                    # Shows help
 ./claudedirector analyze current-initiatives  # Analyzes local files
 ls -la | grep claudedirector               # Command is visible
@@ -147,7 +147,7 @@ ls -la | grep claudedirector               # Command is visible
 
 ### **3. Clear Visual Organization:**
 ```
-~/engineering-director-workspace/
+~/leadership-workspace/
 ├── 📁 current-initiatives/    # Clearly user work
 ├── 📁 meeting-prep/          # Clearly user work
 ├── 📁 budget-planning/       # Clearly user work
@@ -193,7 +193,7 @@ Configuration priority:
 ## ✅ **Success Criteria**
 
 ### **Rachel's UX Success:**
-- [ ] User opens terminal, goes to one location (`~/engineering-director-workspace`)
+- [ ] User opens terminal, goes to one location (`~/leadership-workspace`)
 - [ ] User sees their work files immediately
 - [ ] User runs `./claudedirector` commands naturally
 - [ ] No cognitive overhead about "where to run commands"
