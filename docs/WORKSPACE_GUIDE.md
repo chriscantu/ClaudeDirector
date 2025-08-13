@@ -69,7 +69,7 @@ claudedirector --workspace ~/my-custom-workspace analyze stakeholders
 ### **📁 Suggested Organization:**
 
 ```
-~/engineering-director-workspace/
+~/leadership-workspace/
 ├── README.md                     # Your workspace overview
 ├── .claudedirector/             # Local ClaudeDirector settings
 │   └── config.yaml              # Workspace-specific config
@@ -126,15 +126,15 @@ claudedirector --workspace ~/my-custom-workspace analyze stakeholders
 ### **1. Migrate Your Existing Work:**
 ```bash
 # Create your new workspace
-mkdir -p ~/engineering-director-workspace
+mkdir -p ~/leadership-workspace
 
 # Copy your existing work
-cp -r ../platform-eng-leader-claude-config/workspace/* ~/engineering-director-workspace/
+cp -r ../platform-eng-leader-claude-config/workspace/* ~/leadership-workspace/
 
 # Set environment variable
-echo 'export CLAUDEDIRECTOR_WORKSPACE="$HOME/engineering-director-workspace"' >> ~/.bashrc
+echo 'export CLAUDEDIRECTOR_WORKSPACE="$HOME/leadership-workspace"' >> ~/.bashrc
 # or for fish shell:
-echo 'set -gx CLAUDEDIRECTOR_WORKSPACE "$HOME/engineering-director-workspace"' >> ~/.config/fish/config.fish
+echo 'set -gx CLAUDEDIRECTOR_WORKSPACE "$HOME/leadership-workspace"' >> ~/.config/fish/config.fish
 ```
 
 ### **2. Test ClaudeDirector Integration:**
@@ -143,19 +143,19 @@ echo 'set -gx CLAUDEDIRECTOR_WORKSPACE "$HOME/engineering-director-workspace"' >
 claudedirector workspace status
 
 # Test persona integration with your data
-claudedirector analyze --persona martin --workspace ~/engineering-director-workspace
+claudedirector analyze --persona martin --workspace ~/leadership-workspace
 ```
 
 ### **3. Optional: Version Control Your Workspace:**
 ```bash
-cd ~/engineering-director-workspace
+cd ~/leadership-workspace
 git init
 git add .
 git commit -m "Initial engineering director workspace"
 
 # Optional: Create private GitHub repo for your work
-gh repo create engineering-director-workspace --private
-git remote add origin https://github.com/yourusername/engineering-director-workspace.git
+gh repo create leadership-workspace --private
+git remote add origin https://github.com/yourusername/leadership-workspace.git
 git push -u origin main
 ```
 
