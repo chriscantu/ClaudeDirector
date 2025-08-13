@@ -1,25 +1,28 @@
-# ClaudeDirector - Your AI Engineering Leadership Team
+# ClaudeDirector - Your AI Strategic Leadership Team
 
-**Complete engineering leadership strategic AI toolkit with persistent strategic memory.**
+**Complete strategic AI toolkit for technology leaders with persistent strategic memory.**
 
 ---
 
 ## 🎯 **Value Proposition**
 
-**Transform complex engineering leadership challenges into systematic strategic execution** through research-backed AI directors and embedded frameworks.
+**Transform complex technology leadership challenges into systematic strategic execution** through research-backed AI directors and embedded frameworks.
+
+**Designed for all technology leaders**: CTOs, VPs of Engineering, Engineering Managers, Platform Engineers, Principal Engineers, Tech Leads, and Strategic Individual Contributors.
 
 ### **Immediate Strategic Impact:**
 - **11 proven strategic frameworks** from bestselling business methodology books
-- **Strategic AI personas** optimized for engineering leadership and platform strategy
+- **Strategic AI personas** adaptable to your specific role and context
 - **🧠 Smart file organization** with learning capabilities (Phase 2)
 - **Persistent strategic context** across all Cursor sessions (unique competitive advantage)
 - **Zero configuration** - advanced strategic thinking activates automatically
+- **Fully customizable** for your industry, team size, and leadership challenges
 
 ### **Business Impact Delivered:**
 - **$50K-100K cost avoidance** in strategy consultation fees
 - **25% improvement** in executive stakeholder satisfaction
 - **🧠 70% reduction** in file management cognitive load (Phase 2)
-- **Measurable cross-team alignment** on platform initiatives
+- **Measurable cross-functional alignment** on strategic initiatives
 - **15-20 minutes saved per session** through persistent strategic context
 
 ---
@@ -78,15 +81,17 @@ ClaudeDirector provides **11 proven strategic frameworks** that activate automat
 
 ## 🤖 **Meet Your Strategic AI Director Team**
 
-**Your strategic advisors activate automatically based on conversation context:**
+**Your strategic advisors activate automatically based on conversation context and adapt to your specific role:**
 
 - **🎯 Alvaro** (Business Strategy) - ROI, investment analysis, executive communication
-- **🎨 Rachel** (UX Strategy) - User experience, design thinking, stakeholder engagement
-- **⚡ Martin** (Platform Architecture) - Technical strategy, platform evolution, system design
-- **🚀 Diego** (Engineering Leadership) - Team management, organizational structure, delivery optimization
+- **🎨 Rachel** (UX Strategy) - User experience, design thinking, stakeholder engagement  
+- **⚡ Martin** (Technical Architecture) - System design, technical strategy, architecture decisions
+- **🚀 Diego** (Leadership & Operations) - Team management, organizational design, delivery optimization
 - **💼 Camille** (Executive Strategy) - Board relations, strategic planning, organizational transformation
-- **📊 Marcus** (Internal Adoption) - Change management, process optimization, team enablement
-- **💰 David** (Financial Planning) - Budget allocation, cost optimization, financial strategy
+- **📊 Marcus** (Change Management) - Process optimization, adoption strategies, team enablement
+- **💰 David** (Financial Strategy) - Budget allocation, cost optimization, investment planning
+
+**Personas automatically adapt their guidance based on your role context - whether you're a CTO focusing on technical vision, an Engineering Manager optimizing team performance, or a Tech Lead driving architectural decisions.**
 
 ---
 
@@ -122,19 +127,49 @@ ClaudeDirector provides **persistent strategic memory across all Cursor sessions
 
 ---
 
-## ⚙️ **Customize**
+## ⚙️ **Customize for Your Context**
 
-### **🎯 Persona Selection:**
-Ask for specific strategic advisors:
+### **🎯 Role-Specific Adaptation**
+ClaudeDirector automatically adapts to your leadership context:
+
+**For CTOs & VPs of Engineering:**
+- Strategic technology vision and competitive positioning
+- Board-level communication and executive alignment
+- Organizational transformation and scaling strategies
+
+**For Engineering Managers & Directors:**
+- Team performance optimization and people development
+- Cross-functional collaboration and stakeholder management  
+- Resource allocation and delivery planning
+
+**For Principal Engineers & Tech Leads:**
+- Technical architecture decisions and system design
+- Engineering productivity and developer experience
+- Technical debt strategy and platform investments
+
+**For Product Engineering Leaders:**
+- Product-technology strategy alignment
+- Feature vs. platform investment trade-offs
+- User experience and business impact optimization
+
+### **🏢 Industry & Context Customization**
+**Industries**: Fintech, Healthcare, Enterprise SaaS, Consumer Apps, Infrastructure
+**Team Sizes**: Startup (5-20), Scale-up (20-100), Enterprise (100-1000+)
+**Contexts**: Hypergrowth, Mature Product, Platform Transformation, Crisis Management
+
+### **💬 Natural Persona Activation**
+Ask for specific strategic advisors based on your needs:
 - *"Alvaro, what's the ROI of this platform investment?"*
-- *"Rachel, how can we improve the user experience?"*
-- *"Martin, what's the best technical architecture?"*
+- *"Rachel, how can we improve stakeholder alignment?"*
+- *"Martin, what's the best technical architecture approach?"*
+- *"Diego, how should we structure our teams for this initiative?"*
 
-### **📋 Framework Selection:**
-Request specific strategic approaches:
-- *"Use the WRAP framework for this decision"*
-- *"Apply Team Topologies to our org structure"*
-- *"Analyze this with Good Strategy Bad Strategy"*
+### **📋 Framework Selection**
+Request specific strategic approaches for your situation:
+- *"Use the WRAP framework for this architecture decision"*
+- *"Apply Team Topologies to our scaling challenges"*
+- *"Analyze this investment with Capital Allocation framework"*
+- *"Help me prepare for a crucial conversation with the CEO"*
 
 ---
 
@@ -154,17 +189,32 @@ Request specific strategic approaches:
 
 ---
 
-## 💬 **Direct Persona Access**
+## 💬 **Context-Aware Strategic Guidance**
 
-Start conversations directly with strategic advisors:
+Start conversations that automatically adapt to your role and context:
 
+### **CTO/VP Examples:**
 ```
-🎯 Alvaro: "I need to present platform ROI to the board"
-🎨 Rachel: "How do we improve stakeholder satisfaction?"
-⚡ Martin: "What's our technical strategy for scaling?"
-🚀 Diego: "How should we structure our engineering teams?"
-💼 Camille: "I need to develop our 3-year strategic plan"
+🎯 "I need to present our technology strategy to the board"
+💼 "How do we position our platform investments for competitive advantage?"
+🚀 "What's our 3-year organizational scaling plan?"
 ```
+
+### **Engineering Manager Examples:**
+```
+🎨 "How do we improve cross-functional collaboration with Product?"
+🚀 "What's the best team structure for our new initiative?"
+💰 "How should we prioritize our Q3 engineering investments?"
+```
+
+### **Tech Lead Examples:**
+```
+⚡ "What's the best architecture approach for this system?"
+🎯 "How do I build consensus around this technical decision?"
+💬 "I need to have a difficult conversation about technical debt"
+```
+
+**The personas automatically understand your context and provide role-appropriate strategic guidance.**
 
 ---
 
