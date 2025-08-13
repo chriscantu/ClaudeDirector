@@ -15,7 +15,7 @@
 # Current problematic workflow
 cd ~/repos/ai-leadership                    # Go to framework
 ./claudedirector analyze                    # Run command
-# But files are in ~/engineering-director-workspace/  # Mental disconnect
+# But files are in ~/leadership-workspace/  # Mental disconnect
 ```
 
 ### **✅ Proposed UX Solution: Workspace-First**
@@ -29,7 +29,7 @@ cd ~/repos/ai-leadership                    # Go to framework
 **Improved Workflow:**
 ```bash
 # Proposed intuitive workflow  
-cd ~/engineering-director-workspace/        # Go to work
+cd ~/leadership-workspace/        # Go to work
 ./claudedirector analyze current-initiatives/ # Analyze files right here
 # Everything in one place - cognitive harmony
 ```
@@ -75,7 +75,7 @@ user-project/
 
 ### **ClaudeDirector Should Follow:**
 ```
-engineering-director-workspace/
+leadership-workspace/
 ├── current-initiatives/    # User's work
 ├── meeting-prep/          # User's work
 ├── budget-planning/       # User's work
@@ -94,12 +94,12 @@ engineering-director-workspace/
 
 1. **Copy framework to workspace:**
    ```bash
-   cp -r ~/repos/ai-leadership/.claudedirector ~/engineering-director-workspace/
+   cp -r ~/repos/ai-leadership/.claudedirector ~/leadership-workspace/
    ```
 
 2. **Create command symlink:**
    ```bash
-   ln -s .claudedirector/claudedirector ~/engineering-director-workspace/claudedirector
+   ln -s .claudedirector/claudedirector ~/leadership-workspace/claudedirector
    ```
 
 3. **Update configurations:**
