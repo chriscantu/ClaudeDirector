@@ -1256,8 +1256,8 @@ Examples:
                     if Path.home().joinpath("leadership-workspace").exists():
                         workspace_path = str(Path.home() / "leadership-workspace")
                     # Check for legacy location
-                    elif Path.home().joinpath("engineering-director-workspace").exists():
-                        workspace_path = str(Path.home() / "engineering-director-workspace")
+                    elif Path.home().joinpath("leadership-workspace").exists():
+                        workspace_path = str(Path.home() / "leadership-workspace")
                     else:
                         workspace_path = "leadership-workspace"
 

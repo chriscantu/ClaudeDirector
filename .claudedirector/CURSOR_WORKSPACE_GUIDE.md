@@ -3,7 +3,7 @@
 ## 🎯 **Intelligent Workspace Detection**
 
 ClaudeDirector automatically detects and works with your strategic files in:
-- `engineering-director-workspace/` - Your primary workspace for strategic work
+- `leadership-workspace/` - Your primary workspace for strategic work
 - `.claudedirector/strategic-intelligence/` - Framework personas and strategic frameworks
 
 ## 📁 **Workspace Structure Intelligence**
