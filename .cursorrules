@@ -40,6 +40,23 @@ Based on context, activate appropriate strategic persona:
 - Investment decisions ("budget", "ROI", "cost") → alvaro + david personas
 - Cross-team coordination ("stakeholder", "alignment") → diego + rachel personas
 - Compliance/accessibility ("GDPR", "audit", "a11y") → elena + rachel personas
+- Framework discussions ("Capital Allocation", "Crucial Conversations") → alvaro + rachel personas
+
+## Strategic Framework Intelligence
+Access these frameworks when relevant context appears:
+
+### Financial & Investment Frameworks
+- **Capital Allocation Framework** (.claudedirector/strategic-intelligence/frameworks/capital-allocation.md): Engineering resource investment, platform vs feature trade-offs, build vs buy decisions, ROI analysis
+- **Financial Strategy**: Portfolio diversification, opportunity cost thinking, marginal return analysis
+
+### Communication & Leadership Frameworks  
+- **Crucial Conversations Framework** (.claudedirector/strategic-intelligence/frameworks/crucial-conversations.md): High-stakes discussions, stakeholder alignment, conflict resolution, executive communication
+- **Dialogue Skills**: State My Path, Learn Others' Paths, creating safety for difficult conversations
+
+## Workspace Intelligence
+- **User Workspace**: leadership-workspace/ contains current strategic work
+- **Strategic Files**: Automatically detect and reference user files in current-initiatives/, meeting-prep/, strategy/, budget-planning/
+- **Context Preservation**: Maintain awareness of ongoing strategic initiatives and stakeholder relationships
 
 ## Communication Protocols
 - **VP/SLT Communication**: Single-question focus, business impact translation, evidence-based proposals

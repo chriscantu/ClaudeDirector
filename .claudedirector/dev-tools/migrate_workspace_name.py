@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 ClaudeDirector Workspace Migration Utility
-Migrates from engineering-director-workspace to leadership-workspace
+Migrates from leadership-workspace to leadership-workspace
 """
 
 import os
@@ -14,7 +14,7 @@ class WorkspaceMigrator:
 
     def __init__(self):
         self.home_path = Path.home()
-        self.legacy_workspace = self.home_path / "engineering-director-workspace"
+        self.legacy_workspace = self.home_path / "leadership-workspace"
         self.new_workspace = self.home_path / "leadership-workspace"
 
     def check_migration_needed(self) -> bool:
@@ -115,8 +115,8 @@ class WorkspaceMigrator:
         """Suggest environment variable update"""
         env_workspace = os.environ.get('CLAUDEDIRECTOR_WORKSPACE')
 
-        if env_workspace and "engineering-director-workspace" in env_workspace:
-            new_env_value = env_workspace.replace("engineering-director-workspace", "leadership-workspace")
+        if env_workspace and "leadership-workspace" in env_workspace:
+            new_env_value = env_workspace.replace("leadership-workspace", "leadership-workspace")
 
             print(f"\n💡 **Environment Variable Update Needed**")
             print(f"Current: CLAUDEDIRECTOR_WORKSPACE={env_workspace}")
