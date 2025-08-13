@@ -19,7 +19,7 @@
 Current Chat Experience:
 User: "Review my Q3 initiatives"
 Claude: "I need the file path..."
-User: "It's in ~/engineering-director-workspace/current-initiatives/"
+User: "It's in ~/leadership-workspace/current-initiatives/"
 Claude: "Let me read that..."
 
 Optimized Chat Experience:
@@ -69,7 +69,7 @@ Diego: "Looking at your platform goals, I see 3 strategic initiatives..."
 ```bash
 # Framework positioned to serve chat interface
 echo "📍 Positioning framework for chat interface..."
-echo "Current workspace: ~/engineering-director-workspace/"
+echo "Current workspace: ~/leadership-workspace/"
 echo "Framework will auto-detect this location for chat"
 ```
 
@@ -96,7 +96,7 @@ Target Chat Experience:
 ```bash
 # Copy framework to enable chat access
 echo "🔧 Integrating framework for chat interface..."
-cp -r .claudedirector ~/engineering-director-workspace/
+cp -r .claudedirector ~/leadership-workspace/
 
 # Update framework config for workspace detection
 echo "⚙️ Configuring workspace auto-discovery..."
@@ -133,7 +133,7 @@ Chat flows: Natural strategic conversation
 ### **3. Seamless File Discovery:**
 ```
 User workspace structure visible to chat:
-~/engineering-director-workspace/
+~/leadership-workspace/
 ├── meeting-prep/         → "my meeting prep"
 ├── current-initiatives/  → "Q3 initiatives" 
 ├── budget-planning/      → "budget analysis"

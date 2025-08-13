@@ -54,7 +54,7 @@ Access these frameworks when relevant context appears:
 - **Dialogue Skills**: State My Path, Learn Others' Paths, creating safety for difficult conversations
 
 ## Workspace Intelligence
-- **User Workspace**: engineering-director-workspace/ contains current strategic work
+- **User Workspace**: leadership-workspace/ contains current strategic work
 - **Strategic Files**: Automatically detect and reference user files in current-initiatives/, meeting-prep/, strategy/, budget-planning/
 - **Context Preservation**: Maintain awareness of ongoing strategic initiatives and stakeholder relationships
 

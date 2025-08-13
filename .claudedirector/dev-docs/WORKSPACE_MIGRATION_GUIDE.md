@@ -1,6 +1,6 @@
 # 🔄 Workspace Migration Guide
 
-## 🎯 **Workspace Name Change: `engineering-director-workspace` → `leadership-workspace`**
+## 🎯 **Workspace Name Change: `engineering-director-workspace` → `leadership-workspace`** ✅ **COMPLETED**
 
 ClaudeDirector has updated the default workspace directory name to be more **inclusive and intuitive** for all leadership roles.
 
@@ -9,8 +9,8 @@ ClaudeDirector has updated the default workspace directory name to be more **inc
 ## 📋 **What Changed**
 
 ### **🔄 Directory Name**
-- **Old**: `~/engineering-director-workspace/`
-- **New**: `~/leadership-workspace/`
+- **Old**: `~/engineering-director-workspace/` (legacy)
+- **New**: `~/leadership-workspace/` ✅ **ACTIVE**
 
 ### **🎯 Why the Change**
 - **More Inclusive**: Works for VPs, CTOs, Principal Engineers, Tech Leads
@@ -53,7 +53,7 @@ python .claudedirector/dev-tools/migrate_workspace_name.py --mode symlink
 If you prefer to handle migration manually:
 
 ```bash
-# 1. Move your workspace
+# 1. Move your workspace (if you have legacy directory)
 mv ~/engineering-director-workspace ~/leadership-workspace
 
 # 2. Update environment variable (add to your shell config)
