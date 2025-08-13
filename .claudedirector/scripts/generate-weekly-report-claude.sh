@@ -13,7 +13,7 @@ set -e  # Exit on any error
 # Configuration
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 PROJECT_ROOT="$( cd "$SCRIPT_DIR/../.." &> /dev/null && pwd )"
-WORKSPACE_DIR="${PROJECT_ROOT}/engineering-director-workspace"
+WORKSPACE_DIR="${PROJECT_ROOT}/leadership-workspace"
 REPORTS_DIR="${WORKSPACE_DIR}/reports"
 CONFIG_DIR="${WORKSPACE_DIR}/configs"
 DEFAULT_CONFIG="${CONFIG_DIR}/weekly-report-config.yaml"
@@ -358,7 +358,7 @@ except Exception as e:
 if [[ ! -d "$WORKSPACE_DIR" ]]; then
     log_error "Workspace directory not found: $WORKSPACE_DIR"
     log_info "Expected workspace structure:"
-    log_info "  engineering-director-workspace/"
+    log_info "  leadership-workspace/"
     log_info "    ├── configs/"
     log_info "    │   └── weekly-report-config.yaml"
     log_info "    └── reports/"
