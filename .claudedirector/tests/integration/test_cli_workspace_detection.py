@@ -79,7 +79,7 @@ class TestCLIWorkspaceDetection:
                 shutil.rmtree(leadership_workspace, ignore_errors=True)
 
     def test_cli_detects_legacy_workspace(self):
-        """Test CLI detects engineering-director-workspace (legacy support)"""
+        """Test CLI detects leadership-workspace (legacy support)"""
 
         # Ensure leadership-workspace doesn't exist for this test
         leadership_workspace = Path.home() / "leadership-workspace"
@@ -88,7 +88,7 @@ class TestCLIWorkspaceDetection:
             shutil.rmtree(leadership_workspace, ignore_errors=True)
 
         # Create legacy workspace
-        legacy_workspace = Path.home() / "engineering-director-workspace"
+        legacy_workspace = Path.home() / "leadership-workspace"
         reports_dir = legacy_workspace / "reports"
 
         try:
@@ -109,7 +109,7 @@ class TestCLIWorkspaceDetection:
 
             # Should detect legacy workspace
             assert result.returncode == 0, f"CLI failed: {result.stderr}"
-            assert "engineering-director-workspace/reports" in result.stdout
+            assert "leadership-workspace/reports" in result.stdout
 
         finally:
             # Clean up test workspace
@@ -145,7 +145,7 @@ class TestCLIWorkspaceDetection:
             assert "unique-test-workspace-12345/reports" in result.stdout
 
             # Should NOT contain hardcoded references
-            assert "engineering-director-workspace/reports" not in result.stdout or env['CLAUDEDIRECTOR_WORKSPACE'] in result.stdout
+            assert "leadership-workspace/reports" not in result.stdout or env['CLAUDEDIRECTOR_WORKSPACE'] in result.stdout
 
     def test_workspace_file_handler_integration(self):
         """Test WorkspaceFileHandler integrates with CLI properly"""
