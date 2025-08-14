@@ -81,13 +81,12 @@ class TestMCPUseClient:
     
     def test_check_availability_with_mcp_use(self):
         """Test availability check when mcp-use is available"""
-        with patch('claudedirector.integrations.mcp_use_client.importlib.import_module'):
+        # Mock successful import of mcp_use
+        with patch('builtins.__import__', return_value=Mock()):
             client = MCPUseClient()
-            # Mock successful import
-            with patch('builtins.__import__'):
-                availability = client._check_availability()
-                # Should handle gracefully regardless of actual availability
-                assert isinstance(availability, bool)
+            availability = client._check_availability()
+            # Should handle gracefully regardless of actual availability
+            assert isinstance(availability, bool)
     
     def test_check_availability_without_mcp_use(self):
         """Test availability check when mcp-use is not available"""
