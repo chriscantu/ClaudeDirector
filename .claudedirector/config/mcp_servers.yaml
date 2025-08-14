@@ -1,0 +1,60 @@
+# MCP Server Configuration
+# Zero-setup STDIO connections for MCP server integration
+
+servers:
+  sequential:
+    command: "npx"
+    args: ["-y", "@sequential/mcp-server"]
+    connection_type: "stdio"
+    capabilities: ["systematic_analysis", "framework_application", "business_strategy", "organizational_scaling"]
+    personas: ["diego", "alvaro", "camille"]
+    timeout: 8
+    cache_ttl: 1800  # 30 minutes
+    
+  context7:
+    command: "python"
+    args: ["-m", "context7.server"]
+    connection_type: "stdio"
+    capabilities: ["pattern_access", "methodology_lookup", "architecture_patterns", "business_patterns", "technology_leadership"]
+    personas: ["martin", "rachel", "alvaro", "camille"]
+    timeout: 8
+    cache_ttl: 3600  # 1 hour
+    fallback:
+      transport: "http"
+      url: "https://api.context7.ai/mcp"
+    
+  magic:
+    command: "npx"
+    args: ["-y", "@magic/mcp-server"]
+    connection_type: "stdio"
+    capabilities: ["diagram_generation", "presentation_creation", "business_visualization", "technology_roadmaps"]
+    personas: ["rachel", "alvaro", "camille"]
+    timeout: 10
+    cache_ttl: 7200  # 2 hours
+
+enhancement_thresholds:
+  systematic_analysis: 0.7
+  framework_lookup: 0.6
+  visual_generation: 0.8
+  business_strategy: 0.7
+  organizational_scaling: 0.7
+  technology_leadership: 0.7
+  
+connection_config:
+  default_type: "stdio"
+  http_fallback_enabled: true
+  auto_install_packages: true
+  
+# Performance and reliability settings
+performance:
+  max_concurrent_requests: 5
+  request_timeout: 8
+  retry_attempts: 2
+  circuit_breaker_threshold: 5
+  
+# Monitoring and logging
+monitoring:
+  enabled: true
+  log_level: "INFO"
+  performance_tracking: true
+  error_reporting: true
