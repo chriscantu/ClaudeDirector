@@ -351,7 +351,7 @@ class TestEnhancedPersonaManager:
         assert isinstance(blended, str)
         assert len(blended) > len(mcp_content)  # Should add persona context
         assert mcp_content in blended
-        assert "organizational frameworks" in blended.lower() or "proven" in blended.lower()
+        assert "systematic analysis methodologies" in blended.lower() or "framework" in blended.lower()
     
     @pytest.mark.asyncio
     async def test_blend_response_empty_mcp_content(self, persona_manager):
@@ -519,3 +519,145 @@ class TestMultiPersonaIntegration:
                 assert isinstance(response, EnhancedResponse)
                 assert response.persona == personas[i]
                 assert f"Question {i+1}" in response.content
+    
+    @pytest.mark.asyncio
+    async def test_martin_architectural_enhancement(self, persona_manager):
+        """Test Martin-specific architectural pattern enhancement"""
+        await persona_manager.initialize()
+        
+        # Mock high complexity architectural question
+        mock_complexity = ComplexityAnalysis(
+            level=ComplexityLevel.STRATEGIC,
+            confidence=0.8,
+            triggers=["architecture", "technical"],
+            recommended_enhancement="architecture_patterns",
+            persona_specific_score=0.75
+        )
+        
+        mock_mcp_response = MCPResponse(
+            content="Architectural pattern analysis: Use microservices with event-driven architecture, implement CQRS for scalability...",
+            source_server="context7",
+            processing_time=2.8,
+            success=True
+        )
+        
+        with patch.object(persona_manager.complexity_analyzer, 'analyze_complexity', return_value=mock_complexity):
+            with patch.object(persona_manager.mcp_client, 'is_available', True):
+                with patch.object(persona_manager.mcp_client, 'is_server_available', return_value=True):
+                    with patch.object(persona_manager.mcp_client, 'execute_analysis', return_value=mock_mcp_response):
+                        
+                        response = await persona_manager.get_enhanced_response(
+                            "martin",
+                            "What architectural patterns should we use for a high-scale microservices platform?"
+                        )
+                        
+                        assert response.persona == "martin"
+                        assert response.mcp_server_used == "context7"
+                        assert "architectural patterns" in response.content.lower()
+                        assert "microservices" in response.content.lower()
+    
+    @pytest.mark.asyncio
+    async def test_rachel_design_system_enhancement(self, persona_manager):
+        """Test Rachel-specific design system methodology enhancement"""
+        await persona_manager.initialize()
+        
+        # Mock high complexity design system question
+        mock_complexity = ComplexityAnalysis(
+            level=ComplexityLevel.STRATEGIC,
+            confidence=0.8,
+            triggers=["design", "system", "scaling"],
+            recommended_enhancement="design_system_methodology",
+            persona_specific_score=0.8
+        )
+        
+        mock_mcp_response = MCPResponse(
+            content="Design system scaling methodology: Implement atomic design principles, establish component governance...",
+            source_server="context7",
+            processing_time=2.5,
+            success=True
+        )
+        
+        with patch.object(persona_manager.complexity_analyzer, 'analyze_complexity', return_value=mock_complexity):
+            with patch.object(persona_manager.mcp_client, 'is_available', True):
+                with patch.object(persona_manager.mcp_client, 'is_server_available', return_value=True):
+                    with patch.object(persona_manager.mcp_client, 'execute_analysis', return_value=mock_mcp_response):
+                        
+                        response = await persona_manager.get_enhanced_response(
+                            "rachel",
+                            "How should we scale our design system across multiple product teams?"
+                        )
+                        
+                        assert response.persona == "rachel"
+                        assert response.mcp_server_used == "context7"
+                        assert "design" in response.content.lower()
+                        assert "methodology" in response.content.lower() or "principles" in response.content.lower()
+    
+    @pytest.mark.asyncio
+    async def test_alvaro_business_strategy_enhancement(self, persona_manager):
+        """Test Alvaro-specific business strategy framework enhancement"""
+        await persona_manager.initialize()
+        
+        # Mock high complexity business strategy question
+        mock_complexity = ComplexityAnalysis(
+            level=ComplexityLevel.STRATEGIC,
+            confidence=0.85,
+            triggers=["business", "strategy", "competitive"],
+            recommended_enhancement="business_strategy",
+            persona_specific_score=0.8
+        )
+        
+        mock_mcp_response = MCPResponse(
+            content="Business strategy analysis: Market positioning requires differentiation through platform capabilities, competitive moat...",
+            source_server="sequential",
+            processing_time=3.0,
+            success=True
+        )
+        
+        with patch.object(persona_manager.complexity_analyzer, 'analyze_complexity', return_value=mock_complexity):
+            with patch.object(persona_manager.mcp_client, 'is_available', True):
+                with patch.object(persona_manager.mcp_client, 'is_server_available', return_value=True):
+                    with patch.object(persona_manager.mcp_client, 'execute_analysis', return_value=mock_mcp_response):
+                        
+                        response = await persona_manager.get_enhanced_response(
+                            "alvaro",
+                            "What's our competitive strategy for entering the enterprise market?"
+                        )
+                        
+                        assert response.persona == "alvaro"
+                        assert response.mcp_server_used == "sequential"
+                        assert "business strategy" in response.content.lower() or "competitive" in response.content.lower()
+                        assert "market" in response.content.lower()
+    
+    @pytest.mark.asyncio
+    async def test_all_personas_context_awareness(self, persona_manager):
+        """Test context-aware standard responses for all personas"""
+        await persona_manager.initialize()
+        
+        # Mock low complexity to trigger standard responses
+        mock_complexity = ComplexityAnalysis(
+            level=ComplexityLevel.SIMPLE,
+            confidence=0.3,
+            triggers=[],
+            recommended_enhancement=None,
+            persona_specific_score=0.2
+        )
+        
+        test_cases = [
+            ("diego", "How should we organize our teams?", ["organizational", "systematically"]),
+            ("martin", "What technical architecture should we use?", ["technical architecture", "patterns"]),
+            ("rachel", "How should we design our user experience?", ["design", "collaborate"]),
+            ("alvaro", "What's our business strategy?", ["business strategy", "strategic"]),
+            ("camille", "How should we scale our technology organization?", ["technology leadership", "organizational"])
+        ]
+        
+        with patch.object(persona_manager.complexity_analyzer, 'analyze_complexity', return_value=mock_complexity):
+            for persona, question, expected_keywords in test_cases:
+                response = await persona_manager.get_enhanced_response(persona, question)
+                
+                assert response.persona == persona
+                assert response.enhancement_status == EnhancementStatus.FALLBACK
+                
+                # Check that response contains expected keywords for the persona
+                response_lower = response.content.lower()
+                assert any(keyword.lower() in response_lower for keyword in expected_keywords), \
+                    f"Expected keywords {expected_keywords} not found in {persona} response: {response.content}"
