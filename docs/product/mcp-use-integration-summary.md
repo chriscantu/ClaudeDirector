@@ -40,25 +40,27 @@
 ## 🚀 **Implementation Approach**
 
 ### **Technology Strategy**
-- **Library**: [mcp-use](https://github.com/mcp-use/mcp-use) for MCP server integration
+- **Library**: [mcp-use](https://github.com/mcp-use/mcp-use) with STDIO connections for zero-setup integration
 - **Architecture**: Evolutionary enhancement of existing persona system
+- **Connection**: STDIO local child processes with HTTP fallback
 - **Communication**: Transparent external system access per Rachel's UX requirements
-- **Performance**: 3-5 second enhanced responses with caching optimization
+- **Performance**: 2-4 second enhanced responses (faster than sandbox) with caching optimization
 
 ### **Key Integration Benefits**
 - **Development Time**: 1-2 weeks savings vs. custom MCP implementation
-- **Zero-Setup**: Sandbox execution maintains/improves core value proposition  
-- **Competitive Advantage**: First MCP-native strategic AI framework
-- **Risk Mitigation**: Proven library with graceful degradation fallbacks
+- **Zero-Setup**: STDIO connections fully preserve core zero-setup value proposition  
+- **Competitive Advantage**: First truly zero-setup MCP-native strategic AI framework
+- **Risk Mitigation**: No external dependencies, proven library with graceful degradation fallbacks
 
 ---
 
 ## 📋 **Sprint Overview**
 
 ### **Sprint 1: Foundation (Week 1)**
-**Goal**: Basic mcp-use integration and complexity detection
-- mcp-use library integration with optional dependency handling
-- MCP server configuration management
+**Goal**: Zero-setup mcp-use integration and complexity detection
+- mcp-use library integration with STDIO connections
+- MCP server configuration for local child processes
+- HTTP fallback configuration for hosted servers
 - Complexity detection algorithm for enhancement decisions
 - Foundation testing with 90%+ coverage
 

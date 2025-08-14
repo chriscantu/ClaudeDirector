@@ -77,11 +77,11 @@ class MCPResponse:
     error_message: Optional[str] = None
 
 class MCPUseClient:
-    """Interface to mcp-use library for sandbox execution"""
+    """Interface to mcp-use library for STDIO/HTTP MCP server connections"""
     
     def __init__(self, config: Dict[str, Any]):
         self.config = config
-        self.sandbox_session = None
+        self.mcp_client = None
         self.is_available = self._check_availability()
     
     def _check_availability(self) -> bool:
@@ -92,18 +92,18 @@ class MCPUseClient:
         except ImportError:
             return False
     
-    async def initialize_sandbox(self) -> bool:
-        """Initialize E2B sandbox environment"""
+    async def initialize_connections(self) -> bool:
+        """Initialize MCP server connections using STDIO/HTTP"""
         if not self.is_available:
             return False
-        # Implementation details for sandbox initialization
+        # Implementation details for STDIO connection initialization
         
     async def execute_analysis(self, server: str, query: str, timeout: int = 8) -> MCPResponse:
         """Execute analysis request on specified MCP server"""
         # Implementation with timeout handling and error recovery
         
-    async def cleanup_sandbox(self) -> None:
-        """Cleanup sandbox resources"""
+    async def cleanup_connections(self) -> None:
+        """Cleanup MCP server connections"""
         # Resource cleanup implementation
 
 Files Created:
@@ -127,21 +127,30 @@ Implementation:
 
 servers:
   sequential:
-    url: "mcp://sequential.ai/strategic-analysis"
+    command: "npx"
+    args: ["-y", "@sequential/mcp-server"]
+    connection_type: "stdio"
     capabilities: ["systematic_analysis", "framework_application"]
     personas: ["diego", "camille"]
     timeout: 8
     cache_ttl: 1800  # 30 minutes
     
   context7:
-    url: "mcp://context7.ai/frameworks"
+    command: "python"
+    args: ["-m", "context7.server"]
+    connection_type: "stdio"
     capabilities: ["pattern_access", "methodology_lookup", "architecture_patterns"]
     personas: ["martin", "rachel"]
     timeout: 8
     cache_ttl: 3600  # 1 hour
+    fallback:
+      transport: "http"
+      url: "https://api.context7.ai/mcp"
     
   magic:
-    url: "mcp://magic.dev/visualization"
+    command: "npx"
+    args: ["-y", "@magic/mcp-server"]
+    connection_type: "stdio"
     capabilities: ["diagram_generation", "presentation_creation"]
     personas: ["rachel", "alvaro"]
     timeout: 10
@@ -152,10 +161,10 @@ enhancement_thresholds:
   framework_lookup: 0.6
   visual_generation: 0.8
   
-sandbox_config:
-  api_key_env: "E2B_API_KEY"
-  template_id: "base"
-  supergateway_command: "npx -y supergateway"
+connection_config:
+  default_type: "stdio"
+  http_fallback_enabled: true
+  auto_install_packages: true
 
 Files Created:
 - .claudedirector/config/mcp_servers.yaml

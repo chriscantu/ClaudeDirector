@@ -22,16 +22,17 @@ So that I can access professional-grade strategic frameworks when needed.
 Acceptance Criteria:
 - [ ] mcp-use library integrated as optional dependency
 - [ ] System functions fully without mcp-use available
-- [ ] E2B sandbox environment configured for server execution
+- [ ] STDIO connections configured for local MCP server execution
+- [ ] HTTP fallback connections available for hosted servers
 - [ ] No additional user configuration required beyond pip install
-- [ ] Clear error messages when sandbox unavailable
+- [ ] Clear error messages when MCP servers unavailable
 
 Definition of Done:
 - [ ] mcp-use successfully installed and configured
-- [ ] Basic connection to sandbox environment established  
+- [ ] Basic STDIO and HTTP connections established  
 - [ ] Graceful fallback when library not available
 - [ ] Unit tests cover integration functionality
-- [ ] Documentation updated with optional dependency information
+- [ ] Documentation updated with zero-setup approach
 
 Story Points: 5
 Priority: Must Have

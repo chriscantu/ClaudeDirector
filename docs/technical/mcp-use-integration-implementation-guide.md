@@ -80,13 +80,13 @@ touch .claudedirector/lib/claudedirector/monitoring/__init__.py
 # File: requirements.txt
 # Add mcp-use with version pinning
 mcp-use>=1.3.9,<2.0.0
-e2b>=1.0.0,<2.0.0  # For sandbox execution
+# Note: No additional dependencies required for STDIO connections
 ```
 
 ##### **Task Priority 2: Create MCP Client**
 ```python
 # File: .claudedirector/lib/claudedirector/integrations/mcp_use_client.py
-# Implementation: Basic MCP client with sandbox integration
+# Implementation: Basic MCP client with STDIO/HTTP connections
 # See technical tasks document for detailed implementation
 ```
 
@@ -307,16 +307,16 @@ Sprint 3 Gate:
 
 ### **Required Environment Variables**
 ```bash
-# E2B Sandbox Configuration
-export E2B_API_KEY="your_e2b_api_key"
-
-# Development Feature Flags
+# Development Feature Flags (Optional)
 export CLAUDE_DIRECTOR_MCP_ENABLED=true
 export CLAUDE_DIRECTOR_DEBUG_MODE=true
 export CLAUDE_DIRECTOR_CACHE_ENABLED=true
 
-# Performance Testing
+# Performance Testing (Optional)
 export CLAUDE_DIRECTOR_PERFORMANCE_MONITORING=true
+
+# Note: No API keys or external service configuration required
+# STDIO connections work with zero setup
 ```
 
 ### **Development Dependencies**
@@ -327,7 +327,7 @@ pip install pytest pytest-cov mypy ruff pytest-asyncio
 
 # Verify installation
 python -c "import mcp_use; print('mcp-use available')"
-python -c "import e2b; print('e2b available')"
+python -c "from mcp_use import MCPClient; print('MCPClient available')"
 ```
 
 ### **IDE Configuration**

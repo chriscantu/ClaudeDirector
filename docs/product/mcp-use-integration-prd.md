@@ -50,16 +50,17 @@ User Experience: Seamless integration + maintained persona authenticity + organi
 
 ### **R1: Zero-Setup Enhancement Preservation**
 
-#### **R1.1: Sandbox Execution Integration**
+#### **R1.1: Zero-Setup MCP Integration**
 ```yaml
-Requirement: Integrate mcp-use sandbox execution for MCP server access
+Requirement: Integrate mcp-use with STDIO connections for zero-setup MCP server access
 Acceptance Criteria:
-  - Users can access MCP-enhanced capabilities without local server setup
-  - E2B sandbox environment configured for Context7, Sequential, Magic servers
-  - No additional user configuration required beyond existing pip install
-  - Graceful fallback to standard personas when sandbox unavailable
-Business Value: Maintains and potentially strengthens core zero-setup value proposition
-Technical Risk: LOW (leverages proven mcp-use sandbox architecture)
+  - Users can access MCP-enhanced capabilities without any configuration
+  - STDIO connections run MCP servers as local child processes (zero setup)
+  - HTTP fallback connections for servers requiring hosted access
+  - No API keys, environment variables, or user configuration required
+  - Graceful fallback to standard personas when MCP servers unavailable
+Business Value: Maintains zero-setup principle while delivering MCP integration value
+Technical Risk: LOW (simpler than sandbox, leverages proven mcp-use STDIO architecture)
 ```
 
 #### **R1.2: Dependency Management**
@@ -225,7 +226,7 @@ graph TD
     C -->|Complex/Strategic| E[Enhancement Engine]
     
     E --> F[mcp-use Client]
-    F --> G[E2B Sandbox]
+    F --> G[STDIO Connection]
     G --> H[Sequential Server]
     G --> I[Context7 Server]
     G --> J[Magic Server]
@@ -251,11 +252,11 @@ graph TD
 ```python
 # New module: .claudedirector/lib/claudedirector/integrations/mcp_use_client.py
 class MCPUseClient:
-    """Interface to mcp-use library for sandbox execution"""
+    """Interface to mcp-use library for STDIO/HTTP MCP server connections"""
     
-    async def initialize_sandbox(self) -> SandboxSession
+    async def initialize_connections(self) -> ConnectionStatus
     async def execute_analysis(self, server: str, query: str) -> AnalysisResult
-    async def cleanup_sandbox(self) -> None
+    async def cleanup_connections(self) -> None
 ```
 
 #### **Enhancement Decision Engine**
@@ -286,17 +287,17 @@ class ResponseBlender:
 
 ### **Phase 1: Foundation Integration (Week 1)**
 ```yaml
-Goal: Basic mcp-use integration with sandbox execution
+Goal: Basic mcp-use integration with STDIO connections
 
 Sprint Tasks:
   - Integrate mcp-use library as optional dependency
-  - Configure E2B sandbox environment
-  - Implement basic server connection and execution
+  - Configure STDIO connections for local MCP server execution
+  - Implement HTTP fallback connections for hosted servers
   - Create comprehensive test suite with mock servers
   - Establish performance baseline and monitoring
 
 Deliverables:
-  - MCPUseClient with sandbox execution capability
+  - MCPUseClient with STDIO/HTTP connection capability
   - Configuration structure for server management
   - Unit tests with 90%+ coverage
   - Performance benchmarks and monitoring setup
@@ -413,16 +414,17 @@ User Value Delivery:
 
 ### **Technical Risks**
 
-#### **HIGH: External Dependency Management**
+#### **MEDIUM: External Dependency Management**
 ```yaml
-Risk: mcp-use library or E2B sandbox service disruption
+Risk: mcp-use library or MCP server package unavailability
 Impact: Enhanced capabilities unavailable, potential user disappointment
 Mitigation: 
   - Comprehensive graceful degradation to standard personas
   - Clear user communication about enhanced vs. standard capabilities
   - Circuit breaker patterns prevent cascade failures
-  - Regular health monitoring and proactive alerts
-Probability: LOW (mature library, proven service)
+  - HTTP fallback for servers that don't support STDIO
+  - Local package caching for offline operation
+Probability: LOW (no external service dependencies, local execution)
 ```
 
 #### **MEDIUM: Performance Impact**
@@ -536,8 +538,8 @@ Mitigation:
 
 ### **Technical References**
 - [mcp-use GitHub Repository](https://github.com/mcp-use/mcp-use)
+- [mcp-use Connection Types Documentation](https://docs.mcp-use.com/essentials/connection-types)
 - [MCP Protocol Specification](https://modelcontextprotocol.io/docs)
-- [E2B Sandbox Documentation](https://e2b.dev/docs)
 - Existing ClaudeDirector Architecture Documentation
 
 ### **Strategic Context**
