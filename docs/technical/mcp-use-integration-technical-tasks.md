@@ -130,8 +130,8 @@ servers:
     command: "npx"
     args: ["-y", "@sequential/mcp-server"]
     connection_type: "stdio"
-    capabilities: ["systematic_analysis", "framework_application"]
-    personas: ["diego", "camille"]
+    capabilities: ["systematic_analysis", "framework_application", "business_strategy", "organizational_scaling"]
+    personas: ["diego", "alvaro", "camille"]
     timeout: 8
     cache_ttl: 1800  # 30 minutes
     
@@ -139,8 +139,8 @@ servers:
     command: "python"
     args: ["-m", "context7.server"]
     connection_type: "stdio"
-    capabilities: ["pattern_access", "methodology_lookup", "architecture_patterns"]
-    personas: ["martin", "rachel"]
+    capabilities: ["pattern_access", "methodology_lookup", "architecture_patterns", "business_patterns", "technology_leadership"]
+    personas: ["martin", "rachel", "alvaro", "camille"]
     timeout: 8
     cache_ttl: 3600  # 1 hour
     fallback:
@@ -151,8 +151,8 @@ servers:
     command: "npx"
     args: ["-y", "@magic/mcp-server"]
     connection_type: "stdio"
-    capabilities: ["diagram_generation", "presentation_creation"]
-    personas: ["rachel", "alvaro"]
+    capabilities: ["diagram_generation", "presentation_creation", "business_visualization", "technology_roadmaps"]
+    personas: ["rachel", "alvaro", "camille"]
     timeout: 10
     cache_ttl: 7200  # 2 hours
 
@@ -160,6 +160,9 @@ enhancement_thresholds:
   systematic_analysis: 0.7
   framework_lookup: 0.6
   visual_generation: 0.8
+  business_strategy: 0.7
+  organizational_scaling: 0.7
+  technology_leadership: 0.7
   
 connection_config:
   default_type: "stdio"
@@ -217,6 +220,18 @@ class ComplexityAnalyzer:
             "restructure", "organization", "teams", "strategy", 
             "scaling", "architecture", "platform", "design system",
             "governance", "adoption", "coordination", "alignment"
+        ]
+        self.business_strategy_keywords = [
+            "competitive analysis", "market positioning", "business strategy",
+            "ROI", "financial modeling", "investment decision",
+            "product strategy", "go-to-market", "market fit",
+            "business case", "competitive advantage", "strategic positioning"
+        ]
+        self.technology_leadership_keywords = [
+            "technology strategy", "organizational scaling", "strategic planning",
+            "executive decision", "technology roadmap", "architecture governance",
+            "team scaling", "organizational design", "technology leadership",
+            "strategic technology", "platform strategy", "technical vision"
         ]
         self.complexity_indicators = [
             "how should we", "what's the best approach", "framework",
@@ -670,6 +685,100 @@ Testing:
 - Design system methodology integration tests
 - Cross-team coordination framework validation
 - Facilitation pattern effectiveness testing
+```
+
+### **Task 3.2: Alvaro Business Strategy Integration**
+*Story: Alvaro Sequential/Context7 Business Strategy Enhancement*
+
+#### **Technical Tasks**
+
+##### **Task 3.2.1: Alvaro Sequential Integration**
+```python
+Priority: High
+Estimated Time: 12 hours
+
+Implementation:
+# Alvaro-specific Sequential business strategy integration
+
+async def get_alvaro_response(self, user_input: str) -> str:
+    """Get Alvaro response with optional Sequential/Context7 enhancement"""
+    
+    complexity = self.complexity_analyzer.analyze_complexity(user_input, "alvaro")
+    
+    if self._should_enhance_alvaro(complexity, user_input):
+        return await self._get_enhanced_alvaro_response(user_input, complexity)
+    else:
+        return await self._get_standard_alvaro_response(user_input)
+
+def _should_enhance_alvaro(self, complexity: ComplexityAnalysis, user_input: str) -> bool:
+    """Alvaro-specific enhancement criteria"""
+    business_keywords = [
+        "competitive analysis", "market positioning", "business strategy",
+        "ROI", "financial modeling", "investment decision",
+        "product strategy", "go-to-market", "market fit",
+        "business case", "competitive advantage", "strategic positioning"
+    ]
+    # Alvaro-specific enhancement logic with business strategy focus
+
+async def _get_enhanced_alvaro_response(self, user_input: str, complexity: ComplexityAnalysis) -> str:
+    """Alvaro response enhanced with Sequential business frameworks and Context7 patterns"""
+    # Sequential integration for business strategy + Context7 for business patterns
+
+Files Modified:
+- .claudedirector/lib/claudedirector/core/persona_manager.py
+
+Testing:
+- Alvaro enhancement trigger tests
+- Business strategy framework integration tests
+- Competitive analysis methodology validation
+- Financial modeling framework effectiveness testing
+```
+
+### **Task 3.3: Camille Technology Strategy Integration**
+*Story: Camille Sequential/Context7 Technology Leadership Enhancement*
+
+#### **Technical Tasks**
+
+##### **Task 3.3.1: Camille Sequential Integration**
+```python
+Priority: High
+Estimated Time: 12 hours
+
+Implementation:
+# Camille-specific Sequential technology strategy integration
+
+async def get_camille_response(self, user_input: str) -> str:
+    """Get Camille response with optional Sequential/Context7 enhancement"""
+    
+    complexity = self.complexity_analyzer.analyze_complexity(user_input, "camille")
+    
+    if self._should_enhance_camille(complexity, user_input):
+        return await self._get_enhanced_camille_response(user_input, complexity)
+    else:
+        return await self._get_standard_camille_response(user_input)
+
+def _should_enhance_camille(self, complexity: ComplexityAnalysis, user_input: str) -> bool:
+    """Camille-specific enhancement criteria"""
+    technology_leadership_keywords = [
+        "technology strategy", "organizational scaling", "strategic planning",
+        "executive decision", "technology roadmap", "architecture governance",
+        "team scaling", "organizational design", "technology leadership",
+        "strategic technology", "platform strategy", "technical vision"
+    ]
+    # Camille-specific enhancement logic with technology leadership focus
+
+async def _get_enhanced_camille_response(self, user_input: str, complexity: ComplexityAnalysis) -> str:
+    """Camille response enhanced with Sequential organizational frameworks and Context7 leadership patterns"""
+    # Sequential integration for organizational scaling + Context7 for technology leadership patterns
+
+Files Modified:
+- .claudedirector/lib/claudedirector/core/persona_manager.py
+
+Testing:
+- Camille enhancement trigger tests
+- Technology strategy framework integration tests
+- Organizational scaling methodology validation
+- Technology leadership pattern effectiveness testing
 ```
 
 ### **Task 3.2: Performance Optimization**

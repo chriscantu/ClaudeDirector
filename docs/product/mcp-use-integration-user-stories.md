@@ -245,9 +245,113 @@ Priority: Should Have
 Dependencies: Story 4.1
 ```
 
-### **Epic 5: Error Handling & Reliability**
+### **Epic 5: Alvaro Business Strategy Enhancement**
 
-#### **Story 5.1: Transparent Server Status Communication**
+#### **Story 5.1: Alvaro Business Strategy Framework Integration**
+```yaml
+As a Product Director developing business strategy,
+I want Alvaro to access business strategy frameworks and competitive analysis methodologies,
+So that my strategic decisions are based on proven business methodologies and systematic analysis.
+
+Acceptance Criteria:
+- [ ] Business strategy questions trigger Sequential systematic business analysis
+- [ ] Competitive analysis discussions trigger Context7 business pattern access
+- [ ] Financial modeling and ROI questions enhanced with proven frameworks
+- [ ] Alvaro's strategic business perspective maintained and strengthened
+- [ ] Framework insights clearly attributed with business context adaptation
+
+Definition of Done:
+- [ ] Business strategy framework detection and Sequential integration
+- [ ] Competitive analysis methodology integration with Context7
+- [ ] Financial modeling framework enhancement implemented
+- [ ] Response maintains Alvaro's strategic business leadership style
+- [ ] User validation of enhanced business strategy guidance
+
+Story Points: 13
+Priority: Should Have
+Dependencies: Story 2.3 (Diego foundation)
+```
+
+#### **Story 5.2: Alvaro Financial Modeling and ROI Analysis**
+```yaml
+As a Product Director evaluating investment decisions,
+I want Alvaro to provide framework-enhanced financial modeling and ROI analysis,
+So that my business cases are systematically developed and defensible.
+
+Acceptance Criteria:
+- [ ] Financial modeling questions trigger business framework access
+- [ ] ROI analysis enhanced with systematic methodologies
+- [ ] Investment decision frameworks provided with clear business context
+- [ ] Competitive advantage analysis enhanced with proven patterns
+- [ ] Business case development systematically supported
+
+Definition of Done:
+- [ ] Financial modeling framework detection and integration
+- [ ] ROI analysis methodology enhancement implemented
+- [ ] Investment decision support with systematic frameworks
+- [ ] Business case templates and frameworks accessible
+- [ ] User testing validates enhanced financial analysis quality
+
+Story Points: 8
+Priority: Should Have
+Dependencies: Story 5.1
+```
+
+### **Epic 6: Camille Technology Strategy Enhancement**
+
+#### **Story 6.1: Camille Technology Strategy Framework Integration**
+```yaml
+As a CTO developing technology strategy,
+I want Camille to access technology leadership frameworks and organizational scaling methodologies,
+So that my strategic technology decisions follow proven patterns for enterprise-scale organizations.
+
+Acceptance Criteria:
+- [ ] Technology strategy questions trigger Sequential organizational analysis
+- [ ] Executive technology decisions trigger Context7 leadership pattern access
+- [ ] Organizational scaling enhanced with systematic methodologies
+- [ ] Camille's executive technology leadership approach preserved and enhanced
+- [ ] Framework insights adapted for technology leadership context
+
+Definition of Done:
+- [ ] Technology strategy framework detection and Sequential integration
+- [ ] Technology leadership pattern access with Context7 integration
+- [ ] Organizational scaling methodology enhancement implemented
+- [ ] Response maintains Camille's executive CTO perspective
+- [ ] User validation of enhanced technology strategy guidance
+
+Story Points: 13
+Priority: Should Have
+Dependencies: Story 2.3 (Diego foundation)
+```
+
+#### **Story 6.2: Camille Organizational Scaling and Team Strategy**
+```yaml
+As a CTO scaling technology teams and organizational capabilities,
+I want Camille to provide framework-enhanced organizational design and team scaling guidance,
+So that my organizational decisions follow proven scaling patterns and leadership methodologies.
+
+Acceptance Criteria:
+- [ ] Organizational scaling questions trigger systematic framework access
+- [ ] Team strategy and scaling enhanced with proven methodologies
+- [ ] Technology organization design supported with systematic approaches
+- [ ] Executive decision-making enhanced with leadership frameworks
+- [ ] Implementation guidance adapted to technology organization context
+
+Definition of Done:
+- [ ] Organizational scaling framework detection and integration
+- [ ] Team strategy methodology enhancement implemented
+- [ ] Technology organization design framework support
+- [ ] Executive decision-making framework integration
+- [ ] User testing validates enhanced organizational guidance quality
+
+Story Points: 8
+Priority: Should Have
+Dependencies: Story 6.1
+```
+
+### **Epic 7: Error Handling & Reliability**
+
+#### **Story 7.1: Transparent Server Status Communication**
 ```yaml
 As a ClaudeDirector user,
 I want to understand when external frameworks are unavailable,
@@ -272,7 +376,7 @@ Priority: Must Have
 Dependencies: All persona enhancement stories
 ```
 
-#### **Story 5.2: Performance Optimization**
+#### **Story 7.2: Performance Optimization**
 ```yaml
 As a ClaudeDirector user,
 I want enhanced responses to be delivered in reasonable time,
@@ -356,20 +460,29 @@ And: User receives enhanced technical guidance
 ### **Sprint 2 (Week 2): Core Enhancement**
 - Story 2.2: Diego Sequential Framework Integration (13 points) - **Must Have**
 - Story 2.3: Diego Transparent Communication (5 points) - **Must Have**
-- Story 5.1: Transparent Server Status Communication (5 points) - **Must Have**
+- Story 7.1: Transparent Server Status Communication (5 points) - **Must Have**
 
 **Sprint 2 Total: 23 points**
 
-### **Sprint 3 (Week 3): Multi-Persona & Polish**
+### **Sprint 3 (Week 3): Multi-Persona Expansion**
 - Story 3.1: Martin Context7 Pattern Access (13 points) - **Should Have**
 - Story 4.1: Rachel Design System Scaling Frameworks (13 points) - **Should Have**
-- Story 5.2: Performance Optimization (8 points) - **Must Have**
+- Story 5.1: Alvaro Business Strategy Framework Integration (13 points) - **Should Have**
 
-**Sprint 3 Total: 34 points**
+**Sprint 3 Total: 39 points**
 
-### **Additional Stories (If Time Permits)**
-- Story 3.2: Martin Decision Framework Support (8 points) - **Should Have**
-- Story 4.2: Rachel Cross-Team Facilitation Enhancement (8 points) - **Should Have**
+### **Sprint 4 (Week 4): Executive Personas & Production**
+- Story 6.1: Camille Technology Strategy Framework Integration (13 points) - **Should Have**
+- Story 5.2: Alvaro Financial Modeling and ROI Analysis (8 points) - **Should Have**
+- Story 7.2: Performance Optimization (8 points) - **Must Have**
+- Story 7.1: Transparent Server Status Communication (5 points) - **Must Have**
+
+**Sprint 4 Total: 34 points**
+
+### **Additional Stories (Future Iterations)**
+- Story 3.2: Martin Decision Framework Support (8 points) - **Could Have**
+- Story 4.2: Rachel Cross-Team Facilitation Enhancement (8 points) - **Could Have**
+- Story 6.2: Camille Organizational Scaling and Team Strategy (8 points) - **Could Have**
 
 ---
 
