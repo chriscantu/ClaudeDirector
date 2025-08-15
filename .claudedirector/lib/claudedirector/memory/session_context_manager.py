@@ -92,6 +92,72 @@ class SessionContextManager(StrategicMemoryManager):
                 );
             """)
 
+    def get_recent_sessions(self, hours: int = 24) -> List[Dict[str, Any]]:
+        """Get recent sessions within specified hours"""
+        cutoff_time = datetime.now() - timedelta(hours=hours)
+        
+        with self.get_connection() as conn:
+            cursor = conn.execute("""
+                SELECT session_id, session_type, session_start_timestamp, 
+                       last_backup_timestamp, context_quality_score
+                FROM session_context 
+                WHERE session_start_timestamp > ? 
+                ORDER BY session_start_timestamp DESC
+            """, (cutoff_time.isoformat(),))
+            
+            sessions = []
+            for row in cursor.fetchall():
+                sessions.append({
+                    'session_id': row[0],
+                    'session_type': row[1], 
+                    'session_start_timestamp': row[2],
+                    'last_backup_timestamp': row[3],
+                    'context_quality_score': row[4]
+                })
+            
+            return sessions
+
+    def update_session_context(self, session_id: str, context_data: Dict[str, Any]) -> bool:
+        """Update session context with new data"""
+        try:
+            with self.get_connection() as conn:
+                # Prepare context data as JSON strings
+                active_personas = json.dumps(context_data.get('active_personas', []))
+                stakeholder_context = json.dumps(context_data.get('stakeholder_mentions', []))
+                strategic_initiatives = json.dumps(context_data.get('strategic_topics', []))
+                conversation_thread = json.dumps(context_data.get('conversation_thread', []))
+                
+                # Calculate quality score based on content
+                quality_score = self._calculate_context_quality(context_data)
+                
+                conn.execute("""
+                    UPDATE session_context 
+                    SET active_personas = ?, stakeholder_context = ?, 
+                        strategic_initiatives_context = ?, conversation_thread = ?,
+                        context_quality_score = ?, last_backup_timestamp = ?,
+                        updated_at = CURRENT_TIMESTAMP
+                    WHERE session_id = ?
+                """, (active_personas, stakeholder_context, strategic_initiatives, 
+                      conversation_thread, quality_score, datetime.now().isoformat(), session_id))
+                
+                return conn.total_changes > 0
+                
+        except Exception as e:
+            print(f"❌ Session context update failed: {e}")
+            return False
+
+    def _calculate_context_quality(self, context_data: Dict[str, Any]) -> float:
+        """Calculate context quality score based on available data"""
+        quality_factors = {
+            'conversation_turns': min(len(context_data.get('conversation_thread', [])) / 10, 1.0),
+            'personas_active': min(len(context_data.get('active_personas', [])) / 3, 1.0),
+            'stakeholder_mentions': min(len(context_data.get('stakeholder_mentions', [])) / 5, 1.0),
+            'strategic_topics': min(len(context_data.get('strategic_topics', [])) / 5, 1.0),
+            'decisions_made': min(len(context_data.get('decisions_made', [])) / 3, 1.0)
+        }
+        
+        return sum(quality_factors.values()) / len(quality_factors)
+
     def start_session(self, session_type: str = 'strategic') -> str:
         """
         Start new session with context tracking
