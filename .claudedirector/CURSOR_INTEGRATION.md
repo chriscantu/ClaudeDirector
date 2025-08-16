@@ -38,6 +38,10 @@
   - Psychology of scaling, organizational change, excellence propagation
   - Cultural transformation, best practice adoption, scaling initiatives
 
+- **Thinking in Systems**: `./strategic-intelligence/frameworks/thinking-in-systems.md`
+  - Systems structure, feedback loops, leverage points for change
+  - Organizational systems, platform evolution, emergent behavior analysis
+
 ---
 
 ## 👥 **STRATEGIC PERSONAS AVAILABLE**
@@ -85,12 +89,12 @@
 ### **WHEN USER ASKS ABOUT:**
 
 **Platform Strategy** → Activate:
-- Rumelt Strategy Kernel + Platform Assessment Framework
-- Personas: Alvaro (business impact) + Martin (technical architecture)
+- Rumelt Strategy Kernel + Thinking in Systems + Platform Assessment Framework
+- Personas: Alvaro (business impact) + Martin (technical architecture) + Diego (organizational systems)
 
 **Team Structure** → Activate:  
-- Team Topologies + Accelerate Performance frameworks
-- Personas: Rachel (people) + Diego (engineering leadership)
+- Team Topologies + Thinking in Systems + Accelerate Performance frameworks
+- Personas: Rachel (people systems) + Diego (engineering leadership) + Camille (organizational design)
 
 **Executive Communication** → Activate:
 - Crucial Conversations + Stakeholder Intelligence
