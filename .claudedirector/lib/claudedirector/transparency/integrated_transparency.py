@@ -277,13 +277,26 @@ class IntegratedTransparencySystem:
         """Apply transparency for collaborative multi-persona responses"""
         # Extract consultation results and integration summary from response
         consultant_responses = multi_context.consultation_results
-        integration_summary = response  # Simplified for Phase 1
+        integration_summary = response
         
-        return self.multi_persona_formatter.format_collaborative_response(
+        # Phase 2: Apply multi-persona transparency enhancements
+        enhanced_response = self.multi_persona_formatter.format_collaborative_response(
             multi_context.primary_persona,
             consultant_responses,
             integration_summary
         )
+        
+        # Add MCP transparency if consulting personas used MCP servers
+        enhanced_response = self._apply_multi_persona_mcp_transparency(
+            multi_context, enhanced_response
+        )
+        
+        # Add framework attribution for multi-persona analysis
+        enhanced_response = self._apply_multi_persona_framework_attribution(
+            multi_context, enhanced_response
+        )
+        
+        return enhanced_response
     
     def _apply_sequential_transparency(self, multi_context: MultiPersonaContext, response: str) -> str:
         """Apply transparency for sequential persona consultation"""
@@ -291,12 +304,25 @@ class IntegratedTransparencySystem:
             consulting_persona = multi_context.consulting_personas[0]
             consultation_response = multi_context.consultation_results.get(consulting_persona, "")
             
-            return self.multi_persona_formatter.format_sequential_consultation(
+            # Phase 2: Apply multi-persona transparency enhancements
+            enhanced_response = self.multi_persona_formatter.format_sequential_consultation(
                 multi_context.primary_persona,
                 consulting_persona,
                 consultation_response,
                 response
             )
+            
+            # Add MCP transparency for sequential consultation
+            enhanced_response = self._apply_multi_persona_mcp_transparency(
+                multi_context, enhanced_response
+            )
+            
+            # Add framework attribution for sequential analysis
+            enhanced_response = self._apply_multi_persona_framework_attribution(
+                multi_context, enhanced_response
+            )
+            
+            return enhanced_response
         
         return response
     
@@ -311,7 +337,20 @@ class IntegratedTransparencySystem:
                 handoff_reason="specialized domain expertise"
             )
             
-            return self.multi_persona_formatter.format_persona_handoff(transition, response)
+            # Phase 2: Apply multi-persona transparency enhancements
+            enhanced_response = self.multi_persona_formatter.format_persona_handoff(transition, response)
+            
+            # Add MCP transparency for handoff context
+            enhanced_response = self._apply_multi_persona_mcp_transparency(
+                multi_context, enhanced_response
+            )
+            
+            # Add framework attribution for handoff analysis
+            enhanced_response = self._apply_multi_persona_framework_attribution(
+                multi_context, enhanced_response
+            )
+            
+            return enhanced_response
         
         return response
     
@@ -338,6 +377,136 @@ class IntegratedTransparencySystem:
                 )
         
         return enhanced_response
+    
+    def _apply_multi_persona_mcp_transparency(self, multi_context: MultiPersonaContext, response: str) -> str:
+        """Apply MCP transparency for multi-persona interactions (Phase 2)"""
+        if not self.mcp_disclosure_enabled:
+            return response
+        
+        # Check if multi-persona context has associated MCP calls
+        mcp_calls_summary = getattr(multi_context, 'mcp_calls_summary', None)
+        if not mcp_calls_summary:
+            return response
+        
+        # Add multi-persona MCP disclosure
+        mcp_disclosure = self._format_multi_persona_mcp_disclosure(multi_context, mcp_calls_summary)
+        if mcp_disclosure:
+            return f"{response}\n\n{mcp_disclosure}"
+        
+        return response
+    
+    def _apply_multi_persona_framework_attribution(self, multi_context: MultiPersonaContext, response: str) -> str:
+        """Apply framework attribution for multi-persona analysis (Phase 2)"""
+        if not self.framework_attribution_enabled:
+            return response
+        
+        # Check if multi-persona context has framework usage
+        frameworks_used = getattr(multi_context, 'frameworks_used', None)
+        if not frameworks_used:
+            return response
+        
+        # Add multi-persona framework attribution
+        framework_attribution = self._format_multi_persona_framework_attribution(
+            multi_context, frameworks_used
+        )
+        if framework_attribution:
+            return f"{response}\n\n{framework_attribution}"
+        
+        return response
+    
+    def _format_multi_persona_mcp_disclosure(self, multi_context: MultiPersonaContext, 
+                                           mcp_calls_summary: Dict[str, Any]) -> str:
+        """Format MCP disclosure for multi-persona interactions"""
+        if not mcp_calls_summary:
+            return ""
+        
+        lines = ["🔧 **Multi-Persona MCP Enhancement**"]
+        
+        # Show which personas used which servers
+        for persona, servers in mcp_calls_summary.items():
+            if servers:
+                persona_header = self.multi_persona_formatter._get_persona_header(persona)
+                server_list = ", ".join(servers)
+                lines.append(f"• {persona_header}: {server_list}")
+        
+        lines.append("---")
+        lines.append("**Enhanced Analysis**: Cross-functional insights powered by strategic frameworks and collaborative intelligence.")
+        
+        return "\n".join(lines)
+    
+    def _format_multi_persona_framework_attribution(self, multi_context: MultiPersonaContext,
+                                                  frameworks_used: Dict[str, List[str]]) -> str:
+        """Format framework attribution for multi-persona analysis"""
+        if not frameworks_used:
+            return ""
+        
+        lines = ["📚 **Multi-Persona Framework Integration**"]
+        
+        # Show which personas used which frameworks
+        for persona, frameworks in frameworks_used.items():
+            if frameworks:
+                persona_header = self.multi_persona_formatter._get_persona_header(persona)
+                framework_list = ", ".join(frameworks)
+                lines.append(f"• {persona_header}: {framework_list}")
+        
+        lines.append("---")
+        lines.append("**Framework Attribution**: This cross-functional analysis combines proven strategic frameworks, adapted through collaborative expertise.")
+        
+        return "\n".join(lines)
+    
+    def coordinate_multi_persona_mcp_calls(self, transparency_contexts: Dict[str, TransparencyContext]) -> Dict[str, Any]:
+        """Coordinate MCP calls across multiple personas (Phase 2)"""
+        mcp_summary = {}
+        
+        for persona, context in transparency_contexts.items():
+            if context.mcp_context.has_mcp_calls():
+                servers_used = context.mcp_context.get_server_names()
+                mcp_summary[persona] = servers_used
+        
+        return mcp_summary
+    
+    def coordinate_multi_persona_frameworks(self, transparency_contexts: Dict[str, TransparencyContext]) -> Dict[str, List[str]]:
+        """Coordinate framework usage across multiple personas (Phase 2)"""
+        framework_summary = {}
+        
+        for persona, context in transparency_contexts.items():
+            if context.detected_frameworks:
+                framework_names = [f.framework_name for f in context.detected_frameworks]
+                framework_summary[persona] = framework_names
+        
+        return framework_summary
+    
+    def enhance_multi_persona_context(self, multi_context: MultiPersonaContext, 
+                                    transparency_contexts: Dict[str, TransparencyContext]) -> MultiPersonaContext:
+        """Enhance multi-persona context with transparency information (Phase 2)"""
+        # Add MCP calls summary
+        multi_context.mcp_calls_summary = self.coordinate_multi_persona_mcp_calls(transparency_contexts)
+        
+        # Add frameworks used summary
+        multi_context.frameworks_used = self.coordinate_multi_persona_frameworks(transparency_contexts)
+        
+        return multi_context
+    
+    def create_enhanced_multi_persona_response(self, primary_persona: str, 
+                                             consulting_personas: List[str],
+                                             consultation_results: Dict[str, str],
+                                             integration_response: str,
+                                             transparency_contexts: Optional[Dict[str, TransparencyContext]] = None,
+                                             integration_mode: str = 'collaborative') -> str:
+        """Complete Phase 2 enhanced multi-persona response with full transparency (Convenience method)"""
+        
+        # Create multi-persona context
+        multi_context = self.create_multi_persona_context(
+            primary_persona, consulting_personas, integration_mode
+        )
+        multi_context.consultation_results = consultation_results
+        
+        # Enhance with transparency information if provided
+        if transparency_contexts:
+            multi_context = self.enhance_multi_persona_context(multi_context, transparency_contexts)
+        
+        # Apply complete transparency treatment
+        return self.apply_multi_persona_transparency(multi_context, integration_response)
     
     def _update_performance_stats(self, transparency_overhead: float, has_enhancements: bool):
         """Update internal performance tracking"""
