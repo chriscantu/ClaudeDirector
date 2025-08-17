@@ -1,8 +1,14 @@
-# ENHANCED-COMMANDS.md - Strategic Tool Integration
+# ENHANCED COMMANDS - Complete ClaudeDirector Command System
 
-Enhanced SuperClaude commands with Claude Flow MCP tool integration for Director-level strategic intelligence.
+Comprehensive enhanced command system integrating strategic tool intelligence and session management for Director-level strategic operations.
 
-## Enhanced Command Architecture
+---
+
+## Part I: Strategic Tool Integration Commands
+
+Enhanced SuperClaude commands with strategic intelligence integration for Director-level analytics and insights.
+
+### Enhanced Command Architecture
 
 ### **Command Enhancement Pattern**
 ```yaml
@@ -317,6 +323,170 @@ ROI Tracking:
 
 ---
 
-**Enhanced Commands Status**: Architecture complete, ready for implementation
-**Strategic Value**: 4 core commands enhanced with selective tool integration
-**Preservation**: SuperClaude optimization and workflows maintained with strategic intelligence enhancement
+## Part II: Session Management Commands
+
+Enhanced session context preservation, recovery, and strategic continuity across restarts.
+
+### Core Session Management Commands
+
+#### `/session-start [type]`
+**Purpose**: Start new session with context tracking  
+**Usage**: `/session-start strategic`  
+**Example**:
+```bash
+/session-start executive
+# Output: ✅ Strategic session started (ID: abc123...)
+```
+
+#### `/session-status`
+**Purpose**: Show current session context status and quality  
+**Usage**: `/session-status`  
+**Example**:
+```bash
+/session-status
+# Output:
+# ✅ Strategic session ready (Context quality: 87%)
+# Session ID: abc123
+# Context Gaps: 0
+# Last Backup: 2 minutes ago
+```
+
+#### `/session-backup`
+**Purpose**: Manually trigger context backup  
+**Usage**: `/session-backup`  
+**Example**:
+```bash
+/session-backup
+# Output: ✅ Context backup completed (Quality: 92%)
+```
+
+#### `/session-restore [session-id]`
+**Purpose**: Restore specific session context  
+**Usage**: `/session-restore abc123`  
+**Example**:
+```bash
+/session-restore abc123
+# Output: 🔄 Restoring session context...
+#         ✅ Context restored (Quality: 87%)
+#         ⚠️  2 context gaps detected - see /context-recover
+```
+
+### Context Management Commands
+
+#### `/context-validate`
+**Purpose**: Check for context gaps and completeness  
+**Usage**: `/context-validate`  
+**Example**:
+```bash
+/context-validate
+# Output:
+# ✅ Context Validation Results:
+# - Stakeholder context: Complete ✅
+# - Strategic initiatives: Complete ✅
+# - Executive context: Missing ⚠️
+# - ROI discussions: Incomplete ⚠️
+#
+# Overall Quality: 67%
+# Recommendation: Run /context-recover for missing context
+```
+
+#### `/context-recover`
+**Purpose**: Interactive context recovery with guided prompts  
+**Usage**: `/context-recover`  
+
+#### `/context-quality`
+**Purpose**: Show detailed context completeness scoring  
+**Usage**: `/context-quality`  
+
+### Strategic Context Commands
+
+#### `/stakeholder-update [key] [details]`
+**Purpose**: Update stakeholder context and trigger backup  
+**Usage**: `/stakeholder-update steve_davis "wants ROI understanding, open to evidence-based platform case"`  
+
+#### `/initiative-update [key] [status] [details]`
+**Purpose**: Update strategic initiative status and context  
+**Usage**: `/initiative-update PI-14741 at_risk "resource reallocation needed"`  
+
+#### `/executive-prep [stakeholder] [context]`
+**Purpose**: Store executive session preparation context  
+**Usage**: `/executive-prep steve_davis "ROI presentation preparation"`  
+
+#### `/roi-context [discussion-details]`
+**Purpose**: Store ROI strategy discussion context  
+**Usage**: `/roi-context "Platform investment → productivity gains → business value"`  
+
+### Memory and Intelligence Commands
+
+#### `/memory-recall [type] [filter]`
+**Purpose**: Recall stored strategic memory with context  
+**Usage**: `/memory-recall executive_sessions stakeholder=steve_davis`  
+
+#### `/stakeholder-map`
+**Purpose**: Show current stakeholder coalition mapping  
+**Usage**: `/stakeholder-map`  
+
+#### `/framework-health`
+**Purpose**: Complete framework health and performance check  
+**Usage**: `/framework-health`  
+
+### Advanced Recovery Commands
+
+#### `/context-gap-analysis`
+**Purpose**: Detailed analysis of context gaps with recovery strategies  
+**Usage**: `/context-gap-analysis`  
+
+#### `/auto-recovery`
+**Purpose**: Automatic context recovery using available data sources  
+**Usage**: `/auto-recovery`  
+
+#### `/context-checkpoint`
+**Purpose**: Create manual context checkpoint for recovery  
+**Usage**: `/context-checkpoint "before target stakeholder ROI meeting"`  
+
+---
+
+## Part III: Integration Architecture
+
+### Usage Patterns
+
+#### Daily Strategic Work Pattern
+```bash
+# Morning startup
+/framework-init
+/context-validate
+/stakeholder-map
+
+# During strategic work
+/executive-prep steve_davis "ROI platform investment discussion"
+/roi-context "Focus on $200K productivity gains, competitive advantage"
+
+# End of day
+/session-backup
+```
+
+#### Executive Preparation Pattern
+```bash
+# Before executive meeting
+/context-validate
+/memory-recall executive_sessions stakeholder=steve_davis days=30
+/stakeholder-update steve_davis "current context and positioning"
+/executive-prep steve_davis "meeting agenda and strategic objectives"
+/prepare-slt "Platform Investment ROI" --executive-intelligence
+```
+
+#### Context Recovery Pattern
+```bash
+# After restart/context loss
+/framework-init
+/context-recover
+/context-gap-analysis
+/auto-recovery
+/context-validate
+```
+
+---
+
+**Enhanced Commands Status**: Architecture complete, ready for implementation  
+**Strategic Value**: Complete command system with strategic intelligence and session management  
+**Integration**: Seamless combination of tool enhancement and context preservation
