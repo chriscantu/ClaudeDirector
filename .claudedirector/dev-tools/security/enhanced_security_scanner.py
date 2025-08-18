@@ -71,6 +71,7 @@ class EnhancedSecurityScanner:
             # Self-exclusion to prevent scanner from flagging itself
             '.claudedirector/dev-tools/security/',
             '.claudedirector/archive/',  # Archive directory contains development artifacts
+            '.claudedirector/lib/claudedirector/',  # Symlink for backward compatibility
             'SECURITY.md',
             'engineering-director-workspace/PROCESS_FAILURE_ANALYSIS.md',
             'engineering-director-workspace/SYSTEMATIC_PREVENTION_MEASURES.md',
