@@ -413,7 +413,7 @@ class IntegratedConversationManager:
         assistant_response = conversation_turn.get('assistant_response', '').lower()
 
         # Detect stakeholder updates
-                if any(name in user_input or name in assistant_response 
+                if any(name in user_input or name in assistant_response
                for name in ['vp_engineering', 'director', 'executive']):
             # Update stakeholder context
             pass
