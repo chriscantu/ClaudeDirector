@@ -202,6 +202,16 @@ file_metadata.json
 # Keep only the .gitkeep for directory structure
 !leadership-workspace/.gitkeep
 !**/leadership-workspace/.gitkeep
+
+# EXCEPTION: For development repo, include workspace structure (exclude sensitive data within)
+!leadership-workspace/
+leadership-workspace/**/*.db
+leadership-workspace/**/*.sqlite*
+leadership-workspace/**/sensitive-*
+leadership-workspace/**/credential*
+leadership-workspace/**/secret*
+leadership-workspace/**/archive-sensitive/
+leadership-workspace/strategy/archive-sensitive/
 !engineering-director-workspace/.gitkeep  # Legacy support
 !**/engineering-director-workspace/.gitkeep
 # Prevent pip installation artifact files

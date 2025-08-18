@@ -34,7 +34,7 @@ class ClaudeDirectorConfig:
 
         # Database settings
         self.database_path = self._get_setting(
-            "database_path", str(self.project_root / "memory" / "strategic_memory.db"), **kwargs
+            "database_path", str(self.project_root / "data" / "strategic_memory.db"), **kwargs
         )
 
         # AI Detection thresholds
@@ -65,7 +65,7 @@ class ClaudeDirectorConfig:
         self.enable_debug = self._get_setting("enable_debug", False, **kwargs)
 
         # Schema paths
-        self.schema_dir = self.project_root / "memory"
+        self.schema_dir = self.project_root / ".claudedirector" / "config" / "schemas"
         self.meeting_schema_path = self.schema_dir / "enhanced_schema.sql"
         self.stakeholder_schema_path = self.schema_dir / "stakeholder_engagement_schema.sql"
         self.task_schema_path = self.schema_dir / "task_tracking_schema.sql"
@@ -136,7 +136,7 @@ if PYDANTIC_AVAILABLE:
 
         # Database settings
         database_path: str = Field(
-            default="memory/strategic_memory.db", description="Path to SQLite database"
+            default="data/strategic_memory.db", description="Path to SQLite database"
         )
 
         # AI Detection thresholds
