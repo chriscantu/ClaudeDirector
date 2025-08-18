@@ -427,6 +427,7 @@ class IntegratedConversationManager:
     def _create_session_cli_export(self) -> None:
         """Create CLI export for session end"""
         try:
+            # Use current working directory relative path for Cursor integration
             export_filename = f"leadership-workspace/strategy/session-export-{datetime.now().strftime('%Y%m%d-%H%M')}.md"
             self.export_for_cli(export_filename)
         except Exception as e:
