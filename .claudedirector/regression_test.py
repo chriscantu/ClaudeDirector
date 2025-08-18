@@ -9,7 +9,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-# Add lib directory to Python path
+# Add lib directory to Python path for flattened structure
 lib_dir = Path(__file__).parent / "lib"
 sys.path.insert(0, str(lib_dir))
 
@@ -74,7 +74,7 @@ def test_conversation_capture():
     print("🧪 Testing Conversation Capture...")
 
     try:
-        from claudedirector.core.auto_conversation_integration import (
+        from core.auto_conversation_integration import (
             capture_user_input,
             capture_assistant_response,
             get_capture_status
@@ -114,10 +114,10 @@ def test_import_paths():
 
     try:
         # Test core imports
-        from claudedirector.core.integrated_conversation_manager import IntegratedConversationManager
-        from claudedirector.memory.session_context_manager import SessionContextManager
-        from claudedirector.core.cursor_conversation_hook import CursorConversationHook
-        from claudedirector.core.auto_conversation_integration import auto_capture_conversation
+        from core.integrated_conversation_manager import IntegratedConversationManager
+        from memory.session_context_manager import SessionContextManager
+        from core.cursor_conversation_hook import CursorConversationHook
+        from core.auto_conversation_integration import auto_capture_conversation
 
         print("✅ All critical imports working")
         print("✅ Import paths test PASSED")
@@ -132,7 +132,7 @@ def test_session_management():
     print("🧪 Testing Session Management...")
 
     try:
-        from claudedirector.core.integrated_conversation_manager import IntegratedConversationManager
+        from core.integrated_conversation_manager import IntegratedConversationManager
 
         # Create temporary database for testing
         with tempfile.NamedTemporaryFile(suffix='.db', delete=False) as tmp_db:
