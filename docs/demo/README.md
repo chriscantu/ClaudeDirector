@@ -6,14 +6,14 @@
 ## 🎯 **Quick Start for Your Demo**
 
 ### **📋 What You Need (5 minutes setup):**
-1. **[Complete Demo Package](./complete-demo-package.md)** - Your main presentation guide
-2. **[Executive Demo Script](./executive-demo-script.md)** - Detailed talking points and timing
-3. **[Demo Visuals](./demo-visuals.md)** - ASCII art and Mermaid diagrams for slides
+1. **[Complete Demo Package](./mcp-enhanced-complete-demo-package.md)** - Your main presentation guide
+2. **[Executive Demo Script](./mcp-enhanced-executive-demo-script.md)** - Detailed talking points and timing
+3. **[Demo Visuals](./mcp-enhanced-demo-visuals.md)** - ASCII art and Mermaid diagrams for slides
 4. **ClaudeDirector repository** open and ready for live demo
 
 ### **⏰ Demo Structure (20 minutes total):**
 - **Problem** (2 min): Current strategic decision-making challenges
-- **Solution** (2 min): ClaudeDirector AI director team introduction
+- **Solution** (2 min): ClaudeDirector AI strategic team introduction
 - **Live Demo** (8 min): Three strategic scenarios with real AI responses
 - **Business Impact** (3 min): ROI framework and 30-day value timeline
 - **Q&A & Next Steps** (5 min): Address concerns and pilot program
@@ -22,7 +22,7 @@
 
 ## 🎭 **Demo Materials Overview**
 
-### **📖 [Executive Demo Script](./executive-demo-script.md)**
+### **📖 [Executive Demo Script](./mcp-enhanced-executive-demo-script.md)**
 **Complete presentation script with:**
 - Executive-focused value propositions
 - 3 live demo scenarios (cross-team crisis, ROI presentation, industry-specific)
@@ -30,15 +30,15 @@
 - Common objection handling
 - Clear call to action for pilot program
 
-### **🎨 [Demo Visuals](./demo-visuals.md)**
+### **🎨 [Demo Visuals](./mcp-enhanced-demo-visuals.md)**
 **Visual storytelling materials including:**
 - Before/After problem-solution diagrams
-- AI director team overview and activation flow
+- AI strategic team overview and activation flow
 - User journey sequence diagrams
 - 30-day value demonstration timeline
 - Industry customization examples
 
-### **📦 [Complete Demo Package](./complete-demo-package.md)**
+### **📦 [Complete Demo Package](./mcp-enhanced-complete-demo-package.md)**
 **Everything you need for successful presentation:**
 - Pre-demo checklist and room setup
 - Industry-specific talking points (fintech, healthcare, e-commerce, enterprise SaaS)
@@ -52,7 +52,7 @@
 ## 🚀 **Quick Demo Scenarios with Live Transparency (Ready to Use)**
 
 ### **Scenario 1: Cross-Team Platform Crisis** (Full Transparency Demo)
-**Input:** *"Our design system rollout is creating friction between iOS, Android, and Web teams..."*  
+**Input:** *"Our design system rollout is creating friction between iOS, Android, and Web teams..."*
 **Live Transparency Shows:**
 - `🔧 Accessing MCP Server: context7_server (design_system_patterns)`
 - `*Accessing design system scaling methodologies and coordination frameworks...*`
@@ -62,7 +62,7 @@
 **Value:** Users see Rachel accessing proven design patterns vs. generic advice
 
 ### **Scenario 2: Executive ROI Presentation** (Full Transparency Demo)
-**Input:** *"I need to justify our $2M platform infrastructure investment to the CEO..."*  
+**Input:** *"I need to justify our $2M platform infrastructure investment to the CEO..."*
 **Live Transparency Shows:**
 - `🔧 Accessing MCP Server: sequential_server (strategic_analysis)`
 - `🔧 Accessing MCP Server: financial_modeling (roi_calculation)`
@@ -73,7 +73,7 @@
 **Value:** Users see Alvaro accessing financial modeling capabilities vs. estimates
 
 ### **Scenario 3: Technical Architecture Strategy** (Full Transparency Demo)
-**Input:** *"What architectural patterns should we use for a microservices platform scaling to 100M+ users?"*  
+**Input:** *"What architectural patterns should we use for a microservices platform scaling to 100M+ users?"*
 **Live Transparency Shows:**
 - `🔧 Accessing MCP Server: context7_server (architectural_patterns)`
 - `*Consulting proven architectural patterns and decision methodologies...*`
@@ -124,20 +124,20 @@
 **Demonstrate the live transparency system that shows users exactly when and how ClaudeDirector accesses enhanced capabilities:**
 
 #### **Transparency Example 1: MCP Server Connection**
-**Input:** *"How should we restructure our platform teams for scale?"*  
-**Shows:** `🔧 Accessing MCP Server: sequential_server (strategic_analysis)`  
+**Input:** *"How should we restructure our platform teams for scale?"*
+**Shows:** `🔧 Accessing MCP Server: sequential_server (strategic_analysis)`
 **Value:** Users see exactly when external intelligence is accessed vs local knowledge
 
-#### **Transparency Example 2: Strategic Framework Detection** 
-**Input:** *"Using Porter's Five Forces analysis, what's our competitive position?"*  
-**Shows:** `📚 Strategic Framework: Porter's Five Forces detected`  
+#### **Transparency Example 2: Strategic Framework Detection**
+**Input:** *"Using Porter's Five Forces analysis, what's our competitive position?"*
+**Shows:** `📚 Strategic Framework: Porter's Five Forces detected`
 **Value:** Users understand which proven methodologies are being applied
 
 #### **Transparency Example 3: Combined Enhancement**
-**Input:** *"Develop a comprehensive 3-year platform strategy"*  
-**Shows:** 
-- `🔧 Accessing MCP Server: market_analysis (competitive_intelligence)`
-- `🔧 Accessing MCP Server: financial_modeling (roi_analysis)`  
+**Input:** *"Develop a comprehensive 3-year platform strategy"*
+**Shows:**
+- `🔧 Accessing MCP Server: market_analysis (strategic_analysis)`
+- `🔧 Accessing MCP Server: financial_modeling (roi_analysis)`
 - `📚 Strategic Frameworks: OGSM Strategic Framework, Blue Ocean Strategy`
 **Value:** Complete visibility into all enhancements with <1ms transparency overhead
 
@@ -244,7 +244,7 @@
 
 ### **Why This Matters for Your Demo:**
 - **Executive Trust**: First AI system with complete transparency into enhancement usage
-- **Audit Readiness**: Complete traceability meets enterprise compliance requirements  
+- **Audit Readiness**: Complete traceability meets enterprise compliance requirements
 - **Learning Value**: Users see which strategic frameworks are being applied
 - **Performance Proof**: Live metrics showing <1ms transparency overhead
 - **Zero Surprises**: No hidden capabilities - everything disclosed in real-time
