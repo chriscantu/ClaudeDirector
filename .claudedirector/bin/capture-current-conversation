@@ -20,17 +20,17 @@ from claudedirector.core.integrated_conversation_manager import IntegratedConver
 
 def capture_current_conversation():
     """Manually capture and store current conversation context"""
-    
+
     print("🔄 Capturing Current Cursor Conversation Context")
     print("=" * 55)
-    
+
     # Initialize conversation manager
     manager = IntegratedConversationManager()
-    
+
     # Start a new session for current conversation
     session_id = manager.start_conversation_session("strategic")
     print(f"✅ Session started: {session_id[:12]}...")
-    
+
     # Capture the current strategic conversation context
     conversation_turns = [
         {
@@ -81,7 +81,7 @@ def capture_current_conversation():
             }
         }
     ]
-    
+
     # Add conversation turns to the session
     for turn in conversation_turns:
         manager.capture_conversation_turn(
@@ -91,7 +91,7 @@ def capture_current_conversation():
             turn['metadata']
         )
         print(f"📝 Captured conversation turn: {turn['metadata']['topic']}")
-    
+
     # Add strategic context about current project state
     strategic_context = {
         'current_project': 'Session Context Integration Implementation',
@@ -102,7 +102,7 @@ def capture_current_conversation():
         ],
         'strategic_topics_covered': [
             'session_context_preservation',
-            'cli_bridge_implementation', 
+            'cli_bridge_implementation',
             'architectural_gap_identification',
             'cross_environment_context_continuity'
         ],
@@ -116,7 +116,7 @@ def capture_current_conversation():
         'implementation_branch': 'feature/session-context-integration',
         'commit_status': 'd715097 - Session context integration complete'
     }
-    
+
     # Update session with strategic context
     context_data = {
         'conversation_thread': conversation_turns,
@@ -136,23 +136,23 @@ def capture_current_conversation():
         ],
         'project_context': strategic_context
     }
-    
+
     # Backup the session context
     success = manager.session_manager.update_session_context(session_id, context_data)
-    
+
     if success:
         print(f"✅ Session context updated successfully")
     else:
         print(f"❌ Session context update failed")
-    
+
     # Perform backup
     backup_success = manager.backup_conversation_context()
-    
+
     if backup_success:
         print(f"✅ Conversation context backed up")
     else:
         print(f"❌ Conversation backup failed")
-    
+
     # Show session status
     status = manager.get_session_status()
     print(f"\n📊 Session Status:")
@@ -160,7 +160,7 @@ def capture_current_conversation():
     print(f"• Conversation turns: {status.get('conversation_turns', 0)}")
     print(f"• Context quality: {status.get('context_quality', 0):.1%}")
     print(f"• Active personas: {', '.join(status.get('active_personas', []))}")
-    
+
     # Test CLI export
     print(f"\n🔄 Testing CLI export...")
     try:
@@ -168,61 +168,61 @@ def capture_current_conversation():
         export_preview = cli_export[:300] + "..." if len(cli_export) > 300 else cli_export
         print(f"✅ CLI export successful")
         print(f"📄 Export preview:\n{export_preview}")
-        
+
         # Save to file
         export_file = "leadership-workspace/strategy/captured-conversation-context.md"
         with open(export_file, 'w') as f:
             f.write(cli_export)
         print(f"✅ Context saved to {export_file}")
-        
+
     except Exception as e:
         print(f"❌ CLI export failed: {e}")
-    
+
     # Don't end session - keep it active for ongoing conversation
     print(f"\n✅ Current conversation context captured and stored")
     print(f"📋 Session remains active for continued conversation tracking")
-    
+
     return session_id
 
 
 def verify_database_population():
     """Verify that the database now contains conversation data"""
     import sqlite3
-    
-    db_path = ".claudedirector/data/strategic_memory.db"
-    
+
+    db_path = "data/strategic_memory.db"
+
     print(f"\n🔍 Verifying Database Population")
     print("=" * 35)
-    
+
     try:
         with sqlite3.connect(db_path) as conn:
             # Check session context
             cursor = conn.execute("SELECT COUNT(*) FROM session_context")
             session_count = cursor.fetchone()[0]
             print(f"• Session context entries: {session_count}")
-            
+
             # Check checkpoints
             cursor = conn.execute("SELECT COUNT(*) FROM session_checkpoints")
             checkpoint_count = cursor.fetchone()[0]
             print(f"• Session checkpoints: {checkpoint_count}")
-            
+
             # Check stakeholder intelligence
             cursor = conn.execute("SELECT COUNT(*) FROM stakeholder_intelligence")
             stakeholder_count = cursor.fetchone()[0]
             print(f"• Stakeholder intelligence: {stakeholder_count}")
-            
+
             # Check strategic intelligence
             cursor = conn.execute("SELECT COUNT(*) FROM strategic_intelligence")
             strategic_count = cursor.fetchone()[0]
             print(f"• Strategic intelligence: {strategic_count}")
-            
+
             if session_count > 0:
                 print(f"✅ Database successfully populated")
-                
+
                 # Show recent session info
                 cursor = conn.execute("""
-                    SELECT session_id, session_type, context_quality_score, last_backup_timestamp 
-                    FROM session_context 
+                    SELECT session_id, session_type, context_quality_score, last_backup_timestamp
+                    FROM session_context
                     ORDER BY last_backup_timestamp DESC LIMIT 1
                 """)
                 session_info = cursor.fetchone()
@@ -234,7 +234,7 @@ def verify_database_population():
                     print(f"• Last backup: {session_info[3]}")
             else:
                 print(f"❌ Database still empty")
-                
+
     except Exception as e:
         print(f"❌ Database verification failed: {e}")
 
@@ -244,18 +244,18 @@ def main():
     try:
         # Capture current conversation
         session_id = capture_current_conversation()
-        
+
         # Verify database population
         verify_database_population()
-        
+
         print(f"\n🎉 CONVERSATION CAPTURE COMPLETE")
         print("=" * 35)
         print(f"✅ Current Cursor conversation stored in session database")
         print(f"✅ CLI context export ready for cross-environment use")
         print(f"✅ Strategic context preserved for ongoing session tracking")
-        
+
         return 0
-        
+
     except Exception as e:
         print(f"❌ Conversation capture failed: {e}")
         return 1
