@@ -1,16 +1,17 @@
 # ClaudeDirector - Your AI Strategic Leadership Team
 
-**The first completely transparent AI system for technology leaders. Get strategic guidance from specialized AI directors while seeing exactly how insights are enhanced.**
+**The first completely transparent AI system for engineering leaders at any level. Get strategic guidance from specialized AI directors that automatically customize to your specific role and challenges.**
 
 ## 🎯 **Why ClaudeDirector?**
 
-**Transform complex technology challenges into strategic execution** with AI directors who think like seasoned CTOs, VPs of Engineering, and strategic leaders.
+**Transform complex technology challenges into strategic execution** with AI directors who adapt to your specific leadership role - whether you're a CTO, VP Engineering, Engineering Manager, Staff Engineer, or Product Engineering Lead.
 
 ### **🚀 Immediate Value**
-- **$50K-100K savings** in strategy consultation fees  
-- **25% improvement** in executive stakeholder satisfaction
+- **60-second role customization** automatically tailors guidance to your specific leadership level and challenges
+- **$50K-100K savings** in strategy consultation fees through AI-powered strategic thinking  
+- **25% improvement** in executive stakeholder satisfaction with framework-backed insights
 - **15-20 minutes saved** per strategic session through persistent memory
-- **Zero configuration** - advanced strategic thinking activates automatically
+- **First-time magic** - intelligent setup wizard activates on your first strategic question
 
 ### **🔍 Industry-First Transparency**
 - **See exactly when AI is enhanced** - Real-time disclosure of advanced capabilities
@@ -25,13 +26,43 @@
 ### **💻 Cursor Users** (Recommended)
 1. **Open this repo in Cursor**
 2. **Ask any strategic question** - "How should we structure our teams for this initiative?"
-3. **Watch AI transparency in action** - See personas and frameworks being applied
-4. **Your context persists** - No need to re-explain your situation across sessions
+3. **Complete 60-second role customization** - First-time users see personalized setup wizard
+4. **Get tailored strategic guidance** - Personas and frameworks activate for your specific role
+5. **Your context persists** - No need to re-explain across sessions
 
 ### **💬 Claude Chat Users**
 1. **Share this repo**: `https://github.com/chriscantu/ClaudeDirector`
-2. **Start with your biggest challenge** - Personas activate automatically
-3. **Experience complete transparency** - See how insights are enhanced
+2. **Ask your first strategic question** - Automatic role detection and customization wizard
+3. **Experience complete transparency** - See how insights are enhanced for your role
+
+---
+
+## 🎯 **Automatic Role-Based Customization**
+
+**ClaudeDirector automatically adapts to your specific engineering leadership role and challenges.**
+
+### **🚀 Supported Leadership Roles**
+- **🏢 VP/SVP Engineering** - Executive strategy, board communication, organizational scaling
+- **💻 CTO** - Technology vision, strategic leadership, competitive positioning  
+- **🎯 Engineering Director** - Platform strategy, team coordination, cross-functional alignment
+- **👥 Engineering Manager** - Team leadership, delivery optimization, people management
+- **⚡ Staff/Principal Engineer** - Technical strategy, influence without authority, system design
+- **🚀 Product Engineering Lead** - Product-engineering alignment, user impact optimization
+
+### **🏢 Organization Types**
+- **Startup** (5-50 people) - Resource optimization and rapid scaling challenges
+- **Scale-up** (50-500 people) - Platform building and process establishment  
+- **Enterprise** (500+ people) - Governance, coordination, and organizational complexity
+- **Consulting/Agency** - Client delivery focus and team efficiency optimization
+
+### **🎯 Challenge Focus Areas**
+- **Team Leadership** - People management, team dynamics, performance optimization
+- **Technical Strategy** - Architecture decisions, technology roadmap, platform evolution
+- **Executive Communication** - Board presentations, stakeholder management, strategic messaging
+- **Cross-Team Coordination** - Dependencies, alignment, organizational effectiveness
+- **Product Delivery** - User impact, delivery optimization, product-engineering collaboration
+
+**✨ The setup wizard automatically activates your first strategic question and takes just 60 seconds!**
 
 ---
 
@@ -93,11 +124,11 @@ adapted through collaborative expertise.
 
 ---
 
-## 💬 **Example Conversations**
+## 💬 **Role-Specific Example Conversations**
 
-**See how personas adapt to your role and provide strategic guidance:**
+**See how ClaudeDirector automatically adapts to your specific leadership role:**
 
-### **CTO/VP Engineering:**
+### **VP/SVP Engineering:** *Executive Strategy Focus*
 ```
 🎯 "I need to present our technology strategy to the board"
 
@@ -111,9 +142,22 @@ your technology investments to competitive advantage and business outcomes...
 📚 Strategic Framework: Executive Communication Framework detected
 ```
 
-### **Engineering Manager:**
+### **CTO:** *Technology Vision & Strategic Leadership*
 ```
-🎨 "How do we improve cross-functional collaboration with Product?"
+🎯 "How do we build competitive advantage through our technology stack?"
+
+📊 Camille | Strategic Technology
+This requires analyzing your technology portfolio through competitive positioning...
+
+🔧 Accessing MCP Server: sequential_server (competitive_analysis)
+*Analyzing technology differentiation and market positioning strategies...*
+
+📚 Strategic Framework: Competitive Analysis Framework detected
+```
+
+### **Engineering Manager:** *Team Leadership & Delivery*
+```
+🎯 "How do we improve cross-functional collaboration with Product?"
 
 🎯 Diego | Engineering Leadership  
 This is a classic organizational alignment challenge. Let me analyze the 
@@ -125,16 +169,30 @@ system dynamics at play...
 for optimizing team interaction patterns.
 ```
 
-### **Tech Lead:**
+### **Staff/Principal Engineer:** *Technical Strategy & Influence*
 ```
-⚡ "What's the best architecture approach for this system?"
+🎯 "How do I drive architectural decisions without direct authority?"
 
 🏗️ Martin | Platform Architecture
-🔧 Accessing MCP Server: context7_server (architectural_patterns)
-*Consulting proven architectural patterns for your specific requirements...*
+This is about influence patterns and technical leadership. Let me help you 
+build consensus around architectural decisions...
 
-Based on established architectural patterns, here's how to approach this 
-decision systematically...
+🔧 Accessing MCP Server: context7_server (influence_patterns)
+*Analyzing technical influence and consensus-building strategies...*
+
+📚 Strategic Framework: Influence Without Authority detected
+```
+
+### **Product Engineering Lead:** *Product-Engineering Alignment*
+```
+🎯 "How do we better align engineering velocity with product outcomes?"
+
+💼 Alvaro | Business Strategy
+This requires optimizing the product-engineering collaboration model...
+
+📚 Strategic Framework: Lean Startup + Team Topologies detected
+---
+**Framework Attribution**: Combining user-centered design with optimal team structures.
 ```
 
 ---
@@ -180,12 +238,25 @@ Your strategic context is **automatically preserved across all sessions**:
 - **[🔒 Security Guide](docs/SECURITY.md)** - Enterprise security and compliance
 - **[📝 Technical Index](docs/TECHNICAL_INDEX.md)** - Complete technical reference
 
-### **🎯 Customization Options**
-**Role Adaptation**: Automatically adapts guidance for CTOs, Engineering Managers, Tech Leads, Product Engineering Leaders
+### **🎯 Automatic Customization**
 
-**Industry & Context**: Fintech, Healthcare, Enterprise SaaS, Consumer Apps, Infrastructure
+**🚀 First-Run Wizard**: 60-second setup that automatically:
+- **Detects your leadership role** - 6 supported roles from VP to Staff Engineer
+- **Identifies your organization context** - Startup, Scale-up, Enterprise, or Agency
+- **Focuses on your biggest challenges** - Team leadership, technical strategy, executive communication, cross-team coordination, or product delivery
 
-**Team Sizes**: Startup (5-20), Scale-up (20-100), Enterprise (100-1000+)
+**🔄 Persistent Configuration**: 
+- Your customization **saves automatically** and persists across all sessions
+- **Reconfigure anytime** with `/configure` command
+- **Zero disruption** to existing workflows
+
+**🎯 Role-Specific Value**:
+- **VP/SVP Engineering**: Executive presentations, organizational strategy, board communication
+- **CTO**: Technology vision, competitive positioning, strategic technology decisions
+- **Engineering Director**: Platform strategy, cross-team coordination, investment prioritization
+- **Engineering Manager**: Team leadership, delivery optimization, people management excellence
+- **Staff/Principal Engineer**: Technical influence, architectural decisions, system design leadership  
+- **Product Engineering Lead**: Product-engineering alignment, user impact optimization, delivery effectiveness
 
 ### **💬 Get Help**
 - **[GitHub Issues](https://github.com/chriscantu/ClaudeDirector/issues)** - Report bugs or request features
@@ -194,4 +265,8 @@ Your strategic context is **automatically preserved across all sessions**:
 
 ---
 
-**Ready to experience transparent AI strategic leadership? Start with your biggest challenge!** 🎯
+**Ready to experience transparent AI strategic leadership tailored to your specific role?** 
+
+🚀 **Start with your biggest strategic challenge and see the 60-second customization wizard in action!** 🎯
+
+*Whether you're a VP presenting to the board, a CTO building technology strategy, an Engineering Manager optimizing team performance, or a Staff Engineer driving architectural decisions - ClaudeDirector automatically adapts to deliver exactly the strategic guidance you need.*
