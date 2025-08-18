@@ -12,7 +12,7 @@
 
 ### **What Actually Happens:**
 1. **User clones ClaudeDirector** → `~/repos/ClaudeDirector/`
-2. **User's work files** → `~/engineering-director-workspace/`  
+2. **User's work files** → `~/engineering-director-workspace/`
 3. **In Cursor:** User must open TWO different directories
 4. **Result:** Still juggling framework vs. workspace locations
 
@@ -32,7 +32,7 @@
 ```
 ~/engineering-director-workspace/
 ├── current-initiatives/       # Your strategic work (central)
-├── meeting-prep/             # Your meetings (central)  
+├── meeting-prep/             # Your meetings (central)
 ├── budget-planning/          # Your planning (central)
 ├── .claudedirector/          # Framework (hidden support)
 ├── claudedirector*           # Command access
@@ -53,7 +53,7 @@
 
 ---
 
-### **🎯 Option 2: Framework-First Architecture**  
+### **🎯 Option 2: Framework-First Architecture**
 **Framework is central, work lives inside the repo**
 
 ```
@@ -83,7 +83,7 @@
 
 ---
 
-### **🎯 Option 3: Smart Integration** 
+### **🎯 Option 3: Smart Integration**
 **Best of both worlds through intelligent linking**
 
 ```
@@ -92,7 +92,7 @@
 
 # Smart integration:
 - Symlinks between locations
-- IDE workspace configuration 
+- IDE workspace configuration
 - Scripts that make them feel unified
 ```
 

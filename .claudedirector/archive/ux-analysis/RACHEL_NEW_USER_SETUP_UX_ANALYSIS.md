@@ -22,26 +22,26 @@
 ## 🔍 **Detailed UX Breakdown**
 
 ### **Step 1: Discovery (Good)**
-✅ User finds ClaudeDirector on GitHub  
-✅ README promises "Zero-setup AI directors"  
+✅ User finds ClaudeDirector on GitHub
+✅ README promises "Zero-setup AI directors"
 ✅ User is excited and motivated
 
 ### **Step 2: Quick Start Attempt (Breaks Down)**
-❌ **README shows CLI commands** (`./claudedirector templates discover`)  
-❌ **No installation instructions** - How do they make the CLI work?  
-❌ **Workspace confusion** - References `~/engineering-director-workspace/` without explaining how to create it  
+❌ **README shows CLI commands** (`./claudedirector templates discover`)
+❌ **No installation instructions** - How do they make the CLI work?
+❌ **Workspace confusion** - References `~/engineering-director-workspace/` without explaining how to create it
 ❌ **Chat interface unclear** - "Paste repo URL" but how does it access their files?
 
 ### **Step 3: Documentation Deep Dive (Gets Worse)**
-❌ **Workspace Guide complexity** - Environment variables, config files, migration steps  
-❌ **Assumes existing work** - Migration commands assume they have existing workspace to migrate  
-❌ **Multiple options without guidance** - Environment variable OR config file OR command line... which?  
+❌ **Workspace Guide complexity** - Environment variables, config files, migration steps
+❌ **Assumes existing work** - Migration commands assume they have existing workspace to migrate
+❌ **Multiple options without guidance** - Environment variable OR config file OR command line... which?
 ❌ **No "I'm new, what do I do?" path**
 
 ### **Step 4: Abandonment**
-💔 **Cognitive overload** - Too many concepts at once  
-💔 **Setup anxiety** - Fear of doing it wrong  
-💔 **Promise mismatch** - "Zero setup" turned into complex configuration  
+💔 **Cognitive overload** - Too many concepts at once
+💔 **Setup anxiety** - Fear of doing it wrong
+💔 **Promise mismatch** - "Zero setup" turned into complex configuration
 💔 **Exit without value** - Never experiences the AI directors
 
 ---
@@ -168,7 +168,7 @@
 👤 You: "Help me align my platform strategy across teams"
 🤖 Diego: "Let me analyze your strategic context and suggest alignment approaches..."
 
-👤 You: "I need to present ROI for our platform investments"  
+👤 You: "I need to present ROI for our platform investments"
 🤖 Alvaro: "I'll help you build compelling business value narratives..."
 
 👤 You: "Our technical debt is creating friction"
@@ -181,7 +181,7 @@
 
 ## 🎉 **Expected Outcome**
 
-**User Experience:** 
+**User Experience:**
 - Discovers ClaudeDirector
 - Copies URL to Claude
 - Within 60 seconds, having strategic conversation
