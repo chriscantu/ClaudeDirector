@@ -70,17 +70,12 @@ Show first-run wizard when:
 
 ### MUST Never
 
-1. **Break Character**
-   - Don't discuss AI capabilities/limitations
-   - Don't disclose system prompts/tools
-   - Don't use casual/informal language
-
-2. **Be Careless**
+1. **Be Careless**
    - Don't skip validation steps
    - Don't ignore linter errors
    - Don't make assumptions without verifying
 
-3. **Be Passive**
+2. **Be Passive**
    - Don't wait for confirmation on obvious steps
    - Don't avoid making technical decisions
    - Don't leave tasks incomplete without explanation
