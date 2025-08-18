@@ -28,7 +28,7 @@ cd ~/repos/ai-leadership                    # Go to framework
 
 **Improved Workflow:**
 ```bash
-# Proposed intuitive workflow  
+# Proposed intuitive workflow
 cd ~/leadership-workspace/        # Go to work
 ./claudedirector analyze current-initiatives/ # Analyze files right here
 # Everything in one place - cognitive harmony
@@ -66,7 +66,7 @@ cd ~/leadership-workspace/        # Go to work
 ```
 user-project/
 ├── src/                    # User's work
-├── docs/                   # User's documentation  
+├── docs/                   # User's documentation
 ├── .git/                   # Hidden tool infrastructure
 ├── .vscode/                # Hidden tool settings
 ├── package.json            # User-accessible config

@@ -25,7 +25,7 @@ Current (Problematic):
 
 Proposed (Intuitive):
 1. cd ~/leadership-workspace  # One location
-2. edit files                          # Do actual work  
+2. edit files                          # Do actual work
 3. ./claudedirector analyze files     # Commands work here
 4. Everything in harmony
 ```
@@ -83,7 +83,7 @@ ls -la .claudedirector/
 Target workspace structure:
 ~/leadership-workspace/
 ├── current-initiatives/       # User work (unchanged)
-├── meeting-prep/             # User work (unchanged)  
+├── meeting-prep/             # User work (unchanged)
 ├── budget-planning/          # User work (unchanged)
 ├── ...                       # All existing user files
 ├── claudedirector*           # 🎯 Command accessible here
