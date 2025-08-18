@@ -148,12 +148,14 @@ Your strategic context is **automatically preserved across all sessions**:
 - 15-20 minutes saved per session through context persistence
 
 ### **🧠 Proven Strategic Frameworks**
-**11 research-backed frameworks** activate automatically:
+**25+ research-backed frameworks** activate automatically:
 - **Team Topologies** - Optimal team structure and cognitive load management
 - **"Good Strategy Bad Strategy"** - Strategy kernel and fluff detection  
 - **Capital Allocation Framework** - Strategic investment and ROI optimization
 - **Crucial Conversations** - High-stakes dialogue and conflict resolution
-- **[See all 11 frameworks →](docs/STRATEGIC_FRAMEWORKS_GUIDE.md)**
+- **Accelerate** - High-performing technology organization patterns
+- **WRAP Framework** - Strategic decision-making methodology
+- **[See all 25+ frameworks →](docs/STRATEGIC_FRAMEWORKS_GUIDE.md)**
 
 ### **⚡ MCP Integration & Smart Enhancement**
 - **Intelligent complexity detection** - Advanced analysis triggered automatically
@@ -165,11 +167,18 @@ Your strategic context is **automatically preserved across all sessions**:
 
 ## 📚 **Documentation & Support**
 
-### **📖 Complete Guides**
-- **[Strategic Frameworks Guide](docs/STRATEGIC_FRAMEWORKS_GUIDE.md)** - Deep dive into all 11 proven methodologies
-- **[Quick Start Guide](docs/QUICK_START_GUIDE.md)** - Get strategic guidance in minutes
-- **[MCP Integration Guide](docs/MCP_INTEGRATION_GUIDE.md)** - Advanced transparency features
-- **[Multi-Persona Collaboration](docs/MULTI_PERSONA_GUIDE.md)** - Cross-functional strategic analysis
+### **📖 Essential Guides** (Start Here)
+- **[📖 Quick Start Guide](docs/QUICK_START_GUIDE.md)** - Get started in under 5 minutes with Cursor or Claude Chat
+- **[🏗️ Architecture Guide](docs/ARCHITECTURE.md)** - Complete system architecture with visual diagrams
+- **[⚙️ Implementation Guide](docs/IMPLEMENTATION_GUIDE.md)** - Developer setup and customization
+- **[🧠 Strategic Frameworks Guide](docs/STRATEGIC_FRAMEWORKS_GUIDE.md)** - 25+ proven strategic methodologies
+
+### **📋 Additional Resources**
+- **[💼 Workspace Guide](docs/WORKSPACE_GUIDE.md)** - Leadership templates and best practices
+- **[🧪 Testing Suite](docs/testing/MCP_INTEGRATION_TESTS.md)** - Comprehensive validation procedures
+- **[🎬 Demo Materials](docs/demo/)** - Executive presentations and demo scripts
+- **[🔒 Security Guide](docs/SECURITY.md)** - Enterprise security and compliance
+- **[📝 Technical Index](docs/TECHNICAL_INDEX.md)** - Complete technical reference
 
 ### **🎯 Customization Options**
 **Role Adaptation**: Automatically adapts guidance for CTOs, Engineering Managers, Tech Leads, Product Engineering Leaders
