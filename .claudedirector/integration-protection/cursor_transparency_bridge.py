@@ -52,9 +52,10 @@ class CursorTransparencyBridge:
                 "platform strategy", "resource allocation", "team coordination",
                 "engineering management", "leadership", "strategic"
             ],
-            "camille": [
+                        "camille": [
                 "strategic technology", "executive", "innovation",
-                "technology strategy", "organizational scaling"
+                "technology strategy", "organizational scaling", "strategic",
+                "technology assessment", "strategic assessment"
             ],
             "rachel": [
                 "design systems", "ux", "user experience", "cross-functional",
