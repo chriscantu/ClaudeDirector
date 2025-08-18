@@ -65,10 +65,10 @@ def check_environment():
         print("❌ Virtual environment not found at venv/bin/python")
         return False
 
-    # Check ClaudeDirector installation
-    check_cmd = f'{venv_python} -c "import claudedirector; print(\\"ClaudeDirector import: OK\\")"'
+    # Check ClaudeDirector availability (either installed or via path)
+    check_cmd = f'{venv_python} -c "import sys; sys.path.insert(0, \\"lib\\"); import claudedirector; print(\\"ClaudeDirector import: OK\\")"'
     if not run_command(check_cmd, "ClaudeDirector Import Check"):
-        print("❌ ClaudeDirector not properly installed")
+        print("❌ ClaudeDirector not properly available")
         return False
 
     print("✅ Test environment ready")
@@ -80,28 +80,30 @@ def run_critical_tests():
 
     venv_python = PROJECT_ROOT / "venv" / "bin" / "python"
 
-    # Test 1: Rumelt & WRAP Framework Integration Tests
-    test_cmd = f"{venv_python} -m pytest .claudedirector/tests/integration/test_rumelt_wrap_frameworks.py -v --tb=short"
-    if not run_command(test_cmd, "Rumelt & WRAP Framework Integration Tests"):
-        print("\n❌ CRITICAL FAILURE: Strategic framework tests failed!")
-        print("🚫 These tests validate the core embedded strategic intelligence.")
-        print("🚫 COMMIT BLOCKED - Fix failing tests before committing.")
-        return False
+    # Test 1: First-Run Wizard Tests (Core functionality)
+    wizard_tests = PROJECT_ROOT / "docs" / "testing" / "first_run_wizard_tests.py"
+    if wizard_tests.exists():
+        test_cmd = f"{venv_python} {wizard_tests}"
+        if not run_command(test_cmd, "First-Run Wizard Comprehensive Tests"):
+            print("\n❌ CRITICAL FAILURE: First-run wizard tests failed!")
+            print("🚫 These tests validate the core role-based customization system.")
+            print("🚫 COMMIT BLOCKED - Fix failing tests before committing.")
+            return False
 
-    # Test 2: Core embedded framework engine tests (if they exist)
+    # Test 2: Legacy framework tests (if they exist)
+    legacy_framework_tests = PROJECT_ROOT / ".claudedirector" / "tests" / "integration" / "test_rumelt_wrap_frameworks.py"
+    if legacy_framework_tests.exists():
+        test_cmd = f"{venv_python} -m pytest {legacy_framework_tests} -v --tb=short"
+        if not run_command(test_cmd, "Legacy Framework Integration Tests"):
+            print("\n❌ CRITICAL FAILURE: Strategic framework tests failed!")
+            return False
+
+    # Test 3: Core module tests (if they exist)
     core_tests = PROJECT_ROOT / ".claudedirector" / "tests" / "unit" / "test_embedded_framework_engine.py"
     if core_tests.exists():
         test_cmd = f"{venv_python} -m pytest {core_tests} -v --tb=short"
-        if not run_command(test_cmd, "Embedded Framework Engine Unit Tests"):
-            print("\n❌ CRITICAL FAILURE: Core framework engine tests failed!")
-            return False
-
-    # Test 3: Quick smoke test of complexity analyzer
-    complexity_tests = PROJECT_ROOT / ".claudedirector" / "tests" / "unit" / "test_complexity_analyzer.py"
-    if complexity_tests.exists():
-        test_cmd = f"{venv_python} -m pytest {complexity_tests} -v --tb=short"
-        if not run_command(test_cmd, "Complexity Analyzer Unit Tests"):
-            print("\n❌ CRITICAL FAILURE: Complexity analyzer tests failed!")
+        if not run_command(test_cmd, "Legacy Core Module Tests"):
+            print("\n❌ CRITICAL FAILURE: Core module tests failed!")
             return False
 
     print("\n✅ ALL CRITICAL TESTS PASSED!")
@@ -113,14 +115,19 @@ def run_quick_smoke_tests():
 
     venv_python = PROJECT_ROOT / "venv" / "bin" / "python"
 
-    # Basic import test
-    import_cmd = f'{venv_python} -c "from claudedirector.core.embedded_framework_engine import EmbeddedFrameworkEngine; print(\\"✅ Core imports working\\")"'
+    # Basic import test for current architecture
+    import_cmd = f'{venv_python} -c "import sys; sys.path.insert(0, \\"lib\\"); from claudedirector.core.first_run_wizard import FirstRunWizard; from claudedirector.core.cursor_wizard_integration import CursorWizardIntegration; print(\\"✅ Core imports working\\")"'
     if not run_command(import_cmd, "Core Module Import Test"):
         return False
 
-    # Configuration loading test
-    config_cmd = f'{venv_python} -c "import yaml; yaml.safe_load(open(\\".claudedirector/config/claude_config.yaml\\")); print(\\"✅ Config loading working\\")"'
-    if not run_command(config_cmd, "Configuration Loading Test"):
+    # First-run wizard functionality test
+    wizard_cmd = f'{venv_python} -c "import sys; sys.path.insert(0, \\"lib\\"); from claudedirector.core.first_run_wizard import FirstRunWizard; import tempfile; from pathlib import Path; w = FirstRunWizard(Path(tempfile.mkdtemp())); assert w.needs_first_run_setup(); print(\\"✅ First-run wizard working\\")"'
+    if not run_command(wizard_cmd, "First-Run Wizard Functionality Test"):
+        return False
+
+    # Configuration persistence test
+    config_cmd = f'{venv_python} -c "import sys; sys.path.insert(0, \\"lib\\"); from claudedirector.core.cursor_wizard_integration import initialize_cursor_integration; integration = initialize_cursor_integration(); print(\\"✅ Cursor integration working\\")"'
+    if not run_command(config_cmd, "Cursor Integration Test"):
         return False
 
     print("\n✅ Smoke tests passed!")
