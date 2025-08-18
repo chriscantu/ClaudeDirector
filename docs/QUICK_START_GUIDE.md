@@ -14,8 +14,8 @@
 #### Cursor Setup Details
 - **Directory Setup**: Open the entire `ai-leadership` directory in Cursor (not subdirectories)
 - **Auto-Activation**: Framework loads automatically via `.cursorrules` file
-- **Verification**: Ask "Help me prepare for a VP meeting using diego persona" to test
-- **Workspace**: Use `.archive/leadership-workspace/` templates for structured strategic work
+- **Verification**: Ask "Help me prepare for an executive meeting using diego persona" to test
+- **Workspace**: Use `leadership-workspace/` for structured strategic work
 - **Multi-Persona**: Ask "I need diego and alvaro perspectives on platform ROI"
 
 #### Cursor Working Features
