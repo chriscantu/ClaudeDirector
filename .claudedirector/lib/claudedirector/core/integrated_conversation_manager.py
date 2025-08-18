@@ -79,13 +79,36 @@ class IntegratedConversationManager:
             # Auto-start session if not already active
             self.start_conversation_session()
 
-        conversation_turn = {
-            'timestamp': datetime.now().isoformat(),
-            'user_input': user_input,
-            'assistant_response': assistant_response,
-            'personas_activated': personas_activated or [],
-            'metadata': context_metadata or {}
-        }
+        # Apply transparency middleware to enhance the response
+        try:
+            from .response_middleware import enhance_conversation_turn
+            enhanced_turn = enhance_conversation_turn(
+                user_input, assistant_response, personas_activated, context_metadata
+            )
+
+            conversation_turn = {
+                'timestamp': datetime.now().isoformat(),
+                'user_input': enhanced_turn['user_input'],
+                'assistant_response': enhanced_turn['assistant_response'],  # Enhanced with transparency
+                'personas_activated': enhanced_turn['personas_activated'],
+                'metadata': enhanced_turn['metadata'],
+                'transparency_summary': enhanced_turn['transparency_summary']
+            }
+
+            # Log transparency application
+            if enhanced_turn['transparency_summary'].get('transparency_applied'):
+                persona = enhanced_turn['transparency_summary'].get('persona_detected', 'unknown')
+                print(f"💾 Strategic conversation captured with {persona} persona transparency")
+
+        except ImportError:
+            # Fallback to original behavior if middleware not available
+            conversation_turn = {
+                'timestamp': datetime.now().isoformat(),
+                'user_input': user_input,
+                'assistant_response': assistant_response,
+                'personas_activated': personas_activated or [],
+                'metadata': context_metadata or {}
+            }
 
         self.conversation_buffer.append(conversation_turn)
 
