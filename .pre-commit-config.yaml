@@ -51,17 +51,16 @@ repos:
         verbose: true
 
   # MANDATORY TEST VALIDATION (BLOCKS ALL COMMITS IF TESTS FAIL)
-  # Temporarily disabled for commit fixes - will re-enable after proper package setup
-  # - repo: local
-  #   hooks:
-  #     - id: mandatory-test-validation
-  #       name: 🛡️ MANDATORY TEST VALIDATION
-  #       entry: python3 .claudedirector/dev-tools/testing/mandatory_test_validator.py
-  #       language: system
-  #       pass_filenames: false
-  #       stages: [pre-commit]
-  #       always_run: true
-  #       verbose: true
+  - repo: local
+    hooks:
+      - id: mandatory-test-validation
+        name: 🛡️ MANDATORY TEST VALIDATION
+        entry: python3 .claudedirector/dev-tools/testing/mandatory_test_validator.py
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+        always_run: true
+        verbose: true
 
   # Architectural governance
   - repo: local
