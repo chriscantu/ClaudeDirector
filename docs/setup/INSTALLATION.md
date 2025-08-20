@@ -12,14 +12,19 @@
 - **Cursor**: Recommended IDE for optimal experience
 - **Operating System**: macOS, Linux, Windows (WSL recommended)
 
-### **Optional Requirements**
-- **Node.js**: 18+ (for MCP server integration)
+### **Zero Setup Principle**
+✅ **ClaudeDirector works immediately** without any additional installations
+✅ **MCP integration gracefully degrades** to fallback mode if external servers unavailable
+✅ **Full strategic functionality** maintained without Node.js, Docker, or other dependencies
+
+### **Optional Enhancements**
+- **Node.js**: 18+ (for enhanced MCP server integration - system works without this)
 - **Docker**: For containerized deployment
-- **PyYAML**: For advanced configuration features
+- **PyYAML**: For advanced configuration features (system works without this)
 
 ## 📥 **Installation Methods**
 
-### **Method 1: Cursor Integration (Recommended)**
+### **Method 1: Cursor Integration (Recommended) - Zero Setup**
 
 #### **Step 1: Clone Repository**
 ```bash
@@ -32,11 +37,16 @@ cd ClaudeDirector
 cursor .
 ```
 
-#### **Step 3: Verify Installation**
-Ask this test question in Cursor:
+#### **Step 3: Start Strategic Conversation**
+Ask any strategic question in Cursor:
 ```
 "Test ClaudeDirector transparency: How should we approach platform scaling?"
 ```
+
+**That's it!** ClaudeDirector is now active with:
+- ✅ **Full strategic functionality** (personas, frameworks, transparency)
+- ✅ **Fallback mode** provides complete capability without external dependencies
+- ✅ **Zero additional installations** required
 
 **Expected Response:**
 - Persona header with emoji (🎯 Diego | Engineering Leadership)
@@ -94,12 +104,46 @@ print('✅ ClaudeDirector ready:', get_capture_status()['enabled'])
 "
 ```
 
+## ✅ **Zero Setup Validation**
+
+### **Verify Zero Setup Capability**
+
+Test that ClaudeDirector works without any additional installations:
+
+```bash
+# Test that core functionality works
+python3 .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py | head -3
+
+# Expected output (with your configured name):
+# 🛡️ MANDATORY P0 TEST ENFORCEMENT SYSTEM
+# [Your Name]'s requirement: All P0 features always tested, never skipped
+```
+
+### **What Works in Zero Setup Mode**
+- ✅ **All personas** (Diego, Camille, Rachel, Alvaro, Martin)
+- ✅ **Strategic frameworks** (25+ methodologies)
+- ✅ **Transparency system** (persona headers, framework attribution)
+- ✅ **Conversation tracking** and quality measurement
+- ✅ **P0 enforcement** and testing
+- ✅ **User configuration** with personal attribution
+
+### **Graceful Degradation**
+When MCP servers are unavailable, ClaudeDirector automatically:
+- Maintains full persona functionality
+- Provides strategic framework guidance
+- Shows transparency disclosures
+- Uses fallback analysis methods
+
 ## 🔧 **Advanced Installation**
 
 ### **MCP Server Integration** (Optional)
 
-#### **Install MCP Dependencies**
+#### **Optional: Enhanced MCP Integration**
+
+**⚠️ IMPORTANT**: ClaudeDirector works fully without these installations (fallback mode)
+
 ```bash
+# OPTIONAL: Enhanced MCP servers for additional capabilities
 # Sequential MCP Server (strategic analysis)
 npm install -g @sequential/mcp-server
 
@@ -110,7 +154,10 @@ pip install context7
 npm install -g @magic/mcp-server
 ```
 
-#### **Configure MCP Servers**
+**Without MCP servers**: Full strategic functionality with graceful fallback
+**With MCP servers**: Enhanced analysis capabilities and visual generation
+
+#### **Configure MCP Servers** (Optional)
 ```yaml
 # .claudedirector/config/mcp_servers.yaml
 servers:
