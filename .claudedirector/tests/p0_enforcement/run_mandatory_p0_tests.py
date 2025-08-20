@@ -3,7 +3,7 @@
 MANDATORY P0 Test Enforcement System
 CRITICAL: These tests must NEVER be skipped and MUST pass before any commit.
 
-Michael's requirement: "ensure that all P0 features are always tested moving forward and never skipped"
+Enforces user requirement: "ensure that all P0 features are always tested moving forward and never skipped"
 """
 
 import sys
@@ -18,6 +18,16 @@ from typing import List, Dict, Tuple, Optional
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
+
+# Import user configuration
+try:
+    from config.user_config import get_user_attribution, get_user_name
+    USER_ATTRIBUTION = get_user_attribution()
+    USER_NAME = get_user_name("professional")
+except ImportError:
+    # Fallback if user config not available
+    USER_ATTRIBUTION = "User's requirement"
+    USER_NAME = "User"
 
 class P0TestEnforcer:
     """
@@ -287,7 +297,7 @@ def main():
     """
     print("🛡️ MANDATORY P0 TEST ENFORCEMENT SYSTEM")
     print("=" * 80)
-    print("Michael's Requirement: All P0 features always tested, never skipped")
+    print(f"{USER_ATTRIBUTION}: All P0 features always tested, never skipped")
     print("Zero tolerance for P0 feature regressions")
     print()
 
