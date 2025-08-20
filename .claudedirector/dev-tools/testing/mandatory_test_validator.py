@@ -86,8 +86,24 @@ def run_critical_tests_comprehensive():
     print("\n🔥 COMPREHENSIVE CRITICAL TEST SUITE")
     print("=" * 60)
 
-    tests_passed = 0
-    tests_total = 0
+    # FIRST: Run mandatory P0 tests (BLOCKING) - Michael's requirement
+    print("\n🚨 MANDATORY P0 FEATURE ENFORCEMENT (BLOCKING)")
+    print("=" * 60)
+    p0_success = run_command(
+        "python3 .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py",
+        "🚨 MANDATORY P0 FEATURE ENFORCEMENT"
+    )
+
+    if not p0_success:
+        print("\n🚨 CRITICAL P0 FAILURE - COMMIT IMMEDIATELY BLOCKED")
+        print("❌ P0 feature integrity compromised - cannot proceed")
+        print("🛠️ Michael's requirement: All P0 features must always pass")
+        return False
+
+    print("✅ ALL P0 FEATURES VALIDATED - Proceeding with other critical tests")
+
+    tests_passed = 1  # P0 tests passed
+    tests_total = 1
 
     # Test 1: MCP Transparency P0 Tests
     tests_total += 1
