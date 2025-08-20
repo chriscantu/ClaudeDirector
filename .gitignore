@@ -280,3 +280,10 @@ workspace-backup-*/
 *.tmp
 *_temp.*
 *_backup.*
+
+# ======================================
+# P0 TEST ENFORCEMENT PROTECTION
+# ======================================
+# P0 test results may contain generic stakeholder terms that trigger security scans
+.claudedirector/tests/p0_enforcement/results/
+**/p0_test_results_*.json

@@ -1,0 +1,92 @@
+# P0 Feature Test Definitions
+# CRITICAL: These tests must NEVER be skipped and MUST pass before any commit
+# Michael's requirement: "ensure that all P0 features are always tested moving forward and never skipped"
+
+version: "1.0"
+enforcement_policy: "ZERO_TOLERANCE"
+blocking_failures_allowed: 0
+
+p0_features:
+  # BLOCKING LEVEL: Must pass or commit is blocked
+  - name: "MCP Transparency P0"
+    test_module: ".claudedirector/tests/regression/test_mcp_transparency_p0.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 120
+    description: "MCP server transparency disclosure must work reliably"
+    failure_impact: "Strategic persona responses lose critical transparency"
+    business_impact: "Users cannot see AI enhancement usage - transparency broken"
+    introduced_version: "v2.1.0"
+    owner: "martin"
+
+  - name: "Conversation Tracking P0"
+    test_module: ".claudedirector/tests/conversation/test_conversation_tracking_p0.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 120
+    description: "Strategic memory conversation capture must work"
+    failure_impact: "Strategic context preservation fails across sessions"
+    business_impact: "Strategic intelligence loses conversation continuity"
+    introduced_version: "v2.2.0"
+    owner: "martin"
+
+  - name: "Conversation Quality P0"
+    test_module: ".claudedirector/tests/conversation/test_p0_quality_target.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 120
+    description: "Conversation quality must exceed 0.7 threshold"
+    failure_impact: "Strategic intelligence data quality degrades critically"
+    business_impact: "Executive strategic guidance becomes unreliable"
+    introduced_version: "v2.2.0"
+    owner: "martin"
+
+  # HIGH PRIORITY: Should pass but won't block commit
+  - name: "First-Run Wizard P0"
+    test_module: "docs/testing/first_run_wizard_tests.py"
+    critical_level: "HIGH"
+    timeout_seconds: 60
+    description: "First-run user experience must work"
+    failure_impact: "New users cannot customize system properly"
+    business_impact: "User onboarding experience degraded"
+    introduced_version: "v1.0.0"
+    owner: "rachel"
+
+  - name: "Cursor Integration P0"
+    test_module: "docs/testing/run_cursor_tests.py"
+    critical_level: "HIGH"
+    timeout_seconds: 60
+    description: "Cursor environment integration must work"
+    failure_impact: "Core usage environment fails for primary users"
+    business_impact: "Primary user environment broken"
+    introduced_version: "v1.0.0"
+    owner: "martin"
+
+# Enforcement settings
+enforcement:
+  run_on_commit: true
+  run_on_push: true
+  run_on_pr: true
+  save_results: true
+  generate_reports: true
+  audit_trail: true
+
+# Notification settings
+notifications:
+  on_failure: true
+  on_success: false
+  include_business_impact: true
+  include_remediation_steps: true
+
+# Quality gates
+quality_gates:
+  minimum_pass_rate: 1.0  # 100% for BLOCKING tests
+  maximum_duration_seconds: 300  # 5 minutes total
+  retry_failed_tests: false  # No retries - immediate feedback
+  fail_fast: true  # Stop on first BLOCKING failure
+
+# Reporting
+reporting:
+  include_duration: true
+  include_coverage: false
+  include_performance: true
+  save_to_file: true
+  format: "json"
+  retention_days: 30
