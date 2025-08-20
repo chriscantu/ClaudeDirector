@@ -294,10 +294,3 @@ workspace-backup-*/
 # User identity configuration contains personal information and should not be committed
 .claudedirector/config/user_identity.yaml
 **/user_identity.yaml
-
-# ======================================
-# USER CONFIGURATION PROTECTION
-# ======================================
-# User identity configuration contains personal information and should not be committed
-.claudedirector/config/user_identity.yaml
-**/user_identity.yaml
