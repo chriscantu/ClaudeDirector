@@ -1,0 +1,261 @@
+# ClaudeDirector Installation Guide
+
+**Complete installation instructions for all environments and use cases.**
+
+---
+
+## 🎯 **Prerequisites**
+
+### **System Requirements**
+- **Python**: 3.9+ (recommended: 3.11)
+- **Git**: For repository cloning
+- **Cursor**: Recommended IDE for optimal experience
+- **Operating System**: macOS, Linux, Windows (WSL recommended)
+
+### **Optional Requirements**
+- **Node.js**: 18+ (for MCP server integration)
+- **Docker**: For containerized deployment
+- **PyYAML**: For advanced configuration features
+
+## 📥 **Installation Methods**
+
+### **Method 1: Cursor Integration (Recommended)**
+
+#### **Step 1: Clone Repository**
+```bash
+git clone https://github.com/chriscantu/ClaudeDirector.git
+cd ClaudeDirector
+```
+
+#### **Step 2: Open in Cursor**
+```bash
+cursor .
+```
+
+#### **Step 3: Verify Installation**
+Ask this test question in Cursor:
+```
+"Test ClaudeDirector transparency: How should we approach platform scaling?"
+```
+
+**Expected Response:**
+- Persona header with emoji (🎯 Diego | Engineering Leadership)
+- MCP transparency disclosure for complex questions
+- Framework attribution when strategic frameworks are applied
+
+### **Method 2: Claude Chat Integration**
+
+#### **Share Repository URL**
+```
+https://github.com/chriscantu/ClaudeDirector
+```
+
+#### **Initialize with Test Question**
+```
+"Using the ClaudeDirector framework, help me develop a strategic approach
+to organizational scaling with cross-functional team coordination."
+```
+
+### **Method 3: Local Development Setup**
+
+#### **Step 1: Environment Setup**
+```bash
+# Clone repository
+git clone https://github.com/chriscantu/ClaudeDirector.git
+cd ClaudeDirector
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+#### **Step 2: Configuration**
+```bash
+# Copy configuration templates
+cp .claudedirector/config/default_config.yaml .claudedirector/config/user_config.yaml
+
+# Edit configuration for your environment
+# Optional: Install PyYAML for advanced features
+pip install PyYAML
+```
+
+#### **Step 3: Validation**
+```bash
+# Run test suite
+python3 .claudedirector/tests/run_mcp_transparency_tests.py
+
+# Test installation
+python3 -c "
+from claudedirector.core.auto_conversation_integration import get_capture_status
+print('✅ ClaudeDirector ready:', get_capture_status()['enabled'])
+"
+```
+
+## 🔧 **Advanced Installation**
+
+### **MCP Server Integration** (Optional)
+
+#### **Install MCP Dependencies**
+```bash
+# Sequential MCP Server (strategic analysis)
+npm install -g @sequential/mcp-server
+
+# Context7 MCP Server (framework patterns)
+pip install context7
+
+# Magic MCP Server (visual generation)
+npm install -g @magic/mcp-server
+```
+
+#### **Configure MCP Servers**
+```yaml
+# .claudedirector/config/mcp_servers.yaml
+servers:
+  sequential:
+    command: "npx"
+    args: ["-y", "@sequential/mcp-server"]
+    capabilities: ["systematic_analysis", "business_strategy"]
+
+  context7:
+    command: "python"
+    args: ["-m", "context7.server"]
+    capabilities: ["pattern_access", "methodology_lookup"]
+```
+
+### **Docker Deployment** (Enterprise)
+
+#### **Build Container**
+```bash
+# Build ClaudeDirector image
+docker build -t claudedirector:latest .
+
+# Run with conversation persistence
+docker run -d \
+  --name claudedirector \
+  -v $(pwd)/data:/app/data \
+  -p 8080:8080 \
+  claudedirector:latest
+```
+
+#### **Docker Compose Setup**
+```yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  claudedirector:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data
+      - ./.claudedirector/config:/app/.claudedirector/config
+    environment:
+      - ENVIRONMENT=production
+      - LOG_LEVEL=info
+```
+
+## ✅ **Verification & Testing**
+
+### **Basic Functionality Test**
+```bash
+# Test core imports
+python3 -c "
+import sys
+sys.path.append('.claudedirector/integration-protection')
+from cursor_transparency_bridge import ensure_transparency_compliance
+print('✅ Core functionality available')
+"
+
+# Test MCP transparency
+python3 .claudedirector/tests/run_mcp_transparency_tests.py
+```
+
+### **Integration Test**
+Ask this question in your chosen environment:
+```
+"Diego, how should we develop a strategic organizational framework
+for complex multi-team platform architecture assessment?"
+```
+
+**Verification Checklist:**
+- [ ] Persona header appears: `🎯 Diego | Engineering Leadership`
+- [ ] MCP disclosure shows: `🔧 Accessing MCP Server: sequential (systematic_analysis)`
+- [ ] Processing indicator: `*Analyzing your organizational challenge...*`
+- [ ] Framework attribution appears when strategic frameworks are detected
+- [ ] Response includes actionable strategic guidance
+
+## 🔧 **Troubleshooting**
+
+### **Common Issues**
+
+#### **Import Errors**
+```bash
+# Module not found errors
+export PYTHONPATH="${PYTHONPATH}:$(pwd)/.claudedirector/lib"
+
+# Or add to virtual environment
+echo "$(pwd)/.claudedirector/lib" > venv/lib/python3.11/site-packages/claudedirector.pth
+```
+
+#### **MCP Server Issues**
+```bash
+# Test MCP servers individually
+npx -y @sequential/mcp-server --version
+python -m context7.server --help
+
+# Check configuration
+python3 -c "
+import yaml
+with open('.claudedirector/config/mcp_servers.yaml') as f:
+    config = yaml.safe_load(f)
+    print('✅ MCP configuration valid')
+"
+```
+
+#### **Permission Issues**
+```bash
+# Make scripts executable
+chmod +x .git/hooks/pre-commit-ai-cleanup
+chmod +x .claudedirector/tests/run_mcp_transparency_tests.py
+
+# Fix file permissions
+find .claudedirector -name "*.py" -exec chmod +x {} \;
+```
+
+### **Performance Optimization**
+
+#### **Memory Management**
+```bash
+# Clear conversation cache
+rm -rf .claudedirector/cache/conversations/*
+
+# Optimize database
+sqlite3 data/strategic_memory.db "VACUUM;"
+```
+
+#### **Response Time Tuning**
+```yaml
+# .claudedirector/config/performance.yaml
+mcp_settings:
+  timeout: 5  # Reduce for faster responses
+  cache_ttl: 3600  # Increase for better caching
+
+transparency:
+  complexity_threshold: 4  # Increase to reduce MCP calls
+```
+
+## 🚀 **Next Steps**
+
+After successful installation:
+
+1. **Quick Start**: Follow [docs/setup/QUICK_START.md](./QUICK_START.md) for immediate usage
+2. **Development**: See [docs/development/DEVELOPMENT_GUIDE.md](../development/DEVELOPMENT_GUIDE.md) for extending ClaudeDirector
+3. **Architecture**: Review [docs/architecture/OVERVIEW.md](../architecture/OVERVIEW.md) for system understanding
+4. **Configuration**: Customize settings in [docs/reference/CONFIGURATION.md](../reference/CONFIGURATION.md)
+
+---
+
+**🎯 Installation complete! ClaudeDirector is ready for strategic leadership guidance.**

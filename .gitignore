@@ -276,3 +276,7 @@ workspace-backup-*/
 *.tar.gz
 *.zip
 *.bak
+.mypy_cache/
+*.tmp
+*_temp.*
+*_backup.*
