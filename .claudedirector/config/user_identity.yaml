@@ -1,0 +1,47 @@
+# ClaudeDirector User Identity Configuration
+# Centralizes user information for personalized system messages and documentation
+
+# User Identity
+user:
+  # Primary name for system messages and documentation
+  name: "Cantu"
+
+  # Preferred work name (used in professional contexts)
+  work_name: "Cantu"
+
+  # Full name (used in formal documentation)
+  full_name: "Chris Cantu"
+
+  # Role/title for context
+  role: "Engineering Director"
+
+  # Organization for context
+  organization: "Platform Team"
+
+# Usage Context
+# When to use which name:
+# - name: Default for all system messages ("Cantu's requirement")
+# - work_name: Professional contexts if specified, falls back to name
+# - full_name: Formal documentation if specified, falls back to name
+# - If all empty, system uses "User" as default
+
+# P0 Enforcement Attribution
+# The P0 test enforcement system will use the configured name to properly
+# attribute requirements instead of hardcoding names.
+
+# Example Configuration:
+# user:
+#   name: "Cantu"
+#   work_name: "Cantu"
+#   full_name: "Chris Cantu"
+#   role: "Engineering Director"
+#   organization: "Platform Team"
+
+# Configuration Priority:
+# 1. Environment variables (CLAUDEDIRECTOR_USER_NAME, etc.)
+# 2. This configuration file
+# 3. Default "User"
+
+# Security Note:
+# This file may contain personal information. Consider adding to .gitignore
+# for shared repositories or use environment variables for sensitive deployments.
