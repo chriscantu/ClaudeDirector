@@ -1,26 +1,26 @@
 # Getting Started with ClaudeDirector
 
-**Complete setup guide for engineering leaders at any level.**
+Complete setup guide for engineering leaders at any level.
 
-## 🚀 **Installation & Setup**
+## Installation & Setup
 
-### **💻 Cursor Users** (Recommended)
-1. **Open this repo in Cursor**
-2. **Ask any strategic question** - "How should we structure our teams for this initiative?"
-3. **Complete 60-second role customization** - First-time users see personalized setup wizard
-4. **Get tailored strategic guidance** - Personas and frameworks activate for your specific role
-5. **Your context persists** - No need to re-explain across sessions
+### Cursor Users (Recommended)
+1. Open this repo in Cursor
+2. Ask any strategic question: "How should we structure our teams for this initiative?"
+3. Complete 60-second role customization - First-time users see personalized setup wizard
+4. Get tailored strategic guidance - Personas and frameworks activate for your specific role
+5. Your context persists - No need to re-explain across sessions
 
-### **💬 Claude Chat Users**
-1. **Share this repo**: `https://github.com/chriscantu/ClaudeDirector`
-2. **Ask your first strategic question** - Automatic role detection and customization wizard
-3. **Experience complete transparency** - See how insights are enhanced for your role
+### Claude Chat Users
+1. Share this repo: `https://github.com/chriscantu/ClaudeDirector`
+2. Ask your first strategic question - Automatic role detection and customization wizard
+3. Experience complete transparency - See how insights are enhanced for your role
 
-## 🎯 **First-Run Wizard**
+## First-Run Wizard
 
-**The setup wizard automatically activates on your first strategic question and takes just 60 seconds!**
+The setup wizard automatically activates on your first strategic question and takes just 60 seconds.
 
-### **🚀 Supported Leadership Roles**
+### Supported Leadership Roles
 - **🏢 VP/SVP Engineering** - Executive strategy, board communication, organizational scaling
 - **💻 CTO** - Technology vision, strategic leadership, competitive positioning
 - **🎯 Engineering Director** - Platform strategy, team coordination, cross-functional alignment
@@ -28,24 +28,24 @@
 - **⚡ Staff/Principal Engineer** - Technical strategy, influence without authority, system design
 - **🚀 Product Engineering Lead** - Product-engineering alignment, user impact optimization
 
-### **🏢 Organization Types**
+### Organization Types
 - **Startup** (5-50 people) - Resource optimization and rapid scaling challenges
 - **Scale-up** (50-500 people) - Platform building and process establishment
 - **Enterprise** (500+ people) - Governance, coordination, and organizational complexity
 - **Consulting/Agency** - Client delivery focus and team efficiency optimization
 
-### **🎯 Challenge Focus Areas**
+### Challenge Focus Areas
 - **Team Leadership** - People management, team dynamics, performance optimization
 - **Technical Strategy** - Architecture decisions, technology roadmap, platform evolution
 - **Executive Communication** - Board presentations, stakeholder management, strategic messaging
 - **Cross-Team Coordination** - Dependencies, alignment, organizational effectiveness
 - **Product Delivery** - User impact, delivery optimization, product-engineering collaboration
 
-## 💬 **Example First Questions**
+## Example First Questions
 
-**Ask questions like these to trigger the customization wizard:**
+Ask questions like these to trigger the customization wizard:
 
-### **VP/SVP Engineering**
+### VP/SVP Engineering
 - "I need to present our technology strategy to the board"
 - "How do we scale engineering organization from 50 to 200 people?"
 - "What's our competitive positioning in the market?"
