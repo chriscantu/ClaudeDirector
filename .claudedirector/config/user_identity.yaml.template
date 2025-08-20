@@ -5,19 +5,19 @@
 # Copy this to user_identity.yaml and customize with your information
 user:
   # Primary name for system messages and documentation
-  name: "Cantu"
+  name: "User"
 
-  # Preferred work name (used in professional contexts)  
-  work_name: "Cantu"
+  # Preferred work name (used in professional contexts)
+  work_name: ""
 
   # Full name (used in formal documentation)
-  full_name: "Chris Cantu"
+  full_name: ""
 
   # Role/title for context
-  role: "Engineering Director"
+  role: ""
 
   # Organization for context
-  organization: "Platform Team"
+  organization: ""
 
 # Usage Context
 # When to use which name:
