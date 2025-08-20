@@ -290,7 +290,7 @@ Let me help you design metrics that connect engineering work to user value...
 - **[🚀 Getting Started](GETTING_STARTED.md)** - Quick setup and first strategic question
 - **[🤖 Full Capabilities](CAPABILITIES.md)** - Complete persona and framework overview
 - **[🧠 Strategic Frameworks](STRATEGIC_FRAMEWORKS_GUIDE.md)** - 25+ proven methodologies
-- **[🏗️ Architecture Guide](ARCHITECTURE.md)** - Technical implementation details
+- **[🏗️ Architecture Guide](architecture/OVERVIEW.md)** - Technical implementation details
 
 ---
 

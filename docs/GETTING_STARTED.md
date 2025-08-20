@@ -94,7 +94,7 @@ Once configured, ClaudeDirector automatically:
 - **[🤖 Meet Your AI Directors](CAPABILITIES.md)** - Complete persona and capability overview
 - **[🎯 Role-Specific Guide](ROLES_GUIDE.md)** - Deep dive into your specific leadership role
 - **[🧠 Strategic Frameworks](STRATEGIC_FRAMEWORKS_GUIDE.md)** - 25+ proven methodologies
-- **[🏗️ Architecture Guide](ARCHITECTURE.md)** - Technical implementation details
+- **[🏗️ Architecture Guide](architecture/OVERVIEW.md)** - Technical implementation details
 
 ---
 
