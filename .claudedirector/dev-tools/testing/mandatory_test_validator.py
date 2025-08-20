@@ -75,10 +75,74 @@ def check_environment():
     return True
 
 def run_critical_tests():
-    """Run critical tests - DISABLED during architectural cleanup"""
-    print("🎯 Running CRITICAL tests (TEMPORARILY DISABLED)...")
-    print("✅ Critical tests skipped during architectural cleanup")
-    return True
+    """Run critical tests - FULLY ENABLED"""
+    print("🎯 Running CRITICAL tests (FULLY ENABLED - NO SKIPPING)...")
+
+    # Run the comprehensive test suite
+    return run_critical_tests_comprehensive()
+
+def run_critical_tests_comprehensive():
+    """Run comprehensive critical test suite with NO SKIPPING"""
+    print("\n🔥 COMPREHENSIVE CRITICAL TEST SUITE")
+    print("=" * 60)
+
+    tests_passed = 0
+    tests_total = 0
+
+    # Test 1: MCP Transparency P0 Tests
+    tests_total += 1
+    mcp_test_cmd = "python3 .claudedirector/tests/run_mcp_transparency_tests.py"
+    if run_command(mcp_test_cmd, "🔧 MCP Transparency P0 Regression Tests"):
+        tests_passed += 1
+        print("  ✅ MCP transparency tests: PASSED")
+    else:
+        print("  ❌ MCP transparency tests: FAILED")
+
+    # Test 2: First-Run Wizard Tests
+    tests_total += 1
+    wizard_tests = PROJECT_ROOT / "docs" / "testing" / "first_run_wizard_tests.py"
+    if wizard_tests.exists():
+        test_cmd = f"python3 {wizard_tests}"
+        if run_command(test_cmd, "🧪 First-Run Wizard Tests"):
+            tests_passed += 1
+            print("  ✅ First-run wizard tests: PASSED")
+        else:
+            print("  ❌ First-run wizard tests: FAILED")
+    else:
+        print("  ⚠️ First-run wizard tests: FILE NOT FOUND (skipping)")
+
+    # Test 3: Cursor Integration Tests
+    tests_total += 1
+    cursor_tests = PROJECT_ROOT / "docs" / "testing" / "run_cursor_tests.py"
+    if cursor_tests.exists():
+        test_cmd = f"python3 {cursor_tests}"
+        if run_command(test_cmd, "🔄 Cursor Integration Tests"):
+            tests_passed += 1
+            print("  ✅ Cursor integration tests: PASSED")
+        else:
+            print("  ❌ Cursor integration tests: FAILED")
+    else:
+        print("  ⚠️ Cursor integration tests: FILE NOT FOUND (skipping)")
+
+    # Test 4: AI Cleanup Enforcement Tests
+    tests_total += 1
+    cleanup_test_cmd = "python3 .git/hooks/pre-commit-ai-cleanup"
+    if run_command(cleanup_test_cmd, "🧹 AI Cleanup Enforcement Tests"):
+        tests_passed += 1
+        print("  ✅ AI cleanup enforcement: PASSED")
+    else:
+        print("  ❌ AI cleanup enforcement: FAILED")
+
+    # Results Summary
+    print("\n" + "=" * 60)
+    print(f"📊 CRITICAL TEST RESULTS: {tests_passed}/{tests_total} PASSED")
+
+    if tests_passed == tests_total:
+        print("🎉 ALL CRITICAL TESTS PASSED - COMMIT ALLOWED")
+        return True
+    else:
+        print(f"❌ {tests_total - tests_passed} CRITICAL TESTS FAILED - COMMIT BLOCKED")
+        return False
 
 def run_critical_tests_legacy():
     """Run the critical tests that must pass."""
