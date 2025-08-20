@@ -86,3 +86,11 @@ repos:
         language: python
         files: ^lib/claudedirector/p1_features/.*\.py$
         pass_filenames: false
+
+      - id: ai-cleanup-enforcement
+        name: 🧹 AI Cleanup Enforcement
+        entry: .git/hooks/pre-commit-ai-cleanup
+        language: script
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]

@@ -1,0 +1,139 @@
+# AI Cleanup Enforcement Configuration
+# Controls automatic detection and cleanup of AI-generated code excess
+
+# File size thresholds (lines)
+size_thresholds:
+  documentation: 200      # .md files shouldn't exceed this
+  test_files: 300        # test_*.py files
+  implementation: 500    # regular .py files
+  configuration: 100     # .yaml, .json files
+
+# Cleanup requirements
+cleanup_rules:
+  max_new_files_without_justification: 3    # Trigger review if more than 3 new files
+  max_total_additions_without_review: 1000  # Large additions need cleanup justification
+  required_cleanup_ratio: 0.1               # 10% cleanup for every addition
+  max_consecutive_ai_commits: 5             # Flag excessive AI commit patterns
+
+# AI-generated excess patterns
+excessive_patterns:
+
+  # Documentation verbosity indicators
+  redundant_docs:
+    - "## Implementation Details"
+    - "### Technical Specifications"
+    - "#### Code Examples"
+    - "##### Usage Instructions"
+    - "###### Advanced Configuration"
+    - "## Complete System Overview"
+    - "### Comprehensive Guide"
+    - "#### Detailed Analysis"
+
+  # Temporary file patterns that should be cleaned up
+  temporary_artifacts:
+    - "test_.*\\.py$"
+    - ".*_temp\\..*$"
+    - ".*_backup\\..*$"
+    - ".*\\.tmp$"
+    - "scratch_.*"
+    - "debug_.*"
+    - "experiment_.*"
+    - ".*_working\\..*$"
+    - ".*_draft\\..*$"
+
+  # AI verbosity markers in content
+  ai_verbosity_markers:
+    - "comprehensive.*implementation"
+    - "detailed.*analysis"
+    - "complete.*system"
+    - "fully.*documented"
+    - "extensive.*testing"
+    - "thorough.*validation"
+    - "bulletproof.*solution"
+    - "enterprise-grade.*system"
+
+  # Placeholder/incomplete code patterns
+  redundant_code:
+    - "# TODO:.*implement"
+    - "# FIXME:.*placeholder"
+    - "pass  # placeholder"
+    - "raise NotImplementedError"
+    - "# Example usage:"
+    - "# This is a placeholder"
+    - "# TODO: Add implementation"
+
+# Enforcement levels
+enforcement:
+  # CRITICAL: Block commit
+  critical_violations:
+    - "EXCESSIVE.*DOCS"       # Documentation too large
+    - "PLACEHOLDER.*CODE"     # Unfinished implementations
+    - "TEMPORARY.*ARTIFACT"   # Temp files being committed
+
+  # WARNING: Allow but flag
+  warning_violations:
+    - "AI.*VERBOSITY"         # Excessive AI language
+    - "REDUNDANT.*SECTIONS"   # Too many doc sections
+    - "EXCESSIVE.*COMMENTS"   # Comment-to-code ratio too high
+
+  # INFO: Track but don't block
+  info_violations:
+    - "INSUFFICIENT.*CLEANUP" # Not enough cleanup relative to additions
+
+# Auto-cleanup actions
+auto_cleanup:
+  enabled: true
+
+  # Patterns to automatically remove
+  remove_patterns:
+    - "\\.tmp$"
+    - "_backup\\."
+    - "_temp\\."
+    - "scratch_.*"
+
+  # Documentation consolidation rules
+  consolidate_docs:
+    max_similar_files: 2      # Merge if more than 2 similar docs
+    similarity_threshold: 0.7  # 70% content similarity
+
+  # Code cleanup rules
+  remove_placeholders: true   # Remove TODO/FIXME placeholders
+  consolidate_tests: true     # Merge small test files
+
+# Reporting
+reporting:
+  generate_cleanup_script: true    # Create executable cleanup script
+  show_suggestions: true           # Show improvement suggestions
+  track_violations: true           # Log violations for patterns
+
+# Exemptions (files/patterns to skip)
+exemptions:
+  files:
+    - "docs/ARCHITECTURE.md"     # Architecture docs can be large
+    - "docs/IMPLEMENTATION_GUIDE.md"  # Implementation guides are comprehensive
+    - "README.md"                # Main readme exempt from size limits
+    - ".claudedirector/dev-tools/ai-cleanup/README.md"  # AI cleanup documentation
+
+  patterns:
+    - "test_.*integration.*"     # Integration tests can be large
+    - ".*_COMPLETE\\.md$"        # Completion documentation
+    - ".claudedirector/tests/.*" # Test framework files
+
+  directories:
+    - "docs/demo/"              # Demo documentation
+    - ".claudedirector/framework/"  # Framework files
+    - ".claudedirector/integration-protection/"  # Protection system
+
+# Custom rules for specific AI agents
+agent_specific:
+  claude:
+    # Claude tends to be verbose in documentation
+    enforce_doc_limits: true
+    consolidate_explanations: true
+    remove_excessive_examples: true
+
+  general_ai:
+    # General AI cleanup rules
+    remove_placeholder_comments: true
+    consolidate_temporary_files: true
+    enforce_cleanup_ratio: true
