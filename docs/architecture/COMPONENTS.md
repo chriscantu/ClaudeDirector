@@ -288,6 +288,87 @@ class PerformanceMonitor:
         """Monitor and optimize memory consumption"""
 ```
 
+### **P0 Test Enforcement System**
+```python
+class P0TestEnforcer:
+    """Zero-tolerance enforcement for critical P0 features"""
+
+    def run_mandatory_tests(self) -> P0TestResults:
+        """Execute all P0 tests with blocking on failure"""
+        return self._execute_blocking_tests([
+            "MCP Transparency P0",
+            "Conversation Tracking P0",
+            "Conversation Quality P0",
+            "First-Run Wizard P0",
+            "Cursor Integration P0"
+        ])
+
+    def validate_conversation_quality(self, session_id: str) -> float:
+        """Ensure conversation quality meets ≥0.7 threshold"""
+        quality_score = self.conversation_manager.calculate_quality(session_id)
+        if quality_score < 0.7:
+            raise P0QualityViolation(f"Quality {quality_score} below 0.7 threshold")
+        return quality_score
+
+    def block_commit_on_failure(self, test_results: P0TestResults) -> bool:
+        """Block git commits if any P0 test fails"""
+        return test_results.blocking_failures == 0
+```
+
+### **User Configuration Manager**
+```python
+class UserConfigManager:
+    """Template-based personal configuration with privacy protection"""
+
+    def __init__(self):
+        self.config_path = Path(".claudedirector/config/user_identity.yaml")
+        self.template_path = Path(".claudedirector/config/user_identity.yaml.template")
+
+    def load_user_identity(self) -> UserIdentity:
+        """Load user config, auto-create from template if missing"""
+        if not self.config_path.exists() and self.template_path.exists():
+            self._create_from_template()
+        return self._load_config()
+
+    def _create_from_template(self) -> None:
+        """Copy template to create personal config (never tracked in git)"""
+        shutil.copy2(self.template_path, self.config_path)
+        print(f"Created user config from template: {self.config_path}")
+
+    def get_user_attribution(self) -> str:
+        """Get personalized attribution for system messages"""
+        user = self.load_user_identity()
+        return f"{user.name}'s requirement"
+```
+
+### **Conversation Quality Manager**
+```python
+class ConversationQualityManager:
+    """AI-powered conversation quality assessment and improvement"""
+
+    def calculate_quality_score(self, context_data: Dict[str, Any]) -> float:
+        """Calculate comprehensive quality score (0.0-1.0)"""
+        factors = {
+            'conversation_completeness': 0.30,  # Topic coverage
+            'strategic_richness': 0.20,        # Framework usage
+            'persona_diversity': 0.15,         # Multi-persona engagement
+            'stakeholder_depth': 0.15,         # Stakeholder analysis
+            'strategic_coverage': 0.10,        # Strategic topic range
+            'actionable_outcomes': 0.10        # Decision support
+        }
+
+        weighted_score = sum(
+            self._assess_factor(context_data, factor) * weight
+            for factor, weight in factors.items()
+        )
+
+        return max(0.1, min(1.0, weighted_score))  # Ensure 0.1-1.0 range
+
+    def enhance_conversation_context(self, session_id: str) -> ConversationContext:
+        """Enhance conversation context for improved quality scoring"""
+        pass
+```
+
 ## 🔄 **Integration Components**
 
 ### **Cursor Integration Bridge**
