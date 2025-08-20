@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+"""
+ClaudeDirector User Configuration Utility
+Allows users to set up their identity for personalized system messages.
+"""
+
+import sys
+import os
+from pathlib import Path
+
+# Add the lib directory to the Python path
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
+
+def main():
+    """Main entry point for user configuration"""
+    try:
+        from config.user_config import UserConfigManager
+
+        print("🎯 ClaudeDirector User Configuration")
+        print("=" * 50)
+        print("Setting up personalized system messages and P0 enforcement attribution.")
+        print()
+
+        manager = UserConfigManager()
+        manager.configure_user_interactive()
+
+        print("\n🎉 Configuration complete!")
+        print("System messages will now use your configured name.")
+
+    except ImportError as e:
+        print(f"❌ Error: Could not import user configuration module: {e}")
+        print("Make sure you're running this from the ClaudeDirector project directory.")
+        sys.exit(1)
+    except KeyboardInterrupt:
+        print("\n\n⚠️ Configuration cancelled by user.")
+        sys.exit(0)
+    except Exception as e:
+        print(f"❌ Unexpected error: {e}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
