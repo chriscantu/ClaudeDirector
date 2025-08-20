@@ -287,3 +287,10 @@ workspace-backup-*/
 # P0 test results may contain generic stakeholder terms that trigger security scans
 .claudedirector/tests/p0_enforcement/results/
 **/p0_test_results_*.json
+
+# ======================================
+# USER CONFIGURATION PROTECTION
+# ======================================
+# User identity configuration contains personal information and should not be committed
+.claudedirector/config/user_identity.yaml
+**/user_identity.yaml
