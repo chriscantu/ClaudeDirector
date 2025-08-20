@@ -1,6 +1,7 @@
 # P0 Feature Test Definitions
 # CRITICAL: These tests must NEVER be skipped and MUST pass before any commit
-# Michael's requirement: "ensure that all P0 features are always tested moving forward and never skipped"
+# Enforces user requirement: "ensure that all P0 features are always tested moving forward and never skipped"
+# Note: User name is configurable via .claudedirector/config/user_identity.yaml
 
 version: "1.0"
 enforcement_policy: "ZERO_TOLERANCE"

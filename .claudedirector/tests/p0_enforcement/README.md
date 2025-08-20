@@ -2,10 +2,12 @@
 
 ## 🎯 **Purpose**
 
-This system enforces **Michael's critical requirement**:
+This system enforces the **user's critical requirement**:
 > "Ensure that all P0 features are always tested moving forward and never skipped"
 
 **Zero tolerance policy** for P0 feature regressions.
+
+**Note**: User name is configurable via `.claudedirector/config/user_identity.yaml` - system messages will use the configured name for proper attribution.
 
 ## 🚨 **Enforcement Levels**
 
@@ -170,6 +172,23 @@ quality_gates:
 
 ## 🚨 **Remember: Zero Tolerance**
 
-**Michael's requirement is absolute**: All P0 features must always be tested and never skipped. This system enforces that requirement with technical controls and clear accountability.
+**The user's requirement is absolute**: All P0 features must always be tested and never skipped. This system enforces that requirement with technical controls and clear accountability.
 
 **Any attempt to bypass P0 tests is a critical system failure and must be addressed immediately.**
+
+## 👤 **User Configuration**
+
+The system displays personalized messages using the configured user name. To set up your identity:
+
+```bash
+# Interactive setup
+python3 .claudedirector/lib/config/user_config.py
+
+# Or edit directly
+nano .claudedirector/config/user_identity.yaml
+```
+
+**Environment Variable Support**:
+- `CLAUDEDIRECTOR_USER_NAME`: Primary name
+- `CLAUDEDIRECTOR_WORK_NAME`: Professional name
+- `CLAUDEDIRECTOR_FULL_NAME`: Full formal name
