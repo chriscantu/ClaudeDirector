@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **🏗️ Complete Architecture Documentation**: Comprehensive system architecture with enhanced visual clarity
-  - **ARCHITECTURE.md**: Complete system diagrams with legends, color coding, and flow descriptions
+  - **architecture/**: Complete system diagrams with legends, color coding, and flow descriptions
   - **IMPLEMENTATION_GUIDE.md**: Developer implementation guide with code examples and best practices
   - **TECHNICAL_INDEX.md**: Consolidated technical documentation index for easy navigation
   - **Universal diagram reference**: Consistent visual conventions across all technical diagrams
@@ -49,7 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **📚 Comprehensive Root README**: Restored strategic value proposition with immediate business impact demonstration
   - **30-Second Demo**: Clear before/after transformation showing fragmented strategy → systematic strategic thinking
-  - **Quantified ROI Metrics**: $50K-100K cost avoidance with 40-60% strategic decision velocity improvement  
+  - **Quantified ROI Metrics**: $50K-100K cost avoidance with 40-60% strategic decision velocity improvement
   - **10-Second Quickstart**: Zero-configuration setup for both Cursor and Claude Chat users
   - **Progressive User Journey**: Value recognition → quick start → advanced capabilities → executive communication
   - **Real Strategic Scenarios**: Platform investment justification, crisis resolution, architecture decisions
