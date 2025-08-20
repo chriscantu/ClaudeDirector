@@ -28,17 +28,20 @@ export CLAUDEDIRECTOR_FULL_NAME="Your Full Name"
 ## 📁 **Configuration File**
 
 **Location**: `.claudedirector/config/user_identity.yaml`
+**Template**: `.claudedirector/config/user_identity.yaml.template`
 
 **Example Configuration**:
 ```yaml
 # ClaudeDirector User Identity Configuration
 user:
-  name: "Cantu"
-  work_name: "Cantu"
-  full_name: "Chris Cantu"
-  role: "Engineering Director"
-  organization: "Platform Team"
+  name: "Your Name"
+  work_name: "Your Work Name"
+  full_name: "Your Full Name"
+  role: "Your Role"
+  organization: "Your Organization"
 ```
+
+**Note**: The actual `user_identity.yaml` file is in `.gitignore` to protect personal information. Copy from the template to create your personal configuration.
 
 ## 🎯 **Name Usage Contexts**
 
@@ -108,10 +111,11 @@ attribution = get_user_attribution()  # "Cantu's requirement"
 - Consider adding to `.gitignore` for shared repositories
 - Use environment variables for CI/CD environments
 
-### **Recommended .gitignore Addition**
+### **Privacy Protection (Already Implemented)**
 ```bash
-# User-specific configuration
+# User-specific configuration (already in .gitignore)
 .claudedirector/config/user_identity.yaml
+**/user_identity.yaml
 ```
 
 ### **CI/CD Environment Setup**
