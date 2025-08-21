@@ -35,7 +35,7 @@ frameworks = engine.detect_frameworks(content)
 
 ## Integration Status
 ✅ **Production Ready**: All transparency features validated in CI
-✅ **Cursor Compatible**: Real-time disclosure in Cursor conversations  
+✅ **Cursor Compatible**: Real-time disclosure in Cursor conversations
 ✅ **Enterprise Grade**: Complete audit trails and governance compliance
 
 ## Architecture
