@@ -185,9 +185,17 @@ class TestConversationTrackingP0(unittest.TestCase):
 
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                from core.integrated_conversation_manager import (
-                    IntegratedConversationManager,
-                )
+
+                # Try importing as installed package first (CI environment)
+                try:
+                    from claudedirector.core.integrated_conversation_manager import (
+                        IntegratedConversationManager,
+                    )
+                except ImportError:
+                    # Fallback to local import (development environment)
+                    from core.integrated_conversation_manager import (
+                        IntegratedConversationManager,
+                    )
 
                 # Test basic initialization (should not crash)
                 manager = IntegratedConversationManager()

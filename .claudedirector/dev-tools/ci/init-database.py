@@ -67,6 +67,24 @@ def create_strategic_database(db_path: str):
                 FOREIGN KEY (session_id) REFERENCES session_context(session_id)
             );
 
+            CREATE TABLE IF NOT EXISTS session_checkpoints (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id TEXT NOT NULL,
+                checkpoint_type TEXT NOT NULL,
+                checkpoint_data TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (session_id) REFERENCES session_context(session_id)
+            );
+
+            CREATE TABLE IF NOT EXISTS session_recovery_log (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id TEXT NOT NULL,
+                recovery_action TEXT NOT NULL,
+                recovery_status TEXT DEFAULT 'pending',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (session_id) REFERENCES session_context(session_id)
+            );
+
             -- Create indexes for performance
             CREATE INDEX IF NOT EXISTS idx_session_context_session_id ON session_context(session_id);
             CREATE INDEX IF NOT EXISTS idx_session_context_type ON session_context(session_type);
