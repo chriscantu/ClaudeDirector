@@ -7,7 +7,6 @@ End-to-end workflow testing for director profile management
 import pytest
 import tempfile
 import yaml
-import subprocess
 import os
 from pathlib import Path
 from click.testing import CliRunner
@@ -681,7 +680,6 @@ class TestPerformanceAndScalability:
 
         # Test concurrent calculations
         import threading
-        import time
 
         results = []
 

@@ -10,7 +10,7 @@ import unittest
 import subprocess
 import statistics
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Tuple
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Add project paths

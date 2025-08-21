@@ -6,8 +6,8 @@ User-friendly interface for intelligent stakeholder management with local AI
 
 import json
 import sys
-from datetime import datetime
 from pathlib import Path
+from typing import Dict
 
 from memory.intelligent_stakeholder_detector import IntelligentStakeholderDetector
 

@@ -6,22 +6,15 @@ Ensures zero-setup, chat-only, backwards compatibility principles.
 """
 
 import unittest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch
 import time
-from typing import Dict, List, Any
 
 # Import Phase 4.1 components
 from claudedirector.core.persona_enhanced_integration import (
     ConversationIntelligenceEngine,
     PersonaFrameworkOrchestrator,
-    EnhancedPersonaResponse,
 )
 
-from claudedirector.core.enhanced_framework_engine import (
-    EnhancedFrameworkEngine,
-    ConversationContext,
-    EnhancedSystematicResponse,
-)
 
 
 class TestConversationIntelligenceIntegration(unittest.TestCase):

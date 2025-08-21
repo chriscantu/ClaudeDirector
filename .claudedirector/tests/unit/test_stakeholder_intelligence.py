@@ -2,7 +2,7 @@
 Unit tests for stakeholder intelligence functionality
 """
 
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 from claudedirector.core.exceptions import AIDetectionError

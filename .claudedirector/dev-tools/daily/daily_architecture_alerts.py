@@ -4,7 +4,6 @@ ClaudeDirector Daily Architecture Health Alerts
 Martin's proactive migration notification system
 """
 
-import json
 import sys
 from datetime import datetime
 from pathlib import Path

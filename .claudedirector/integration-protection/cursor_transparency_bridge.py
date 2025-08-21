@@ -3,9 +3,7 @@ Cursor Transparency Bridge
 Ensures persona headers and framework detection are applied to responses
 """
 
-import re
-from typing import Dict, List, Optional, Tuple
-from pathlib import Path
+from typing import Dict, Optional
 from datetime import datetime
 
 # Import transparency system

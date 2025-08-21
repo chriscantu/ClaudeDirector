@@ -7,9 +7,8 @@ content sizes and complexity levels.
 """
 
 import time
-import unittest
 from unittest.mock import Mock, patch
-from typing import Callable, Dict, Any, List
+from typing import Callable, Dict, Any
 
 try:
     from claudedirector.intelligence.task import TaskIntelligence

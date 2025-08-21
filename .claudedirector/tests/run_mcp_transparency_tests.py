@@ -8,7 +8,6 @@ feature works correctly in all scenarios and integration points.
 """
 
 import sys
-import os
 import subprocess
 import time
 from pathlib import Path

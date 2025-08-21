@@ -4,10 +4,7 @@ Test script to validate conversation quality improvements
 """
 
 import sys
-import os
 from pathlib import Path
-import json
-from datetime import datetime
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
@@ -23,7 +20,6 @@ def test_conversation_quality_improvements():
     try:
         # Import the enhanced managers
         from core.integrated_conversation_manager import IntegratedConversationManager
-        from memory.session_context_manager import SessionContextManager
 
         print("✅ Successfully imported enhanced conversation managers")
 

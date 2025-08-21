@@ -4,12 +4,10 @@ Validates that ClaudeDirector maintains zero-setup compliance with MCP integrati
 """
 
 import pytest
-import tempfile
-import subprocess
 import sys
 import os
 from pathlib import Path
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 
 
 class TestZeroSetupValidation:

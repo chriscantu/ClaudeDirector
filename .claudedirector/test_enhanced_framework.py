@@ -7,8 +7,6 @@ Validates session context preservation and recovery functionality
 import os
 import sys
 import tempfile
-import json
-from datetime import datetime
 
 # Add lib directory to Python path
 current_dir = os.path.dirname(os.path.abspath(__file__))

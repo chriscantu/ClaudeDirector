@@ -18,7 +18,6 @@ Exit Codes:
 
 import sys
 import subprocess
-import os
 from pathlib import Path
 
 # Add project root to Python path

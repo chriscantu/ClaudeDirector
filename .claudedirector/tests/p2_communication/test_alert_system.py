@@ -6,8 +6,7 @@ Tests alert generation, stakeholder filtering, and CLI formatting.
 """
 
 import unittest
-from unittest.mock import Mock, patch
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Dict, Any
 
 import sys
@@ -19,8 +18,6 @@ from lib.claudedirector.p2_communication.integrations.alert_system import (
     IntelligentAlertSystem,
     AlertSeverity,
     AlertCategory,
-    Alert,
-    AlertRule,
 )
 from lib.claudedirector.p2_communication.interfaces.report_interface import (
     StakeholderType,

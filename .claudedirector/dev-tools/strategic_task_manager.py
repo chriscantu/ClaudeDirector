@@ -7,9 +7,9 @@ Comprehensive task management CLI with AI detection and stakeholder integration
 import json
 import sqlite3
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 import structlog
 

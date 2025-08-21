@@ -6,7 +6,7 @@ listing, discovery, validation, and comparison operations.
 """
 
 import unittest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 import json
 
 import sys
@@ -23,7 +23,6 @@ from claudedirector.core.template_engine import (
     DirectorTemplate,
     TemplatePersonaConfig,
     TemplateActivationKeywords,
-    TemplateValidationError,
 )
 
 

@@ -5,7 +5,6 @@ Allows users to set up their identity for personalized system messages.
 """
 
 import sys
-import os
 from pathlib import Path
 
 # Add the lib directory to the Python path

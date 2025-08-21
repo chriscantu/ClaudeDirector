@@ -4,7 +4,6 @@ P0 Validation: Test that conversation quality can reach >0.7 target
 """
 
 import sys
-import os
 from pathlib import Path
 
 # Add project root to path

@@ -5,10 +5,9 @@ Comprehensive tests for persona framework integration with P2.1 system.
 """
 
 import unittest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 from lib.claudedirector.persona_integration.persona_bridge import (
     PersonaP2Bridge,
-    PersonaRequest,
     PersonaResponse,
 )
 

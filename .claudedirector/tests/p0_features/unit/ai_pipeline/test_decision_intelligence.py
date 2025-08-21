@@ -8,10 +8,8 @@ Berny's comprehensive testing framework ensuring:
 - Edge case handling and error recovery
 """
 
-import pytest
 import time
-from unittest.mock import patch, MagicMock
-from pathlib import Path
+from unittest.mock import patch
 
 from lib.claudedirector.p0_features.shared.ai_pipeline.decision_intelligence import (
     DecisionIntelligenceEngine,

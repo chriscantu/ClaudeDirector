@@ -5,7 +5,6 @@ Validates that .cursorrules integration works in live Cursor conversations
 """
 
 import sys
-import os
 import unittest
 from pathlib import Path
 

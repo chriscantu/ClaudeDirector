@@ -7,11 +7,8 @@ CRITICAL: These tests ensure hybrid installation never breaks zero setup princip
 import unittest
 import sys
 import tempfile
-import json
 from pathlib import Path
-from unittest.mock import patch, MagicMock, call
-import subprocess
-import time
+from unittest.mock import patch
 
 # Add project paths
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
@@ -21,7 +18,6 @@ sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
 try:
     from mcp.hybrid_installation_manager import (
         HybridInstallationManager,
-        InstallationCommand,
         InstallationResult,
         UsageStats,
     )

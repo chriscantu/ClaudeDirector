@@ -5,7 +5,6 @@ Orchestrates all unit tests with coverage reporting for CI/CD pipeline
 """
 
 import sys
-import unittest
 import subprocess
 import time
 from pathlib import Path

@@ -6,8 +6,7 @@ context analysis, persona selection, and conversation state management.
 """
 
 import unittest
-from unittest.mock import Mock, patch, MagicMock
-from datetime import datetime, timedelta
+from unittest.mock import Mock
 import time
 
 import sys
@@ -21,7 +20,6 @@ from claudedirector.core.persona_activation_engine import (
     ConversationStateEngine,
     ContextResult,
     PersonaSelection,
-    PersonaActivation,
     ConfidenceLevel,
 )
 

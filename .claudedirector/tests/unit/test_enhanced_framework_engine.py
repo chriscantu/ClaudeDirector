@@ -6,16 +6,13 @@ Ensures backwards compatibility and zero-setup principles.
 """
 
 import unittest
-from unittest.mock import Mock, patch, MagicMock
-import time
-from typing import Dict, List, Any
+from unittest.mock import Mock, patch
 
 # Import the enhanced framework engine
 from claudedirector.core.enhanced_framework_engine import (
     EnhancedFrameworkEngine,
     ConversationMemoryEngine,
     MultiFrameworkIntegrationEngine,
-    ConversationContext,
     MultiFrameworkAnalysis,
     EnhancedSystematicResponse,
 )

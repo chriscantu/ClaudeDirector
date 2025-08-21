@@ -7,9 +7,7 @@ Tests complete strategic leadership workflows from user input to strategic outpu
 import sys
 import time
 import unittest
-import tempfile
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 # Add project paths
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent

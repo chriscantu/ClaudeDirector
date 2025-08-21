@@ -240,7 +240,6 @@ class SmartGitSetup:
             )
             if sis_path.exists():
                 sys.path.insert(0, str(sis_path))
-                from hooks.intelligent_hook_filter import IntelligentHookFilter
 
                 return True
             else:

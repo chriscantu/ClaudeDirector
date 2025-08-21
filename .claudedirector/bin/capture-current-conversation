@@ -5,9 +5,6 @@ Martin's tool to manually populate session database with existing conversation
 """
 
 import sys
-import os
-import json
-import uuid
 from datetime import datetime
 from pathlib import Path
 

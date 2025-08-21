@@ -9,11 +9,8 @@ import sqlite3
 import tempfile
 import shutil
 import json
-import uuid
-from datetime import datetime, timedelta
 from pathlib import Path
 import sys
-import os
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent

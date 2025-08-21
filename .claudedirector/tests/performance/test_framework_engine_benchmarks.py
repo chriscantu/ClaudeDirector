@@ -6,9 +6,7 @@ engine that powers ClaudeDirector's strategic thinking capabilities.
 """
 
 import time
-import unittest
-from unittest.mock import Mock, patch
-from typing import Callable, Dict, Any, List
+from typing import Callable, Dict, Any
 
 try:
     from claudedirector.frameworks.embedded_framework_engine import (

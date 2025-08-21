@@ -4,9 +4,7 @@ Strategic Scenario Demo: Real Director Workflow
 Demonstrates ClaudeDirector value through realistic usage patterns
 """
 
-import os
 import subprocess
-import tempfile
 import time
 from pathlib import Path
 

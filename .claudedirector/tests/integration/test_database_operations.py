@@ -6,7 +6,6 @@ import sqlite3
 import tempfile
 from pathlib import Path
 
-import pytest
 from claudedirector.core.config import ClaudeDirectorConfig
 from claudedirector.core.database import DatabaseManager
 

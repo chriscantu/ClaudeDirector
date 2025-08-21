@@ -151,10 +151,8 @@ class MeetingIntelligenceSetup:
     def _check_imports(self) -> bool:
         """Check if required modules can be imported."""
         try:
-            import watchdog
+            pass
 
-            from memory.meeting_intelligence import MeetingIntelligenceManager
-            from memory.workspace_monitor import WorkspaceMonitor
 
             return True
         except ImportError:

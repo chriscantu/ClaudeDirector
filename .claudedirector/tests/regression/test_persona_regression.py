@@ -5,7 +5,7 @@ Ensures existing persona behavior is preserved during MCP integration.
 
 import pytest
 import time
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 
 class TestPersonaRegression:

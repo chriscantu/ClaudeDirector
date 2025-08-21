@@ -5,13 +5,12 @@ Real-time security monitoring without public dashboard exposure
 --persona-martin: Enterprise security architecture
 """
 
-import os
 import json
 import time
 import hashlib
 from pathlib import Path
 from datetime import datetime, timedelta
-from typing import Dict, List
+from typing import Dict
 import subprocess
 
 
