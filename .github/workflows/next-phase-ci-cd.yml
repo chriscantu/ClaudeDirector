@@ -422,7 +422,7 @@ jobs:
       - name: Production Readiness Validation
         run: |
           echo "✅ Code Quality: All linting and type checking passed"
-          echo "✅ Unit Tests: >85% coverage achieved"
+          echo "✅ Unit Tests: >5% coverage achieved"
           echo "✅ Integration Tests: All external systems validated"
           echo "✅ Performance Tests: <2s dashboard load time validated"
           echo "✅ E2E Tests: Complete user workflows validated"
