@@ -176,6 +176,14 @@ jobs:
           echo "🔍 Attempting installation:"
           python -m pip install -e ./.claudedirector/lib/
 
+      - name: Initialize Strategic Database for P0 Tests
+        run: |
+          echo "💾 Initializing strategic memory database for conversation tracking"
+          python .claudedirector/dev-tools/ci/init-database.py
+          echo "🔍 Verifying database creation:"
+          ls -la data/
+          sqlite3 data/strategic_memory.db ".tables"
+
       - name: Run P0 Regression Test Suite
         run: |
           echo "🚀 Running Comprehensive P0 Regression Tests"
