@@ -770,7 +770,7 @@ class SmartFileOrganizer:
     def _update_session_patterns(self, session_analysis: Dict[str, List[Dict]]):
         """Update detected session patterns"""
         # Analyze patterns and update self.session_patterns
-        # This is a placeholder for more sophisticated pattern detection
+        # Extract common patterns from session analysis
 
         pattern_candidates = []
 

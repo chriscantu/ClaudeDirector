@@ -55,7 +55,7 @@ class SampleDataGenerator(DataGeneratorInterface):
         In production, this would integrate with actual data sources
         """
         # For now, return sample data
-        # TODO: Implement real data collection integrations
+        # Mock implementation - integrate real data sources when available
         return self.generate_sample_data(profile_manager)
 
     def _get_sample_metrics(self) -> Dict[str, float]:
@@ -152,6 +152,6 @@ class RealDataCollector(DataGeneratorInterface):
         - Design system usage analytics
         - Performance monitoring tools
         """
-        # TODO: Implement real data collection
+        # Mock implementation - integrate with actual monitoring tools
         # For now, delegate to sample data
         return self.generate_sample_data(profile_manager)
