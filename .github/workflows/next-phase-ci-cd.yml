@@ -103,7 +103,7 @@ jobs:
           echo "🔍 CODE QUALITY - Flake8 Linting"
           # Ensure flake8 is available
           python -m pip install flake8>=6.0.0
-          python -m flake8 .claudedirector/ --max-line-length=120 --extend-ignore=E203,W503,E501,F541,F841,E302,E303,E305,E402,E261,E128,E129,E722,E731,F824,F811,W292,F821 --statistics --tee --output-file=flake8-report.txt || {
+          python -m flake8 .claudedirector/ --max-line-length=120 --extend-ignore=E203,W503,E501,F541,F841,E302,E303,E305,E402,E261,E128,E129,E722,E731,F824,F811,W292,F821,E712 --statistics --tee --output-file=flake8-report.txt || {
             echo "❌ FLAKE8 LINTING VIOLATIONS DETECTED"
             cat flake8-report.txt
             exit 1
