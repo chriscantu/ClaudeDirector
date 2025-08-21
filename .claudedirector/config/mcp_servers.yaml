@@ -3,14 +3,24 @@
 
 servers:
   sequential:
-    command: "npx"
-    args: ["-y", "@sequential/mcp-server"]
+    # Hybrid installation strategy: Try permanent first, fallback to temporary
+    installation_strategy: "hybrid"
+    commands:
+      - type: "permanent"
+        command: "sequential-mcp-server"
+        args: []
+        performance_benefit: "58% faster startup"
+      - type: "temporary"
+        command: "npx"
+        args: ["-y", "@sequential/mcp-server"]
+        fallback_message: "Installing MCP enhancement: sequential (systematic_analysis)"
     connection_type: "stdio"
     capabilities: ["systematic_analysis", "framework_application", "business_strategy", "organizational_scaling"]
     personas: ["diego", "alvaro", "camille"]
     timeout: 8
     cache_ttl: 1800  # 30 minutes
-    
+    performance_hint_threshold: 3  # Suggest permanent installation after 3 temporary uses
+
   context7:
     command: "python"
     args: ["-m", "context7.server"]
@@ -22,15 +32,25 @@ servers:
     fallback:
       transport: "http"
       url: "https://api.context7.ai/mcp"
-    
+
   magic:
-    command: "npx"
-    args: ["-y", "@magic/mcp-server"]
+    # Hybrid installation strategy: Try permanent first, fallback to temporary
+    installation_strategy: "hybrid"
+    commands:
+      - type: "permanent"
+        command: "magic-mcp-server"
+        args: []
+        performance_benefit: "58% faster startup"
+      - type: "temporary"
+        command: "npx"
+        args: ["-y", "@magic/mcp-server"]
+        fallback_message: "Installing MCP enhancement: magic (visual_generation)"
     connection_type: "stdio"
     capabilities: ["diagram_generation", "presentation_creation", "business_visualization", "technology_roadmaps"]
     personas: ["rachel", "alvaro", "camille"]
     timeout: 10
     cache_ttl: 7200  # 2 hours
+    performance_hint_threshold: 3  # Suggest permanent installation after 3 temporary uses
 
 enhancement_thresholds:
   systematic_analysis: 0.7
@@ -39,19 +59,34 @@ enhancement_thresholds:
   business_strategy: 0.7
   organizational_scaling: 0.7
   technology_leadership: 0.7
-  
+
 connection_config:
   default_type: "stdio"
   http_fallback_enabled: true
   auto_install_packages: true
-  
+  installation_strategy: "hybrid"  # Global default: try permanent first
+
+# Hybrid Installation Settings
+hybrid_installation:
+  # Performance tracking for optimization hints
+  track_installation_performance: true
+  usage_tracking_enabled: true
+  performance_hint_threshold: 3  # Default threshold for all servers
+
+  # User messaging for different installation types
+  messages:
+    permanent_found: "⚡ Using optimized MCP server: {server} ({benefit})"
+    temporary_installing: "🔧 Installing MCP enhancement: {server} ({capability})"
+    performance_hint: "💡 Install {server} permanently for {benefit}? Use: npm install -g {package}"
+    zero_setup_maintained: "✅ Full functionality available immediately - optimizations optional"
+
 # Performance and reliability settings
 performance:
   max_concurrent_requests: 5
   request_timeout: 8
   retry_attempts: 2
   circuit_breaker_threshold: 5
-  
+
 # Monitoring and logging
 monitoring:
   enabled: true

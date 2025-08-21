@@ -39,6 +39,16 @@ p0_features:
     introduced_version: "v2.2.0"
     owner: "martin"
 
+  - name: "Hybrid Installation P0"
+    test_module: ".claudedirector/tests/integration/test_hybrid_installation_p0.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 120
+    description: "Hybrid MCP installation strategy maintaining zero setup principle"
+    failure_impact: "Zero setup principle broken or performance optimization fails"
+    business_impact: "New users face installation barriers - adoption blocked"
+    introduced_version: "v2.3.0"
+    owner: "martin"
+
   # HIGH PRIORITY: Should pass but won't block commit
   - name: "First-Run Wizard P0"
     test_module: "docs/testing/first_run_wizard_tests.py"
