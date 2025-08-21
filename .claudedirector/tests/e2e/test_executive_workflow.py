@@ -16,6 +16,11 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
 
+# Add additional paths for CI environment
+import os
+sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
+sys.path.insert(0, os.getcwd())  # Current working directory
+
 try:
     from integration_protection.cursor_transparency_bridge import CursorTransparencyBridge
     TRANSPARENCY_AVAILABLE = True

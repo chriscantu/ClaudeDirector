@@ -16,6 +16,20 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
 
+# Add additional paths for CI environment
+import os
+sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
+sys.path.insert(0, os.getcwd())  # Current working directory
+
+# Set PYTHONPATH environment variable for subprocess calls
+os.environ['PYTHONPATH'] = ':'.join([
+    str(PROJECT_ROOT),
+    str(PROJECT_ROOT / ".claudedirector/lib"),
+    str(PROJECT_ROOT / ".claudedirector"),
+    os.getcwd(),
+    os.environ.get('PYTHONPATH', '')
+]).rstrip(':')
+
 class UnitTestSuiteRunner:
     """Comprehensive unit test runner with coverage reporting"""
 
@@ -50,7 +64,8 @@ class UnitTestSuiteRunner:
                 capture_output=True,
                 text=True,
                 timeout=120,  # 2 minute timeout per test file
-                cwd=self.project_root
+                cwd=self.project_root,
+                env=os.environ.copy()  # Pass environment variables including PYTHONPATH
             )
 
             duration = time.time() - start_time
@@ -137,6 +152,7 @@ class UnitTestSuiteRunner:
                 capture_output=True,
                 text=True,
                 cwd=self.project_root,
+                env=os.environ.copy(),  # Pass environment variables including PYTHONPATH
                 timeout=300  # 5 minute timeout for coverage
             )
 
@@ -145,7 +161,8 @@ class UnitTestSuiteRunner:
                 [sys.executable, "-m", "coverage", "report", "--show-missing"],
                 capture_output=True,
                 text=True,
-                cwd=self.project_root
+                cwd=self.project_root,
+                env=os.environ.copy()  # Pass environment variables including PYTHONPATH
             )
 
             # Parse coverage percentage

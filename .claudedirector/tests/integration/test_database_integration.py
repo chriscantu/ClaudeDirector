@@ -17,6 +17,11 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
 
+# Add additional paths for CI environment
+import os
+sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
+sys.path.insert(0, os.getcwd())  # Current working directory
+
 try:
     from memory.session_context_manager import SessionContextManager
     from core.integrated_conversation_manager import IntegratedConversationManager

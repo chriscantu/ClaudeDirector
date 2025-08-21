@@ -15,6 +15,12 @@ from typing import Dict, List, Optional
 # Add project paths
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
+
+# Add additional paths for CI environment
+import os
+sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
+sys.path.insert(0, os.getcwd())  # Current working directory
 
 class TestSecurityCompliance(unittest.TestCase):
     """Security and compliance validation for CI/CD pipeline"""
@@ -39,7 +45,8 @@ class TestSecurityCompliance(unittest.TestCase):
                 capture_output=True,
                 text=True,
                 timeout=120,
-                cwd=self.project_root
+                cwd=self.project_root,
+                env=os.environ.copy()
             )
 
             if result.returncode == 0:
@@ -115,7 +122,8 @@ class TestSecurityCompliance(unittest.TestCase):
                 capture_output=True,
                 text=True,
                 timeout=120,
-                cwd=self.project_root
+                cwd=self.project_root,
+                env=os.environ.copy()
             )
 
             try:
