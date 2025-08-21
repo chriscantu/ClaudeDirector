@@ -11,17 +11,17 @@ Runs **exactly the same checks** as the GitHub Actions pipeline:
 
 Additional checks will be added in future iterations:
 - Black Formatting (coming in Part 3)
-- Flake8 Linting (coming in Part 3) 
+- Flake8 Linting (coming in Part 3)
 - MyPy Type Checking (coming in Part 4)
 - SOLID Principles Validation (coming in Part 4)
 
 ### Usage
 ```bash
 # Check all CI requirements locally
-python3 scripts/validate-ci-locally.py
+python3 .claudedirector/dev-tools/ci/validate-ci-locally.py
 
 # Future: Auto-fix formatting issues (Part 3)
-# python3 scripts/validate-ci-locally.py --fix
+# python3 .claudedirector/dev-tools/ci/validate-ci-locally.py --fix
 ```
 
 ### Prerequisites

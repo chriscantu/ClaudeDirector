@@ -8,6 +8,7 @@ import json
 import sys
 from datetime import datetime
 from pathlib import Path
+from typing import Dict
 
 from memory.intelligent_stakeholder_detector import IntelligentStakeholderDetector
 
@@ -252,7 +253,7 @@ class StakeholderAIManager:
                     cursor = conn.cursor()
                     cursor.execute(
                         """
-                        UPDATE stakeholder_profiles_enhanced 
+                        UPDATE stakeholder_profiles_enhanced
                         SET optimal_meeting_frequency = ?,
                             preferred_communication_channels = ?,
                             communication_style = ?
@@ -284,7 +285,7 @@ class StakeholderAIManager:
                 cursor = conn.cursor()
                 cursor.execute(
                     """
-                    UPDATE stakeholder_profiling_tasks 
+                    UPDATE stakeholder_profiling_tasks
                     SET status = 'completed'
                     WHERE id = ?
                 """,
@@ -348,7 +349,7 @@ class StakeholderAIManager:
 
                     cursor.execute(
                         f"""
-                        UPDATE stakeholder_profiles_enhanced 
+                        UPDATE stakeholder_profiles_enhanced
                         SET {field} = ?
                         WHERE stakeholder_key = ?
                     """,
@@ -365,7 +366,7 @@ class StakeholderAIManager:
                 cursor = conn.cursor()
                 cursor.execute(
                     """
-                    UPDATE stakeholder_update_suggestions 
+                    UPDATE stakeholder_update_suggestions
                     SET status = 'processed'
                     WHERE id = ?
                 """,
