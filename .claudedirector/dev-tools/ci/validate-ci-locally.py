@@ -6,8 +6,8 @@ Runs the same checks locally that run in the GitHub Actions CI pipeline,
 eliminating push-and-wait iteration cycles.
 
 Usage:
-    python3 scripts/validate-ci-locally.py
-    python3 scripts/validate-ci-locally.py --fix  # Auto-fix formatting issues
+    python3 .claudedirector/dev-tools/ci/validate-ci-locally.py
+    python3 .claudedirector/dev-tools/ci/validate-ci-locally.py --fix  # Auto-fix formatting issues
 """
 
 import subprocess

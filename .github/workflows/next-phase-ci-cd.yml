@@ -50,25 +50,25 @@ jobs:
           for root, dirs, files in os.walk('.'):
               # Skip certain directories
               dirs[:] = [d for d in dirs if d not in ['.git', '__pycache__', '.mypy_cache', 'venv', '.venv', 'node_modules', 'target', 'build', 'dist']]
-              
+
               for file in files:
                   if file.endswith(('.py', '.js', '.ts', '.yaml', '.yml', '.json', '.md', '.txt', '.env')):
                       file_path = os.path.join(root, file)
-                      
+
                       # Skip documentation and workspace files to reduce false positives
                       skip_patterns = ['docs/', 'readme', 'security.md', 'example', 'leadership-workspace/']
                       if any(pattern in file_path.lower() for pattern in skip_patterns):
                           continue
-                      
+
                       try:
                           with open(file_path, 'r', encoding='utf-8') as f:
                               content = f.read()
-                              
+
                               # Skip content with obvious documentation patterns
                               content_lower = content.lower()
                               if any(word in content_lower for word in ['@company.com', '@procore.com', 'platform-security.internal', 'example', 'test', 'dummy', 'placeholder', 'sample']):
                                   continue
-                              
+
                               for pattern, description in patterns:
                                   matches = re.finditer(pattern, content, re.IGNORECASE)
                                   for match in matches:
@@ -93,10 +93,10 @@ jobs:
           echo "🎨 CODE QUALITY - Black Formatting"
           # Install black if not available
           python -m pip install black>=23.0.0
-          
+
           # Check formatting compliance
           python -m black --check --diff .
-          
+
           if [ $? -eq 0 ]; then
             echo "✅ Black formatting check passed"
           else
@@ -110,13 +110,13 @@ jobs:
           echo "🔍 CODE QUALITY - Flake8 Linting"
           # Install flake8 if not available
           python -m pip install flake8>=6.0.0
-          
-          # Run linting with reasonable settings for existing codebase
-          python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          
-          # Run full linting with lenient settings for gradual improvement
-          python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
-          
+
+          # Run linting with reasonable settings for existing codebase (exclude third-party)
+          python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=venv,.venv,__pycache__,.mypy_cache
+
+          # Run full linting with lenient settings for gradual improvement (exclude third-party)
+          python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics --exclude=venv,.venv,__pycache__,.mypy_cache
+
           echo "✅ Flake8 linting completed"
 
       - name: Code Quality - MyPy Type Checking
@@ -124,10 +124,10 @@ jobs:
           echo "🔬 CODE QUALITY - MyPy Type Checking"
           # Install mypy and type stubs
           python -m pip install mypy>=1.0.0 types-PyYAML types-requests types-setuptools
-          
+
           # Run type checking with lenient settings for existing codebase
           python -m mypy . --ignore-missing-imports --no-strict-optional --allow-untyped-defs --allow-incomplete-defs --check-untyped-defs || echo "MyPy found type issues (expected for existing codebase)"
-          
+
           echo "✅ MyPy type checking completed"
 
       - name: SOLID Principles Validation
@@ -139,7 +139,7 @@ jobs:
           else
             echo "⚠️ SOLID validator not found - skipping validation"
           fi
-          
+
           echo "✅ SOLID principles validation completed"
 
   # Phase 2: Unit Testing with Coverage (Disabled - tests not implemented yet)

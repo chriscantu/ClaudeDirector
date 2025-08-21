@@ -11,6 +11,7 @@ import subprocess
 import os
 from pathlib import Path
 from click.testing import CliRunner
+from unittest.mock import patch, MagicMock
 
 # Import the modules under test
 import sys
