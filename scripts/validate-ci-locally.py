@@ -121,8 +121,11 @@ def black_formatting_check(fix=False):
     """Run Black formatting check"""
     print_step("CODE QUALITY - Black Formatting Check")
 
+    # Ensure black is available (matches CI)
+    install_result = run_command("python -m pip install black>=23.0.0", check=False)
+
     if fix:
-        result = run_command("black .claudedirector/")
+        result = run_command("python -m black .claudedirector/")
         if result.returncode == 0:
             print_success("Black formatting applied")
             return True
@@ -131,7 +134,7 @@ def black_formatting_check(fix=False):
             print(result.stderr)
             return False
     else:
-        result = run_command("black --check --diff .claudedirector/")
+        result = run_command("python -m black --check --diff .claudedirector/")
         if result.returncode == 0:
             print_success("Black formatting check passed")
             return True
@@ -145,10 +148,10 @@ def flake8_linting():
     """Run Flake8 linting"""
     print_step("CODE QUALITY - Flake8 Linting")
 
-    # Install flake8 if not available
-    install_result = run_command("pip install flake8", check=False)
+    # Ensure flake8 is available (matches CI)
+    install_result = run_command("python -m pip install flake8>=6.0.0", check=False)
 
-    result = run_command("flake8 .claudedirector/ --max-line-length=88 --extend-ignore=E203,W503 --statistics")
+    result = run_command("python -m flake8 .claudedirector/ --max-line-length=88 --extend-ignore=E203,W503 --statistics")
     if result.returncode == 0:
         print_success("Flake8 linting check passed")
         return True
@@ -161,7 +164,10 @@ def mypy_type_checking():
     """Run MyPy type checking"""
     print_step("CODE QUALITY - MyPy Type Checking")
 
-    result = run_command("mypy .claudedirector/lib/ --ignore-missing-imports --no-strict-optional --show-error-codes --pretty")
+    # Ensure mypy is available (matches CI)
+    install_result = run_command("python -m pip install mypy>=1.0.0", check=False)
+
+    result = run_command("python -m mypy .claudedirector/lib/ --ignore-missing-imports --no-strict-optional --show-error-codes --pretty")
     if result.returncode == 0:
         print_success("MyPy type checking passed")
         return True
@@ -244,29 +250,29 @@ def unit_tests_with_coverage():
     """Run unit tests with coverage (exact copy from CI)"""
     print_step("UNIT TESTS WITH COVERAGE REPORTING")
 
-    # Install coverage tool
-    install_result = run_command("pip install coverage", check=False)
+    # Install coverage tool (matches CI)
+    install_result = run_command("python -m pip install coverage", check=False)
 
-    # Run tests with coverage
+    # Run tests with coverage (exact CI command)
     print("Running unit tests with coverage...")
-    result = run_command("coverage run --source=.claudedirector/lib .claudedirector/tests/unit/test_suite_runner.py")
+    result = run_command("python -m coverage run --source=.claudedirector/lib .claudedirector/tests/unit/test_suite_runner.py")
     if result.returncode != 0:
         print_error("Unit tests failed")
         print(result.stdout)
         print(result.stderr)
         return False
 
-    # Generate coverage reports
+    # Generate coverage reports (exact CI command)
     print("Generating coverage reports...")
-    coverage_result = run_command("coverage report --fail-under=85 --show-missing")
+    coverage_result = run_command("python -m coverage report --fail-under=85 --show-missing")
     if coverage_result.returncode != 0:
         print_error("Coverage below 85% threshold")
         print(coverage_result.stdout)
         return False
 
-    # Generate additional reports
-    run_command("coverage xml", check=False)
-    run_command("coverage html --directory=htmlcov", check=False)
+    # Generate additional reports (exact CI commands)
+    run_command("python -m coverage xml", check=False)
+    run_command("python -m coverage html --directory=htmlcov", check=False)
 
     print_success("Unit tests completed with coverage reporting")
     return True

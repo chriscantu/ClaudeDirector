@@ -89,7 +89,9 @@ jobs:
       - name: Code Quality - Black Formatting
         run: |
           echo "🎨 CODE QUALITY - Black Formatting Check"
-          black --check --diff .claudedirector/ || {
+          # Ensure black is available
+          python -m pip install black>=23.0.0
+          python -m black --check --diff .claudedirector/ || {
             echo "❌ BLACK FORMATTING VIOLATIONS DETECTED"
             echo "Run 'black .claudedirector/' to fix formatting issues"
             exit 1
@@ -99,8 +101,9 @@ jobs:
       - name: Code Quality - Flake8 Linting
         run: |
           echo "🔍 CODE QUALITY - Flake8 Linting"
-          pip install flake8
-          flake8 .claudedirector/ --max-line-length=88 --extend-ignore=E203,W503 --statistics --tee --output-file=flake8-report.txt || {
+          # Ensure flake8 is available
+          python -m pip install flake8>=6.0.0
+          python -m flake8 .claudedirector/ --max-line-length=88 --extend-ignore=E203,W503 --statistics --tee --output-file=flake8-report.txt || {
             echo "❌ FLAKE8 LINTING VIOLATIONS DETECTED"
             cat flake8-report.txt
             exit 1
@@ -110,7 +113,9 @@ jobs:
       - name: Code Quality - MyPy Type Checking
         run: |
           echo "🏷️ CODE QUALITY - MyPy Type Checking"
-          mypy .claudedirector/lib/ --ignore-missing-imports --no-strict-optional --show-error-codes --pretty || {
+          # Ensure mypy is available
+          python -m pip install mypy>=1.0.0
+          python -m mypy .claudedirector/lib/ --ignore-missing-imports --no-strict-optional --show-error-codes --pretty || {
             echo "❌ MYPY TYPE CHECKING VIOLATIONS DETECTED"
             echo "Fix type annotations and imports"
             exit 1
