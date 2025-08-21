@@ -45,3 +45,8 @@ ruff>=0.1.0
 black>=23.0.0
 flake8>=6.0.0
 coverage>=7.0.0
+
+# Type Stubs
+types-PyYAML>=6.0.0
+types-requests>=2.32.0
+types-setuptools>=80.0.0
