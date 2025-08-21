@@ -71,6 +71,8 @@ dist/
 downloads/
 eggs/
 .eggs/
+# Allow ClaudeDirector package lib directory
+!.claudedirector/lib/
 lib/
 lib64/
 parts/
