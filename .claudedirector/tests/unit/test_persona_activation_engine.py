@@ -12,7 +12,8 @@ import time
 
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../lib'))
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../lib"))
 
 from claudedirector.core.persona_activation_engine import (
     ContextAnalysisEngine,
@@ -21,14 +22,14 @@ from claudedirector.core.persona_activation_engine import (
     ContextResult,
     PersonaSelection,
     PersonaActivation,
-    ConfidenceLevel
+    ConfidenceLevel,
 )
 
 from claudedirector.core.template_engine import (
     TemplateDiscoveryEngine,
     DirectorTemplate,
     TemplatePersonaConfig,
-    TemplateActivationKeywords
+    TemplateActivationKeywords,
 )
 
 
@@ -64,7 +65,7 @@ class TestContextResult(unittest.TestCase):
             keywords=["mobile app", "ios"],
             detected_industry="fintech",
             detected_team_size="startup",
-            analysis_time_ms=250
+            analysis_time_ms=250,
         )
 
         result_dict = context.to_dict()
@@ -93,7 +94,7 @@ class TestPersonaSelection(unittest.TestCase):
             rationale="High confidence product strategy match",
             selection_method="automatic_high_confidence",
             selection_time_ms=150,
-            alternatives_considered=["alvaro", "rachel", "diego", "camille"]
+            alternatives_considered=["alvaro", "rachel", "diego", "camille"],
         )
 
         self.assertEqual(selection.primary, "alvaro")
@@ -106,9 +107,7 @@ class TestPersonaSelection(unittest.TestCase):
     def test_to_dict_conversion(self):
         """Test conversion to dictionary"""
         selection = PersonaSelection(
-            primary="marcus",
-            template_id="mobile_director",
-            confidence=0.75
+            primary="marcus", template_id="mobile_director", confidence=0.75
         )
 
         result_dict = selection.to_dict()
@@ -134,12 +133,16 @@ class TestContextAnalysisEngine(unittest.TestCase):
             domain="mobile_platforms",
             display_name="Mobile Engineering Director",
             description="iOS/Android platform strategy",
-            personas=TemplatePersonaConfig(primary=["marcus", "sofia"], contextual=["diego"], fallback=["camille"]),
-            activation_keywords=TemplateActivationKeywords(keywords={
-                "mobile app": 0.9,
-                "ios development": 0.95,
-                "android platform": 0.9
-            })
+            personas=TemplatePersonaConfig(
+                primary=["marcus", "sofia"], contextual=["diego"], fallback=["camille"]
+            ),
+            activation_keywords=TemplateActivationKeywords(
+                keywords={
+                    "mobile app": 0.9,
+                    "ios development": 0.95,
+                    "android platform": 0.9,
+                }
+            ),
         )
 
         self.product_template = DirectorTemplate(
@@ -147,16 +150,23 @@ class TestContextAnalysisEngine(unittest.TestCase):
             domain="product_engineering",
             display_name="Product Engineering Director",
             description="Product strategy execution",
-            personas=TemplatePersonaConfig(primary=["alvaro", "rachel"], contextual=["diego"], fallback=["camille"]),
-            activation_keywords=TemplateActivationKeywords(keywords={
-                "product strategy": 0.95,
-                "user experience": 0.9,
-                "feature delivery": 0.85
-            })
+            personas=TemplatePersonaConfig(
+                primary=["alvaro", "rachel"], contextual=["diego"], fallback=["camille"]
+            ),
+            activation_keywords=TemplateActivationKeywords(
+                keywords={
+                    "product strategy": 0.95,
+                    "user experience": 0.9,
+                    "feature delivery": 0.85,
+                }
+            ),
         )
 
         # Configure mock
-        self.mock_template_discovery.list_templates.return_value = [self.mobile_template, self.product_template]
+        self.mock_template_discovery.list_templates.return_value = [
+            self.mobile_template,
+            self.product_template,
+        ]
 
         # Create engine
         self.engine = ContextAnalysisEngine(self.mock_template_discovery)
@@ -182,7 +192,9 @@ class TestContextAnalysisEngine(unittest.TestCase):
             (self.product_template, 0.95)
         ]
 
-        result = self.engine.analyze_context("We need to improve our product strategy and user experience")
+        result = self.engine.analyze_context(
+            "We need to improve our product strategy and user experience"
+        )
 
         self.assertGreater(result.confidence, 0.8)
         self.assertEqual(result.suggested_template, "product_engineering_director")
@@ -194,7 +206,9 @@ class TestContextAnalysisEngine(unittest.TestCase):
             (self.mobile_template, 0.8)
         ]
 
-        result = self.engine.analyze_context("Our fintech mobile app needs better security compliance")
+        result = self.engine.analyze_context(
+            "Our fintech mobile app needs better security compliance"
+        )
 
         self.assertEqual(result.detected_industry, "fintech")
         self.assertIsNotNone(result.suggested_template)
@@ -205,7 +219,9 @@ class TestContextAnalysisEngine(unittest.TestCase):
             (self.product_template, 0.7)
         ]
 
-        result = self.engine.analyze_context("Our startup team of 8 engineers is struggling with product delivery")
+        result = self.engine.analyze_context(
+            "Our startup team of 8 engineers is struggling with product delivery"
+        )
 
         self.assertEqual(result.detected_team_size, "startup")
         self.assertIsNotNone(result.suggested_template)
@@ -214,7 +230,9 @@ class TestContextAnalysisEngine(unittest.TestCase):
         """Test context analysis when no clear match is found"""
         self.mock_template_discovery.discover_templates_by_context.return_value = []
 
-        result = self.engine.analyze_context("Random unrelated text about cooking recipes")
+        result = self.engine.analyze_context(
+            "Random unrelated text about cooking recipes"
+        )
 
         self.assertLess(result.confidence, 0.4)
         self.assertIsNone(result.suggested_template)
@@ -242,7 +260,7 @@ class TestContextAnalysisEngine(unittest.TestCase):
             ("SaaS subscription platform", "saas"),
             ("ecommerce shopping cart optimization", "ecommerce"),
             ("gaming real-time multiplayer", "gaming"),
-            ("corporate business application", None)  # No clear industry
+            ("corporate business application", None),  # No clear industry
         ]
 
         for text, expected_industry in test_cases:
@@ -255,7 +273,7 @@ class TestContextAnalysisEngine(unittest.TestCase):
             ("our small startup team of 5 engineers", "startup"),
             ("scaling team with 25 developers", "scale"),
             ("enterprise team of 200 engineers", "enterprise"),
-            ("we have some developers", None)  # No specific size
+            ("we have some developers", None),  # No specific size
         ]
 
         for text, expected_size in test_cases:
@@ -265,7 +283,9 @@ class TestContextAnalysisEngine(unittest.TestCase):
     def test_error_handling(self):
         """Test error handling in context analysis"""
         # Configure mock to raise exception
-        self.mock_template_discovery.discover_templates_by_context.side_effect = Exception("Test error")
+        self.mock_template_discovery.discover_templates_by_context.side_effect = (
+            Exception("Test error")
+        )
 
         result = self.engine.analyze_context("test input")
 
@@ -291,9 +311,9 @@ class TestPersonaSelectionEngine(unittest.TestCase):
             personas=TemplatePersonaConfig(
                 primary=["marcus", "sofia"],
                 contextual=["diego", "martin"],
-                fallback=["camille"]
+                fallback=["camille"],
             ),
-            activation_keywords=TemplateActivationKeywords(keywords={"mobile": 0.9})
+            activation_keywords=TemplateActivationKeywords(keywords={"mobile": 0.9}),
         )
 
         self.mock_template_discovery.get_template.return_value = self.test_template
@@ -305,7 +325,7 @@ class TestPersonaSelectionEngine(unittest.TestCase):
         context = ContextResult(
             domain="mobile_platforms",
             confidence=0.85,
-            suggested_template="mobile_director"
+            suggested_template="mobile_director",
         )
 
         selection = self.engine.select_persona(context)
@@ -321,7 +341,7 @@ class TestPersonaSelectionEngine(unittest.TestCase):
         context = ContextResult(
             domain="mobile_platforms",
             confidence=0.65,
-            suggested_template="mobile_director"
+            suggested_template="mobile_director",
         )
 
         selection = self.engine.select_persona(context)
@@ -335,7 +355,7 @@ class TestPersonaSelectionEngine(unittest.TestCase):
         context = ContextResult(
             domain="mobile_platforms",
             confidence=0.35,
-            suggested_template="mobile_director"
+            suggested_template="mobile_director",
         )
 
         selection = self.engine.select_persona(context)
@@ -346,11 +366,7 @@ class TestPersonaSelectionEngine(unittest.TestCase):
 
     def test_select_persona_no_template(self):
         """Test persona selection when no template is suggested"""
-        context = ContextResult(
-            domain=None,
-            confidence=0.2,
-            suggested_template=None
-        )
+        context = ContextResult(domain=None, confidence=0.2, suggested_template=None)
 
         selection = self.engine.select_persona(context)
 
@@ -365,7 +381,7 @@ class TestPersonaSelectionEngine(unittest.TestCase):
         context = ContextResult(
             domain="unknown_domain",
             confidence=0.8,
-            suggested_template="nonexistent_template"
+            suggested_template="nonexistent_template",
         )
 
         selection = self.engine.select_persona(context)
@@ -378,12 +394,16 @@ class TestPersonaSelectionEngine(unittest.TestCase):
         context = ContextResult(
             domain="mobile_platforms",
             confidence=0.9,
-            suggested_template="product_engineering_director"  # Different template
+            suggested_template="product_engineering_director",  # Different template
         )
 
-        selection = self.engine.select_persona(context, override_template="mobile_director")
+        selection = self.engine.select_persona(
+            context, override_template="mobile_director"
+        )
 
-        self.assertEqual(selection.template_id, "mobile_director")  # Should use override
+        self.assertEqual(
+            selection.template_id, "mobile_director"
+        )  # Should use override
         self.assertEqual(selection.primary, "marcus")
 
     def test_select_persona_performance(self):
@@ -391,7 +411,7 @@ class TestPersonaSelectionEngine(unittest.TestCase):
         context = ContextResult(
             domain="mobile_platforms",
             confidence=0.8,
-            suggested_template="mobile_director"
+            suggested_template="mobile_director",
         )
 
         start_time = time.time()
@@ -407,7 +427,7 @@ class TestPersonaSelectionEngine(unittest.TestCase):
         context = ContextResult(
             domain="mobile_platforms",
             confidence=0.8,
-            suggested_template="mobile_director"
+            suggested_template="mobile_director",
         )
 
         selection = self.engine.select_persona(context)
@@ -431,7 +451,7 @@ class TestConversationStateEngine(unittest.TestCase):
             confidence=0.85,
             suggested_template="mobile_director",
             keywords=["mobile app"],
-            analysis_time_ms=200
+            analysis_time_ms=200,
         )
 
         self.test_selection = PersonaSelection(
@@ -442,7 +462,7 @@ class TestConversationStateEngine(unittest.TestCase):
             fallback="camille",
             rationale="High confidence mobile match",
             selection_method="automatic_high_confidence",
-            selection_time_ms=150
+            selection_time_ms=150,
         )
 
     def test_initial_state(self):
@@ -459,7 +479,7 @@ class TestConversationStateEngine(unittest.TestCase):
         self.engine.update_state(
             self.test_selection,
             self.test_context,
-            "Our mobile app needs performance optimization"
+            "Our mobile app needs performance optimization",
         )
 
         state = self.engine.get_current_state()
@@ -477,9 +497,7 @@ class TestConversationStateEngine(unittest.TestCase):
 
         # Second activation with different persona
         selection2 = PersonaSelection(
-            primary="alvaro",
-            template_id="product_engineering_director",
-            confidence=0.7
+            primary="alvaro", template_id="product_engineering_director", confidence=0.7
         )
         context2 = ContextResult(domain="product_engineering", confidence=0.7)
 
@@ -510,7 +528,9 @@ class TestConversationStateEngine(unittest.TestCase):
         """Test activation history with limit"""
         # Add multiple activations
         for i in range(15):
-            selection = PersonaSelection(primary=f"persona_{i}", template_id="test", confidence=0.5)
+            selection = PersonaSelection(
+                primary=f"persona_{i}", template_id="test", confidence=0.5
+            )
             context = ContextResult(confidence=0.5)
             self.engine.update_state(selection, context, f"input {i}")
 
@@ -531,7 +551,7 @@ class TestConversationStateEngine(unittest.TestCase):
         new_context = ContextResult(
             domain="product_engineering",
             confidence=0.8,
-            suggested_template="product_engineering_director"
+            suggested_template="product_engineering_director",
         )
 
         suggestion = self.engine.suggest_persona_switch(new_context)
@@ -546,7 +566,7 @@ class TestConversationStateEngine(unittest.TestCase):
         same_context = ContextResult(
             domain="mobile_platforms",
             confidence=0.8,
-            suggested_template="mobile_director"
+            suggested_template="mobile_director",
         )
 
         suggestion = self.engine.suggest_persona_switch(same_context)
@@ -561,7 +581,7 @@ class TestConversationStateEngine(unittest.TestCase):
         low_confidence_context = ContextResult(
             domain="product_engineering",
             confidence=0.5,  # Below 0.7 threshold
-            suggested_template="product_engineering_director"
+            suggested_template="product_engineering_director",
         )
 
         suggestion = self.engine.suggest_persona_switch(low_confidence_context)
@@ -616,14 +636,11 @@ class TestPersonaActivationIntegration(unittest.TestCase):
             display_name="Mobile Engineering Director",
             description="Test template",
             personas=TemplatePersonaConfig(
-                primary=["marcus", "sofia"],
-                contextual=["diego"],
-                fallback=["camille"]
+                primary=["marcus", "sofia"], contextual=["diego"], fallback=["camille"]
             ),
-            activation_keywords=TemplateActivationKeywords(keywords={
-                "mobile app": 0.9,
-                "ios": 0.95
-            })
+            activation_keywords=TemplateActivationKeywords(
+                keywords={"mobile app": 0.9, "ios": 0.95}
+            ),
         )
 
         self.mock_template_discovery.list_templates.return_value = [self.test_template]
@@ -681,8 +698,12 @@ class TestPersonaActivationIntegration(unittest.TestCase):
             domain="product_engineering",
             display_name="Product Engineering Director",
             description="Product strategy",
-            personas=TemplatePersonaConfig(primary=["alvaro"], contextual=["rachel"], fallback=["camille"]),
-            activation_keywords=TemplateActivationKeywords(keywords={"product strategy": 0.95})
+            personas=TemplatePersonaConfig(
+                primary=["alvaro"], contextual=["rachel"], fallback=["camille"]
+            ),
+            activation_keywords=TemplateActivationKeywords(
+                keywords={"product strategy": 0.95}
+            ),
         )
 
         # Update mock to return product template for product context
@@ -691,17 +712,23 @@ class TestPersonaActivationIntegration(unittest.TestCase):
                 return [(product_template, 0.95)]
             return [(self.test_template, 0.9)]
 
-        self.mock_template_discovery.discover_templates_by_context.side_effect = mock_discover_side_effect
+        self.mock_template_discovery.discover_templates_by_context.side_effect = (
+            mock_discover_side_effect
+        )
 
         def mock_get_template_side_effect(template_id):
             if template_id == "product_engineering_director":
                 return product_template
             return self.test_template
 
-        self.mock_template_discovery.get_template.side_effect = mock_get_template_side_effect
+        self.mock_template_discovery.get_template.side_effect = (
+            mock_get_template_side_effect
+        )
 
         # Analyze new context
-        product_input = "We need to improve our product strategy and user feedback loops"
+        product_input = (
+            "We need to improve our product strategy and user feedback loops"
+        )
         context2 = self.context_engine.analyze_context(product_input)
 
         # Check if switch is suggested
@@ -739,5 +766,5 @@ class TestPersonaActivationIntegration(unittest.TestCase):
         self.assertLess(selection.selection_time_ms, 300)  # Persona selection <300ms
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

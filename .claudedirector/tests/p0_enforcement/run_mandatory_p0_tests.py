@@ -22,12 +22,14 @@ sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
 # Import user configuration
 try:
     from config.user_config import get_user_attribution, get_user_name
+
     USER_ATTRIBUTION = get_user_attribution()
     USER_NAME = get_user_name("professional")
 except ImportError:
     # Fallback if user config not available
     USER_ATTRIBUTION = "User's requirement"
     USER_NAME = "User"
+
 
 class P0TestEnforcer:
     """
@@ -42,36 +44,36 @@ class P0TestEnforcer:
                 "module": ".claudedirector/tests/regression/test_mcp_transparency_p0.py",
                 "critical_level": "BLOCKING",
                 "description": "MCP server transparency disclosure must work",
-                "failure_impact": "Strategic persona responses lose transparency"
+                "failure_impact": "Strategic persona responses lose transparency",
             },
             {
                 "name": "Conversation Tracking P0",
                 "module": ".claudedirector/tests/conversation/test_conversation_tracking_p0.py",
                 "critical_level": "BLOCKING",
                 "description": "Strategic memory conversation capture must work",
-                "failure_impact": "Strategic context preservation fails across sessions"
+                "failure_impact": "Strategic context preservation fails across sessions",
             },
             {
                 "name": "Conversation Quality P0",
                 "module": ".claudedirector/tests/conversation/test_p0_quality_target.py",
                 "critical_level": "BLOCKING",
                 "description": "Conversation quality must exceed 0.7 threshold",
-                "failure_impact": "Strategic intelligence data quality degrades"
+                "failure_impact": "Strategic intelligence data quality degrades",
             },
             {
                 "name": "First-Run Wizard P0",
                 "module": "docs/testing/first_run_wizard_tests.py",
                 "critical_level": "HIGH",
                 "description": "First-run user experience must work",
-                "failure_impact": "New users cannot customize system"
+                "failure_impact": "New users cannot customize system",
             },
             {
                 "name": "Cursor Integration P0",
                 "module": "docs/testing/run_cursor_tests.py",
                 "critical_level": "HIGH",
                 "description": "Cursor environment integration must work",
-                "failure_impact": "Core usage environment fails"
-            }
+                "failure_impact": "Core usage environment fails",
+            },
         ]
 
         self.test_results = []
@@ -87,11 +89,13 @@ class P0TestEnforcer:
         for test in self.p0_tests_defined:
             test_path = PROJECT_ROOT / test["module"]
             if not test_path.exists():
-                missing_files.append({
-                    "test": test["name"],
-                    "path": test["module"],
-                    "critical": test["critical_level"]
-                })
+                missing_files.append(
+                    {
+                        "test": test["name"],
+                        "path": test["module"],
+                        "critical": test["critical_level"],
+                    }
+                )
                 print(f"❌ MISSING: {test['name']} -> {test['module']}")
             else:
                 print(f"✅ EXISTS: {test['name']} -> {test['module']}")
@@ -99,7 +103,9 @@ class P0TestEnforcer:
         if missing_files:
             print(f"\n🚨 CRITICAL ERROR: {len(missing_files)} P0 test files missing!")
             for missing in missing_files:
-                print(f"   - {missing['test']} ({missing['critical']}) -> {missing['path']}")
+                print(
+                    f"   - {missing['test']} ({missing['critical']}) -> {missing['path']}"
+                )
             print("\n❌ CANNOT PROCEED: All P0 tests must exist")
             return False
 
@@ -129,7 +135,7 @@ class P0TestEnforcer:
                 capture_output=True,
                 text=True,
                 timeout=120,  # 2 minute timeout
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             duration = time.time() - start_time
@@ -144,7 +150,7 @@ class P0TestEnforcer:
                 "stderr": result.stderr,
                 "success": result.returncode == 0,
                 "description": test_config["description"],
-                "failure_impact": test_config["failure_impact"]
+                "failure_impact": test_config["failure_impact"],
             }
 
             if test_result["success"]:
@@ -172,7 +178,7 @@ class P0TestEnforcer:
                 "success": False,
                 "error": "Test timeout after 2 minutes",
                 "description": test_config["description"],
-                "failure_impact": test_config["failure_impact"]
+                "failure_impact": test_config["failure_impact"],
             }
 
         except Exception as e:
@@ -186,7 +192,7 @@ class P0TestEnforcer:
                 "success": False,
                 "error": str(e),
                 "description": test_config["description"],
-                "failure_impact": test_config["failure_impact"]
+                "failure_impact": test_config["failure_impact"],
             }
 
     def run_all_p0_tests(self) -> bool:
@@ -222,10 +228,26 @@ class P0TestEnforcer:
         print()
 
         # Categorize results
-        blocking_passed = [r for r in self.test_results if r["critical_level"] == "BLOCKING" and r["success"]]
-        blocking_failed = [r for r in self.test_results if r["critical_level"] == "BLOCKING" and not r["success"]]
-        high_passed = [r for r in self.test_results if r["critical_level"] == "HIGH" and r["success"]]
-        high_failed = [r for r in self.test_results if r["critical_level"] == "HIGH" and not r["success"]]
+        blocking_passed = [
+            r
+            for r in self.test_results
+            if r["critical_level"] == "BLOCKING" and r["success"]
+        ]
+        blocking_failed = [
+            r
+            for r in self.test_results
+            if r["critical_level"] == "BLOCKING" and not r["success"]
+        ]
+        high_passed = [
+            r
+            for r in self.test_results
+            if r["critical_level"] == "HIGH" and r["success"]
+        ]
+        high_failed = [
+            r
+            for r in self.test_results
+            if r["critical_level"] == "HIGH" and not r["success"]
+        ]
 
         print("🚨 BLOCKING P0 FEATURES (MUST PASS):")
         for result in blocking_passed:
@@ -278,10 +300,12 @@ class P0TestEnforcer:
                 "blocking_failures": self.blocking_failures,
                 "total_duration": (datetime.now() - self.start_time).total_seconds(),
                 "test_results": self.test_results,
-                "compliance_status": "PASSED" if self.blocking_failures == 0 else "FAILED"
+                "compliance_status": (
+                    "PASSED" if self.blocking_failures == 0 else "FAILED"
+                ),
             }
 
-            with open(results_file, 'w') as f:
+            with open(results_file, "w") as f:
                 json.dump(audit_data, f, indent=2)
 
             print(f"📋 Test results saved: {results_file}")

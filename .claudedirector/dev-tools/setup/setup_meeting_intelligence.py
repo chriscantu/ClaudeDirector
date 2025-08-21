@@ -81,7 +81,12 @@ class MeetingIntelligenceSetup:
             return results
         except Exception as e:
             print(f"   ❌ Meeting scan failed: {e}")
-            return {"processed": 0, "new_meetings": 0, "updated_meetings": 0, "errors": [str(e)]}
+            return {
+                "processed": 0,
+                "new_meetings": 0,
+                "updated_meetings": 0,
+                "errors": [str(e)],
+            }
 
     def show_intelligence_summary(self):
         """Display current meeting intelligence summary."""
@@ -119,7 +124,9 @@ class MeetingIntelligenceSetup:
         checks = {
             "Database accessible": self._check_database(),
             "Workspace directory exists": self.workspace_dir.exists(),
-            "Meeting-prep directory exists": (self.workspace_dir / "meeting-prep").exists(),
+            "Meeting-prep directory exists": (
+                self.workspace_dir / "meeting-prep"
+            ).exists(),
             "Python modules importable": self._check_imports(),
         }
 
@@ -159,8 +166,14 @@ class MeetingIntelligenceSetup:
         print("\n📚 Available Commands:")
 
         commands = [
-            ("Scan meeting preparations", "python memory/meeting_intelligence.py --scan"),
-            ("Show intelligence summary", "python memory/meeting_intelligence.py --summary"),
+            (
+                "Scan meeting preparations",
+                "python memory/meeting_intelligence.py --scan",
+            ),
+            (
+                "Show intelligence summary",
+                "python memory/meeting_intelligence.py --summary",
+            ),
             ("Start filesystem monitoring", "python memory/workspace_monitor.py"),
             ("Run system demonstration", "python demo-meeting-intelligence.py"),
             ("Test workspace handler", "python memory/workspace_monitor.py --test"),
@@ -229,7 +242,9 @@ class MeetingIntelligenceSetup:
 
         # Step 5: Verify setup
         if not self.verify_setup():
-            print("\n⚠️  Setup completed with some issues - see verification results above")
+            print(
+                "\n⚠️  Setup completed with some issues - see verification results above"
+            )
 
         # Step 6: Print usage guide
         self.print_usage_guide()
@@ -241,9 +256,15 @@ def main():
     """Main entry point for setup script."""
     import argparse
 
-    parser = argparse.ArgumentParser(description="SuperClaude Meeting Intelligence Setup")
-    parser.add_argument("--verify-only", action="store_true", help="Only verify existing setup")
-    parser.add_argument("--scan-only", action="store_true", help="Only scan existing meetings")
+    parser = argparse.ArgumentParser(
+        description="SuperClaude Meeting Intelligence Setup"
+    )
+    parser.add_argument(
+        "--verify-only", action="store_true", help="Only verify existing setup"
+    )
+    parser.add_argument(
+        "--scan-only", action="store_true", help="Only scan existing meetings"
+    )
     parser.add_argument(
         "--summary-only", action="store_true", help="Only show intelligence summary"
     )

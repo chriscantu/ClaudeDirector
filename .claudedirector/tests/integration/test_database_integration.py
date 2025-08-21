@@ -19,15 +19,18 @@ sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
 
 # Add additional paths for CI environment
 import os
+
 sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
 sys.path.insert(0, os.getcwd())  # Current working directory
 
 try:
     from memory.session_context_manager import SessionContextManager
     from core.integrated_conversation_manager import IntegratedConversationManager
+
     MEMORY_AVAILABLE = True
 except ImportError:
     MEMORY_AVAILABLE = False
+
 
 class TestDatabaseIntegration(unittest.TestCase):
     """Integration tests for database functionality"""
@@ -38,7 +41,7 @@ class TestDatabaseIntegration(unittest.TestCase):
             self.skipTest("Memory modules not available")
 
         # Create temporary database
-        self.temp_db = tempfile.NamedTemporaryFile(suffix='.db', delete=False)
+        self.temp_db = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
         self.temp_db.close()
         self.db_path = self.temp_db.name
 
@@ -48,7 +51,7 @@ class TestDatabaseIntegration(unittest.TestCase):
 
     def tearDown(self):
         """Clean up test database"""
-        if hasattr(self, 'db_path'):
+        if hasattr(self, "db_path"):
             Path(self.db_path).unlink(missing_ok=True)
 
     def test_database_connection(self):
@@ -72,15 +75,17 @@ class TestDatabaseIntegration(unittest.TestCase):
         cursor = conn.cursor()
 
         # Check that required tables exist
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT name FROM sqlite_master
             WHERE type='table' AND name IN ('session_context', 'stakeholder_profiles_enhanced')
-        """)
+        """
+        )
 
         tables = [row[0] for row in cursor.fetchall()]
 
-        self.assertIn('session_context', tables)
-        self.assertIn('stakeholder_profiles_enhanced', tables)
+        self.assertIn("session_context", tables)
+        self.assertIn("stakeholder_profiles_enhanced", tables)
 
         conn.close()
 
@@ -93,7 +98,7 @@ class TestDatabaseIntegration(unittest.TestCase):
             "persona_focus": "diego",
             "strategic_themes": ["platform", "scaling"],
             "stakeholder_engagement": {"VP Engineering": "high"},
-            "conversation_quality": 0.85
+            "conversation_quality": 0.85,
         }
 
         self.session_manager.save_session_context(session_id, context_data)
@@ -120,19 +125,30 @@ class TestDatabaseIntegration(unittest.TestCase):
 
         # Simulate conversation with good quality data
         conversation_thread = [
-            {"role": "user", "content": "How should we scale our platform architecture?"},
-            {"role": "assistant", "content": "🎯 Diego | Engineering Leadership\n\nGreat strategic question! Let me apply first principles thinking..."},
+            {
+                "role": "user",
+                "content": "How should we scale our platform architecture?",
+            },
+            {
+                "role": "assistant",
+                "content": "🎯 Diego | Engineering Leadership\n\nGreat strategic question! Let me apply first principles thinking...",
+            },
             {"role": "user", "content": "What about stakeholder alignment?"},
-            {"role": "assistant", "content": "📊 Camille | Strategic Technology\n\nStakeholder alignment is critical..."}
+            {
+                "role": "assistant",
+                "content": "📊 Camille | Strategic Technology\n\nStakeholder alignment is critical...",
+            },
         ]
 
         # Process conversation
-        quality_score = self.conversation_manager._calculate_conversation_quality({
-            "conversation_thread": conversation_thread,
-            "persona_usage": {"diego": 1, "camille": 1},
-            "framework_usage": ["Team Topologies", "Strategic Analysis"],
-            "stakeholder_mentions": ["VP Engineering", "Product Director"]
-        })
+        quality_score = self.conversation_manager._calculate_conversation_quality(
+            {
+                "conversation_thread": conversation_thread,
+                "persona_usage": {"diego": 1, "camille": 1},
+                "framework_usage": ["Team Topologies", "Strategic Analysis"],
+                "stakeholder_mentions": ["VP Engineering", "Product Director"],
+            }
+        )
 
         # Quality should be reasonable for this rich conversation
         self.assertGreaterEqual(quality_score, 0.5)
@@ -155,7 +171,7 @@ class TestDatabaseIntegration(unittest.TestCase):
                 context_data = {
                     "worker_id": worker_id,
                     "timestamp": time.time(),
-                    "conversation_quality": 0.75 + (worker_id * 0.05)
+                    "conversation_quality": 0.75 + (worker_id * 0.05),
                 }
 
                 # Save and retrieve
@@ -202,7 +218,7 @@ class TestDatabaseIntegration(unittest.TestCase):
                 "iteration": i,
                 "persona_focus": "diego" if i % 2 == 0 else "camille",
                 "conversation_quality": 0.7 + (i % 30) * 0.01,
-                "strategic_themes": ["platform", "scaling", "architecture"]
+                "strategic_themes": ["platform", "scaling", "architecture"],
             }
 
             self.session_manager.save_session_context(session_id, context_data)
@@ -224,6 +240,7 @@ class TestDatabaseIntegration(unittest.TestCase):
 
         # Should complete 50 reads quickly
         self.assertLess(read_duration, 5.0)  # 5 seconds max
+
 
 def run_database_integration_tests():
     """Run database integration tests"""
@@ -252,6 +269,7 @@ def run_database_integration_tests():
         print(f"   Failures: {len(result.failures)}")
         print(f"   Errors: {len(result.errors)}")
         return False
+
 
 if __name__ == "__main__":
     success = run_database_integration_tests()

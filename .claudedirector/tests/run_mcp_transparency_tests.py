@@ -19,18 +19,22 @@ sys.path.insert(0, str(test_dir / "regression"))
 sys.path.insert(0, str(test_dir / "integration"))
 sys.path.insert(0, str(test_dir.parent / "integration-protection"))
 
+
 def run_test_module(module_path, description):
     """Run a test module and return results"""
     print(f"\n{'='*60}")
     print(f"🧪 {description}")
-    print('='*60)
+    print("=" * 60)
 
     start_time = time.time()
 
     try:
-        result = subprocess.run([
-            sys.executable, str(module_path)
-        ], capture_output=True, text=True, cwd=test_dir.parent.parent)
+        result = subprocess.run(
+            [sys.executable, str(module_path)],
+            capture_output=True,
+            text=True,
+            cwd=test_dir.parent.parent,
+        )
 
         end_time = time.time()
         duration = end_time - start_time
@@ -49,7 +53,7 @@ def run_test_module(module_path, description):
             "success": success,
             "duration": duration,
             "output": result.stdout,
-            "error": result.stderr
+            "error": result.stderr,
         }
 
     except Exception as e:
@@ -64,8 +68,9 @@ def run_test_module(module_path, description):
             "success": False,
             "duration": duration,
             "output": "",
-            "error": str(e)
+            "error": str(e),
         }
+
 
 def run_quick_validation():
     """Run quick validation of core functionality"""
@@ -73,21 +78,32 @@ def run_quick_validation():
     print("-" * 40)
 
     try:
-        from cursor_transparency_bridge import ensure_transparency_compliance, get_transparency_summary
+        from cursor_transparency_bridge import (
+            ensure_transparency_compliance,
+            get_transparency_summary,
+        )
 
         # Test basic functionality
         test_input = "How should we develop strategic organizational framework for complex assessment?"
-        test_response = "Strategic analysis requires systematic framework application..."
+        test_response = (
+            "Strategic analysis requires systematic framework application..."
+        )
 
         enhanced = ensure_transparency_compliance(test_response, test_input)
         summary = get_transparency_summary(test_response, test_input)
 
         # Validate core requirements
         checks = [
-            ("MCP disclosure present", ("🔧 Accessing MCP Server:" in enhanced or "🔧 Installing MCP enhancement:" in enhanced)),
+            (
+                "MCP disclosure present",
+                (
+                    "🔧 Accessing MCP Server:" in enhanced
+                    or "🔧 Installing MCP enhancement:" in enhanced
+                ),
+            ),
             ("Persona header present", summary["has_persona_header"]),
             ("MCP enhancement detected", summary["has_mcp_enhancement"]),
-            ("Transparency applied", summary["transparency_applied"])
+            ("Transparency applied", summary["transparency_applied"]),
         ]
 
         all_passed = True
@@ -107,6 +123,7 @@ def run_quick_validation():
     except Exception as e:
         print(f"  ❌ Quick validation failed: {e}")
         return False
+
 
 def main():
     """Run comprehensive MCP transparency test suite"""
@@ -129,12 +146,12 @@ def main():
     test_modules = [
         {
             "path": test_dir / "regression" / "test_mcp_transparency_p0.py",
-            "description": "P0 Regression Tests - Core MCP transparency functionality"
+            "description": "P0 Regression Tests - Core MCP transparency functionality",
         },
         {
             "path": test_dir / "integration" / "test_cursor_integration.py",
-            "description": "Cursor Integration Tests - Live conversation flow"
-        }
+            "description": "Cursor Integration Tests - Live conversation flow",
+        },
     ]
 
     # Run all test modules
@@ -147,13 +164,15 @@ def main():
             results.append(result)
         else:
             print(f"⚠️ Test module not found: {test_module['path']}")
-            results.append({
-                "name": test_module["description"],
-                "success": False,
-                "duration": 0,
-                "output": "",
-                "error": f"Test file not found: {test_module['path']}"
-            })
+            results.append(
+                {
+                    "name": test_module["description"],
+                    "success": False,
+                    "duration": 0,
+                    "output": "",
+                    "error": f"Test file not found: {test_module['path']}",
+                }
+            )
 
     total_end_time = time.time()
     total_duration = total_end_time - total_start_time
@@ -161,7 +180,7 @@ def main():
     # Generate summary report
     print(f"\n{'='*60}")
     print("📊 TEST SUITE SUMMARY")
-    print('='*60)
+    print("=" * 60)
 
     passed_tests = [r for r in results if r["success"]]
     failed_tests = [r for r in results if not r["success"]]
@@ -175,7 +194,7 @@ def main():
         print(f"\n❌ FAILED TESTS:")
         for test in failed_tests:
             print(f"  • {test['name']} ({test['duration']:.2f}s)")
-            if test['error']:
+            if test["error"]:
                 print(f"    Error: {test['error']}")
 
     if passed_tests:
@@ -195,9 +214,10 @@ def main():
         print("🚨 TESTS FAILED - MCP TRANSPARENCY NEEDS FIXES")
         print("   P0 feature has critical issues")
         print("   DO NOT DEPLOY until all tests pass")
-    print('='*60)
+    print("=" * 60)
 
     return all_passed
+
 
 def run_continuous_monitoring():
     """Run in continuous monitoring mode for development"""
@@ -217,6 +237,7 @@ def run_continuous_monitoring():
 
     except KeyboardInterrupt:
         print("\n🛑 Monitoring stopped")
+
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--monitor":

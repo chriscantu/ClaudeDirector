@@ -10,22 +10,40 @@ from datetime import datetime
 
 # Import transparency system
 try:
-    from claudedirector.transparency.integrated_transparency import IntegratedTransparencySystem
-    from claudedirector.transparency.framework_detection import FrameworkDetectionMiddleware
-    from claudedirector.transparency.mcp_transparency import MCPTransparencyMiddleware, MCPContext, MCPCall
+    from claudedirector.transparency.integrated_transparency import (
+        IntegratedTransparencySystem,
+    )
+    from claudedirector.transparency.framework_detection import (
+        FrameworkDetectionMiddleware,
+    )
+    from claudedirector.transparency.mcp_transparency import (
+        MCPTransparencyMiddleware,
+        MCPContext,
+        MCPCall,
+    )
+
     HAS_TRANSPARENCY = True
 except ImportError:
     HAS_TRANSPARENCY = False
-    print("✅ ClaudeDirector ready - Enhanced MCP analysis will auto-install when needed")
+    print(
+        "✅ ClaudeDirector ready - Enhanced MCP analysis will auto-install when needed"
+    )
 
     # Create fallback classes
     class MCPContext:
         def __init__(self):
             self.mcp_calls = []
+
         def has_mcp_calls(self):
             return len(self.mcp_calls) > 0
+
         def get_server_names(self):
-            return [call.server_name for call in self.mcp_calls if hasattr(call, 'server_name')]
+            return [
+                call.server_name
+                for call in self.mcp_calls
+                if hasattr(call, "server_name")
+            ]
+
         def add_mcp_call(self, call):
             self.mcp_calls.append(call)
 
@@ -53,36 +71,68 @@ class CursorTransparencyBridge:
             "backend": "🔧 Backend | Platform Services Specialist",
             "legal": "⚖️ Legal | International Compliance",
             "security": "🔒 Security | Platform Security Architecture",
-            "data": "📊 Data | Analytics Strategy"
+            "data": "📊 Data | Analytics Strategy",
         }
 
         # Context patterns to detect persona activation
         self.context_patterns = {
             "martin": [
-                "architecture", "platform", "scalability", "performance",
-                "technical debt", "legacy systems", "modernization",
-                "infrastructure", "cloud", "distributed systems",
-                "apis", "services", "microservices", "monolith",
-                "developer experience", "tooling", "productivity"
+                "architecture",
+                "platform",
+                "scalability",
+                "performance",
+                "technical debt",
+                "legacy systems",
+                "modernization",
+                "infrastructure",
+                "cloud",
+                "distributed systems",
+                "apis",
+                "services",
+                "microservices",
+                "monolith",
+                "developer experience",
+                "tooling",
+                "productivity",
             ],
             "diego": [
-                "engineering leadership", "team structure", "organization",
-                "platform strategy", "resource allocation", "team coordination",
-                "engineering management", "leadership", "strategic"
+                "engineering leadership",
+                "team structure",
+                "organization",
+                "platform strategy",
+                "resource allocation",
+                "team coordination",
+                "engineering management",
+                "leadership",
+                "strategic",
             ],
-                        "camille": [
-                "strategic technology", "executive", "innovation",
-                "technology strategy", "organizational scaling", "strategic",
-                "technology assessment", "strategic assessment"
+            "camille": [
+                "strategic technology",
+                "executive",
+                "innovation",
+                "technology strategy",
+                "organizational scaling",
+                "strategic",
+                "technology assessment",
+                "strategic assessment",
             ],
             "rachel": [
-                "design systems", "ux", "user experience", "cross-functional",
-                "design strategy", "component", "ui"
+                "design systems",
+                "ux",
+                "user experience",
+                "cross-functional",
+                "design strategy",
+                "component",
+                "ui",
             ],
             "alvaro": [
-                "business value", "roi", "investment", "platform investment",
-                "business strategy", "stakeholder communication"
-            ]
+                "business value",
+                "roi",
+                "investment",
+                "platform investment",
+                "business strategy",
+                "stakeholder communication",
+            ],
         }
 
         # Initialize transparency system if available
@@ -95,7 +145,9 @@ class CursorTransparencyBridge:
             self.framework_detector = None
             self.mcp_middleware = None
 
-    def detect_persona_from_context(self, user_input: str, assistant_response: str = "") -> str:
+    def detect_persona_from_context(
+        self, user_input: str, assistant_response: str = ""
+    ) -> str:
         """Detect which persona should be activated based on context"""
 
         # Check if response already has persona header
@@ -150,55 +202,88 @@ class CursorTransparencyBridge:
         try:
             frameworks = self.framework_detector.detect_frameworks_used(response)
             if frameworks:
-                return self.framework_detector.add_framework_attribution(persona, response, frameworks)
+                return self.framework_detector.add_framework_attribution(
+                    persona, response, frameworks
+                )
         except Exception as e:
             print(f"⚠️ Framework detection error: {e}")
 
         return response
 
-    def detect_mcp_usage_context(self, user_input: str, response: str) -> Optional[MCPContext]:
+    def detect_mcp_usage_context(
+        self, user_input: str, response: str
+    ) -> Optional[MCPContext]:
         """Detect if response should show MCP enhancement based on complexity"""
         # Note: We always run detection even in fallback mode
 
         # Complexity indicators that suggest MCP enhancement
         complexity_indicators = [
-            "strategic", "organizational", "framework", "systematic", "complex",
-            "multi-team", "executive", "board", "leadership", "presentation",
-            "enterprise", "organization-wide", "cross-functional", "multiple teams",
-            "trade-offs", "options", "alternatives", "analysis", "assessment"
+            "strategic",
+            "organizational",
+            "framework",
+            "systematic",
+            "complex",
+            "multi-team",
+            "executive",
+            "board",
+            "leadership",
+            "presentation",
+            "enterprise",
+            "organization-wide",
+            "cross-functional",
+            "multiple teams",
+            "trade-offs",
+            "options",
+            "alternatives",
+            "analysis",
+            "assessment",
         ]
 
         combined_text = f"{user_input} {response}".lower()
-        complexity_score = sum(1 for indicator in complexity_indicators if indicator in combined_text)
+        complexity_score = sum(
+            1 for indicator in complexity_indicators if indicator in combined_text
+        )
 
         # If complexity is high enough, simulate MCP enhancement
         if complexity_score >= 3:
             mcp_context = MCPContext()
 
             # Determine appropriate MCP server based on context
-            if any(word in combined_text for word in ["strategic", "organizational", "framework"]):
-                mcp_context.add_mcp_call(MCPCall(
-                    server_name="sequential",
-                    capability="systematic_analysis",
-                    processing_time=0.15,
-                    timestamp=datetime.now(),
-                    success=True
-                ))
+            if any(
+                word in combined_text
+                for word in ["strategic", "organizational", "framework"]
+            ):
+                mcp_context.add_mcp_call(
+                    MCPCall(
+                        server_name="sequential",
+                        capability="systematic_analysis",
+                        processing_time=0.15,
+                        timestamp=datetime.now(),
+                        success=True,
+                    )
+                )
 
-            if any(word in combined_text for word in ["architecture", "platform", "technical"]):
-                mcp_context.add_mcp_call(MCPCall(
-                    server_name="context7",
-                    capability="architectural_patterns",
-                    processing_time=0.10,
-                    timestamp=datetime.now(),
-                    success=True
-                ))
+            if any(
+                word in combined_text
+                for word in ["architecture", "platform", "technical"]
+            ):
+                mcp_context.add_mcp_call(
+                    MCPCall(
+                        server_name="context7",
+                        capability="architectural_patterns",
+                        processing_time=0.10,
+                        timestamp=datetime.now(),
+                        success=True,
+                    )
+                )
 
             return mcp_context
 
         return None
 
-    def apply_mcp_transparency(self, response: str, persona: str, user_input: str = "") -> str:
+    def apply_mcp_transparency(
+        self, response: str, persona: str, user_input: str = ""
+    ) -> str:
         """Apply MCP transparency disclosure if enhancement detected"""
         if not self.mcp_middleware:
             # Fallback mode with hybrid installation strategy
@@ -206,13 +291,18 @@ class CursorTransparencyBridge:
             if mcp_context and mcp_context.has_mcp_calls():
                 # Use hybrid installation manager for smart messaging
                 try:
-                    from claudedirector.mcp.hybrid_installation_manager import HybridInstallationManager
+                    from claudedirector.mcp.hybrid_installation_manager import (
+                        HybridInstallationManager,
+                    )
+
                     manager = HybridInstallationManager()
 
                     # Get the server name from context (default to sequential)
                     server_name = "sequential"
                     if mcp_context.mcp_calls:
-                        server_name = mcp_context.mcp_calls[0].server_name or "sequential"
+                        server_name = (
+                            mcp_context.mcp_calls[0].server_name or "sequential"
+                        )
 
                     status = manager.get_server_status(server_name)
 
@@ -234,7 +324,9 @@ class CursorTransparencyBridge:
         # Full transparency mode
         mcp_context = self.detect_mcp_usage_context(user_input, response)
         if mcp_context and mcp_context.has_mcp_calls():
-            return self.mcp_middleware.wrap_persona_response(persona, response, mcp_context)
+            return self.mcp_middleware.wrap_persona_response(
+                persona, response, mcp_context
+            )
 
         return response
 
@@ -282,7 +374,9 @@ class CursorTransparencyBridge:
             "frameworks_detected": frameworks_detected,
             "has_mcp_enhancement": has_mcp_enhancement,
             "mcp_servers_used": mcp_servers_used,
-            "transparency_applied": has_header or len(frameworks_detected) > 0 or has_mcp_enhancement
+            "transparency_applied": has_header
+            or len(frameworks_detected) > 0
+            or has_mcp_enhancement,
         }
 
 
@@ -298,8 +392,12 @@ def ensure_transparency_compliance(response: str, user_input: str = "") -> str:
 def get_transparency_summary(response: str, user_input: str = "") -> Dict:
     """Get summary of transparency features"""
     # First apply transparency to get the enhanced response, then analyze it
-    enhanced_response = transparency_bridge.apply_transparency_system(response, user_input)
-    return transparency_bridge.create_transparency_summary(enhanced_response, user_input)
+    enhanced_response = transparency_bridge.apply_transparency_system(
+        response, user_input
+    )
+    return transparency_bridge.create_transparency_summary(
+        enhanced_response, user_input
+    )
 
 
 # Example usage for testing
@@ -309,9 +407,18 @@ if __name__ == "__main__":
 
     # Test cases
     test_cases = [
-        ("How should we architect our platform for scale?", "Here's an approach to platform scalability..."),
-        ("What's our team structure strategy?", "Team structure depends on several factors..."),
-        ("ROI analysis for platform investment", "Platform investments require careful analysis...")
+        (
+            "How should we architect our platform for scale?",
+            "Here's an approach to platform scalability...",
+        ),
+        (
+            "What's our team structure strategy?",
+            "Team structure depends on several factors...",
+        ),
+        (
+            "ROI analysis for platform investment",
+            "Platform investments require careful analysis...",
+        ),
     ]
 
     for user_input, response in test_cases:

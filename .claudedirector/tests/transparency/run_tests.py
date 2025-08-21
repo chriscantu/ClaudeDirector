@@ -13,7 +13,11 @@ integration_path = Path(__file__).parent.parent.parent / "integration-protection
 sys.path.insert(0, str(lib_path))
 sys.path.insert(0, str(integration_path))
 
-from cursor_transparency_bridge import CursorTransparencyBridge, ensure_transparency_compliance, get_transparency_summary
+from cursor_transparency_bridge import (
+    CursorTransparencyBridge,
+    ensure_transparency_compliance,
+    get_transparency_summary,
+)
 
 
 def test_persona_detection():
@@ -27,7 +31,7 @@ def test_persona_detection():
         ("What's our team structure strategy?", "diego"),
         ("ROI analysis for platform investment", "alvaro"),
         ("Design system component strategy", "rachel"),
-        ("Strategic technology assessment", "camille")
+        ("Strategic technology assessment", "camille"),
     ]
 
     passed = 0
@@ -37,7 +41,9 @@ def test_persona_detection():
             print(f"  ✅ '{user_input[:30]}...' → {persona}")
             passed += 1
         else:
-            print(f"  ❌ '{user_input[:30]}...' → {persona} (expected {expected_persona})")
+            print(
+                f"  ❌ '{user_input[:30]}...' → {persona} (expected {expected_persona})"
+            )
 
     print(f"  📊 Persona Detection: {passed}/{len(test_cases)} passed")
     return passed == len(test_cases)
@@ -53,7 +59,7 @@ def test_persona_headers():
         ("martin", "🏗️ Martin | Platform Architecture"),
         ("diego", "🎯 Diego | Engineering Leadership"),
         ("alvaro", "💼 Alvaro | Platform Investment Strategy"),
-        ("rachel", "🎨 Rachel | Design Systems Strategy")
+        ("rachel", "🎨 Rachel | Design Systems Strategy"),
     ]
 
     passed = 0
@@ -89,27 +95,26 @@ def test_transparency_compliance():
             "input": "Platform architecture scalability concerns",
             "response": "Here's a systematic approach...",
             "expected_persona": "martin",
-            "expected_header": "🏗️ Martin | Platform Architecture"
+            "expected_header": "🏗️ Martin | Platform Architecture",
         },
         {
             "input": "Team coordination strategy",
             "response": "Team structure considerations...",
             "expected_persona": "diego",
-            "expected_header": "🎯 Diego | Engineering Leadership"
+            "expected_header": "🎯 Diego | Engineering Leadership",
         },
         {
             "input": "Business value ROI analysis",
             "response": "Investment analysis shows...",
             "expected_persona": "alvaro",
-            "expected_header": "💼 Alvaro | Platform Investment Strategy"
-        }
+            "expected_header": "💼 Alvaro | Platform Investment Strategy",
+        },
     ]
 
     passed = 0
     for scenario in test_scenarios:
         enhanced = ensure_transparency_compliance(
-            scenario["response"],
-            scenario["input"]
+            scenario["response"], scenario["input"]
         )
 
         if scenario["expected_header"] in enhanced:
@@ -135,7 +140,7 @@ def test_transparency_summary():
     checks = [
         ("persona_detected", lambda: summary["persona_detected"] == "martin"),
         ("has_persona_header", lambda: summary["has_persona_header"] == True),
-        ("transparency_applied", lambda: summary["transparency_applied"] == True)
+        ("transparency_applied", lambda: summary["transparency_applied"] == True),
     ]
 
     passed = 0
@@ -157,7 +162,7 @@ def test_error_handling():
     test_cases = [
         ("", "Empty input"),
         ("   ", "Whitespace only"),
-        ("x" * 1000, "Very long input")
+        ("x" * 1000, "Very long input"),
     ]
 
     passed = 0
@@ -167,7 +172,13 @@ def test_error_handling():
             # Should have some persona header
             has_header = any(
                 header in enhanced
-                for header in ["🏗️ Martin", "🎯 Diego", "💼 Alvaro", "🎨 Rachel", "📊 Camille"]
+                for header in [
+                    "🏗️ Martin",
+                    "🎯 Diego",
+                    "💼 Alvaro",
+                    "🎨 Rachel",
+                    "📊 Camille",
+                ]
             )
             if has_header:
                 print(f"  ✅ {description}: Handled gracefully")
@@ -201,14 +212,18 @@ def test_performance():
 
     # Performance targets
     performance_ok = max_time < 0.01  # <10ms max
-    consistency_ok = all("🏗️ Martin | Platform Architecture" in
-                        ensure_transparency_compliance(response, user_input)
-                        for _ in range(5))
+    consistency_ok = all(
+        "🏗️ Martin | Platform Architecture"
+        in ensure_transparency_compliance(response, user_input)
+        for _ in range(5)
+    )
 
     if performance_ok:
         print(f"  ✅ Performance: {avg_time*1000:.2f}ms avg, {max_time*1000:.2f}ms max")
     else:
-        print(f"  ⚠️ Performance: {avg_time*1000:.2f}ms avg, {max_time*1000:.2f}ms max (target <10ms)")
+        print(
+            f"  ⚠️ Performance: {avg_time*1000:.2f}ms avg, {max_time*1000:.2f}ms max (target <10ms)"
+        )
 
     if consistency_ok:
         print("  ✅ Consistency: Deterministic results")
@@ -231,7 +246,7 @@ def run_all_tests():
         ("Transparency Compliance", test_transparency_compliance),
         ("Transparency Summary", test_transparency_summary),
         ("Error Handling", test_error_handling),
-        ("Performance", test_performance)
+        ("Performance", test_performance),
     ]
 
     results = []
@@ -257,7 +272,9 @@ def run_all_tests():
     total_tests = len(results)
     success_rate = (passed_tests / total_tests) * 100
 
-    print(f"\n📈 Overall Results: {passed_tests}/{total_tests} tests passed ({success_rate:.1f}%)")
+    print(
+        f"\n📈 Overall Results: {passed_tests}/{total_tests} tests passed ({success_rate:.1f}%)"
+    )
 
     if passed_tests == total_tests:
         print("🎉 ALL TESTS PASSED! Ready for integration.")

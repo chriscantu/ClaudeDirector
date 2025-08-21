@@ -19,8 +19,10 @@ sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
 
 # Add additional paths for CI environment
 import os
+
 sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
 sys.path.insert(0, os.getcwd())  # Current working directory
+
 
 class TestSecurityCompliance(unittest.TestCase):
     """Security and compliance validation for CI/CD pipeline"""
@@ -36,8 +38,9 @@ class TestSecurityCompliance(unittest.TestCase):
 
         try:
             # Try to install safety if not available
-            subprocess.run([sys.executable, "-m", "pip", "install", "safety"],
-                          capture_output=True)
+            subprocess.run(
+                [sys.executable, "-m", "pip", "install", "safety"], capture_output=True
+            )
 
             # Run safety check
             result = subprocess.run(
@@ -46,7 +49,7 @@ class TestSecurityCompliance(unittest.TestCase):
                 text=True,
                 timeout=120,
                 cwd=self.project_root,
-                env=os.environ.copy()
+                env=os.environ.copy(),
             )
 
             if result.returncode == 0:
@@ -54,7 +57,7 @@ class TestSecurityCompliance(unittest.TestCase):
                 self.security_results["dependency_scan"] = {
                     "status": "passed",
                     "vulnerabilities": 0,
-                    "message": "No known security vulnerabilities found"
+                    "message": "No known security vulnerabilities found",
                 }
                 print("   ✅ No security vulnerabilities found")
 
@@ -66,16 +69,21 @@ class TestSecurityCompliance(unittest.TestCase):
                         vuln_count = len(vulnerabilities)
 
                         # Check if vulnerabilities are critical
-                        critical_vulns = [v for v in vulnerabilities
-                                        if v.get("vulnerability_id", "").startswith("CVE")]
+                        critical_vulns = [
+                            v
+                            for v in vulnerabilities
+                            if v.get("vulnerability_id", "").startswith("CVE")
+                        ]
 
                         if critical_vulns:
-                            self.fail(f"Critical security vulnerabilities found: {len(critical_vulns)}")
+                            self.fail(
+                                f"Critical security vulnerabilities found: {len(critical_vulns)}"
+                            )
 
                         self.security_results["dependency_scan"] = {
                             "status": "warning",
                             "vulnerabilities": vuln_count,
-                            "details": vulnerabilities
+                            "details": vulnerabilities,
                         }
 
                         # Allow non-critical vulnerabilities but warn
@@ -85,7 +93,7 @@ class TestSecurityCompliance(unittest.TestCase):
                         # Safety returned error but no JSON
                         self.security_results["dependency_scan"] = {
                             "status": "error",
-                            "message": result.stderr or "Safety check failed"
+                            "message": result.stderr or "Safety check failed",
                         }
                         print(f"   ❌ Safety check failed: {result.stderr}")
 
@@ -93,7 +101,7 @@ class TestSecurityCompliance(unittest.TestCase):
                     # Not JSON output, treat as warning
                     self.security_results["dependency_scan"] = {
                         "status": "warning",
-                        "message": "Could not parse safety output"
+                        "message": "Could not parse safety output",
                     }
                     print("   ⚠️  Could not parse safety output")
 
@@ -108,8 +116,9 @@ class TestSecurityCompliance(unittest.TestCase):
 
         try:
             # Try to install bandit if not available
-            subprocess.run([sys.executable, "-m", "pip", "install", "bandit"],
-                          capture_output=True)
+            subprocess.run(
+                [sys.executable, "-m", "pip", "install", "bandit"], capture_output=True
+            )
 
             # Run bandit on the lib directory
             lib_dir = self.project_root / ".claudedirector/lib"
@@ -123,7 +132,7 @@ class TestSecurityCompliance(unittest.TestCase):
                 text=True,
                 timeout=120,
                 cwd=self.project_root,
-                env=os.environ.copy()
+                env=os.environ.copy(),
             )
 
             try:
@@ -135,16 +144,30 @@ class TestSecurityCompliance(unittest.TestCase):
                     metrics = bandit_results.get("metrics", {})
 
                     # Count severity levels
-                    high_severity = len([r for r in results if r.get("issue_severity") == "HIGH"])
-                    medium_severity = len([r for r in results if r.get("issue_severity") == "MEDIUM"])
-                    low_severity = len([r for r in results if r.get("issue_severity") == "LOW"])
+                    high_severity = len(
+                        [r for r in results if r.get("issue_severity") == "HIGH"]
+                    )
+                    medium_severity = len(
+                        [r for r in results if r.get("issue_severity") == "MEDIUM"]
+                    )
+                    low_severity = len(
+                        [r for r in results if r.get("issue_severity") == "LOW"]
+                    )
 
                     # Fail on high severity issues
                     if high_severity > 0:
-                        high_issues = [r for r in results if r.get("issue_severity") == "HIGH"]
-                        issue_summary = "; ".join([f"{issue.get('test_name', 'Unknown')}: {issue.get('issue_text', 'No description')}"
-                                                 for issue in high_issues[:3]])  # Show first 3
-                        self.fail(f"High severity security issues found: {high_severity}. Issues: {issue_summary}")
+                        high_issues = [
+                            r for r in results if r.get("issue_severity") == "HIGH"
+                        ]
+                        issue_summary = "; ".join(
+                            [
+                                f"{issue.get('test_name', 'Unknown')}: {issue.get('issue_text', 'No description')}"
+                                for issue in high_issues[:3]
+                            ]
+                        )  # Show first 3
+                        self.fail(
+                            f"High severity security issues found: {high_severity}. Issues: {issue_summary}"
+                        )
 
                     self.security_results["code_scan"] = {
                         "status": "passed" if high_severity == 0 else "failed",
@@ -152,28 +175,32 @@ class TestSecurityCompliance(unittest.TestCase):
                         "medium_severity": medium_severity,
                         "low_severity": low_severity,
                         "total_issues": len(results),
-                        "files_scanned": metrics.get("_totals", {}).get("loc", 0)
+                        "files_scanned": metrics.get("_totals", {}).get("loc", 0),
                     }
 
                     if high_severity == 0:
                         print(f"   ✅ No high-severity security issues found")
                         if medium_severity > 0:
-                            print(f"   ⚠️  {medium_severity} medium-severity issues found")
+                            print(
+                                f"   ⚠️  {medium_severity} medium-severity issues found"
+                            )
                     else:
-                        print(f"   ❌ {high_severity} high-severity security issues found")
+                        print(
+                            f"   ❌ {high_severity} high-severity security issues found"
+                        )
 
                 else:
                     # No output - assume clean
                     self.security_results["code_scan"] = {
                         "status": "passed",
-                        "message": "No security issues detected"
+                        "message": "No security issues detected",
                     }
                     print("   ✅ No security issues detected")
 
             except json.JSONDecodeError:
                 self.security_results["code_scan"] = {
                     "status": "error",
-                    "message": "Could not parse bandit output"
+                    "message": "Could not parse bandit output",
                 }
                 print("   ⚠️  Could not parse bandit output")
 
@@ -195,7 +222,7 @@ class TestSecurityCompliance(unittest.TestCase):
             r"(?i)(private[_-]?key|privatekey)['\"]?\s*[:=]\s*['\"]?-----BEGIN",
             r"(?i)(database[_-]?url|db[_-]?url)['\"]?\s*[:=]\s*['\"]?[a-zA-Z0-9_://.-]+",
             # Exclude test/example patterns
-            r"(?!.*(?:test|example|demo|sample|placeholder|fake|mock))"
+            r"(?!.*(?:test|example|demo|sample|placeholder|fake|mock))",
         ]
 
         secrets_found = []
@@ -205,40 +232,70 @@ class TestSecurityCompliance(unittest.TestCase):
 
         # Add Python files
         for py_file in self.project_root.rglob("*.py"):
-            if not any(skip in str(py_file) for skip in [".git", "__pycache__", ".venv", "venv"]):
+            if not any(
+                skip in str(py_file)
+                for skip in [".git", "__pycache__", ".venv", "venv"]
+            ):
                 files_to_scan.append(py_file)
 
         # Add config files
         for ext in ["*.yaml", "*.yml", "*.json", "*.conf", "*.env"]:
             for config_file in self.project_root.rglob(ext):
-                if not any(skip in str(config_file) for skip in [".git", "__pycache__"]):
+                if not any(
+                    skip in str(config_file) for skip in [".git", "__pycache__"]
+                ):
                     files_to_scan.append(config_file)
 
         import re
 
-        for file_path in files_to_scan[:100]:  # Limit to first 100 files for performance
+        for file_path in files_to_scan[
+            :100
+        ]:  # Limit to first 100 files for performance
             try:
-                with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
                     content = f.read()
 
-                    for i, line in enumerate(content.split('\n'), 1):
+                    for i, line in enumerate(content.split("\n"), 1):
                         # Skip comments and obviously safe lines
-                        if line.strip().startswith('#') or 'test' in line.lower() or 'example' in line.lower():
+                        if (
+                            line.strip().startswith("#")
+                            or "test" in line.lower()
+                            or "example" in line.lower()
+                        ):
                             continue
 
-                        for pattern in secret_patterns[:-1]:  # Exclude the negative lookahead pattern
+                        for pattern in secret_patterns[
+                            :-1
+                        ]:  # Exclude the negative lookahead pattern
                             if re.search(pattern, line):
                                 # Additional validation - skip if it's clearly a test/example
-                                if any(safe_word in line.lower() for safe_word in
-                                      ['test', 'example', 'demo', 'sample', 'placeholder', 'fake', 'mock', 'xxx']):
+                                if any(
+                                    safe_word in line.lower()
+                                    for safe_word in [
+                                        "test",
+                                        "example",
+                                        "demo",
+                                        "sample",
+                                        "placeholder",
+                                        "fake",
+                                        "mock",
+                                        "xxx",
+                                    ]
+                                ):
                                     continue
 
-                                secrets_found.append({
-                                    "file": str(file_path.relative_to(self.project_root)),
-                                    "line": i,
-                                    "pattern": "potential_secret",
-                                    "content": line.strip()[:100]  # First 100 chars
-                                })
+                                secrets_found.append(
+                                    {
+                                        "file": str(
+                                            file_path.relative_to(self.project_root)
+                                        ),
+                                        "line": i,
+                                        "pattern": "potential_secret",
+                                        "content": line.strip()[
+                                            :100
+                                        ],  # First 100 chars
+                                    }
+                                )
 
             except (UnicodeDecodeError, PermissionError):
                 continue
@@ -249,13 +306,29 @@ class TestSecurityCompliance(unittest.TestCase):
             content = secret["content"].lower()
 
             # Skip if it contains obvious test indicators
-            if any(indicator in content for indicator in
-                  ['test', 'example', 'demo', 'sample', 'placeholder', 'mock', 'fake',
-                   'your_', 'insert_', 'replace_', 'todo', 'fixme']):
+            if any(
+                indicator in content
+                for indicator in [
+                    "test",
+                    "example",
+                    "demo",
+                    "sample",
+                    "placeholder",
+                    "mock",
+                    "fake",
+                    "your_",
+                    "insert_",
+                    "replace_",
+                    "todo",
+                    "fixme",
+                ]
+            ):
                 continue
 
             # Skip if it's in a test file
-            if any(test_dir in secret["file"] for test_dir in ['test', 'tests', 'testing']):
+            if any(
+                test_dir in secret["file"] for test_dir in ["test", "tests", "testing"]
+            ):
                 continue
 
             filtered_secrets.append(secret)
@@ -264,12 +337,14 @@ class TestSecurityCompliance(unittest.TestCase):
             "status": "passed" if len(filtered_secrets) == 0 else "failed",
             "potential_secrets_found": len(filtered_secrets),
             "files_scanned": len(files_to_scan),
-            "secrets": filtered_secrets[:5] if filtered_secrets else []  # Show first 5
+            "secrets": filtered_secrets[:5] if filtered_secrets else [],  # Show first 5
         }
 
         if filtered_secrets:
-            self.fail(f"Potential secrets found in {len(filtered_secrets)} locations. "
-                     f"First issue: {filtered_secrets[0]['file']}:{filtered_secrets[0]['line']}")
+            self.fail(
+                f"Potential secrets found in {len(filtered_secrets)} locations. "
+                f"First issue: {filtered_secrets[0]['file']}:{filtered_secrets[0]['line']}"
+            )
         else:
             print(f"   ✅ No secrets detected in {len(files_to_scan)} files")
 
@@ -290,20 +365,29 @@ class TestSecurityCompliance(unittest.TestCase):
 
                     # Check for world-writable files (dangerous)
                     if mode & stat.S_IWOTH:
-                        permission_issues.append({
-                            "file": str(file_path.relative_to(self.project_root)),
-                            "issue": "world_writable",
-                            "permissions": oct(mode)[-3:]
-                        })
+                        permission_issues.append(
+                            {
+                                "file": str(file_path.relative_to(self.project_root)),
+                                "issue": "world_writable",
+                                "permissions": oct(mode)[-3:],
+                            }
+                        )
 
                     # Check for executable config files (suspicious)
-                    if (file_path.suffix in ['.json', '.yaml', '.yml', '.conf', '.env'] and
-                        mode & (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)):
-                        permission_issues.append({
-                            "file": str(file_path.relative_to(self.project_root)),
-                            "issue": "executable_config",
-                            "permissions": oct(mode)[-3:]
-                        })
+                    if file_path.suffix in [
+                        ".json",
+                        ".yaml",
+                        ".yml",
+                        ".conf",
+                        ".env",
+                    ] and mode & (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH):
+                        permission_issues.append(
+                            {
+                                "file": str(file_path.relative_to(self.project_root)),
+                                "issue": "executable_config",
+                                "permissions": oct(mode)[-3:],
+                            }
+                        )
 
                 except (OSError, PermissionError):
                     continue
@@ -311,7 +395,7 @@ class TestSecurityCompliance(unittest.TestCase):
         self.security_results["permissions_scan"] = {
             "status": "passed" if len(permission_issues) == 0 else "warning",
             "permission_issues": len(permission_issues),
-            "issues": permission_issues[:10]  # Show first 10
+            "issues": permission_issues[:10],  # Show first 10
         }
 
         # Warning for permission issues but don't fail CI
@@ -328,8 +412,10 @@ class TestSecurityCompliance(unittest.TestCase):
             "readme_present": (self.project_root / "README.md").exists(),
             "requirements_present": (self.project_root / "requirements.txt").exists(),
             "gitignore_present": (self.project_root / ".gitignore").exists(),
-            "license_present": any((self.project_root / f"LICENSE{ext}").exists()
-                                 for ext in ["", ".txt", ".md"]),
+            "license_present": any(
+                (self.project_root / f"LICENSE{ext}").exists()
+                for ext in ["", ".txt", ".md"]
+            ),
         }
 
         # Check for sensitive data protection
@@ -339,17 +425,21 @@ class TestSecurityCompliance(unittest.TestCase):
         if gitignore_path.exists():
             gitignore_content = gitignore_path.read_text()
             security_patterns = ["*.env", "*.key", "*password*", "*secret*"]
-            has_security_ignores = any(pattern in gitignore_content for pattern in security_patterns)
+            has_security_ignores = any(
+                pattern in gitignore_content for pattern in security_patterns
+            )
 
         compliance_checks["security_ignores"] = has_security_ignores
 
         # Count failed compliance checks
-        failed_checks = [check for check, passed in compliance_checks.items() if not passed]
+        failed_checks = [
+            check for check, passed in compliance_checks.items() if not passed
+        ]
 
         self.security_results["compliance_scan"] = {
             "status": "passed" if len(failed_checks) == 0 else "warning",
             "checks": compliance_checks,
-            "failed_checks": failed_checks
+            "failed_checks": failed_checks,
         }
 
         # Report compliance status
@@ -363,6 +453,7 @@ class TestSecurityCompliance(unittest.TestCase):
             print("   📝 Consider adding README.md")
         if "license_present" in failed_checks:
             print("   ⚖️  Consider adding LICENSE file")
+
 
 def run_security_compliance_tests():
     """Run security and compliance tests"""
@@ -397,6 +488,7 @@ def run_security_compliance_tests():
             print(f"   Critical: {test}")
 
         return False
+
 
 if __name__ == "__main__":
     success = run_security_compliance_tests()

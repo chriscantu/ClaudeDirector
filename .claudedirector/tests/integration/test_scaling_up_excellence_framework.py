@@ -9,9 +9,12 @@ import sys
 import os
 
 # Add the lib directory to Python path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../lib'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../lib"))
 
-from claudedirector.core.embedded_framework_engine import EmbeddedFrameworkEngine, EmbeddedPersonaIntegrator
+from claudedirector.core.embedded_framework_engine import (
+    EmbeddedFrameworkEngine,
+    EmbeddedPersonaIntegrator,
+)
 
 
 def test_scaling_up_excellence_framework_direct():
@@ -36,7 +39,7 @@ def test_scaling_up_excellence_framework_direct():
     framework_analysis = framework_engine.analyze_systematically(
         user_input=test_input,
         persona_context=persona_context,
-        domain_focus=domain_focus
+        domain_focus=domain_focus,
     )
 
     print(f"\n✅ **Framework Analysis Results:**")
@@ -44,7 +47,18 @@ def test_scaling_up_excellence_framework_direct():
     print(f"   Analysis Confidence: {framework_analysis.analysis_confidence:.2f}")
 
     # Check for Scaling Up Excellence-specific components
-    scaling_keywords = ["buddhist", "catholic", "hot causes", "cool solutions", "connect", "cascade", "cut", "growth", "excellence", "scaling"]
+    scaling_keywords = [
+        "buddhist",
+        "catholic",
+        "hot causes",
+        "cool solutions",
+        "connect",
+        "cascade",
+        "cut",
+        "growth",
+        "excellence",
+        "scaling",
+    ]
     found_scaling_elements = []
 
     # Check in structured insights
@@ -64,12 +78,18 @@ def test_scaling_up_excellence_framework_direct():
 
     # Validate we got the right framework
     expected_framework = "Scaling Up Excellence Framework"
-    assert framework_analysis.framework_name == expected_framework, f"Expected {expected_framework}, got {framework_analysis.framework_name}"
+    assert (
+        framework_analysis.framework_name == expected_framework
+    ), f"Expected {expected_framework}, got {framework_analysis.framework_name}"
 
     # Validate we found key Scaling Up Excellence concepts
     required_elements = ["buddhist", "catholic", "excellence"]
-    found_required = [elem for elem in required_elements if elem in found_scaling_elements]
-    assert len(found_required) >= 2, f"Expected at least 2 required elements, found: {found_required}"
+    found_required = [
+        elem for elem in required_elements if elem in found_scaling_elements
+    ]
+    assert (
+        len(found_required) >= 2
+    ), f"Expected at least 2 required elements, found: {found_required}"
 
     print(f"\n📋 **Key Recommendations:**")
     for i, rec in enumerate(framework_analysis.recommendations[:3], 1):
@@ -79,7 +99,9 @@ def test_scaling_up_excellence_framework_direct():
     for i, step in enumerate(framework_analysis.implementation_steps[:3], 1):
         print(f"   {i}. {step}")
 
-    print(f"\n✅ **Test Result: SUCCESS** - Scaling Up Excellence framework correctly activated")
+    print(
+        f"\n✅ **Test Result: SUCCESS** - Scaling Up Excellence framework correctly activated"
+    )
     return True
 
 
@@ -95,16 +117,16 @@ def test_scaling_keyword_activation():
     test_cases = [
         {
             "input": "How do we scale our API standards across multiple teams?",
-            "expected_keywords": ["scaling", "standards"]
+            "expected_keywords": ["scaling", "standards"],
         },
         {
             "input": "We need to spread best practices for code quality organization-wide",
-            "expected_keywords": ["spread", "practices", "organization"]
+            "expected_keywords": ["spread", "practices", "organization"],
         },
         {
             "input": "Our platform excellence is inconsistent across teams - need better adoption",
-            "expected_keywords": ["excellence", "adoption", "teams"]
-        }
+            "expected_keywords": ["excellence", "adoption", "teams"],
+        },
     ]
 
     for i, test_case in enumerate(test_cases, 1):
@@ -113,7 +135,7 @@ def test_scaling_keyword_activation():
         analysis = framework_engine.analyze_systematically(
             user_input=test_case["input"],
             persona_context="diego",
-            domain_focus=["organizational", "strategic"]
+            domain_focus=["organizational", "strategic"],
         )
 
         print(f"   Framework: {analysis.framework_name}")
@@ -148,7 +170,7 @@ def test_persona_integration_with_scaling():
             persona_name=persona,
             user_input=test_input,
             base_response="",
-            domain_focus=["organizational", "strategic"]
+            domain_focus=["organizational", "strategic"],
         )
 
         print(f"   Framework: {response.framework_applied}")
@@ -159,7 +181,10 @@ def test_persona_integration_with_scaling():
         response_text = response.persona_integrated_response.lower()
 
         if persona == "diego":
-            assert "😊" in response.persona_integrated_response or "collaborative" in response_text
+            assert (
+                "😊" in response.persona_integrated_response
+                or "collaborative" in response_text
+            )
         elif persona == "rachel":
             assert "user" in response_text or "experience" in response_text
         elif persona == "martin":
@@ -180,7 +205,9 @@ if __name__ == "__main__":
         test_persona_integration_with_scaling()
 
         print("\n" + "=" * 60)
-        print("🎉 **ALL TESTS PASSED** - Scaling Up Excellence Framework Successfully Integrated!")
+        print(
+            "🎉 **ALL TESTS PASSED** - Scaling Up Excellence Framework Successfully Integrated!"
+        )
         print("=" * 60)
 
     except Exception as e:

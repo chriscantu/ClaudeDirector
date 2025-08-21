@@ -27,7 +27,9 @@ class TestClaudeDirectorConfig:
     def test_config_with_overrides(self):
         """Test configuration with manual overrides"""
         config = ClaudeDirectorConfig(
-            stakeholder_auto_create_threshold=0.95, cache_ttl_seconds=7200, enable_caching=False
+            stakeholder_auto_create_threshold=0.95,
+            cache_ttl_seconds=7200,
+            enable_caching=False,
         )
 
         assert config.stakeholder_auto_create_threshold == 0.95

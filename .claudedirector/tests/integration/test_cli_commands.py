@@ -32,7 +32,10 @@ class TestCLICommands:
     def test_claudedirector_status(self):
         """Test claudedirector status command"""
         result = subprocess.run(
-            ["./claudedirector", "status"], capture_output=True, text=True, cwd=Path.cwd()
+            ["./claudedirector", "status"],
+            capture_output=True,
+            text=True,
+            cwd=Path.cwd(),
         )
 
         # Should succeed or give informative error
@@ -43,7 +46,10 @@ class TestCLICommands:
     def test_claudedirector_setup_help(self):
         """Test claudedirector setup help"""
         result = subprocess.run(
-            ["./claudedirector", "setup", "--help"], capture_output=True, text=True, cwd=Path.cwd()
+            ["./claudedirector", "setup", "--help"],
+            capture_output=True,
+            text=True,
+            cwd=Path.cwd(),
         )
 
         assert result.returncode == 0
@@ -53,7 +59,10 @@ class TestCLICommands:
     def test_claudedirector_alerts_help(self):
         """Test claudedirector alerts help"""
         result = subprocess.run(
-            ["./claudedirector", "alerts", "--help"], capture_output=True, text=True, cwd=Path.cwd()
+            ["./claudedirector", "alerts", "--help"],
+            capture_output=True,
+            text=True,
+            cwd=Path.cwd(),
         )
 
         assert result.returncode == 0
@@ -75,7 +84,10 @@ class TestCLICommands:
     def test_claudedirector_tasks_help(self):
         """Test claudedirector tasks help"""
         result = subprocess.run(
-            ["./claudedirector", "tasks", "--help"], capture_output=True, text=True, cwd=Path.cwd()
+            ["./claudedirector", "tasks", "--help"],
+            capture_output=True,
+            text=True,
+            cwd=Path.cwd(),
         )
 
         assert result.returncode == 0
@@ -98,7 +110,10 @@ class TestCLICommands:
     def test_claudedirector_git_help(self):
         """Test claudedirector git help"""
         result = subprocess.run(
-            ["./claudedirector", "git", "--help"], capture_output=True, text=True, cwd=Path.cwd()
+            ["./claudedirector", "git", "--help"],
+            capture_output=True,
+            text=True,
+            cwd=Path.cwd(),
         )
 
         assert result.returncode == 0
@@ -123,7 +138,10 @@ class TestCLICommands:
     def test_invalid_command(self):
         """Test handling of invalid commands"""
         result = subprocess.run(
-            ["./claudedirector", "invalid_command"], capture_output=True, text=True, cwd=Path.cwd()
+            ["./claudedirector", "invalid_command"],
+            capture_output=True,
+            text=True,
+            cwd=Path.cwd(),
         )
 
         assert result.returncode != 0
@@ -159,7 +177,10 @@ print("CONFIG_SUCCESS")
 """
 
         result = subprocess.run(
-            [sys.executable, "-c", test_script], capture_output=True, text=True, cwd=Path.cwd()
+            [sys.executable, "-c", test_script],
+            capture_output=True,
+            text=True,
+            cwd=Path.cwd(),
         )
 
         assert result.returncode == 0
@@ -177,7 +198,10 @@ except ImportError as e:
 """
 
         result = subprocess.run(
-            [sys.executable, "-c", test_script], capture_output=True, text=True, cwd=Path.cwd()
+            [sys.executable, "-c", test_script],
+            capture_output=True,
+            text=True,
+            cwd=Path.cwd(),
         )
 
         assert result.returncode == 0
@@ -194,7 +218,10 @@ except ImportError as e:
 """
 
         result = subprocess.run(
-            [sys.executable, "-c", test_script], capture_output=True, text=True, cwd=Path.cwd()
+            [sys.executable, "-c", test_script],
+            capture_output=True,
+            text=True,
+            cwd=Path.cwd(),
         )
 
         assert result.returncode == 0
@@ -211,7 +238,10 @@ except ImportError as e:
 """
 
         result = subprocess.run(
-            [sys.executable, "-c", test_script], capture_output=True, text=True, cwd=Path.cwd()
+            [sys.executable, "-c", test_script],
+            capture_output=True,
+            text=True,
+            cwd=Path.cwd(),
         )
 
         assert result.returncode == 0

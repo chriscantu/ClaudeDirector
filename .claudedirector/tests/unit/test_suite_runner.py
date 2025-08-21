@@ -18,17 +18,21 @@ sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
 
 # Add additional paths for CI environment
 import os
+
 sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
 sys.path.insert(0, os.getcwd())  # Current working directory
 
 # Set PYTHONPATH environment variable for subprocess calls
-os.environ['PYTHONPATH'] = ':'.join([
-    str(PROJECT_ROOT),
-    str(PROJECT_ROOT / ".claudedirector/lib"),
-    str(PROJECT_ROOT / ".claudedirector"),
-    os.getcwd(),
-    os.environ.get('PYTHONPATH', '')
-]).rstrip(':')
+os.environ["PYTHONPATH"] = ":".join(
+    [
+        str(PROJECT_ROOT),
+        str(PROJECT_ROOT / ".claudedirector/lib"),
+        str(PROJECT_ROOT / ".claudedirector"),
+        os.getcwd(),
+        os.environ.get("PYTHONPATH", ""),
+    ]
+).rstrip(":")
+
 
 class UnitTestSuiteRunner:
     """Comprehensive unit test runner with coverage reporting"""
@@ -65,15 +69,14 @@ class UnitTestSuiteRunner:
                 text=True,
                 timeout=120,  # 2 minute timeout per test file
                 cwd=self.project_root,
-                env=os.environ.copy()  # Pass environment variables including PYTHONPATH
+                env=os.environ.copy(),  # Pass environment variables including PYTHONPATH
             )
 
             # Check if failure is due to missing modules (import errors)
-            is_import_error = (
-                result.returncode != 0 and
-                ("No module named 'claudedirector" in result.stderr or
-                 "ModuleNotFoundError" in result.stderr or
-                 "ImportError" in result.stderr)
+            is_import_error = result.returncode != 0 and (
+                "No module named 'claudedirector" in result.stderr
+                or "ModuleNotFoundError" in result.stderr
+                or "ImportError" in result.stderr
             )
 
             duration = time.time() - start_time
@@ -86,7 +89,7 @@ class UnitTestSuiteRunner:
                 "duration": duration,
                 "stdout": result.stdout,
                 "stderr": result.stderr,
-                "return_code": result.returncode
+                "return_code": result.returncode,
             }
 
             if success:
@@ -108,7 +111,7 @@ class UnitTestSuiteRunner:
                 "name": test_name,
                 "success": False,
                 "duration": 120.0,
-                "error": "Test timed out after 120 seconds"
+                "error": "Test timed out after 120 seconds",
             }
         except Exception as e:
             print(f"   💥 ERROR: {str(e)}")
@@ -116,7 +119,7 @@ class UnitTestSuiteRunner:
                 "name": test_name,
                 "success": False,
                 "duration": 0.0,
-                "error": str(e)
+                "error": str(e),
             }
 
     def run_coverage_analysis(self) -> Dict:
@@ -125,18 +128,19 @@ class UnitTestSuiteRunner:
 
         try:
             # Check if coverage is available
-            subprocess.run([sys.executable, "-m", "coverage", "--version"],
-                          capture_output=True, check=True)
+            subprocess.run(
+                [sys.executable, "-m", "coverage", "--version"],
+                capture_output=True,
+                check=True,
+            )
         except (subprocess.CalledProcessError, FileNotFoundError):
             print("   ⚠️  Coverage tool not available - installing...")
             try:
-                subprocess.run([sys.executable, "-m", "pip", "install", "coverage"],
-                              check=True)
+                subprocess.run(
+                    [sys.executable, "-m", "pip", "install", "coverage"], check=True
+                )
             except subprocess.CalledProcessError:
-                return {
-                    "available": False,
-                    "error": "Could not install coverage tool"
-                }
+                return {"available": False, "error": "Could not install coverage tool"}
 
         try:
             # Run coverage on unit tests
@@ -146,18 +150,27 @@ class UnitTestSuiteRunner:
                 return {
                     "available": True,
                     "coverage_percent": 0,
-                    "message": "No unit test files found"
+                    "message": "No unit test files found",
                 }
 
             # Create coverage command
             coverage_cmd = [
-                sys.executable, "-m", "coverage", "run",
-                "--source", str(self.lib_dir),
-                "--omit", "*/test*,*/tests/*,*/__pycache__/*",
-                "-m", "unittest", "discover",
-                "-s", str(self.unit_tests_dir),
-                "-p", "test_*.py",
-                "-v"
+                sys.executable,
+                "-m",
+                "coverage",
+                "run",
+                "--source",
+                str(self.lib_dir),
+                "--omit",
+                "*/test*,*/tests/*,*/__pycache__/*",
+                "-m",
+                "unittest",
+                "discover",
+                "-s",
+                str(self.unit_tests_dir),
+                "-p",
+                "test_*.py",
+                "-v",
             ]
 
             result = subprocess.run(
@@ -166,7 +179,7 @@ class UnitTestSuiteRunner:
                 text=True,
                 cwd=self.project_root,
                 env=os.environ.copy(),  # Pass environment variables including PYTHONPATH
-                timeout=300  # 5 minute timeout for coverage
+                timeout=300,  # 5 minute timeout for coverage
             )
 
             # Generate coverage report
@@ -175,18 +188,18 @@ class UnitTestSuiteRunner:
                 capture_output=True,
                 text=True,
                 cwd=self.project_root,
-                env=os.environ.copy()  # Pass environment variables including PYTHONPATH
+                env=os.environ.copy(),  # Pass environment variables including PYTHONPATH
             )
 
             # Parse coverage percentage
-            coverage_lines = report_result.stdout.split('\n')
-            total_line = [line for line in coverage_lines if line.startswith('TOTAL')]
+            coverage_lines = report_result.stdout.split("\n")
+            total_line = [line for line in coverage_lines if line.startswith("TOTAL")]
 
             coverage_percent = 0
             if total_line:
                 # Extract percentage from line like "TOTAL     123    45    63%"
                 parts = total_line[0].split()
-                if len(parts) >= 4 and parts[-1].endswith('%'):
+                if len(parts) >= 4 and parts[-1].endswith("%"):
                     coverage_percent = int(parts[-1][:-1])
 
             return {
@@ -194,20 +207,20 @@ class UnitTestSuiteRunner:
                 "success": result.returncode == 0,
                 "coverage_percent": coverage_percent,
                 "report": report_result.stdout,
-                "error": result.stderr if result.returncode != 0 else None
+                "error": result.stderr if result.returncode != 0 else None,
             }
 
         except subprocess.TimeoutExpired:
             return {
                 "available": True,
                 "success": False,
-                "error": "Coverage analysis timed out"
+                "error": "Coverage analysis timed out",
             }
         except Exception as e:
             return {
                 "available": True,
                 "success": False,
-                "error": f"Coverage analysis failed: {str(e)}"
+                "error": f"Coverage analysis failed: {str(e)}",
             }
 
     def run_all_unit_tests(self) -> Dict:
@@ -228,7 +241,7 @@ class UnitTestSuiteRunner:
                 "message": "No unit test files found",
                 "tests_run": 0,
                 "tests_passed": 0,
-                "duration": 0.0
+                "duration": 0.0,
             }
 
         print(f"📋 Discovered {len(test_files)} unit test files")
@@ -297,7 +310,9 @@ class UnitTestSuiteRunner:
             if tests_skipped > 0:
                 print(f"   {tests_skipped} test file(s) skipped (missing modules)")
             if coverage_result.get("available") and not coverage_target_met:
-                print(f"   Coverage below target ({coverage_result.get('coverage_percent', 0)}% < 85%)")
+                print(
+                    f"   Coverage below target ({coverage_result.get('coverage_percent', 0)}% < 85%)"
+                )
 
         return {
             "success": overall_success,
@@ -308,8 +323,9 @@ class UnitTestSuiteRunner:
             "duration": total_duration,
             "coverage": coverage_result,
             "test_results": test_results,
-            "coverage_target_met": coverage_target_met
+            "coverage_target_met": coverage_target_met,
         }
+
 
 def run_unit_test_suite():
     """Main entry point for unit test suite"""
@@ -318,6 +334,7 @@ def run_unit_test_suite():
 
     # Exit with appropriate code for CI/CD
     sys.exit(0 if results["success"] else 1)
+
 
 if __name__ == "__main__":
     run_unit_test_suite()

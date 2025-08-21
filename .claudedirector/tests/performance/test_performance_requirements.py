@@ -20,14 +20,19 @@ sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
 
 # Add additional paths for CI environment
 import os
+
 sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
 sys.path.insert(0, os.getcwd())  # Current working directory
 
 try:
-    from integration_protection.cursor_transparency_bridge import CursorTransparencyBridge
+    from integration_protection.cursor_transparency_bridge import (
+        CursorTransparencyBridge,
+    )
+
     TRANSPARENCY_AVAILABLE = True
 except ImportError:
     TRANSPARENCY_AVAILABLE = False
+
 
 class TestPerformanceRequirements(unittest.TestCase):
     """Performance requirements validation for CI/CD pipeline"""
@@ -36,7 +41,7 @@ class TestPerformanceRequirements(unittest.TestCase):
         """Set up performance testing environment"""
         self.performance_results = {}
         self.max_response_time = 2.0  # 2 second requirement from CI config
-        self.max_api_response = 0.5   # 500ms requirement from CI config
+        self.max_api_response = 0.5  # 500ms requirement from CI config
 
     def measure_execution_time(self, func, *args, **kwargs) -> Tuple[float, any]:
         """Measure execution time of a function"""
@@ -57,8 +62,7 @@ class TestPerformanceRequirements(unittest.TestCase):
         simple_response = "Hello! How can I help you today?"
 
         duration, enhanced_response = self.measure_execution_time(
-            bridge.apply_transparency_system,
-            simple_response, simple_input, "martin"
+            bridge.apply_transparency_system, simple_response, simple_input, "martin"
         )
 
         self.assertLess(duration, 0.1)  # Should be under 100ms for simple responses
@@ -69,8 +73,7 @@ class TestPerformanceRequirements(unittest.TestCase):
         complex_response = "🎯 Diego | Engineering Leadership\n\nGreat strategic question! Let me apply systematic frameworks to analyze this complex organizational challenge..."
 
         duration, enhanced_response = self.measure_execution_time(
-            bridge.apply_transparency_system,
-            complex_response, complex_input, "diego"
+            bridge.apply_transparency_system, complex_response, complex_input, "diego"
         )
 
         self.assertLess(duration, self.max_api_response)  # Under 500ms requirement
@@ -80,15 +83,24 @@ class TestPerformanceRequirements(unittest.TestCase):
         self.performance_results["transparency_bridge"] = {
             "simple_response_time": duration,
             "complex_response_time": duration,
-            "requirement_met": duration < self.max_api_response
+            "requirement_met": duration < self.max_api_response,
         }
 
     def test_p0_test_performance(self):
         """Test that P0 tests complete within performance requirements"""
         test_commands = [
-            ("MCP Transparency P0", "python3 .claudedirector/tests/regression/test_mcp_transparency_p0.py"),
-            ("Hybrid Installation P0", "python3 .claudedirector/tests/integration/test_hybrid_installation_p0.py"),
-            ("P0 Enforcement", "python3 .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py")
+            (
+                "MCP Transparency P0",
+                "python3 .claudedirector/tests/regression/test_mcp_transparency_p0.py",
+            ),
+            (
+                "Hybrid Installation P0",
+                "python3 .claudedirector/tests/integration/test_hybrid_installation_p0.py",
+            ),
+            (
+                "P0 Enforcement",
+                "python3 .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py",
+            ),
         ]
 
         test_results = {}
@@ -102,7 +114,7 @@ class TestPerformanceRequirements(unittest.TestCase):
                     capture_output=True,
                     text=True,
                     timeout=30,  # 30 second timeout
-                    cwd=PROJECT_ROOT
+                    cwd=PROJECT_ROOT,
                 )
 
                 duration = time.time() - start_time
@@ -111,11 +123,16 @@ class TestPerformanceRequirements(unittest.TestCase):
                 test_results[test_name] = {
                     "duration": duration,
                     "success": success,
-                    "requirement_met": duration < 10.0  # P0 tests should complete quickly
+                    "requirement_met": duration
+                    < 10.0,  # P0 tests should complete quickly
                 }
 
-                self.assertTrue(success, f"{test_name} must pass for performance testing")
-                self.assertLess(duration, 10.0, f"{test_name} took too long: {duration:.2f}s")
+                self.assertTrue(
+                    success, f"{test_name} must pass for performance testing"
+                )
+                self.assertLess(
+                    duration, 10.0, f"{test_name} took too long: {duration:.2f}s"
+                )
 
             except subprocess.TimeoutExpired:
                 self.fail(f"{test_name} timed out (>30s)")
@@ -143,7 +160,8 @@ class TestPerformanceRequirements(unittest.TestCase):
             return {
                 "request_id": request_id,
                 "duration": duration,
-                "success": isinstance(enhanced_response, str) and len(enhanced_response) > 0
+                "success": isinstance(enhanced_response, str)
+                and len(enhanced_response) > 0,
             }
 
         # Test with 10 concurrent requests
@@ -153,7 +171,10 @@ class TestPerformanceRequirements(unittest.TestCase):
 
         with ThreadPoolExecutor(max_workers=max_concurrent_users) as executor:
             # Submit all requests
-            futures = [executor.submit(simulate_request, i) for i in range(max_concurrent_users)]
+            futures = [
+                executor.submit(simulate_request, i)
+                for i in range(max_concurrent_users)
+            ]
 
             # Collect results
             for future in as_completed(futures):
@@ -173,9 +194,19 @@ class TestPerformanceRequirements(unittest.TestCase):
         success_rate = successful_requests / max_concurrent_users
 
         # Performance requirements under load
-        self.assertEqual(successful_requests, max_concurrent_users, "All requests must succeed")
-        self.assertLess(avg_duration, self.max_api_response, f"Average response time too high: {avg_duration:.3f}s")
-        self.assertLess(max_duration, self.max_response_time, f"Max response time too high: {max_duration:.3f}s")
+        self.assertEqual(
+            successful_requests, max_concurrent_users, "All requests must succeed"
+        )
+        self.assertLess(
+            avg_duration,
+            self.max_api_response,
+            f"Average response time too high: {avg_duration:.3f}s",
+        )
+        self.assertLess(
+            max_duration,
+            self.max_response_time,
+            f"Max response time too high: {max_duration:.3f}s",
+        )
         self.assertGreaterEqual(success_rate, 0.95, "Success rate too low under load")
 
         self.performance_results["concurrent_load"] = {
@@ -183,7 +214,7 @@ class TestPerformanceRequirements(unittest.TestCase):
             "avg_duration": avg_duration,
             "max_duration": max_duration,
             "success_rate": success_rate,
-            "requirement_met": max_duration < self.max_response_time
+            "requirement_met": max_duration < self.max_response_time,
         }
 
     def test_memory_performance(self):
@@ -201,7 +232,9 @@ class TestPerformanceRequirements(unittest.TestCase):
 
             # Process multiple strategic responses
             for i in range(50):
-                strategic_input = f"Strategic question {i}: Complex organizational analysis required."
+                strategic_input = (
+                    f"Strategic question {i}: Complex organizational analysis required."
+                )
                 strategic_response = f"🎯 Diego | Engineering Leadership\n\nDetailed strategic analysis {i} with comprehensive framework application..."
 
                 enhanced_response = bridge.apply_transparency_system(
@@ -215,14 +248,17 @@ class TestPerformanceRequirements(unittest.TestCase):
         # Memory should not increase excessively
         max_memory_increase = 150  # 150MB max increase
 
-        self.assertLess(memory_increase, max_memory_increase,
-                       f"Memory increase too high: {memory_increase:.1f}MB")
+        self.assertLess(
+            memory_increase,
+            max_memory_increase,
+            f"Memory increase too high: {memory_increase:.1f}MB",
+        )
 
         self.performance_results["memory_usage"] = {
             "initial_memory_mb": initial_memory,
             "final_memory_mb": final_memory,
             "memory_increase_mb": memory_increase,
-            "requirement_met": memory_increase < max_memory_increase
+            "requirement_met": memory_increase < max_memory_increase,
         }
 
     def test_startup_performance(self):
@@ -250,8 +286,11 @@ class TestPerformanceRequirements(unittest.TestCase):
                 import_times[module_name] = import_duration
 
                 # Each module should import quickly
-                self.assertLess(import_duration, 1.0,
-                               f"Module {module_name} import too slow: {import_duration:.3f}s")
+                self.assertLess(
+                    import_duration,
+                    1.0,
+                    f"Module {module_name} import too slow: {import_duration:.3f}s",
+                )
 
             except ImportError:
                 # Module not available - record as 0 time
@@ -260,14 +299,18 @@ class TestPerformanceRequirements(unittest.TestCase):
         total_import_time = sum(import_times.values())
 
         # Total startup should be fast
-        self.assertLess(total_import_time, 2.0,
-                       f"Total import time too slow: {total_import_time:.3f}s")
+        self.assertLess(
+            total_import_time,
+            2.0,
+            f"Total import time too slow: {total_import_time:.3f}s",
+        )
 
         self.performance_results["startup"] = {
             "import_times": import_times,
             "total_import_time": total_import_time,
-            "requirement_met": total_import_time < 2.0
+            "requirement_met": total_import_time < 2.0,
         }
+
 
 def run_performance_tests():
     """Run performance requirements tests"""
@@ -309,6 +352,7 @@ def run_performance_tests():
             print(f"   Error: {test}")
 
         return False
+
 
 if __name__ == "__main__":
     success = run_performance_tests()

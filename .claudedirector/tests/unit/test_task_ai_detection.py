@@ -7,6 +7,7 @@ import unittest
 import sys
 from pathlib import Path
 
+
 # Simple Mock class for CI compatibility
 class Mock:
     def __init__(self, **kwargs):
@@ -16,10 +17,13 @@ class Mock:
     def __call__(self, *args, **kwargs):
         return Mock()
 
+
 def patch(target):
     def decorator(func):
         return func
+
     return decorator
+
 
 # Add the lib directory to Python path for imports
 lib_path = Path(__file__).parent.parent.parent / "lib"
@@ -28,28 +32,41 @@ sys.path.insert(0, str(lib_path))
 # Always use mock classes for testing to avoid real module complexity
 IMPORTS_AVAILABLE = False
 
+
 # Create mock classes for testing
 class TaskIntelligence:
     def __init__(self, config=None):
         self.config = config
-        self.db_path = getattr(config, 'database_path', ':memory:')
+        self.db_path = getattr(config, "database_path", ":memory:")
 
     def get_my_tasks(self):
         # Mock implementation for testing
         return [
-            {"task": "Fix critical security vulnerability", "confidence": 0.95, "priority": "critical", "deadline": "ASAP"},
+            {
+                "task": "Fix critical security vulnerability",
+                "confidence": 0.95,
+                "priority": "critical",
+                "deadline": "ASAP",
+            },
             {"task": "High confidence task", "confidence": 0.90, "priority": "high"},
-            {"task": "Medium confidence task", "confidence": 0.70, "priority": "medium"},
-            {"task": "Low confidence task", "confidence": 0.45, "priority": "low"}
+            {
+                "task": "Medium confidence task",
+                "confidence": 0.70,
+                "priority": "medium",
+            },
+            {"task": "Low confidence task", "confidence": 0.45, "priority": "low"},
         ]
+
 
 class ClaudeDirectorConfig:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             setattr(self, key, value)
 
+
 class AIDetectionError(Exception):
     pass
+
 
 class DatabaseError(Exception):
     pass
@@ -65,7 +82,7 @@ class TestTaskAIDetection(unittest.TestCase):
             task_auto_create_threshold=0.80,
             task_review_threshold=0.60,
             enable_caching=False,
-            enable_parallel_processing=False
+            enable_parallel_processing=False,
         )
 
     def test_task_intelligence_initialization(self):
@@ -90,11 +107,15 @@ class TestTaskAIDetection(unittest.TestCase):
 
         # Check that high-priority tasks are properly structured
         critical_tasks = [t for t in tasks if t.get("priority") == "critical"]
-        self.assertGreater(len(critical_tasks), 0, "Should have at least one critical task")
+        self.assertGreater(
+            len(critical_tasks), 0, "Should have at least one critical task"
+        )
 
         # Verify critical task has high confidence
         critical_task = critical_tasks[0]
-        self.assertGreaterEqual(critical_task["confidence"], self.mock_config.task_auto_create_threshold)
+        self.assertGreaterEqual(
+            critical_task["confidence"], self.mock_config.task_auto_create_threshold
+        )
 
     def test_task_confidence_thresholds(self):
         """Test task detection confidence threshold logic."""
@@ -112,12 +133,16 @@ class TestTaskAIDetection(unittest.TestCase):
         self.assertEqual(review_threshold, 0.60)
 
         # Test threshold comparisons with actual task data
-        high_conf_tasks = [t for t in tasks if t["confidence"] >= high_confidence_threshold]
+        high_conf_tasks = [
+            t for t in tasks if t["confidence"] >= high_confidence_threshold
+        ]
         review_tasks = [t for t in tasks if t["confidence"] >= review_threshold]
         low_conf_tasks = [t for t in tasks if t["confidence"] < review_threshold]
 
         self.assertGreater(len(high_conf_tasks), 0, "Should have high confidence tasks")
-        self.assertGreater(len(review_tasks), 0, "Should have tasks above review threshold")
+        self.assertGreater(
+            len(review_tasks), 0, "Should have tasks above review threshold"
+        )
         self.assertGreater(len(low_conf_tasks), 0, "Should have low confidence tasks")
 
 
@@ -131,11 +156,17 @@ class TestTaskDetectionPatterns(unittest.TestCase):
             "TODO: Implement user authentication",
             "Need to: Review code before Friday",
             "Must complete: Database migration script",
-            "Follow up: Contact vendor about licensing"
+            "Follow up: Contact vendor about licensing",
         ]
 
         # Test pattern recognition concepts
-        action_keywords = ["action item", "todo", "need to", "must complete", "follow up"]
+        action_keywords = [
+            "action item",
+            "todo",
+            "need to",
+            "must complete",
+            "follow up",
+        ]
 
         for pattern in action_patterns:
             pattern_lower = pattern.lower()
@@ -149,14 +180,16 @@ class TestTaskDetectionPatterns(unittest.TestCase):
             "Due tomorrow at 5pm",
             "Deadline: Monday morning",
             "Submit before end of week",
-            "Finish by next sprint"
+            "Finish by next sprint",
         ]
 
         deadline_keywords = ["by", "due", "deadline", "before", "finish"]
 
         for pattern in deadline_patterns:
             pattern_lower = pattern.lower()
-            has_deadline = any(keyword in pattern_lower for keyword in deadline_keywords)
+            has_deadline = any(
+                keyword in pattern_lower for keyword in deadline_keywords
+            )
             self.assertTrue(has_deadline, f"Should detect deadline in: {pattern}")
 
     def test_priority_indicators(self):
@@ -166,7 +199,7 @@ class TestTaskDetectionPatterns(unittest.TestCase):
             ("Critical security vulnerability found", "critical"),
             ("High priority: Customer escalation", "high"),
             ("Low priority: Update documentation", "low"),
-            ("Nice to have: Add dark mode", "low")
+            ("Nice to have: Add dark mode", "low"),
         ]
 
         for pattern, expected_priority in priority_patterns:
@@ -184,12 +217,24 @@ class TestTaskDetectionPatterns(unittest.TestCase):
 
             # Verify priority detection logic works correctly
             if expected_priority == "critical" and detected_priority == "critical":
-                self.assertEqual(detected_priority, "critical", f"Should detect critical priority in: {pattern}")
+                self.assertEqual(
+                    detected_priority,
+                    "critical",
+                    f"Should detect critical priority in: {pattern}",
+                )
             elif expected_priority == "high" and detected_priority == "high":
-                self.assertEqual(detected_priority, "high", f"Should detect high priority in: {pattern}")
+                self.assertEqual(
+                    detected_priority,
+                    "high",
+                    f"Should detect high priority in: {pattern}",
+                )
             elif expected_priority == "low":
                 # For "nice to have" patterns, verify the logic detects them as low priority
-                self.assertEqual(detected_priority, "low", f"Should detect low priority pattern: {pattern}")
+                self.assertEqual(
+                    detected_priority,
+                    "low",
+                    f"Should detect low priority pattern: {pattern}",
+                )
 
 
 class TestTaskDetectionErrorHandling(unittest.TestCase):
@@ -217,11 +262,15 @@ class TestTaskDetectionErrorHandling(unittest.TestCase):
         invalid_thresholds = [-0.1, 1.1, "invalid", None]
 
         for threshold in valid_thresholds:
-            self.assertTrue(0.0 <= threshold <= 1.0, f"Threshold {threshold} should be valid")
+            self.assertTrue(
+                0.0 <= threshold <= 1.0, f"Threshold {threshold} should be valid"
+            )
 
         for threshold in invalid_thresholds:
             if threshold is not None and isinstance(threshold, (int, float)):
-                self.assertFalse(0.0 <= threshold <= 1.0, f"Threshold {threshold} should be invalid")
+                self.assertFalse(
+                    0.0 <= threshold <= 1.0, f"Threshold {threshold} should be invalid"
+                )
 
 
 if __name__ == "__main__":

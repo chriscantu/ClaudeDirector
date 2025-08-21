@@ -8,6 +8,7 @@ import sys
 import os
 from pathlib import Path
 
+
 # Simple Mock class for CI compatibility
 class Mock:
     def __init__(self, **kwargs):
@@ -17,10 +18,13 @@ class Mock:
     def __call__(self, *args, **kwargs):
         return Mock()
 
+
 def patch(target):
     def decorator(func):
         return func
+
     return decorator
+
 
 # Add the lib directory to Python path for imports
 lib_path = Path(__file__).parent.parent.parent / "lib"
@@ -46,7 +50,7 @@ class TestAIDetectionThresholds(unittest.TestCase):
                 stakeholder_auto_create_threshold=0.85,
                 stakeholder_profiling_threshold=0.65,
                 task_auto_create_threshold=0.80,
-                task_review_threshold=0.60
+                task_review_threshold=0.60,
             )
         else:
             # Fallback mock config
@@ -71,12 +75,18 @@ class TestAIDetectionThresholds(unittest.TestCase):
         for confidence, expected_action, description in test_cases:
             with self.subTest(confidence=confidence, description=description):
                 # Auto-creation logic
-                should_auto_create = confidence >= self.config.stakeholder_auto_create_threshold
+                should_auto_create = (
+                    confidence >= self.config.stakeholder_auto_create_threshold
+                )
                 # Profiling logic
-                should_profile = confidence >= self.config.stakeholder_profiling_threshold
+                should_profile = (
+                    confidence >= self.config.stakeholder_profiling_threshold
+                )
 
                 if confidence >= 0.85:
-                    self.assertTrue(should_auto_create, f"Should auto-create at {confidence}")
+                    self.assertTrue(
+                        should_auto_create, f"Should auto-create at {confidence}"
+                    )
                 elif confidence >= 0.65:
                     self.assertTrue(should_profile, f"Should profile at {confidence}")
                 else:
@@ -96,12 +106,16 @@ class TestAIDetectionThresholds(unittest.TestCase):
         for confidence, expected_action, description in test_cases:
             with self.subTest(confidence=confidence, description=description):
                 # Auto-creation logic
-                should_auto_create = confidence >= self.config.task_auto_create_threshold
+                should_auto_create = (
+                    confidence >= self.config.task_auto_create_threshold
+                )
                 # Review logic
                 should_review = confidence >= self.config.task_review_threshold
 
                 if confidence >= 0.80:
-                    self.assertTrue(should_auto_create, f"Should auto-create at {confidence}")
+                    self.assertTrue(
+                        should_auto_create, f"Should auto-create at {confidence}"
+                    )
                 elif confidence >= 0.60:
                     self.assertTrue(should_review, f"Should review at {confidence}")
                 else:
@@ -125,13 +139,13 @@ class TestAIDetectionThresholds(unittest.TestCase):
         self.assertLessEqual(
             self.config.stakeholder_profiling_threshold,
             self.config.stakeholder_auto_create_threshold,
-            "Profiling threshold should be <= auto-create threshold"
+            "Profiling threshold should be <= auto-create threshold",
         )
 
         self.assertLessEqual(
             self.config.task_review_threshold,
             self.config.task_auto_create_threshold,
-            "Review threshold should be <= auto-create threshold"
+            "Review threshold should be <= auto-create threshold",
         )
 
 
@@ -164,17 +178,21 @@ class TestAIDetectionPatterns(unittest.TestCase):
             import re
 
             # Pattern 1: Title + Name (e.g., "PM Lisa Wang")
-            title_pattern = r'(?:VP|Director|CTO|PM|CEO|Manager|Senior\s+leader|Team\s+lead|Executive)\s+(?:of\s+\w+\s+)?([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)'
+            title_pattern = r"(?:VP|Director|CTO|PM|CEO|Manager|Senior\s+leader|Team\s+lead|Executive)\s+(?:of\s+\w+\s+)?([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)"
             title_matches = re.findall(title_pattern, text, re.IGNORECASE)
             names.extend(title_matches)
 
             # Pattern 2: Name followed by action words (e.g., "John Smith tomorrow")
-            name_pattern = r'([A-Z][a-z]+\s+[A-Z][a-z]+)(?=\s+(?:tomorrow|will|is|approved))'
+            name_pattern = (
+                r"([A-Z][a-z]+\s+[A-Z][a-z]+)(?=\s+(?:tomorrow|will|is|approved))"
+            )
             name_matches = re.findall(name_pattern, text)
             names.extend(name_matches)
 
             # Pattern 3: Standalone titles that act as stakeholder references
-            standalone_titles = re.findall(r'\b(Senior leader|Team lead|Executive)\b', text, re.IGNORECASE)
+            standalone_titles = re.findall(
+                r"\b(Senior leader|Team lead|Executive)\b", text, re.IGNORECASE
+            )
             for title in standalone_titles:
                 names.append(title.title())
 
@@ -183,14 +201,18 @@ class TestAIDetectionPatterns(unittest.TestCase):
         for text, expected_name in positive_cases:
             with self.subTest(text=text):
                 detected_names = mock_detect_stakeholder_names(text)
-                self.assertIn(expected_name, detected_names,
-                            f"Should detect '{expected_name}' in '{text}'")
+                self.assertIn(
+                    expected_name,
+                    detected_names,
+                    f"Should detect '{expected_name}' in '{text}'",
+                )
 
         for text in negative_cases:
             with self.subTest(text=text[0]):
                 detected_names = mock_detect_stakeholder_names(text[0])
-                self.assertEqual(len(detected_names), 0,
-                               f"Should not detect names in '{text[0]}'")
+                self.assertEqual(
+                    len(detected_names), 0, f"Should not detect names in '{text[0]}'"
+                )
 
     def test_task_pattern_detection(self):
         """Test task detection pattern matching."""
@@ -212,10 +234,11 @@ class TestAIDetectionPatterns(unittest.TestCase):
         def mock_detect_task_patterns(text):
             """Mock task pattern detection."""
             import re
+
             task_patterns = [
-                r'(?:Need to|TODO:|Action item:|Must)\s+(.+?)(?:\s+by\s+\w+|$)',
-                r'(?:Deadline:)\s+(.+?)(?:\s+by\s+\w+|$)',
-                r'(?:complete|fix|update|schedule|submit)\s+(.+?)(?:\s+by\s+\w+|$)',
+                r"(?:Need to|TODO:|Action item:|Must)\s+(.+?)(?:\s+by\s+\w+|$)",
+                r"(?:Deadline:)\s+(.+?)(?:\s+by\s+\w+|$)",
+                r"(?:complete|fix|update|schedule|submit)\s+(.+?)(?:\s+by\s+\w+|$)",
             ]
 
             tasks = []
@@ -227,15 +250,19 @@ class TestAIDetectionPatterns(unittest.TestCase):
         for text, expected_task in positive_cases:
             with self.subTest(text=text):
                 detected_tasks = mock_detect_task_patterns(text)
-                self.assertTrue(any(expected_task.lower() in task.lower()
-                                  for task in detected_tasks),
-                               f"Should detect task related to '{expected_task}' in '{text}'")
+                self.assertTrue(
+                    any(
+                        expected_task.lower() in task.lower() for task in detected_tasks
+                    ),
+                    f"Should detect task related to '{expected_task}' in '{text}'",
+                )
 
         for text in negative_cases:
             with self.subTest(text=text[0]):
                 detected_tasks = mock_detect_task_patterns(text[0])
-                self.assertEqual(len(detected_tasks), 0,
-                               f"Should not detect tasks in '{text[0]}'")
+                self.assertEqual(
+                    len(detected_tasks), 0, f"Should not detect tasks in '{text[0]}'"
+                )
 
 
 class TestAIDetectionErrorHandling(unittest.TestCase):
@@ -260,8 +287,8 @@ class TestAIDetectionErrorHandling(unittest.TestCase):
         """Test handling of configuration errors in AI detection."""
         invalid_configs = [
             {"stakeholder_auto_create_threshold": -0.1},  # Below 0
-            {"stakeholder_auto_create_threshold": 1.1},   # Above 1
-            {"task_auto_create_threshold": "invalid"},    # Wrong type
+            {"stakeholder_auto_create_threshold": 1.1},  # Above 1
+            {"task_auto_create_threshold": "invalid"},  # Wrong type
         ]
 
         def mock_validate_config(config_dict):
@@ -271,7 +298,9 @@ class TestAIDetectionErrorHandling(unittest.TestCase):
                     if not isinstance(value, (int, float)):
                         raise ConfigurationError(f"Threshold {key} must be numeric")
                     if not 0.0 <= value <= 1.0:
-                        raise ConfigurationError(f"Threshold {key} must be between 0 and 1")
+                        raise ConfigurationError(
+                            f"Threshold {key} must be between 0 and 1"
+                        )
 
         for invalid_config in invalid_configs:
             with self.subTest(config=invalid_config):

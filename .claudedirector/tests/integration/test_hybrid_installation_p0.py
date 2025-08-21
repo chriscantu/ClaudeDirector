@@ -23,12 +23,14 @@ try:
         HybridInstallationManager,
         InstallationCommand,
         InstallationResult,
-        UsageStats
+        UsageStats,
     )
+
     HYBRID_MANAGER_AVAILABLE = True
 except ImportError:
     HYBRID_MANAGER_AVAILABLE = False
     print("⚠️ Hybrid installation manager not available - using fallback tests")
+
 
 class TestHybridInstallationP0(unittest.TestCase):
     """
@@ -51,16 +53,16 @@ class TestHybridInstallationP0(unittest.TestCase):
                             "type": "permanent",
                             "command": "sequential-mcp-server",
                             "args": [],
-                            "performance_benefit": "58% faster startup"
+                            "performance_benefit": "58% faster startup",
                         },
                         {
                             "type": "temporary",
                             "command": "npx",
                             "args": ["-y", "@sequential/mcp-server"],
-                            "fallback_message": "Installing MCP enhancement: sequential (systematic_analysis)"
-                        }
+                            "fallback_message": "Installing MCP enhancement: sequential (systematic_analysis)",
+                        },
                     ],
-                    "performance_hint_threshold": 3
+                    "performance_hint_threshold": 3,
                 }
             },
             "hybrid_installation": {
@@ -69,9 +71,9 @@ class TestHybridInstallationP0(unittest.TestCase):
                 "messages": {
                     "permanent_found": "⚡ Using optimized MCP server: {server} ({benefit})",
                     "temporary_installing": "🔧 Installing MCP enhancement: {server} ({capability})",
-                    "performance_hint": "💡 Install {server} permanently for {benefit}? Use: npm install -g {package}"
-                }
-            }
+                    "performance_hint": "💡 Install {server} permanently for {benefit}? Use: npm install -g {package}",
+                },
+            },
         }
 
     def test_p0_zero_setup_principle_maintained(self):
@@ -87,24 +89,31 @@ class TestHybridInstallationP0(unittest.TestCase):
             manager.config = self.test_config
 
             # Mock permanent command not available
-            with patch.object(manager, 'check_command_availability', return_value=False):
+            with patch.object(
+                manager, "check_command_availability", return_value=False
+            ):
                 # Mock temporary command success
-                with patch.object(manager, 'try_installation_command') as mock_try:
+                with patch.object(manager, "try_installation_command") as mock_try:
                     mock_try.return_value = InstallationResult(
                         success=True,
                         installation_type="temporary",
                         command_used="npx -y @sequential/mcp-server",
                         startup_time=1.1,
-                        performance_benefit=None
+                        performance_benefit=None,
                     )
 
                     result = manager.attempt_server_startup("sequential")
 
                     # CRITICAL: Must succeed with temporary installation
-                    self.assertTrue(result.success,
-                        "P0 FAILURE: Zero setup broken - temporary installation must work")
-                    self.assertEqual(result.installation_type, "temporary",
-                        "P0 FAILURE: Must fallback to temporary when permanent unavailable")
+                    self.assertTrue(
+                        result.success,
+                        "P0 FAILURE: Zero setup broken - temporary installation must work",
+                    )
+                    self.assertEqual(
+                        result.installation_type,
+                        "temporary",
+                        "P0 FAILURE: Must fallback to temporary when permanent unavailable",
+                    )
 
     def test_p0_performance_optimization_detection(self):
         """
@@ -115,25 +124,31 @@ class TestHybridInstallationP0(unittest.TestCase):
             manager.config = self.test_config
 
             # Mock permanent command available
-            with patch.object(manager, 'check_command_availability', return_value=True):
-                with patch.object(manager, 'try_installation_command') as mock_try:
+            with patch.object(manager, "check_command_availability", return_value=True):
+                with patch.object(manager, "try_installation_command") as mock_try:
                     mock_try.return_value = InstallationResult(
                         success=True,
                         installation_type="permanent",
                         command_used="sequential-mcp-server",
                         startup_time=0.46,
-                        performance_benefit="58% faster startup"
+                        performance_benefit="58% faster startup",
                     )
 
                     result = manager.attempt_server_startup("sequential")
 
                     # CRITICAL: Must use permanent when available
-                    self.assertTrue(result.success,
-                        "P0 FAILURE: Performance optimization failed")
-                    self.assertEqual(result.installation_type, "permanent",
-                        "P0 FAILURE: Must prefer permanent when available")
-                    self.assertIsNotNone(result.performance_benefit,
-                        "P0 FAILURE: Performance benefit must be tracked")
+                    self.assertTrue(
+                        result.success, "P0 FAILURE: Performance optimization failed"
+                    )
+                    self.assertEqual(
+                        result.installation_type,
+                        "permanent",
+                        "P0 FAILURE: Must prefer permanent when available",
+                    )
+                    self.assertIsNotNone(
+                        result.performance_benefit,
+                        "P0 FAILURE: Performance benefit must be tracked",
+                    )
 
     def test_p0_command_detection_accuracy(self):
         """
@@ -142,12 +157,16 @@ class TestHybridInstallationP0(unittest.TestCase):
         manager = HybridInstallationManager()
 
         # Test with known available command
-        self.assertTrue(manager.check_command_availability("python3"),
-            "P0 FAILURE: Must detect available commands")
+        self.assertTrue(
+            manager.check_command_availability("python3"),
+            "P0 FAILURE: Must detect available commands",
+        )
 
         # Test with known unavailable command
-        self.assertFalse(manager.check_command_availability("definitely-not-a-real-command-12345"),
-            "P0 FAILURE: Must not detect unavailable commands")
+        self.assertFalse(
+            manager.check_command_availability("definitely-not-a-real-command-12345"),
+            "P0 FAILURE: Must not detect unavailable commands",
+        )
 
     def test_p0_fallback_chain_ordering(self):
         """
@@ -159,12 +178,19 @@ class TestHybridInstallationP0(unittest.TestCase):
         commands = manager.get_installation_commands("sequential")
 
         # CRITICAL: Permanent must be tried first
-        self.assertEqual(len(commands), 2,
-            "P0 FAILURE: Must have exactly 2 installation options")
-        self.assertEqual(commands[0].type, "permanent",
-            "P0 FAILURE: Permanent installation must be tried first")
-        self.assertEqual(commands[1].type, "temporary",
-            "P0 FAILURE: Temporary installation must be fallback")
+        self.assertEqual(
+            len(commands), 2, "P0 FAILURE: Must have exactly 2 installation options"
+        )
+        self.assertEqual(
+            commands[0].type,
+            "permanent",
+            "P0 FAILURE: Permanent installation must be tried first",
+        )
+        self.assertEqual(
+            commands[1].type,
+            "temporary",
+            "P0 FAILURE: Temporary installation must be fallback",
+        )
 
     def test_p0_usage_tracking_accuracy(self):
         """
@@ -183,13 +209,15 @@ class TestHybridInstallationP0(unittest.TestCase):
             # Verify stats updated
             stats = manager.usage_stats.get("sequential")
             self.assertIsNotNone(stats, "P0 FAILURE: Usage stats must be created")
-            self.assertEqual(stats.temporary_uses, 1,
-                "P0 FAILURE: Temporary usage must be tracked")
+            self.assertEqual(
+                stats.temporary_uses, 1, "P0 FAILURE: Temporary usage must be tracked"
+            )
 
             # Track permanent usage
             manager._track_usage("sequential", "permanent", 0.46)
-            self.assertEqual(stats.permanent_uses, 1,
-                "P0 FAILURE: Permanent usage must be tracked")
+            self.assertEqual(
+                stats.permanent_uses, 1, "P0 FAILURE: Permanent usage must be tracked"
+            )
 
     def test_p0_performance_hint_threshold(self):
         """
@@ -203,7 +231,7 @@ class TestHybridInstallationP0(unittest.TestCase):
         manager.usage_stats["sequential"] = stats
 
         # Mock print to capture output
-        with patch('builtins.print') as mock_print:
+        with patch("builtins.print") as mock_print:
             manager._check_performance_hint("sequential", "temporary")
             # Should not show hint yet (below threshold)
             mock_print.assert_not_called()
@@ -211,13 +239,13 @@ class TestHybridInstallationP0(unittest.TestCase):
         # Reach threshold
         stats.temporary_uses = 3
 
-        with patch('builtins.print') as mock_print:
+        with patch("builtins.print") as mock_print:
             manager._check_performance_hint("sequential", "temporary")
             # Should show hint now
             mock_print.assert_called()
 
         # Verify hint timing prevents spam
-        with patch('builtins.print') as mock_print:
+        with patch("builtins.print") as mock_print:
             manager._check_performance_hint("sequential", "temporary")
             # Should not show hint again immediately
             mock_print.assert_not_called()
@@ -230,13 +258,17 @@ class TestHybridInstallationP0(unittest.TestCase):
         manager = HybridInstallationManager(config_path=Path("/nonexistent/path"))
 
         # Should create default configuration
-        self.assertIsNotNone(manager.config,
-            "P0 FAILURE: Must create default config when file missing")
+        self.assertIsNotNone(
+            manager.config, "P0 FAILURE: Must create default config when file missing"
+        )
 
         # Should be able to get commands even with default config
         commands = manager.get_installation_commands("sequential")
-        self.assertGreater(len(commands), 0,
-            "P0 FAILURE: Must provide fallback commands with default config")
+        self.assertGreater(
+            len(commands),
+            0,
+            "P0 FAILURE: Must provide fallback commands with default config",
+        )
 
     def test_p0_error_handling_graceful_degradation(self):
         """
@@ -246,13 +278,13 @@ class TestHybridInstallationP0(unittest.TestCase):
         manager.config = self.test_config
 
         # Mock all commands failing
-        with patch.object(manager, 'try_installation_command') as mock_try:
+        with patch.object(manager, "try_installation_command") as mock_try:
             mock_try.return_value = InstallationResult(
                 success=False,
                 installation_type="failed",
                 command_used="test",
                 startup_time=0.0,
-                error_message="Test failure"
+                error_message="Test failure",
             )
 
             result = manager.attempt_server_startup("sequential")
@@ -260,8 +292,10 @@ class TestHybridInstallationP0(unittest.TestCase):
             # CRITICAL: Must handle failure gracefully
             self.assertFalse(result.success, "Expected failure for this test")
             self.assertEqual(result.installation_type, "failed")
-            self.assertIsNotNone(result.error_message,
-                "P0 FAILURE: Must provide error message for debugging")
+            self.assertIsNotNone(
+                result.error_message,
+                "P0 FAILURE: Must provide error message for debugging",
+            )
 
     def test_p0_transparency_bridge_integration(self):
         """
@@ -280,21 +314,31 @@ class TestHybridInstallationP0(unittest.TestCase):
             test_response = "Strategic analysis requires systematic frameworks"
 
             # Should not crash and should return enhanced response
-            enhanced = bridge.apply_mcp_transparency(test_response, "martin", test_input)
+            enhanced = bridge.apply_mcp_transparency(
+                test_response, "martin", test_input
+            )
 
-            self.assertIsInstance(enhanced, str,
-                "P0 FAILURE: Transparency bridge must return string")
-            self.assertIn(test_response, enhanced,
-                "P0 FAILURE: Original response must be preserved")
+            self.assertIsInstance(
+                enhanced, str, "P0 FAILURE: Transparency bridge must return string"
+            )
+            self.assertIn(
+                test_response,
+                enhanced,
+                "P0 FAILURE: Original response must be preserved",
+            )
 
             # Should contain either optimization or installation message
-            has_mcp_message = ("⚡ Using optimized MCP server:" in enhanced or
-                             "🔧 Installing MCP enhancement:" in enhanced)
-            self.assertTrue(has_mcp_message,
-                "P0 FAILURE: Must show appropriate MCP message")
+            has_mcp_message = (
+                "⚡ Using optimized MCP server:" in enhanced
+                or "🔧 Installing MCP enhancement:" in enhanced
+            )
+            self.assertTrue(
+                has_mcp_message, "P0 FAILURE: Must show appropriate MCP message"
+            )
 
         except ImportError:
             self.skipTest("Transparency bridge not available for testing")
+
 
 class TestHybridInstallationCompatibility(unittest.TestCase):
     """
@@ -314,7 +358,7 @@ class TestHybridInstallationCompatibility(unittest.TestCase):
                 "legacy": {
                     "command": "npx",
                     "args": ["-y", "@legacy/mcp-server"],
-                    "connection_type": "stdio"
+                    "connection_type": "stdio",
                     # No installation_strategy specified
                 }
             }
@@ -326,10 +370,14 @@ class TestHybridInstallationCompatibility(unittest.TestCase):
         commands = manager.get_installation_commands("legacy")
 
         # CRITICAL: Must convert legacy config to temporary installation
-        self.assertGreater(len(commands), 0,
-            "P0 FAILURE: Must handle legacy configuration")
-        self.assertEqual(commands[0].type, "temporary",
-            "P0 FAILURE: Legacy config must be treated as temporary")
+        self.assertGreater(
+            len(commands), 0, "P0 FAILURE: Must handle legacy configuration"
+        )
+        self.assertEqual(
+            commands[0].type,
+            "temporary",
+            "P0 FAILURE: Legacy config must be treated as temporary",
+        )
 
     def test_p0_existing_test_compatibility(self):
         """
@@ -342,13 +390,15 @@ class TestHybridInstallationCompatibility(unittest.TestCase):
         test_patterns = [
             "🔧 Accessing MCP Server:",
             "🔧 Installing MCP enhancement:",
-            "⚡ Using optimized MCP server:"
+            "⚡ Using optimized MCP server:",
         ]
 
         # All tests should accept any of these patterns for compatibility
         for pattern in test_patterns:
-            self.assertIsInstance(pattern, str,
-                "P0 FAILURE: Test patterns must remain valid")
+            self.assertIsInstance(
+                pattern, str, "P0 FAILURE: Test patterns must remain valid"
+            )
+
 
 def run_p0_tests():
     """Run P0 hybrid installation tests"""
@@ -362,7 +412,9 @@ def run_p0_tests():
 
     # Add P0 critical tests
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestHybridInstallationP0))
-    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestHybridInstallationCompatibility))
+    suite.addTest(
+        unittest.TestLoader().loadTestsFromTestCase(TestHybridInstallationCompatibility)
+    )
 
     # Run tests
     runner = unittest.TextTestRunner(verbosity=2)
@@ -382,6 +434,7 @@ def run_p0_tests():
         print(f"   Errors: {len(result.errors)}")
         print("\n🚨 CRITICAL: P0 feature integrity compromised")
         return False
+
 
 if __name__ == "__main__":
     success = run_p0_tests()

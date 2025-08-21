@@ -12,13 +12,14 @@ from datetime import datetime
 
 # Add lib directory to Python path
 current_dir = os.path.dirname(os.path.abspath(__file__))
-lib_dir = os.path.join(current_dir, 'lib')
+lib_dir = os.path.join(current_dir, "lib")
 if lib_dir not in sys.path:
     sys.path.insert(0, lib_dir)
 
 try:
     from claudedirector.memory.session_context_manager import SessionContextManager
     from claudedirector.core.enhanced_framework_manager import EnhancedFrameworkManager
+
     print("✅ Successfully imported ClaudeDirector enhanced framework modules")
 except ImportError as e:
     print(f"❌ Import failed: {e}")
@@ -30,7 +31,7 @@ def test_session_context_manager():
     print("\n🧪 Testing SessionContextManager...")
 
     # Use temporary database for testing
-    with tempfile.NamedTemporaryFile(suffix='.db', delete=False) as tmp_db:
+    with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as tmp_db:
         db_path = tmp_db.name
 
     try:
@@ -39,7 +40,7 @@ def test_session_context_manager():
         print("✅ SessionContextManager initialized")
 
         # Start new session
-        session_id = manager.start_session('test_strategic')
+        session_id = manager.start_session("test_strategic")
         print(f"✅ New session started: {session_id}")
 
         # Test context backup
@@ -84,7 +85,7 @@ def test_enhanced_framework_manager():
     print("\n🧪 Testing EnhancedFrameworkManager...")
 
     # Use temporary database for testing
-    with tempfile.NamedTemporaryFile(suffix='.db', delete=False) as tmp_db:
+    with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as tmp_db:
         db_path = tmp_db.name
 
     try:
@@ -110,14 +111,16 @@ def test_enhanced_framework_manager():
 
         # Test strategic context storage
         test_stakeholder_context = {
-            'stakeholder_target': {
-                'name': 'VP Engineering',
-                'role': 'VP Engineering',
-                'style': 'data_driven'
+            "stakeholder_target": {
+                "name": "VP Engineering",
+                "role": "VP Engineering",
+                "style": "data_driven",
             }
         }
 
-        framework.store_strategic_context('stakeholder_update', test_stakeholder_context)
+        framework.store_strategic_context(
+            "stakeholder_update", test_stakeholder_context
+        )
         print("✅ Strategic context storage successful")
 
         # End session
@@ -141,7 +144,7 @@ def test_session_recovery_simulation():
     print("\n🧪 Testing Session Recovery Simulation...")
 
     # Use temporary database for testing
-    with tempfile.NamedTemporaryFile(suffix='.db', delete=False) as tmp_db:
+    with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as tmp_db:
         db_path = tmp_db.name
 
     try:
@@ -149,22 +152,22 @@ def test_session_recovery_simulation():
         print("📝 Step 1: Creating initial session with context...")
 
         manager1 = SessionContextManager(db_path)
-        session_id = manager1.start_session('strategic')
+        session_id = manager1.start_session("strategic")
 
         # Add some test context
         manager1.store_stakeholder_profile(
-            stakeholder_key='stakeholder_target',
-            display_name='VP Engineering',
-            role_title='VP Engineering',
-            communication_style='data_driven'
+            stakeholder_key="stakeholder_target",
+            display_name="VP Engineering",
+            role_title="VP Engineering",
+            communication_style="data_driven",
         )
 
         manager1.store_strategic_initiative(
-            initiative_key='TEST-001',
-            initiative_name='Platform Investment ROI',
-            status='in_progress',
-            priority='high',
-            business_value='$200K productivity gains'
+            initiative_key="TEST-001",
+            initiative_name="Platform Investment ROI",
+            status="in_progress",
+            priority="high",
+            business_value="$200K productivity gains",
         )
 
         # Backup context
@@ -214,53 +217,53 @@ def test_real_procore_context():
     print("\n🧪 Testing Real Procore Context Preservation...")
 
     # Use temporary database for testing
-    with tempfile.NamedTemporaryFile(suffix='.db', delete=False) as tmp_db:
+    with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as tmp_db:
         db_path = tmp_db.name
 
     try:
         framework = EnhancedFrameworkManager(db_path)
 
-                # Store test stakeholder context
+        # Store test stakeholder context
         test_stakeholders = {
-            'stakeholder_a': {
-                'name': 'Director A',
-                'role': 'Director',
-                'style': 'product_focused',
-                'position': 'Not strong platform advocate, skip levels focused on product delivery'
+            "stakeholder_a": {
+                "name": "Director A",
+                "role": "Director",
+                "style": "product_focused",
+                "position": "Not strong platform advocate, skip levels focused on product delivery",
             },
-            'stakeholder_b': {
-                'name': 'SLT Member B',
-                'role': 'SLT Member',
-                'style': 'product_focused',
-                'position': '100% product focused, conflicts with platform advocate over investment'
+            "stakeholder_b": {
+                "name": "SLT Member B",
+                "role": "SLT Member",
+                "style": "product_focused",
+                "position": "100% product focused, conflicts with platform advocate over investment",
             },
-            'stakeholder_target': {
-                'name': 'VP Engineering',
-                'role': 'VP Engineering',
-                'style': 'data_driven',
-                'position': 'Wants ROI understanding, convertible with evidence-based business case'
+            "stakeholder_target": {
+                "name": "VP Engineering",
+                "role": "VP Engineering",
+                "style": "data_driven",
+                "position": "Wants ROI understanding, convertible with evidence-based business case",
             },
-            'stakeholder_ally': {
-                'name': 'SLT Ally',
-                'role': 'SLT Member',
-                'style': 'strategic',
-                'position': 'Platform advocate, key SLT ally for platform investment'
-            }
+            "stakeholder_ally": {
+                "name": "SLT Ally",
+                "role": "SLT Member",
+                "style": "strategic",
+                "position": "Platform advocate, key SLT ally for platform investment",
+            },
         }
 
-        framework.store_strategic_context('stakeholder_update', test_stakeholders)
+        framework.store_strategic_context("stakeholder_update", test_stakeholders)
         print("✅ Test stakeholder context stored")
 
         # Store ROI discussion context
         roi_context = {
-            'target': 'stakeholder_target',
-            'objective': 'Platform investment ROI demonstration',
-            'strategy': 'Focus on $200K productivity gains and competitive advantage',
-            'opposition': 'Product-focused stakeholder resistance',
-            'allies': 'SLT ally support, technical team validation'
+            "target": "stakeholder_target",
+            "objective": "Platform investment ROI demonstration",
+            "strategy": "Focus on $200K productivity gains and competitive advantage",
+            "opposition": "Product-focused stakeholder resistance",
+            "allies": "SLT ally support, technical team validation",
         }
 
-        framework.store_strategic_context('roi_discussion', roi_context)
+        framework.store_strategic_context("roi_discussion", roi_context)
         print("✅ ROI discussion context stored")
 
         # Test context backup and quality
@@ -272,7 +275,9 @@ def test_real_procore_context():
 
         # Test context validation
         is_valid = framework.validate_context_before_strategic_work()
-        print(f"✅ Strategic work readiness: {'Ready' if is_valid else 'Requires recovery'}")
+        print(
+            f"✅ Strategic work readiness: {'Ready' if is_valid else 'Requires recovery'}"
+        )
 
         return True
 
@@ -295,7 +300,7 @@ def main():
         ("Session Context Manager", test_session_context_manager),
         ("Enhanced Framework Manager", test_enhanced_framework_manager),
         ("Session Recovery Simulation", test_session_recovery_simulation),
-        ("Real Procore Context", test_real_procore_context)
+        ("Real Procore Context", test_real_procore_context),
     ]
 
     results = []
@@ -305,7 +310,9 @@ def main():
         try:
             success = test_func()
             results.append((test_name, success))
-            print(f"{'✅' if success else '❌'} {test_name}: {'PASSED' if success else 'FAILED'}")
+            print(
+                f"{'✅' if success else '❌'} {test_name}: {'PASSED' if success else 'FAILED'}"
+            )
         except Exception as e:
             print(f"❌ {test_name}: FAILED - {e}")
             results.append((test_name, False))
