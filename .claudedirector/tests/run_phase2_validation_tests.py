@@ -110,6 +110,7 @@ def main():
     tests_total += 1
     # Check if git hook exists (local env) or use alternative validation (CI env)
     import os
+
     ai_cleanup_command = (
         "python3 .git/hooks/pre-commit-ai-cleanup"
         if os.path.exists(".git/hooks/pre-commit-ai-cleanup")
