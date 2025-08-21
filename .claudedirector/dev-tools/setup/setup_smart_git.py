@@ -65,7 +65,11 @@ class SmartGitSetup:
         print("\n⚡ Creating git aliases...")
 
         aliases = [
-            ("smart-commit", str(self.git_commit_smart), "Intelligent commit with optimization"),
+            (
+                "smart-commit",
+                str(self.git_commit_smart),
+                "Intelligent commit with optimization",
+            ),
             ("sc", str(self.git_commit_smart), "Short alias for smart commit"),
             (
                 "analyze-commit",
@@ -95,12 +99,18 @@ class SmartGitSetup:
 
         try:
             # Import and test the intelligent hook filter (optional component)
-            sis_path = self.project_root / "strategic_integration_service" / "strategic_integration_service"
+            sis_path = (
+                self.project_root
+                / "strategic_integration_service"
+                / "strategic_integration_service"
+            )
             if sis_path.exists():
                 sys.path.insert(0, str(sis_path))
                 from hooks.intelligent_hook_filter import IntelligentHookFilter
             else:
-                print("   ⚠️  Strategic integration service not found - using basic git functionality")
+                print(
+                    "   ⚠️  Strategic integration service not found - using basic git functionality"
+                )
                 return True
 
             filter_tool = IntelligentHookFilter()
@@ -139,13 +149,21 @@ class SmartGitSetup:
                 "git smart-commit -m 'Fix critical bug'",
                 "10s saved, full validation",
             ),
-            ("Preview optimization", "git analyze-commit", "See what would be optimized"),
+            (
+                "Preview optimization",
+                "git analyze-commit",
+                "See what would be optimized",
+            ),
             (
                 "Force full validation",
                 "git smart-commit --force-full -m 'Security patch'",
                 "All hooks run",
             ),
-            ("Traditional commit", "git commit -m 'message'", "Standard hooks (slower)"),
+            (
+                "Traditional commit",
+                "git commit -m 'message'",
+                "Standard hooks (slower)",
+            ),
         ]
 
         for description, command, benefit in examples:
@@ -204,7 +222,9 @@ class SmartGitSetup:
         """Check if git aliases were created successfully."""
         try:
             result = subprocess.run(
-                ["git", "config", "--global", "alias.sc"], capture_output=True, text=True
+                ["git", "config", "--global", "alias.sc"],
+                capture_output=True,
+                text=True,
             )
             return result.returncode == 0
         except Exception:
@@ -213,10 +233,15 @@ class SmartGitSetup:
     def _check_intelligent_filtering(self) -> bool:
         """Check if intelligent filtering is available."""
         try:
-            sis_path = self.project_root / "strategic_integration_service" / "strategic_integration_service"
+            sis_path = (
+                self.project_root
+                / "strategic_integration_service"
+                / "strategic_integration_service"
+            )
             if sis_path.exists():
                 sys.path.insert(0, str(sis_path))
                 from hooks.intelligent_hook_filter import IntelligentHookFilter
+
                 return True
             else:
                 return False
@@ -254,7 +279,9 @@ class SmartGitSetup:
 
         # Step 5: Verify setup
         if not self.verify_setup():
-            print("\n⚠️  Setup completed with some issues - see verification results above")
+            print(
+                "\n⚠️  Setup completed with some issues - see verification results above"
+            )
 
         # Step 6: Show usage examples
         self.show_usage_examples()
@@ -267,8 +294,12 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="SuperClaude Smart Git Setup")
-    parser.add_argument("--verify-only", action="store_true", help="Only verify existing setup")
-    parser.add_argument("--test-only", action="store_true", help="Only test intelligent filtering")
+    parser.add_argument(
+        "--verify-only", action="store_true", help="Only verify existing setup"
+    )
+    parser.add_argument(
+        "--test-only", action="store_true", help="Only test intelligent filtering"
+    )
 
     args = parser.parse_args()
 

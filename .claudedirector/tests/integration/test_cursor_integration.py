@@ -16,8 +16,9 @@ try:
     from cursor_transparency_bridge import (
         ensure_transparency_compliance,
         get_transparency_summary,
-        CursorTransparencyBridge
+        CursorTransparencyBridge,
     )
+
     BRIDGE_AVAILABLE = True
 except ImportError:
     BRIDGE_AVAILABLE = False
@@ -71,36 +72,53 @@ This approach balances technical excellence with organizational dynamics."""
         summary = get_transparency_summary(initial_response, user_input)
 
         # Verify Cursor integration requirements
-        self.assertIn("🏗️ Martin | Platform Architecture", enhanced_response,
-                     "Cursor must auto-apply Martin persona header")
+        self.assertIn(
+            "🏗️ Martin | Platform Architecture",
+            enhanced_response,
+            "Cursor must auto-apply Martin persona header",
+        )
 
         # Support both old and new MCP disclosure formats
-        has_mcp_disclosure = ("🔧 Accessing MCP Server:" in enhanced_response or
-                             "🔧 Installing MCP enhancement:" in enhanced_response)
-        self.assertTrue(has_mcp_disclosure,
-                       "Cursor must show MCP transparency for strategic questions")
+        has_mcp_disclosure = (
+            "🔧 Accessing MCP Server:" in enhanced_response
+            or "🔧 Installing MCP enhancement:" in enhanced_response
+        )
+        self.assertTrue(
+            has_mcp_disclosure,
+            "Cursor must show MCP transparency for strategic questions",
+        )
 
-        self.assertIn("systematic_analysis", enhanced_response,
-                     "Strategic questions must trigger systematic analysis")
+        self.assertIn(
+            "systematic_analysis",
+            enhanced_response,
+            "Strategic questions must trigger systematic analysis",
+        )
 
-        self.assertTrue(summary["has_mcp_enhancement"],
-                       "Summary must detect MCP enhancement for monitoring")
+        self.assertTrue(
+            summary["has_mcp_enhancement"],
+            "Summary must detect MCP enhancement for monitoring",
+        )
 
         # Verify response format matches .cursorrules specification exactly
-        lines = enhanced_response.split('\n')
+        lines = enhanced_response.split("\n")
 
         # Should start with MCP disclosure (either format)
-        first_line_valid = (lines[0].startswith("🔧 Accessing MCP Server:") or
-                           lines[0].startswith("🔧 Installing MCP enhancement:"))
-        self.assertTrue(first_line_valid,
-                       "Must start with MCP server disclosure")
+        first_line_valid = lines[0].startswith("🔧 Accessing MCP Server:") or lines[
+            0
+        ].startswith("🔧 Installing MCP enhancement:")
+        self.assertTrue(first_line_valid, "Must start with MCP server disclosure")
 
         # Should have processing indicator
-        processing_line = next((line for line in lines if line.startswith("*") and line.endswith("*")), None)
+        processing_line = next(
+            (line for line in lines if line.startswith("*") and line.endswith("*")),
+            None,
+        )
         self.assertIsNotNone(processing_line, "Must include processing indicator")
 
         # Should have persona header
-        persona_line = next((line for line in lines if "Martin | Platform Architecture" in line), None)
+        persona_line = next(
+            (line for line in lines if "Martin | Platform Architecture" in line), None
+        )
         self.assertIsNotNone(persona_line, "Must include persona header")
 
     def test_cursor_persona_switching(self):
@@ -110,29 +128,33 @@ This approach balances technical excellence with organizational dynamics."""
             {
                 "input": "Diego, what organizational framework should we use for strategic team scaling?",
                 "expected_persona": "diego",
-                "expected_header": "🎯 Diego | Engineering Leadership"
+                "expected_header": "🎯 Diego | Engineering Leadership",
             },
             {
                 "input": "Camille, how do we develop executive-level strategic technology assessment?",
                 "expected_persona": "camille",
-                "expected_header": "📊 Camille | Strategic Technology"
+                "expected_header": "📊 Camille | Strategic Technology",
             },
             {
                 "input": "Rachel, what design system strategy should we use for cross-functional coordination?",
                 "expected_persona": "rachel",
-                "expected_header": "🎨 Rachel | Design Systems Strategy"
-            }
+                "expected_header": "🎨 Rachel | Design Systems Strategy",
+            },
         ]
 
         for test_case in test_cases:
             with self.subTest(persona=test_case["expected_persona"]):
-                response = "Here is a strategic approach to your organizational challenge..."
+                response = (
+                    "Here is a strategic approach to your organizational challenge..."
+                )
 
                 enhanced = ensure_transparency_compliance(response, test_case["input"])
                 summary = get_transparency_summary(response, test_case["input"])
 
                 # Verify correct persona detection
-                self.assertEqual(summary["persona_detected"], test_case["expected_persona"])
+                self.assertEqual(
+                    summary["persona_detected"], test_case["expected_persona"]
+                )
 
                 # Verify correct header application
                 self.assertIn(test_case["expected_header"], enhanced)
@@ -156,8 +178,11 @@ This approach balances technical excellence with organizational dynamics."""
         processing_time = end_time - start_time
 
         # Should be very fast (< 50ms for fallback mode)
-        self.assertLess(processing_time, 0.05,
-                       f"Transparency processing too slow: {processing_time:.3f}s")
+        self.assertLess(
+            processing_time,
+            0.05,
+            f"Transparency processing too slow: {processing_time:.3f}s",
+        )
 
         # Should still provide all required features
         self.assertTrue(summary["transparency_applied"])
@@ -179,21 +204,30 @@ This approach balances technical excellence with organizational dynamics."""
         # Verify .cursorrules compliance checklist
         compliance_checks = [
             # Persona header format
-            ("Persona header emoji", any(emoji in enhanced for emoji in ["🎯", "📊", "🎨", "💼", "🏗️"])),
+            (
+                "Persona header emoji",
+                any(emoji in enhanced for emoji in ["🎯", "📊", "🎨", "💼", "🏗️"]),
+            ),
             ("Persona header format", " | " in enhanced),
-
             # MCP transparency format (support both old and new)
-            ("MCP disclosure format", ("🔧 Accessing MCP Server:" in enhanced or "🔧 Installing MCP enhancement:" in enhanced)),
+            (
+                "MCP disclosure format",
+                (
+                    "🔧 Accessing MCP Server:" in enhanced
+                    or "🔧 Installing MCP enhancement:" in enhanced
+                ),
+            ),
             ("MCP capability format", "(" in enhanced and ")" in enhanced),
             ("Processing indicator", "*" in enhanced),
-
             # Content structure
             ("Response has content", len(enhanced) > 200),
-            ("Multiple lines", "\n" in enhanced)
+            ("Multiple lines", "\n" in enhanced),
         ]
 
         for check_name, check_result in compliance_checks:
-            self.assertTrue(check_result, f".cursorrules compliance failed: {check_name}")
+            self.assertTrue(
+                check_result, f".cursorrules compliance failed: {check_name}"
+            )
 
 
 def run_cursor_integration_test():

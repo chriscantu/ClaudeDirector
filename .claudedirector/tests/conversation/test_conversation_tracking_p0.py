@@ -19,6 +19,7 @@ import os
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+
 class TestConversationTrackingP0(unittest.TestCase):
     """P0 Tests: Conversation tracking must work reliably"""
 
@@ -37,7 +38,7 @@ class TestConversationTrackingP0(unittest.TestCase):
         """P0 TEST: Strategic memory database must exist and be accessible"""
         self.assertTrue(
             self.main_db_path.exists(),
-            "Strategic memory database must exist at data/strategic_memory.db"
+            "Strategic memory database must exist at data/strategic_memory.db",
         )
 
         # Test database is readable
@@ -51,10 +52,10 @@ class TestConversationTrackingP0(unittest.TestCase):
 
         # Verify required tables exist
         required_tables = [
-            'session_context',
-            'session_checkpoints',
-            'context_gaps',
-            'session_recovery_log'
+            "session_context",
+            "session_checkpoints",
+            "context_gaps",
+            "session_recovery_log",
         ]
 
         for table in required_tables:
@@ -62,7 +63,7 @@ class TestConversationTrackingP0(unittest.TestCase):
                 self.assertIn(
                     table,
                     tables,
-                    f"Required conversation tracking table '{table}' must exist"
+                    f"Required conversation tracking table '{table}' must exist",
                 )
 
     def test_p0_conversation_capture_quality(self):
@@ -71,13 +72,15 @@ class TestConversationTrackingP0(unittest.TestCase):
             cursor = conn.cursor()
 
             # Get recent session quality scores
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT session_id, context_quality_score, last_backup_timestamp
                 FROM session_context
                 WHERE last_backup_timestamp >= datetime('now', '-7 days')
                 ORDER BY last_backup_timestamp DESC
                 LIMIT 5
-            """)
+            """
+            )
 
             recent_sessions = cursor.fetchall()
 
@@ -85,7 +88,7 @@ class TestConversationTrackingP0(unittest.TestCase):
             self.assertGreater(
                 len(recent_sessions),
                 0,
-                "Must have recent conversation sessions in last 7 days"
+                "Must have recent conversation sessions in last 7 days",
             )
 
             # Quality scores should be reasonable for active conversations
@@ -96,7 +99,7 @@ class TestConversationTrackingP0(unittest.TestCase):
                         self.assertGreaterEqual(
                             quality_score,
                             0.0,
-                            f"Quality score must be non-negative for session {session_id[:12]}"
+                            f"Quality score must be non-negative for session {session_id[:12]}",
                         )
 
     def test_p0_session_context_schema_compliance(self):
@@ -110,11 +113,11 @@ class TestConversationTrackingP0(unittest.TestCase):
 
             # Required columns for conversation tracking
             required_columns = {
-                'session_id': 'TEXT',
-                'session_type': 'TEXT',
-                'conversation_thread': 'TEXT',
-                'last_backup_timestamp': 'TIMESTAMP',
-                'context_quality_score': 'REAL'
+                "session_id": "TEXT",
+                "session_type": "TEXT",
+                "conversation_thread": "TEXT",
+                "last_backup_timestamp": "TIMESTAMP",
+                "context_quality_score": "REAL",
             }
 
             for col_name, col_type in required_columns.items():
@@ -122,7 +125,7 @@ class TestConversationTrackingP0(unittest.TestCase):
                     self.assertIn(
                         col_name,
                         columns,
-                        f"Required column '{col_name}' must exist in session_context"
+                        f"Required column '{col_name}' must exist in session_context",
                     )
 
     def test_p0_conversation_data_structure(self):
@@ -131,12 +134,14 @@ class TestConversationTrackingP0(unittest.TestCase):
             cursor = conn.cursor()
 
             # Get sample conversation data
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT session_id, conversation_thread, active_personas
                 FROM session_context
                 WHERE conversation_thread IS NOT NULL
                 LIMIT 3
-            """)
+            """
+            )
 
             for session_id, conversation_thread, active_personas in cursor.fetchall():
                 with self.subTest(session=session_id[:12]):
@@ -148,10 +153,12 @@ class TestConversationTrackingP0(unittest.TestCase):
                             self.assertIsInstance(
                                 conversation_data,
                                 (list, dict),
-                                f"Conversation thread must be valid JSON structure for {session_id[:12]}"
+                                f"Conversation thread must be valid JSON structure for {session_id[:12]}",
                             )
                         except json.JSONDecodeError:
-                            self.fail(f"Conversation thread must be valid JSON for session {session_id[:12]}")
+                            self.fail(
+                                f"Conversation thread must be valid JSON for session {session_id[:12]}"
+                            )
 
                     # Active personas should be valid JSON if present
                     if active_personas:
@@ -160,21 +167,27 @@ class TestConversationTrackingP0(unittest.TestCase):
                             self.assertIsInstance(
                                 personas_data,
                                 (list, dict),
-                                f"Active personas must be valid JSON for {session_id[:12]}"
+                                f"Active personas must be valid JSON for {session_id[:12]}",
                             )
                         except json.JSONDecodeError:
-                            self.fail(f"Active personas must be valid JSON for session {session_id[:12]}")
+                            self.fail(
+                                f"Active personas must be valid JSON for session {session_id[:12]}"
+                            )
 
     def test_p0_conversation_manager_integration(self):
         """P0 TEST: Conversation manager integration must be available"""
         try:
             # Try to import the conversation manager
             sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
-            from claudedirector.core.integrated_conversation_manager import IntegratedConversationManager
+            from claudedirector.core.integrated_conversation_manager import (
+                IntegratedConversationManager,
+            )
 
             # Test basic initialization (should not crash)
             manager = IntegratedConversationManager()
-            self.assertIsNotNone(manager, "Conversation manager must initialize successfully")
+            self.assertIsNotNone(
+                manager, "Conversation manager must initialize successfully"
+            )
 
         except ImportError as e:
             # Check if there's a fallback or alternative implementation
@@ -193,21 +206,23 @@ class TestConversationTrackingP0(unittest.TestCase):
             session_types = [row[0] for row in cursor.fetchall()]
 
             self.assertGreater(
-                len(session_types),
-                0,
-                "Must have at least one session type recorded"
+                len(session_types), 0, "Must have at least one session type recorded"
             )
 
             # Verify session lifecycle fields exist
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT COUNT(*) as active_sessions
                 FROM session_context
                 WHERE session_end_timestamp IS NULL
-            """)
+            """
+            )
 
             result = cursor.fetchone()
             # Should have some concept of active vs ended sessions
-            self.assertIsNotNone(result, "Session lifecycle tracking must be implemented")
+            self.assertIsNotNone(
+                result, "Session lifecycle tracking must be implemented"
+            )
 
 
 class TestConversationTrackingFunctionality(unittest.TestCase):
@@ -223,13 +238,15 @@ class TestConversationTrackingFunctionality(unittest.TestCase):
             cursor = conn.cursor()
 
             # Get sessions with conversation data
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT session_id, conversation_thread, last_backup_timestamp
                 FROM session_context
                 WHERE conversation_thread IS NOT NULL
                 ORDER BY last_backup_timestamp DESC
                 LIMIT 2
-            """)
+            """
+            )
 
             sessions = cursor.fetchall()
 
@@ -239,10 +256,12 @@ class TestConversationTrackingFunctionality(unittest.TestCase):
                     with self.subTest(session=session_id[:12]):
                         self.assertIsNotNone(
                             conversation_thread,
-                            f"Conversation data must be preserved for session {session_id[:12]}"
+                            f"Conversation data must be preserved for session {session_id[:12]}",
                         )
             else:
-                self.skipTest("Need at least 2 sessions with conversation data to test persistence")
+                self.skipTest(
+                    "Need at least 2 sessions with conversation data to test persistence"
+                )
 
     def test_strategic_context_preservation(self):
         """Test that strategic context is preserved correctly"""
@@ -250,12 +269,14 @@ class TestConversationTrackingFunctionality(unittest.TestCase):
             cursor = conn.cursor()
 
             # Look for strategic context fields
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT session_id, stakeholder_context, strategic_initiatives_context, executive_context
                 FROM session_context
                 WHERE session_type = 'strategic'
                 LIMIT 3
-            """)
+            """
+            )
 
             strategic_sessions = cursor.fetchall()
 
@@ -264,14 +285,20 @@ class TestConversationTrackingFunctionality(unittest.TestCase):
                     session_id = session_data[0]
                     with self.subTest(session=session_id[:12]):
                         # At least some strategic context should be preserved
-                        context_fields = session_data[1:]  # stakeholder, initiatives, executive
+                        context_fields = session_data[
+                            1:
+                        ]  # stakeholder, initiatives, executive
                         has_context = any(field is not None for field in context_fields)
 
                         # Don't fail but warn if no strategic context
                         if not has_context:
-                            print(f"⚠️ Warning: No strategic context found for session {session_id[:12]}")
+                            print(
+                                f"⚠️ Warning: No strategic context found for session {session_id[:12]}"
+                            )
             else:
-                self.skipTest("No strategic sessions found to test context preservation")
+                self.skipTest(
+                    "No strategic sessions found to test context preservation"
+                )
 
     def test_conversation_quality_improvement(self):
         """Test that conversation quality can be measured and improved"""
@@ -279,22 +306,28 @@ class TestConversationTrackingFunctionality(unittest.TestCase):
             cursor = conn.cursor()
 
             # Get quality score distribution
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT AVG(context_quality_score) as avg_quality,
                        MIN(context_quality_score) as min_quality,
                        MAX(context_quality_score) as max_quality,
                        COUNT(*) as total_sessions
                 FROM session_context
                 WHERE context_quality_score IS NOT NULL
-            """)
+            """
+            )
 
             result = cursor.fetchone()
             avg_quality, min_quality, max_quality, total_sessions = result
 
             if total_sessions > 0:
                 # Quality scores should be in valid range
-                self.assertGreaterEqual(min_quality, 0.0, "Quality scores must be non-negative")
-                self.assertLessEqual(max_quality, 1.0, "Quality scores must not exceed 1.0")
+                self.assertGreaterEqual(
+                    min_quality, 0.0, "Quality scores must be non-negative"
+                )
+                self.assertLessEqual(
+                    max_quality, 1.0, "Quality scores must not exceed 1.0"
+                )
 
                 # Print quality metrics for monitoring
                 print(f"\n📊 Conversation Quality Metrics:")
@@ -316,8 +349,14 @@ def run_conversation_tracking_tests():
     suite = unittest.TestSuite()
 
     # Add P0 tests
-    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestConversationTrackingP0))
-    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestConversationTrackingFunctionality))
+    suite.addTest(
+        unittest.TestLoader().loadTestsFromTestCase(TestConversationTrackingP0)
+    )
+    suite.addTest(
+        unittest.TestLoader().loadTestsFromTestCase(
+            TestConversationTrackingFunctionality
+        )
+    )
 
     # Run tests
     runner = unittest.TextTestRunner(verbosity=2)

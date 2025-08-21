@@ -10,16 +10,23 @@ import json
 from pathlib import Path
 
 # Add lib directory to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'lib'))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "lib"))
 
 try:
     from claudedirector.core.first_run_wizard import (
-        FirstRunWizard, UserRole, OrganizationType, ChallengeFocus,
-        RolePersonaMapper, create_first_run_wizard
+        FirstRunWizard,
+        UserRole,
+        OrganizationType,
+        ChallengeFocus,
+        RolePersonaMapper,
+        create_first_run_wizard,
     )
     from claudedirector.core.cursor_wizard_integration import (
-        CursorWizardIntegration, initialize_cursor_integration, process_cursor_input
+        CursorWizardIntegration,
+        initialize_cursor_integration,
+        process_cursor_input,
     )
+
     WIZARD_AVAILABLE = True
 except ImportError:
     print("⚠️ ClaudeDirector modules not available - running basic validation only")
@@ -51,25 +58,33 @@ def test_first_run_wizard_core():
         # Test 3: Valid response processing
         test_responses = [
             ("B, 2, iii", True),  # CTO, Scale-up, Executive Communication
-            ("d, 1, i", True),    # Engineering Manager, Startup, Team Leadership
-            ("skip", True),       # Skip setup
-            ("invalid", False),   # Invalid response
-            ("", False),          # Empty response
+            ("d, 1, i", True),  # Engineering Manager, Startup, Team Leadership
+            ("skip", True),  # Skip setup
+            ("invalid", False),  # Invalid response
+            ("", False),  # Empty response
         ]
 
         for response, should_succeed in test_responses:
-            success, message, config = wizard.process_wizard_response(response, original_query)
-            assert success == should_succeed, f"Response '{response}' should succeed: {should_succeed}"
+            success, message, config = wizard.process_wizard_response(
+                response, original_query
+            )
+            assert (
+                success == should_succeed
+            ), f"Response '{response}' should succeed: {should_succeed}"
 
             if success and response != "skip":
                 assert config is not None, "Successful response should return config"
                 assert len(config.primary_personas) > 0, "Config should have personas"
-                assert len(config.recommended_frameworks) > 0, "Config should have frameworks"
+                assert (
+                    len(config.recommended_frameworks) > 0
+                ), "Config should have frameworks"
 
         print("✅ Response processing works for all test cases")
 
         # Test 4: Configuration persistence
-        success, message, config = wizard.process_wizard_response("B, 2, iii", original_query)
+        success, message, config = wizard.process_wizard_response(
+            "B, 2, iii", original_query
+        )
         assert success, "Valid response should succeed"
 
         # Create new wizard instance to test persistence
@@ -96,10 +111,22 @@ def test_role_persona_mapping():
 
     # Test all role configurations
     test_cases = [
-        (UserRole.VP_SVP_ENGINEERING, OrganizationType.ENTERPRISE, ChallengeFocus.EXECUTIVE_COMMUNICATION),
+        (
+            UserRole.VP_SVP_ENGINEERING,
+            OrganizationType.ENTERPRISE,
+            ChallengeFocus.EXECUTIVE_COMMUNICATION,
+        ),
         (UserRole.CTO, OrganizationType.SCALE_UP, ChallengeFocus.TECHNICAL_STRATEGY),
-        (UserRole.ENGINEERING_MANAGER, OrganizationType.STARTUP, ChallengeFocus.TEAM_LEADERSHIP),
-        (UserRole.STAFF_PRINCIPAL_ENGINEER, OrganizationType.SCALE_UP, ChallengeFocus.TECHNICAL_STRATEGY),
+        (
+            UserRole.ENGINEERING_MANAGER,
+            OrganizationType.STARTUP,
+            ChallengeFocus.TEAM_LEADERSHIP,
+        ),
+        (
+            UserRole.STAFF_PRINCIPAL_ENGINEER,
+            OrganizationType.SCALE_UP,
+            ChallengeFocus.TECHNICAL_STRATEGY,
+        ),
     ]
 
     for role, org, challenge in test_cases:
@@ -108,15 +135,23 @@ def test_role_persona_mapping():
         # Validate configuration structure
         assert isinstance(config.primary_personas, list), "Personas should be list"
         assert len(config.primary_personas) > 0, "Should have at least one persona"
-        assert isinstance(config.recommended_frameworks, list), "Frameworks should be list"
-        assert len(config.recommended_frameworks) > 0, "Should have at least one framework"
+        assert isinstance(
+            config.recommended_frameworks, list
+        ), "Frameworks should be list"
+        assert (
+            len(config.recommended_frameworks) > 0
+        ), "Should have at least one framework"
 
         # Validate role-specific personas
         role_config = RolePersonaMapper.ROLE_PERSONA_MAPPING[role]
-        for persona in role_config['primary_personas']:
-            assert persona in config.primary_personas, f"Primary persona {persona} should be included"
+        for persona in role_config["primary_personas"]:
+            assert (
+                persona in config.primary_personas
+            ), f"Primary persona {persona} should be included"
 
-        print(f"✅ {role.value}: {len(config.primary_personas)} personas, {len(config.recommended_frameworks)} frameworks")
+        print(
+            f"✅ {role.value}: {len(config.primary_personas)} personas, {len(config.recommended_frameworks)} frameworks"
+        )
 
     print("✅ All role configurations valid")
 
@@ -137,7 +172,7 @@ def test_cursor_integration():
             "What's the best architecture for our platform?",
             "Help me prepare for a VP meeting",
             "Need advice on team leadership",
-            "How do we scale our organization?"
+            "How do we scale our organization?",
         ]
 
         non_strategic_questions = [
@@ -145,7 +180,7 @@ def test_cursor_integration():
             "Hello",
             "Thanks",
             "Yes",
-            "No"
+            "No",
         ]
 
         for question in strategic_questions:
@@ -163,27 +198,33 @@ def test_cursor_integration():
 
         # First interaction should trigger wizard
         result = process_cursor_input(integration, original_query)
-        assert result['is_wizard_interaction'], "First strategic question should trigger wizard"
-        assert result['should_show_response'], "Should show wizard prompt"
-        assert "Welcome to ClaudeDirector" in result['response_text']
+        assert result[
+            "is_wizard_interaction"
+        ], "First strategic question should trigger wizard"
+        assert result["should_show_response"], "Should show wizard prompt"
+        assert "Welcome to ClaudeDirector" in result["response_text"]
 
         print("✅ First interaction triggers wizard")
 
         # Wizard response should configure and proceed
-        wizard_response = "D, 2, iv"  # Engineering Manager, Scale-up, Cross-team Coordination
+        wizard_response = (
+            "D, 2, iv"  # Engineering Manager, Scale-up, Cross-team Coordination
+        )
         result = process_cursor_input(integration, wizard_response)
 
-        assert result['is_wizard_interaction'], "Wizard response should be handled"
-        assert result['should_show_response'], "Should show configuration success"
-        assert "Configuration Complete" in result['response_text']
-        assert result['persona_context'] is not None, "Should provide persona context"
+        assert result["is_wizard_interaction"], "Wizard response should be handled"
+        assert result["should_show_response"], "Should show configuration success"
+        assert "Configuration Complete" in result["response_text"]
+        assert result["persona_context"] is not None, "Should provide persona context"
 
         print("✅ Wizard response configuration works")
 
         # Subsequent interactions should not trigger wizard
         result = process_cursor_input(integration, "Another strategic question")
-        assert not result['is_wizard_interaction'], "Should not trigger wizard again"
-        assert result['persona_context'] is not None, "Should provide saved configuration context"
+        assert not result["is_wizard_interaction"], "Should not trigger wizard again"
+        assert (
+            result["persona_context"] is not None
+        ), "Should provide saved configuration context"
 
         print("✅ Configuration persistence in Cursor works")
 
@@ -192,8 +233,10 @@ def test_cursor_integration():
         assert "Configuration Reset" in configure_response
 
         # Should trigger wizard again on next strategic question
-        result = process_cursor_input(integration, "How should I improve team coordination?")
-        assert result['is_wizard_interaction'], "Should trigger wizard after reset"
+        result = process_cursor_input(
+            integration, "How should I improve team coordination?"
+        )
+        assert result["is_wizard_interaction"], "Should trigger wizard after reset"
 
         print("✅ /configure command works")
 
@@ -207,7 +250,9 @@ def test_wizard_user_experience():
         wizard = FirstRunWizard(Path(temp_dir))
 
         # Test UX requirements from user stories
-        original_query = "How should I structure my engineering teams for better scalability?"
+        original_query = (
+            "How should I structure my engineering teams for better scalability?"
+        )
 
         # UX Requirement: Setup takes <60 seconds (simulated)
         prompt = wizard.get_wizard_prompt(original_query)
@@ -223,7 +268,9 @@ def test_wizard_user_experience():
         print("✅ UX requirements met in wizard prompt")
 
         # Test successful configuration experience
-        success, message, config = wizard.process_wizard_response("B, 2, iii", original_query)
+        success, message, config = wizard.process_wizard_response(
+            "B, 2, iii", original_query
+        )
 
         # UX Requirement: Immediate value delivery
         assert success, "Valid response should succeed"
@@ -238,7 +285,9 @@ def test_wizard_user_experience():
         print("✅ Success message provides immediate value confirmation")
 
         # Test skip experience
-        success, message, config = wizard.process_wizard_response("skip", original_query)
+        success, message, config = wizard.process_wizard_response(
+            "skip", original_query
+        )
 
         # UX Requirement: Skip provides value without guilt
         assert success, "Skip should succeed"
@@ -249,7 +298,9 @@ def test_wizard_user_experience():
         print("✅ Skip experience maintains value delivery")
 
         # Test error handling
-        success, message, config = wizard.process_wizard_response("invalid input", original_query)
+        success, message, config = wizard.process_wizard_response(
+            "invalid input", original_query
+        )
 
         # UX Requirement: Clear error recovery
         assert not success, "Invalid input should fail gracefully"
@@ -267,47 +318,58 @@ def test_role_specific_configurations():
 
     role_tests = [
         {
-            'role': UserRole.VP_SVP_ENGINEERING,
-            'expected_personas': ['camille', 'diego', 'alvaro'],
-            'expected_frameworks': ['Good Strategy Bad Strategy', 'Strategic Analysis Framework'],
-            'description': 'Executive strategy focus'
+            "role": UserRole.VP_SVP_ENGINEERING,
+            "expected_personas": ["camille", "diego", "alvaro"],
+            "expected_frameworks": [
+                "Good Strategy Bad Strategy",
+                "Strategic Analysis Framework",
+            ],
+            "description": "Executive strategy focus",
         },
         {
-            'role': UserRole.CTO,
-            'expected_personas': ['camille', 'martin', 'alvaro'],
-            'expected_frameworks': ['Technical Strategy Framework', 'Good Strategy Bad Strategy'],
-            'description': 'Technology vision focus'
+            "role": UserRole.CTO,
+            "expected_personas": ["camille", "martin", "alvaro"],
+            "expected_frameworks": [
+                "Technical Strategy Framework",
+                "Good Strategy Bad Strategy",
+            ],
+            "description": "Technology vision focus",
         },
         {
-            'role': UserRole.ENGINEERING_MANAGER,
-            'expected_personas': ['diego', 'marcus', 'rachel'],
-            'expected_frameworks': ['Team Topologies', 'Crucial Conversations'],
-            'description': 'Team leadership focus'
+            "role": UserRole.ENGINEERING_MANAGER,
+            "expected_personas": ["diego", "marcus", "rachel"],
+            "expected_frameworks": ["Team Topologies", "Crucial Conversations"],
+            "description": "Team leadership focus",
         },
         {
-            'role': UserRole.STAFF_PRINCIPAL_ENGINEER,
-            'expected_personas': ['martin', 'diego', 'marcus'],
-            'expected_frameworks': ['Technical Strategy Framework', 'Evolutionary Architecture'],
-            'description': 'Technical strategy focus'
-        }
+            "role": UserRole.STAFF_PRINCIPAL_ENGINEER,
+            "expected_personas": ["martin", "diego", "marcus"],
+            "expected_frameworks": [
+                "Technical Strategy Framework",
+                "Evolutionary Architecture",
+            ],
+            "description": "Technical strategy focus",
+        },
     ]
 
     for test_case in role_tests:
         config = RolePersonaMapper.get_configuration_for_role(
-            test_case['role'],
+            test_case["role"],
             OrganizationType.SCALE_UP,
-            ChallengeFocus.TECHNICAL_STRATEGY
+            ChallengeFocus.TECHNICAL_STRATEGY,
         )
 
         # Check personas
-        for expected_persona in test_case['expected_personas']:
-            assert expected_persona in config.primary_personas, \
-                f"{test_case['role'].value} should include persona {expected_persona}"
+        for expected_persona in test_case["expected_personas"]:
+            assert (
+                expected_persona in config.primary_personas
+            ), f"{test_case['role'].value} should include persona {expected_persona}"
 
         # Check frameworks
-        for expected_framework in test_case['expected_frameworks']:
-            assert expected_framework in config.recommended_frameworks, \
-                f"{test_case['role'].value} should include framework {expected_framework}"
+        for expected_framework in test_case["expected_frameworks"]:
+            assert (
+                expected_framework in config.recommended_frameworks
+            ), f"{test_case['role'].value} should include framework {expected_framework}"
 
         print(f"✅ {test_case['role'].value}: {test_case['description']}")
 
@@ -356,11 +418,13 @@ def run_comprehensive_test_suite():
     except AssertionError as e:
         print(f"\n❌ TEST FAILED: {e}")
         import traceback
+
         traceback.print_exc()
         return False
     except Exception as e:
         print(f"\n💥 UNEXPECTED ERROR: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 

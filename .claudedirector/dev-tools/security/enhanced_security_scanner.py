@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import List, Dict, Tuple, Set
 from datetime import datetime
 
+
 class EnhancedSecurityScanner:
     """
     Enterprise-grade security scanner with verifiable safeguards
@@ -30,51 +31,46 @@ class EnhancedSecurityScanner:
         # Enhanced threat patterns (real but generic)
         self.stakeholder_patterns = [
             # Executive title patterns (real threats)
-            r'(?i)\b(hemendra|hisham|steve)\s+(pal|younis|davis)\b',
-            r'(?i)\b(beth|jeff|victor|zach)\s+(nelson|williams|davis|mckenzie)\b',
-            r'(?i)\b(marfise)\b',  # Single names are also sensitive
-
+            r"(?i)\b(hemendra|hisham|steve)\s+(pal|younis|davis)\b",
+            r"(?i)\b(beth|jeff|victor|zach)\s+(nelson|williams|davis|mckenzie)\b",
+            r"(?i)\b(marfise)\b",  # Single names are also sensitive
             # Pattern-based detection for strategic roles
-            r'(?i)\b(director|vp|cpo|cto)\s+[A-Z][a-z]+\s+[A-Z][a-z]+\b',
-            r'(?i)\b(senior|principal|distinguished)\s+(engineer|architect)\s+[A-Z][a-z]+\b',
-
+            r"(?i)\b(director|vp|cpo|cto)\s+[A-Z][a-z]+\s+[A-Z][a-z]+\b",
+            r"(?i)\b(senior|principal|distinguished)\s+(engineer|architect)\s+[A-Z][a-z]+\b",
             # Strategic context markers
-            r'(?i)(real[_\s-]?stakeholder[_\s-]?name)',
-            r'(?i)(actual[_\s-]?procore[_\s-]?stakeholder)',
-            r'(?i)(confidential[_\s-]?stakeholder[_\s-]?data)',
-
+            r"(?i)(real[_\s-]?stakeholder[_\s-]?name)",
+            r"(?i)(actual[_\s-]?procore[_\s-]?stakeholder)",
+            r"(?i)(confidential[_\s-]?stakeholder[_\s-]?data)",
             # Organizational intelligence
-            r'(?i)(skip[_\s-]?level[_\s-]?meeting)',
-            r'(?i)(slt[_\s-]?resistance[_\s-]?pattern)',
-            r'(?i)(platform[_\s-]?opposition[_\s-]?mapping)',
+            r"(?i)(skip[_\s-]?level[_\s-]?meeting)",
+            r"(?i)(slt[_\s-]?resistance[_\s-]?pattern)",
+            r"(?i)(platform[_\s-]?opposition[_\s-]?mapping)",
         ]
 
         self.strategic_intelligence_patterns = [
             # Business intelligence
-            r'(?i)(quarterly[_\s-]?revenue[_\s-]?data)',
-            r'(?i)(competitive[_\s-]?intelligence)',
-            r'(?i)(customer[_\s-]?acquisition[_\s-]?cost)',
-            r'(?i)(internal[_\s-]?strategy[_\s-]?document)',
-
+            r"(?i)(quarterly[_\s-]?revenue[_\s-]?data)",
+            r"(?i)(competitive[_\s-]?intelligence)",
+            r"(?i)(customer[_\s-]?acquisition[_\s-]?cost)",
+            r"(?i)(internal[_\s-]?strategy[_\s-]?document)",
             # Technical intelligence
-            r'(?i)(production[_\s-]?database[_\s-]?credential)',
-            r'(?i)(api[_\s-]?key[_\s-]?production)',
-            r'(?i)(security[_\s-]?vulnerability[_\s-]?report)',
-
+            r"(?i)(production[_\s-]?database[_\s-]?credential)",
+            r"(?i)(api[_\s-]?key[_\s-]?production)",
+            r"(?i)(security[_\s-]?vulnerability[_\s-]?report)",
             # Executive communications
-            r'(?i)(board[_\s-]?presentation[_\s-]?data)',
-            r'(?i)(executive[_\s-]?session[_\s-]?notes)',
-            r'(?i)(confidential[_\s-]?strategy[_\s-]?discussion)',
+            r"(?i)(board[_\s-]?presentation[_\s-]?data)",
+            r"(?i)(executive[_\s-]?session[_\s-]?notes)",
+            r"(?i)(confidential[_\s-]?strategy[_\s-]?discussion)",
         ]
 
         self.security_exclusions = {
             # Self-exclusion to prevent scanner from flagging itself
-            '.claudedirector/dev-tools/security/',
-            '.claudedirector/archive/',  # Archive directory contains development artifacts
-            '.claudedirector/lib/claudedirector/',  # Symlink for backward compatibility
-            'SECURITY.md',
-            'engineering-director-workspace/PROCESS_FAILURE_ANALYSIS.md',
-            'engineering-director-workspace/SYSTEMATIC_PREVENTION_MEASURES.md',
+            ".claudedirector/dev-tools/security/",
+            ".claudedirector/archive/",  # Archive directory contains development artifacts
+            ".claudedirector/lib/claudedirector/",  # Symlink for backward compatibility
+            "SECURITY.md",
+            "engineering-director-workspace/PROCESS_FAILURE_ANALYSIS.md",
+            "engineering-director-workspace/SYSTEMATIC_PREVENTION_MEASURES.md",
         }
 
     def comprehensive_scan(self) -> Dict[str, any]:
@@ -83,14 +79,16 @@ class EnhancedSecurityScanner:
         Returns detailed scan report for trust building
         """
         scan_report = {
-            'scan_id': hashlib.md5(f"{datetime.now().isoformat()}".encode()).hexdigest()[:8],
-            'timestamp': datetime.now().isoformat(),
-            'scanner_version': '2.0-enhanced',
-            'violations': [],
-            'files_scanned': 0,
-            'threats_detected': 0,
-            'security_score': 0,
-            'verifiable_proof': []
+            "scan_id": hashlib.md5(
+                f"{datetime.now().isoformat()}".encode()
+            ).hexdigest()[:8],
+            "timestamp": datetime.now().isoformat(),
+            "scanner_version": "2.0-enhanced",
+            "violations": [],
+            "files_scanned": 0,
+            "threats_detected": 0,
+            "security_score": 0,
+            "verifiable_proof": [],
         }
 
         staged_files = self._get_staged_files()
@@ -103,23 +101,23 @@ class EnhancedSecurityScanner:
             if any(exclusion in file_path for exclusion in self.security_exclusions):
                 continue
 
-            scan_report['files_scanned'] += 1
+            scan_report["files_scanned"] += 1
 
             # Scan for stakeholder intelligence
             stakeholder_violations = self._scan_stakeholder_data(file_path)
-            scan_report['violations'].extend(stakeholder_violations)
+            scan_report["violations"].extend(stakeholder_violations)
 
             # Scan for strategic intelligence
             strategic_violations = self._scan_strategic_intelligence(file_path)
-            scan_report['violations'].extend(strategic_violations)
+            scan_report["violations"].extend(strategic_violations)
 
             # Scan for general sensitive data
             general_violations = self._scan_general_sensitive_data(file_path)
-            scan_report['violations'].extend(general_violations)
+            scan_report["violations"].extend(general_violations)
 
-        scan_report['threats_detected'] = len(scan_report['violations'])
-        scan_report['security_score'] = self._calculate_security_score(scan_report)
-        scan_report['verifiable_proof'] = self._generate_verifiable_proof(scan_report)
+        scan_report["threats_detected"] = len(scan_report["violations"])
+        scan_report["security_score"] = self._calculate_security_score(scan_report)
+        scan_report["verifiable_proof"] = self._generate_verifiable_proof(scan_report)
 
         return scan_report
 
@@ -127,10 +125,12 @@ class EnhancedSecurityScanner:
         """Get staged files from git"""
         try:
             result = subprocess.run(
-                ['git', 'diff', '--cached', '--name-only'],
-                capture_output=True, text=True, check=True
+                ["git", "diff", "--cached", "--name-only"],
+                capture_output=True,
+                text=True,
+                check=True,
             )
-            return [f.strip() for f in result.stdout.split('\n') if f.strip()]
+            return [f.strip() for f in result.stdout.split("\n") if f.strip()]
         except subprocess.CalledProcessError:
             return []
 
@@ -142,30 +142,36 @@ class EnhancedSecurityScanner:
             return violations
 
         try:
-            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
                 content = f.read()
 
-            for i, line in enumerate(content.split('\n'), 1):
+            for i, line in enumerate(content.split("\n"), 1):
                 for pattern in self.stakeholder_patterns:
                     if re.search(pattern, line):
-                        violations.append({
-                            'type': 'STAKEHOLDER_INTELLIGENCE',
-                            'severity': 'CRITICAL',
-                            'file': file_path,
-                            'line': i,
-                            'pattern': pattern,
-                            'threat_level': 'EXECUTIVE_EXPOSURE',
-                            'message': f'Sensitive stakeholder data detected on line {i}',
-                            'line_preview': line[:100] + '...' if len(line) > 100 else line
-                        })
+                        violations.append(
+                            {
+                                "type": "STAKEHOLDER_INTELLIGENCE",
+                                "severity": "CRITICAL",
+                                "file": file_path,
+                                "line": i,
+                                "pattern": pattern,
+                                "threat_level": "EXECUTIVE_EXPOSURE",
+                                "message": f"Sensitive stakeholder data detected on line {i}",
+                                "line_preview": (
+                                    line[:100] + "..." if len(line) > 100 else line
+                                ),
+                            }
+                        )
 
         except Exception as e:
-            violations.append({
-                'type': 'SCAN_ERROR',
-                'severity': 'WARNING',
-                'file': file_path,
-                'message': f'Could not scan stakeholder data: {e}'
-            })
+            violations.append(
+                {
+                    "type": "SCAN_ERROR",
+                    "severity": "WARNING",
+                    "file": file_path,
+                    "message": f"Could not scan stakeholder data: {e}",
+                }
+            )
 
         return violations
 
@@ -177,30 +183,36 @@ class EnhancedSecurityScanner:
             return violations
 
         try:
-            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
                 content = f.read()
 
-            for i, line in enumerate(content.split('\n'), 1):
+            for i, line in enumerate(content.split("\n"), 1):
                 for pattern in self.strategic_intelligence_patterns:
                     if re.search(pattern, line):
-                        violations.append({
-                            'type': 'STRATEGIC_INTELLIGENCE',
-                            'severity': 'HIGH',
-                            'file': file_path,
-                            'line': i,
-                            'pattern': pattern,
-                            'threat_level': 'BUSINESS_EXPOSURE',
-                            'message': f'Strategic intelligence detected on line {i}',
-                            'line_preview': line[:100] + '...' if len(line) > 100 else line
-                        })
+                        violations.append(
+                            {
+                                "type": "STRATEGIC_INTELLIGENCE",
+                                "severity": "HIGH",
+                                "file": file_path,
+                                "line": i,
+                                "pattern": pattern,
+                                "threat_level": "BUSINESS_EXPOSURE",
+                                "message": f"Strategic intelligence detected on line {i}",
+                                "line_preview": (
+                                    line[:100] + "..." if len(line) > 100 else line
+                                ),
+                            }
+                        )
 
         except Exception as e:
-            violations.append({
-                'type': 'SCAN_ERROR',
-                'severity': 'WARNING',
-                'file': file_path,
-                'message': f'Could not scan strategic intelligence: {e}'
-            })
+            violations.append(
+                {
+                    "type": "SCAN_ERROR",
+                    "severity": "WARNING",
+                    "file": file_path,
+                    "message": f"Could not scan strategic intelligence: {e}",
+                }
+            )
 
         return violations
 
@@ -210,45 +222,52 @@ class EnhancedSecurityScanner:
 
         # Sensitive file patterns
         sensitive_file_patterns = [
-            r'.*\.db$', r'.*\.sqlite$', r'.*\.key$', r'.*\.pem$',
-            r'.*password.*', r'.*credential.*', r'.*secret.*'
+            r".*\.db$",
+            r".*\.sqlite$",
+            r".*\.key$",
+            r".*\.pem$",
+            r".*password.*",
+            r".*credential.*",
+            r".*secret.*",
         ]
 
         for pattern in sensitive_file_patterns:
             if re.search(pattern, file_path, re.IGNORECASE):
-                violations.append({
-                    'type': 'SENSITIVE_FILE',
-                    'severity': 'HIGH',
-                    'file': file_path,
-                    'pattern': pattern,
-                    'threat_level': 'DATA_EXPOSURE',
-                    'message': f'Sensitive file pattern detected: {pattern}'
-                })
+                violations.append(
+                    {
+                        "type": "SENSITIVE_FILE",
+                        "severity": "HIGH",
+                        "file": file_path,
+                        "pattern": pattern,
+                        "threat_level": "DATA_EXPOSURE",
+                        "message": f"Sensitive file pattern detected: {pattern}",
+                    }
+                )
 
         return violations
 
     def _is_binary_file(self, file_path: str) -> bool:
         """Check if file is binary"""
         try:
-            with open(file_path, 'rb') as f:
+            with open(file_path, "rb") as f:
                 chunk = f.read(8192)
-            return b'\0' in chunk
+            return b"\0" in chunk
         except:
             return True
 
     def _calculate_security_score(self, scan_report: Dict) -> int:
         """Calculate security score (0-100)"""
-        if scan_report['threats_detected'] == 0:
+        if scan_report["threats_detected"] == 0:
             return 100
 
         # Deduct points based on severity
         score = 100
-        for violation in scan_report['violations']:
-            if violation['severity'] == 'CRITICAL':
+        for violation in scan_report["violations"]:
+            if violation["severity"] == "CRITICAL":
                 score -= 25
-            elif violation['severity'] == 'HIGH':
+            elif violation["severity"] == "HIGH":
                 score -= 15
-            elif violation['severity'] == 'WARNING':
+            elif violation["severity"] == "WARNING":
                 score -= 5
 
         return max(0, score)
@@ -258,31 +277,40 @@ class EnhancedSecurityScanner:
         proof = []
 
         # Proof of comprehensive scanning
-        proof.append({
-            'verification_type': 'COMPREHENSIVE_SCAN',
-            'files_scanned': scan_report['files_scanned'],
-            'patterns_checked': len(self.stakeholder_patterns) + len(self.strategic_intelligence_patterns),
-            'scan_depth': 'FULL_CONTENT_ANALYSIS',
-            'verification_hash': hashlib.md5(f"scan_{scan_report['scan_id']}".encode()).hexdigest()[:16]
-        })
+        proof.append(
+            {
+                "verification_type": "COMPREHENSIVE_SCAN",
+                "files_scanned": scan_report["files_scanned"],
+                "patterns_checked": len(self.stakeholder_patterns)
+                + len(self.strategic_intelligence_patterns),
+                "scan_depth": "FULL_CONTENT_ANALYSIS",
+                "verification_hash": hashlib.md5(
+                    f"scan_{scan_report['scan_id']}".encode()
+                ).hexdigest()[:16],
+            }
+        )
 
         # Proof of threat detection capability
-        proof.append({
-            'verification_type': 'THREAT_DETECTION_CAPABILITY',
-            'stakeholder_patterns': len(self.stakeholder_patterns),
-            'strategic_patterns': len(self.strategic_intelligence_patterns),
-            'detection_confidence': '99.8%',
-            'false_positive_rate': '<0.2%'
-        })
+        proof.append(
+            {
+                "verification_type": "THREAT_DETECTION_CAPABILITY",
+                "stakeholder_patterns": len(self.stakeholder_patterns),
+                "strategic_patterns": len(self.strategic_intelligence_patterns),
+                "detection_confidence": "99.8%",
+                "false_positive_rate": "<0.2%",
+            }
+        )
 
         # Proof of un-bypassable enforcement
-        proof.append({
-            'verification_type': 'UNBYPASSABLE_ENFORCEMENT',
-            'pre_commit_integration': True,
-            'exit_code_enforcement': True,
-            'mandatory_validation': True,
-            'override_prevention': True
-        })
+        proof.append(
+            {
+                "verification_type": "UNBYPASSABLE_ENFORCEMENT",
+                "pre_commit_integration": True,
+                "exit_code_enforcement": True,
+                "mandatory_validation": True,
+                "override_prevention": True,
+            }
+        )
 
         return proof
 
@@ -302,18 +330,18 @@ class EnhancedSecurityScanner:
         report.append(f"   Security Score: {scan_report['security_score']}/100")
         report.append("")
 
-        if scan_report['violations']:
+        if scan_report["violations"]:
             report.append("🚨 SECURITY VIOLATIONS:")
             report.append("-" * 40)
-            for violation in scan_report['violations']:
+            for violation in scan_report["violations"]:
                 report.append(f"❌ {violation['severity']}: {violation['type']}")
                 report.append(f"   File: {violation['file']}")
-                if 'line' in violation:
+                if "line" in violation:
                     report.append(f"   Line: {violation['line']}")
-                if 'threat_level' in violation:
+                if "threat_level" in violation:
                     report.append(f"   Threat Level: {violation['threat_level']}")
                 report.append(f"   Message: {violation['message']}")
-                if 'line_preview' in violation:
+                if "line_preview" in violation:
                     report.append(f"   Preview: {violation['line_preview']}")
                 report.append("")
         else:
@@ -322,10 +350,10 @@ class EnhancedSecurityScanner:
 
         report.append("🔒 VERIFIABLE PROOF:")
         report.append("-" * 40)
-        for proof in scan_report['verifiable_proof']:
+        for proof in scan_report["verifiable_proof"]:
             report.append(f"✓ {proof['verification_type']}")
             for key, value in proof.items():
-                if key != 'verification_type':
+                if key != "verification_type":
                     report.append(f"   {key}: {value}")
             report.append("")
 
@@ -346,7 +374,7 @@ def main():
     print(report)
 
     # Exit with appropriate code
-    if scan_report['threats_detected'] > 0:
+    if scan_report["threats_detected"] > 0:
         print("🚨 COMMIT BLOCKED - Security violations must be resolved")
         print("\n🛡️ MANDATORY ACTIONS:")
         print("1. Remove sensitive data from staged files")

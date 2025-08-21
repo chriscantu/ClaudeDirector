@@ -25,7 +25,7 @@ class TestCLIWorkspaceDetection:
 
             # Set environment variable
             env = os.environ.copy()
-            env['CLAUDEDIRECTOR_WORKSPACE'] = str(workspace_path)
+            env["CLAUDEDIRECTOR_WORKSPACE"] = str(workspace_path)
 
             # Run CLI command
             result = subprocess.run(
@@ -33,7 +33,7 @@ class TestCLIWorkspaceDetection:
                 capture_output=True,
                 text=True,
                 env=env,
-                cwd=str(Path.cwd())
+                cwd=str(Path.cwd()),
             )
 
             # Should not error and should reference correct workspace
@@ -50,6 +50,7 @@ class TestCLIWorkspaceDetection:
         # Clean up any existing test artifacts
         if leadership_workspace.exists():
             import shutil
+
             shutil.rmtree(leadership_workspace, ignore_errors=True)
 
         try:
@@ -58,14 +59,14 @@ class TestCLIWorkspaceDetection:
 
             # Run CLI without environment variable
             env = os.environ.copy()
-            env.pop('CLAUDEDIRECTOR_WORKSPACE', None)
+            env.pop("CLAUDEDIRECTOR_WORKSPACE", None)
 
             result = subprocess.run(
                 [sys.executable, "./claudedirector", "reports", "weekly", "--dry-run"],
                 capture_output=True,
                 text=True,
                 env=env,
-                cwd=str(Path.cwd())
+                cwd=str(Path.cwd()),
             )
 
             # Should detect leadership-workspace
@@ -76,6 +77,7 @@ class TestCLIWorkspaceDetection:
             # Clean up test workspace
             if leadership_workspace.exists():
                 import shutil
+
                 shutil.rmtree(leadership_workspace, ignore_errors=True)
 
     def test_cli_detects_legacy_workspace(self):
@@ -85,6 +87,7 @@ class TestCLIWorkspaceDetection:
         leadership_workspace = Path.home() / "leadership-workspace"
         if leadership_workspace.exists():
             import shutil
+
             shutil.rmtree(leadership_workspace, ignore_errors=True)
 
         # Create legacy workspace
@@ -97,14 +100,14 @@ class TestCLIWorkspaceDetection:
 
             # Run CLI without environment variable
             env = os.environ.copy()
-            env.pop('CLAUDEDIRECTOR_WORKSPACE', None)
+            env.pop("CLAUDEDIRECTOR_WORKSPACE", None)
 
             result = subprocess.run(
                 [sys.executable, "./claudedirector", "reports", "weekly", "--dry-run"],
                 capture_output=True,
                 text=True,
                 env=env,
-                cwd=str(Path.cwd())
+                cwd=str(Path.cwd()),
             )
 
             # Should detect legacy workspace
@@ -115,6 +118,7 @@ class TestCLIWorkspaceDetection:
             # Clean up test workspace
             if legacy_workspace.exists():
                 import shutil
+
                 shutil.rmtree(legacy_workspace, ignore_errors=True)
 
     def test_cli_no_hardcoded_paths(self):
@@ -129,7 +133,7 @@ class TestCLIWorkspaceDetection:
 
             # Set environment variable to unique workspace
             env = os.environ.copy()
-            env['CLAUDEDIRECTOR_WORKSPACE'] = str(unique_workspace)
+            env["CLAUDEDIRECTOR_WORKSPACE"] = str(unique_workspace)
 
             # Run CLI command
             result = subprocess.run(
@@ -137,7 +141,7 @@ class TestCLIWorkspaceDetection:
                 capture_output=True,
                 text=True,
                 env=env,
-                cwd=str(Path.cwd())
+                cwd=str(Path.cwd()),
             )
 
             # Should reference the unique workspace name, not hardcoded paths
@@ -145,13 +149,17 @@ class TestCLIWorkspaceDetection:
             assert "unique-test-workspace-12345/reports" in result.stdout
 
             # Should NOT contain hardcoded references
-            assert "leadership-workspace/reports" not in result.stdout or env['CLAUDEDIRECTOR_WORKSPACE'] in result.stdout
+            assert (
+                "leadership-workspace/reports" not in result.stdout
+                or env["CLAUDEDIRECTOR_WORKSPACE"] in result.stdout
+            )
 
     def test_workspace_file_handler_integration(self):
         """Test WorkspaceFileHandler integrates with CLI properly"""
 
         import sys
-        sys.path.insert(0, '.claudedirector/lib')
+
+        sys.path.insert(0, ".claudedirector/lib")
 
         from claudedirector.core.workspace_file_handler import WorkspaceFileHandler
 
@@ -163,11 +171,11 @@ class TestCLIWorkspaceDetection:
         assert Path(handler.workspace_path).exists()
 
         # Should have integrated lifecycle manager
-        assert hasattr(handler, 'lifecycle_manager')
+        assert hasattr(handler, "lifecycle_manager")
         assert handler.lifecycle_manager is not None
 
         # Should have integrated smart organizer
-        assert hasattr(handler, 'smart_organizer')
+        assert hasattr(handler, "smart_organizer")
         assert handler.smart_organizer is not None
 
 

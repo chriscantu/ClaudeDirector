@@ -16,6 +16,7 @@ sys.path.insert(0, str(lib_dir))
 import sqlite3
 from datetime import datetime
 
+
 def test_database_consolidation():
     """Test that database consolidation worked correctly"""
     print("🧪 Testing Database Consolidation...")
@@ -31,11 +32,11 @@ def test_database_consolidation():
         tables = [row[0] for row in cursor.fetchall()]
 
         required_tables = [
-            'strategic_intelligence',
-            'stakeholder_intelligence',
-            'session_context',
-            'session_checkpoints',
-            'context_gaps'
+            "strategic_intelligence",
+            "stakeholder_intelligence",
+            "session_context",
+            "session_checkpoints",
+            "context_gaps",
         ]
 
         for table in required_tables:
@@ -53,8 +54,15 @@ def test_database_consolidation():
         print(f"✅ Database has {session_count} session contexts")
 
         # Verify database is writable
-        cursor.execute("INSERT INTO strategic_intelligence (intelligence_id, category, title, created_at) VALUES (?, ?, ?, ?)",
-                      ("test_" + str(datetime.now().timestamp()), "TEST", "Regression test", datetime.now().isoformat()))
+        cursor.execute(
+            "INSERT INTO strategic_intelligence (intelligence_id, category, title, created_at) VALUES (?, ?, ?, ?)",
+            (
+                "test_" + str(datetime.now().timestamp()),
+                "TEST",
+                "Regression test",
+                datetime.now().isoformat(),
+            ),
+        )
         conn.commit()
 
         # Clean up test record
@@ -69,6 +77,7 @@ def test_database_consolidation():
         print(f"❌ Database consolidation test FAILED: {e}")
         return False
 
+
 def test_conversation_capture():
     """Test conversation capture system"""
     print("🧪 Testing Conversation Capture...")
@@ -77,7 +86,7 @@ def test_conversation_capture():
         from core.auto_conversation_integration import (
             capture_user_input,
             capture_assistant_response,
-            get_capture_status
+            get_capture_status,
         )
 
         # Test basic capture
@@ -108,6 +117,7 @@ def test_conversation_capture():
         print(f"❌ Conversation capture test FAILED: {e}")
         return False
 
+
 def test_import_paths():
     """Test that all critical import paths work"""
     print("🧪 Testing Import Paths...")
@@ -127,6 +137,7 @@ def test_import_paths():
         print(f"❌ Import paths test FAILED: {e}")
         return False
 
+
 def test_session_management():
     """Test basic session management"""
     print("🧪 Testing Session Management...")
@@ -135,13 +146,15 @@ def test_session_management():
         from core.integrated_conversation_manager import IntegratedConversationManager
 
         # Create temporary database for testing
-        with tempfile.NamedTemporaryFile(suffix='.db', delete=False) as tmp_db:
+        with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as tmp_db:
             db_path = tmp_db.name
 
         try:
             # Apply the proper schema to temp database
             conn = sqlite3.connect(db_path)
-            with open('.claudedirector/config/schemas/session_context_schema.sql', 'r') as f:
+            with open(
+                ".claudedirector/config/schemas/session_context_schema.sql", "r"
+            ) as f:
                 schema_sql = f.read()
             conn.executescript(schema_sql)
             conn.close()
@@ -157,7 +170,7 @@ def test_session_management():
                 "Test user input",
                 "Test assistant response with strategic content about platform architecture",
                 ["martin"],
-                {"test": True}
+                {"test": True},
             )
             print("✅ Conversation turn captured")
 
@@ -184,6 +197,7 @@ def test_session_management():
     except Exception as e:
         print(f"❌ Session management test FAILED: {e}")
         return False
+
 
 def main():
     """Run full regression test suite"""
@@ -225,6 +239,7 @@ def main():
     else:
         print(f"\n⚠️  {total-passed} regression tests failed")
         return False
+
 
 if __name__ == "__main__":
     success = main()

@@ -162,7 +162,15 @@ class DailyTaskAlerts:
 
                 tasks = []
                 for row in cursor.fetchall():
-                    task_id, title, priority, direction, assigned_to, assignee_name, category = row
+                    (
+                        task_id,
+                        title,
+                        priority,
+                        direction,
+                        assigned_to,
+                        assignee_name,
+                        category,
+                    ) = row
 
                     tasks.append(
                         {
@@ -296,7 +304,8 @@ class DailyTaskAlerts:
                     if (
                         due_date
                         and (
-                            datetime.fromisoformat(due_date.replace("Z", "")) - datetime.now()
+                            datetime.fromisoformat(due_date.replace("Z", ""))
+                            - datetime.now()
                         ).days
                         <= 2
                     ):
@@ -322,7 +331,9 @@ class DailyTaskAlerts:
                 return updates
 
         except Exception as e:
-            self.logger.error("Failed to get assigned tasks needing updates", error=str(e))
+            self.logger.error(
+                "Failed to get assigned tasks needing updates", error=str(e)
+            )
             return []
 
     def _get_tasks_needing_escalation(self) -> List[Dict]:
@@ -375,7 +386,9 @@ class DailyTaskAlerts:
                     ) = row
 
                     # Determine escalation reason
-                    if escalation_date and escalation_date <= datetime.now().strftime("%Y-%m-%d"):
+                    if escalation_date and escalation_date <= datetime.now().strftime(
+                        "%Y-%m-%d"
+                    ):
                         escalation_reason = "scheduled_escalation"
                     elif priority == "critical" and days_overdue > 2:
                         escalation_reason = "critical_overdue"
@@ -460,9 +473,11 @@ class DailyTaskAlerts:
             print("-" * 35)
 
             for task in alerts["critical_overdue"]:
-                direction_emoji = {"incoming": "📥", "outgoing": "📤", "self_assigned": "📝"}[
-                    task["assignment_direction"]
-                ]
+                direction_emoji = {
+                    "incoming": "📥",
+                    "outgoing": "📤",
+                    "self_assigned": "📝",
+                }[task["assignment_direction"]]
 
                 print(f"{direction_emoji} [{task['task_id']}] {task['title'][:50]}")
                 print(
@@ -482,12 +497,17 @@ class DailyTaskAlerts:
             print("-" * 20)
 
             for task in alerts["due_today"]:
-                direction_emoji = {"incoming": "📥", "outgoing": "📤", "self_assigned": "📝"}[
-                    task["assignment_direction"]
-                ]
-                priority_emoji = {"critical": "🔴", "high": "🟠", "medium": "🟡", "low": "🟢"}[
-                    task["priority"]
-                ]
+                direction_emoji = {
+                    "incoming": "📥",
+                    "outgoing": "📤",
+                    "self_assigned": "📝",
+                }[task["assignment_direction"]]
+                priority_emoji = {
+                    "critical": "🔴",
+                    "high": "🟠",
+                    "medium": "🟡",
+                    "low": "🟢",
+                }[task["priority"]]
 
                 print(
                     f"{direction_emoji} {priority_emoji} [{task['task_id']}] {task['title'][:50]}"
@@ -510,7 +530,9 @@ class DailyTaskAlerts:
                     follow_up["urgency"]
                 ]
 
-                print(f"{urgency_emoji} [{follow_up['task_id']}] {follow_up['title'][:50]}")
+                print(
+                    f"{urgency_emoji} [{follow_up['task_id']}] {follow_up['title'][:50]}"
+                )
                 print(f"   👤 Follow up with: {follow_up['stakeholder_name']}")
 
                 if follow_up["urgency"] == "overdue":
@@ -540,9 +562,12 @@ class DailyTaskAlerts:
             print("-" * 25)
 
             for update in alerts["assigned_task_updates"][:5]:  # Limit to top 5
-                priority_emoji = {"critical": "🔴", "high": "🟠", "medium": "🟡", "low": "🟢"}[
-                    update["priority"]
-                ]
+                priority_emoji = {
+                    "critical": "🔴",
+                    "high": "🟠",
+                    "medium": "🟡",
+                    "low": "🟢",
+                }[update["priority"]]
 
                 print(f"{priority_emoji} [{update['task_id']}] {update['title'][:50]}")
                 print(f"   👤 Check with: {update['assignee_name']}")

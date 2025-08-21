@@ -9,9 +9,12 @@ import sys
 import os
 
 # Add the lib directory to Python path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../lib'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../lib"))
 
-from claudedirector.core.embedded_framework_engine import EmbeddedFrameworkEngine, EmbeddedPersonaIntegrator
+from claudedirector.core.embedded_framework_engine import (
+    EmbeddedFrameworkEngine,
+    EmbeddedPersonaIntegrator,
+)
 
 
 def test_team_topologies_framework():
@@ -35,7 +38,7 @@ def test_team_topologies_framework():
     framework_analysis = framework_engine.analyze_systematically(
         user_input=test_input,
         persona_context=persona_context,
-        domain_focus=domain_focus
+        domain_focus=domain_focus,
     )
 
     print(f"\n✅ **Framework Analysis Results:**")
@@ -43,7 +46,15 @@ def test_team_topologies_framework():
     print(f"   Analysis Confidence: {framework_analysis.analysis_confidence:.2f}")
 
     # Check for Team Topologies-specific components
-    topology_keywords = ["stream-aligned", "platform", "enabling", "complicated subsystem", "conway", "cognitive load", "topology"]
+    topology_keywords = [
+        "stream-aligned",
+        "platform",
+        "enabling",
+        "complicated subsystem",
+        "conway",
+        "cognitive load",
+        "topology",
+    ]
     found_topology_elements = []
 
     # Check in structured insights
@@ -63,12 +74,20 @@ def test_team_topologies_framework():
 
     # Validate we got the right framework
     expected_framework = "Team Topologies Framework"
-    assert framework_analysis.framework_name == expected_framework, f"Expected {expected_framework}, got {framework_analysis.framework_name}"
+    assert (
+        framework_analysis.framework_name == expected_framework
+    ), f"Expected {expected_framework}, got {framework_analysis.framework_name}"
 
     # Validate we found key Team Topologies concepts
     required_elements = ["platform", "conway", "cognitive"]
-    found_required = [elem for elem in required_elements if any(elem in found_elem.lower() for found_elem in found_topology_elements)]
-    assert len(found_required) >= 2, f"Expected at least 2 required elements, found: {found_required}"
+    found_required = [
+        elem
+        for elem in required_elements
+        if any(elem in found_elem.lower() for found_elem in found_topology_elements)
+    ]
+    assert (
+        len(found_required) >= 2
+    ), f"Expected at least 2 required elements, found: {found_required}"
 
     print(f"\n📋 **Key Recommendations:**")
     for i, rec in enumerate(framework_analysis.recommendations[:3], 1):
@@ -98,7 +117,7 @@ def test_accelerate_framework():
     framework_analysis = framework_engine.analyze_systematically(
         user_input=test_input,
         persona_context=persona_context,
-        domain_focus=domain_focus
+        domain_focus=domain_focus,
     )
 
     print(f"\n✅ **Framework Analysis Results:**")
@@ -106,7 +125,15 @@ def test_accelerate_framework():
     print(f"   Analysis Confidence: {framework_analysis.analysis_confidence:.2f}")
 
     # Check for Accelerate-specific components
-    accelerate_keywords = ["dora", "deployment frequency", "psychological safety", "performance", "lead time", "change failure", "recovery"]
+    accelerate_keywords = [
+        "dora",
+        "deployment frequency",
+        "psychological safety",
+        "performance",
+        "lead time",
+        "change failure",
+        "recovery",
+    ]
     found_accelerate_elements = []
 
     # Check in structured insights
@@ -126,12 +153,20 @@ def test_accelerate_framework():
 
     # Validate we got the right framework
     expected_framework = "Accelerate Team Performance Framework"
-    assert framework_analysis.framework_name == expected_framework, f"Expected {expected_framework}, got {framework_analysis.framework_name}"
+    assert (
+        framework_analysis.framework_name == expected_framework
+    ), f"Expected {expected_framework}, got {framework_analysis.framework_name}"
 
     # Validate we found key Accelerate concepts
     required_elements = ["dora", "performance", "psychological"]
-    found_required = [elem for elem in required_elements if any(elem in found_elem.lower() for found_elem in found_accelerate_elements)]
-    assert len(found_required) >= 2, f"Expected at least 2 required elements, found: {found_required}"
+    found_required = [
+        elem
+        for elem in required_elements
+        if any(elem in found_elem.lower() for found_elem in found_accelerate_elements)
+    ]
+    assert (
+        len(found_required) >= 2
+    ), f"Expected at least 2 required elements, found: {found_required}"
 
     print(f"\n📋 **Key Recommendations:**")
     for i, rec in enumerate(framework_analysis.recommendations[:3], 1):
@@ -155,20 +190,20 @@ def test_team_framework_persona_integration():
             "name": "Team Topologies with Diego",
             "input": "Our team topology needs platform teams and stream-aligned teams with proper cognitive load management",
             "persona": "diego",
-            "expected_framework": "Team Topologies"
+            "expected_framework": "Team Topologies",
         },
         {
             "name": "Accelerate with Camille",
             "input": "We need better DORA metrics and psychological safety for team performance",
             "persona": "camille",
-            "expected_framework": "Accelerate"
+            "expected_framework": "Accelerate",
         },
         {
             "name": "Team Topologies with Marcus",
             "input": "Conway's Law says our team structure affects our platform team interactions",
             "persona": "marcus",
-            "expected_framework": "Team Topologies"
-        }
+            "expected_framework": "Team Topologies",
+        },
     ]
 
     for scenario in test_scenarios:
@@ -178,7 +213,7 @@ def test_team_framework_persona_integration():
             persona_name=scenario["persona"],
             user_input=scenario["input"],
             base_response="",
-            domain_focus=["organizational", "strategic"]
+            domain_focus=["organizational", "strategic"],
         )
 
         print(f"   Framework: {response.framework_applied}")
@@ -186,8 +221,13 @@ def test_team_framework_persona_integration():
         print(f"   Response Length: {len(response.persona_integrated_response)} chars")
 
         # Check that we got a team-related framework
-        is_team_framework = any(term in response.framework_applied for term in ["Team Topologies", "Accelerate"])
-        assert is_team_framework, f"Expected team framework, got {response.framework_applied}"
+        is_team_framework = any(
+            term in response.framework_applied
+            for term in ["Team Topologies", "Accelerate"]
+        )
+        assert (
+            is_team_framework
+        ), f"Expected team framework, got {response.framework_applied}"
 
     print(f"\n✅ **Persona Integration Test Complete**")
     return True
@@ -206,23 +246,23 @@ def test_framework_keyword_activation():
         {
             "input": "Our platform team cognitive load is too high",
             "expected_framework": "Team Topologies",
-            "keywords": ["platform team", "cognitive load"]
+            "keywords": ["platform team", "cognitive load"],
         },
         {
             "input": "We need better DORA metrics and deployment frequency",
             "expected_framework": "Accelerate",
-            "keywords": ["DORA metrics", "deployment frequency"]
+            "keywords": ["DORA metrics", "deployment frequency"],
         },
         {
             "input": "How do we structure stream-aligned teams?",
             "expected_framework": "Team Topologies",
-            "keywords": ["stream-aligned"]
+            "keywords": ["stream-aligned"],
         },
         {
             "input": "Our psychological safety needs improvement for high performance",
             "expected_framework": "Accelerate",
-            "keywords": ["psychological safety", "high performance"]
-        }
+            "keywords": ["psychological safety", "high performance"],
+        },
     ]
 
     for i, test_case in enumerate(test_cases, 1):
@@ -231,7 +271,7 @@ def test_framework_keyword_activation():
         analysis = framework_engine.analyze_systematically(
             user_input=test_case["input"],
             persona_context="diego",
-            domain_focus=["organizational", "technical"]
+            domain_focus=["organizational", "technical"],
         )
 
         print(f"   Framework: {analysis.framework_name}")
@@ -239,7 +279,9 @@ def test_framework_keyword_activation():
 
         # Check if we got the expected framework type
         expected_keywords = test_case["expected_framework"].lower().split()
-        framework_matches = any(keyword in analysis.framework_name.lower() for keyword in expected_keywords)
+        framework_matches = any(
+            keyword in analysis.framework_name.lower() for keyword in expected_keywords
+        )
         print(f"   Expected Framework Type Activated: {framework_matches}")
 
     print(f"\n✅ **Keyword Activation Test Complete**")

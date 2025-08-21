@@ -54,7 +54,9 @@ def demo_meeting_intelligence():
         for i, meeting in enumerate(meetings, 1):
             print(f"\n   Meeting {i}: {meeting['meeting_key']}")
             print(f"      Type: {meeting['meeting_type']}")
-            print(f"      Stakeholder: {meeting['stakeholder_primary'] or 'Not detected'}")
+            print(
+                f"      Stakeholder: {meeting['stakeholder_primary'] or 'Not detected'}"
+            )
 
             # Parse JSON fields safely
             try:
@@ -111,10 +113,16 @@ def demo_meeting_intelligence():
         meeting_data = manager.parse_meeting_prep_directory(demo_dir)
         meeting_id = manager.store_meeting_session(meeting_data)
 
-        print(f"   ✅ Meeting processed: {meeting_data['meeting_key']} -> ID {meeting_id}")
+        print(
+            f"   ✅ Meeting processed: {meeting_data['meeting_key']} -> ID {meeting_id}"
+        )
         print(f"   📊 Meeting Type: {meeting_data['meeting_type']}")
-        print(f"   👤 Primary Stakeholder: {meeting_data['stakeholder_primary'] or 'Not detected'}")
-        print(f"   🎭 Recommended Personas: {', '.join(meeting_data['persona_activated'])}")
+        print(
+            f"   👤 Primary Stakeholder: {meeting_data['stakeholder_primary'] or 'Not detected'}"
+        )
+        print(
+            f"   🎭 Recommended Personas: {', '.join(meeting_data['persona_activated'])}"
+        )
         print(f"   📋 Agenda Items: {len(meeting_data['agenda_items'])} detected")
 
     # Show workspace monitoring capabilities
@@ -129,7 +137,9 @@ def demo_meeting_intelligence():
     print(f"   python memory/workspace_monitor.py")
     print(f"   (Then create new directories in workspace/meeting-prep/)")
 
-    print(f"\n✅ Demo Complete! Meeting Intelligence System is ready for production use.")
+    print(
+        f"\n✅ Demo Complete! Meeting Intelligence System is ready for production use."
+    )
 
 
 if __name__ == "__main__":

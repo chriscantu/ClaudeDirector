@@ -25,6 +25,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+
 def run_command(cmd, description):
     """Run a command and return success status."""
     print(f"\n{'='*60}")
@@ -33,11 +34,7 @@ def run_command(cmd, description):
 
     try:
         result = subprocess.run(
-            cmd,
-            shell=True,
-            capture_output=True,
-            text=True,
-            cwd=PROJECT_ROOT
+            cmd, shell=True, capture_output=True, text=True, cwd=PROJECT_ROOT
         )
 
         if result.returncode == 0:
@@ -54,6 +51,7 @@ def run_command(cmd, description):
     except Exception as e:
         print(f"❌ {description} - ERROR: {e}")
         return False
+
 
 def check_environment():
     """Verify test environment is set up correctly."""
@@ -74,6 +72,7 @@ def check_environment():
     print("✅ Test environment ready")
     return True
 
+
 def run_critical_tests():
     """Run critical tests - FULLY ENABLED"""
     print("🎯 Running CRITICAL tests (FULLY ENABLED - NO SKIPPING)...")
@@ -81,17 +80,18 @@ def run_critical_tests():
     # Run the comprehensive test suite
     return run_critical_tests_comprehensive()
 
+
 def run_critical_tests_comprehensive():
     """Run comprehensive critical test suite with NO SKIPPING"""
     print("\n🔥 COMPREHENSIVE CRITICAL TEST SUITE")
     print("=" * 60)
 
-        # FIRST: Run mandatory P0 tests (BLOCKING) - User's requirement
+    # FIRST: Run mandatory P0 tests (BLOCKING) - User's requirement
     print("\n🚨 MANDATORY P0 FEATURE ENFORCEMENT (BLOCKING)")
     print("=" * 60)
     p0_success = run_command(
         "python3 .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py",
-        "🚨 MANDATORY P0 FEATURE ENFORCEMENT"
+        "🚨 MANDATORY P0 FEATURE ENFORCEMENT",
     )
 
     if not p0_success:
@@ -160,6 +160,7 @@ def run_critical_tests_comprehensive():
         print(f"❌ {tests_total - tests_passed} CRITICAL TESTS FAILED - COMMIT BLOCKED")
         return False
 
+
 def run_critical_tests_legacy():
     """Run the critical tests that must pass."""
     print("\n🎯 Running CRITICAL tests (MUST PASS for commit)...")
@@ -177,7 +178,13 @@ def run_critical_tests_legacy():
             return False
 
     # Test 2: Legacy framework tests (if they exist)
-    legacy_framework_tests = PROJECT_ROOT / ".claudedirector" / "tests" / "integration" / "test_rumelt_wrap_frameworks.py"
+    legacy_framework_tests = (
+        PROJECT_ROOT
+        / ".claudedirector"
+        / "tests"
+        / "integration"
+        / "test_rumelt_wrap_frameworks.py"
+    )
     if legacy_framework_tests.exists():
         test_cmd = f"{venv_python} -m pytest {legacy_framework_tests} -v --tb=short"
         if not run_command(test_cmd, "Legacy Framework Integration Tests"):
@@ -185,7 +192,13 @@ def run_critical_tests_legacy():
             return False
 
     # Test 3: Core module tests (if they exist)
-    core_tests = PROJECT_ROOT / ".claudedirector" / "tests" / "unit" / "test_embedded_framework_engine.py"
+    core_tests = (
+        PROJECT_ROOT
+        / ".claudedirector"
+        / "tests"
+        / "unit"
+        / "test_embedded_framework_engine.py"
+    )
     if core_tests.exists():
         test_cmd = f"{venv_python} -m pytest {core_tests} -v --tb=short"
         if not run_command(test_cmd, "Legacy Core Module Tests"):
@@ -194,6 +207,7 @@ def run_critical_tests_legacy():
 
     print("\n✅ ALL CRITICAL TESTS PASSED!")
     return True
+
 
 def run_quick_smoke_tests():
     """Run quick smoke tests to catch obvious issues."""
@@ -219,17 +233,20 @@ def run_quick_smoke_tests():
     print("\n✅ Smoke tests passed!")
     return True
 
+
 def main():
     """Main test validation function."""
     print("🛡️  MANDATORY TEST VALIDATOR")
-    print("="*60)
+    print("=" * 60)
     print("Enforcing: All features must have passing tests before commit")
-    print("="*60)
+    print("=" * 60)
 
     # Check environment
     if not check_environment():
         print("\n❌ ENVIRONMENT SETUP FAILED")
-        print("🔧 Please ensure virtual environment is set up and ClaudeDirector is installed")
+        print(
+            "🔧 Please ensure virtual environment is set up and ClaudeDirector is installed"
+        )
         return 2
 
     # Run smoke tests
@@ -243,7 +260,9 @@ def main():
         print("\n❌ CRITICAL TESTS FAILED")
         print("🚫 COMMIT BLOCKED - Fix failing tests before committing")
         print("\nTo debug:")
-        print("1. Run tests manually: ./venv/bin/python -m pytest .claudedirector/tests/integration/test_rumelt_wrap_frameworks.py -v")
+        print(
+            "1. Run tests manually: ./venv/bin/python -m pytest .claudedirector/tests/integration/test_rumelt_wrap_frameworks.py -v"
+        )
         print("2. Fix any failing tests")
         print("3. Re-run this validator")
         return 1
@@ -251,6 +270,7 @@ def main():
     print("\n🎉 ALL TESTS PASSED!")
     print("✅ Commit allowed - code quality validated")
     return 0
+
 
 if __name__ == "__main__":
     exit_code = main()

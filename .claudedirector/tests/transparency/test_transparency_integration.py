@@ -13,8 +13,13 @@ lib_path = Path(__file__).parent.parent.parent / "lib"
 sys.path.insert(0, str(lib_path))
 
 try:
-    from claudedirector.transparency.integrated_transparency import IntegratedTransparencySystem
-    from claudedirector.transparency.framework_detection import FrameworkDetectionMiddleware
+    from claudedirector.transparency.integrated_transparency import (
+        IntegratedTransparencySystem,
+    )
+    from claudedirector.transparency.framework_detection import (
+        FrameworkDetectionMiddleware,
+    )
+
     HAS_FULL_TRANSPARENCY = True
 except ImportError:
     HAS_FULL_TRANSPARENCY = False
@@ -22,7 +27,10 @@ except ImportError:
 # Import our integration bridge
 integration_path = Path(__file__).parent.parent.parent / "integration-protection"
 sys.path.insert(0, str(integration_path))
-from cursor_transparency_bridge import CursorTransparencyBridge, ensure_transparency_compliance
+from cursor_transparency_bridge import (
+    CursorTransparencyBridge,
+    ensure_transparency_compliance,
+)
 
 
 class TestPersonaDetection:
@@ -37,12 +45,14 @@ class TestPersonaDetection:
             "How should we architect our platform for scale?",
             "What's the best approach for microservices architecture?",
             "Help me design our technical debt strategy",
-            "Platform scalability concerns with distributed systems"
+            "Platform scalability concerns with distributed systems",
         ]
 
         for user_input in test_cases:
             persona = self.bridge.detect_persona_from_context(user_input)
-            assert persona == "martin", f"Expected 'martin' for input: {user_input}, got: {persona}"
+            assert (
+                persona == "martin"
+            ), f"Expected 'martin' for input: {user_input}, got: {persona}"
 
     def test_diego_leadership_detection(self):
         """Test Diego persona detection for leadership questions"""
@@ -50,12 +60,14 @@ class TestPersonaDetection:
             "How should we structure our engineering team?",
             "What's our platform strategy for next quarter?",
             "Team coordination across multiple engineering groups",
-            "Engineering leadership challenges with remote teams"
+            "Engineering leadership challenges with remote teams",
         ]
 
         for user_input in test_cases:
             persona = self.bridge.detect_persona_from_context(user_input)
-            assert persona == "diego", f"Expected 'diego' for input: {user_input}, got: {persona}"
+            assert (
+                persona == "diego"
+            ), f"Expected 'diego' for input: {user_input}, got: {persona}"
 
     def test_alvaro_business_detection(self):
         """Test Alvaro persona detection for business/ROI questions"""
@@ -63,12 +75,14 @@ class TestPersonaDetection:
             "What's the ROI of our platform investment?",
             "Business value analysis for this technical initiative",
             "Platform investment strategy and stakeholder communication",
-            "How do we justify this business expense?"
+            "How do we justify this business expense?",
         ]
 
         for user_input in test_cases:
             persona = self.bridge.detect_persona_from_context(user_input)
-            assert persona == "alvaro", f"Expected 'alvaro' for input: {user_input}, got: {persona}"
+            assert (
+                persona == "alvaro"
+            ), f"Expected 'alvaro' for input: {user_input}, got: {persona}"
 
     def test_rachel_design_detection(self):
         """Test Rachel persona detection for design system questions"""
@@ -76,12 +90,14 @@ class TestPersonaDetection:
             "How should we approach our design system strategy?",
             "Cross-functional UX coordination challenges",
             "Component library architecture and adoption",
-            "Design systems strategy for multiple platforms"
+            "Design systems strategy for multiple platforms",
         ]
 
         for user_input in test_cases:
             persona = self.bridge.detect_persona_from_context(user_input)
-            assert persona == "rachel", f"Expected 'rachel' for input: {user_input}, got: {persona}"
+            assert (
+                persona == "rachel"
+            ), f"Expected 'rachel' for input: {user_input}, got: {persona}"
 
     def test_default_persona_fallback(self):
         """Test default persona when no clear context"""
@@ -102,7 +118,9 @@ class TestPersonaHeaders:
         enhanced = self.bridge.add_persona_header(response, "martin")
 
         expected_header = "🏗️ Martin | Platform Architecture"
-        assert enhanced.startswith(expected_header), f"Response should start with Martin header: {enhanced[:50]}"
+        assert enhanced.startswith(
+            expected_header
+        ), f"Response should start with Martin header: {enhanced[:50]}"
         assert response in enhanced, "Original response should be preserved"
 
     def test_diego_header_application(self):
@@ -111,16 +129,22 @@ class TestPersonaHeaders:
         enhanced = self.bridge.add_persona_header(response, "diego")
 
         expected_header = "🎯 Diego | Engineering Leadership"
-        assert enhanced.startswith(expected_header), f"Response should start with Diego header: {enhanced[:50]}"
+        assert enhanced.startswith(
+            expected_header
+        ), f"Response should start with Diego header: {enhanced[:50]}"
 
     def test_header_not_duplicated(self):
         """Test that headers are not duplicated if already present"""
-        response_with_header = "🏗️ Martin | Platform Architecture\n\nHere's the analysis..."
+        response_with_header = (
+            "🏗️ Martin | Platform Architecture\n\nHere's the analysis..."
+        )
         enhanced = self.bridge.add_persona_header(response_with_header, "martin")
 
         # Should not add another header
         header_count = enhanced.count("🏗️ Martin | Platform Architecture")
-        assert header_count == 1, f"Header should appear only once, found {header_count} times"
+        assert (
+            header_count == 1
+        ), f"Header should appear only once, found {header_count} times"
 
     def test_has_persona_header_detection(self):
         """Test detection of existing persona headers"""
@@ -128,12 +152,14 @@ class TestPersonaHeaders:
             ("🏗️ Martin | Platform Architecture\nContent...", True),
             ("🎯 Diego | Engineering Leadership\nContent...", True),
             ("Regular response without header", False),
-            ("Some other content 🏗️ Martin", False)  # Header not at start
+            ("Some other content 🏗️ Martin", False),  # Header not at start
         ]
 
         for response, expected in test_cases:
             result = self.bridge.has_persona_header(response)
-            assert result == expected, f"Header detection failed for: {response[:30]}..."
+            assert (
+                result == expected
+            ), f"Header detection failed for: {response[:30]}..."
 
 
 class TestTransparencyCompliance:
@@ -175,32 +201,34 @@ class TestTransparencyCompliance:
                 "input": "Team structure for platform engineering",
                 "response": "Team topology considerations...",
                 "expected_persona": "diego",
-                "expected_header": "🎯 Diego | Engineering Leadership"
+                "expected_header": "🎯 Diego | Engineering Leadership",
             },
             {
                 "input": "Microservices architecture patterns",
                 "response": "Distributed systems design requires...",
                 "expected_persona": "martin",
-                "expected_header": "🏗️ Martin | Platform Architecture"
+                "expected_header": "🏗️ Martin | Platform Architecture",
             },
             {
                 "input": "Design system component strategy",
                 "response": "Component architecture should...",
                 "expected_persona": "rachel",
-                "expected_header": "🎨 Rachel | Design Systems Strategy"
-            }
+                "expected_header": "🎨 Rachel | Design Systems Strategy",
+            },
         ]
 
         for scenario in test_scenarios:
             enhanced = ensure_transparency_compliance(
-                scenario["response"],
-                scenario["input"]
+                scenario["response"], scenario["input"]
             )
-            assert scenario["expected_header"] in enhanced, \
-                f"Expected {scenario['expected_header']} in response for: {scenario['input']}"
+            assert (
+                scenario["expected_header"] in enhanced
+            ), f"Expected {scenario['expected_header']} in response for: {scenario['input']}"
 
 
-@pytest.mark.skipif(not HAS_FULL_TRANSPARENCY, reason="Full transparency system not available")
+@pytest.mark.skipif(
+    not HAS_FULL_TRANSPARENCY, reason="Full transparency system not available"
+)
 class TestFrameworkDetection:
     """Test framework detection and attribution (requires full system)"""
 
@@ -215,10 +243,14 @@ class TestFrameworkDetection:
         feature development while platform teams provide foundational capabilities.
         """
 
-        frameworks = self.framework_detector.detect_frameworks_used(response_with_framework)
+        frameworks = self.framework_detector.detect_frameworks_used(
+            response_with_framework
+        )
         framework_names = [f.framework_name for f in frameworks]
 
-        assert "Team Topologies" in framework_names, f"Should detect Team Topologies, found: {framework_names}"
+        assert (
+            "Team Topologies" in framework_names
+        ), f"Should detect Team Topologies, found: {framework_names}"
 
     def test_strategic_framework_detection(self):
         """Test strategic framework detection"""
@@ -230,7 +262,9 @@ class TestFrameworkDetection:
         frameworks = self.framework_detector.detect_frameworks_used(response_with_ogsm)
         framework_names = [f.framework_name for f in frameworks]
 
-        assert "OGSM Strategic Framework" in framework_names, f"Should detect OGSM, found: {framework_names}"
+        assert (
+            "OGSM Strategic Framework" in framework_names
+        ), f"Should detect OGSM, found: {framework_names}"
 
     def test_framework_attribution_generation(self):
         """Test framework attribution text generation"""
@@ -242,17 +276,21 @@ class TestFrameworkDetection:
                 framework_name="Team Topologies",
                 confidence_score=0.8,
                 matched_patterns=["team topologies", "cognitive load"],
-                framework_type="organizational"
+                framework_type="organizational",
             )
         ]
 
-        attribution = self.framework_detector.create_framework_attribution("martin", frameworks)
+        attribution = self.framework_detector.create_framework_attribution(
+            "martin", frameworks
+        )
 
         assert "Team Topologies" in attribution
         assert "Platform Architecture experience" in attribution
 
 
-@pytest.mark.skipif(not HAS_FULL_TRANSPARENCY, reason="Full transparency system not available")
+@pytest.mark.skipif(
+    not HAS_FULL_TRANSPARENCY, reason="Full transparency system not available"
+)
 class TestIntegratedTransparencySystem:
     """Test full integrated transparency system"""
 
@@ -324,13 +362,20 @@ class TestErrorHandling:
 
                 enhanced = ensure_transparency_compliance("Response", test_input or "")
                 # Should not crash and should have a persona header
-                assert any(header in enhanced for header in self.bridge.persona_headers.values())
+                assert any(
+                    header in enhanced
+                    for header in self.bridge.persona_headers.values()
+                )
             except Exception as e:
-                pytest.fail(f"Should handle malformed input gracefully: {test_input}, got error: {e}")
+                pytest.fail(
+                    f"Should handle malformed input gracefully: {test_input}, got error: {e}"
+                )
 
     def test_long_input_performance(self):
         """Test performance with long inputs"""
-        long_input = "architecture " * 1000  # Very long input with architecture keywords
+        long_input = (
+            "architecture " * 1000
+        )  # Very long input with architecture keywords
         response = "Here's the analysis..."
 
         start_time = time.time()
@@ -338,7 +383,9 @@ class TestErrorHandling:
         processing_time = time.time() - start_time
 
         # Should complete in reasonable time (< 100ms for this test)
-        assert processing_time < 0.1, f"Processing took too long: {processing_time:.3f}s"
+        assert (
+            processing_time < 0.1
+        ), f"Processing took too long: {processing_time:.3f}s"
         assert "🏗️ Martin | Platform Architecture" in enhanced
 
 
@@ -347,16 +394,21 @@ class TestSafeguards:
 
     def test_no_breaking_changes(self):
         """Test that transparency integration doesn't break existing responses"""
-        original_response = "This is a standard response without any special formatting."
+        original_response = (
+            "This is a standard response without any special formatting."
+        )
         enhanced = ensure_transparency_compliance(original_response, "general question")
 
         # Should preserve original content
         assert original_response in enhanced
         # Should add persona header
-        assert any(header in enhanced for header in [
-            "🏗️ Martin | Platform Architecture",
-            "🎯 Diego | Engineering Leadership"
-        ])
+        assert any(
+            header in enhanced
+            for header in [
+                "🏗️ Martin | Platform Architecture",
+                "🎯 Diego | Engineering Leadership",
+            ]
+        )
 
     def test_graceful_fallback(self):
         """Test graceful fallback when full transparency system unavailable"""
@@ -373,7 +425,7 @@ class TestSafeguards:
         test_cases = [
             ("Architecture question", "Architecture response"),
             ("Leadership question", "Leadership response"),
-            ("Business question", "Business response")
+            ("Business question", "Business response"),
         ]
 
         for user_input, response in test_cases:

@@ -12,13 +12,14 @@ from typing import List, Tuple
 # CRITICAL: Sensitive stakeholder names that must NEVER be committed
 SENSITIVE_PATTERNS = [
     # Real stakeholder names (add patterns, not exact names for security)
-    r'(?i)\b(executive_a|executive_b)\b',  # Placeholder patterns to prevent self-detection
-    r'(?i)\b(target_exec|ally_exec|opposition_exec)\b',
-    r'(?i)\b(platform_executive|product_executive)\b',
+    r"(?i)\b(executive_a|executive_b)\b",  # Placeholder patterns to prevent self-detection
+    r"(?i)\b(target_exec|ally_exec|opposition_exec)\b",
+    r"(?i)\b(platform_executive|product_executive)\b",
     # Pattern-based detection
-    r'(?i)(real[_-]?stakeholder[_-]?name)',
-    r'(?i)(actual[_-]?procore[_-]?stakeholder)',
+    r"(?i)(real[_-]?stakeholder[_-]?name)",
+    r"(?i)(actual[_-]?procore[_-]?stakeholder)",
 ]
+
 
 def scan_file(file_path: str) -> List[Tuple[int, str, str]]:
     """
@@ -28,7 +29,7 @@ def scan_file(file_path: str) -> List[Tuple[int, str, str]]:
     violations = []
 
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             for line_num, line in enumerate(f, 1):
                 for pattern in SENSITIVE_PATTERNS:
                     if re.search(pattern, line):
@@ -39,6 +40,7 @@ def scan_file(file_path: str) -> List[Tuple[int, str, str]]:
 
     return violations
 
+
 def scan_staged_files() -> bool:
     """
     Scan all staged files for sensitive information
@@ -48,9 +50,12 @@ def scan_staged_files() -> bool:
     import subprocess
 
     try:
-        result = subprocess.run(['git', 'diff', '--cached', '--name-only'],
-                              capture_output=True, text=True)
-        staged_files = result.stdout.strip().split('\n') if result.stdout.strip() else []
+        result = subprocess.run(
+            ["git", "diff", "--cached", "--name-only"], capture_output=True, text=True
+        )
+        staged_files = (
+            result.stdout.strip().split("\n") if result.stdout.strip() else []
+        )
     except subprocess.CalledProcessError:
         print("Error: Could not get staged files from git")
         return False
@@ -62,7 +67,7 @@ def scan_staged_files() -> bool:
             continue
 
         # Skip certain file types
-        if file_path.endswith(('.db', '.sqlite', '.pyc', '.png', '.jpg', '.jpeg')):
+        if file_path.endswith((".db", ".sqlite", ".pyc", ".png", ".jpg", ".jpeg")):
             continue
 
         violations = scan_file(file_path)
@@ -85,11 +90,12 @@ def scan_staged_files() -> bool:
 
     return True
 
+
 def main():
     """Main security scanner entry point"""
     print("🛡️ Scanning for sensitive stakeholder information...")
 
-    if len(sys.argv) > 1 and sys.argv[1] == '--staged':
+    if len(sys.argv) > 1 and sys.argv[1] == "--staged":
         # Scan staged files (for pre-commit hook)
         if not scan_staged_files():
             sys.exit(1)
@@ -114,6 +120,7 @@ def main():
         else:
             print(f"✅ Clean: {file_path}")
             sys.exit(0)
+
 
 if __name__ == "__main__":
     main()

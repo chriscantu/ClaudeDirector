@@ -19,8 +19,9 @@ try:
     from cursor_transparency_bridge import (
         ensure_transparency_compliance,
         get_transparency_summary,
-        CursorTransparencyBridge
+        CursorTransparencyBridge,
     )
+
     BRIDGE_AVAILABLE = True
 except ImportError as e:
     BRIDGE_AVAILABLE = False
@@ -50,7 +51,7 @@ class TestMCPTransparencyP0(unittest.TestCase):
                 "response": "Here is a comprehensive strategic approach to organizational framework development for platform architecture...",
                 "expected_persona": "martin",
                 "expected_mcp_servers": ["sequential", "context7"],
-                "min_complexity_score": 6
+                "min_complexity_score": 6,
             },
             {
                 "name": "Executive Leadership Analysis",
@@ -58,7 +59,7 @@ class TestMCPTransparencyP0(unittest.TestCase):
                 "response": "Executive leadership requires systematic analysis of organizational dynamics and strategic framework application...",
                 "expected_persona": "diego",
                 "expected_mcp_servers": ["sequential"],
-                "min_complexity_score": 4
+                "min_complexity_score": 4,
             },
             {
                 "name": "Enterprise Platform Strategy",
@@ -66,7 +67,7 @@ class TestMCPTransparencyP0(unittest.TestCase):
                 "response": "Enterprise platform strategy requires systematic analysis of organizational complexity and strategic alternatives...",
                 "expected_persona": "martin",
                 "expected_mcp_servers": ["sequential", "context7"],
-                "min_complexity_score": 7
+                "min_complexity_score": 7,
             },
             {
                 "name": "Strategic Investment Analysis",
@@ -74,8 +75,8 @@ class TestMCPTransparencyP0(unittest.TestCase):
                 "response": "Strategic investment analysis requires systematic assessment of alternatives and organizational impact...",
                 "expected_persona": "alvaro",
                 "expected_mcp_servers": ["sequential"],
-                "min_complexity_score": 5
-            }
+                "min_complexity_score": 5,
+            },
         ]
 
         # Negative test cases - These should NOT trigger MCP transparency
@@ -84,14 +85,14 @@ class TestMCPTransparencyP0(unittest.TestCase):
                 "name": "Simple Question",
                 "input": "What is the status?",
                 "response": "The status is good.",
-                "expected_complexity_score": 0
+                "expected_complexity_score": 0,
             },
             {
                 "name": "Basic Technical Question",
                 "input": "How do I run the tests?",
                 "response": "Run pytest to execute the tests.",
-                "expected_complexity_score": 0
-            }
+                "expected_complexity_score": 0,
+            },
         ]
 
     def test_p0_mcp_transparency_disclosure_format(self):
@@ -105,24 +106,33 @@ class TestMCPTransparencyP0(unittest.TestCase):
         for test_case in self.p0_test_cases:
             with self.subTest(test_case=test_case["name"]):
                 enhanced = ensure_transparency_compliance(
-                    test_case["response"],
-                    test_case["input"]
+                    test_case["response"], test_case["input"]
                 )
 
                 # CRITICAL: Must contain MCP disclosure
                 # Check for either format - old "Accessing" or new "Installing"
-                has_mcp_disclosure = ("🔧 Accessing MCP Server:" in enhanced or
-                                    "🔧 Installing MCP enhancement:" in enhanced)
-                self.assertTrue(has_mcp_disclosure,
-                    f"FAILED P0: {test_case['name']} missing MCP disclosure")
+                has_mcp_disclosure = (
+                    "🔧 Accessing MCP Server:" in enhanced
+                    or "🔧 Installing MCP enhancement:" in enhanced
+                )
+                self.assertTrue(
+                    has_mcp_disclosure,
+                    f"FAILED P0: {test_case['name']} missing MCP disclosure",
+                )
 
                 # CRITICAL: Must contain processing indicator
-                self.assertIn("*", enhanced,
-                    f"FAILED P0: {test_case['name']} missing processing indicator")
+                self.assertIn(
+                    "*",
+                    enhanced,
+                    f"FAILED P0: {test_case['name']} missing processing indicator",
+                )
 
                 # CRITICAL: Must contain persona header
-                self.assertIn("|", enhanced,
-                    f"FAILED P0: {test_case['name']} missing persona header")
+                self.assertIn(
+                    "|",
+                    enhanced,
+                    f"FAILED P0: {test_case['name']} missing persona header",
+                )
 
     def test_p0_complexity_threshold_detection(self):
         """
@@ -136,21 +146,46 @@ class TestMCPTransparencyP0(unittest.TestCase):
                 combined_text = f"{test_case['input']} {test_case['response']}".lower()
 
                 complexity_indicators = [
-                    "strategic", "organizational", "framework", "systematic", "complex",
-                    "multi-team", "executive", "board", "leadership", "presentation",
-                    "enterprise", "organization-wide", "cross-functional", "multiple teams",
-                    "trade-offs", "options", "alternatives", "analysis", "assessment"
+                    "strategic",
+                    "organizational",
+                    "framework",
+                    "systematic",
+                    "complex",
+                    "multi-team",
+                    "executive",
+                    "board",
+                    "leadership",
+                    "presentation",
+                    "enterprise",
+                    "organization-wide",
+                    "cross-functional",
+                    "multiple teams",
+                    "trade-offs",
+                    "options",
+                    "alternatives",
+                    "analysis",
+                    "assessment",
                 ]
 
-                actual_score = sum(1 for indicator in complexity_indicators if indicator in combined_text)
+                actual_score = sum(
+                    1
+                    for indicator in complexity_indicators
+                    if indicator in combined_text
+                )
 
                 # CRITICAL: Must meet minimum complexity threshold
-                self.assertGreaterEqual(actual_score, 3,
-                    f"FAILED P0: {test_case['name']} complexity score {actual_score} < 3")
+                self.assertGreaterEqual(
+                    actual_score,
+                    3,
+                    f"FAILED P0: {test_case['name']} complexity score {actual_score} < 3",
+                )
 
                 # Verify expected score
-                self.assertGreaterEqual(actual_score, test_case["min_complexity_score"],
-                    f"FAILED P0: {test_case['name']} complexity score {actual_score} < expected {test_case['min_complexity_score']}")
+                self.assertGreaterEqual(
+                    actual_score,
+                    test_case["min_complexity_score"],
+                    f"FAILED P0: {test_case['name']} complexity score {actual_score} < expected {test_case['min_complexity_score']}",
+                )
 
     def test_p0_mcp_context_creation(self):
         """
@@ -161,24 +196,29 @@ class TestMCPTransparencyP0(unittest.TestCase):
         for test_case in self.p0_test_cases:
             with self.subTest(test_case=test_case["name"]):
                 mcp_context = self.bridge.detect_mcp_usage_context(
-                    test_case["input"],
-                    test_case["response"]
+                    test_case["input"], test_case["response"]
                 )
 
                 # CRITICAL: MCP context must be created
-                self.assertIsNotNone(mcp_context,
-                    f"FAILED P0: {test_case['name']} - no MCP context created")
+                self.assertIsNotNone(
+                    mcp_context,
+                    f"FAILED P0: {test_case['name']} - no MCP context created",
+                )
 
                 # CRITICAL: Must have MCP calls
-                self.assertTrue(mcp_context.has_mcp_calls(),
-                    f"FAILED P0: {test_case['name']} - MCP context has no calls")
+                self.assertTrue(
+                    mcp_context.has_mcp_calls(),
+                    f"FAILED P0: {test_case['name']} - MCP context has no calls",
+                )
 
                 # CRITICAL: Must have expected servers
                 actual_servers = set(mcp_context.get_server_names())
                 expected_servers = set(test_case["expected_mcp_servers"])
 
-                self.assertTrue(expected_servers.issubset(actual_servers),
-                    f"FAILED P0: {test_case['name']} - expected servers {expected_servers} not in actual {actual_servers}")
+                self.assertTrue(
+                    expected_servers.issubset(actual_servers),
+                    f"FAILED P0: {test_case['name']} - expected servers {expected_servers} not in actual {actual_servers}",
+                )
 
     def test_p0_transparency_summary_accuracy(self):
         """
@@ -189,25 +229,30 @@ class TestMCPTransparencyP0(unittest.TestCase):
         for test_case in self.p0_test_cases:
             with self.subTest(test_case=test_case["name"]):
                 enhanced = ensure_transparency_compliance(
-                    test_case["response"],
-                    test_case["input"]
+                    test_case["response"], test_case["input"]
                 )
                 summary = get_transparency_summary(enhanced, test_case["input"])
 
                 # CRITICAL: Must detect MCP enhancement
-                self.assertTrue(summary["has_mcp_enhancement"],
-                    f"FAILED P0: {test_case['name']} - summary shows no MCP enhancement")
+                self.assertTrue(
+                    summary["has_mcp_enhancement"],
+                    f"FAILED P0: {test_case['name']} - summary shows no MCP enhancement",
+                )
 
                 # CRITICAL: Must identify correct servers
                 actual_servers = set(summary["mcp_servers_used"])
                 expected_servers = set(test_case["expected_mcp_servers"])
 
-                self.assertTrue(expected_servers.issubset(actual_servers),
-                    f"FAILED P0: {test_case['name']} - summary servers {actual_servers} missing {expected_servers}")
+                self.assertTrue(
+                    expected_servers.issubset(actual_servers),
+                    f"FAILED P0: {test_case['name']} - summary servers {actual_servers} missing {expected_servers}",
+                )
 
                 # CRITICAL: Must show transparency applied
-                self.assertTrue(summary["transparency_applied"],
-                    f"FAILED P0: {test_case['name']} - summary shows no transparency applied")
+                self.assertTrue(
+                    summary["transparency_applied"],
+                    f"FAILED P0: {test_case['name']} - summary shows no transparency applied",
+                )
 
     def test_p0_negative_cases_no_false_positives(self):
         """
@@ -218,18 +263,21 @@ class TestMCPTransparencyP0(unittest.TestCase):
         for test_case in self.negative_test_cases:
             with self.subTest(test_case=test_case["name"]):
                 enhanced = ensure_transparency_compliance(
-                    test_case["response"],
-                    test_case["input"]
+                    test_case["response"], test_case["input"]
                 )
                 summary = get_transparency_summary(enhanced, test_case["input"])
 
                 # CRITICAL: Must NOT show false positive MCP enhancement
                 if summary["has_mcp_enhancement"]:
-                    self.fail(f"FAILED P0: {test_case['name']} - false positive MCP enhancement")
+                    self.fail(
+                        f"FAILED P0: {test_case['name']} - false positive MCP enhancement"
+                    )
 
                 # Should still have persona header
-                self.assertTrue(summary["has_persona_header"],
-                    f"FAILED P0: {test_case['name']} - missing persona header")
+                self.assertTrue(
+                    summary["has_persona_header"],
+                    f"FAILED P0: {test_case['name']} - missing persona header",
+                )
 
     def test_p0_persona_specific_mcp_templates(self):
         """
@@ -244,14 +292,22 @@ class TestMCPTransparencyP0(unittest.TestCase):
             with self.subTest(persona=persona):
                 # Verify persona header exists
                 header = self.bridge.persona_headers.get(persona)
-                self.assertIsNotNone(header, f"FAILED P0: {persona} missing persona header")
+                self.assertIsNotNone(
+                    header, f"FAILED P0: {persona} missing persona header"
+                )
 
                 # Verify header format
-                self.assertIn("|", header, f"FAILED P0: {persona} header format incorrect")
-                self.assertTrue(header.startswith("🎯") or header.startswith("📊") or
-                              header.startswith("🎨") or header.startswith("💼") or
-                              header.startswith("🏗️"),
-                              f"FAILED P0: {persona} header missing emoji")
+                self.assertIn(
+                    "|", header, f"FAILED P0: {persona} header format incorrect"
+                )
+                self.assertTrue(
+                    header.startswith("🎯")
+                    or header.startswith("📊")
+                    or header.startswith("🎨")
+                    or header.startswith("💼")
+                    or header.startswith("🏗️"),
+                    f"FAILED P0: {persona} header missing emoji",
+                )
 
     def test_p0_end_to_end_integration(self):
         """
@@ -263,23 +319,30 @@ class TestMCPTransparencyP0(unittest.TestCase):
         test_case = self.p0_test_cases[0]  # Strategic Organizational Framework
 
         enhanced = ensure_transparency_compliance(
-            test_case["response"],
-            test_case["input"]
+            test_case["response"], test_case["input"]
         )
         summary = get_transparency_summary(enhanced, test_case["input"])
 
         # CRITICAL: Complete integration checklist
         integration_checks = [
-            ("MCP disclosure present", ("🔧 Accessing MCP Server:" in enhanced or "🔧 Installing MCP enhancement:" in enhanced)),
+            (
+                "MCP disclosure present",
+                (
+                    "🔧 Accessing MCP Server:" in enhanced
+                    or "🔧 Installing MCP enhancement:" in enhanced
+                ),
+            ),
             ("Processing indicator present", "*" in enhanced and "..." in enhanced),
             ("Persona header present", summary["has_persona_header"]),
             ("MCP enhancement detected", summary["has_mcp_enhancement"]),
             ("Multiple servers used", len(summary["mcp_servers_used"]) >= 2),
-            ("Transparency applied", summary["transparency_applied"])
+            ("Transparency applied", summary["transparency_applied"]),
         ]
 
         for check_name, check_result in integration_checks:
-            self.assertTrue(check_result, f"FAILED P0: End-to-end integration - {check_name}")
+            self.assertTrue(
+                check_result, f"FAILED P0: End-to-end integration - {check_name}"
+            )
 
 
 class TestMCPTransparencyRegression(unittest.TestCase):
@@ -289,7 +352,9 @@ class TestMCPTransparencyRegression(unittest.TestCase):
 
     def test_regression_bridge_imports(self):
         """Ensure transparency bridge imports don't regress"""
-        self.assertTrue(BRIDGE_AVAILABLE, "Bridge imports regressed - transparency system broken")
+        self.assertTrue(
+            BRIDGE_AVAILABLE, "Bridge imports regressed - transparency system broken"
+        )
 
     def test_regression_cursorrules_compliance(self):
         """Ensure implementation matches .cursorrules specification"""
@@ -300,10 +365,25 @@ class TestMCPTransparencyRegression(unittest.TestCase):
 
         # Verify complexity indicators match .cursorrules
         cursorrules_indicators = [
-            "strategic", "organizational", "framework", "systematic", "complex",
-            "multi-team", "executive", "board", "leadership", "presentation",
-            "enterprise", "organization-wide", "cross-functional", "multiple teams",
-            "trade-offs", "options", "alternatives", "analysis", "assessment"
+            "strategic",
+            "organizational",
+            "framework",
+            "systematic",
+            "complex",
+            "multi-team",
+            "executive",
+            "board",
+            "leadership",
+            "presentation",
+            "enterprise",
+            "organization-wide",
+            "cross-functional",
+            "multiple teams",
+            "trade-offs",
+            "options",
+            "alternatives",
+            "analysis",
+            "assessment",
         ]
 
         # Read actual implementation

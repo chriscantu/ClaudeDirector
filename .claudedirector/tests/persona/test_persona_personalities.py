@@ -13,19 +13,23 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+
 class TestPersonaPersonalities(unittest.TestCase):
     """Test that persona personalities are preserved during cleanup"""
 
     def setUp(self):
         """Set up test environment"""
         self.cursorrules_file = PROJECT_ROOT / ".cursorrules"
-        self.transparency_bridge_file = PROJECT_ROOT / ".claudedirector/integration-protection/cursor_transparency_bridge.py"
+        self.transparency_bridge_file = (
+            PROJECT_ROOT
+            / ".claudedirector/integration-protection/cursor_transparency_bridge.py"
+        )
 
     def test_cursorrules_persona_headers_preserved(self):
         """Verify persona headers remain in .cursorrules"""
         self.assertTrue(self.cursorrules_file.exists(), ".cursorrules file must exist")
 
-        with open(self.cursorrules_file, 'r') as f:
+        with open(self.cursorrules_file, "r") as f:
             content = f.read()
 
         # Test all top 5 persona headers are preserved
@@ -34,16 +38,20 @@ class TestPersonaPersonalities(unittest.TestCase):
             "📊 Camille | Strategic Technology",
             "🎨 Rachel | Design Systems Strategy",
             "💼 Alvaro | Platform Investment Strategy",
-            "🏗️ Martin | Platform Architecture"
+            "🏗️ Martin | Platform Architecture",
         ]
 
         for header in expected_headers:
             with self.subTest(header=header):
-                self.assertIn(header, content, f"Persona header '{header}' must be preserved in .cursorrules")
+                self.assertIn(
+                    header,
+                    content,
+                    f"Persona header '{header}' must be preserved in .cursorrules",
+                )
 
     def test_diego_challenge_patterns_preserved(self):
         """Test Diego's engineering leadership challenge patterns"""
-        with open(self.cursorrules_file, 'r') as f:
+        with open(self.cursorrules_file, "r") as f:
             content = f.read()
 
         # Diego should maintain stress-testing and assumption challenging
@@ -52,7 +60,7 @@ class TestPersonaPersonalities(unittest.TestCase):
             "first principles",
             "assumptions",
             "organizational leverage",
-            "cross-team coordination"
+            "cross-team coordination",
         ]
 
         for pattern in diego_patterns:
@@ -60,31 +68,26 @@ class TestPersonaPersonalities(unittest.TestCase):
                 # Pattern should appear in context of Diego or general strategic guidance
                 self.assertTrue(
                     pattern in content.lower(),
-                    f"Diego's challenge pattern '{pattern}' must be preserved"
+                    f"Diego's challenge pattern '{pattern}' must be preserved",
                 )
 
     def test_camille_business_focus_preserved(self):
         """Test Camille's strategic technology and business alignment focus"""
-        with open(self.cursorrules_file, 'r') as f:
+        with open(self.cursorrules_file, "r") as f:
             content = f.read()
 
-        camille_patterns = [
-            "strategic technology",
-            "executive",
-            "ROI",
-            "stakeholder"
-        ]
+        camille_patterns = ["strategic technology", "executive", "ROI", "stakeholder"]
 
         for pattern in camille_patterns:
             with self.subTest(pattern=pattern):
                 self.assertTrue(
                     pattern.lower() in content.lower(),
-                    f"Camille's business focus pattern '{pattern}' must be preserved"
+                    f"Camille's business focus pattern '{pattern}' must be preserved",
                 )
 
     def test_rachel_design_systems_focus_preserved(self):
         """Test Rachel's design systems and UX focus"""
-        with open(self.cursorrules_file, 'r') as f:
+        with open(self.cursorrules_file, "r") as f:
             content = f.read()
 
         rachel_patterns = [
@@ -92,19 +95,19 @@ class TestPersonaPersonalities(unittest.TestCase):
             "UX",
             "accessibility",
             "cross-functional",
-            "user experience"
+            "user experience",
         ]
 
         for pattern in rachel_patterns:
             with self.subTest(pattern=pattern):
                 self.assertTrue(
                     pattern.lower() in content.lower(),
-                    f"Rachel's design focus pattern '{pattern}' must be preserved"
+                    f"Rachel's design focus pattern '{pattern}' must be preserved",
                 )
 
     def test_alvaro_investment_focus_preserved(self):
         """Test Alvaro's platform investment and ROI focus"""
-        with open(self.cursorrules_file, 'r') as f:
+        with open(self.cursorrules_file, "r") as f:
             content = f.read()
 
         alvaro_patterns = [
@@ -112,19 +115,19 @@ class TestPersonaPersonalities(unittest.TestCase):
             "ROI",
             "business value",
             "investment strategy",
-            "stakeholder communication"
+            "stakeholder communication",
         ]
 
         for pattern in alvaro_patterns:
             with self.subTest(pattern=pattern):
                 self.assertTrue(
                     pattern.lower() in content.lower(),
-                    f"Alvaro's investment focus pattern '{pattern}' must be preserved"
+                    f"Alvaro's investment focus pattern '{pattern}' must be preserved",
                 )
 
     def test_martin_architecture_focus_preserved(self):
         """Test Martin's platform architecture and technical focus"""
-        with open(self.cursorrules_file, 'r') as f:
+        with open(self.cursorrules_file, "r") as f:
             content = f.read()
 
         martin_patterns = [
@@ -132,19 +135,19 @@ class TestPersonaPersonalities(unittest.TestCase):
             "technical",
             "architecture",
             "evolutionary design",
-            "technical debt"
+            "technical debt",
         ]
 
         for pattern in martin_patterns:
             with self.subTest(pattern=pattern):
                 self.assertTrue(
                     pattern.lower() in content.lower(),
-                    f"Martin's architecture focus pattern '{pattern}' must be preserved"
+                    f"Martin's architecture focus pattern '{pattern}' must be preserved",
                 )
 
     def test_persona_challenge_capability_preserved(self):
         """Test that personas maintain ability to challenge and push back"""
-        with open(self.cursorrules_file, 'r') as f:
+        with open(self.cursorrules_file, "r") as f:
             content = f.read()
 
         # General challenge patterns that should be preserved
@@ -154,14 +157,14 @@ class TestPersonaPersonalities(unittest.TestCase):
             "stress-test",
             "first principles",
             "dig deeper",
-            "validate"
+            "validate",
         ]
 
         for pattern in challenge_patterns:
             with self.subTest(pattern=pattern):
                 self.assertTrue(
                     pattern.lower() in content.lower(),
-                    f"Challenge capability pattern '{pattern}' must be preserved"
+                    f"Challenge capability pattern '{pattern}' must be preserved",
                 )
 
     def test_transparency_bridge_persona_detection_preserved(self):
@@ -169,7 +172,7 @@ class TestPersonaPersonalities(unittest.TestCase):
         if not self.transparency_bridge_file.exists():
             self.skipTest("Transparency bridge file not found - optional component")
 
-        with open(self.transparency_bridge_file, 'r') as f:
+        with open(self.transparency_bridge_file, "r") as f:
             content = f.read()
 
         # Should maintain persona detection and selection logic
@@ -179,14 +182,14 @@ class TestPersonaPersonalities(unittest.TestCase):
             "camille",
             "rachel",
             "alvaro",
-            "martin"
+            "martin",
         ]
 
         for pattern in persona_detection_patterns:
             with self.subTest(pattern=pattern):
                 self.assertTrue(
                     pattern.lower() in content.lower(),
-                    f"Persona detection pattern '{pattern}' must be preserved in transparency bridge"
+                    f"Persona detection pattern '{pattern}' must be preserved in transparency bridge",
                 )
 
 
@@ -199,7 +202,7 @@ class TestStrategicCapabilityPreservation(unittest.TestCase):
 
     def test_framework_detection_preserved(self):
         """Test that strategic framework detection is preserved"""
-        with open(self.cursorrules_file, 'r') as f:
+        with open(self.cursorrules_file, "r") as f:
             content = f.read()
 
         framework_patterns = [
@@ -208,38 +211,33 @@ class TestStrategicCapabilityPreservation(unittest.TestCase):
             "framework detection",
             "Team Topologies",
             "Good Strategy",
-            "WRAP"
+            "WRAP",
         ]
 
         for pattern in framework_patterns:
             with self.subTest(pattern=pattern):
                 self.assertTrue(
                     pattern.lower() in content.lower(),
-                    f"Framework detection pattern '{pattern}' must be preserved"
+                    f"Framework detection pattern '{pattern}' must be preserved",
                 )
 
     def test_mcp_transparency_preserved(self):
         """Test that MCP transparency system is preserved"""
-        with open(self.cursorrules_file, 'r') as f:
+        with open(self.cursorrules_file, "r") as f:
             content = f.read()
 
-        mcp_patterns = [
-            "MCP",
-            "transparency",
-            "🔧 Accessing MCP Server",
-            "sequential"
-        ]
+        mcp_patterns = ["MCP", "transparency", "🔧 Accessing MCP Server", "sequential"]
 
         for pattern in mcp_patterns:
             with self.subTest(pattern=pattern):
                 self.assertTrue(
                     pattern in content,
-                    f"MCP transparency pattern '{pattern}' must be preserved"
+                    f"MCP transparency pattern '{pattern}' must be preserved",
                 )
 
     def test_complexity_analysis_preserved(self):
         """Test that complexity analysis for strategic enhancement is preserved"""
-        with open(self.cursorrules_file, 'r') as f:
+        with open(self.cursorrules_file, "r") as f:
             content = f.read()
 
         complexity_patterns = [
@@ -248,14 +246,14 @@ class TestStrategicCapabilityPreservation(unittest.TestCase):
             "organizational",
             "framework",
             "systematic",
-            "multi-team"
+            "multi-team",
         ]
 
         for pattern in complexity_patterns:
             with self.subTest(pattern=pattern):
                 self.assertTrue(
                     pattern.lower() in content.lower(),
-                    f"Complexity analysis pattern '{pattern}' must be preserved"
+                    f"Complexity analysis pattern '{pattern}' must be preserved",
                 )
 
 
@@ -267,7 +265,7 @@ class TestDocumentationFunctionalityPreservation(unittest.TestCase):
         index_file = PROJECT_ROOT / "docs/IMPLEMENTATION_INDEX.md"
         self.assertTrue(index_file.exists(), "Implementation index must exist")
 
-        with open(index_file, 'r') as f:
+        with open(index_file, "r") as f:
             content = f.read()
 
         # Should contain navigation to all major sections
@@ -277,19 +275,23 @@ class TestDocumentationFunctionalityPreservation(unittest.TestCase):
             "Reference Documentation",
             "Strategic Frameworks",
             "Testing",
-            "Advanced Topics"
+            "Advanced Topics",
         ]
 
         for section in navigation_sections:
             with self.subTest(section=section):
-                self.assertIn(section, content, f"Navigation section '{section}' must be preserved")
+                self.assertIn(
+                    section,
+                    content,
+                    f"Navigation section '{section}' must be preserved",
+                )
 
     def test_framework_index_exists(self):
         """Test that framework index provides strategic framework access"""
         framework_index = PROJECT_ROOT / "docs/frameworks/FRAMEWORKS_INDEX.md"
         self.assertTrue(framework_index.exists(), "Framework index must exist")
 
-        with open(framework_index, 'r') as f:
+        with open(framework_index, "r") as f:
             content = f.read()
 
         # Should contain key strategic frameworks
@@ -297,12 +299,16 @@ class TestDocumentationFunctionalityPreservation(unittest.TestCase):
             "Good Strategy Bad Strategy",
             "WRAP Decision Framework",
             "Team Topologies",
-            "Strategic Platform Assessment"
+            "Strategic Platform Assessment",
         ]
 
         for framework in framework_references:
             with self.subTest(framework=framework):
-                self.assertIn(framework, content, f"Framework reference '{framework}' must be preserved")
+                self.assertIn(
+                    framework,
+                    content,
+                    f"Framework reference '{framework}' must be preserved",
+                )
 
     def test_architecture_documentation_structure(self):
         """Test that architecture documentation maintains structure"""
@@ -310,18 +316,24 @@ class TestDocumentationFunctionalityPreservation(unittest.TestCase):
             "docs/architecture/OVERVIEW.md",
             "docs/architecture/COMPONENTS.md",
             "docs/architecture/PATTERNS.md",
-            "docs/architecture/DECISIONS.md"
+            "docs/architecture/DECISIONS.md",
         ]
 
         for arch_file in arch_files:
             with self.subTest(file=arch_file):
                 file_path = PROJECT_ROOT / arch_file
-                self.assertTrue(file_path.exists(), f"Architecture file '{arch_file}' must exist")
+                self.assertTrue(
+                    file_path.exists(), f"Architecture file '{arch_file}' must exist"
+                )
 
                 # Verify file has content
-                with open(file_path, 'r') as f:
+                with open(file_path, "r") as f:
                     content = f.read()
-                self.assertGreater(len(content), 100, f"Architecture file '{arch_file}' must have substantial content")
+                self.assertGreater(
+                    len(content),
+                    100,
+                    f"Architecture file '{arch_file}' must have substantial content",
+                )
 
 
 def run_persona_preservation_tests():
@@ -337,8 +349,14 @@ def run_persona_preservation_tests():
 
     # Add persona personality tests
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestPersonaPersonalities))
-    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestStrategicCapabilityPreservation))
-    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestDocumentationFunctionalityPreservation))
+    suite.addTest(
+        unittest.TestLoader().loadTestsFromTestCase(TestStrategicCapabilityPreservation)
+    )
+    suite.addTest(
+        unittest.TestLoader().loadTestsFromTestCase(
+            TestDocumentationFunctionalityPreservation
+        )
+    )
 
     # Run tests
     runner = unittest.TextTestRunner(verbosity=2)
