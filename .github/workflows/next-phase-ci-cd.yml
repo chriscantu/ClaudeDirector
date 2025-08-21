@@ -65,10 +65,10 @@ jobs:
                                   line = content[:match.start()].count('\n') + 1
                                   context = match.group()
 
-                                                            # Enhanced filtering for documentation and examples
-                          skip_patterns = ['example', 'test', 'dummy', 'placeholder', 'xxx', 'company.com', 'platform-security.internal', 'sample', 'docs', 'documentation', 'procore.com']
-                          is_doc_file = any(doc_path in filepath.lower() for doc_path in ['docs/', 'readme', 'security.md', 'example', 'leadership-workspace/'])
-                          is_example_content = any(pattern in context.lower() for pattern in skip_patterns)
+                                  # Enhanced filtering for documentation and examples
+                                  skip_patterns = ['example', 'test', 'dummy', 'placeholder', 'xxx', 'company.com', 'platform-security.internal', 'sample', 'docs', 'documentation', 'procore.com']
+                                  is_doc_file = any(doc_path in filepath.lower() for doc_path in ['docs/', 'readme', 'security.md', 'example', 'leadership-workspace/'])
+                                  is_example_content = any(pattern in context.lower() for pattern in skip_patterns)
 
                                   if not (is_doc_file or is_example_content):
                                       issues.append(f'{filepath}:{line} - {desc}: {context[:50]}...')
