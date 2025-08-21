@@ -182,6 +182,7 @@ class TestConversationTrackingP0(unittest.TestCase):
 
             # Suppress warnings during import and initialization
             import warnings
+
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 from core.integrated_conversation_manager import (
