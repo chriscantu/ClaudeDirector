@@ -14,7 +14,8 @@ import subprocess
 import json
 
 import sys
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../lib'))
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../lib"))
 
 from claudedirector.core.template_engine import TemplateDiscoveryEngine
 from claudedirector.p1_features.template_commands import TemplateCommands
@@ -36,7 +37,11 @@ class TestTemplateSystemIntegration(unittest.TestCase):
                 "generated_at": "2025-01-15T12:00:00Z",
                 "generated_by": "Test Suite",
                 "total_templates": 3,
-                "supported_domains": ["mobile_platforms", "product_engineering", "infrastructure_devops"]
+                "supported_domains": [
+                    "mobile_platforms",
+                    "product_engineering",
+                    "infrastructure_devops",
+                ],
             },
             "templates": {
                 "mobile_director": {
@@ -46,49 +51,55 @@ class TestTemplateSystemIntegration(unittest.TestCase):
                     "industry_modifiers": {
                         "fintech": {
                             "priorities": ["security_compliance", "payment_processing"],
-                            "metrics": ["transaction_security", "compliance_audit_score"]
+                            "metrics": [
+                                "transaction_security",
+                                "compliance_audit_score",
+                            ],
                         },
                         "consumer": {
                             "priorities": ["user_experience", "app_store_optimization"],
-                            "metrics": ["app_store_rating", "user_retention"]
-                        }
+                            "metrics": ["app_store_rating", "user_retention"],
+                        },
                     },
                     "team_size_contexts": {
                         "startup": {
                             "focus": ["mvp_velocity", "platform_foundation"],
-                            "challenges": ["resource_constraints", "technical_debt"]
+                            "challenges": ["resource_constraints", "technical_debt"],
                         },
                         "scale": {
                             "focus": ["platform_unification", "team_coordination"],
-                            "challenges": ["cross_platform_consistency", "team_scaling"]
-                        }
+                            "challenges": [
+                                "cross_platform_consistency",
+                                "team_scaling",
+                            ],
+                        },
                     },
                     "personas": {
                         "primary": ["marcus", "sofia", "elena"],
                         "contextual": ["diego", "martin", "security"],
-                        "fallback": ["camille", "rachel"]
+                        "fallback": ["camille", "rachel"],
                     },
                     "activation_keywords": {
                         "mobile app": 0.9,
                         "ios development": 0.95,
                         "android platform": 0.9,
                         "app store": 0.8,
-                        "mobile performance": 0.85
+                        "mobile performance": 0.85,
                     },
                     "strategic_priorities": [
                         "platform_unification",
                         "developer_experience",
                         "market_speed",
                         "performance_optimization",
-                        "security_compliance"
+                        "security_compliance",
                     ],
                     "metrics_focus": [
                         "app_performance",
                         "release_velocity",
                         "user_adoption",
                         "platform_consistency",
-                        "developer_productivity"
-                    ]
+                        "developer_productivity",
+                    ],
                 },
                 "product_engineering_director": {
                     "domain": "product_engineering",
@@ -96,42 +107,51 @@ class TestTemplateSystemIntegration(unittest.TestCase):
                     "description": "Product strategy execution, user experience optimization, and customer-driven engineering delivery",
                     "industry_modifiers": {
                         "saas": {
-                            "priorities": ["customer_retention_engineering", "product_analytics"],
-                            "metrics": ["monthly_active_users", "feature_adoption_rate"]
+                            "priorities": [
+                                "customer_retention_engineering",
+                                "product_analytics",
+                            ],
+                            "metrics": [
+                                "monthly_active_users",
+                                "feature_adoption_rate",
+                            ],
                         }
                     },
                     "team_size_contexts": {
                         "startup": {
                             "focus": ["mvp_product_fit", "user_feedback_loops"],
-                            "challenges": ["feature_prioritization", "technical_debt_vs_features"]
+                            "challenges": [
+                                "feature_prioritization",
+                                "technical_debt_vs_features",
+                            ],
                         }
                     },
                     "personas": {
                         "primary": ["alvaro", "rachel", "camille"],
                         "contextual": ["diego", "marcus", "data"],
-                        "fallback": ["martin", "security"]
+                        "fallback": ["martin", "security"],
                     },
                     "activation_keywords": {
                         "product strategy": 0.95,
                         "user experience": 0.9,
                         "product roadmap": 0.9,
                         "customer feedback": 0.85,
-                        "feature delivery": 0.85
+                        "feature delivery": 0.85,
                     },
                     "strategic_priorities": [
                         "product_market_fit_engineering",
                         "user_experience_optimization",
                         "feature_delivery_velocity",
                         "data_driven_development",
-                        "customer_feedback_integration"
+                        "customer_feedback_integration",
                     ],
                     "metrics_focus": [
                         "feature_adoption_rate",
                         "user_satisfaction_scores",
                         "product_velocity_metrics",
                         "customer_conversion_impact",
-                        "technical_debt_vs_feature_ratio"
-                    ]
+                        "technical_debt_vs_feature_ratio",
+                    ],
                 },
                 "infrastructure_director": {
                     "domain": "infrastructure_devops",
@@ -139,67 +159,74 @@ class TestTemplateSystemIntegration(unittest.TestCase):
                     "description": "Cloud platforms, reliability engineering, and DevOps transformation",
                     "industry_modifiers": {
                         "fintech": {
-                            "priorities": ["regulatory_compliance", "financial_security"],
-                            "metrics": ["compliance_coverage", "security_incidents"]
+                            "priorities": [
+                                "regulatory_compliance",
+                                "financial_security",
+                            ],
+                            "metrics": ["compliance_coverage", "security_incidents"],
                         }
                     },
                     "team_size_contexts": {
                         "enterprise": {
                             "focus": ["enterprise_governance", "compliance_frameworks"],
-                            "challenges": ["legacy_migration", "regulatory_requirements"]
+                            "challenges": [
+                                "legacy_migration",
+                                "regulatory_requirements",
+                            ],
                         }
                     },
                     "personas": {
                         "primary": ["martin", "security", "david"],
                         "contextual": ["diego", "camille", "sofia"],
-                        "fallback": ["alvaro", "elena"]
+                        "fallback": ["alvaro", "elena"],
                     },
                     "activation_keywords": {
                         "infrastructure": 0.95,
                         "devops": 0.9,
                         "cloud platform": 0.9,
                         "kubernetes": 0.85,
-                        "reliability": 0.85
+                        "reliability": 0.85,
                     },
                     "strategic_priorities": [
                         "platform_reliability",
                         "cost_optimization",
                         "security_posture",
                         "operational_excellence",
-                        "scalability_planning"
+                        "scalability_planning",
                     ],
                     "metrics_focus": [
                         "system_reliability",
                         "cost_efficiency",
                         "deployment_velocity",
                         "security_posture",
-                        "operational_efficiency"
-                    ]
-                }
+                        "operational_efficiency",
+                    ],
+                },
             },
             "global_settings": {
                 "default_fallback_personas": ["camille", "diego", "alvaro"],
                 "activation_thresholds": {
                     "high_confidence": 0.8,
                     "medium_confidence": 0.6,
-                    "low_confidence": 0.4
+                    "low_confidence": 0.4,
                 },
                 "selection_weights": {
                     "domain_match": 0.4,
                     "industry_match": 0.3,
                     "team_size_match": 0.2,
-                    "keyword_confidence": 0.1
-                }
-            }
+                    "keyword_confidence": 0.1,
+                },
+            },
         }
 
         # Write config to file
-        with open(self.config_path, 'w') as f:
+        with open(self.config_path, "w") as f:
             yaml.dump(self.test_config, f)
 
     def tearDown(self):
         """Clean up test environment"""
         import shutil
+
         shutil.rmtree(self.test_dir)
 
     def test_template_engine_loads_config_successfully(self):
@@ -214,28 +241,36 @@ class TestTemplateSystemIntegration(unittest.TestCase):
 
         # Verify global settings were loaded
         self.assertIn("activation_thresholds", engine.global_settings)
-        self.assertEqual(engine.global_settings["activation_thresholds"]["high_confidence"], 0.8)
+        self.assertEqual(
+            engine.global_settings["activation_thresholds"]["high_confidence"], 0.8
+        )
 
     def test_template_discovery_workflow(self):
         """Test complete template discovery workflow"""
         engine = TemplateDiscoveryEngine(templates_config_path=self.config_path)
 
         # Test mobile context discovery
-        mobile_results = engine.discover_templates_by_context("mobile app performance issues", threshold=0.7)
+        mobile_results = engine.discover_templates_by_context(
+            "mobile app performance issues", threshold=0.7
+        )
         self.assertEqual(len(mobile_results), 1)
         template, confidence = mobile_results[0]
         self.assertEqual(template.template_id, "mobile_director")
         self.assertGreater(confidence, 0.8)
 
         # Test product context discovery
-        product_results = engine.discover_templates_by_context("product strategy and user experience", threshold=0.7)
+        product_results = engine.discover_templates_by_context(
+            "product strategy and user experience", threshold=0.7
+        )
         self.assertEqual(len(product_results), 1)
         template, confidence = product_results[0]
         self.assertEqual(template.template_id, "product_engineering_director")
         self.assertGreater(confidence, 0.9)
 
         # Test infrastructure context discovery
-        infra_results = engine.discover_templates_by_context("kubernetes infrastructure and devops", threshold=0.7)
+        infra_results = engine.discover_templates_by_context(
+            "kubernetes infrastructure and devops", threshold=0.7
+        )
         self.assertEqual(len(infra_results), 1)
         template, confidence = infra_results[0]
         self.assertEqual(template.template_id, "infrastructure_director")
@@ -246,12 +281,16 @@ class TestTemplateSystemIntegration(unittest.TestCase):
         engine = TemplateDiscoveryEngine(templates_config_path=self.config_path)
 
         # Test valid template with supported modifiers
-        result = engine.validate_template_selection("mobile_director", "fintech", "startup")
+        result = engine.validate_template_selection(
+            "mobile_director", "fintech", "startup"
+        )
         self.assertTrue(result["valid"])
         self.assertEqual(len(result["warnings"]), 0)
 
         # Test valid template with unsupported modifiers
-        result = engine.validate_template_selection("mobile_director", "unsupported_industry", "unsupported_size")
+        result = engine.validate_template_selection(
+            "mobile_director", "unsupported_industry", "unsupported_size"
+        )
         self.assertTrue(result["valid"])
         self.assertEqual(len(result["warnings"]), 2)
 
@@ -265,7 +304,9 @@ class TestTemplateSystemIntegration(unittest.TestCase):
         engine = TemplateDiscoveryEngine(templates_config_path=self.config_path)
 
         # Test mobile director summary with fintech + startup context
-        summary = engine.generate_template_summary("mobile_director", "fintech", "startup")
+        summary = engine.generate_template_summary(
+            "mobile_director", "fintech", "startup"
+        )
 
         self.assertEqual(summary["template_id"], "mobile_director")
         self.assertEqual(summary["display_name"], "Mobile Engineering Director")
@@ -287,7 +328,9 @@ class TestTemplateSystemIntegration(unittest.TestCase):
         engine = TemplateDiscoveryEngine(templates_config_path=self.config_path)
 
         # Compare mobile and product templates
-        comparison = engine.get_template_comparison(["mobile_director", "product_engineering_director"])
+        comparison = engine.get_template_comparison(
+            ["mobile_director", "product_engineering_director"]
+        )
 
         self.assertIn("templates", comparison)
         self.assertEqual(len(comparison["templates"]), 2)
@@ -334,7 +377,9 @@ class TestTemplateSystemIntegration(unittest.TestCase):
         self.assertIn("Team Size Context", result)
 
         # Test compare command
-        result = commands.compare_templates(["mobile_director", "product_engineering_director"])
+        result = commands.compare_templates(
+            ["mobile_director", "product_engineering_director"]
+        )
         self.assertIn("Template Comparison", result)
         self.assertIn("Mobile Engineering Director", result)
         self.assertIn("Product Engineering Director", result)
@@ -351,15 +396,25 @@ class TestTemplateSystemIntegration(unittest.TestCase):
 
         # Test text with multiple mobile keywords
         mobile_template = engine.get_template("mobile_director")
-        confidence = mobile_template.get_activation_confidence("Our iOS development team needs better mobile app performance")
-        self.assertGreater(confidence, 0.9)  # Should get ios development confidence (0.95)
+        confidence = mobile_template.get_activation_confidence(
+            "Our iOS development team needs better mobile app performance"
+        )
+        self.assertGreater(
+            confidence, 0.9
+        )  # Should get ios development confidence (0.95)
 
         # Test text with single keyword
-        confidence = mobile_template.get_activation_confidence("We need better app store optimization")
-        self.assertAlmostEqual(confidence, 0.8, places=1)  # Should get app store confidence
+        confidence = mobile_template.get_activation_confidence(
+            "We need better app store optimization"
+        )
+        self.assertAlmostEqual(
+            confidence, 0.8, places=1
+        )  # Should get app store confidence
 
         # Test text with no matching keywords
-        confidence = mobile_template.get_activation_confidence("Database optimization and backend scaling")
+        confidence = mobile_template.get_activation_confidence(
+            "Database optimization and backend scaling"
+        )
         self.assertEqual(confidence, 0.0)
 
     def test_template_domain_filtering(self):
@@ -374,7 +429,9 @@ class TestTemplateSystemIntegration(unittest.TestCase):
         # Test product domain filtering
         product_templates = engine.list_templates(domain_filter="product_engineering")
         self.assertEqual(len(product_templates), 1)
-        self.assertEqual(product_templates[0].template_id, "product_engineering_director")
+        self.assertEqual(
+            product_templates[0].template_id, "product_engineering_director"
+        )
 
         # Test non-existent domain filtering
         empty_templates = engine.list_templates(domain_filter="nonexistent_domain")
@@ -392,12 +449,23 @@ class TestTemplateSystemIntegration(unittest.TestCase):
 
         # Test persona hierarchy
         self.assertEqual(mobile_template.personas.primary, ["marcus", "sofia", "elena"])
-        self.assertEqual(mobile_template.personas.contextual, ["diego", "martin", "security"])
+        self.assertEqual(
+            mobile_template.personas.contextual, ["diego", "martin", "security"]
+        )
         self.assertEqual(mobile_template.personas.fallback, ["camille", "rachel"])
 
         # Test all personas method
         all_personas = mobile_template.personas.get_all_personas()
-        expected = ["marcus", "sofia", "elena", "diego", "martin", "security", "camille", "rachel"]
+        expected = [
+            "marcus",
+            "sofia",
+            "elena",
+            "diego",
+            "martin",
+            "security",
+            "camille",
+            "rachel",
+        ]
         self.assertEqual(all_personas, expected)
 
         # Test primary persona selection
@@ -407,7 +475,9 @@ class TestTemplateSystemIntegration(unittest.TestCase):
     def test_error_handling_robustness(self):
         """Test error handling for various edge cases"""
         # Test with invalid config path
-        engine = TemplateDiscoveryEngine(templates_config_path=Path("/nonexistent/path/config.yaml"))
+        engine = TemplateDiscoveryEngine(
+            templates_config_path=Path("/nonexistent/path/config.yaml")
+        )
         self.assertEqual(len(engine.templates), 0)
 
         # Test commands with empty engine
@@ -445,7 +515,7 @@ class TestTemplateSystemCLIIntegration(unittest.TestCase):
             ["./claudedirector", "templates", "list"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
 
         # Should not error out
@@ -461,7 +531,7 @@ class TestTemplateSystemCLIIntegration(unittest.TestCase):
             ["./claudedirector", "templates", "domains"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
 
         # Should not error out
@@ -477,7 +547,7 @@ class TestTemplateSystemCLIIntegration(unittest.TestCase):
             ["./claudedirector", "templates", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
 
         # Should show help
@@ -485,5 +555,5 @@ class TestTemplateSystemCLIIntegration(unittest.TestCase):
         self.assertIn("template management", result.stdout.lower())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

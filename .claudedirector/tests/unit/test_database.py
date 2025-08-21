@@ -48,7 +48,9 @@ class TestDatabaseManager:
 
         # Verify data was inserted
         with db_manager.get_connection() as conn:
-            cursor = conn.execute("SELECT name FROM test_table WHERE name = ?", ("test",))
+            cursor = conn.execute(
+                "SELECT name FROM test_table WHERE name = ?", ("test",)
+            )
             result = cursor.fetchone()
             assert result[0] == "test"
 
@@ -58,11 +60,15 @@ class TestDatabaseManager:
         db_manager = DatabaseManager(temp_db)
 
         # Insert test data
-        db_manager.execute_query("INSERT INTO test_table (name) VALUES (?)", ("query_test",))
+        db_manager.execute_query(
+            "INSERT INTO test_table (name) VALUES (?)", ("query_test",)
+        )
 
         # Query test data
         result = db_manager.execute_query(
-            "SELECT name FROM test_table WHERE name = ?", ("query_test",), fetch_one=True
+            "SELECT name FROM test_table WHERE name = ?",
+            ("query_test",),
+            fetch_one=True,
         )
 
         assert result[0] == "query_test"
@@ -75,7 +81,9 @@ class TestDatabaseManager:
         # Insert multiple records
         test_names = ["test1", "test2", "test3"]
         for name in test_names:
-            db_manager.execute_query("INSERT INTO test_table (name) VALUES (?)", (name,))
+            db_manager.execute_query(
+                "INSERT INTO test_table (name) VALUES (?)", (name,)
+            )
 
         # Query all records
         results = db_manager.execute_query(
@@ -147,6 +155,7 @@ class TestDatabaseManager:
 
         # Verify all writes succeeded
         results = db_manager.execute_query(
-            "SELECT COUNT(*) FROM test_table WHERE name LIKE 'concurrent_test_%'", fetch_one=True
+            "SELECT COUNT(*) FROM test_table WHERE name LIKE 'concurrent_test_%'",
+            fetch_one=True,
         )
         assert results[0] == 10

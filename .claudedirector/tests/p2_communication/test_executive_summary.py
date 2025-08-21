@@ -12,13 +12,18 @@ from typing import Dict, Any
 
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from lib.claudedirector.p2_communication.report_generation.executive_summary import (
-    ExecutiveSummaryGenerator, SummaryTemplate
+    ExecutiveSummaryGenerator,
+    SummaryTemplate,
 )
 from lib.claudedirector.p2_communication.interfaces.report_interface import (
-    ReportContext, StakeholderType, ReportFormat, IDataSource
+    ReportContext,
+    StakeholderType,
+    ReportFormat,
+    IDataSource,
 )
 
 
@@ -47,23 +52,19 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
             "team_velocity": {
                 "current_sprint": 42,
                 "last_sprint": 38,
-                "trend": "increasing"
+                "trend": "increasing",
             },
             "risk_indicators": {
                 "blocked_issues": 2,
                 "overdue_issues": 3,
-                "critical_bugs": 1
+                "critical_bugs": 1,
             },
-            "initiative_health": {
-                "on_track": 8,
-                "at_risk": 2,
-                "critical": 1
-            },
+            "initiative_health": {"on_track": 8, "at_risk": 2, "critical": 1},
             "cross_team_dependencies": {
                 "total_dependencies": 12,
-                "blocked_dependencies": 2
+                "blocked_dependencies": 2,
             },
-            "data_freshness": "2025-08-10 09:00:00"
+            "data_freshness": "2025-08-10 09:00:00",
         }
 
         self.data_source = MockDataSource(self.mock_data)
@@ -85,7 +86,7 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
             StakeholderType.VP_ENGINEERING,
             StakeholderType.BOARD,
             StakeholderType.PRODUCT_TEAM,
-            StakeholderType.ENGINEERING_MANAGER
+            StakeholderType.ENGINEERING_MANAGER,
         ]
 
         for stakeholder in expected_stakeholders:
@@ -96,7 +97,7 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
         context = ReportContext(
             stakeholder_type=StakeholderType.CEO,
             time_period="current_week",
-            format=ReportFormat.CLI_RICH
+            format=ReportFormat.CLI_RICH,
         )
 
         self.assertTrue(self.generator.validate_context(context))
@@ -108,11 +109,13 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
         context = ReportContext(
             stakeholder_type=StakeholderType.CEO,
             time_period="current_week",
-            format=ReportFormat.CLI_RICH
+            format=ReportFormat.CLI_RICH,
         )
 
         # Mock get_supported_stakeholders to return empty list
-        with patch.object(self.generator, 'get_supported_stakeholders', return_value=[]):
+        with patch.object(
+            self.generator, "get_supported_stakeholders", return_value=[]
+        ):
             self.assertFalse(self.generator.validate_context(context))
 
     def test_context_validation_invalid_format(self):
@@ -120,7 +123,7 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
         context = ReportContext(
             stakeholder_type=StakeholderType.CEO,
             time_period="current_week",
-            format=ReportFormat.JSON  # Not supported
+            format=ReportFormat.JSON,  # Not supported
         )
 
         self.assertFalse(self.generator.validate_context(context))
@@ -130,7 +133,7 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
         context = ReportContext(
             stakeholder_type=StakeholderType.CEO,
             time_period="current_week",
-            format=ReportFormat.CLI_RICH
+            format=ReportFormat.CLI_RICH,
         )
 
         report = self.generator.generate_report(context)
@@ -152,7 +155,7 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
         context = ReportContext(
             stakeholder_type=StakeholderType.VP_ENGINEERING,
             time_period="current_week",
-            format=ReportFormat.CLI_RICH
+            format=ReportFormat.CLI_RICH,
         )
 
         report = self.generator.generate_report(context)
@@ -162,7 +165,9 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
         self.assertIn("Team Performance", section_titles)
 
         # Check for engineering-specific messaging
-        summary_section = next(s for s in report.sections if s.title == "Executive Summary")
+        summary_section = next(
+            s for s in report.sections if s.title == "Executive Summary"
+        )
         self.assertIn("Team performance remains strong", summary_section.content)
 
     def test_generate_report_board(self):
@@ -170,7 +175,7 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
         context = ReportContext(
             stakeholder_type=StakeholderType.BOARD,
             time_period="current_quarter",
-            format=ReportFormat.CLI_RICH
+            format=ReportFormat.CLI_RICH,
         )
 
         report = self.generator.generate_report(context)
@@ -194,7 +199,7 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
         context = ReportContext(
             stakeholder_type=StakeholderType.CEO,
             time_period="current_week",
-            format=ReportFormat.CLI_RICH
+            format=ReportFormat.CLI_RICH,
         )
 
         report = self.generator.generate_report(context)
@@ -208,7 +213,7 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
         # Create data source with incomplete data
         incomplete_data = {
             "team_velocity": {"current_sprint": 42},
-            "data_freshness": "2025-08-10 09:00:00"
+            "data_freshness": "2025-08-10 09:00:00",
         }
 
         incomplete_source = MockDataSource(incomplete_data)
@@ -217,7 +222,7 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
         context = ReportContext(
             stakeholder_type=StakeholderType.CEO,
             time_period="current_week",
-            format=ReportFormat.CLI_RICH
+            format=ReportFormat.CLI_RICH,
         )
 
         report = generator.generate_report(context)
@@ -230,7 +235,7 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
         context = ReportContext(
             stakeholder_type=StakeholderType.VP_ENGINEERING,
             time_period="current_week",
-            format=ReportFormat.CLI_RICH
+            format=ReportFormat.CLI_RICH,
         )
 
         report = self.generator.generate_report(context)
@@ -244,7 +249,7 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
         context = ReportContext(
             stakeholder_type=StakeholderType.CEO,
             time_period="current_week",
-            format=ReportFormat.CLI_RICH
+            format=ReportFormat.CLI_RICH,
         )
 
         report = self.generator.generate_report(context)
@@ -260,7 +265,7 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
             stakeholder_type=StakeholderType.CEO,
             time_period="current_week",
             format=ReportFormat.CLI_RICH,
-            include_risks=True
+            include_risks=True,
         )
 
         report_with_risks = self.generator.generate_report(context_with_risks)
@@ -272,7 +277,7 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
             stakeholder_type=StakeholderType.CEO,
             time_period="current_week",
             format=ReportFormat.CLI_RICH,
-            include_risks=False
+            include_risks=False,
         )
 
         report_without_risks = self.generator.generate_report(context_without_risks)
@@ -285,19 +290,18 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
             stakeholder_type=StakeholderType.CEO,
             time_period="current_week",
             format=ReportFormat.CLI_RICH,
-            custom_metrics=["team_velocity", "custom_metric"]
+            custom_metrics=["team_velocity", "custom_metric"],
         )
 
         # Mock data source should be called with custom metrics
-        with patch.object(self.data_source, 'get_data') as mock_get_data:
+        with patch.object(self.data_source, "get_data") as mock_get_data:
             mock_get_data.return_value = self.mock_data
 
             report = self.generator.generate_report(context)
 
             # Verify custom metrics were requested
             mock_get_data.assert_called_once_with(
-                "current_week",
-                ["team_velocity", "custom_metric"]
+                "current_week", ["team_velocity", "custom_metric"]
             )
 
     def test_title_generation(self):
@@ -305,7 +309,7 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
         context = ReportContext(
             stakeholder_type=StakeholderType.VP_ENGINEERING,
             time_period="current_week",
-            format=ReportFormat.CLI_RICH
+            format=ReportFormat.CLI_RICH,
         )
 
         report = self.generator.generate_report(context)
@@ -318,7 +322,7 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
         context = ReportContext(
             stakeholder_type=StakeholderType.CEO,
             time_period="current_week",
-            format=ReportFormat.CLI_RICH
+            format=ReportFormat.CLI_RICH,
         )
 
         report = self.generator.generate_report(context)
@@ -332,18 +336,17 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
         generator = self.generator
 
         # Test dict formatting with velocity data
-        velocity_metric = generator._format_metric("team_velocity", {
-            "current_sprint": 42,
-            "trend": "increasing"
-        })
+        velocity_metric = generator._format_metric(
+            "team_velocity", {"current_sprint": 42, "trend": "increasing"}
+        )
         self.assertIn("42", velocity_metric)
         self.assertIn("increasing", velocity_metric)
 
         # Test dict formatting with dependency data
-        dep_metric = generator._format_metric("cross_team_dependencies", {
-            "total_dependencies": 12,
-            "blocked_dependencies": 2
-        })
+        dep_metric = generator._format_metric(
+            "cross_team_dependencies",
+            {"total_dependencies": 12, "blocked_dependencies": 2},
+        )
         self.assertIn("12", dep_metric)
         self.assertIn("2", dep_metric)
 
@@ -362,7 +365,7 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
             StakeholderType.VP_ENGINEERING,
             StakeholderType.BOARD,
             StakeholderType.PRODUCT_TEAM,
-            StakeholderType.ENGINEERING_MANAGER
+            StakeholderType.ENGINEERING_MANAGER,
         ]
 
         for stakeholder in expected_stakeholders:
@@ -376,5 +379,5 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
             self.assertGreater(len(template.focus_areas), 0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

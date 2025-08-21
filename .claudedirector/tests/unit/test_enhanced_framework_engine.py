@@ -17,14 +17,14 @@ from claudedirector.core.enhanced_framework_engine import (
     MultiFrameworkIntegrationEngine,
     ConversationContext,
     MultiFrameworkAnalysis,
-    EnhancedSystematicResponse
+    EnhancedSystematicResponse,
 )
 
 # Import base classes for backwards compatibility testing
 from claudedirector.core.embedded_framework_engine import (
     EmbeddedFrameworkEngine,
     FrameworkAnalysis,
-    SystematicResponse
+    SystematicResponse,
 )
 
 
@@ -70,13 +70,27 @@ class TestConversationMemoryEngine(unittest.TestCase):
         """Test generating insights from conversation context"""
         # Build up conversation history
         conversations = [
-            ("Platform strategy help", ["platform_strategy"], ["rumelt_strategy_kernel"]),
-            ("Team organization questions", ["organizational_design", "platform_strategy"], ["team_topologies"]),
-            ("Platform scaling decisions", ["platform_strategy", "strategic_planning"], ["rumelt_strategy_kernel"])
+            (
+                "Platform strategy help",
+                ["platform_strategy"],
+                ["rumelt_strategy_kernel"],
+            ),
+            (
+                "Team organization questions",
+                ["organizational_design", "platform_strategy"],
+                ["team_topologies"],
+            ),
+            (
+                "Platform scaling decisions",
+                ["platform_strategy", "strategic_planning"],
+                ["rumelt_strategy_kernel"],
+            ),
         ]
 
         for user_input, topics, frameworks in conversations:
-            self.memory_engine.update_context(self.session_id, user_input, topics, frameworks)
+            self.memory_engine.update_context(
+                self.session_id, user_input, topics, frameworks
+            )
 
         insights = self.memory_engine.get_context_insights(self.session_id)
 
@@ -89,7 +103,9 @@ class TestConversationMemoryEngine(unittest.TestCase):
         # Verify recurring themes detection
         recurring_themes = dict(insights["recurring_themes"])
         self.assertIn("platform_strategy", recurring_themes)
-        self.assertEqual(recurring_themes["platform_strategy"], 3)  # Appears in all 3 conversations
+        self.assertEqual(
+            recurring_themes["platform_strategy"], 3
+        )  # Appears in all 3 conversations
 
         # Verify preferred frameworks
         preferred_frameworks = dict(insights["preferred_frameworks"])
@@ -115,7 +131,9 @@ class TestMultiFrameworkIntegrationEngine(unittest.TestCase):
 
         self.assertIn("rumelt_strategy_kernel", synergies)
         self.assertIn("decisive_wrap_framework", synergies["rumelt_strategy_kernel"])
-        self.assertIn("strategic_platform_assessment", synergies["rumelt_strategy_kernel"])
+        self.assertIn(
+            "strategic_platform_assessment", synergies["rumelt_strategy_kernel"]
+        )
 
         # Test bidirectional relationships
         self.assertIn("rumelt_strategy_kernel", synergies["decisive_wrap_framework"])
@@ -125,26 +143,37 @@ class TestMultiFrameworkIntegrationEngine(unittest.TestCase):
         user_input = "Help me create a strategic plan for Q1"
         context = self.memory_engine.get_or_create_context(self.session_id)
 
-        frameworks = self.integration_engine.identify_optimal_frameworks(user_input, context)
+        frameworks = self.integration_engine.identify_optimal_frameworks(
+            user_input, context
+        )
 
         self.assertIsInstance(frameworks, list)
         self.assertGreater(len(frameworks), 0)
         self.assertLessEqual(len(frameworks), 3)  # Max 3 frameworks
-        self.assertIn("rumelt_strategy_kernel", frameworks)  # Should select strategy framework
+        self.assertIn(
+            "rumelt_strategy_kernel", frameworks
+        )  # Should select strategy framework
 
     def test_identify_optimal_frameworks_multi(self):
         """Test framework selection for complex input requiring multiple frameworks"""
         user_input = "Help me design a comprehensive platform strategy that considers team organization and decision-making processes"
         context = self.memory_engine.get_or_create_context(self.session_id)
 
-        frameworks = self.integration_engine.identify_optimal_frameworks(user_input, context)
+        frameworks = self.integration_engine.identify_optimal_frameworks(
+            user_input, context
+        )
 
         self.assertGreater(len(frameworks), 1)  # Should select multiple frameworks
         self.assertLessEqual(len(frameworks), 3)
 
         # Should include relevant frameworks for platform, team, and decision-making
         framework_types = set(frameworks)
-        expected_types = {"rumelt_strategy_kernel", "strategic_platform_assessment", "team_topologies", "decisive_wrap_framework"}
+        expected_types = {
+            "rumelt_strategy_kernel",
+            "strategic_platform_assessment",
+            "team_topologies",
+            "decisive_wrap_framework",
+        }
         overlap = framework_types.intersection(expected_types)
         self.assertGreater(len(overlap), 1)  # At least 2 relevant frameworks
 
@@ -153,11 +182,17 @@ class TestMultiFrameworkIntegrationEngine(unittest.TestCase):
         context = self.memory_engine.get_or_create_context(self.session_id)
 
         # Build up context with platform-focused conversations
-        context.framework_usage_history = ["strategic_platform_assessment", "rumelt_strategy_kernel", "strategic_platform_assessment"]
+        context.framework_usage_history = [
+            "strategic_platform_assessment",
+            "rumelt_strategy_kernel",
+            "strategic_platform_assessment",
+        ]
         context.strategic_themes = {"platform_strategy", "technical_strategy"}
 
         user_input = "What should I focus on next for our platform?"
-        frameworks = self.integration_engine.identify_optimal_frameworks(user_input, context)
+        frameworks = self.integration_engine.identify_optimal_frameworks(
+            user_input, context
+        )
 
         # Should favor frameworks consistent with conversation history
         self.assertIn("strategic_platform_assessment", frameworks)
@@ -169,24 +204,27 @@ class TestMultiFrameworkIntegrationEngine(unittest.TestCase):
             framework_name="rumelt_strategy_kernel",
             structured_insights={
                 "strategic_themes": ["platform_consolidation", "technical_excellence"],
-                "patterns": ["fragmentation", "complexity"]
+                "patterns": ["fragmentation", "complexity"],
             },
-            recommendations=["Consolidate platform services", "Establish clear technical standards"],
+            recommendations=[
+                "Consolidate platform services",
+                "Establish clear technical standards",
+            ],
             implementation_steps=["Phase 1: Assessment", "Phase 2: Consolidation"],
             key_considerations=["Engineering team capacity", "Customer impact"],
-            analysis_confidence=0.85
+            analysis_confidence=0.85,
         )
 
         analysis2 = FrameworkAnalysis(
             framework_name="strategic_platform_assessment",
             structured_insights={
                 "strategic_themes": ["platform_consolidation", "developer_experience"],
-                "patterns": ["fragmentation", "inconsistency"]
+                "patterns": ["fragmentation", "inconsistency"],
             },
             recommendations=["Improve developer tooling", "Standardize APIs"],
             implementation_steps=["Tool audit", "API standardization"],
             key_considerations=["Developer productivity", "Migration complexity"],
-            analysis_confidence=0.78
+            analysis_confidence=0.78,
         )
 
         context = self.memory_engine.get_or_create_context(self.session_id)
@@ -226,7 +264,7 @@ class TestEnhancedFrameworkEngine(unittest.TestCase):
         self.engine = EnhancedFrameworkEngine(self.config)
         self.session_id = "enhanced_test_session"
 
-    @patch('claudedirector.core.enhanced_framework_engine.EmbeddedFrameworkEngine')
+    @patch("claudedirector.core.enhanced_framework_engine.EmbeddedFrameworkEngine")
     def test_initialization(self, mock_base_engine):
         """Test proper initialization of enhanced engine"""
         engine = EnhancedFrameworkEngine(self.config)
@@ -234,14 +272,16 @@ class TestEnhancedFrameworkEngine(unittest.TestCase):
         self.assertTrue(engine.enhanced_mode)
         self.assertEqual(engine.max_frameworks, 3)
         self.assertIsInstance(engine.memory_engine, ConversationMemoryEngine)
-        self.assertIsInstance(engine.integration_engine, MultiFrameworkIntegrationEngine)
+        self.assertIsInstance(
+            engine.integration_engine, MultiFrameworkIntegrationEngine
+        )
 
     def test_backwards_compatibility_methods(self):
         """Test that backwards compatibility methods are available"""
         # These methods should exist and delegate to base engine
-        self.assertTrue(hasattr(self.engine, 'get_available_frameworks'))
-        self.assertTrue(hasattr(self.engine, 'get_framework_info'))
-        self.assertTrue(hasattr(self.engine, 'simple_analyze'))
+        self.assertTrue(hasattr(self.engine, "get_available_frameworks"))
+        self.assertTrue(hasattr(self.engine, "get_framework_info"))
+        self.assertTrue(hasattr(self.engine, "simple_analyze"))
 
         # Test that they're callable (even if mocked)
         try:
@@ -251,7 +291,9 @@ class TestEnhancedFrameworkEngine(unittest.TestCase):
             # Mock might not be fully configured, but method should exist
             pass
 
-    @patch('claudedirector.core.enhanced_framework_engine.EmbeddedFrameworkEngine.analyze_systematically')
+    @patch(
+        "claudedirector.core.enhanced_framework_engine.EmbeddedFrameworkEngine.analyze_systematically"
+    )
     def test_enhanced_analyze_single_framework(self, mock_analyze):
         """Test enhanced analysis with single framework (backwards compatible mode)"""
         # Configure mock response
@@ -261,14 +303,14 @@ class TestEnhancedFrameworkEngine(unittest.TestCase):
             recommendations=["Focus on core strategy", "Align team efforts"],
             implementation_steps=["Step 1", "Step 2"],
             key_considerations=["Resource constraints"],
-            analysis_confidence=0.8
+            analysis_confidence=0.8,
         )
 
         mock_response = SystematicResponse(
             analysis=mock_analysis,
             persona_integrated_response="Strategic analysis response",
             processing_time_ms=500,
-            framework_applied="rumelt_strategy_kernel"
+            framework_applied="rumelt_strategy_kernel",
         )
 
         mock_analyze.return_value = mock_response
@@ -287,17 +329,31 @@ class TestEnhancedFrameworkEngine(unittest.TestCase):
         self.assertIsInstance(result.learning_insights, dict)
 
         # Verify backwards compatibility
-        self.assertEqual(result.multi_framework_analysis.primary_framework, mock_analysis)
+        self.assertEqual(
+            result.multi_framework_analysis.primary_framework, mock_analysis
+        )
         self.assertIn("rumelt_strategy_kernel", result.frameworks_applied)
 
     def test_topic_extraction(self):
         """Test extraction of strategic topics from user input"""
         test_cases = [
-            ("Help me design a platform strategy", ["platform_strategy", "strategic_planning"]),
-            ("Our team structure needs optimization", ["organizational_design", "team_development"]),
-            ("I need to make a difficult decision about architecture", ["decision_making", "platform_strategy"]),
-            ("How can we improve our performance metrics?", ["performance_optimization"]),
-            ("Need help with stakeholder communication", ["stakeholder_management"])
+            (
+                "Help me design a platform strategy",
+                ["platform_strategy", "strategic_planning"],
+            ),
+            (
+                "Our team structure needs optimization",
+                ["organizational_design", "team_development"],
+            ),
+            (
+                "I need to make a difficult decision about architecture",
+                ["decision_making", "platform_strategy"],
+            ),
+            (
+                "How can we improve our performance metrics?",
+                ["performance_optimization"],
+            ),
+            ("Need help with stakeholder communication", ["stakeholder_management"]),
         ]
 
         for user_input, expected_topics in test_cases:
@@ -305,9 +361,14 @@ class TestEnhancedFrameworkEngine(unittest.TestCase):
 
             # Check that at least one expected topic is found
             found_expected = any(topic in topics for topic in expected_topics)
-            self.assertTrue(found_expected, f"Expected topics {expected_topics} not found in {topics} for input: {user_input}")
+            self.assertTrue(
+                found_expected,
+                f"Expected topics {expected_topics} not found in {topics} for input: {user_input}",
+            )
 
-    @patch('claudedirector.core.enhanced_framework_engine.EmbeddedFrameworkEngine.analyze_systematically')
+    @patch(
+        "claudedirector.core.enhanced_framework_engine.EmbeddedFrameworkEngine.analyze_systematically"
+    )
     def test_context_aware_recommendations(self, mock_analyze):
         """Test that recommendations consider conversation context"""
         # Setup mock response
@@ -317,23 +378,27 @@ class TestEnhancedFrameworkEngine(unittest.TestCase):
             recommendations=["Base recommendation 1", "Base recommendation 2"],
             implementation_steps=["Step 1"],
             key_considerations=["Constraint 1"],
-            analysis_confidence=0.8
+            analysis_confidence=0.8,
         )
 
         mock_response = SystematicResponse(
             analysis=mock_analysis,
             persona_integrated_response="Strategic response",
             processing_time_ms=500,
-            framework_applied="rumelt_strategy_kernel"
+            framework_applied="rumelt_strategy_kernel",
         )
 
         mock_analyze.return_value = mock_response
 
         # First conversation to build context
-        self.engine.analyze_systematically("Platform strategy discussion", self.session_id)
+        self.engine.analyze_systematically(
+            "Platform strategy discussion", self.session_id
+        )
 
         # Second conversation should include context-aware recommendations
-        result = self.engine.analyze_systematically("Let's continue our platform discussion", self.session_id)
+        result = self.engine.analyze_systematically(
+            "Let's continue our platform discussion", self.session_id
+        )
 
         # Should include base recommendations plus context-aware ones
         self.assertGreater(len(result.context_aware_recommendations), 2)
@@ -356,8 +421,8 @@ class TestEnhancedFrameworkEngine(unittest.TestCase):
         self.assertFalse(standard_engine.enhanced_mode)
 
         # Both should have same interface
-        self.assertTrue(hasattr(enhanced_engine, 'analyze_systematically'))
-        self.assertTrue(hasattr(standard_engine, 'analyze_systematically'))
+        self.assertTrue(hasattr(enhanced_engine, "analyze_systematically"))
+        self.assertTrue(hasattr(standard_engine, "analyze_systematically"))
 
 
 class TestBackwardsCompatibility(unittest.TestCase):
@@ -372,31 +437,41 @@ class TestBackwardsCompatibility(unittest.TestCase):
         enhanced_engine = self.enhanced_engine
 
         # Both should have core methods
-        base_methods = ['get_available_frameworks', 'get_framework_info']
+        base_methods = ["get_available_frameworks", "get_framework_info"]
 
         for method_name in base_methods:
-            self.assertTrue(hasattr(base_engine, method_name), f"Base engine missing {method_name}")
-            self.assertTrue(hasattr(enhanced_engine, method_name), f"Enhanced engine missing {method_name}")
+            self.assertTrue(
+                hasattr(base_engine, method_name), f"Base engine missing {method_name}"
+            )
+            self.assertTrue(
+                hasattr(enhanced_engine, method_name),
+                f"Enhanced engine missing {method_name}",
+            )
 
     def test_response_object_backwards_compatibility(self):
         """Test that enhanced response can be used where base response is expected"""
         # EnhancedSystematicResponse should contain all information from SystematicResponse
         enhanced_response_attributes = [
-            'multi_framework_analysis',
-            'persona_integrated_response',
-            'frameworks_applied',
-            'processing_time_ms'
+            "multi_framework_analysis",
+            "persona_integrated_response",
+            "frameworks_applied",
+            "processing_time_ms",
         ]
 
         # Create a mock enhanced response
         from unittest.mock import Mock
+
         enhanced_response = Mock()
 
         for attr in enhanced_response_attributes:
-            self.assertTrue(hasattr(EnhancedSystematicResponse, '__annotations__'))
+            self.assertTrue(hasattr(EnhancedSystematicResponse, "__annotations__"))
             # Check that the attributes are defined in the dataclass
             annotations = EnhancedSystematicResponse.__annotations__
-            if attr in ['persona_integrated_response', 'frameworks_applied', 'processing_time_ms']:
+            if attr in [
+                "persona_integrated_response",
+                "frameworks_applied",
+                "processing_time_ms",
+            ]:
                 # These should map to base response attributes
                 self.assertIn(attr, annotations)
 
@@ -429,7 +504,7 @@ class TestZeroSetupPrinciple(unittest.TestCase):
         engine = EnhancedFrameworkEngine()
 
         # Primary interface should be the analyze_systematically method
-        self.assertTrue(hasattr(engine, 'analyze_systematically'))
+        self.assertTrue(hasattr(engine, "analyze_systematically"))
 
         # Should not require file system operations for basic functionality
         # (workspace file generation is optional enhancement)
@@ -446,7 +521,7 @@ class TestZeroSetupPrinciple(unittest.TestCase):
             pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Create test suite
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
@@ -457,7 +532,7 @@ if __name__ == '__main__':
         TestMultiFrameworkIntegrationEngine,
         TestEnhancedFrameworkEngine,
         TestBackwardsCompatibility,
-        TestZeroSetupPrinciple
+        TestZeroSetupPrinciple,
     ]
 
     for test_class in test_classes:
@@ -472,7 +547,9 @@ if __name__ == '__main__':
     if result.wasSuccessful():
         print(f"\n✅ All tests passed! ({result.testsRun} tests)")
     else:
-        print(f"\n❌ {len(result.failures)} failures, {len(result.errors)} errors out of {result.testsRun} tests")
+        print(
+            f"\n❌ {len(result.failures)} failures, {len(result.errors)} errors out of {result.testsRun} tests"
+        )
 
         if result.failures:
             print("\nFailures:")

@@ -32,11 +32,15 @@ class TestStakeholderIntelligence:
         with patch("claudedirector.intelligence.stakeholder.LocalStakeholderAI"), patch(
             "claudedirector.intelligence.stakeholder.IntelligentStakeholderDetector"
         ), patch("claudedirector.intelligence.stakeholder.StakeholderEngagementEngine"):
-            stakeholder_ai = StakeholderIntelligence(config=mock_config, enable_performance=False)
+            stakeholder_ai = StakeholderIntelligence(
+                config=mock_config, enable_performance=False
+            )
 
             assert stakeholder_ai.enable_performance is False
 
-    def test_detect_stakeholders_in_content(self, mock_config, temp_db, sample_meeting_content):
+    def test_detect_stakeholders_in_content(
+        self, mock_config, temp_db, sample_meeting_content
+    ):
         """Test stakeholder detection in content"""
         mock_config.database_path = temp_db
 
@@ -49,13 +53,19 @@ class TestStakeholderIntelligence:
         with patch(
             "claudedirector.intelligence.stakeholder.LocalStakeholderAI",
             return_value=mock_ai_engine,
-        ), patch("claudedirector.intelligence.stakeholder.IntelligentStakeholderDetector"), patch(
+        ), patch(
+            "claudedirector.intelligence.stakeholder.IntelligentStakeholderDetector"
+        ), patch(
             "claudedirector.intelligence.stakeholder.StakeholderEngagementEngine"
         ):
-            stakeholder_ai = StakeholderIntelligence(config=mock_config, enable_performance=False)
+            stakeholder_ai = StakeholderIntelligence(
+                config=mock_config, enable_performance=False
+            )
 
             context = {"category": "meeting_prep", "meeting_type": "vp_1on1"}
-            result = stakeholder_ai.detect_stakeholders_in_content(sample_meeting_content, context)
+            result = stakeholder_ai.detect_stakeholders_in_content(
+                sample_meeting_content, context
+            )
 
             assert len(result) == 2
             assert result[0]["name"] == "Sarah Chen"
@@ -80,8 +90,11 @@ class TestStakeholderIntelligence:
         with patch("claudedirector.intelligence.stakeholder.LocalStakeholderAI"), patch(
             "claudedirector.intelligence.stakeholder.IntelligentStakeholderDetector",
             return_value=mock_detector,
-        ), patch("claudedirector.intelligence.stakeholder.StakeholderEngagementEngine"), patch(
-            "claudedirector.intelligence.stakeholder.CacheManager", return_value=mock_cache_manager
+        ), patch(
+            "claudedirector.intelligence.stakeholder.StakeholderEngagementEngine"
+        ), patch(
+            "claudedirector.intelligence.stakeholder.CacheManager",
+            return_value=mock_cache_manager,
         ):
             stakeholder_ai = StakeholderIntelligence(config=mock_config)
 
@@ -115,7 +128,9 @@ class TestStakeholderIntelligence:
         ), patch(
             "claudedirector.intelligence.stakeholder.StakeholderEngagementEngine"
         ):
-            stakeholder_ai = StakeholderIntelligence(config=mock_config, enable_performance=False)
+            stakeholder_ai = StakeholderIntelligence(
+                config=mock_config, enable_performance=False
+            )
 
             content = "Meeting with Sarah Chen"
             context = {"category": "meeting_prep"}
@@ -131,13 +146,17 @@ class TestStakeholderIntelligence:
         mock_config.database_path = temp_db
 
         mock_detector = Mock()
-        mock_detector.process_content_for_stakeholders.side_effect = Exception("Processing error")
+        mock_detector.process_content_for_stakeholders.side_effect = Exception(
+            "Processing error"
+        )
 
         with patch("claudedirector.intelligence.stakeholder.LocalStakeholderAI"), patch(
             "claudedirector.intelligence.stakeholder.IntelligentStakeholderDetector",
             return_value=mock_detector,
         ), patch("claudedirector.intelligence.stakeholder.StakeholderEngagementEngine"):
-            stakeholder_ai = StakeholderIntelligence(config=mock_config, enable_performance=False)
+            stakeholder_ai = StakeholderIntelligence(
+                config=mock_config, enable_performance=False
+            )
 
             with pytest.raises(AIDetectionError) as exc_info:
                 stakeholder_ai.process_content_for_stakeholders("test content", {})
@@ -156,7 +175,9 @@ class TestStakeholderIntelligence:
             with pytest.raises(AIDetectionError) as exc_info:
                 StakeholderIntelligence(config=mock_config)
 
-            assert "Failed to initialize stakeholder intelligence" in str(exc_info.value)
+            assert "Failed to initialize stakeholder intelligence" in str(
+                exc_info.value
+            )
 
     def test_cache_hit_scenario(self, mock_config, temp_db):
         """Test cache hit scenario"""
@@ -174,8 +195,11 @@ class TestStakeholderIntelligence:
 
         with patch("claudedirector.intelligence.stakeholder.LocalStakeholderAI"), patch(
             "claudedirector.intelligence.stakeholder.IntelligentStakeholderDetector"
-        ), patch("claudedirector.intelligence.stakeholder.StakeholderEngagementEngine"), patch(
-            "claudedirector.intelligence.stakeholder.CacheManager", return_value=mock_cache_manager
+        ), patch(
+            "claudedirector.intelligence.stakeholder.StakeholderEngagementEngine"
+        ), patch(
+            "claudedirector.intelligence.stakeholder.CacheManager",
+            return_value=mock_cache_manager,
         ):
             stakeholder_ai = StakeholderIntelligence(config=mock_config)
 
@@ -199,7 +223,9 @@ class TestStakeholderIntelligence:
 
         with patch("claudedirector.intelligence.stakeholder.LocalStakeholderAI"), patch(
             "claudedirector.intelligence.stakeholder.IntelligentStakeholderDetector"
-        ), patch("claudedirector.intelligence.stakeholder.StakeholderEngagementEngine"), patch(
+        ), patch(
+            "claudedirector.intelligence.stakeholder.StakeholderEngagementEngine"
+        ), patch(
             "claudedirector.intelligence.stakeholder.ParallelProcessor",
             return_value=mock_parallel_processor,
         ):

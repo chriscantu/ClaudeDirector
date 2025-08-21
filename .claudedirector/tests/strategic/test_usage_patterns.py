@@ -55,14 +55,20 @@ class StrategicUsageValidator:
 
         # Step 1: Daily alerts
         result = subprocess.run(
-            [str(self.claudedirector), "alerts"], capture_output=True, text=True, timeout=30
+            [str(self.claudedirector), "alerts"],
+            capture_output=True,
+            text=True,
+            timeout=30,
         )
 
         alerts_time = time.time()
 
         # Step 2: System status check
         result = subprocess.run(
-            [str(self.claudedirector), "status"], capture_output=True, text=True, timeout=15
+            [str(self.claudedirector), "status"],
+            capture_output=True,
+            text=True,
+            timeout=15,
         )
 
         total_time = time.time() - start_time
@@ -74,7 +80,9 @@ class StrategicUsageValidator:
             "status_check_time": time.time() - alerts_time,
             "success": result.returncode == 0,
             "target_time": 30.0,
-            "performance_score": min(100, (30.0 / total_time) * 100) if total_time > 0 else 100,
+            "performance_score": (
+                min(100, (30.0 / total_time) * 100) if total_time > 0 else 100
+            ),
         }
 
     def validate_meeting_intelligence_workflow(self) -> Dict:
@@ -143,7 +151,9 @@ class StrategicUsageValidator:
             "success": result.returncode == 0,
             "stakeholders_detected": self._count_stakeholders_in_output(result.stdout),
             "target_time": 60.0,
-            "performance_score": min(100, (60.0 / total_time) * 100) if total_time > 0 else 100,
+            "performance_score": (
+                min(100, (60.0 / total_time) * 100) if total_time > 0 else 100
+            ),
         }
 
     def validate_strategic_task_workflow(self) -> Dict:
@@ -184,7 +194,13 @@ class StrategicUsageValidator:
         # Test task scanning
         scan_start = time.time()
         result = subprocess.run(
-            [str(self.claudedirector), "tasks", "scan", "--path", str(self.test_workspace_path)],
+            [
+                str(self.claudedirector),
+                "tasks",
+                "scan",
+                "--path",
+                str(self.test_workspace_path),
+            ],
             capture_output=True,
             text=True,
             timeout=45,
@@ -195,7 +211,10 @@ class StrategicUsageValidator:
         # Test task listing
         list_start = time.time()
         list_result = subprocess.run(
-            [str(self.claudedirector), "tasks", "list"], capture_output=True, text=True, timeout=15
+            [str(self.claudedirector), "tasks", "list"],
+            capture_output=True,
+            text=True,
+            timeout=15,
         )
 
         list_time = time.time() - list_start
@@ -209,7 +228,9 @@ class StrategicUsageValidator:
             "success": result.returncode == 0 and list_result.returncode == 0,
             "tasks_detected": self._count_tasks_in_output(result.stdout),
             "target_time": 45.0,
-            "performance_score": min(100, (45.0 / total_time) * 100) if total_time > 0 else 100,
+            "performance_score": (
+                min(100, (45.0 / total_time) * 100) if total_time > 0 else 100
+            ),
         }
 
     def validate_platform_setup_workflow(self) -> Dict:
@@ -237,7 +258,9 @@ class StrategicUsageValidator:
             "success": result.returncode == 0,
             "setup_output": result.stdout,
             "target_time": 30.0,
-            "performance_score": min(100, (30.0 / setup_time) * 100) if setup_time > 0 else 100,
+            "performance_score": (
+                min(100, (30.0 / setup_time) * 100) if setup_time > 0 else 100
+            ),
         }
 
     def validate_ai_accuracy(self) -> Dict:
@@ -283,7 +306,9 @@ class StrategicUsageValidator:
                 }
             )
 
-        avg_accuracy = sum(r["accuracy_score"] for r in accuracy_results) / len(accuracy_results)
+        avg_accuracy = sum(r["accuracy_score"] for r in accuracy_results) / len(
+            accuracy_results
+        )
 
         return {
             "workflow": "ai_accuracy",
@@ -309,7 +334,9 @@ class StrategicUsageValidator:
             }
 
             # Executive workflow validation
-            results["workflows"]["executive_daily"] = self.validate_executive_daily_workflow()
+            results["workflows"][
+                "executive_daily"
+            ] = self.validate_executive_daily_workflow()
 
             # Meeting intelligence validation
             results["workflows"][
@@ -317,10 +344,14 @@ class StrategicUsageValidator:
             ] = self.validate_meeting_intelligence_workflow()
 
             # Task management validation
-            results["workflows"]["strategic_tasks"] = self.validate_strategic_task_workflow()
+            results["workflows"][
+                "strategic_tasks"
+            ] = self.validate_strategic_task_workflow()
 
             # Platform setup validation
-            results["workflows"]["platform_setup"] = self.validate_platform_setup_workflow()
+            results["workflows"][
+                "platform_setup"
+            ] = self.validate_platform_setup_workflow()
 
             # AI accuracy validation
             results["workflows"]["ai_accuracy"] = self.validate_ai_accuracy()
@@ -346,10 +377,13 @@ class StrategicUsageValidator:
     def _calculate_summary_metrics(self, workflows: Dict) -> Dict:
         """Calculate overall validation summary"""
         total_workflows = len(workflows)
-        successful_workflows = sum(1 for w in workflows.values() if w.get("success", False))
+        successful_workflows = sum(
+            1 for w in workflows.values() if w.get("success", False)
+        )
 
         avg_performance = (
-            sum(w.get("performance_score", 0) for w in workflows.values()) / total_workflows
+            sum(w.get("performance_score", 0) for w in workflows.values())
+            / total_workflows
         )
 
         return {
@@ -385,7 +419,9 @@ class StrategicUsageValidator:
                 )
 
             if not results.get("success", False):
-                recommendations.append(f"Fix critical issues in {workflow_name} workflow")
+                recommendations.append(
+                    f"Fix critical issues in {workflow_name} workflow"
+                )
 
         return recommendations
 

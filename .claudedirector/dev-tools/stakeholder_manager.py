@@ -154,7 +154,9 @@ class StakeholderManager:
 
         # Optional: Topics and outcomes
         topics_input = input("\nTopics discussed (comma-separated): ").strip()
-        topics_discussed = [t.strip() for t in topics_input.split(",")] if topics_input else []
+        topics_discussed = (
+            [t.strip() for t in topics_input.split(",")] if topics_input else []
+        )
 
         action_items = []
         print("\nAction items (press Enter on empty line to finish):")
@@ -164,7 +166,9 @@ class StakeholderManager:
                 break
             owner = input("Owner: ").strip()
             due_date = input("Due date (YYYY-MM-DD): ").strip()
-            action_items.append({"action": action, "owner": owner, "due_date": due_date})
+            action_items.append(
+                {"action": action, "owner": owner, "due_date": due_date}
+            )
 
         # Record engagement
         success = self.engine.record_engagement(
@@ -218,7 +222,9 @@ class StakeholderManager:
             if urgency not in by_urgency:
                 continue
 
-            print(f"\n{urgency_emojis[urgency]} Priority ({len(by_urgency[urgency])} items)")
+            print(
+                f"\n{urgency_emojis[urgency]} Priority ({len(by_urgency[urgency])} items)"
+            )
             print("-" * 30)
 
             for rec in by_urgency[urgency]:
@@ -340,22 +346,32 @@ class StakeholderManager:
         print(f"\n📈 Recent Engagements ({len(summary['recent_engagements'])}):")
         if summary["recent_engagements"]:
             for eng in summary["recent_engagements"]:
-                quality_emoji = {"excellent": "🟢", "good": "🟡", "adequate": "🟠", "poor": "🔴"}.get(
-                    eng["quality"], "⚪"
-                )
+                quality_emoji = {
+                    "excellent": "🟢",
+                    "good": "🟡",
+                    "adequate": "🟠",
+                    "poor": "🔴",
+                }.get(eng["quality"], "⚪")
 
-                print(f"  {quality_emoji} {eng['date']} - {eng['type']} ({eng['quality']})")
+                print(
+                    f"  {quality_emoji} {eng['date']} - {eng['type']} ({eng['quality']})"
+                )
                 if eng["topics"]:
                     print(f"     Topics: {', '.join(eng['topics'])}")
         else:
             print("  No recorded engagements")
 
-        print(f"\n💡 Pending Recommendations ({len(summary['pending_recommendations'])}):")
+        print(
+            f"\n💡 Pending Recommendations ({len(summary['pending_recommendations'])}):"
+        )
         if summary["pending_recommendations"]:
             for rec in summary["pending_recommendations"]:
-                urgency_emoji = {"urgent": "🔴", "high": "🟡", "medium": "🟢", "low": "🔵"}.get(
-                    rec["urgency"], "⚪"
-                )
+                urgency_emoji = {
+                    "urgent": "🔴",
+                    "high": "🟡",
+                    "medium": "🟢",
+                    "low": "🔵",
+                }.get(rec["urgency"], "⚪")
 
                 print(f"  {urgency_emoji} {rec['type'].replace('_', ' ').title()}")
                 print(f"     {rec['reason']}")
@@ -377,7 +393,9 @@ class StakeholderManager:
                 urgency_counts[urgency] = urgency_counts.get(urgency, 0) + 1
 
             for urgency, count in urgency_counts.items():
-                emoji = {"urgent": "🔴", "high": "🟡", "medium": "🟢", "low": "🔵"}.get(urgency, "⚪")
+                emoji = {"urgent": "🔴", "high": "🟡", "medium": "🟢", "low": "🔵"}.get(
+                    urgency, "⚪"
+                )
                 print(f"  {emoji} {urgency.title()}: {count}")
 
 
@@ -403,10 +421,20 @@ Examples:
 
     parser.add_argument(
         "command",
-        choices=["init", "add", "list", "show", "engage", "recommendations", "generate"],
+        choices=[
+            "init",
+            "add",
+            "list",
+            "show",
+            "engage",
+            "recommendations",
+            "generate",
+        ],
         help="Command to execute",
     )
-    parser.add_argument("stakeholder", nargs="?", help="Stakeholder key (for 'show' command)")
+    parser.add_argument(
+        "stakeholder", nargs="?", help="Stakeholder key (for 'show' command)"
+    )
     parser.add_argument(
         "--urgency",
         choices=["urgent", "high", "medium", "low"],
@@ -426,7 +454,9 @@ Examples:
                 print("\n💡 Next steps:")
                 print("  1. Add stakeholders: python stakeholder_manager.py add")
                 print("  2. Record engagements: python stakeholder_manager.py engage")
-                print("  3. Check recommendations: python stakeholder_manager.py recommendations")
+                print(
+                    "  3. Check recommendations: python stakeholder_manager.py recommendations"
+                )
             else:
                 print("❌ Failed to initialize database schema")
                 sys.exit(1)

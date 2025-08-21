@@ -39,15 +39,15 @@ class TestPhase2Integration:
         file_handler.initialize_workspace()
 
         # Should have smart organizer
-        assert hasattr(file_handler, 'smart_organizer')
+        assert hasattr(file_handler, "smart_organizer")
         assert file_handler.smart_organizer is not None
 
         # Should have advanced archiving
-        assert hasattr(file_handler.smart_organizer, 'advanced_archiving')
+        assert hasattr(file_handler.smart_organizer, "advanced_archiving")
         assert file_handler.smart_organizer.advanced_archiving is not None
 
         # Should have pattern recognition
-        assert hasattr(file_handler.smart_organizer, 'pattern_engine')
+        assert hasattr(file_handler.smart_organizer, "pattern_engine")
         assert file_handler.smart_organizer.pattern_engine is not None
 
     def test_smart_filename_generation_integration(self, file_handler):
@@ -61,7 +61,7 @@ class TestPhase2Integration:
             suggested_filename="test.md",
             content_type="strategic_analysis",
             business_context="Platform scaling strategy for Q3 engineering teams",
-            persona="diego"
+            persona="diego",
         )
 
         # Should generate outcome-focused filename
@@ -69,7 +69,9 @@ class TestPhase2Integration:
         assert filename.endswith(".md")
         assert "strategic" in filename or "analysis" in filename
 
-    def test_consolidation_opportunity_detection_integration(self, file_handler, temp_workspace):
+    def test_consolidation_opportunity_detection_integration(
+        self, file_handler, temp_workspace
+    ):
         """Test consolidation opportunity detection in integrated system"""
 
         workspace_path = Path(temp_workspace)
@@ -82,7 +84,7 @@ class TestPhase2Integration:
         test_files = [
             "platform-analysis-1.md",
             "platform-analysis-2.md",
-            "team-structure.md"
+            "team-structure.md",
         ]
 
         for filename in test_files:
@@ -92,13 +94,13 @@ class TestPhase2Integration:
 
             # Register file
             file_handler.lifecycle_manager.register_file(
-                str(file_path),
-                "strategic_analysis",
-                file_handler.current_session_id
+                str(file_path), "strategic_analysis", file_handler.current_session_id
             )
 
         # Should detect consolidation opportunity
-        opportunities = file_handler.smart_organizer.identify_consolidation_opportunities()
+        opportunities = (
+            file_handler.smart_organizer.identify_consolidation_opportunities()
+        )
         assert len(opportunities) > 0
 
     def test_lifecycle_status_with_phase2_insights(self, file_handler):
@@ -115,7 +117,9 @@ class TestPhase2Integration:
         stats = file_handler.smart_organizer.get_archive_statistics()
         assert isinstance(stats, dict)
 
-    def test_persona_integration_with_smart_features(self, persona_integration, temp_workspace):
+    def test_persona_integration_with_smart_features(
+        self, persona_integration, temp_workspace
+    ):
         """Test persona integration with Phase 2 smart features"""
 
         # Test persona file generation with smart organizer
@@ -126,7 +130,7 @@ class TestPhase2Integration:
             persona="diego",
             content=content,
             content_type="strategic_analysis",
-            business_context="Platform engineering strategy"
+            business_context="Platform engineering strategy",
         )
 
         # Should not error (may return None if user doesn't approve, but shouldn't crash)
@@ -140,7 +144,7 @@ class TestPhase2Integration:
         # Create some test files
         test_files = [
             ("analysis-1.md", "strategic_analysis"),
-            ("meeting-prep.md", "meeting_prep")
+            ("meeting-prep.md", "meeting_prep"),
         ]
 
         for filename, content_type in test_files:
@@ -149,9 +153,7 @@ class TestPhase2Integration:
             file_path.write_text(f"Test content for {filename}")
 
             file_handler.lifecycle_manager.register_file(
-                str(file_path),
-                content_type,
-                file_handler.current_session_id
+                str(file_path), content_type, file_handler.current_session_id
             )
 
         # Generate cross-session insights
@@ -169,20 +171,20 @@ class TestPhase2Integration:
         # Create test file
         test_file = workspace_path / "analysis-results" / "test-analysis.md"
         test_file.parent.mkdir(parents=True, exist_ok=True)
-        test_file.write_text("Test strategic analysis content with platform migration details")
+        test_file.write_text(
+            "Test strategic analysis content with platform migration details"
+        )
 
         # Register file
         file_handler.lifecycle_manager.register_file(
-            str(test_file),
-            "strategic_analysis",
-            file_handler.current_session_id
+            str(test_file), "strategic_analysis", file_handler.current_session_id
         )
 
         # Archive with enhanced indexing
-        result = file_handler.smart_organizer.advanced_archiving.archive_file_with_indexing(
-            str(test_file),
-            "strategic_analysis",
-            file_handler.current_session_id
+        result = (
+            file_handler.smart_organizer.advanced_archiving.archive_file_with_indexing(
+                str(test_file), "strategic_analysis", file_handler.current_session_id
+            )
         )
 
         # Should successfully archive
@@ -199,7 +201,7 @@ class TestPhase2Integration:
             ("monday-prep.md", "meeting_prep"),
             ("monday-analysis.md", "strategic_analysis"),
             ("tuesday-prep.md", "meeting_prep"),
-            ("tuesday-analysis.md", "strategic_analysis")
+            ("tuesday-analysis.md", "strategic_analysis"),
         ]
 
         for filename, content_type in pattern_files:
@@ -210,7 +212,7 @@ class TestPhase2Integration:
             file_handler.lifecycle_manager.register_file(
                 str(file_path),
                 content_type,
-                f"session_{filename.split('-')[0]}"  # Different sessions per day
+                f"session_{filename.split('-')[0]}",  # Different sessions per day
             )
 
         # Trigger pattern detection
@@ -230,7 +232,7 @@ class TestPhase2Integration:
             suggested_filename="test.md",
             content_type="strategic_analysis",
             business_context="Platform strategy",
-            persona="diego"
+            persona="diego",
         )
 
         # Test professional mode (should use outcome-focused naming)
@@ -240,7 +242,7 @@ class TestPhase2Integration:
             suggested_filename="test.md",
             content_type="strategic_analysis",
             business_context="Platform strategy",
-            persona="diego"
+            persona="diego",
         )
 
         # Professional mode should generate different (smarter) filenames
@@ -280,10 +282,15 @@ class TestPhase2Integration:
         try:
             # Should handle missing files gracefully
             file_handler.smart_organizer.consolidate_files(
-                Mock(files=["nonexistent.md"], suggested_name="test.md",
-                     business_value="test", consolidation_type="test",
-                     priority="low", size_reduction=1.0),
-                user_approved=True
+                Mock(
+                    files=["nonexistent.md"],
+                    suggested_name="test.md",
+                    business_value="test",
+                    consolidation_type="test",
+                    priority="low",
+                    size_reduction=1.0,
+                ),
+                user_approved=True,
             )
         except Exception as e:
             # Should handle errors gracefully, not crash
@@ -309,11 +316,13 @@ class TestPhase2Integration:
             file_handler.lifecycle_manager.register_file(
                 str(file_path),
                 "strategic_analysis",
-                f"session_{i % 5}"  # Group into 5 sessions
+                f"session_{i % 5}",  # Group into 5 sessions
             )
 
         # Should handle larger datasets without significant performance issues
-        opportunities = file_handler.smart_organizer.identify_consolidation_opportunities()
+        opportunities = (
+            file_handler.smart_organizer.identify_consolidation_opportunities()
+        )
         assert isinstance(opportunities, list)
 
         # Cross-session insights should handle multiple files

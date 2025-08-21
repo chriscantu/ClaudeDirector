@@ -7,9 +7,14 @@ Tests for the persona chat interface and P2.1 integration.
 import unittest
 from unittest.mock import Mock, patch, MagicMock
 from lib.claudedirector.persona_integration.chat_interface import (
-    PersonaChatInterface, ChatRequest, ChatResponse, PersonaType
+    PersonaChatInterface,
+    ChatRequest,
+    ChatResponse,
+    PersonaType,
 )
-from lib.claudedirector.p2_communication.interfaces.report_interface import StakeholderType
+from lib.claudedirector.p2_communication.interfaces.report_interface import (
+    StakeholderType,
+)
 
 
 class TestPersonaChatInterface(unittest.TestCase):
@@ -22,8 +27,7 @@ class TestPersonaChatInterface(unittest.TestCase):
     def test_chat_request_parsing_executive_summary(self):
         """Test parsing executive summary requests."""
         request = self.interface._parse_chat_request(
-            "diego",
-            "Can you give me an executive summary?"
+            "diego", "Can you give me an executive summary?"
         )
 
         self.assertEqual(request.persona, PersonaType.DIEGO)
@@ -33,8 +37,7 @@ class TestPersonaChatInterface(unittest.TestCase):
     def test_chat_request_parsing_alerts(self):
         """Test parsing alert requests."""
         request = self.interface._parse_chat_request(
-            "camille",
-            "What critical alerts should I know about?"
+            "camille", "What critical alerts should I know about?"
         )
 
         self.assertEqual(request.persona, PersonaType.CAMILLE)
@@ -43,8 +46,7 @@ class TestPersonaChatInterface(unittest.TestCase):
     def test_chat_request_parsing_team_health(self):
         """Test parsing team health requests."""
         request = self.interface._parse_chat_request(
-            "rachel",
-            "How is team health looking this week?"
+            "rachel", "How is team health looking this week?"
         )
 
         self.assertEqual(request.persona, PersonaType.RACHEL)
@@ -54,9 +56,7 @@ class TestPersonaChatInterface(unittest.TestCase):
     def test_chat_request_parsing_time_periods(self):
         """Test time period extraction from requests."""
         # Test daily
-        request = self.interface._parse_chat_request(
-            "diego", "Give me today's status"
-        )
+        request = self.interface._parse_chat_request("diego", "Give me today's status")
         self.assertEqual(request.time_period, "today")
 
         # Test monthly
@@ -78,23 +78,29 @@ class TestPersonaChatInterface(unittest.TestCase):
             (PersonaType.CAMILLE, "ceo"),
             (PersonaType.RACHEL, "product_team"),
             (PersonaType.ALVARO, "ceo"),
-            (PersonaType.MARTIN, "vp_engineering")
+            (PersonaType.MARTIN, "vp_engineering"),
         ]
 
         for persona_type, expected_stakeholder in mappings:
             stakeholder = self.interface.persona_stakeholder_map[persona_type]
             # Convert enum to string for comparison
-            stakeholder_str = stakeholder.value if hasattr(stakeholder, 'value') else str(stakeholder).split('.')[-1].lower()
+            stakeholder_str = (
+                stakeholder.value
+                if hasattr(stakeholder, "value")
+                else str(stakeholder).split(".")[-1].lower()
+            )
             self.assertEqual(stakeholder_str, expected_stakeholder)
 
-    @patch('lib.claudedirector.persona_integration.chat_interface.ExecutiveSummaryGenerator')
+    @patch(
+        "lib.claudedirector.persona_integration.chat_interface.ExecutiveSummaryGenerator"
+    )
     def test_handle_executive_summary_request(self, mock_generator):
         """Test executive summary request handling."""
         # Mock report
         mock_report = Mock()
         mock_report.sections = [
             Mock(title="Executive Summary", content="• Key insight 1\n• Key insight 2"),
-            Mock(title="Risks & Opportunities", content="⚠️ Risk 1\n✅ Opportunity 1")
+            Mock(title="Risks & Opportunities", content="⚠️ Risk 1\n✅ Opportunity 1"),
         ]
         mock_report.data_sources = ["jira", "claudedirector"]
         mock_report.confidence_score = 0.95
@@ -110,7 +116,7 @@ class TestPersonaChatInterface(unittest.TestCase):
             stakeholder_context=StakeholderType.VP_ENGINEERING,
             time_period="current_week",
             additional_context={},
-            raw_message="Give me an executive summary"
+            raw_message="Give me an executive summary",
         )
 
         # Handle request
@@ -126,14 +132,16 @@ class TestPersonaChatInterface(unittest.TestCase):
     def test_handle_alerts_request_with_no_alerts(self):
         """Test alerts request when no alerts exist."""
         # Mock empty alerts
-        with patch.object(self.interface.alert_system, 'get_stakeholder_alerts', return_value=[]):
+        with patch.object(
+            self.interface.alert_system, "get_stakeholder_alerts", return_value=[]
+        ):
             request = ChatRequest(
                 persona=PersonaType.DIEGO,
                 request_type="alerts",
                 stakeholder_context=StakeholderType.VP_ENGINEERING,
                 time_period="current_week",
                 additional_context={},
-                raw_message="Any alerts?"
+                raw_message="Any alerts?",
             )
 
             response = self.interface._handle_alerts_request(request)
@@ -150,14 +158,18 @@ class TestPersonaChatInterface(unittest.TestCase):
         mock_alert.severity.value = "critical"
         mock_alert.actionable_items = ["Restart service"]
 
-        with patch.object(self.interface.alert_system, 'get_stakeholder_alerts', return_value=[mock_alert]):
+        with patch.object(
+            self.interface.alert_system,
+            "get_stakeholder_alerts",
+            return_value=[mock_alert],
+        ):
             request = ChatRequest(
                 persona=PersonaType.DIEGO,
                 request_type="alerts",
                 stakeholder_context=StakeholderType.VP_ENGINEERING,
                 time_period="current_week",
                 additional_context={},
-                raw_message="Any critical alerts?"
+                raw_message="Any critical alerts?",
             )
 
             response = self.interface._handle_alerts_request(request)
@@ -174,22 +186,21 @@ class TestPersonaChatInterface(unittest.TestCase):
             "team_health": {
                 "overall_score": 85,
                 "collaboration_score": 80,
-                "quality_metrics": 90
+                "quality_metrics": 90,
             },
-            "team_velocity": {
-                "current_sprint": 45,
-                "trend": "increasing"
-            }
+            "team_velocity": {"current_sprint": 45, "trend": "increasing"},
         }
 
-        with patch.object(self.interface.data_source, 'get_data', return_value=mock_data):
+        with patch.object(
+            self.interface.data_source, "get_data", return_value=mock_data
+        ):
             request = ChatRequest(
                 persona=PersonaType.RACHEL,
                 request_type="team_health",
                 stakeholder_context=StakeholderType.PRODUCT_TEAM,
                 time_period="current_week",
                 additional_context={},
-                raw_message="How is team health?"
+                raw_message="How is team health?",
             )
 
             response = self.interface._handle_team_health_request(request)
@@ -207,7 +218,7 @@ class TestPersonaChatInterface(unittest.TestCase):
             stakeholder_context=StakeholderType.VP_ENGINEERING,
             time_period="current_week",
             additional_context={},
-            raw_message="What's going on?"
+            raw_message="What's going on?",
         )
 
         response = self.interface._handle_general_request(request)
@@ -215,15 +226,23 @@ class TestPersonaChatInterface(unittest.TestCase):
         self.assertIsInstance(response, ChatResponse)
         self.assertIn("status", response.response_text.lower())
         self.assertEqual(response.confidence_score, 0.80)
-        self.assertIn("Ask for a detailed executive summary", response.follow_up_suggestions)
+        self.assertIn(
+            "Ask for a detailed executive summary", response.follow_up_suggestions
+        )
 
     def test_format_executive_summary_for_conversation_diego(self):
         """Test executive summary formatting for Diego."""
         # Mock report
         mock_report = Mock()
         mock_report.sections = [
-            Mock(title="Executive Summary", content="• Platform is healthy\n• Cross-team coordination strong"),
-            Mock(title="Risks & Opportunities", content="⚠️ Minor technical debt\n✅ Scaling opportunity")
+            Mock(
+                title="Executive Summary",
+                content="• Platform is healthy\n• Cross-team coordination strong",
+            ),
+            Mock(
+                title="Risks & Opportunities",
+                content="⚠️ Minor technical debt\n✅ Scaling opportunity",
+            ),
         ]
         mock_report.confidence_score = 0.90
         mock_report.generated_at = "2025-01-15T14:30:00Z"
@@ -268,7 +287,9 @@ class TestPersonaChatInterface(unittest.TestCase):
 
         alerts = [critical_alert, high_alert, medium_alert]
 
-        result = self.interface._format_alerts_for_conversation(alerts, PersonaType.DIEGO)
+        result = self.interface._format_alerts_for_conversation(
+            alerts, PersonaType.DIEGO
+        )
 
         self.assertIn("3 items require attention", result)
         self.assertIn("Critical Issues", result)
@@ -287,11 +308,13 @@ class TestPersonaChatInterface(unittest.TestCase):
             (PersonaType.RACHEL, "UX Impact"),
             (PersonaType.ALVARO, "Business Impact"),
             (PersonaType.CAMILLE, "Strategic Technology"),
-            (PersonaType.MARTIN, "Architecture Health")
+            (PersonaType.MARTIN, "Architecture Health"),
         ]
 
         for persona, expected_keyword in personas_and_keywords:
-            insight = self.interface._add_persona_specific_insights(persona, mock_report)
+            insight = self.interface._add_persona_specific_insights(
+                persona, mock_report
+            )
             self.assertIn(expected_keyword, insight)
 
     def test_follow_up_suggestions_generation(self):
@@ -306,14 +329,16 @@ class TestPersonaChatInterface(unittest.TestCase):
         # Should be relevant to executive summary
         suggestion_text = " ".join(suggestions).lower()
         self.assertTrue(
-            any(keyword in suggestion_text for keyword in ["team", "risk", "performance", "metric"])
+            any(
+                keyword in suggestion_text
+                for keyword in ["team", "risk", "performance", "metric"]
+            )
         )
 
     def test_unknown_persona_fallback(self):
         """Test handling of unknown persona types."""
         request = self.interface._parse_chat_request(
-            "unknown_persona",
-            "Give me a status update"
+            "unknown_persona", "Give me a status update"
         )
 
         # Should fallback to DIEGO
@@ -322,7 +347,9 @@ class TestPersonaChatInterface(unittest.TestCase):
     def test_handle_chat_request_error_handling(self):
         """Test error handling in main chat request handler."""
         # Mock an exception in request parsing
-        with patch.object(self.interface, '_parse_chat_request', side_effect=Exception("Test error")):
+        with patch.object(
+            self.interface, "_parse_chat_request", side_effect=Exception("Test error")
+        ):
             response = self.interface.handle_chat_request("diego", "test message")
 
             self.assertIsInstance(response, ChatResponse)

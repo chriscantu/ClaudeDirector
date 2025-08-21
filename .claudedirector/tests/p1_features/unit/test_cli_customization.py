@@ -13,6 +13,7 @@ from unittest.mock import patch, MagicMock
 
 # Import the modules under test
 import sys
+
 sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
 from lib.claudedirector.p1_features.organizational_intelligence.cli_customization import (
@@ -21,7 +22,7 @@ from lib.claudedirector.p1_features.organizational_intelligence.cli_customizatio
     customize,
     configure_domain,
     status,
-    quick_setup
+    quick_setup,
 )
 
 
@@ -31,9 +32,12 @@ class TestOrgIntelligenceCLI:
     def test_org_intelligence_group_exists(self):
         """Test that the main CLI group exists and is callable"""
         runner = CliRunner()
-        result = runner.invoke(org_intelligence, ['--help'])
+        result = runner.invoke(org_intelligence, ["--help"])
         assert result.exit_code == 0
-        assert "Organizational Leverage Intelligence configuration commands" in result.output
+        assert (
+            "Organizational Leverage Intelligence configuration commands"
+            in result.output
+        )
 
 
 class TestSetupCommand:
@@ -43,14 +47,10 @@ class TestSetupCommand:
     def sample_config(self):
         """Sample configuration for testing"""
         return {
-            "director_profile": {
-                "profile_type": "platform_director"
-            },
+            "director_profile": {"profile_type": "platform_director"},
             "organizational_intelligence": {
-                "velocity_tracking": {
-                    "measurement_domains": {}
-                }
-            }
+                "velocity_tracking": {"measurement_domains": {}}
+            },
         }
 
     @pytest.fixture
@@ -60,7 +60,7 @@ class TestSetupCommand:
         config_dir.mkdir(exist_ok=True)
 
         config_path = config_dir / "p1_organizational_intelligence.yaml"
-        with open(config_path, 'w') as f:
+        with open(config_path, "w") as f:
             yaml.dump(sample_config, f)
 
         yield str(config_path)
@@ -73,14 +73,22 @@ class TestSetupCommand:
         """Test setup with platform director preset"""
         runner = CliRunner()
 
-        result = runner.invoke(setup, [
-            '--profile-type', 'platform_director',
-            '--role-title', 'Test Director',
-            '--primary-focus', 'Test Focus'
-        ])
+        result = runner.invoke(
+            setup,
+            [
+                "--profile-type",
+                "platform_director",
+                "--role-title",
+                "Test Director",
+                "--primary-focus",
+                "Test Focus",
+            ],
+        )
 
         assert result.exit_code == 0
-        assert "Setting up Organizational Intelligence for Test Director" in result.output
+        assert (
+            "Setting up Organizational Intelligence for Test Director" in result.output
+        )
         assert "Profile setup complete" in result.output
 
     def test_setup_custom_profile_non_interactive(self, temp_config_file):
@@ -90,11 +98,18 @@ class TestSetupCommand:
         # Mock the interactive input for custom profile
         inputs = "\n\n\n\n"  # Empty inputs to exit loops
 
-        result = runner.invoke(setup, [
-            '--profile-type', 'custom',
-            '--role-title', 'Custom Director',
-            '--primary-focus', 'Custom Focus'
-        ], input=inputs)
+        result = runner.invoke(
+            setup,
+            [
+                "--profile-type",
+                "custom",
+                "--role-title",
+                "Custom Director",
+                "--primary-focus",
+                "Custom Focus",
+            ],
+            input=inputs,
+        )
 
         assert result.exit_code == 0
         assert "Custom Profile Setup" in result.output
@@ -103,29 +118,38 @@ class TestSetupCommand:
         """Test setup with backend director preset"""
         runner = CliRunner()
 
-        result = runner.invoke(setup, [
-            '--profile-type', 'backend_director',
-            '--role-title', 'Backend Director',
-            '--primary-focus', 'Backend Services'
-        ])
+        result = runner.invoke(
+            setup,
+            [
+                "--profile-type",
+                "backend_director",
+                "--role-title",
+                "Backend Director",
+                "--primary-focus",
+                "Backend Services",
+            ],
+        )
 
         assert result.exit_code == 0
-        assert "Setting up Organizational Intelligence for Backend Director" in result.output
+        assert (
+            "Setting up Organizational Intelligence for Backend Director"
+            in result.output
+        )
 
     def test_setup_updates_config_file(self, temp_config_file):
         """Test that setup actually updates the configuration file"""
         runner = CliRunner()
 
         # Run setup
-        result = runner.invoke(setup, [
-            '--profile-type', 'product_director',
-            '--role-title', 'Product Director'
-        ])
+        result = runner.invoke(
+            setup,
+            ["--profile-type", "product_director", "--role-title", "Product Director"],
+        )
 
         assert result.exit_code == 0
 
         # Check that config file was updated
-        with open(temp_config_file, 'r') as f:
+        with open(temp_config_file, "r") as f:
             updated_config = yaml.safe_load(f)
 
         assert updated_config["director_profile"]["profile_type"] == "product_director"
@@ -144,11 +168,11 @@ class TestStatusCommand:
         mock_profile.primary_focus = "Test Focus"
         mock_profile.enabled_domains = {
             "design_system_leverage": [MagicMock(weight=0.35)],
-            "platform_adoption": [MagicMock(weight=0.30)]
+            "platform_adoption": [MagicMock(weight=0.30)],
         }
         mock_profile.investment_categories = {
             "design_enhancement": MagicMock(priority_weight=0.4),
-            "platform_infra": MagicMock(priority_weight=0.6)
+            "platform_infra": MagicMock(priority_weight=0.6),
         }
         mock_profile.strategic_priorities = ["Priority 1", "Priority 2"]
         mock_profile.success_metrics = ["Metric 1", "Metric 2"]
@@ -157,8 +181,12 @@ class TestStatusCommand:
         mock_manager.current_profile = mock_profile
         return mock_manager
 
-    @patch('lib.claudedirector.p1_features.organizational_intelligence.cli_customization.DirectorProfileManager')
-    def test_status_command_output(self, mock_manager_class, mock_director_profile_manager):
+    @patch(
+        "lib.claudedirector.p1_features.organizational_intelligence.cli_customization.DirectorProfileManager"
+    )
+    def test_status_command_output(
+        self, mock_manager_class, mock_director_profile_manager
+    ):
         """Test status command output format"""
         mock_manager_class.return_value = mock_director_profile_manager
 
@@ -190,20 +218,20 @@ class TestCustomizeCommand:
                             "enabled": True,
                             "weight": 0.35,
                             "metrics": ["component_usage"],
-                            "targets": {"component": 0.8}
+                            "targets": {"component": 0.8},
                         },
                         "api_service_efficiency": {
                             "enabled": False,
                             "weight": 0.0,
                             "metrics": ["response_time"],
-                            "targets": {"response": 200}
+                            "targets": {"response": 200},
                         },
                         "platform_adoption": {
                             "enabled": True,
                             "weight": 0.30,
                             "metrics": ["adoption_rate"],
-                            "targets": {"adoption": 0.75}
-                        }
+                            "targets": {"adoption": 0.75},
+                        },
                     }
                 }
             }
@@ -216,7 +244,7 @@ class TestCustomizeCommand:
         config_dir.mkdir(exist_ok=True)
 
         config_path = config_dir / "p1_organizational_intelligence.yaml"
-        with open(config_path, 'w') as f:
+        with open(config_path, "w") as f:
             yaml.dump(sample_config_with_domains, f)
 
         yield str(config_path)
@@ -225,8 +253,12 @@ class TestCustomizeCommand:
         if config_path.exists():
             config_path.unlink()
 
-    @patch('lib.claudedirector.p1_features.organizational_intelligence.cli_customization.DirectorProfileManager')
-    def test_customize_command_basic_flow(self, mock_manager_class, temp_config_for_customize):
+    @patch(
+        "lib.claudedirector.p1_features.organizational_intelligence.cli_customization.DirectorProfileManager"
+    )
+    def test_customize_command_basic_flow(
+        self, mock_manager_class, temp_config_for_customize
+    ):
         """Test customize command basic flow"""
         mock_manager = MagicMock()
         mock_profile = MagicMock()
@@ -238,7 +270,7 @@ class TestCustomizeCommand:
         mock_manager.current_profile = mock_profile
         mock_manager.generate_executive_summary.return_value = {
             "director_profile": {"role": "Test Director"},
-            "enabled_domains": ["design_system_leverage"]
+            "enabled_domains": ["design_system_leverage"],
         }
 
         mock_manager_class.return_value = mock_manager
@@ -267,10 +299,7 @@ class TestConfigureDomainCommand:
                     "measurement_domains": {
                         "design_system_leverage": {
                             "enabled": True,
-                            "targets": {
-                                "consistency": 0.85,
-                                "adoption": 0.80
-                            }
+                            "targets": {"consistency": 0.85, "adoption": 0.80},
                         }
                     }
                 }
@@ -281,7 +310,7 @@ class TestConfigureDomainCommand:
         config_dir.mkdir(exist_ok=True)
 
         config_path = config_dir / "p1_organizational_intelligence.yaml"
-        with open(config_path, 'w') as f:
+        with open(config_path, "w") as f:
             yaml.dump(config, f)
 
         yield str(config_path)
@@ -290,8 +319,12 @@ class TestConfigureDomainCommand:
         if config_path.exists():
             config_path.unlink()
 
-    @patch('lib.claudedirector.p1_features.organizational_intelligence.cli_customization.DirectorProfileManager')
-    def test_configure_domain_specific(self, mock_manager_class, temp_config_for_domain_config):
+    @patch(
+        "lib.claudedirector.p1_features.organizational_intelligence.cli_customization.DirectorProfileManager"
+    )
+    def test_configure_domain_specific(
+        self, mock_manager_class, temp_config_for_domain_config
+    ):
         """Test configuring a specific domain"""
         mock_manager = MagicMock()
         mock_profile = MagicMock()
@@ -304,14 +337,20 @@ class TestConfigureDomainCommand:
         # Simulate user saying no to updates
         inputs = "n\n"
 
-        result = runner.invoke(configure_domain, ['--domain', 'design_system_leverage'], input=inputs)
+        result = runner.invoke(
+            configure_domain, ["--domain", "design_system_leverage"], input=inputs
+        )
 
         assert result.exit_code == 0
         assert "Configuring design_system_leverage" in result.output
         assert "Current targets for design_system_leverage" in result.output
 
-    @patch('lib.claudedirector.p1_features.organizational_intelligence.cli_customization.DirectorProfileManager')
-    def test_configure_domain_not_enabled(self, mock_manager_class, temp_config_for_domain_config):
+    @patch(
+        "lib.claudedirector.p1_features.organizational_intelligence.cli_customization.DirectorProfileManager"
+    )
+    def test_configure_domain_not_enabled(
+        self, mock_manager_class, temp_config_for_domain_config
+    ):
         """Test configuring a domain that's not enabled"""
         mock_manager = MagicMock()
         mock_profile = MagicMock()
@@ -321,7 +360,7 @@ class TestConfigureDomainCommand:
 
         runner = CliRunner()
 
-        result = runner.invoke(configure_domain, ['--domain', 'nonexistent_domain'])
+        result = runner.invoke(configure_domain, ["--domain", "nonexistent_domain"])
 
         assert result.exit_code == 0
         assert "Domain nonexistent_domain is not enabled" in result.output
@@ -341,17 +380,17 @@ class TestQuickSetupCommand:
                         "design_system_leverage": {"enabled": False, "weight": 0.0},
                         "platform_adoption": {"enabled": False, "weight": 0.0},
                         "developer_experience": {"enabled": False, "weight": 0.0},
-                        "api_service_efficiency": {"enabled": False, "weight": 0.0}
+                        "api_service_efficiency": {"enabled": False, "weight": 0.0},
                     }
                 }
-            }
+            },
         }
 
         config_dir = Path("config")
         config_dir.mkdir(exist_ok=True)
 
         config_path = config_dir / "p1_organizational_intelligence.yaml"
-        with open(config_path, 'w') as f:
+        with open(config_path, "w") as f:
             yaml.dump(config, f)
 
         yield str(config_path)
@@ -364,7 +403,7 @@ class TestQuickSetupCommand:
         """Test quick setup with design system template"""
         runner = CliRunner()
 
-        result = runner.invoke(quick_setup, ['--template', 'design_system'])
+        result = runner.invoke(quick_setup, ["--template", "design_system"])
 
         assert result.exit_code == 0
         assert "Setting up with design_system template" in result.output
@@ -372,7 +411,7 @@ class TestQuickSetupCommand:
         assert "Quick setup complete" in result.output
 
         # Verify config was updated
-        with open(temp_config_for_quick_setup, 'r') as f:
+        with open(temp_config_for_quick_setup, "r") as f:
             updated_config = yaml.safe_load(f)
 
         profile_config = updated_config["director_profile"]["custom_profile"]
@@ -383,13 +422,15 @@ class TestQuickSetupCommand:
         """Test quick setup with backend services template"""
         runner = CliRunner()
 
-        result = runner.invoke(quick_setup, ['--template', 'backend_services'])
+        result = runner.invoke(quick_setup, ["--template", "backend_services"])
 
         assert result.exit_code == 0
         assert "Setting up with backend_services template" in result.output
         assert "Director of Backend Engineering" in result.output
 
-    def test_quick_setup_interactive_template_selection(self, temp_config_for_quick_setup):
+    def test_quick_setup_interactive_template_selection(
+        self, temp_config_for_quick_setup
+    ):
         """Test quick setup with interactive template selection"""
         runner = CliRunner()
 
@@ -406,15 +447,17 @@ class TestQuickSetupCommand:
         """Test that quick setup properly updates domain weights"""
         runner = CliRunner()
 
-        result = runner.invoke(quick_setup, ['--template', 'design_system'])
+        result = runner.invoke(quick_setup, ["--template", "design_system"])
 
         assert result.exit_code == 0
 
         # Check that domains were enabled and weighted correctly
-        with open(temp_config_for_quick_setup, 'r') as f:
+        with open(temp_config_for_quick_setup, "r") as f:
             updated_config = yaml.safe_load(f)
 
-        domains = updated_config["organizational_intelligence"]["velocity_tracking"]["measurement_domains"]
+        domains = updated_config["organizational_intelligence"]["velocity_tracking"][
+            "measurement_domains"
+        ]
 
         # Design system template should enable these domains
         assert domains["design_system_leverage"]["enabled"] is True
@@ -436,7 +479,7 @@ class TestCLIErrorHandling:
         """Test setup with invalid profile type"""
         runner = CliRunner()
 
-        result = runner.invoke(setup, ['--profile-type', 'invalid_type'])
+        result = runner.invoke(setup, ["--profile-type", "invalid_type"])
 
         # Should fail due to Click choice validation
         assert result.exit_code != 0
@@ -445,12 +488,14 @@ class TestCLIErrorHandling:
         """Test quick setup with invalid template"""
         runner = CliRunner()
 
-        result = runner.invoke(quick_setup, ['--template', 'invalid_template'])
+        result = runner.invoke(quick_setup, ["--template", "invalid_template"])
 
         # Should fail due to Click choice validation
         assert result.exit_code != 0
 
-    @patch('lib.claudedirector.p1_features.organizational_intelligence.cli_customization.DirectorProfileManager')
+    @patch(
+        "lib.claudedirector.p1_features.organizational_intelligence.cli_customization.DirectorProfileManager"
+    )
     def test_status_with_manager_error(self, mock_manager_class):
         """Test status command when manager initialization fails"""
         mock_manager_class.side_effect = Exception("Configuration error")
@@ -476,25 +521,34 @@ class TestCLIIntegration:
         # Initial minimal config
         initial_config = {
             "director_profile": {"profile_type": "platform_director"},
-            "organizational_intelligence": {"velocity_tracking": {"measurement_domains": {}}}
+            "organizational_intelligence": {
+                "velocity_tracking": {"measurement_domains": {}}
+            },
         }
 
-        with open(config_path, 'w') as f:
+        with open(config_path, "w") as f:
             yaml.dump(initial_config, f)
 
         runner = CliRunner()
 
         try:
             # Run setup
-            setup_result = runner.invoke(setup, [
-                '--profile-type', 'platform_director',
-                '--role-title', 'Integration Test Director'
-            ])
+            setup_result = runner.invoke(
+                setup,
+                [
+                    "--profile-type",
+                    "platform_director",
+                    "--role-title",
+                    "Integration Test Director",
+                ],
+            )
 
             assert setup_result.exit_code == 0
 
             # Then run status to verify
-            with patch('lib.claudedirector.p1_features.organizational_intelligence.cli_customization.DirectorProfileManager') as mock_manager:
+            with patch(
+                "lib.claudedirector.p1_features.organizational_intelligence.cli_customization.DirectorProfileManager"
+            ) as mock_manager:
                 mock_profile = MagicMock()
                 mock_profile.role_title = "Integration Test Director"
                 mock_profile.primary_focus = "Test"

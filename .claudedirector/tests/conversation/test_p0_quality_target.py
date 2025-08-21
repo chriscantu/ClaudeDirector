@@ -12,6 +12,7 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
 
+
 def test_p0_quality_target():
     """Test that we can achieve >0.7 quality score with rich strategic conversation"""
     print("🎯 P0 VALIDATION: >0.7 Conversation Quality Target")
@@ -51,13 +52,23 @@ Let me stress-test this platform investment approach systematically...
 **Executive Presentation Strategy**: Single-question focus for SLT, business impact translation, evidence-based proposals with quantifiable metrics.""",
                 "personas_activated": ["diego", "alvaro", "camille"],
                 "context_metadata": {
-                    "strategic_frameworks": ["Capital Allocation Framework", "Stakeholder Mapping"],
-                    "stakeholders_mentioned": ["vp_engineering", "senior_director", "distinguished_engineer", "finance_director", "product_vp", "product_director"],
+                    "strategic_frameworks": [
+                        "Capital Allocation Framework",
+                        "Stakeholder Mapping",
+                    ],
+                    "stakeholders_mentioned": [
+                        "vp_engineering",
+                        "senior_director",
+                        "distinguished_engineer",
+                        "finance_director",
+                        "product_vp",
+                        "product_director",
+                    ],
                     "roi_analysis": True,
                     "coalition_mapping": True,
                     "executive_strategy": True,
-                    "complexity_score": 0.95
-                }
+                    "complexity_score": 0.95,
+                },
             },
             {
                 "user_input": "How should we structure the design system investment as part of this platform strategy?",
@@ -87,8 +98,8 @@ Excellent strategic question! Design system investment should integrate seamless
                     "accessibility_compliance": True,
                     "cross_team_coordination": True,
                     "roi_demonstration": True,
-                    "stakeholder_value": True
-                }
+                    "stakeholder_value": True,
+                },
             },
             {
                 "user_input": "What about the technical architecture decisions for this platform? How do we balance innovation with stability?",
@@ -118,8 +129,8 @@ Critical architectural balance for platform investment success...
                     "evolutionary_design": True,
                     "platform_architecture": True,
                     "risk_mitigation": True,
-                    "technical_debt_strategy": True
-                }
+                    "technical_debt_strategy": True,
+                },
             },
             {
                 "user_input": "How do we present this comprehensive platform strategy to the executive team for budget approval?",
@@ -152,9 +163,9 @@ Strategic executive presentation for platform investment approval...
                     "business_strategy": True,
                     "competitive_analysis": True,
                     "decision_framework": True,
-                    "coalition_activation": True
-                }
-            }
+                    "coalition_activation": True,
+                },
+            },
         ]
 
         # Capture all conversation turns
@@ -163,7 +174,7 @@ Strategic executive presentation for platform investment approval...
                 user_input=conv["user_input"],
                 assistant_response=conv["assistant_response"],
                 personas_activated=conv["personas_activated"],
-                context_metadata=conv["context_metadata"]
+                context_metadata=conv["context_metadata"],
             )
             print(f"✅ Strategic conversation turn {i+1} captured")
 
@@ -173,7 +184,7 @@ Strategic executive presentation for platform investment approval...
 
         # Get final quality score
         status = manager.get_session_status()
-        final_quality = status.get('context_quality', 0.0)
+        final_quality = status.get("context_quality", 0.0)
 
         print(f"\n📊 FINAL QUALITY METRICS:")
         print(f"   - Conversation Quality: {final_quality:.3f}")
@@ -186,33 +197,62 @@ Strategic executive presentation for platform investment approval...
         if final_quality >= target_quality:
             print(f"\n🎉 P0 TARGET ACHIEVED!")
             print(f"   Quality Score: {final_quality:.3f} >= {target_quality}")
-            print(f"   Improvement: {(final_quality/0.08)*100:.0f}% increase from baseline")
+            print(
+                f"   Improvement: {(final_quality/0.08)*100:.0f}% increase from baseline"
+            )
             success = True
         else:
             print(f"\n⚠️ P0 Target Not Met")
             print(f"   Quality Score: {final_quality:.3f} < {target_quality}")
-            print(f"   Still improved: {(final_quality/0.08)*100:.0f}% increase from baseline")
+            print(
+                f"   Still improved: {(final_quality/0.08)*100:.0f}% increase from baseline"
+            )
             success = False
 
         # Test direct quality calculation for verification
         print(f"\n🔧 Quality Calculation Verification:")
         test_context = {
-            'conversation_thread': [
-                {'user_input': conv['user_input'], 'assistant_response': conv['assistant_response']}
+            "conversation_thread": [
+                {
+                    "user_input": conv["user_input"],
+                    "assistant_response": conv["assistant_response"],
+                }
                 for conv in conversations
             ],
-            'active_personas': ['diego', 'rachel', 'martin', 'camille', 'alvaro'],
-            'stakeholder_mentions': ['vp_engineering', 'senior_director', 'finance_director', 'product_vp'],
-            'strategic_topics': ['platform', 'investment', 'roi', 'strategy', 'architecture', 'stakeholder'],
-            'decisions_made': ['platform investment strategy', 'design system integration', 'technical architecture'],
-            'action_items': ['executive presentation', 'stakeholder alignment', 'roi analysis']
+            "active_personas": ["diego", "rachel", "martin", "camille", "alvaro"],
+            "stakeholder_mentions": [
+                "vp_engineering",
+                "senior_director",
+                "finance_director",
+                "product_vp",
+            ],
+            "strategic_topics": [
+                "platform",
+                "investment",
+                "roi",
+                "strategy",
+                "architecture",
+                "stakeholder",
+            ],
+            "decisions_made": [
+                "platform investment strategy",
+                "design system integration",
+                "technical architecture",
+            ],
+            "action_items": [
+                "executive presentation",
+                "stakeholder alignment",
+                "roi analysis",
+            ],
         }
 
         direct_quality = manager._calculate_conversation_quality(test_context)
         print(f"   Direct calculation: {direct_quality:.3f}")
 
         if direct_quality >= target_quality:
-            print(f"✅ Direct calculation confirms P0 target: {direct_quality:.3f} >= {target_quality}")
+            print(
+                f"✅ Direct calculation confirms P0 target: {direct_quality:.3f} >= {target_quality}"
+            )
             success = True
 
         # End session
@@ -232,8 +272,10 @@ Strategic executive presentation for platform investment approval...
     except Exception as e:
         print(f"❌ P0 validation failed: {e}")
         import traceback
+
         traceback.print_exc()
         return False
+
 
 if __name__ == "__main__":
     success = test_p0_quality_target()
