@@ -38,10 +38,10 @@ jobs:
           # Sensitive patterns to scan for
           patterns = [
               (r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', 'Email addresses'),
-              (r'(?:password|passwd|pwd)\s*[=:]\s*[\"\'']?([^\"\''\s]{8,})', 'Passwords'),
-              (r'(?:api_key|apikey|secret)\s*[=:]\s*[\"\'']?([a-zA-Z0-9_-]{16,})', 'API Keys'),
-              (r'(?:token)\s*[=:]\s*[\"\'']?([a-zA-Z0-9_-]{20,})', 'Tokens'),
-              (r'aws_access_key_id\s*[=:]\s*[\"\'']?([A-Z0-9]{20})', 'AWS Access Keys'),
+              (r'(?:password|passwd|pwd)\s*[=:]\s*[a-zA-Z0-9_-]{8,}', 'Passwords'),
+              (r'(?:api_key|apikey|secret)\s*[=:]\s*[a-zA-Z0-9_-]{16,}', 'API Keys'),
+              (r'(?:token)\s*[=:]\s*[a-zA-Z0-9_-]{20,}', 'Tokens'),
+              (r'aws_access_key_id\s*[=:]\s*[A-Z0-9]{20}', 'AWS Access Keys'),
               (r'ssh-rsa\s+[A-Za-z0-9+/]{100,}', 'SSH Keys')
           ]
 
