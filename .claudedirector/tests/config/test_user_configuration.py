@@ -28,11 +28,11 @@ class TestUserConfiguration(unittest.TestCase):
         # Clear any existing environment variables
         self.original_env = {}
         env_vars = [
-            'CLAUDEDIRECTOR_USER_NAME',
-            'CLAUDEDIRECTOR_WORK_NAME',
-            'CLAUDEDIRECTOR_FULL_NAME',
-            'CLAUDEDIRECTOR_USER_ROLE',
-            'CLAUDEDIRECTOR_ORGANIZATION'
+            "CLAUDEDIRECTOR_USER_NAME",
+            "CLAUDEDIRECTOR_WORK_NAME",
+            "CLAUDEDIRECTOR_FULL_NAME",
+            "CLAUDEDIRECTOR_USER_ROLE",
+            "CLAUDEDIRECTOR_ORGANIZATION",
         ]
 
         for var in env_vars:
@@ -76,7 +76,7 @@ user:
   organization: "Test Org"
 """
 
-        with open(self.test_config_path, 'w') as f:
+        with open(self.test_config_path, "w") as f:
             f.write(config_content)
 
         manager = UserConfigManager(self.test_config_path)
@@ -97,12 +97,12 @@ user:
   work_name: "FileUser"
 """
 
-        with open(self.test_config_path, 'w') as f:
+        with open(self.test_config_path, "w") as f:
             f.write(config_content)
 
         # Set environment variables
-        os.environ['CLAUDEDIRECTOR_USER_NAME'] = "EnvUser"
-        os.environ['CLAUDEDIRECTOR_WORK_NAME'] = "EnvWorkUser"
+        os.environ["CLAUDEDIRECTOR_USER_NAME"] = "EnvUser"
+        os.environ["CLAUDEDIRECTOR_WORK_NAME"] = "EnvWorkUser"
 
         manager = UserConfigManager(self.test_config_path)
         identity = manager.get_user_identity()
@@ -118,7 +118,7 @@ user:
             name="Default",
             work_name="WorkName",
             full_name="Full Name",
-            role="Test Role"
+            role="Test Role",
         )
 
         self.assertEqual(identity.get_name("default"), "Default")
@@ -147,7 +147,7 @@ user:
   full_name: No Quotes
 """
 
-        with open(self.test_config_path, 'w') as f:
+        with open(self.test_config_path, "w") as f:
             f.write(config_content)
 
         manager = UserConfigManager(self.test_config_path)
@@ -164,7 +164,7 @@ user:
   name: "P0TestUser"
 """
 
-        with open(self.test_config_path, 'w') as f:
+        with open(self.test_config_path, "w") as f:
             f.write(config_content)
 
         # Test the specific functions used by P0 enforcement

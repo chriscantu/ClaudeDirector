@@ -9,6 +9,7 @@ import shutil
 from pathlib import Path
 import argparse
 
+
 class WorkspaceMigrator:
     """Handles migration from old to new workspace naming"""
 
@@ -44,7 +45,7 @@ class WorkspaceMigrator:
             print(f"📁 New workspace location available: {self.new_workspace}")
 
         # Check environment variable
-        env_workspace = os.environ.get('CLAUDEDIRECTOR_WORKSPACE')
+        env_workspace = os.environ.get("CLAUDEDIRECTOR_WORKSPACE")
         if env_workspace:
             print(f"🔧 Environment variable set: {env_workspace}")
         else:
@@ -54,7 +55,7 @@ class WorkspaceMigrator:
         """Get directory size in MB"""
         total_size = 0
         try:
-            for file_path in path.rglob('*'):
+            for file_path in path.rglob("*"):
                 if file_path.is_file():
                     total_size += file_path.stat().st_size
         except (OSError, PermissionError):
@@ -64,7 +65,7 @@ class WorkspaceMigrator:
     def _count_files(self, path: Path) -> int:
         """Count files and directories"""
         try:
-            return len(list(path.rglob('*')))
+            return len(list(path.rglob("*")))
         except (OSError, PermissionError):
             return 0
 
@@ -113,10 +114,12 @@ class WorkspaceMigrator:
 
     def _suggest_environment_update(self):
         """Suggest environment variable update"""
-        env_workspace = os.environ.get('CLAUDEDIRECTOR_WORKSPACE')
+        env_workspace = os.environ.get("CLAUDEDIRECTOR_WORKSPACE")
 
         if env_workspace and "leadership-workspace" in env_workspace:
-            new_env_value = env_workspace.replace("leadership-workspace", "leadership-workspace")
+            new_env_value = env_workspace.replace(
+                "leadership-workspace", "leadership-workspace"
+            )
 
             print(f"\n💡 **Environment Variable Update Needed**")
             print(f"Current: CLAUDEDIRECTOR_WORKSPACE={env_workspace}")
@@ -160,11 +163,20 @@ class WorkspaceMigrator:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Migrate ClaudeDirector workspace naming")
-    parser.add_argument("--mode", choices=["move", "copy", "symlink", "interactive"],
-                       default="interactive", help="Migration mode")
-    parser.add_argument("--analyze-only", action="store_true",
-                       help="Only analyze current workspace situation")
+    parser = argparse.ArgumentParser(
+        description="Migrate ClaudeDirector workspace naming"
+    )
+    parser.add_argument(
+        "--mode",
+        choices=["move", "copy", "symlink", "interactive"],
+        default="interactive",
+        help="Migration mode",
+    )
+    parser.add_argument(
+        "--analyze-only",
+        action="store_true",
+        help="Only analyze current workspace situation",
+    )
 
     args = parser.parse_args()
 

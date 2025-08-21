@@ -159,8 +159,16 @@ class TestMeetingIntelligence:
 
         mock_manager = Mock()
         mock_manager.suggest_personas.return_value = [
-            {"persona": "diego", "confidence": 0.9, "reason": "Engineering leadership context"},
-            {"persona": "camille", "confidence": 0.7, "reason": "Strategic technology discussion"},
+            {
+                "persona": "diego",
+                "confidence": 0.9,
+                "reason": "Engineering leadership context",
+            },
+            {
+                "persona": "camille",
+                "confidence": 0.7,
+                "reason": "Strategic technology discussion",
+            },
         ]
 
         with patch(

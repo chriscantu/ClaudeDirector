@@ -31,7 +31,9 @@ def optimize_database():
 
         print(f"   Database size: {initial_stats['database_size_mb']} MB")
         print(f"   Total queries processed: {initial_stats['total_queries']}")
-        print(f"   Slow queries: {initial_stats['slow_queries']} ({initial_stats['slow_query_percentage']:.1f}%)")
+        print(
+            f"   Slow queries: {initial_stats['slow_queries']} ({initial_stats['slow_query_percentage']:.1f}%)"
+        )
 
         # Apply optimizations
         print("⚡ Applying SQLite performance optimizations...")
@@ -54,9 +56,10 @@ def optimize_database():
         print(f"   Connection reuses: {final_stats['connection_reuses']}")
 
         # Calculate improvements
-        if initial_stats['total_queries'] > 0:
+        if initial_stats["total_queries"] > 0:
             improvement = (
-                (initial_stats['slow_query_percentage'] - final_stats['slow_query_percentage'])
+                initial_stats["slow_query_percentage"]
+                - final_stats["slow_query_percentage"]
             )
             if improvement > 0:
                 print(f"   Query performance improved by {improvement:.1f}%")
@@ -73,7 +76,9 @@ def optimize_database():
         print("   • Monitor query performance with 'claudedirector db-stats'")
         print("   • Database will auto-optimize during normal operations")
 
-        print("\n🚀 ClaudeDirector is now optimized for strategic intelligence workloads!")
+        print(
+            "\n🚀 ClaudeDirector is now optimized for strategic intelligence workloads!"
+        )
 
     except Exception as e:
         print(f"\n❌ Optimization failed: {e}")
@@ -97,13 +102,15 @@ def show_database_stats():
 
         print(f"\nQuery Performance:")
         print(f"   Total Queries: {stats['total_queries']}")
-        print(f"   Slow Queries: {stats['slow_queries']} ({stats['slow_query_percentage']:.1f}%)")
+        print(
+            f"   Slow Queries: {stats['slow_queries']} ({stats['slow_query_percentage']:.1f}%)"
+        )
         print(f"   Connection Reuses: {stats['connection_reuses']}")
 
         # Performance assessment
-        if stats['slow_query_percentage'] < 5:
+        if stats["slow_query_percentage"] < 5:
             print(f"\n✅ Performance Status: Excellent")
-        elif stats['slow_query_percentage'] < 15:
+        elif stats["slow_query_percentage"] < 15:
             print(f"\n⚠️  Performance Status: Good (consider maintenance)")
         else:
             print(f"\n❌ Performance Status: Needs optimization")
@@ -132,15 +139,20 @@ Examples:
   python bin/optimize-database.py --optimize     # Apply optimizations
   python bin/optimize-database.py --stats        # Show performance stats
   python bin/optimize-database.py --maintenance  # Run maintenance only
-        """
+        """,
     )
 
-    parser.add_argument("--optimize", action="store_true",
-                       help="Apply SQLite performance optimizations")
-    parser.add_argument("--stats", action="store_true",
-                       help="Show database performance statistics")
-    parser.add_argument("--maintenance", action="store_true",
-                       help="Run database maintenance (VACUUM + ANALYZE)")
+    parser.add_argument(
+        "--optimize", action="store_true", help="Apply SQLite performance optimizations"
+    )
+    parser.add_argument(
+        "--stats", action="store_true", help="Show database performance statistics"
+    )
+    parser.add_argument(
+        "--maintenance",
+        action="store_true",
+        help="Run database maintenance (VACUUM + ANALYZE)",
+    )
 
     args = parser.parse_args()
 

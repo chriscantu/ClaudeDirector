@@ -12,13 +12,19 @@ from typing import Dict, Any
 
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from lib.claudedirector.p2_communication.integrations.alert_system import (
-    IntelligentAlertSystem, AlertSeverity, AlertCategory, Alert, AlertRule
+    IntelligentAlertSystem,
+    AlertSeverity,
+    AlertCategory,
+    Alert,
+    AlertRule,
 )
 from lib.claudedirector.p2_communication.interfaces.report_interface import (
-    StakeholderType, IDataSource
+    StakeholderType,
+    IDataSource,
 )
 
 
@@ -48,23 +54,16 @@ class TestIntelligentAlertSystem(unittest.TestCase):
                 "current_sprint": 42,
                 "average_last_5": 40,
                 "trend": "stable",
-                "sprint_commitment_accuracy": 0.85
+                "sprint_commitment_accuracy": 0.85,
             },
             "risk_indicators": {
                 "blocked_issues": 1,
                 "overdue_issues": 2,
                 "critical_bugs": 0,
-                "security_vulnerabilities": 0
+                "security_vulnerabilities": 0,
             },
-            "initiative_health": {
-                "on_track": 8,
-                "at_risk": 1,
-                "critical": 0
-            },
-            "team_health": {
-                "overall_score": 82,
-                "technical_debt_ratio": 0.15
-            }
+            "initiative_health": {"on_track": 8, "at_risk": 1, "critical": 0},
+            "team_health": {"overall_score": 82, "technical_debt_ratio": 0.15},
         }
 
         self.data_source = MockDataSource(self.normal_data)
@@ -97,13 +96,17 @@ class TestIntelligentAlertSystem(unittest.TestCase):
             "blocked_issues": 4,  # Triggers alert (>= 3)
             "overdue_issues": 2,
             "critical_bugs": 0,
-            "security_vulnerabilities": 0
+            "security_vulnerabilities": 0,
         }
 
         alerts = self.alert_system.generate_alerts(problem_data)
 
         # Should generate blocked issues alert
-        blocked_alerts = [a for a in alerts if "blocker" in a.title.lower() or "delivery" in a.title.lower()]
+        blocked_alerts = [
+            a
+            for a in alerts
+            if "blocker" in a.title.lower() or "delivery" in a.title.lower()
+        ]
         self.assertGreater(len(blocked_alerts), 0)
 
         blocked_alert = blocked_alerts[0]
@@ -119,7 +122,7 @@ class TestIntelligentAlertSystem(unittest.TestCase):
             "blocked_issues": 1,
             "overdue_issues": 2,
             "critical_bugs": 0,
-            "security_vulnerabilities": 2  # Triggers alert (> 0)
+            "security_vulnerabilities": 2,  # Triggers alert (> 0)
         }
 
         alerts = self.alert_system.generate_alerts(problem_data)
@@ -132,7 +135,9 @@ class TestIntelligentAlertSystem(unittest.TestCase):
         self.assertEqual(security_alert.severity, AlertSeverity.CRITICAL)
         self.assertEqual(security_alert.category, AlertCategory.SECURITY)
         self.assertIn(StakeholderType.CEO, security_alert.stakeholders)
-        self.assertGreater(security_alert.confidence_score, 0.9)  # High confidence for security
+        self.assertGreater(
+            security_alert.confidence_score, 0.9
+        )  # High confidence for security
 
     def test_velocity_crash_alert(self):
         """Test alert generation for velocity crash."""
@@ -141,7 +146,7 @@ class TestIntelligentAlertSystem(unittest.TestCase):
             "current_sprint": 25,  # 37.5% drop from average of 40
             "average_last_5": 40,
             "trend": "decreasing",
-            "sprint_commitment_accuracy": 0.85
+            "sprint_commitment_accuracy": 0.85,
         }
 
         alerts = self.alert_system.generate_alerts(problem_data)
@@ -160,7 +165,7 @@ class TestIntelligentAlertSystem(unittest.TestCase):
         problem_data = self.normal_data.copy()
         problem_data["team_health"] = {
             "overall_score": 65,  # Triggers alert (< 70)
-            "technical_debt_ratio": 0.15
+            "technical_debt_ratio": 0.15,
         }
 
         alerts = self.alert_system.generate_alerts(problem_data)
@@ -179,7 +184,7 @@ class TestIntelligentAlertSystem(unittest.TestCase):
         problem_data = self.normal_data.copy()
         problem_data["team_health"] = {
             "overall_score": 82,
-            "technical_debt_ratio": 0.30  # Triggers alert (> 0.25)
+            "technical_debt_ratio": 0.30,  # Triggers alert (> 0.25)
         }
 
         alerts = self.alert_system.generate_alerts(problem_data)
@@ -199,7 +204,7 @@ class TestIntelligentAlertSystem(unittest.TestCase):
         problem_data["initiative_health"] = {
             "on_track": 5,
             "at_risk": 3,
-            "critical": 2  # Triggers alert (>= 2 critical)
+            "critical": 2,  # Triggers alert (>= 2 critical)
         }
 
         alerts = self.alert_system.generate_alerts(problem_data)
@@ -220,13 +225,15 @@ class TestIntelligentAlertSystem(unittest.TestCase):
             "current_sprint": 42,
             "average_last_5": 40,
             "trend": "stable",
-            "sprint_commitment_accuracy": 0.65  # Triggers alert (< 0.70)
+            "sprint_commitment_accuracy": 0.65,  # Triggers alert (< 0.70)
         }
 
         alerts = self.alert_system.generate_alerts(problem_data)
 
         # Should generate predictability alert
-        predictability_alerts = [a for a in alerts if "predictability" in a.title.lower()]
+        predictability_alerts = [
+            a for a in alerts if "predictability" in a.title.lower()
+        ]
         self.assertGreater(len(predictability_alerts), 0)
 
         predictability_alert = predictability_alerts[0]
@@ -237,18 +244,20 @@ class TestIntelligentAlertSystem(unittest.TestCase):
     def test_multiple_alerts_sorting(self):
         """Test that multiple alerts are sorted by severity and confidence."""
         problem_data = self.normal_data.copy()
-        problem_data.update({
-            "risk_indicators": {
-                "blocked_issues": 4,  # Critical alert
-                "security_vulnerabilities": 1,  # Critical alert
-                "overdue_issues": 2,
-                "critical_bugs": 0
-            },
-            "team_health": {
-                "overall_score": 65,  # Medium alert
-                "technical_debt_ratio": 0.30  # Medium alert
+        problem_data.update(
+            {
+                "risk_indicators": {
+                    "blocked_issues": 4,  # Critical alert
+                    "security_vulnerabilities": 1,  # Critical alert
+                    "overdue_issues": 2,
+                    "critical_bugs": 0,
+                },
+                "team_health": {
+                    "overall_score": 65,  # Medium alert
+                    "technical_debt_ratio": 0.30,  # Medium alert
+                },
             }
-        })
+        )
 
         alerts = self.alert_system.generate_alerts(problem_data)
 
@@ -269,28 +278,34 @@ class TestIntelligentAlertSystem(unittest.TestCase):
     def test_stakeholder_specific_filtering(self):
         """Test filtering alerts for specific stakeholders."""
         problem_data = self.normal_data.copy()
-        problem_data.update({
-            "risk_indicators": {
-                "blocked_issues": 4,  # VP Engineering + CEO
-                "security_vulnerabilities": 1,  # CEO + VP Engineering
-                "overdue_issues": 2,
-                "critical_bugs": 0
-            },
-            "team_health": {
-                "overall_score": 65,  # VP Engineering only
-                "technical_debt_ratio": 0.15
+        problem_data.update(
+            {
+                "risk_indicators": {
+                    "blocked_issues": 4,  # VP Engineering + CEO
+                    "security_vulnerabilities": 1,  # CEO + VP Engineering
+                    "overdue_issues": 2,
+                    "critical_bugs": 0,
+                },
+                "team_health": {
+                    "overall_score": 65,  # VP Engineering only
+                    "technical_debt_ratio": 0.15,
+                },
             }
-        })
+        )
 
         all_alerts = self.alert_system.generate_alerts(problem_data)
 
         # Test CEO filtering
-        ceo_alerts = self.alert_system.get_stakeholder_alerts(StakeholderType.CEO, problem_data)
+        ceo_alerts = self.alert_system.get_stakeholder_alerts(
+            StakeholderType.CEO, problem_data
+        )
         for alert in ceo_alerts:
             self.assertIn(StakeholderType.CEO, alert.stakeholders)
 
         # Test VP Engineering filtering
-        vp_alerts = self.alert_system.get_stakeholder_alerts(StakeholderType.VP_ENGINEERING, problem_data)
+        vp_alerts = self.alert_system.get_stakeholder_alerts(
+            StakeholderType.VP_ENGINEERING, problem_data
+        )
         for alert in vp_alerts:
             self.assertIn(StakeholderType.VP_ENGINEERING, alert.stakeholders)
 
@@ -304,17 +319,25 @@ class TestIntelligentAlertSystem(unittest.TestCase):
             "blocked_issues": 4,  # Triggers alert
             "overdue_issues": 2,
             "critical_bugs": 0,
-            "security_vulnerabilities": 0
+            "security_vulnerabilities": 0,
         }
 
         # First alert generation should work
         alerts1 = self.alert_system.generate_alerts(problem_data)
-        blocked_alerts1 = [a for a in alerts1 if "blocker" in a.title.lower() or "delivery" in a.title.lower()]
+        blocked_alerts1 = [
+            a
+            for a in alerts1
+            if "blocker" in a.title.lower() or "delivery" in a.title.lower()
+        ]
         self.assertGreater(len(blocked_alerts1), 0)
 
         # Second alert generation should be blocked by cooldown
         alerts2 = self.alert_system.generate_alerts(problem_data)
-        blocked_alerts2 = [a for a in alerts2 if "blocker" in a.title.lower() or "delivery" in a.title.lower()]
+        blocked_alerts2 = [
+            a
+            for a in alerts2
+            if "blocker" in a.title.lower() or "delivery" in a.title.lower()
+        ]
         self.assertEqual(len(blocked_alerts2), 0)  # Should be in cooldown
 
         # Verify cooldown tracking
@@ -329,18 +352,20 @@ class TestIntelligentAlertSystem(unittest.TestCase):
     def test_cli_formatting_with_alerts(self):
         """Test CLI formatting with active alerts."""
         problem_data = self.normal_data.copy()
-        problem_data.update({
-            "risk_indicators": {
-                "blocked_issues": 4,  # Critical
-                "security_vulnerabilities": 1,  # Critical
-                "overdue_issues": 2,
-                "critical_bugs": 0
-            },
-            "team_health": {
-                "overall_score": 65,  # Medium
-                "technical_debt_ratio": 0.30  # Medium
+        problem_data.update(
+            {
+                "risk_indicators": {
+                    "blocked_issues": 4,  # Critical
+                    "security_vulnerabilities": 1,  # Critical
+                    "overdue_issues": 2,
+                    "critical_bugs": 0,
+                },
+                "team_health": {
+                    "overall_score": 65,  # Medium
+                    "technical_debt_ratio": 0.30,  # Medium
+                },
             }
-        })
+        )
 
         alerts = self.alert_system.generate_alerts(problem_data)
         formatted = self.alert_system.format_alerts_for_cli(alerts)
@@ -386,7 +411,7 @@ class TestIntelligentAlertSystem(unittest.TestCase):
             "team_health_degrading",
             "technical_debt_spike",
             "security_vulnerabilities",
-            "delivery_predictability_drop"
+            "delivery_predictability_drop",
         ]
 
         for expected_rule in expected_rules:
@@ -410,11 +435,15 @@ class TestIntelligentAlertSystem(unittest.TestCase):
             "blocked_issues": 4,
             "critical_bugs": 2,
             "overdue_issues": 2,
-            "security_vulnerabilities": 0
+            "security_vulnerabilities": 0,
         }
 
         alerts = self.alert_system.generate_alerts(problem_data)
-        blocked_alert = next(a for a in alerts if "blocker" in a.title.lower() or "delivery" in a.title.lower())
+        blocked_alert = next(
+            a
+            for a in alerts
+            if "blocker" in a.title.lower() or "delivery" in a.title.lower()
+        )
 
         # Verify alert structure
         self.assertIsNotNone(blocked_alert.id)
@@ -436,5 +465,5 @@ class TestIntelligentAlertSystem(unittest.TestCase):
             self.assertGreater(len(item), 10)  # Should be meaningful text
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

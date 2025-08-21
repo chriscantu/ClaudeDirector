@@ -7,8 +7,15 @@ Tests for the convenience adapter functions for P2.1 integration.
 import unittest
 from unittest.mock import Mock, patch
 from lib.claudedirector.persona_integration.p2_chat_adapter import (
-    P2ChatAdapter, executive_summary, current_alerts, team_health,
-    risk_analysis, initiative_status, ask_persona, get_capabilities, list_personas
+    P2ChatAdapter,
+    executive_summary,
+    current_alerts,
+    team_health,
+    risk_analysis,
+    initiative_status,
+    ask_persona,
+    get_capabilities,
+    list_personas,
 )
 
 
@@ -24,7 +31,9 @@ class TestP2ChatAdapter(unittest.TestCase):
         mock_response = Mock()
         mock_response.response_text = "Executive summary for Diego"
 
-        with patch.object(self.adapter.bridge, 'handle_persona_request', return_value=mock_response) as mock_handler:
+        with patch.object(
+            self.adapter.bridge, "handle_persona_request", return_value=mock_response
+        ) as mock_handler:
             result = self.adapter.get_executive_summary("diego")
 
             # Should auto-detect stakeholder for Diego as vp_engineering
@@ -40,8 +49,12 @@ class TestP2ChatAdapter(unittest.TestCase):
         mock_response = Mock()
         mock_response.response_text = "CEO-focused summary"
 
-        with patch.object(self.adapter.bridge, 'handle_persona_request', return_value=mock_response) as mock_handler:
-            result = self.adapter.get_executive_summary("camille", stakeholder="ceo", period="current_month")
+        with patch.object(
+            self.adapter.bridge, "handle_persona_request", return_value=mock_response
+        ) as mock_handler:
+            result = self.adapter.get_executive_summary(
+                "camille", stakeholder="ceo", period="current_month"
+            )
 
             # Should use specified stakeholder
             call_args = mock_handler.call_args
@@ -55,7 +68,9 @@ class TestP2ChatAdapter(unittest.TestCase):
         mock_response = Mock()
         mock_response.response_text = "Current critical alerts"
 
-        with patch.object(self.adapter.bridge, 'handle_persona_request', return_value=mock_response) as mock_handler:
+        with patch.object(
+            self.adapter.bridge, "handle_persona_request", return_value=mock_response
+        ) as mock_handler:
             result = self.adapter.get_current_alerts("rachel", severity="critical")
 
             call_args = mock_handler.call_args
@@ -69,7 +84,9 @@ class TestP2ChatAdapter(unittest.TestCase):
         mock_response = Mock()
         mock_response.response_text = "Team health status"
 
-        with patch.object(self.adapter.bridge, 'handle_persona_request', return_value=mock_response) as mock_handler:
+        with patch.object(
+            self.adapter.bridge, "handle_persona_request", return_value=mock_response
+        ) as mock_handler:
             result = self.adapter.get_team_health("martin")
 
             call_args = mock_handler.call_args
@@ -83,7 +100,9 @@ class TestP2ChatAdapter(unittest.TestCase):
         mock_response = Mock()
         mock_response.response_text = "Risk analysis report"
 
-        with patch.object(self.adapter.bridge, 'handle_persona_request', return_value=mock_response) as mock_handler:
+        with patch.object(
+            self.adapter.bridge, "handle_persona_request", return_value=mock_response
+        ) as mock_handler:
             result = self.adapter.get_risk_analysis("alvaro")
 
             call_args = mock_handler.call_args
@@ -97,7 +116,9 @@ class TestP2ChatAdapter(unittest.TestCase):
         mock_response = Mock()
         mock_response.response_text = "Initiative status report"
 
-        with patch.object(self.adapter.bridge, 'handle_persona_request', return_value=mock_response) as mock_handler:
+        with patch.object(
+            self.adapter.bridge, "handle_persona_request", return_value=mock_response
+        ) as mock_handler:
             result = self.adapter.get_initiative_status("diego")
 
             call_args = mock_handler.call_args
@@ -115,8 +136,12 @@ class TestP2ChatAdapter(unittest.TestCase):
         mock_response.follow_up_suggestions = ["Follow up 1", "Follow up 2"]
         mock_response.metadata = {"test": "data"}
 
-        with patch.object(self.adapter.bridge, 'handle_persona_request', return_value=mock_response):
-            result = self.adapter.handle_natural_request("sofia", "How are things going?")
+        with patch.object(
+            self.adapter.bridge, "handle_persona_request", return_value=mock_response
+        ):
+            result = self.adapter.handle_natural_request(
+                "sofia", "How are things going?"
+            )
 
             # Should return complete response dictionary
             self.assertIsInstance(result, dict)
@@ -135,13 +160,15 @@ class TestP2ChatAdapter(unittest.TestCase):
             ("rachel", "product_team"),
             ("alvaro", "ceo"),
             ("martin", "vp_engineering"),
-            ("unknown", "vp_engineering")  # Default fallback
+            ("unknown", "vp_engineering"),  # Default fallback
         ]
 
         mock_response = Mock()
         mock_response.response_text = "Test response"
 
-        with patch.object(self.adapter.bridge, 'handle_persona_request', return_value=mock_response) as mock_handler:
+        with patch.object(
+            self.adapter.bridge, "handle_persona_request", return_value=mock_response
+        ) as mock_handler:
             for persona, expected_stakeholder in test_cases:
                 mock_handler.reset_mock()  # Reset for each test
                 self.adapter.get_executive_summary(persona)
@@ -153,7 +180,9 @@ class TestP2ChatAdapter(unittest.TestCase):
         """Test persona capabilities retrieval."""
         mock_caps = {"primary_focus": "test focus", "data_sources": ["test"]}
 
-        with patch.object(self.adapter.bridge, 'get_persona_capabilities', return_value=mock_caps) as mock_handler:
+        with patch.object(
+            self.adapter.bridge, "get_persona_capabilities", return_value=mock_caps
+        ) as mock_handler:
             result = self.adapter.get_persona_capabilities("elena")
 
             mock_handler.assert_called_once_with("elena")
@@ -163,10 +192,12 @@ class TestP2ChatAdapter(unittest.TestCase):
         """Test listing available personas."""
         mock_personas = [
             {"name": "diego", "title": "Test Title"},
-            {"name": "camille", "title": "Test Title 2"}
+            {"name": "camille", "title": "Test Title 2"},
         ]
 
-        with patch.object(self.adapter.bridge, 'get_available_personas', return_value=mock_personas) as mock_handler:
+        with patch.object(
+            self.adapter.bridge, "get_available_personas", return_value=mock_personas
+        ) as mock_handler:
             result = self.adapter.list_available_personas()
 
             mock_handler.assert_called_once()
@@ -176,27 +207,31 @@ class TestP2ChatAdapter(unittest.TestCase):
 class TestConvenienceFunctions(unittest.TestCase):
     """Test convenience functions for direct use."""
 
-    @patch('lib.claudedirector.persona_integration.p2_chat_adapter.p2_chat')
+    @patch("lib.claudedirector.persona_integration.p2_chat_adapter.p2_chat")
     def test_executive_summary_function(self, mock_adapter):
         """Test executive_summary convenience function."""
         mock_adapter.get_executive_summary.return_value = "Test summary"
 
         result = executive_summary("diego", stakeholder="ceo")
 
-        mock_adapter.get_executive_summary.assert_called_once_with("diego", stakeholder="ceo")
+        mock_adapter.get_executive_summary.assert_called_once_with(
+            "diego", stakeholder="ceo"
+        )
         self.assertEqual(result, "Test summary")
 
-    @patch('lib.claudedirector.persona_integration.p2_chat_adapter.p2_chat')
+    @patch("lib.claudedirector.persona_integration.p2_chat_adapter.p2_chat")
     def test_current_alerts_function(self, mock_adapter):
         """Test current_alerts convenience function."""
         mock_adapter.get_current_alerts.return_value = "Test alerts"
 
         result = current_alerts("rachel", severity="high")
 
-        mock_adapter.get_current_alerts.assert_called_once_with("rachel", severity="high")
+        mock_adapter.get_current_alerts.assert_called_once_with(
+            "rachel", severity="high"
+        )
         self.assertEqual(result, "Test alerts")
 
-    @patch('lib.claudedirector.persona_integration.p2_chat_adapter.p2_chat')
+    @patch("lib.claudedirector.persona_integration.p2_chat_adapter.p2_chat")
     def test_team_health_function(self, mock_adapter):
         """Test team_health convenience function."""
         mock_adapter.get_team_health.return_value = "Test health"
@@ -206,7 +241,7 @@ class TestConvenienceFunctions(unittest.TestCase):
         mock_adapter.get_team_health.assert_called_once_with("martin")
         self.assertEqual(result, "Test health")
 
-    @patch('lib.claudedirector.persona_integration.p2_chat_adapter.p2_chat')
+    @patch("lib.claudedirector.persona_integration.p2_chat_adapter.p2_chat")
     def test_risk_analysis_function(self, mock_adapter):
         """Test risk_analysis convenience function."""
         mock_adapter.get_risk_analysis.return_value = "Test risks"
@@ -216,7 +251,7 @@ class TestConvenienceFunctions(unittest.TestCase):
         mock_adapter.get_risk_analysis.assert_called_once_with("alvaro")
         self.assertEqual(result, "Test risks")
 
-    @patch('lib.claudedirector.persona_integration.p2_chat_adapter.p2_chat')
+    @patch("lib.claudedirector.persona_integration.p2_chat_adapter.p2_chat")
     def test_initiative_status_function(self, mock_adapter):
         """Test initiative_status convenience function."""
         mock_adapter.get_initiative_status.return_value = "Test initiatives"
@@ -226,17 +261,19 @@ class TestConvenienceFunctions(unittest.TestCase):
         mock_adapter.get_initiative_status.assert_called_once_with("diego")
         self.assertEqual(result, "Test initiatives")
 
-    @patch('lib.claudedirector.persona_integration.p2_chat_adapter.p2_chat')
+    @patch("lib.claudedirector.persona_integration.p2_chat_adapter.p2_chat")
     def test_ask_persona_function(self, mock_adapter):
         """Test ask_persona convenience function."""
         mock_adapter.handle_natural_request.return_value = {"response": "Test response"}
 
         result = ask_persona("sofia", "How are things?")
 
-        mock_adapter.handle_natural_request.assert_called_once_with("sofia", "How are things?")
+        mock_adapter.handle_natural_request.assert_called_once_with(
+            "sofia", "How are things?"
+        )
         self.assertEqual(result, {"response": "Test response"})
 
-    @patch('lib.claudedirector.persona_integration.p2_chat_adapter.p2_chat')
+    @patch("lib.claudedirector.persona_integration.p2_chat_adapter.p2_chat")
     def test_get_capabilities_function(self, mock_adapter):
         """Test get_capabilities convenience function."""
         mock_adapter.get_persona_capabilities.return_value = {"test": "caps"}
@@ -246,7 +283,7 @@ class TestConvenienceFunctions(unittest.TestCase):
         mock_adapter.get_persona_capabilities.assert_called_once_with("elena")
         self.assertEqual(result, {"test": "caps"})
 
-    @patch('lib.claudedirector.persona_integration.p2_chat_adapter.p2_chat')
+    @patch("lib.claudedirector.persona_integration.p2_chat_adapter.p2_chat")
     def test_list_personas_function(self, mock_adapter):
         """Test list_personas convenience function."""
         mock_adapter.list_available_personas.return_value = [{"name": "test"}]

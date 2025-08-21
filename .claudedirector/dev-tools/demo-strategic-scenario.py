@@ -123,7 +123,9 @@ class StrategicScenarioDemo:
         **Recommended personas**: @martin for architecture decisions, @security for risk assessment
         """
 
-        filepath = Path("workspace/meeting-prep/platform-architecture-review/architecture-notes.md")
+        filepath = Path(
+            "workspace/meeting-prep/platform-architecture-review/architecture-notes.md"
+        )
         filepath.write_text(content)
 
     def create_strategic_planning_content(self):
@@ -178,7 +180,9 @@ class StrategicScenarioDemo:
         **Recommended personas**: @diego for execution, @alvaro for business case, @camille for organizational scaling
         """
 
-        filepath = Path("workspace/meeting-prep/q4-strategic-planning/strategic-initiatives.md")
+        filepath = Path(
+            "workspace/meeting-prep/q4-strategic-planning/strategic-initiatives.md"
+        )
         filepath.write_text(content)
 
     def create_dependency_sync_content(self):
@@ -222,7 +226,9 @@ class StrategicScenarioDemo:
         **Recommended personas**: @rachel for design system alignment, @diego for execution coordination
         """
 
-        filepath = Path("workspace/meeting-prep/cross-team-dependency-sync/coordination-notes.md")
+        filepath = Path(
+            "workspace/meeting-prep/cross-team-dependency-sync/coordination-notes.md"
+        )
         filepath.write_text(content)
 
     def run_strategic_scenario(self):
@@ -230,8 +236,12 @@ class StrategicScenarioDemo:
         print("\n" + "=" * 80)
         print("🎯 STRATEGIC SCENARIO DEMO: Director's Strategic Workflow")
         print("=" * 80)
-        print("Scenario: Engineering Director managing platform initiative across multiple teams")
-        print("Expected: Complete strategic context and actionable insights in < 2 minutes")
+        print(
+            "Scenario: Engineering Director managing platform initiative across multiple teams"
+        )
+        print(
+            "Expected: Complete strategic context and actionable insights in < 2 minutes"
+        )
         print()
 
         start_time = time.time()
@@ -241,7 +251,9 @@ class StrategicScenarioDemo:
         print("Director starts day, needs immediate strategic context...")
 
         step_start = time.time()
-        result = subprocess.run(["./claudedirector", "alerts"], capture_output=True, text=True)
+        result = subprocess.run(
+            ["./claudedirector", "alerts"], capture_output=True, text=True
+        )
 
         print(f"✅ Daily alerts completed in {time.time() - step_start:.1f}s")
         if result.stdout.strip():
@@ -266,7 +278,9 @@ class StrategicScenarioDemo:
 
         scan_time = time.time() - step_start
         print(f"✅ Intelligence extraction completed in {scan_time:.1f}s")
-        print(f"   Stakeholder scan: {'✅' if stakeholder_result.returncode == 0 else '❌'}")
+        print(
+            f"   Stakeholder scan: {'✅' if stakeholder_result.returncode == 0 else '❌'}"
+        )
         print(f"   Task scan: {'✅' if task_result.returncode == 0 else '❌'}")
         print()
 
@@ -293,7 +307,9 @@ class StrategicScenarioDemo:
 
         dashboard_time = time.time() - step_start
         print(f"✅ Strategic dashboard reviewed in {dashboard_time:.1f}s")
-        print(f"   Stakeholder status: {'✅' if stakeholder_list.returncode == 0 else '❌'}")
+        print(
+            f"   Stakeholder status: {'✅' if stakeholder_list.returncode == 0 else '❌'}"
+        )
         print(f"   Task accountability: {'✅' if task_list.returncode == 0 else '❌'}")
         print(f"   Critical items: {'✅' if overdue_tasks.returncode == 0 else '❌'}")
         print()
@@ -321,7 +337,9 @@ class StrategicScenarioDemo:
         print(f"Total Strategic Workflow Time: {total_time:.1f} seconds")
         print(f"Target: < 120 seconds (2 minutes)")
 
-        performance_score = min(100, (120.0 / total_time) * 100) if total_time > 0 else 100
+        performance_score = (
+            min(100, (120.0 / total_time) * 100) if total_time > 0 else 100
+        )
 
         if total_time <= 60:
             grade = "🌟 EXCEPTIONAL - Executive ready"
@@ -344,10 +362,14 @@ class StrategicScenarioDemo:
         print(f"✅ Zero manual data entry or complex configuration")
 
         if total_time <= 120:
-            print(f"\n🎯 DIRECTOR IMPACT: ClaudeDirector delivers immediate strategic value")
+            print(
+                f"\n🎯 DIRECTOR IMPACT: ClaudeDirector delivers immediate strategic value"
+            )
             print(f"   • Time savings: ~15 minutes vs manual coordination")
             print(f"   • Risk reduction: Automated deadline and stakeholder tracking")
-            print(f"   • Decision quality: Persistent context across strategic sessions")
+            print(
+                f"   • Decision quality: Persistent context across strategic sessions"
+            )
 
         return {
             "total_time": total_time,
@@ -376,7 +398,9 @@ def main():
     results = demo.run_strategic_scenario()
 
     print(f"\n📁 Demo meeting content created in workspace/meeting-prep/")
-    print(f"🔄 You can re-run individual commands to explore the strategic intelligence:")
+    print(
+        f"🔄 You can re-run individual commands to explore the strategic intelligence:"
+    )
     print(f"   ./claudedirector stakeholders scan")
     print(f"   ./claudedirector tasks scan")
     print(f"   ./claudedirector stakeholders list")

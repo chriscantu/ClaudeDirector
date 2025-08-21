@@ -21,7 +21,7 @@ def print_step(message: str) -> None:
     """Print a step header"""
     print(f"\n{'='*60}")
     print(f"🔍 {message}")
-    print('='*60)
+    print("=" * 60)
 
 
 def print_success(message: str) -> None:
@@ -43,11 +43,7 @@ def run_command(command: str, check: bool = True) -> subprocess.CompletedProcess
     """Run a command and return the result"""
     try:
         result = subprocess.run(
-            command, 
-            shell=True, 
-            capture_output=True, 
-            text=True,
-            check=check
+            command, shell=True, capture_output=True, text=True, check=check
         )
         return result
     except subprocess.CalledProcessError as e:
@@ -62,9 +58,9 @@ def run_command(command: str, check: bool = True) -> subprocess.CompletedProcess
 def security_scan() -> bool:
     """Run security scan - matches CI exactly"""
     print_step("SECURITY SCAN - Sensitive Data Protection")
-    
+
     # This is the exact same code as in CI
-    security_code = '''
+    security_code = """
 import os
 import re
 
@@ -119,9 +115,9 @@ if issues:
     exit(1)
 else:
     print('✅ No sensitive data violations detected')
-'''
-    
-    result = run_command(f"python3 -c \"{security_code}\"", check=False)
+"""
+
+    result = run_command(f'python3 -c "{security_code}"', check=False)
     if result.returncode == 0:
         print_success("Security Scan")
         return True
@@ -131,32 +127,60 @@ else:
         return False
 
 
+def black_formatting() -> bool:
+    """Run Black formatting check - matches CI exactly"""
+    print_step("CODE QUALITY - Black Formatting")
+
+    # Check if black is available
+    result = run_command("black --version", check=False)
+    if result.returncode != 0:
+        print_warning("Black not installed - installing...")
+        install_result = run_command(
+            "python3 -m pip install black>=23.0.0", check=False
+        )
+        if install_result.returncode != 0:
+            print_error("Failed to install black")
+            return False
+
+    # Check formatting compliance (exact CI command)
+    result = run_command("black --check --diff .", check=False)
+    if result.returncode == 0:
+        print_success("Black Formatting")
+        return True
+    else:
+        print_error("Black Formatting")
+        print("Black formatting violations detected:")
+        print(result.stdout)
+        print("💡 Fix with: black .")
+        return False
+
+
 def check_prerequisites() -> bool:
     """Check if required tools are available"""
     print_step("PREREQUISITES CHECK")
-    
+
     # Check Python
     result = run_command("python3 --version", check=False)
     if result.returncode != 0:
         print_error("Python 3 not found")
         return False
-    
+
     print(f"✅ Python: {result.stdout.strip()}")
-    
+
     # Check if in git repo
     result = run_command("git rev-parse --git-dir", check=False)
     if result.returncode != 0:
         print_error("Not in a git repository")
         return False
-    
+
     print("✅ Git repository detected")
-    
+
     # Check if requirements.txt exists
     if not os.path.exists("requirements.txt"):
         print_warning("requirements.txt not found - some checks may fail")
     else:
         print("✅ requirements.txt found")
-    
+
     return True
 
 
@@ -165,29 +189,35 @@ def main():
     print("🚀 ClaudeDirector Local CI Validation")
     print("=====================================")
     print("Running the same checks as GitHub Actions CI pipeline locally...")
-    
+
     # Check prerequisites
     if not check_prerequisites():
         print_error("Prerequisites check failed")
         sys.exit(1)
-    
-    # Track results
+
+        # Track results
     checks_passed = 0
     checks_failed = 0
-    
+
     # Run security scan
     if security_scan():
         checks_passed += 1
     else:
         checks_failed += 1
-    
+
+    # Run Black formatting check
+    if black_formatting():
+        checks_passed += 1
+    else:
+        checks_failed += 1
+
     # Summary
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("📊 VALIDATION SUMMARY")
-    print("="*60)
+    print("=" * 60)
     print(f"✅ {checks_passed} check(s) passed")
     print(f"❌ {checks_failed} check(s) failed")
-    
+
     if checks_failed == 0:
         print_success("ALL CHECKS PASSED - Ready for CI/CD Pipeline!")
         sys.exit(0)

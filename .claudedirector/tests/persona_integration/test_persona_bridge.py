@@ -6,7 +6,11 @@ Comprehensive tests for persona framework integration with P2.1 system.
 
 import unittest
 from unittest.mock import Mock, patch, MagicMock
-from lib.claudedirector.persona_integration.persona_bridge import PersonaP2Bridge, PersonaRequest, PersonaResponse
+from lib.claudedirector.persona_integration.persona_bridge import (
+    PersonaP2Bridge,
+    PersonaRequest,
+    PersonaResponse,
+)
 
 
 class TestPersonaP2Bridge(unittest.TestCase):
@@ -20,32 +24,28 @@ class TestPersonaP2Bridge(unittest.TestCase):
         """Test routing decision for executive summary requests."""
         # Should route to P2.1
         should_route = self.bridge._should_route_to_p2(
-            "Give me an executive summary",
-            "diego"
+            "Give me an executive summary", "diego"
         )
         self.assertTrue(should_route)
 
     def test_should_route_to_p2_with_alerts_request(self):
         """Test routing decision for alerts requests."""
         should_route = self.bridge._should_route_to_p2(
-            "What critical alerts should I know about?",
-            "camille"
+            "What critical alerts should I know about?", "camille"
         )
         self.assertTrue(should_route)
 
     def test_should_route_to_p2_with_team_health_request(self):
         """Test routing decision for team health requests."""
         should_route = self.bridge._should_route_to_p2(
-            "How is team health looking?",
-            "rachel"
+            "How is team health looking?", "rachel"
         )
         self.assertTrue(should_route)
 
     def test_should_not_route_general_questions(self):
         """Test that general questions don't route to P2.1."""
         should_route = self.bridge._should_route_to_p2(
-            "What is your opinion on microservices?",
-            "martin"
+            "What is your opinion on microservices?", "martin"
         )
         self.assertFalse(should_route)
 
@@ -53,15 +53,13 @@ class TestPersonaP2Bridge(unittest.TestCase):
         """Test routing based on persona-specific keywords."""
         # Diego + platform keywords + status request
         should_route = self.bridge._should_route_to_p2(
-            "What's the status of platform engineering coordination?",
-            "diego"
+            "What's the status of platform engineering coordination?", "diego"
         )
         self.assertTrue(should_route)
 
         # Rachel + design keywords + overview request
         should_route = self.bridge._should_route_to_p2(
-            "Give me an overview of design system accessibility",
-            "rachel"
+            "Give me an overview of design system accessibility", "rachel"
         )
         self.assertTrue(should_route)
 
@@ -76,12 +74,14 @@ class TestPersonaP2Bridge(unittest.TestCase):
         mock_response.technical_details = {"sections": 3}
 
         # Mock the chat interface directly
-        with patch.object(self.bridge.chat_interface, 'handle_chat_request', return_value=mock_response):
+        with patch.object(
+            self.bridge.chat_interface,
+            "handle_chat_request",
+            return_value=mock_response,
+        ):
             # Test the request
             response = self.bridge._handle_p2_request(
-                "diego",
-                "Give me an executive summary",
-                {}
+                "diego", "Give me an executive summary", {}
             )
 
             # Verify response structure
@@ -95,9 +95,7 @@ class TestPersonaP2Bridge(unittest.TestCase):
     def test_handle_general_persona_request(self):
         """Test general persona request handling."""
         response = self.bridge._handle_general_persona_request(
-            "diego",
-            "What do you think about microservices?",
-            {}
+            "diego", "What do you think about microservices?", {}
         )
 
         # Verify response structure
@@ -133,8 +131,11 @@ class TestPersonaP2Bridge(unittest.TestCase):
         caps = self.bridge.get_persona_capabilities("diego")
 
         required_keys = [
-            "primary_focus", "data_sources", "report_types",
-            "alert_types", "stakeholder_perspective"
+            "primary_focus",
+            "data_sources",
+            "report_types",
+            "alert_types",
+            "stakeholder_perspective",
         ]
         for key in required_keys:
             self.assertIn(key, caps)
@@ -167,7 +168,11 @@ class TestPersonaP2Bridge(unittest.TestCase):
         mock_response.confidence_score = 0.85
         mock_response.data_sources = ["jira"]
 
-        with patch.object(self.bridge.chat_interface, 'handle_chat_request', return_value=mock_response):
+        with patch.object(
+            self.bridge.chat_interface,
+            "handle_chat_request",
+            return_value=mock_response,
+        ):
             # Test quick status
             response = self.bridge.quick_status_check("diego")
 
@@ -180,11 +185,14 @@ class TestPersonaP2Bridge(unittest.TestCase):
     def test_handle_persona_request_with_error(self):
         """Test error handling in persona request."""
         # Mock chat interface to raise exception
-        with patch.object(self.bridge.chat_interface, 'handle_chat_request', side_effect=Exception("Test error")):
+        with patch.object(
+            self.bridge.chat_interface,
+            "handle_chat_request",
+            side_effect=Exception("Test error"),
+        ):
             # Test request with error
             response = self.bridge.handle_persona_request(
-                "diego",
-                "Give me an executive summary"
+                "diego", "Give me an executive summary"
             )
 
             # Should return error response
@@ -198,8 +206,19 @@ class TestPersonaP2Bridge(unittest.TestCase):
     def test_persona_keyword_mapping(self):
         """Test persona keyword mapping completeness."""
         # All personas should have keyword mappings
-        expected_personas = ["diego", "camille", "rachel", "alvaro", "martin",
-                           "sofia", "elena", "marcus", "david", "security", "data"]
+        expected_personas = [
+            "diego",
+            "camille",
+            "rachel",
+            "alvaro",
+            "martin",
+            "sofia",
+            "elena",
+            "marcus",
+            "david",
+            "security",
+            "data",
+        ]
 
         for persona in expected_personas:
             self.assertIn(persona, self.bridge.persona_keywords)
@@ -213,8 +232,13 @@ class TestPersonaP2Bridge(unittest.TestCase):
 
         # Should include common request types
         expected_patterns = [
-            "executive summary", "status update", "alerts", "team health",
-            "velocity", "risks", "initiatives"
+            "executive summary",
+            "status update",
+            "alerts",
+            "team health",
+            "velocity",
+            "risks",
+            "initiatives",
         ]
 
         pattern_text = " ".join(patterns)

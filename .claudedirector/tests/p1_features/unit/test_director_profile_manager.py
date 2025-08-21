@@ -13,6 +13,7 @@ from typing import Dict, Any
 
 # Import the modules under test
 import sys
+
 sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
 from lib.claudedirector.p1_features.organizational_intelligence.director_profile_manager import (
@@ -20,7 +21,7 @@ from lib.claudedirector.p1_features.organizational_intelligence.director_profile
     DirectorProfile,
     MetricDefinition,
     InvestmentCategory,
-    DirectorRole
+    DirectorRole,
 )
 
 
@@ -34,7 +35,7 @@ class TestMetricDefinition:
             enabled=True,
             weight=0.5,
             target_value=0.8,
-            measurement_method="test_method"
+            measurement_method="test_method",
         )
 
         assert metric.name == "test_metric"
@@ -52,7 +53,7 @@ class TestMetricDefinition:
             weight=0.3,
             target_value=0.9,
             measurement_method="business_analysis",
-            annual_value_per_percent=15000.0
+            annual_value_per_percent=15000.0,
         )
 
         assert metric.annual_value_per_percent == 15000.0
@@ -69,7 +70,7 @@ class TestInvestmentCategory:
             priority_weight=0.4,
             roi_calculation_method="productivity_gains",
             measurement_period_months=6,
-            success_criteria=[{"metric": "adoption", "target": 0.8}]
+            success_criteria=[{"metric": "adoption", "target": 0.8}],
         )
 
         assert investment.name == "test_investment"
@@ -96,7 +97,7 @@ class TestDirectorProfile:
             enabled_domains={"domain1": metrics},
             investment_categories={"invest1": investment},
             dashboard_config={"layout": "test"},
-            integration_preferences={"tool1": True}
+            integration_preferences={"tool1": True},
         )
 
         assert profile.role_title == "Test Director"
@@ -120,8 +121,8 @@ class TestDirectorProfileManager:
                     "role_title": "Test Director",
                     "primary_focus": "Test Focus",
                     "strategic_priorities": ["Priority 1", "Priority 2"],
-                    "success_metrics": ["Metric 1", "Metric 2"]
-                }
+                    "success_metrics": ["Metric 1", "Metric 2"],
+                },
             },
             "organizational_intelligence": {
                 "velocity_tracking": {
@@ -130,29 +131,20 @@ class TestDirectorProfileManager:
                             "enabled": True,
                             "weight": 0.35,
                             "metrics": ["component_usage", "design_consistency"],
-                            "targets": {
-                                "component": 0.8,
-                                "design": 0.85
-                            }
+                            "targets": {"component": 0.8, "design": 0.85},
                         },
                         "platform_adoption": {
                             "enabled": True,
                             "weight": 0.30,
                             "metrics": ["adoption_rate", "satisfaction"],
-                            "targets": {
-                                "adoption": 0.75,
-                                "satisfaction": 4.5
-                            }
+                            "targets": {"adoption": 0.75, "satisfaction": 4.5},
                         },
                         "api_service_efficiency": {
                             "enabled": False,
                             "weight": 0.0,
                             "metrics": ["response_time", "uptime"],
-                            "targets": {
-                                "response": 200,
-                                "uptime": 0.99
-                            }
-                        }
+                            "targets": {"response": 200, "uptime": 0.99},
+                        },
                     }
                 },
                 "investment_intelligence": {
@@ -164,7 +156,7 @@ class TestDirectorProfileManager:
                             "measurement_period_months": 6,
                             "success_criteria": [
                                 {"metric": "adoption", "target": 0.85, "weight": 0.6}
-                            ]
+                            ],
                         },
                         "platform_infrastructure": {
                             "enabled": True,
@@ -172,38 +164,40 @@ class TestDirectorProfileManager:
                             "roi_calculation_method": "operational_efficiency",
                             "measurement_period_months": 12,
                             "success_criteria": [
-                                {"metric": "deployment_frequency", "target": 2.0, "weight": 0.5}
-                            ]
-                        }
+                                {
+                                    "metric": "deployment_frequency",
+                                    "target": 2.0,
+                                    "weight": 0.5,
+                                }
+                            ],
+                        },
                     }
-                }
+                },
             },
-            "dashboard": {
-                "layout": "platform_director"
-            },
+            "dashboard": {"layout": "platform_director"},
             "integrations": {
                 "design_tools": {
                     "figma": {"enabled": False},
-                    "sketch": {"enabled": False}
+                    "sketch": {"enabled": False},
                 },
                 "development_tools": {
                     "github": {"enabled": True},
-                    "jira": {"enabled": True}
-                }
+                    "jira": {"enabled": True},
+                },
             },
             "preset_profiles": {
                 "platform_director": {
                     "focus_areas": ["design_system_leverage", "platform_adoption"],
                     "key_metrics": ["adoption_rate", "design_consistency"],
-                    "dashboard_layout": "platform_focused"
+                    "dashboard_layout": "platform_focused",
                 }
-            }
+            },
         }
 
     @pytest.fixture
     def temp_config_file(self, sample_config):
         """Create temporary config file for testing"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             yaml.dump(sample_config, f)
             return f.name
 
@@ -255,7 +249,7 @@ class TestDirectorProfileManager:
         # Modify config to use preset
         sample_config["director_profile"]["profile_type"] = "platform_director"
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             yaml.dump(sample_config, f)
             preset_config_file = f.name
 
@@ -308,7 +302,9 @@ class TestDirectorProfileManager:
         manager.customize_profile(update_weights=new_weights)
 
         # Check updated weights
-        design_metrics = manager.current_profile.enabled_domains["design_system_leverage"]
+        design_metrics = manager.current_profile.enabled_domains[
+            "design_system_leverage"
+        ]
         platform_metrics = manager.current_profile.enabled_domains["platform_adoption"]
 
         assert design_metrics[0].weight == 0.5
@@ -326,7 +322,9 @@ class TestDirectorProfileManager:
         manager.customize_profile(update_targets=new_targets)
 
         # Check updated targets
-        design_metrics = manager.current_profile.enabled_domains["design_system_leverage"]
+        design_metrics = manager.current_profile.enabled_domains[
+            "design_system_leverage"
+        ]
         platform_metrics = manager.current_profile.enabled_domains["platform_adoption"]
 
         assert design_metrics[0].target_value == 0.9
@@ -341,10 +339,10 @@ class TestDirectorProfileManager:
 
         # Mock current metrics
         current_metrics = {
-            "component_usage": 0.7,      # 70% of 80% target = 87.5% achievement
-            "design_consistency": 0.8,   # 80% of 85% target = 94.1% achievement
-            "adoption_rate": 0.6,        # 60% of 75% target = 80% achievement
-            "satisfaction": 4.0          # 4.0 of 4.5 target = 88.9% achievement
+            "component_usage": 0.7,  # 70% of 80% target = 87.5% achievement
+            "design_consistency": 0.8,  # 80% of 85% target = 94.1% achievement
+            "adoption_rate": 0.6,  # 60% of 75% target = 80% achievement
+            "satisfaction": 4.0,  # 4.0 of 4.5 target = 88.9% achievement
         }
 
         impact_score = manager.calculate_organizational_impact_score(current_metrics)
@@ -442,7 +440,7 @@ class TestEdgeCases:
         """Test handling of unknown preset profile"""
         sample_config["director_profile"]["profile_type"] = "unknown_profile"
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             yaml.dump(sample_config, f)
             config_file = f.name
 
@@ -454,7 +452,7 @@ class TestEdgeCases:
 
     def test_malformed_yaml_config(self):
         """Test handling of malformed YAML"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             f.write("invalid: yaml: content: [unclosed bracket")
             config_file = f.name
 
@@ -468,7 +466,7 @@ class TestEdgeCases:
         """Test handling of missing required configuration sections"""
         minimal_config = {"director_profile": {"profile_type": "custom"}}
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             yaml.dump(minimal_config, f)
             config_file = f.name
 

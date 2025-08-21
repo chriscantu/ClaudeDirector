@@ -14,13 +14,13 @@ from typing import Dict, List, Any
 from claudedirector.core.persona_enhanced_integration import (
     ConversationIntelligenceEngine,
     PersonaFrameworkOrchestrator,
-    EnhancedPersonaResponse
+    EnhancedPersonaResponse,
 )
 
 from claudedirector.core.enhanced_framework_engine import (
     EnhancedFrameworkEngine,
     ConversationContext,
-    EnhancedSystematicResponse
+    EnhancedSystematicResponse,
 )
 
 
@@ -32,7 +32,7 @@ class TestConversationIntelligenceIntegration(unittest.TestCase):
             "enhanced_mode": True,
             "intelligence_mode": "enhanced",
             "context_retention": True,
-            "collaborative_mode": True
+            "collaborative_mode": True,
         }
         self.intelligence_engine = ConversationIntelligenceEngine(self.config)
         self.session_id = "integration_test_session"
@@ -52,42 +52,47 @@ class TestConversationIntelligenceIntegration(unittest.TestCase):
         self.assertIsInstance(engine.context_retention, bool)
         self.assertIsInstance(engine.collaborative_mode, bool)
 
-    @patch('claudedirector.core.enhanced_framework_engine.EmbeddedFrameworkEngine.analyze_systematically')
+    @patch(
+        "claudedirector.core.enhanced_framework_engine.EmbeddedFrameworkEngine.analyze_systematically"
+    )
     def test_enhanced_conversation_processing(self, mock_analyze):
         """Test enhanced conversation processing with mock framework"""
         # Setup mock framework response
-        from claudedirector.core.embedded_framework_engine import FrameworkAnalysis, SystematicResponse
+        from claudedirector.core.embedded_framework_engine import (
+            FrameworkAnalysis,
+            SystematicResponse,
+        )
 
         mock_analysis = FrameworkAnalysis(
             framework_name="rumelt_strategy_kernel",
             structured_insights={
                 "summary": "Strategic analysis of platform consolidation",
                 "strategic_themes": ["platform_consolidation", "technical_excellence"],
-                "patterns": ["fragmentation", "complexity"]
+                "patterns": ["fragmentation", "complexity"],
             },
             recommendations=[
                 "Consolidate platform services into unified architecture",
                 "Establish clear technical governance standards",
-                "Implement phased migration strategy"
+                "Implement phased migration strategy",
             ],
             implementation_steps=[
                 "Conduct comprehensive platform audit",
                 "Design unified architecture blueprint",
-                "Create migration roadmap with timelines"
+                "Create migration roadmap with timelines",
             ],
             key_considerations=[
                 "Engineering team capacity constraints",
                 "Customer impact during migration",
-                "Technical debt accumulation"
+                "Technical debt accumulation",
             ],
-            analysis_confidence=0.85
+            analysis_confidence=0.85,
         )
 
         mock_response = SystematicResponse(
             analysis=mock_analysis,
             persona_integrated_response="Strategic analysis indicates platform consolidation is critical for Q1 success.",
             processing_time_ms=750,
-            framework_applied="rumelt_strategy_kernel"
+            framework_applied="rumelt_strategy_kernel",
         )
 
         mock_analyze.return_value = mock_response
@@ -95,7 +100,9 @@ class TestConversationIntelligenceIntegration(unittest.TestCase):
         # Test enhanced conversation processing
         user_input = "Help me develop a comprehensive platform strategy for Q1 that addresses our current architectural fragmentation"
 
-        result = self.intelligence_engine.process_conversation(user_input, self.session_id)
+        result = self.intelligence_engine.process_conversation(
+            user_input, self.session_id
+        )
 
         # Verify response structure
         self.assertIsInstance(result, dict)
@@ -121,28 +128,33 @@ class TestConversationIntelligenceIntegration(unittest.TestCase):
         self.assertIn("frameworks_applied", insights)
         self.assertIn("strategic_depth", insights)
 
-    @patch('claudedirector.core.enhanced_framework_engine.EmbeddedFrameworkEngine.analyze_systematically')
+    @patch(
+        "claudedirector.core.enhanced_framework_engine.EmbeddedFrameworkEngine.analyze_systematically"
+    )
     def test_context_aware_conversation_flow(self, mock_analyze):
         """Test that conversation intelligence maintains context across interactions"""
-        from claudedirector.core.embedded_framework_engine import FrameworkAnalysis, SystematicResponse
+        from claudedirector.core.embedded_framework_engine import (
+            FrameworkAnalysis,
+            SystematicResponse,
+        )
 
         # Setup progressive conversation scenarios
         conversations = [
             {
                 "input": "I need help with our platform strategy",
                 "expected_persona": "alvaro",  # Business strategy focus
-                "framework": "rumelt_strategy_kernel"
+                "framework": "rumelt_strategy_kernel",
             },
             {
                 "input": "How should we structure our engineering teams for this platform work?",
                 "expected_persona": "rachel",  # Team structure focus
-                "framework": "team_topologies"
+                "framework": "team_topologies",
             },
             {
                 "input": "Let's dive deeper into the technical architecture decisions",
                 "expected_persona": "martin",  # Technical focus
-                "framework": "strategic_platform_assessment"
-            }
+                "framework": "strategic_platform_assessment",
+            },
         ]
 
         session_results = []
@@ -154,19 +166,21 @@ class TestConversationIntelligenceIntegration(unittest.TestCase):
                 structured_insights={
                     "summary": f"Analysis {i+1} focusing on {conversation['framework']}",
                     "strategic_themes": [f"theme_{i+1}"],
-                    "context_evolution": f"conversation_depth_{i+1}"
+                    "context_evolution": f"conversation_depth_{i+1}",
                 },
-                recommendations=[f"Recommendation {i+1} for {conversation['framework']}"],
+                recommendations=[
+                    f"Recommendation {i+1} for {conversation['framework']}"
+                ],
                 implementation_steps=[f"Step {i+1}"],
                 key_considerations=[f"Consideration {i+1}"],
-                analysis_confidence=0.8 + (i * 0.05)  # Increasing confidence
+                analysis_confidence=0.8 + (i * 0.05),  # Increasing confidence
             )
 
             mock_response = SystematicResponse(
                 analysis=mock_analysis,
                 persona_integrated_response=f"Response {i+1} with context awareness",
                 processing_time_ms=500 + (i * 100),
-                framework_applied=conversation["framework"]
+                framework_applied=conversation["framework"],
             )
 
             mock_analyze.return_value = mock_response
@@ -203,7 +217,9 @@ class TestConversationIntelligenceIntegration(unittest.TestCase):
         complex_input = "I need to develop a comprehensive platform strategy that considers business ROI, team structure, and technical architecture while ensuring smooth stakeholder communication"
 
         try:
-            result = self.intelligence_engine.process_conversation(complex_input, self.session_id)
+            result = self.intelligence_engine.process_conversation(
+                complex_input, self.session_id
+            )
 
             # If collaborative mode is enabled, should have collaboration opportunities
             if self.intelligence_engine.collaborative_mode:
@@ -240,7 +256,7 @@ class TestConversationIntelligenceIntegration(unittest.TestCase):
     def test_chat_only_interface_principle(self):
         """Test that all functionality is accessible through conversation only"""
         # All functionality should be accessible through process_conversation method
-        self.assertTrue(hasattr(self.intelligence_engine, 'process_conversation'))
+        self.assertTrue(hasattr(self.intelligence_engine, "process_conversation"))
         self.assertTrue(callable(self.intelligence_engine.process_conversation))
 
         # Should not require file system setup
@@ -293,7 +309,15 @@ class TestPersonaFrameworkOrchestration(unittest.TestCase):
         affinities = self.orchestrator.persona_framework_affinity
 
         # All key personas should be defined
-        expected_personas = ["alvaro", "rachel", "martin", "diego", "camille", "marcus", "david"]
+        expected_personas = [
+            "alvaro",
+            "rachel",
+            "martin",
+            "diego",
+            "camille",
+            "marcus",
+            "david",
+        ]
 
         for persona in expected_personas:
             self.assertIn(persona, affinities)
@@ -304,7 +328,9 @@ class TestPersonaFrameworkOrchestration(unittest.TestCase):
         for persona, frameworks in affinities.items():
             for framework in frameworks:
                 self.assertIsInstance(framework, str)
-                self.assertGreater(len(framework), 5)  # Reasonable framework name length
+                self.assertGreater(
+                    len(framework), 5
+                )  # Reasonable framework name length
 
     def test_optimal_persona_determination(self):
         """Test that optimal personas are determined correctly"""
@@ -312,24 +338,25 @@ class TestPersonaFrameworkOrchestration(unittest.TestCase):
             {
                 "input": "business strategy and ROI analysis",
                 "expected_personas": ["alvaro"],  # Business focus
-                "frameworks": ["rumelt_strategy_kernel"]
+                "frameworks": ["rumelt_strategy_kernel"],
             },
             {
                 "input": "team structure and organization design",
                 "expected_personas": ["rachel", "diego"],  # People focus
-                "frameworks": ["team_topologies"]
+                "frameworks": ["team_topologies"],
             },
             {
                 "input": "platform architecture and technical decisions",
                 "expected_personas": ["martin"],  # Technical focus
-                "frameworks": ["strategic_platform_assessment"]
-            }
+                "frameworks": ["strategic_platform_assessment"],
+            },
         ]
 
         for test_case in test_cases:
             try:
                 # Create mock enhanced response
                 from unittest.mock import Mock
+
                 mock_response = Mock()
                 mock_response.frameworks_applied = test_case["frameworks"]
 
@@ -351,15 +378,17 @@ class TestPersonaFrameworkOrchestration(unittest.TestCase):
 
             except Exception:
                 # Expected with incomplete mocks, but method should exist
-                self.assertTrue(hasattr(self.orchestrator, '_determine_optimal_personas'))
+                self.assertTrue(
+                    hasattr(self.orchestrator, "_determine_optimal_personas")
+                )
 
     def test_backwards_compatibility_methods(self):
         """Test that orchestrator provides backwards compatible interface"""
         # Should have simple methods for backwards compatibility
         compatibility_methods = [
-            'simple_persona_analysis',
-            'get_available_personas',
-            'get_persona_frameworks'
+            "simple_persona_analysis",
+            "get_available_personas",
+            "get_persona_frameworks",
         ]
 
         for method_name in compatibility_methods:
@@ -374,10 +403,12 @@ class TestPersonaFrameworkOrchestration(unittest.TestCase):
         # Test get_persona_frameworks
         alvaro_frameworks = self.orchestrator.get_persona_frameworks("alvaro")
         self.assertIsInstance(alvaro_frameworks, list)
-        self.assertGreater(len(alvaro_frameworks), 2)  # Alvaro should have multiple frameworks
+        self.assertGreater(
+            len(alvaro_frameworks), 2
+        )  # Alvaro should have multiple frameworks
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Create comprehensive test suite
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
@@ -385,7 +416,7 @@ if __name__ == '__main__':
     # Add integration test classes
     test_classes = [
         TestConversationIntelligenceIntegration,
-        TestPersonaFrameworkOrchestration
+        TestPersonaFrameworkOrchestration,
     ]
 
     for test_class in test_classes:
@@ -409,7 +440,9 @@ if __name__ == '__main__':
         print(f"✅ Chat-Only Interface: CONFIRMED")
         print(f"✅ Backwards Compatibility: PRESERVED")
     else:
-        print(f"❌ {len(result.failures)} failures, {len(result.errors)} errors out of {result.testsRun} tests")
+        print(
+            f"❌ {len(result.failures)} failures, {len(result.errors)} errors out of {result.testsRun} tests"
+        )
 
         if result.failures:
             print(f"\n🔍 FAILURES:")

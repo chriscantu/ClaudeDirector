@@ -12,6 +12,7 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 
+
 def run_command(command, description, timeout=60):
     """Run a command and return success status"""
     print(f"\n{'='*60}")
@@ -25,7 +26,7 @@ def run_command(command, description, timeout=60):
             capture_output=True,
             text=True,
             timeout=timeout,
-            cwd=PROJECT_ROOT
+            cwd=PROJECT_ROOT,
         )
 
         # Print output
@@ -51,6 +52,7 @@ def run_command(command, description, timeout=60):
         print(f"💥 {description} - ERROR: {e}")
         return False
 
+
 def main():
     """Run comprehensive Phase 2 validation test suite"""
     print("🚀 PHASE 2 COMPREHENSIVE VALIDATION TEST SUITE")
@@ -68,7 +70,7 @@ def main():
     tests_total += 1
     if run_command(
         "python3 .claudedirector/tests/run_mcp_transparency_tests.py",
-        "🔧 MCP Transparency P0 Regression Tests (MANDATORY)"
+        "🔧 MCP Transparency P0 Regression Tests (MANDATORY)",
     ):
         tests_passed += 1
 
@@ -76,7 +78,7 @@ def main():
     tests_total += 1
     if run_command(
         "python3 .claudedirector/tests/persona/test_persona_personalities.py",
-        "🎭 Persona Personality Preservation Tests (NEW - MANDATORY)"
+        "🎭 Persona Personality Preservation Tests (NEW - MANDATORY)",
     ):
         tests_passed += 1
 
@@ -84,7 +86,7 @@ def main():
     tests_total += 1
     if run_command(
         "python3 .claudedirector/tests/documentation/test_documentation_preservation.py",
-        "📚 Documentation Functionality Preservation Tests (NEW - MANDATORY)"
+        "📚 Documentation Functionality Preservation Tests (NEW - MANDATORY)",
     ):
         tests_passed += 1
 
@@ -92,7 +94,7 @@ def main():
     tests_total += 1
     if run_command(
         "python3 .claudedirector/tests/integration/test_cursor_integration.py",
-        "🔄 Cursor Integration Tests (MANDATORY)"
+        "🔄 Cursor Integration Tests (MANDATORY)",
     ):
         tests_passed += 1
 
@@ -100,7 +102,7 @@ def main():
     tests_total += 1
     if run_command(
         "python3 docs/testing/first_run_wizard_tests.py",
-        "🧪 First-Run Wizard Tests (MANDATORY)"
+        "🧪 First-Run Wizard Tests (MANDATORY)",
     ):
         tests_passed += 1
 
@@ -108,7 +110,7 @@ def main():
     tests_total += 1
     if run_command(
         "python3 .git/hooks/pre-commit-ai-cleanup",
-        "🧹 AI Cleanup Enforcement Validation (MANDATORY)"
+        "🧹 AI Cleanup Enforcement Validation (MANDATORY)",
     ):
         tests_passed += 1
 
@@ -151,8 +153,7 @@ else:
 "
     """
     if run_command(
-        framework_test_command,
-        "📋 Strategic Framework Functionality Tests (NEW)"
+        framework_test_command, "📋 Strategic Framework Functionality Tests (NEW)"
     ):
         tests_passed += 1
 
@@ -160,7 +161,7 @@ else:
     tests_total += 1
     if run_command(
         "python3 .claudedirector/tests/conversation/test_conversation_tracking_p0.py",
-        "💾 Conversation Tracking P0 Tests (CRITICAL P0 FEATURE)"
+        "💾 Conversation Tracking P0 Tests (CRITICAL P0 FEATURE)",
     ):
         tests_passed += 1
 
@@ -205,10 +206,7 @@ else:
     sys.exit(1)
 "
     """
-    if run_command(
-        navigation_test_command,
-        "🗺️ Documentation Navigation Tests (NEW)"
-    ):
+    if run_command(navigation_test_command, "🗺️ Documentation Navigation Tests (NEW)"):
         tests_passed += 1
 
     # Summary Report
@@ -247,6 +245,7 @@ else:
         print("3. Re-run this validation suite")
         print("4. Only proceed when ALL tests pass")
         return 1
+
 
 if __name__ == "__main__":
     exit_code = main()

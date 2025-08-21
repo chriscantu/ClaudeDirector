@@ -24,7 +24,9 @@ class TestTaskIntelligence:
             assert task_ai.config == mock_config
             assert task_ai.db_path == temp_db
 
-    def test_detect_tasks_in_content(self, mock_config, temp_db, sample_meeting_content):
+    def test_detect_tasks_in_content(
+        self, mock_config, temp_db, sample_meeting_content
+    ):
         """Test task detection in meeting content"""
         mock_config.database_path = temp_db
 
@@ -47,15 +49,22 @@ class TestTaskIntelligence:
         ]
 
         with patch(
-            "claudedirector.intelligence.task.IntelligentTaskDetector", return_value=mock_detector
+            "claudedirector.intelligence.task.IntelligentTaskDetector",
+            return_value=mock_detector,
         ), patch("claudedirector.intelligence.task.StrategicTaskManager"):
             task_ai = TaskIntelligence(config=mock_config)
 
-            context = {"source_path": "meeting-prep/weekly-1on1.md", "category": "meeting_prep"}
+            context = {
+                "source_path": "meeting-prep/weekly-1on1.md",
+                "category": "meeting_prep",
+            }
             result = task_ai.detect_tasks_in_content(sample_meeting_content, context)
 
             assert len(result) == 2
-            assert result[0]["description"] == "Send roadmap draft to stakeholders by Friday"
+            assert (
+                result[0]["description"]
+                == "Send roadmap draft to stakeholders by Friday"
+            )
             assert result[0]["assigned_to"] == "self"
             assert result[0]["priority"] == "high"
             assert result[1]["description"] == "Schedule meeting with DevOps team"
@@ -76,9 +85,11 @@ class TestTaskIntelligence:
         }
 
         with patch(
-            "claudedirector.intelligence.task.IntelligentTaskDetector", return_value=mock_detector
+            "claudedirector.intelligence.task.IntelligentTaskDetector",
+            return_value=mock_detector,
         ), patch(
-            "claudedirector.intelligence.task.StrategicTaskManager", return_value=mock_task_manager
+            "claudedirector.intelligence.task.StrategicTaskManager",
+            return_value=mock_task_manager,
         ):
             task_ai = TaskIntelligence(config=mock_config)
 
@@ -112,7 +123,8 @@ class TestTaskIntelligence:
         ]
 
         with patch("claudedirector.intelligence.task.IntelligentTaskDetector"), patch(
-            "claudedirector.intelligence.task.StrategicTaskManager", return_value=mock_task_manager
+            "claudedirector.intelligence.task.StrategicTaskManager",
+            return_value=mock_task_manager,
         ):
             task_ai = TaskIntelligence(config=mock_config)
 
@@ -140,7 +152,8 @@ class TestTaskIntelligence:
         ]
 
         with patch("claudedirector.intelligence.task.IntelligentTaskDetector"), patch(
-            "claudedirector.intelligence.task.StrategicTaskManager", return_value=mock_task_manager
+            "claudedirector.intelligence.task.StrategicTaskManager",
+            return_value=mock_task_manager,
         ):
             task_ai = TaskIntelligence(config=mock_config)
 
@@ -159,7 +172,8 @@ class TestTaskIntelligence:
         mock_task_manager.update_task_status.return_value = True
 
         with patch("claudedirector.intelligence.task.IntelligentTaskDetector"), patch(
-            "claudedirector.intelligence.task.StrategicTaskManager", return_value=mock_task_manager
+            "claudedirector.intelligence.task.StrategicTaskManager",
+            return_value=mock_task_manager,
         ):
             task_ai = TaskIntelligence(config=mock_config)
 
@@ -176,7 +190,8 @@ class TestTaskIntelligence:
         mock_detector.detect_tasks_in_content.side_effect = Exception("Detection error")
 
         with patch(
-            "claudedirector.intelligence.task.IntelligentTaskDetector", return_value=mock_detector
+            "claudedirector.intelligence.task.IntelligentTaskDetector",
+            return_value=mock_detector,
         ), patch("claudedirector.intelligence.task.StrategicTaskManager"):
             task_ai = TaskIntelligence(config=mock_config)
 
@@ -222,11 +237,14 @@ class TestTaskIntelligence:
         ]
 
         with patch(
-            "claudedirector.intelligence.task.IntelligentTaskDetector", return_value=mock_detector
+            "claudedirector.intelligence.task.IntelligentTaskDetector",
+            return_value=mock_detector,
         ), patch("claudedirector.intelligence.task.StrategicTaskManager"):
             task_ai = TaskIntelligence(config=mock_config)
 
-            content = "I need to review the proposal. Sarah asked me to prepare the metrics."
+            content = (
+                "I need to review the proposal. Sarah asked me to prepare the metrics."
+            )
             result = task_ai.detect_tasks_in_content(content, {})
 
             assert len(result) == 2
@@ -242,9 +260,11 @@ class TestTaskIntelligence:
         mock_task_manager.link_task_to_stakeholder.return_value = True
 
         with patch(
-            "claudedirector.intelligence.task.IntelligentTaskDetector", return_value=mock_detector
+            "claudedirector.intelligence.task.IntelligentTaskDetector",
+            return_value=mock_detector,
         ), patch(
-            "claudedirector.intelligence.task.StrategicTaskManager", return_value=mock_task_manager
+            "claudedirector.intelligence.task.StrategicTaskManager",
+            return_value=mock_task_manager,
         ):
             task_ai = TaskIntelligence(config=mock_config)
 

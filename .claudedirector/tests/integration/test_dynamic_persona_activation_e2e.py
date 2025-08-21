@@ -26,7 +26,8 @@ from datetime import datetime
 from typing import Dict, List, Any
 
 import sys
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../lib'))
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../lib"))
 
 from claudedirector.core.persona_activation_engine import (
     ContextAnalysisEngine,
@@ -34,11 +35,14 @@ from claudedirector.core.persona_activation_engine import (
     ConversationStateEngine,
     ContextResult,
     PersonaSelection,
-    ConfidenceLevel
+    ConfidenceLevel,
 )
 from claudedirector.core.template_engine import TemplateDiscoveryEngine
 from claudedirector.p1_features.template_commands import TemplateCommands
-from claudedirector.p1_features.template_migration import TemplateMigrationEngine, TemplateMigrationCommands
+from claudedirector.p1_features.template_migration import (
+    TemplateMigrationEngine,
+    TemplateMigrationCommands,
+)
 
 
 class TestDynamicPersonaActivationE2E(unittest.TestCase):
@@ -58,23 +62,27 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
                 "generated_by": "E2E Test Suite",
                 "total_templates": 6,
                 "supported_domains": [
-                    "mobile_platforms", "product_engineering", "platform_engineering",
-                    "backend_services", "infrastructure_devops", "data_analytics_ml"
-                ]
+                    "mobile_platforms",
+                    "product_engineering",
+                    "platform_engineering",
+                    "backend_services",
+                    "infrastructure_devops",
+                    "data_analytics_ml",
+                ],
             },
             "global_settings": {
                 "default_fallback_personas": ["camille", "diego", "alvaro"],
                 "activation_thresholds": {
                     "high_confidence": 0.8,
                     "medium_confidence": 0.6,
-                    "low_confidence": 0.4
+                    "low_confidence": 0.4,
                 },
                 "selection_weights": {
                     "domain_match": 0.4,
                     "industry_match": 0.3,
                     "team_size_match": 0.2,
-                    "keyword_confidence": 0.1
-                }
+                    "keyword_confidence": 0.1,
+                },
             },
             "templates": {
                 "mobile_director": {
@@ -84,27 +92,33 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
                     "industry_modifiers": {
                         "fintech": {
                             "priorities": ["security_compliance", "payment_processing"],
-                            "metrics": ["transaction_security", "compliance_audit_score"]
+                            "metrics": [
+                                "transaction_security",
+                                "compliance_audit_score",
+                            ],
                         },
                         "gaming": {
                             "priorities": ["real_time_performance", "user_engagement"],
-                            "metrics": ["frame_rate_consistency", "user_retention"]
-                        }
+                            "metrics": ["frame_rate_consistency", "user_retention"],
+                        },
                     },
                     "team_size_contexts": {
                         "startup": {
                             "focus": ["mvp_velocity", "platform_foundation"],
-                            "challenges": ["resource_constraints", "technical_debt"]
+                            "challenges": ["resource_constraints", "technical_debt"],
                         },
                         "enterprise": {
                             "focus": ["enterprise_governance", "app_store_compliance"],
-                            "challenges": ["legacy_migration", "regulatory_requirements"]
-                        }
+                            "challenges": [
+                                "legacy_migration",
+                                "regulatory_requirements",
+                            ],
+                        },
                     },
                     "personas": {
                         "primary": ["marcus", "sofia"],
                         "contextual": ["diego", "security"],
-                        "fallback": ["camille"]
+                        "fallback": ["camille"],
                     },
                     "activation_keywords": {
                         "mobile app": 0.9,
@@ -113,20 +127,20 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
                         "react native": 0.85,
                         "flutter": 0.85,
                         "app store": 0.8,
-                        "mobile performance": 0.85
+                        "mobile performance": 0.85,
                     },
                     "strategic_priorities": [
                         "platform_unification",
                         "developer_experience",
                         "market_speed",
-                        "performance_optimization"
+                        "performance_optimization",
                     ],
                     "metrics_focus": [
                         "app_performance",
                         "release_velocity",
                         "user_adoption",
-                        "platform_consistency"
-                    ]
+                        "platform_consistency",
+                    ],
                 },
                 "product_engineering_director": {
                     "domain": "product_engineering",
@@ -134,28 +148,46 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
                     "description": "Product strategy execution, user experience optimization, and customer-driven engineering delivery",
                     "industry_modifiers": {
                         "saas": {
-                            "priorities": ["customer_retention_engineering", "product_analytics"],
-                            "metrics": ["monthly_active_users", "feature_adoption_rate"]
+                            "priorities": [
+                                "customer_retention_engineering",
+                                "product_analytics",
+                            ],
+                            "metrics": [
+                                "monthly_active_users",
+                                "feature_adoption_rate",
+                            ],
                         },
                         "ecommerce": {
-                            "priorities": ["conversion_optimization", "personalization_systems"],
-                            "metrics": ["conversion_rate", "cart_abandonment"]
-                        }
+                            "priorities": [
+                                "conversion_optimization",
+                                "personalization_systems",
+                            ],
+                            "metrics": ["conversion_rate", "cart_abandonment"],
+                        },
                     },
                     "team_size_contexts": {
                         "startup": {
                             "focus": ["mvp_product_fit", "user_feedback_loops"],
-                            "challenges": ["feature_prioritization", "technical_debt_vs_features"]
+                            "challenges": [
+                                "feature_prioritization",
+                                "technical_debt_vs_features",
+                            ],
                         },
                         "scale": {
-                            "focus": ["product_scalability", "user_experience_consistency"],
-                            "challenges": ["feature_coordination", "product_quality_vs_velocity"]
-                        }
+                            "focus": [
+                                "product_scalability",
+                                "user_experience_consistency",
+                            ],
+                            "challenges": [
+                                "feature_coordination",
+                                "product_quality_vs_velocity",
+                            ],
+                        },
                     },
                     "personas": {
                         "primary": ["alvaro", "rachel"],
                         "contextual": ["diego", "data"],
-                        "fallback": ["camille"]
+                        "fallback": ["camille"],
                     },
                     "activation_keywords": {
                         "product strategy": 0.95,
@@ -164,20 +196,20 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
                         "customer feedback": 0.85,
                         "feature delivery": 0.85,
                         "product analytics": 0.8,
-                        "user research": 0.8
+                        "user research": 0.8,
                     },
                     "strategic_priorities": [
                         "product_market_fit_engineering",
                         "user_experience_optimization",
                         "feature_delivery_velocity",
-                        "data_driven_development"
+                        "data_driven_development",
                     ],
                     "metrics_focus": [
                         "feature_adoption_rate",
                         "user_satisfaction_scores",
                         "product_velocity_metrics",
-                        "customer_conversion_impact"
-                    ]
+                        "customer_conversion_impact",
+                    ],
                 },
                 "platform_director": {
                     "domain": "platform_engineering",
@@ -185,20 +217,23 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
                     "description": "Developer productivity, internal tooling, and platform infrastructure",
                     "industry_modifiers": {
                         "enterprise": {
-                            "priorities": ["enterprise_governance", "compliance_frameworks"],
-                            "metrics": ["developer_productivity", "platform_adoption"]
+                            "priorities": [
+                                "enterprise_governance",
+                                "compliance_frameworks",
+                            ],
+                            "metrics": ["developer_productivity", "platform_adoption"],
                         }
                     },
                     "team_size_contexts": {
                         "scale": {
                             "focus": ["developer_velocity", "platform_standardization"],
-                            "challenges": ["tool_proliferation", "platform_adoption"]
+                            "challenges": ["tool_proliferation", "platform_adoption"],
                         }
                     },
                     "personas": {
                         "primary": ["diego", "martin"],
                         "contextual": ["alvaro", "security"],
-                        "fallback": ["camille"]
+                        "fallback": ["camille"],
                     },
                     "activation_keywords": {
                         "platform engineering": 0.95,
@@ -206,18 +241,18 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
                         "ci/cd": 0.85,
                         "developer productivity": 0.9,
                         "internal tools": 0.85,
-                        "platform": 0.8
+                        "platform": 0.8,
                     },
                     "strategic_priorities": [
                         "developer_productivity",
                         "platform_standardization",
-                        "tool_consolidation"
+                        "tool_consolidation",
                     ],
                     "metrics_focus": [
                         "developer_velocity",
                         "platform_adoption",
-                        "build_success_rate"
-                    ]
+                        "build_success_rate",
+                    ],
                 },
                 "backend_director": {
                     "domain": "backend_services",
@@ -225,20 +260,23 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
                     "description": "API strategy, microservices architecture, and backend scalability",
                     "industry_modifiers": {
                         "fintech": {
-                            "priorities": ["transaction_processing", "data_consistency"],
-                            "metrics": ["transaction_throughput", "data_integrity"]
+                            "priorities": [
+                                "transaction_processing",
+                                "data_consistency",
+                            ],
+                            "metrics": ["transaction_throughput", "data_integrity"],
                         }
                     },
                     "team_size_contexts": {
                         "enterprise": {
                             "focus": ["service_governance", "api_strategy"],
-                            "challenges": ["legacy_integration", "service_sprawl"]
+                            "challenges": ["legacy_integration", "service_sprawl"],
                         }
                     },
                     "personas": {
                         "primary": ["martin", "diego"],
                         "contextual": ["data", "security"],
-                        "fallback": ["camille"]
+                        "fallback": ["camille"],
                     },
                     "activation_keywords": {
                         "backend": 0.9,
@@ -246,18 +284,18 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
                         "api": 0.85,
                         "database": 0.8,
                         "scalability": 0.85,
-                        "distributed systems": 0.9
+                        "distributed systems": 0.9,
                     },
                     "strategic_priorities": [
                         "service_architecture",
                         "api_governance",
-                        "scalability_planning"
+                        "scalability_planning",
                     ],
                     "metrics_focus": [
                         "api_performance",
                         "service_reliability",
-                        "database_efficiency"
-                    ]
+                        "database_efficiency",
+                    ],
                 },
                 "infrastructure_director": {
                     "domain": "infrastructure_devops",
@@ -266,19 +304,19 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
                     "industry_modifiers": {
                         "healthcare": {
                             "priorities": ["hipaa_compliance", "data_privacy"],
-                            "metrics": ["compliance_coverage", "security_incidents"]
+                            "metrics": ["compliance_coverage", "security_incidents"],
                         }
                     },
                     "team_size_contexts": {
                         "startup": {
                             "focus": ["cloud_adoption", "automation_basics"],
-                            "challenges": ["cost_optimization", "skill_gaps"]
+                            "challenges": ["cost_optimization", "skill_gaps"],
                         }
                     },
                     "personas": {
                         "primary": ["martin", "security"],
                         "contextual": ["diego", "david"],
-                        "fallback": ["camille"]
+                        "fallback": ["camille"],
                     },
                     "activation_keywords": {
                         "infrastructure": 0.95,
@@ -287,18 +325,18 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
                         "cloud": 0.85,
                         "deployment": 0.8,
                         "monitoring": 0.8,
-                        "reliability": 0.85
+                        "reliability": 0.85,
                     },
                     "strategic_priorities": [
                         "platform_reliability",
                         "operational_excellence",
-                        "cost_optimization"
+                        "cost_optimization",
                     ],
                     "metrics_focus": [
                         "system_reliability",
                         "deployment_velocity",
-                        "cost_efficiency"
-                    ]
+                        "cost_efficiency",
+                    ],
                 },
                 "data_director": {
                     "domain": "data_analytics_ml",
@@ -307,19 +345,19 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
                     "industry_modifiers": {
                         "ecommerce": {
                             "priorities": ["recommendation_systems", "personalization"],
-                            "metrics": ["recommendation_accuracy", "conversion_lift"]
+                            "metrics": ["recommendation_accuracy", "conversion_lift"],
                         }
                     },
                     "team_size_contexts": {
                         "scale": {
                             "focus": ["data_governance", "ml_ops"],
-                            "challenges": ["data_quality", "model_deployment"]
+                            "challenges": ["data_quality", "model_deployment"],
                         }
                     },
                     "personas": {
                         "primary": ["data", "martin"],
                         "contextual": ["alvaro", "diego"],
-                        "fallback": ["camille"]
+                        "fallback": ["camille"],
                     },
                     "activation_keywords": {
                         "data pipeline": 0.95,
@@ -327,30 +365,31 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
                         "analytics": 0.85,
                         "data warehouse": 0.9,
                         "ml": 0.85,
-                        "business intelligence": 0.8
+                        "business intelligence": 0.8,
                     },
                     "strategic_priorities": [
                         "data_governance",
                         "ml_operations",
-                        "analytics_enablement"
+                        "analytics_enablement",
                     ],
                     "metrics_focus": [
                         "data_quality",
                         "model_performance",
-                        "analytics_adoption"
-                    ]
-                }
-            }
+                        "analytics_adoption",
+                    ],
+                },
+            },
         }
 
         # Write test configuration
-        with open(cls.config_path, 'w') as f:
+        with open(cls.config_path, "w") as f:
             yaml.dump(cls.test_config, f, default_flow_style=False, indent=2)
 
     @classmethod
     def tearDownClass(cls):
         """Clean up test environment"""
         import shutil
+
         shutil.rmtree(cls.test_dir)
 
     def setUp(self):
@@ -397,7 +436,9 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
 
         # Validate persona selection
         self.assertEqual(selection.template_id, "mobile_director")
-        self.assertIn(selection.primary, ["marcus", "sofia", "diego"])  # Should select appropriate persona
+        self.assertIn(
+            selection.primary, ["marcus", "sofia", "diego"]
+        )  # Should select appropriate persona
         self.assertEqual(selection.confidence, context.confidence)
         self.assertIn("Mobile Engineering Director", selection.rationale)
 
@@ -413,8 +454,12 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
         # Step 4: Performance Validation
         total_time = (time.time() - start_time) * 1000
         self.assertLess(total_time, 2000)  # ADR requirement: <2000ms total
-        self.assertLess(context.analysis_time_ms, 500)  # ADR requirement: <500ms analysis
-        self.assertLess(selection.selection_time_ms, 300)  # ADR requirement: <300ms selection
+        self.assertLess(
+            context.analysis_time_ms, 500
+        )  # ADR requirement: <500ms analysis
+        self.assertLess(
+            selection.selection_time_ms, 300
+        )  # ADR requirement: <300ms selection
 
         # Step 5: Industry Context Application
         template = self.template_discovery.get_template("mobile_director")
@@ -422,11 +467,15 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
 
         # Validate industry-specific enhancements
         self.assertIn("enhanced_priorities", industry_enhancements)
-        self.assertIn("security_compliance", industry_enhancements["enhanced_priorities"])
+        self.assertIn(
+            "security_compliance", industry_enhancements["enhanced_priorities"]
+        )
         self.assertIn("enhanced_metrics", industry_enhancements)
         self.assertIn("transaction_security", industry_enhancements["enhanced_metrics"])
 
-        print(f"✅ Mobile Development E2E: {total_time:.1f}ms total, {context.confidence:.2f} confidence")
+        print(
+            f"✅ Mobile Development E2E: {total_time:.1f}ms total, {context.confidence:.2f} confidence"
+        )
 
     def test_e2e_product_strategy_workflow(self):
         """
@@ -456,21 +505,23 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
 
         # Validate persona selection
         self.assertEqual(selection.template_id, "product_engineering_director")
-        self.assertIn(selection.primary, ["alvaro", "rachel"])  # Should select product persona
+        self.assertIn(
+            selection.primary, ["alvaro", "rachel"]
+        )  # Should select product persona
 
         # Step 3: State Management with Previous Context
         # Simulate previous mobile conversation
         previous_context = ContextResult(
             domain="mobile_platforms",
             confidence=0.8,
-            suggested_template="mobile_director"
+            suggested_template="mobile_director",
         )
         previous_selection = PersonaSelection(
-            primary="marcus",
-            template_id="mobile_director",
-            confidence=0.8
+            primary="marcus", template_id="mobile_director", confidence=0.8
         )
-        self.state_engine.update_state(previous_selection, previous_context, "previous mobile discussion")
+        self.state_engine.update_state(
+            previous_selection, previous_context, "previous mobile discussion"
+        )
 
         # Now update with new product context
         self.state_engine.update_state(selection, context, user_input)
@@ -483,7 +534,9 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
 
         # Validate persona switch suggestion worked
         switch_suggestion = self.state_engine.suggest_persona_switch(context)
-        self.assertIsNone(switch_suggestion)  # Should not suggest switch since we already switched
+        self.assertIsNone(
+            switch_suggestion
+        )  # Should not suggest switch since we already switched
 
         # Step 4: Performance Validation
         total_time = (time.time() - start_time) * 1000
@@ -499,7 +552,9 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
         self.assertIn("key_challenges", team_context)
         self.assertIn("feature_coordination", team_context["key_challenges"])
 
-        print(f"✅ Product Strategy E2E: {total_time:.1f}ms total, {context.confidence:.2f} confidence")
+        print(
+            f"✅ Product Strategy E2E: {total_time:.1f}ms total, {context.confidence:.2f} confidence"
+        )
 
     def test_e2e_infrastructure_emergency_workflow(self):
         """
@@ -518,7 +573,9 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
 
         # Validate emergency detection
         self.assertEqual(context.suggested_template, "infrastructure_director")
-        self.assertGreater(context.confidence, 0.8)  # Should be high confidence for emergency
+        self.assertGreater(
+            context.confidence, 0.8
+        )  # Should be high confidence for emergency
         self.assertEqual(context.detected_industry, "healthcare")
         self.assertIn("kubernetes", context.keywords)
         self.assertIn("infrastructure", context.keywords)
@@ -528,7 +585,9 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
 
         # Validate high-priority persona selection
         self.assertEqual(selection.template_id, "infrastructure_director")
-        self.assertIn(selection.primary, ["martin", "security"])  # Should select infrastructure expert
+        self.assertIn(
+            selection.primary, ["martin", "security"]
+        )  # Should select infrastructure expert
         self.assertEqual(selection.selection_method, "automatic_high_confidence")
 
         # Step 3: Rapid State Update
@@ -537,8 +596,12 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
         # Step 4: Emergency Performance Validation (Stricter Requirements)
         total_time = (time.time() - start_time) * 1000
         self.assertLess(total_time, 1000)  # Emergency should be faster than 1 second
-        self.assertLess(context.analysis_time_ms, 300)  # Faster analysis for emergencies
-        self.assertLess(selection.selection_time_ms, 200)  # Faster selection for emergencies
+        self.assertLess(
+            context.analysis_time_ms, 300
+        )  # Faster analysis for emergencies
+        self.assertLess(
+            selection.selection_time_ms, 200
+        )  # Faster selection for emergencies
 
         # Step 5: Industry Compliance Context
         template = self.template_discovery.get_template("infrastructure_director")
@@ -549,7 +612,9 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
         self.assertIn("hipaa_compliance", industry_enhancements["enhanced_priorities"])
         self.assertIn("data_privacy", industry_enhancements["enhanced_priorities"])
 
-        print(f"✅ Infrastructure Emergency E2E: {total_time:.1f}ms total (emergency response)")
+        print(
+            f"✅ Infrastructure Emergency E2E: {total_time:.1f}ms total (emergency response)"
+        )
 
     def test_e2e_persona_switching_workflow(self):
         """
@@ -561,9 +626,18 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
 
         # Conversation Evolution: Platform → Mobile → Data
         conversations = [
-            ("Our CI/CD pipeline is slow and developer productivity is suffering", "platform_director"),
-            ("The mobile app built by this pipeline has performance issues on iOS", "mobile_director"),
-            ("We need analytics to understand which features are causing the performance problems", "data_director")
+            (
+                "Our CI/CD pipeline is slow and developer productivity is suffering",
+                "platform_director",
+            ),
+            (
+                "The mobile app built by this pipeline has performance issues on iOS",
+                "mobile_director",
+            ),
+            (
+                "We need analytics to understand which features are causing the performance problems",
+                "data_director",
+            ),
         ]
 
         activation_times = []
@@ -614,7 +688,9 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
         Tests graceful fallback when confidence is low or context is unclear.
         """
         # Test Scenario: Ambiguous input that doesn't clearly match any template
-        user_input = "We have some performance issues and need help with optimization strategies"
+        user_input = (
+            "We have some performance issues and need help with optimization strategies"
+        )
 
         start_time = time.time()
 
@@ -648,7 +724,9 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
         total_time = (time.time() - start_time) * 1000
         self.assertLess(total_time, 2000)
 
-        print(f"✅ Low Confidence Fallback E2E: {total_time:.1f}ms total, {context.confidence:.2f} confidence")
+        print(
+            f"✅ Low Confidence Fallback E2E: {total_time:.1f}ms total, {context.confidence:.2f} confidence"
+        )
 
     def test_e2e_template_commands_integration(self):
         """
@@ -680,9 +758,9 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
         self.assertIn("resource_constraints", summary_result)
 
         # Test template comparison
-        comparison_result = template_commands.compare_templates([
-            "mobile_director", "product_engineering_director"
-        ])
+        comparison_result = template_commands.compare_templates(
+            ["mobile_director", "product_engineering_director"]
+        )
 
         # Validate comparison shows both templates
         self.assertIn("Mobile Engineering Director", comparison_result)
@@ -703,7 +781,7 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
         migration_engine = TemplateMigrationEngine(
             templates_config_path=self.config_path,
             migrations_dir=migration_dir,
-            template_discovery=self.template_discovery
+            template_discovery=self.template_discovery,
         )
 
         # Test version detection
@@ -745,7 +823,7 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
             "kubernetes infrastructure deployment issues",
             "data pipeline optimization and ML model performance",
             "backend API scalability and microservices architecture",
-            "platform developer tools and CI/CD improvement"
+            "platform developer tools and CI/CD improvement",
         ]
 
         total_start_time = time.time()
@@ -764,7 +842,9 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
 
             # Individual scenario validation
             self.assertLess(scenario_time, 2000)  # Each scenario should be fast
-            self.assertGreater(context.confidence, 0.4)  # Should have reasonable confidence
+            self.assertGreater(
+                context.confidence, 0.4
+            )  # Should have reasonable confidence
 
         total_time = (time.time() - total_start_time) * 1000
         avg_time = sum(activation_times) / len(activation_times)
@@ -772,7 +852,7 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
 
         # Performance requirements validation
         self.assertLess(avg_time, 1500)  # Average should be well under limit
-        self.assertLess(max_time, 2000)   # No single activation should exceed limit
+        self.assertLess(max_time, 2000)  # No single activation should exceed limit
 
         # State consistency validation
         final_state = self.state_engine.get_current_state()
@@ -781,7 +861,9 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
         history = self.state_engine.get_activation_history()
         self.assertEqual(len(history), len(test_scenarios))
 
-        print(f"✅ Performance Stress Test E2E: {total_time:.1f}ms total, {avg_time:.1f}ms avg, {max_time:.1f}ms max")
+        print(
+            f"✅ Performance Stress Test E2E: {total_time:.1f}ms total, {avg_time:.1f}ms avg, {max_time:.1f}ms max"
+        )
 
     def test_e2e_error_handling_resilience(self):
         """
@@ -813,7 +895,9 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
                     self.assertLess(context.confidence, 0.4)
 
             except Exception as e:
-                self.fail(f"System should handle error scenario gracefully: {scenario[:50]}... Error: {e}")
+                self.fail(
+                    f"System should handle error scenario gracefully: {scenario[:50]}... Error: {e}"
+                )
 
         print("✅ Error Handling Resilience E2E: System handles edge cases gracefully")
 
@@ -826,22 +910,35 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
         # Simulate realistic engineering director conversation
         conversation_flow = [
             # Initial problem statement
-            ("Our mobile app is getting bad reviews in the app store, users are complaining about crashes and slow performance", "mobile_director"),
-
+            (
+                "Our mobile app is getting bad reviews in the app store, users are complaining about crashes and slow performance",
+                "mobile_director",
+            ),
             # Technical deep dive
-            ("The crashes seem to be happening during payment processing in our fintech app, especially on iOS", "mobile_director"),
-
+            (
+                "The crashes seem to be happening during payment processing in our fintech app, especially on iOS",
+                "mobile_director",
+            ),
             # Expanding scope to product strategy
-            ("This is affecting our user retention and product metrics, we need to understand the business impact", "product_engineering_director"),
-
+            (
+                "This is affecting our user retention and product metrics, we need to understand the business impact",
+                "product_engineering_director",
+            ),
             # Infrastructure concerns
-            ("The backend APIs are also showing high latency, might be related to our kubernetes infrastructure", "infrastructure_director"),
-
+            (
+                "The backend APIs are also showing high latency, might be related to our kubernetes infrastructure",
+                "infrastructure_director",
+            ),
             # Data analysis need
-            ("We need analytics to correlate app crashes with API performance and identify patterns", "data_director"),
-
+            (
+                "We need analytics to correlate app crashes with API performance and identify patterns",
+                "data_director",
+            ),
             # Back to mobile for resolution
-            ("Based on the data, we need to implement better error handling and performance monitoring in the mobile app", "mobile_director")
+            (
+                "Based on the data, we need to implement better error handling and performance monitoring in the mobile app",
+                "mobile_director",
+            ),
         ]
 
         start_time = time.time()
@@ -860,13 +957,20 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
             last_template = selection.template_id
 
             # Validate expected template selection
-            self.assertEqual(selection.template_id, expected_template,
-                           f"Turn {turn + 1}: Expected {expected_template}, got {selection.template_id}")
+            self.assertEqual(
+                selection.template_id,
+                expected_template,
+                f"Turn {turn + 1}: Expected {expected_template}, got {selection.template_id}",
+            )
 
             # Test persona switch suggestions
             if turn > 0:  # Skip first turn
                 switch_suggestion = self.state_engine.suggest_persona_switch(context)
-                if context.confidence >= 0.7 and context.suggested_template != self.state_engine.current_template_id:
+                if (
+                    context.confidence >= 0.7
+                    and context.suggested_template
+                    != self.state_engine.current_template_id
+                ):
                     self.assertIsNotNone(switch_suggestion)
 
         total_time = (time.time() - start_time) * 1000
@@ -874,7 +978,9 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
         # Validate conversation metrics
         final_state = self.state_engine.get_current_state()
         self.assertEqual(final_state["total_activations"], len(conversation_flow))
-        self.assertGreater(persona_switches, 2)  # Should have switched personas multiple times
+        self.assertGreater(
+            persona_switches, 2
+        )  # Should have switched personas multiple times
 
         # Validate conversation history
         history = self.state_engine.get_activation_history()
@@ -884,7 +990,9 @@ class TestDynamicPersonaActivationE2E(unittest.TestCase):
         avg_time_per_turn = total_time / len(conversation_flow)
         self.assertLess(avg_time_per_turn, 1000)  # Should maintain performance
 
-        print(f"✅ Real-World Conversation E2E: {len(conversation_flow)} turns, {persona_switches} switches, {total_time:.1f}ms total")
+        print(
+            f"✅ Real-World Conversation E2E: {len(conversation_flow)} turns, {persona_switches} switches, {total_time:.1f}ms total"
+        )
 
 
 class TestCLIIntegrationE2E(unittest.TestCase):
@@ -901,7 +1009,9 @@ class TestCLIIntegrationE2E(unittest.TestCase):
         # Test templates list command
         result = subprocess.run(
             ["./claudedirector", "templates", "list"],
-            capture_output=True, text=True, timeout=30
+            capture_output=True,
+            text=True,
+            timeout=30,
         )
         self.assertEqual(result.returncode, 0)
         self.assertIn("Director Template", result.stdout)
@@ -909,7 +1019,9 @@ class TestCLIIntegrationE2E(unittest.TestCase):
         # Test templates discover command
         result = subprocess.run(
             ["./claudedirector", "templates", "discover", "mobile app performance"],
-            capture_output=True, text=True, timeout=30
+            capture_output=True,
+            text=True,
+            timeout=30,
         )
         self.assertEqual(result.returncode, 0)
         self.assertIn("mobile", result.stdout.lower())
@@ -917,7 +1029,9 @@ class TestCLIIntegrationE2E(unittest.TestCase):
         # Test templates show command
         result = subprocess.run(
             ["./claudedirector", "templates", "show", "mobile_director"],
-            capture_output=True, text=True, timeout=30
+            capture_output=True,
+            text=True,
+            timeout=30,
         )
         self.assertEqual(result.returncode, 0)
         self.assertIn("Mobile Engineering Director", result.stdout)
@@ -943,6 +1057,6 @@ class TestCLIIntegrationE2E(unittest.TestCase):
         print("✅ CLI Performance E2E: All commands respond quickly")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Run with verbose output
     unittest.main(verbosity=2)

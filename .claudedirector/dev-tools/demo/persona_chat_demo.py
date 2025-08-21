@@ -30,28 +30,28 @@ def demo_persona_interactions():
         {
             "persona": "diego",
             "request": "Can you give me an executive summary of how the platform teams are doing?",
-            "description": "Diego requesting platform engineering status"
+            "description": "Diego requesting platform engineering status",
         },
         {
             "persona": "camille",
             "request": "What strategic technology issues should I be aware of right now?",
-            "description": "Camille asking for strategic alerts"
+            "description": "Camille asking for strategic alerts",
         },
         {
             "persona": "rachel",
             "request": "How is team health looking from a design systems perspective?",
-            "description": "Rachel checking team health with design focus"
+            "description": "Rachel checking team health with design focus",
         },
         {
             "persona": "alvaro",
             "request": "Any business risks or ROI concerns I should know about?",
-            "description": "Alvaro asking for business risk analysis"
+            "description": "Alvaro asking for business risk analysis",
         },
         {
             "persona": "martin",
             "request": "What's the current status of our platform architecture and technical health?",
-            "description": "Martin requesting technical architecture status"
-        }
+            "description": "Martin requesting technical architecture status",
+        },
     ]
 
     for i, scenario in enumerate(demo_scenarios, 1):
@@ -62,17 +62,18 @@ def demo_persona_interactions():
 
         # Handle the request
         response = bridge.handle_persona_request(
-            scenario['persona'],
-            scenario['request']
+            scenario["persona"], scenario["request"]
         )
 
         print(f"**{scenario['persona'].title()}**: {response.response_text}")
         print()
 
         # Show metadata
-        print(f"*Confidence: {response.confidence_score:.1%} | "
-              f"Data Sources: {', '.join(response.data_sources)} | "
-              f"Used P2.1: {response.metadata.get('used_p2_system', False)}*")
+        print(
+            f"*Confidence: {response.confidence_score:.1%} | "
+            f"Data Sources: {', '.join(response.data_sources)} | "
+            f"Used P2.1: {response.metadata.get('used_p2_system', False)}*"
+        )
         print()
 
         # Show follow-up suggestions
@@ -155,4 +156,5 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"❌ Demo error: {e}")
         import traceback
+
         traceback.print_exc()

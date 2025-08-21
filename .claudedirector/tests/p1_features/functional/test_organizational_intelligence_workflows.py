@@ -14,10 +14,15 @@ from click.testing import CliRunner
 
 # Import the modules under test
 import sys
+
 sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
-from lib.claudedirector.p1_features.organizational_intelligence import DirectorProfileManager
-from lib.claudedirector.p1_features.organizational_intelligence.cli_customization import org_intelligence
+from lib.claudedirector.p1_features.organizational_intelligence import (
+    DirectorProfileManager,
+)
+from lib.claudedirector.p1_features.organizational_intelligence.cli_customization import (
+    org_intelligence,
+)
 
 
 class TestDirectorProfileWorkflows:
@@ -44,13 +49,16 @@ class TestDirectorProfileWorkflows:
 
         # Remove test directory and contents
         import shutil
+
         shutil.rmtree(test_dir)
 
     def test_complete_platform_director_setup_workflow(self, clean_test_environment):
         """Test complete setup workflow for platform director"""
 
         # Step 1: Create initial configuration
-        config_path = clean_test_environment / "config" / "p1_organizational_intelligence.yaml"
+        config_path = (
+            clean_test_environment / "config" / "p1_organizational_intelligence.yaml"
+        )
         initial_config = {
             "director_profile": {
                 "profile_type": "custom",
@@ -60,14 +68,14 @@ class TestDirectorProfileWorkflows:
                     "strategic_priorities": [
                         "Platform scalability and developer experience",
                         "Design system adoption and consistency",
-                        "International expansion support"
+                        "International expansion support",
                     ],
                     "success_metrics": [
                         "Platform adoption rates",
                         "Developer satisfaction scores",
-                        "Design system component usage"
-                    ]
-                }
+                        "Design system component usage",
+                    ],
+                },
             },
             "organizational_intelligence": {
                 "velocity_tracking": {
@@ -75,38 +83,45 @@ class TestDirectorProfileWorkflows:
                         "design_system_leverage": {
                             "enabled": True,
                             "weight": 0.35,
-                            "metrics": ["component_usage_consistency", "design_debt_reduction"],
+                            "metrics": [
+                                "component_usage_consistency",
+                                "design_debt_reduction",
+                            ],
                             "targets": {
                                 "component_usage_consistency": 0.85,
-                                "design_debt_reduction": 0.15
-                            }
+                                "design_debt_reduction": 0.15,
+                            },
                         },
                         "platform_adoption": {
                             "enabled": True,
                             "weight": 0.30,
-                            "metrics": ["adoption_rate_percentage", "developer_satisfaction_score"],
+                            "metrics": [
+                                "adoption_rate_percentage",
+                                "developer_satisfaction_score",
+                            ],
                             "targets": {
                                 "adoption_rate_percentage": 0.80,
-                                "developer_satisfaction_score": 4.5
-                            }
+                                "developer_satisfaction_score": 4.5,
+                            },
                         },
                         "developer_experience": {
                             "enabled": True,
                             "weight": 0.25,
-                            "metrics": ["onboarding_efficiency", "productivity_metrics"],
+                            "metrics": [
+                                "onboarding_efficiency",
+                                "productivity_metrics",
+                            ],
                             "targets": {
                                 "onboarding_efficiency": 0.60,
-                                "productivity_metrics": 0.75
-                            }
+                                "productivity_metrics": 0.75,
+                            },
                         },
                         "knowledge_sharing": {
                             "enabled": True,
                             "weight": 0.10,
                             "metrics": ["cross_team_learning_index"],
-                            "targets": {
-                                "cross_team_learning_index": 0.70
-                            }
-                        }
+                            "targets": {"cross_team_learning_index": 0.70},
+                        },
                     }
                 },
                 "investment_intelligence": {
@@ -117,8 +132,12 @@ class TestDirectorProfileWorkflows:
                             "roi_calculation_method": "developer_velocity_improvement",
                             "measurement_period_months": 6,
                             "success_criteria": [
-                                {"metric": "component_adoption_rate", "target": 0.85, "weight": 0.6}
-                            ]
+                                {
+                                    "metric": "component_adoption_rate",
+                                    "target": 0.85,
+                                    "weight": 0.6,
+                                }
+                            ],
                         },
                         "platform_infrastructure": {
                             "enabled": True,
@@ -126,28 +145,30 @@ class TestDirectorProfileWorkflows:
                             "roi_calculation_method": "operational_efficiency",
                             "measurement_period_months": 12,
                             "success_criteria": [
-                                {"metric": "deployment_frequency", "target": 2.0, "weight": 0.5}
-                            ]
-                        }
+                                {
+                                    "metric": "deployment_frequency",
+                                    "target": 2.0,
+                                    "weight": 0.5,
+                                }
+                            ],
+                        },
                     }
-                }
+                },
             },
-            "dashboard": {
-                "layout": "platform_director"
-            },
+            "dashboard": {"layout": "platform_director"},
             "integrations": {
                 "design_tools": {
                     "figma": {"enabled": False},
-                    "sketch": {"enabled": False}
+                    "sketch": {"enabled": False},
                 },
                 "development_tools": {
                     "github": {"enabled": True},
-                    "jira": {"enabled": True}
-                }
-            }
+                    "jira": {"enabled": True},
+                },
+            },
         }
 
-        with open(config_path, 'w') as f:
+        with open(config_path, "w") as f:
             yaml.dump(initial_config, f)
 
         # Step 2: Initialize DirectorProfileManager
@@ -166,12 +187,12 @@ class TestDirectorProfileWorkflows:
                 "design_system_leverage": 0.40,  # Increase design system focus
                 "platform_adoption": 0.30,
                 "developer_experience": 0.20,
-                "knowledge_sharing": 0.10
+                "knowledge_sharing": 0.10,
             },
             update_targets={
                 "design_system_leverage": 0.90,  # Increase design consistency target
-                "platform_adoption": 0.85       # Increase adoption target
-            }
+                "platform_adoption": 0.85,  # Increase adoption target
+            },
         )
 
         # Step 5: Verify customizations
@@ -185,11 +206,11 @@ class TestDirectorProfileWorkflows:
         # Step 6: Test business value calculation
         current_metrics = {
             "component_usage_consistency": 0.75,  # 75% actual vs 90% target
-            "design_debt_reduction": 0.12,        # 12% actual vs 15% target
-            "adoption_rate_percentage": 0.78,     # 78% actual vs 85% target
+            "design_debt_reduction": 0.12,  # 12% actual vs 15% target
+            "adoption_rate_percentage": 0.78,  # 78% actual vs 85% target
             "developer_satisfaction_score": 4.3,  # 4.3 actual vs 4.5 target
-            "onboarding_efficiency": 0.55,        # 55% actual vs 60% target
-            "cross_team_learning_index": 0.68     # 68% actual vs 70% target
+            "onboarding_efficiency": 0.55,  # 55% actual vs 60% target
+            "cross_team_learning_index": 0.68,  # 68% actual vs 70% target
         }
 
         impact_score = manager.calculate_organizational_impact_score(current_metrics)
@@ -201,15 +222,23 @@ class TestDirectorProfileWorkflows:
         # Step 7: Generate executive summary
         summary = manager.generate_executive_summary()
 
-        assert summary["director_profile"]["role"] == "Director of Engineering - UI Foundation"
+        assert (
+            summary["director_profile"]["role"]
+            == "Director of Engineering - UI Foundation"
+        )
         assert len(summary["enabled_domains"]) == 4
         assert len(summary["investment_priorities"]) == 2
-        assert "Platform scalability and developer experience" in summary["director_profile"]["strategic_priorities"]
+        assert (
+            "Platform scalability and developer experience"
+            in summary["director_profile"]["strategic_priorities"]
+        )
 
     def test_backend_director_workflow(self, clean_test_environment):
         """Test workflow for backend engineering director"""
 
-        config_path = clean_test_environment / "config" / "p1_organizational_intelligence.yaml"
+        config_path = (
+            clean_test_environment / "config" / "p1_organizational_intelligence.yaml"
+        )
 
         # Backend director focused configuration
         backend_config = {
@@ -221,14 +250,14 @@ class TestDirectorProfileWorkflows:
                     "strategic_priorities": [
                         "Service reliability and performance",
                         "API design and integration quality",
-                        "System scalability and efficiency"
+                        "System scalability and efficiency",
                     ],
                     "success_metrics": [
                         "API response times",
                         "Service uptime",
-                        "Integration success rates"
-                    ]
-                }
+                        "Integration success rates",
+                    ],
+                },
             },
             "organizational_intelligence": {
                 "velocity_tracking": {
@@ -239,8 +268,8 @@ class TestDirectorProfileWorkflows:
                             "metrics": ["api_response_times", "service_uptime"],
                             "targets": {
                                 "api_response_times": 200,  # 200ms target
-                                "service_uptime": 0.999     # 99.9% uptime target
-                            }
+                                "service_uptime": 0.999,  # 99.9% uptime target
+                            },
                         },
                         "feature_delivery_impact": {
                             "enabled": True,
@@ -248,24 +277,22 @@ class TestDirectorProfileWorkflows:
                             "metrics": ["delivery_velocity", "integration_success"],
                             "targets": {
                                 "delivery_velocity": 0.80,
-                                "integration_success": 0.95
-                            }
+                                "integration_success": 0.95,
+                            },
                         },
                         "knowledge_sharing": {
                             "enabled": True,
                             "weight": 0.25,
                             "metrics": ["cross_team_coordination"],
-                            "targets": {
-                                "cross_team_coordination": 0.75
-                            }
+                            "targets": {"cross_team_coordination": 0.75},
                         },
                         # Design system should be disabled for backend director
                         "design_system_leverage": {
                             "enabled": False,
                             "weight": 0.0,
                             "metrics": [],
-                            "targets": {}
-                        }
+                            "targets": {},
+                        },
                     }
                 },
                 "investment_intelligence": {
@@ -276,8 +303,12 @@ class TestDirectorProfileWorkflows:
                             "roi_calculation_method": "operational_efficiency",
                             "measurement_period_months": 9,
                             "success_criteria": [
-                                {"metric": "service_reliability", "target": 0.999, "weight": 0.6}
-                            ]
+                                {
+                                    "metric": "service_reliability",
+                                    "target": 0.999,
+                                    "weight": 0.6,
+                                }
+                            ],
                         },
                         "cross_team_tooling": {
                             "enabled": True,
@@ -285,27 +316,27 @@ class TestDirectorProfileWorkflows:
                             "roi_calculation_method": "coordination_efficiency",
                             "measurement_period_months": 6,
                             "success_criteria": [
-                                {"metric": "integration_time_reduction", "target": 0.30, "weight": 0.7}
-                            ]
-                        }
+                                {
+                                    "metric": "integration_time_reduction",
+                                    "target": 0.30,
+                                    "weight": 0.7,
+                                }
+                            ],
+                        },
                     }
-                }
+                },
             },
-            "dashboard": {
-                "layout": "backend_focused"
-            },
+            "dashboard": {"layout": "backend_focused"},
             "integrations": {
                 "development_tools": {
                     "github": {"enabled": True},
-                    "jira": {"enabled": True}
+                    "jira": {"enabled": True},
                 },
-                "analytics": {
-                    "datadog": {"enabled": True}
-                }
-            }
+                "analytics": {"datadog": {"enabled": True}},
+            },
         }
 
-        with open(config_path, 'w') as f:
+        with open(config_path, "w") as f:
             yaml.dump(backend_config, f)
 
         # Initialize and test backend director profile
@@ -329,20 +360,24 @@ class TestDirectorProfileWorkflows:
 
         # Test business value calculation with backend-specific metrics
         backend_current_metrics = {
-            "api_response_times": 180,           # 180ms actual vs 200ms target (good)
-            "service_uptime": 0.9995,           # 99.95% actual vs 99.9% target (excellent)
-            "delivery_velocity": 0.75,          # 75% actual vs 80% target (good)
-            "integration_success": 0.97,        # 97% actual vs 95% target (excellent)
-            "cross_team_coordination": 0.70     # 70% actual vs 75% target (good)
+            "api_response_times": 180,  # 180ms actual vs 200ms target (good)
+            "service_uptime": 0.9995,  # 99.95% actual vs 99.9% target (excellent)
+            "delivery_velocity": 0.75,  # 75% actual vs 80% target (good)
+            "integration_success": 0.97,  # 97% actual vs 95% target (excellent)
+            "cross_team_coordination": 0.70,  # 70% actual vs 75% target (good)
         }
 
-        impact_score = manager.calculate_organizational_impact_score(backend_current_metrics)
+        impact_score = manager.calculate_organizational_impact_score(
+            backend_current_metrics
+        )
         assert impact_score > 0.85  # Should be high for good backend performance
 
     def test_profile_migration_workflow(self, clean_test_environment):
         """Test migrating from one director profile to another"""
 
-        config_path = clean_test_environment / "config" / "p1_organizational_intelligence.yaml"
+        config_path = (
+            clean_test_environment / "config" / "p1_organizational_intelligence.yaml"
+        )
 
         # Start as product director
         initial_config = {
@@ -352,8 +387,8 @@ class TestDirectorProfileWorkflows:
                     "role_title": "Director of Product Engineering",
                     "primary_focus": "Feature delivery, user experience",
                     "strategic_priorities": ["Feature velocity", "User satisfaction"],
-                    "success_metrics": ["Delivery metrics", "User feedback"]
-                }
+                    "success_metrics": ["Delivery metrics", "User feedback"],
+                },
             },
             "organizational_intelligence": {
                 "velocity_tracking": {
@@ -362,14 +397,14 @@ class TestDirectorProfileWorkflows:
                             "enabled": True,
                             "weight": 0.60,
                             "metrics": ["feature_velocity"],
-                            "targets": {"feature_velocity": 0.80}
+                            "targets": {"feature_velocity": 0.80},
                         },
                         "developer_experience": {
                             "enabled": True,
                             "weight": 0.40,
                             "metrics": ["team_satisfaction"],
-                            "targets": {"team_satisfaction": 4.0}
-                        }
+                            "targets": {"team_satisfaction": 4.0},
+                        },
                     }
                 },
                 "investment_intelligence": {
@@ -379,14 +414,14 @@ class TestDirectorProfileWorkflows:
                             "priority_weight": 1.0,
                             "roi_calculation_method": "feature_delivery",
                             "measurement_period_months": 3,
-                            "success_criteria": []
+                            "success_criteria": [],
                         }
                     }
-                }
-            }
+                },
+            },
         }
 
-        with open(config_path, 'w') as f:
+        with open(config_path, "w") as f:
             yaml.dump(initial_config, f)
 
         # Initialize as product director
@@ -404,8 +439,8 @@ class TestDirectorProfileWorkflows:
             update_weights={
                 "design_system_leverage": 0.40,
                 "platform_adoption": 0.35,
-                "developer_experience": 0.25
-            }
+                "developer_experience": 0.25,
+            },
         )
 
         # Verify migration
@@ -416,8 +451,12 @@ class TestDirectorProfileWorkflows:
         assert "feature_delivery_impact" not in migrated_profile.enabled_domains
 
         # Verify weights were updated
-        design_weight = migrated_profile.enabled_domains["design_system_leverage"][0].weight
-        platform_weight = migrated_profile.enabled_domains["platform_adoption"][0].weight
+        design_weight = migrated_profile.enabled_domains["design_system_leverage"][
+            0
+        ].weight
+        platform_weight = migrated_profile.enabled_domains["platform_adoption"][
+            0
+        ].weight
 
         assert design_weight == 0.40
         assert platform_weight == 0.35
@@ -445,13 +484,13 @@ class TestCLIFunctionalWorkflows:
                     "measurement_domains": {
                         "design_system_leverage": {"enabled": False, "weight": 0.0},
                         "platform_adoption": {"enabled": False, "weight": 0.0},
-                        "developer_experience": {"enabled": False, "weight": 0.0}
+                        "developer_experience": {"enabled": False, "weight": 0.0},
                     }
                 }
-            }
+            },
         }
 
-        with open(config_path, 'w') as f:
+        with open(config_path, "w") as f:
             yaml.dump(minimal_config, f)
 
         yield test_dir, config_path
@@ -459,6 +498,7 @@ class TestCLIFunctionalWorkflows:
         # Cleanup
         os.chdir(original_cwd)
         import shutil
+
         shutil.rmtree(test_dir)
 
     def test_complete_cli_setup_workflow(self, cli_test_environment):
@@ -468,30 +508,36 @@ class TestCLIFunctionalWorkflows:
         runner = CliRunner()
 
         # Step 1: Quick setup with design system template
-        result = runner.invoke(org_intelligence, [
-            'quick-setup', '--template', 'design_system'
-        ])
+        result = runner.invoke(
+            org_intelligence, ["quick-setup", "--template", "design_system"]
+        )
 
         assert result.exit_code == 0
         assert "Quick setup complete" in result.output
 
         # Step 2: Verify configuration was updated
-        with open(config_path, 'r') as f:
+        with open(config_path, "r") as f:
             updated_config = yaml.safe_load(f)
 
         profile_config = updated_config["director_profile"]["custom_profile"]
         assert "UI Foundation" in profile_config["role_title"]
 
-        domains = updated_config["organizational_intelligence"]["velocity_tracking"]["measurement_domains"]
+        domains = updated_config["organizational_intelligence"]["velocity_tracking"][
+            "measurement_domains"
+        ]
         assert domains["design_system_leverage"]["enabled"] is True
         assert domains["platform_adoption"]["enabled"] is True
 
         # Step 3: Check status
-        with patch('lib.claudedirector.p1_features.organizational_intelligence.cli_customization.DirectorProfileManager') as mock_manager:
+        with patch(
+            "lib.claudedirector.p1_features.organizational_intelligence.cli_customization.DirectorProfileManager"
+        ) as mock_manager:
             mock_profile = MagicMock()
             mock_profile.role_title = "Director of Engineering - UI Foundation"
             mock_profile.primary_focus = "Web platform, design system"
-            mock_profile.enabled_domains = {"design_system_leverage": [MagicMock(weight=0.35)]}
+            mock_profile.enabled_domains = {
+                "design_system_leverage": [MagicMock(weight=0.35)]
+            }
             mock_profile.investment_categories = {}
             mock_profile.strategic_priorities = []
             mock_profile.success_metrics = []
@@ -499,7 +545,7 @@ class TestCLIFunctionalWorkflows:
 
             mock_manager.return_value.current_profile = mock_profile
 
-            status_result = runner.invoke(org_intelligence, ['status'])
+            status_result = runner.invoke(org_intelligence, ["status"])
 
             assert status_result.exit_code == 0
             assert "UI Foundation" in status_result.output
@@ -511,7 +557,9 @@ class TestPerformanceAndScalability:
     def test_large_configuration_performance(self, clean_test_environment):
         """Test performance with large configuration"""
 
-        config_path = clean_test_environment / "config" / "p1_organizational_intelligence.yaml"
+        config_path = (
+            clean_test_environment / "config" / "p1_organizational_intelligence.yaml"
+        )
 
         # Create large configuration with many domains and metrics
         large_config = {
@@ -521,41 +569,43 @@ class TestPerformanceAndScalability:
                     "role_title": "Enterprise Director",
                     "primary_focus": "Large scale operations",
                     "strategic_priorities": [f"Priority {i}" for i in range(20)],
-                    "success_metrics": [f"Metric {i}" for i in range(50)]
-                }
+                    "success_metrics": [f"Metric {i}" for i in range(50)],
+                },
             },
             "organizational_intelligence": {
-                "velocity_tracking": {
-                    "measurement_domains": {}
-                },
-                "investment_intelligence": {
-                    "investment_categories": {}
-                }
-            }
+                "velocity_tracking": {"measurement_domains": {}},
+                "investment_intelligence": {"investment_categories": {}},
+            },
         }
 
         # Add many measurement domains
         for i in range(10):
             domain_name = f"domain_{i}"
-            large_config["organizational_intelligence"]["velocity_tracking"]["measurement_domains"][domain_name] = {
+            large_config["organizational_intelligence"]["velocity_tracking"][
+                "measurement_domains"
+            ][domain_name] = {
                 "enabled": True,
                 "weight": 0.1,
                 "metrics": [f"metric_{j}" for j in range(10)],
-                "targets": {f"metric_{j}": 0.8 for j in range(10)}
+                "targets": {f"metric_{j}": 0.8 for j in range(10)},
             }
 
         # Add many investment categories
         for i in range(10):
             category_name = f"investment_{i}"
-            large_config["organizational_intelligence"]["investment_intelligence"]["investment_categories"][category_name] = {
+            large_config["organizational_intelligence"]["investment_intelligence"][
+                "investment_categories"
+            ][category_name] = {
                 "enabled": True,
                 "priority_weight": 0.1,
                 "roi_calculation_method": "test_method",
                 "measurement_period_months": 6,
-                "success_criteria": [{"metric": f"metric_{j}", "target": 0.8} for j in range(5)]
+                "success_criteria": [
+                    {"metric": f"metric_{j}", "target": 0.8} for j in range(5)
+                ],
             }
 
-        with open(config_path, 'w') as f:
+        with open(config_path, "w") as f:
             yaml.dump(large_config, f)
 
         # Test initialization performance
@@ -579,7 +629,9 @@ class TestPerformanceAndScalability:
                 large_current_metrics[f"metric_{metric_j}"] = 0.75
 
         start_time = time.time()
-        impact_score = manager.calculate_organizational_impact_score(large_current_metrics)
+        impact_score = manager.calculate_organizational_impact_score(
+            large_current_metrics
+        )
         calc_time = time.time() - start_time
 
         # Should calculate quickly even with many metrics
@@ -589,21 +641,31 @@ class TestPerformanceAndScalability:
     def test_concurrent_access_safety(self, clean_test_environment):
         """Test thread safety of DirectorProfileManager"""
 
-        config_path = clean_test_environment / "config" / "p1_organizational_intelligence.yaml"
+        config_path = (
+            clean_test_environment / "config" / "p1_organizational_intelligence.yaml"
+        )
 
         # Create basic config
         config = {
-            "director_profile": {"profile_type": "custom", "custom_profile": {"role_title": "Test"}},
+            "director_profile": {
+                "profile_type": "custom",
+                "custom_profile": {"role_title": "Test"},
+            },
             "organizational_intelligence": {
-                "velocity_tracking": {"measurement_domains": {
-                    "test_domain": {
-                        "enabled": True, "weight": 1.0, "metrics": ["test_metric"], "targets": {"test_metric": 0.8}
+                "velocity_tracking": {
+                    "measurement_domains": {
+                        "test_domain": {
+                            "enabled": True,
+                            "weight": 1.0,
+                            "metrics": ["test_metric"],
+                            "targets": {"test_metric": 0.8},
+                        }
                     }
-                }}
-            }
+                }
+            },
         }
 
-        with open(config_path, 'w') as f:
+        with open(config_path, "w") as f:
             yaml.dump(config, f)
 
         # Test multiple managers accessing same config
