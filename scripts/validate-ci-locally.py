@@ -265,7 +265,7 @@ def unit_tests_with_coverage():
 
     # Run tests with coverage (exact CI command)
     print("Running unit tests with coverage...")
-    result = run_command("python -m coverage run --source=.claudedirector/lib .claudedirector/tests/unit/test_coverage_direct.py")
+    result = run_command("python -m coverage run --source=.claudedirector/lib .claudedirector/tests/unit/test_coverage_simple_direct.py")
     if result.returncode != 0:
         print_error("Unit tests failed")
         print(result.stdout)
