@@ -176,7 +176,7 @@ class TestConversationTrackingP0(unittest.TestCase):
         try:
             # Try to import the conversation manager
             sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
-            from claudedirector.core.integrated_conversation_manager import (
+            from core.integrated_conversation_manager import (
                 IntegratedConversationManager,
             )
 
