@@ -35,9 +35,9 @@ print_section() {
 run_step() {
     local step_name="$1"
     local command="$2"
-    
+
     print_status $YELLOW "🔄 Running: $step_name"
-    
+
     if eval "$command"; then
         print_status $GREEN "✅ PASSED: $step_name"
         return 0
@@ -68,7 +68,7 @@ import sys
 sys.path.insert(0, '.claudedirector/lib')
 try:
     from core import integrated_conversation_manager
-    from transparency import mcp_transparency  
+    from transparency import mcp_transparency
     from memory import session_context_manager
     print('✅ Core modules importable via direct import')
 except ImportError as e:
@@ -151,12 +151,13 @@ else:
 run_step "Code Quality - Black Formatting" "
 echo '🎨 CODE QUALITY - Black Formatting'
 python -m pip install black>=23.0.0 > /dev/null 2>&1
-python -m black --check --diff . > /dev/null 2>&1 || (
+if python -m black --check --diff . > /dev/null 2>&1; then
+    echo '✅ Black formatting check passed'
+else
     echo '❌ Black formatting violations detected'
     echo '💡 Fix with: python -m black .'
     exit 1
-)
-echo '✅ Black formatting check passed'
+fi
 "
 
 # 4. Code Quality - Flake8 Linting
@@ -269,7 +270,7 @@ print_status $GREEN "✅ All quality gates validated locally"
 echo ""
 print_status $BLUE "📊 VALIDATION SUMMARY:"
 print_status $GREEN "  ✅ Package Structure: PASSED"
-print_status $GREEN "  ✅ Security Scan: PASSED"  
+print_status $GREEN "  ✅ Security Scan: PASSED"
 print_status $GREEN "  ✅ Code Quality (Black/Flake8/MyPy): PASSED"
 print_status $GREEN "  ✅ P0 Feature Tests (5/5): PASSED"
 print_status $GREEN "  ✅ P0 CI Coverage: PASSED"

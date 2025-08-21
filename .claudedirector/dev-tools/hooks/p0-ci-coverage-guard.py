@@ -25,9 +25,9 @@ def main():
 
     # Run the P0 coverage validator
     try:
-        result = subprocess.run([
-            "python3", validator_path
-        ], capture_output=True, text=True, timeout=30)
+        result = subprocess.run(
+            ["python3", validator_path], capture_output=True, text=True, timeout=30
+        )
 
         if result.returncode == 0:
             print("✅ P0 CI coverage validation: PASSED")

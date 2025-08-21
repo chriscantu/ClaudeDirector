@@ -15,27 +15,36 @@ from typing import Dict, List, Any
 class P0TestGenerator:
     """Generates CI test steps from P0 test definitions"""
 
-    def __init__(self, definitions_file: str = ".claudedirector/tests/p0_enforcement/p0_test_definitions.yaml"):
+    def __init__(
+        self,
+        definitions_file: str = ".claudedirector/tests/p0_enforcement/p0_test_definitions.yaml",
+    ):
         self.definitions_file = definitions_file
         self.definitions = self._load_definitions()
 
     def _load_definitions(self) -> Dict[str, Any]:
         """Load P0 test definitions from YAML"""
         if not os.path.exists(self.definitions_file):
-            raise FileNotFoundError(f"P0 definitions file not found: {self.definitions_file}")
+            raise FileNotFoundError(
+                f"P0 definitions file not found: {self.definitions_file}"
+            )
 
-        with open(self.definitions_file, 'r') as f:
+        with open(self.definitions_file, "r") as f:
             return yaml.safe_load(f)
 
     def generate_ci_step(self) -> str:
         """Generate complete CI step for GitHub Actions"""
-        p0_features = self.definitions.get('p0_features', [])
-        enforcement = self.definitions.get('enforcement', {})
-        quality_gates = self.definitions.get('quality_gates', {})
+        p0_features = self.definitions.get("p0_features", [])
+        enforcement = self.definitions.get("enforcement", {})
+        quality_gates = self.definitions.get("quality_gates", {})
 
         # Group tests by critical level
-        blocking_tests = [f for f in p0_features if f.get('critical_level') == 'BLOCKING']
-        high_priority_tests = [f for f in p0_features if f.get('critical_level') == 'HIGH']
+        blocking_tests = [
+            f for f in p0_features if f.get("critical_level") == "BLOCKING"
+        ]
+        high_priority_tests = [
+            f for f in p0_features if f.get("critical_level") == "HIGH"
+        ]
 
         ci_step = self._generate_step_header()
         ci_step += self._generate_blocking_tests(blocking_tests)
@@ -46,7 +55,7 @@ class P0TestGenerator:
 
     def _generate_step_header(self) -> str:
         """Generate CI step header"""
-        return '''      - name: P0 Feature Test Suite (YAML-Driven)
+        return """      - name: P0 Feature Test Suite (YAML-Driven)
         run: |
           echo "🚨 AUTOMATED P0 TEST EXECUTION - YAML DEFINITION DRIVEN"
           echo "============================================================"
@@ -55,7 +64,7 @@ class P0TestGenerator:
           echo "Coverage: 100% of defined P0 features"
           echo ""
 
-'''
+"""
 
     def _generate_blocking_tests(self, blocking_tests: List[Dict]) -> str:
         """Generate BLOCKING level test execution"""
@@ -66,13 +75,13 @@ class P0TestGenerator:
         section += '          echo "============================================================"\n'
 
         for test in blocking_tests:
-            name = test.get('name', 'Unknown Test')
-            module = test.get('test_module', '')
-            timeout = test.get('timeout_seconds', 120)
-            description = test.get('description', '')
-            business_impact = test.get('business_impact', '')
+            name = test.get("name", "Unknown Test")
+            module = test.get("test_module", "")
+            timeout = test.get("timeout_seconds", 120)
+            description = test.get("description", "")
+            business_impact = test.get("business_impact", "")
 
-            section += f'''
+            section += f"""
           echo "🧪 BLOCKING: {name}"
           echo "   Module: {module}"
           echo "   Description: {description}"
@@ -84,7 +93,7 @@ class P0TestGenerator:
             exit 1
           }}
           echo "✅ PASSED: {name}"
-'''
+"""
 
         return section
 
@@ -93,20 +102,20 @@ class P0TestGenerator:
         if not high_priority_tests:
             return ""
 
-        section = '''
+        section = """
           echo ""
           echo "🔺 HIGH PRIORITY P0 TESTS (Should pass but won't block CI)"
           echo "============================================================"
-'''
+"""
 
         for test in high_priority_tests:
-            name = test.get('name', 'Unknown Test')
-            module = test.get('test_module', '')
-            timeout = test.get('timeout_seconds', 60)
-            description = test.get('description', '')
-            failure_impact = test.get('failure_impact', '')
+            name = test.get("name", "Unknown Test")
+            module = test.get("test_module", "")
+            timeout = test.get("timeout_seconds", 60)
+            description = test.get("description", "")
+            failure_impact = test.get("failure_impact", "")
 
-            section += f'''
+            section += f"""
           echo "🧪 HIGH PRIORITY: {name}"
           echo "   Module: {module}"
           echo "   Description: {description}"
@@ -116,13 +125,13 @@ class P0TestGenerator:
             echo "📝 Note: Non-blocking but should be investigated"
           }}
           echo "✅ COMPLETED: {name}"
-'''
+"""
 
         return section
 
     def _generate_step_footer(self, total_tests: int) -> str:
         """Generate CI step footer with summary"""
-        return f'''
+        return f"""
           echo ""
           echo "📊 P0 TEST EXECUTION SUMMARY"
           echo "============================================================"
@@ -132,11 +141,11 @@ class P0TestGenerator:
           echo "✅ All BLOCKING tests passed - CI success criteria met"
           echo "============================================================"
 
-'''
+"""
 
     def generate_validation_script(self) -> str:
         """Generate validation script to check CI coverage"""
-        p0_features = self.definitions.get('p0_features', [])
+        p0_features = self.definitions.get("p0_features", [])
 
         script = '''#!/usr/bin/env python3
 """
@@ -197,7 +206,9 @@ if __name__ == "__main__":
 '''
         return script
 
-    def update_ci_workflow(self, workflow_file: str = ".github/workflows/next-phase-ci-cd.yml"):
+    def update_ci_workflow(
+        self, workflow_file: str = ".github/workflows/next-phase-ci-cd.yml"
+    ):
         """Update CI workflow with generated P0 test step"""
         print("🔧 Updating CI workflow with YAML-driven P0 tests...")
 
@@ -223,20 +234,32 @@ def main():
         validator = generator.generate_validation_script()
 
         # Write validator script
-        with open(".claudedirector/dev-tools/ci/validate_p0_coverage.py", 'w') as f:
+        with open(".claudedirector/dev-tools/ci/validate_p0_coverage.py", "w") as f:
             f.write(validator)
         os.chmod(".claudedirector/dev-tools/ci/validate_p0_coverage.py", 0o755)
-        print("✅ Generated P0 coverage validator: .claudedirector/dev-tools/ci/validate_p0_coverage.py")
+        print(
+            "✅ Generated P0 coverage validator: .claudedirector/dev-tools/ci/validate_p0_coverage.py"
+        )
 
     else:
         generator = P0TestGenerator()
         print("🔍 P0 Test Definitions Analysis:")
         print("=" * 40)
         print(f"Total P0 Features: {len(generator.definitions.get('p0_features', []))}")
-        print(f"Enforcement Policy: {generator.definitions.get('enforcement_policy', 'Not specified')}")
+        print(
+            f"Enforcement Policy: {generator.definitions.get('enforcement_policy', 'Not specified')}"
+        )
 
-        blocking = [f for f in generator.definitions.get('p0_features', []) if f.get('critical_level') == 'BLOCKING']
-        high = [f for f in generator.definitions.get('p0_features', []) if f.get('critical_level') == 'HIGH']
+        blocking = [
+            f
+            for f in generator.definitions.get("p0_features", [])
+            if f.get("critical_level") == "BLOCKING"
+        ]
+        high = [
+            f
+            for f in generator.definitions.get("p0_features", [])
+            if f.get("critical_level") == "HIGH"
+        ]
 
         print(f"BLOCKING Tests: {len(blocking)}")
         print(f"HIGH Priority Tests: {len(high)}")
