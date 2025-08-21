@@ -74,8 +74,11 @@ This approach balances technical excellence with organizational dynamics."""
         self.assertIn("🏗️ Martin | Platform Architecture", enhanced_response,
                      "Cursor must auto-apply Martin persona header")
 
-        self.assertIn("🔧 Accessing MCP Server:", enhanced_response,
-                     "Cursor must show MCP transparency for strategic questions")
+        # Support both old and new MCP disclosure formats
+        has_mcp_disclosure = ("🔧 Accessing MCP Server:" in enhanced_response or
+                             "🔧 Installing MCP enhancement:" in enhanced_response)
+        self.assertTrue(has_mcp_disclosure,
+                       "Cursor must show MCP transparency for strategic questions")
 
         self.assertIn("systematic_analysis", enhanced_response,
                      "Strategic questions must trigger systematic analysis")
@@ -86,8 +89,10 @@ This approach balances technical excellence with organizational dynamics."""
         # Verify response format matches .cursorrules specification exactly
         lines = enhanced_response.split('\n')
 
-        # Should start with MCP disclosure
-        self.assertTrue(lines[0].startswith("🔧 Accessing MCP Server:"),
+        # Should start with MCP disclosure (either format)
+        first_line_valid = (lines[0].startswith("🔧 Accessing MCP Server:") or
+                           lines[0].startswith("🔧 Installing MCP enhancement:"))
+        self.assertTrue(first_line_valid,
                        "Must start with MCP server disclosure")
 
         # Should have processing indicator
@@ -177,8 +182,8 @@ This approach balances technical excellence with organizational dynamics."""
             ("Persona header emoji", any(emoji in enhanced for emoji in ["🎯", "📊", "🎨", "💼", "🏗️"])),
             ("Persona header format", " | " in enhanced),
 
-            # MCP transparency format
-            ("MCP disclosure format", "🔧 Accessing MCP Server:" in enhanced),
+            # MCP transparency format (support both old and new)
+            ("MCP disclosure format", ("🔧 Accessing MCP Server:" in enhanced or "🔧 Installing MCP enhancement:" in enhanced)),
             ("MCP capability format", "(" in enhanced and ")" in enhanced),
             ("Processing indicator", "*" in enhanced),
 

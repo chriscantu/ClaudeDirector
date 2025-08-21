@@ -127,12 +127,12 @@ python3 .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py | head -3
 - ✅ **P0 enforcement** and testing
 - ✅ **User configuration** with personal attribution
 
-### **Graceful Degradation**
-When MCP servers are unavailable, ClaudeDirector automatically:
-- Maintains full persona functionality
-- Provides strategic framework guidance
-- Shows transparency disclosures
-- Uses fallback analysis methods
+### **Progressive Enhancement**
+ClaudeDirector provides immediate value and progressively enhances capabilities:
+- ✅ **Immediate**: All personas, frameworks, and transparency features work instantly
+- ✅ **Enhanced**: MCP servers auto-install when needed for advanced analysis
+- ✅ **Seamless**: Users see "Installing MCP enhancement..." only when beneficial
+- ✅ **Reliable**: Full strategic functionality always available
 
 ## 🔧 **Advanced Installation**
 

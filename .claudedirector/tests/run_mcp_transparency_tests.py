@@ -84,7 +84,7 @@ def run_quick_validation():
 
         # Validate core requirements
         checks = [
-            ("MCP disclosure present", "🔧 Accessing MCP Server:" in enhanced),
+            ("MCP disclosure present", ("🔧 Accessing MCP Server:" in enhanced or "🔧 Installing MCP enhancement:" in enhanced)),
             ("Persona header present", summary["has_persona_header"]),
             ("MCP enhancement detected", summary["has_mcp_enhancement"]),
             ("Transparency applied", summary["transparency_applied"])
