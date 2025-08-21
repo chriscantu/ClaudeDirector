@@ -22,7 +22,7 @@ class TestDirectCoverage(unittest.TestCase):
         formatting_path = PROJECT_ROOT / ".claudedirector/lib/utils/formatting.py"
         if not formatting_path.exists():
             self.skipTest(f"Formatting module not found at {formatting_path}")
-        
+
         self.assertTrue(
             formatting_path.exists(),
             f"Formatting module should exist at {formatting_path}",
@@ -57,7 +57,7 @@ class TestDirectCoverage(unittest.TestCase):
         exceptions_path = PROJECT_ROOT / ".claudedirector/lib/core/exceptions.py"
         if not exceptions_path.exists():
             self.skipTest(f"Exceptions module not found at {exceptions_path}")
-            
+
         self.assertTrue(
             exceptions_path.exists(),
             f"Exceptions module should exist at {exceptions_path}",
@@ -88,7 +88,7 @@ class TestDirectCoverage(unittest.TestCase):
         cache_path = PROJECT_ROOT / ".claudedirector/lib/utils/cache.py"
         if not cache_path.exists():
             self.skipTest(f"Cache module not found at {cache_path}")
-            
+
         self.assertTrue(
             cache_path.exists(), f"Cache module should exist at {cache_path}"
         )
