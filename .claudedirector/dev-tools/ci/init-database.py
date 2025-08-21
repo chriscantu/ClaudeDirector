@@ -8,6 +8,7 @@ import sqlite3
 import sys
 from pathlib import Path
 
+
 def create_strategic_database(db_path: str):
     """Create strategic memory database with required schema"""
 
@@ -16,7 +17,8 @@ def create_strategic_database(db_path: str):
 
     with sqlite3.connect(db_path) as conn:
         # Create session context tables (matching actual schema)
-        conn.executescript("""
+        conn.executescript(
+            """
             CREATE TABLE IF NOT EXISTS session_context (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 session_id TEXT UNIQUE NOT NULL,
@@ -69,10 +71,12 @@ def create_strategic_database(db_path: str):
             CREATE INDEX IF NOT EXISTS idx_session_context_session_id ON session_context(session_id);
             CREATE INDEX IF NOT EXISTS idx_session_context_type ON session_context(session_type);
             CREATE INDEX IF NOT EXISTS idx_session_context_backup_timestamp ON session_context(last_backup_timestamp);
-        """)
+        """
+        )
 
         # Create test data for P0 tests
-        conn.execute("""
+        conn.execute(
+            """
             INSERT OR IGNORE INTO session_context
             (session_id, session_type, active_personas, conversation_thread,
              last_backup_timestamp, session_start_timestamp, context_quality_score)
@@ -80,12 +84,14 @@ def create_strategic_database(db_path: str):
             ('test-session-001', 'strategic', '["diego", "rachel"]',
              '{"summary": "Test strategic conversation"}',
              datetime('now'), datetime('now'), 0.85)
-        """)
+        """
+        )
 
         conn.commit()
 
     print(f"✅ Strategic memory database initialized at {db_path}")
     return True
+
 
 def main():
     """Initialize database for CI environment"""
@@ -103,6 +109,7 @@ def main():
     except Exception as e:
         print(f"❌ Database initialization failed: {e}")
         return 1
+
 
 if __name__ == "__main__":
     sys.exit(main())
