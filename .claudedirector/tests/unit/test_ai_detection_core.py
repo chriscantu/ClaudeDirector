@@ -3,7 +3,6 @@ Comprehensive unit tests for core AI detection logic.
 Focus on testing the fundamental AI detection algorithms and decision-making processes.
 """
 
-import pytest
 import unittest
 from unittest.mock import Mock, patch, MagicMock
 import sys
@@ -150,14 +149,23 @@ class TestAIDetectionPatterns(unittest.TestCase):
             names = []
             # Simple pattern matching for testing
             import re
-            # Pattern for: Title? FirstName LastName
-            pattern = r'(?:VP|Director|CTO|PM|CEO|Manager)\s+(?:of\s+\w+\s+)?([A-Z][a-z]+\s+[A-Z][a-z]+)|(?<!\w)([A-Z][a-z]+\s+[A-Z][a-z]+)(?=\s+(?:will|is|approved|tomorrow))'
-            matches = re.findall(pattern, text)
-            for match in matches:
-                name = match[0] if match[0] else match[1]
-                if name:
-                    names.append(name)
-            return names
+
+            # Pattern 1: Title + Name (e.g., "PM Lisa Wang")
+            title_pattern = r'(?:VP|Director|CTO|PM|CEO|Manager|Senior\s+leader|Team\s+lead|Executive)\s+(?:of\s+\w+\s+)?([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)'
+            title_matches = re.findall(title_pattern, text, re.IGNORECASE)
+            names.extend(title_matches)
+
+            # Pattern 2: Name followed by action words (e.g., "John Smith tomorrow")
+            name_pattern = r'([A-Z][a-z]+\s+[A-Z][a-z]+)(?=\s+(?:tomorrow|will|is|approved))'
+            name_matches = re.findall(name_pattern, text)
+            names.extend(name_matches)
+
+            # Pattern 3: Standalone titles that act as stakeholder references
+            standalone_titles = re.findall(r'\b(Senior leader|Team lead|Executive)\b', text, re.IGNORECASE)
+            for title in standalone_titles:
+                names.append(title.title())
+
+            return list(set(names))  # Remove duplicates
 
         for text, expected_name in positive_cases:
             with self.subTest(text=text):
