@@ -23,25 +23,30 @@ def restore_readme():
             ["git", "log", "--oneline", "--", "README.md"],
             capture_output=True,
             text=True,
-            check=True
+            check=True,
         )
 
         if result.stdout.strip():
             # Get the most recent commit that modified README.md
-            latest_commit = result.stdout.strip().split('\n')[0].split()[0]
+            latest_commit = result.stdout.strip().split("\n")[0].split()[0]
 
             # Restore README.md from that commit
             subprocess.run(
-                ["git", "checkout", latest_commit, "--", "README.md"],
-                check=True
+                ["git", "checkout", latest_commit, "--", "README.md"], check=True
             )
 
             # Stage and commit the restoration
             subprocess.run(["git", "add", "README.md"], check=True)
-            subprocess.run([
-                "git", "commit", "--no-verify", "-m",
-                "🚨 AUTO-RESTORE: README.md protection system\n\nREADME.md was missing and has been automatically restored.\nThis file is critical for project discovery and must remain on main branch."
-            ], check=True)
+            subprocess.run(
+                [
+                    "git",
+                    "commit",
+                    "--no-verify",
+                    "-m",
+                    "🚨 AUTO-RESTORE: README.md protection system\n\nREADME.md was missing and has been automatically restored.\nThis file is critical for project discovery and must remain on main branch.",
+                ],
+                check=True,
+            )
 
             print("✅ README.md automatically restored and committed")
             return True

@@ -57,7 +57,9 @@ class TestPerformanceRegression:
         config_time = time.time() - start_time
 
         # Should be very fast (under 10ms)
-        assert config_time < 0.01, f"Config creation took {config_time:.4f}s, expected < 0.01s"
+        assert (
+            config_time < 0.01
+        ), f"Config creation took {config_time:.4f}s, expected < 0.01s"
 
         # Measure multiple config creations
         start_time = time.time()
@@ -98,12 +100,15 @@ class TestPerformanceRegression:
             start_time = time.time()
             for i in range(1000):
                 db_manager.execute_query(
-                    "INSERT INTO performance_test (data) VALUES (?)", (f"test_data_{i}",)
+                    "INSERT INTO performance_test (data) VALUES (?)",
+                    (f"test_data_{i}",),
                 )
             insert_time = time.time() - start_time
 
             # Should complete 1000 inserts in reasonable time (under 1 second)
-            assert insert_time < 1.0, f"1000 inserts took {insert_time:.4f}s, expected < 1.0s"
+            assert (
+                insert_time < 1.0
+            ), f"1000 inserts took {insert_time:.4f}s, expected < 1.0s"
 
             # Measure query performance
             start_time = time.time()
@@ -117,7 +122,9 @@ class TestPerformanceRegression:
             query_time = time.time() - start_time
 
             # Should complete 100 queries quickly (under 100ms)
-            assert query_time < 0.1, f"100 queries took {query_time:.4f}s, expected < 0.1s"
+            assert (
+                query_time < 0.1
+            ), f"100 queries took {query_time:.4f}s, expected < 0.1s"
 
             # Measure bulk query performance
             start_time = time.time()
@@ -222,7 +229,8 @@ Attendees: Person A, Person B
                 # Insert data
                 for i in range(100):
                     db_manager.execute_query(
-                        f"INSERT INTO {table_name} (data) VALUES (?)", (f"data_{iteration}_{i}",)
+                        f"INSERT INTO {table_name} (data) VALUES (?)",
+                        (f"data_{iteration}_{i}",),
                     )
 
                 # Query data
@@ -302,7 +310,8 @@ Attendees: Person A, Person B
                 for i in range(100):  # 100 operations per batch
                     operation_num = batch * 100 + i
                     db_manager.execute_query(
-                        "INSERT INTO sustained_test (operation_num) VALUES (?)", (operation_num,)
+                        "INSERT INTO sustained_test (operation_num) VALUES (?)",
+                        (operation_num,),
                     )
 
                 batch_time = time.time() - start_time
@@ -313,7 +322,9 @@ Attendees: Person A, Person B
             last_batch_time = operation_times[-1]
 
             # Last batch should not be more than 50% slower than first batch
-            performance_degradation = (last_batch_time - first_batch_time) / first_batch_time
+            performance_degradation = (
+                last_batch_time - first_batch_time
+            ) / first_batch_time
             assert (
                 performance_degradation < 0.5
             ), f"Performance degraded by {performance_degradation:.2%}, expected < 50%"

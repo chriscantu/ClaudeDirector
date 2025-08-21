@@ -10,8 +10,16 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-from claudedirector.core.file_lifecycle_manager import FileLifecycleManager, FileMetadata, FileRetentionStatus, GenerationMode
-from claudedirector.core.smart_file_organizer import SmartFileOrganizer, ConsolidationOpportunity
+from claudedirector.core.file_lifecycle_manager import (
+    FileLifecycleManager,
+    FileMetadata,
+    FileRetentionStatus,
+    GenerationMode,
+)
+from claudedirector.core.smart_file_organizer import (
+    SmartFileOrganizer,
+    ConsolidationOpportunity,
+)
 from claudedirector.core.advanced_archiving import AdvancedArchivingSystem
 from claudedirector.core.pattern_recognition import PatternRecognitionEngine
 
@@ -43,7 +51,7 @@ class TestSmartFileOrganizer:
             content_preview="Platform migration strategy for Q3 scaling initiative",
             content_type="strategic_analysis",
             business_context="Platform architecture roadmap discussion",
-            persona="diego"
+            persona="diego",
         )
 
         assert "platform" in filename.lower()
@@ -55,7 +63,7 @@ class TestSmartFileOrganizer:
             content_preview="Q4 objectives and key results planning",
             content_type="quarterly_planning",
             business_context="Strategic planning session",
-            persona="alvaro"
+            persona="alvaro",
         )
 
         assert "q4" in filename.lower() or "quarterly" in filename.lower()
@@ -84,7 +92,9 @@ class TestSmartFileOrganizer:
         )
         assert "stakeholder" in contexts
 
-    def test_consolidation_opportunity_identification(self, smart_organizer, temp_workspace):
+    def test_consolidation_opportunity_identification(
+        self, smart_organizer, temp_workspace
+    ):
         """Test identification of consolidation opportunities"""
 
         # Create test files with metadata
@@ -93,7 +103,7 @@ class TestSmartFileOrganizer:
             ("platform-analysis-1.md", "strategic_analysis"),
             ("platform-analysis-2.md", "strategic_analysis"),
             ("team-structure.md", "strategic_analysis"),
-            ("meeting-prep.md", "meeting_prep")
+            ("meeting-prep.md", "meeting_prep"),
         ]
 
         session_id = "test_session_123"
@@ -111,7 +121,7 @@ class TestSmartFileOrganizer:
                 retention_status=FileRetentionStatus.STANDARD,
                 generation_mode=GenerationMode.PROFESSIONAL,
                 content_type=content_type,
-                session_id=session_id
+                session_id=session_id,
             )
             smart_organizer.lifecycle_manager.metadata_store[str(file_path)] = metadata
 
@@ -122,11 +132,17 @@ class TestSmartFileOrganizer:
 
         # Check for session-based opportunity
         session_opportunity = next(
-            (opp for opp in opportunities if opp.consolidation_type == "session_summary"),
-            None
+            (
+                opp
+                for opp in opportunities
+                if opp.consolidation_type == "session_summary"
+            ),
+            None,
         )
         assert session_opportunity is not None
-        assert len(session_opportunity.files) >= 3  # Should find multiple files from same session
+        assert (
+            len(session_opportunity.files) >= 3
+        )  # Should find multiple files from same session
 
     def test_smart_consolidation_execution(self, smart_organizer, temp_workspace):
         """Test smart consolidation execution"""
@@ -137,14 +153,16 @@ class TestSmartFileOrganizer:
         test_files = [
             "strategic-analysis-1.md",
             "strategic-analysis-2.md",
-            "meeting-prep.md"
+            "meeting-prep.md",
         ]
 
         file_paths = []
         for filename in test_files:
             file_path = workspace_path / "analysis-results" / filename
             file_path.parent.mkdir(parents=True, exist_ok=True)
-            file_path.write_text(f"# {filename}\n\nTest strategic content for {filename}")
+            file_path.write_text(
+                f"# {filename}\n\nTest strategic content for {filename}"
+            )
             file_paths.append(str(file_path))
 
         # Create consolidation opportunity
@@ -154,7 +172,7 @@ class TestSmartFileOrganizer:
             business_value="Test strategic analysis consolidation",
             consolidation_type="session_summary",
             priority="high",
-            size_reduction=2.5
+            size_reduction=2.5,
         )
 
         # Execute consolidation
@@ -205,7 +223,7 @@ class TestSmartFileOrganizer:
         test_files = [
             ("week1-analysis.md", base_time - timedelta(days=7), "strategic_analysis"),
             ("week2-analysis.md", base_time - timedelta(days=3), "strategic_analysis"),
-            ("current-analysis.md", base_time, "meeting_prep")
+            ("current-analysis.md", base_time, "meeting_prep"),
         ]
 
         for filename, created_time, content_type in test_files:
@@ -218,7 +236,7 @@ class TestSmartFileOrganizer:
                 last_accessed=created_time,
                 retention_status=FileRetentionStatus.STANDARD,
                 generation_mode=GenerationMode.PROFESSIONAL,
-                content_type=content_type
+                content_type=content_type,
             )
             smart_organizer.lifecycle_manager.metadata_store[str(file_path)] = metadata
 
@@ -265,15 +283,16 @@ class TestSmartFileOrganizer:
             ("Strategic roadmap planning", ["strategy"]),
             ("Executive stakeholder communication", ["stakeholder"]),
             ("Budget planning and ROI analysis", ["budget"]),
-            ("Quarterly objectives and key results", ["quarterly", "strategy"])
+            ("Quarterly objectives and key results", ["quarterly", "strategy"]),
         ]
 
         for content, expected_contexts in test_cases:
             detected = smart_organizer._detect_business_contexts(content)
 
             # Should detect at least one expected context
-            assert any(context in detected for context in expected_contexts), \
-                f"Failed to detect {expected_contexts} in '{content}', got {detected}"
+            assert any(
+                context in detected for context in expected_contexts
+            ), f"Failed to detect {expected_contexts} in '{content}', got {detected}"
 
     def test_session_pattern_detection(self, smart_organizer, temp_workspace):
         """Test session pattern detection"""
@@ -284,7 +303,7 @@ class TestSmartFileOrganizer:
         session_files = [
             ("monday-planning.md", "meeting_prep"),
             ("monday-analysis.md", "strategic_analysis"),
-            ("monday-summary.md", "session_summary")
+            ("monday-summary.md", "session_summary"),
         ]
 
         session_id = "monday_pattern_session"
@@ -300,7 +319,7 @@ class TestSmartFileOrganizer:
                 retention_status=FileRetentionStatus.STANDARD,
                 generation_mode=GenerationMode.PROFESSIONAL,
                 content_type=content_type,
-                session_id=session_id
+                session_id=session_id,
             )
             smart_organizer.lifecycle_manager.metadata_store[str(file_path)] = metadata
 
@@ -367,14 +386,20 @@ class TestAdvancedArchivingSystem:
         """Test retention score calculation"""
 
         # Test high-value content
-        high_value_content = "Executive board presentation ROI analysis quarterly strategic planning"
-        score = archiving_system._calculate_retention_score(high_value_content, "executive_presentation")
+        high_value_content = (
+            "Executive board presentation ROI analysis quarterly strategic planning"
+        )
+        score = archiving_system._calculate_retention_score(
+            high_value_content, "executive_presentation"
+        )
 
         assert score >= 8.0  # Should be high value
 
         # Test lower-value content
         low_value_content = "Basic meeting notes"
-        score = archiving_system._calculate_retention_score(low_value_content, "session_summary")
+        score = archiving_system._calculate_retention_score(
+            low_value_content, "session_summary"
+        )
 
         assert score < 8.0  # Should be lower value
 
@@ -386,6 +411,7 @@ class TestAdvancedArchivingSystem:
 
         # Should be able to query (even if empty)
         import sqlite3
+
         with sqlite3.connect(str(archiving_system.index_db_path)) as conn:
             cursor = conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
             tables = [row[0] for row in cursor.fetchall()]
@@ -414,29 +440,29 @@ class TestPatternRecognitionEngine:
         # Create test session data
         session_data = [
             {
-                'session_id': 'weekly_session_1',
-                'content_type': 'meeting_prep',
-                'created_at': '2024-08-05T09:00:00',
-                'business_context': 'weekly planning'
+                "session_id": "weekly_session_1",
+                "content_type": "meeting_prep",
+                "created_at": "2024-08-05T09:00:00",
+                "business_context": "weekly planning",
             },
             {
-                'session_id': 'weekly_session_1',
-                'content_type': 'strategic_analysis',
-                'created_at': '2024-08-05T10:00:00',
-                'business_context': 'team structure'
+                "session_id": "weekly_session_1",
+                "content_type": "strategic_analysis",
+                "created_at": "2024-08-05T10:00:00",
+                "business_context": "team structure",
             },
             {
-                'session_id': 'weekly_session_2',
-                'content_type': 'meeting_prep',
-                'created_at': '2024-08-12T09:00:00',
-                'business_context': 'weekly planning'
+                "session_id": "weekly_session_2",
+                "content_type": "meeting_prep",
+                "created_at": "2024-08-12T09:00:00",
+                "business_context": "weekly planning",
             },
             {
-                'session_id': 'weekly_session_2',
-                'content_type': 'strategic_analysis',
-                'created_at': '2024-08-12T10:00:00',
-                'business_context': 'platform strategy'
-            }
+                "session_id": "weekly_session_2",
+                "content_type": "strategic_analysis",
+                "created_at": "2024-08-12T10:00:00",
+                "business_context": "platform strategy",
+            },
         ]
 
         patterns = pattern_engine.analyze_user_patterns(session_data)
@@ -458,16 +484,18 @@ class TestPatternRecognitionEngine:
             frequency="weekly",
             confidence=0.85,
             business_value="Consistent weekly strategic planning workflow",
-            template_suggestion="weekly_planning_template"
+            template_suggestion="weekly_planning_template",
         )
 
-        recommendations = pattern_engine.generate_template_recommendations([test_pattern])
+        recommendations = pattern_engine.generate_template_recommendations(
+            [test_pattern]
+        )
 
         assert isinstance(recommendations, list)
         if recommendations:  # May be empty for unknown patterns
             rec = recommendations[0]
-            assert hasattr(rec, 'template_name')
-            assert hasattr(rec, 'confidence')
+            assert hasattr(rec, "template_name")
+            assert hasattr(rec, "confidence")
 
     def test_workflow_optimization_suggestions(self, pattern_engine):
         """Test workflow optimization suggestions"""
@@ -483,10 +511,12 @@ class TestPatternRecognitionEngine:
             frequency="daily",
             confidence=0.9,
             business_value="Daily team coordination",
-            template_suggestion="daily_standup_template"
+            template_suggestion="daily_standup_template",
         )
 
-        suggestions = pattern_engine.suggest_workflow_optimizations([high_confidence_pattern])
+        suggestions = pattern_engine.suggest_workflow_optimizations(
+            [high_confidence_pattern]
+        )
 
         assert isinstance(suggestions, list)
         # Should provide suggestions for high-confidence patterns

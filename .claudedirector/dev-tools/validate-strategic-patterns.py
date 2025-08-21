@@ -38,7 +38,10 @@ class QuickStrategicValidator:
 
             # Test 2: System status (health check)
             result = subprocess.run(
-                [str(self.claudedirector), "status"], capture_output=True, text=True, timeout=15
+                [str(self.claudedirector), "status"],
+                capture_output=True,
+                text=True,
+                timeout=15,
             )
 
             elapsed = time.time() - start_time
@@ -220,7 +223,11 @@ class QuickStrategicValidator:
             status = "✅" if success else "❌"
             print(f"{status} {workflow_name}: {message}")
 
-            results[workflow_name] = {"success": success, "time": elapsed, "message": message}
+            results[workflow_name] = {
+                "success": success,
+                "time": elapsed,
+                "message": message,
+            }
 
             total_time += elapsed
             if success:
@@ -255,7 +262,10 @@ class QuickStrategicValidator:
         recommendations = []
         for workflow_name, result in results.items():
             if not result["success"]:
-                if "timeout" in result["message"].lower() or "slow" in result["message"]:
+                if (
+                    "timeout" in result["message"].lower()
+                    or "slow" in result["message"]
+                ):
                     recommendations.append(f"Optimize {workflow_name} performance")
                 elif "not available" in result["message"]:
                     recommendations.append(f"Fix {workflow_name} availability issues")

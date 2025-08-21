@@ -12,13 +12,19 @@ from typing import Dict, Any
 
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from lib.claudedirector.p2_communication.report_generation.cli_formatter import (
-    CLIReportFormatter, CLIColors
+    CLIReportFormatter,
+    CLIColors,
 )
 from lib.claudedirector.p2_communication.interfaces.report_interface import (
-    GeneratedReport, ReportSection, ReportContext, StakeholderType, ReportFormat
+    GeneratedReport,
+    ReportSection,
+    ReportContext,
+    StakeholderType,
+    ReportFormat,
 )
 
 
@@ -40,24 +46,24 @@ class TestCLIColors(unittest.TestCase):
         self.assertIsInstance(CLIColors.RESET, str)
 
         # Colors should contain ANSI escape codes
-        self.assertTrue(CLIColors.RED.startswith('\033['))
-        self.assertTrue(CLIColors.RESET.startswith('\033['))
+        self.assertTrue(CLIColors.RED.startswith("\033["))
+        self.assertTrue(CLIColors.RESET.startswith("\033["))
 
-    @patch('os.getenv')
-    @patch('os.sys.stderr.isatty')
+    @patch("os.getenv")
+    @patch("os.sys.stderr.isatty")
     def test_color_support_detection(self, mock_isatty, mock_getenv):
         """Test color support detection."""
         # Test with color support
-        mock_getenv.return_value = 'xterm-256color'
+        mock_getenv.return_value = "xterm-256color"
         mock_isatty.return_value = True
         self.assertTrue(CLIColors.is_supported())
 
         # Test without color support (dumb terminal)
-        mock_getenv.return_value = 'dumb'
+        mock_getenv.return_value = "dumb"
         self.assertFalse(CLIColors.is_supported())
 
         # Test without TTY
-        mock_getenv.return_value = 'xterm-256color'
+        mock_getenv.return_value = "xterm-256color"
         mock_isatty.return_value = False
         self.assertFalse(CLIColors.is_supported())
 
@@ -67,7 +73,9 @@ class TestCLIReportFormatter(unittest.TestCase):
 
     def setUp(self):
         """Set up test fixtures."""
-        self.formatter = CLIReportFormatter(use_colors=False)  # Disable colors for testing
+        self.formatter = CLIReportFormatter(
+            use_colors=False
+        )  # Disable colors for testing
 
         # Create sample report sections
         self.executive_summary = ReportSection(
@@ -75,7 +83,7 @@ class TestCLIReportFormatter(unittest.TestCase):
             content="• Team velocity is increasing (42 points this sprint)\n• 85% of strategic initiatives are on track (8/10)\n• No critical issues - operations running smoothly",
             priority=1,
             stakeholder_relevant=[StakeholderType.CEO],
-            data_freshness="2025-08-10 09:00:00"
+            data_freshness="2025-08-10 09:00:00",
         )
 
         self.key_metrics = ReportSection(
@@ -83,7 +91,7 @@ class TestCLIReportFormatter(unittest.TestCase):
             content="Team Velocity: 42 (increasing)\nTeam Health: 85%\nDelivery Predictability: 90%",
             priority=2,
             stakeholder_relevant=[StakeholderType.VP_ENGINEERING],
-            data_freshness="2025-08-10 09:00:00"
+            data_freshness="2025-08-10 09:00:00",
         )
 
         self.risks_section = ReportSection(
@@ -91,7 +99,7 @@ class TestCLIReportFormatter(unittest.TestCase):
             content="✅ No significant risks identified - operations stable\n✅ Velocity trend suggests capacity for additional initiatives",
             priority=3,
             stakeholder_relevant=[StakeholderType.CEO, StakeholderType.VP_ENGINEERING],
-            data_freshness="2025-08-10 09:00:00"
+            data_freshness="2025-08-10 09:00:00",
         )
 
         # Create sample report context
@@ -100,7 +108,7 @@ class TestCLIReportFormatter(unittest.TestCase):
             time_period="current_week",
             format=ReportFormat.CLI_RICH,
             include_predictions=True,
-            include_risks=True
+            include_risks=True,
         )
 
         # Create sample report
@@ -110,7 +118,7 @@ class TestCLIReportFormatter(unittest.TestCase):
             generated_at="2025-08-10T09:00:00",
             context=self.context,
             data_sources=["jira", "claudedirector"],
-            confidence_score=0.95
+            confidence_score=0.95,
         )
 
     def test_formatter_initialization(self):
@@ -209,7 +217,7 @@ class TestCLIReportFormatter(unittest.TestCase):
             title="Critical Issues",
             content="• Security vulnerability detected\n• Immediate action required",
             priority=1,  # High priority
-            stakeholder_relevant=[StakeholderType.CEO]
+            stakeholder_relevant=[StakeholderType.CEO],
         )
 
         formatted = self.formatter._format_section(high_priority_section)
@@ -221,7 +229,7 @@ class TestCLIReportFormatter(unittest.TestCase):
             title="Process Improvements",
             content="• Review current workflows\n• Consider automation opportunities",
             priority=3,  # Medium priority
-            stakeholder_relevant=[StakeholderType.VP_ENGINEERING]
+            stakeholder_relevant=[StakeholderType.VP_ENGINEERING],
         )
 
         formatted = self.formatter._format_section(medium_priority_section)
@@ -232,7 +240,7 @@ class TestCLIReportFormatter(unittest.TestCase):
             title="Future Planning",
             content="• Strategic roadmap review\n• Long-term capacity planning",
             priority=6,  # Low priority
-            stakeholder_relevant=[StakeholderType.CEO]
+            stakeholder_relevant=[StakeholderType.CEO],
         )
 
         formatted = self.formatter._format_section(low_priority_section)
@@ -300,7 +308,7 @@ class TestCLIReportFormatter(unittest.TestCase):
             "team_health": 85,
             "velocity_trend": "increasing",
             "critical_issues": 2,
-            "last_updated": "2025-08-10 09:00:00"
+            "last_updated": "2025-08-10 09:00:00",
         }
 
         formatted = self.formatter.format_quick_status(status_data)
@@ -322,7 +330,7 @@ class TestCLIReportFormatter(unittest.TestCase):
             title="Test Section",
             content=content_with_bullets,
             priority=2,
-            stakeholder_relevant=[StakeholderType.CEO]
+            stakeholder_relevant=[StakeholderType.CEO],
         )
 
         formatted = self.formatter._format_section(section)
@@ -338,7 +346,7 @@ class TestCLIReportFormatter(unittest.TestCase):
             title="Metrics",
             content=content_with_kvp,
             priority=2,
-            stakeholder_relevant=[StakeholderType.CEO]
+            stakeholder_relevant=[StakeholderType.CEO],
         )
 
         formatted_kvp = self.formatter._format_section(section_kvp)
@@ -353,7 +361,7 @@ class TestCLIReportFormatter(unittest.TestCase):
             content="Test content",
             priority=2,
             stakeholder_relevant=[StakeholderType.CEO],
-            data_freshness="2025-08-10 09:00:00"
+            data_freshness="2025-08-10 09:00:00",
         )
 
         formatted = self.formatter._format_section(section_with_freshness)
@@ -368,7 +376,7 @@ class TestCLIReportFormatter(unittest.TestCase):
             title="Test Section",
             content="Test content",
             priority=2,
-            stakeholder_relevant=[StakeholderType.CEO]
+            stakeholder_relevant=[StakeholderType.CEO],
         )
 
         formatted_no_freshness = self.formatter._format_section(section_no_freshness)
@@ -382,7 +390,7 @@ class TestCLIReportFormatter(unittest.TestCase):
             title="Long Content Test",
             content=long_content,
             priority=2,
-            stakeholder_relevant=[StakeholderType.CEO]
+            stakeholder_relevant=[StakeholderType.CEO],
         )
 
         formatted = self.formatter._format_section(long_section)
@@ -397,7 +405,7 @@ class TestCLIReportFormatter(unittest.TestCase):
             title="Empty Section",
             content="",
             priority=2,
-            stakeholder_relevant=[StakeholderType.CEO]
+            stakeholder_relevant=[StakeholderType.CEO],
         )
 
         formatted = self.formatter._format_section(empty_section)
@@ -409,13 +417,15 @@ class TestCLIReportFormatter(unittest.TestCase):
 
     def test_special_characters_handling(self):
         """Test handling of special characters and Unicode."""
-        special_content = "• Unicode bullets ✅ ⚠️ 🔴\n• Arrows → ← ↑ ↓\n• Progress: 85% ±2%"
+        special_content = (
+            "• Unicode bullets ✅ ⚠️ 🔴\n• Arrows → ← ↑ ↓\n• Progress: 85% ±2%"
+        )
 
         special_section = ReportSection(
             title="Special Characters",
             content=special_content,
             priority=2,
-            stakeholder_relevant=[StakeholderType.CEO]
+            stakeholder_relevant=[StakeholderType.CEO],
         )
 
         formatted = self.formatter._format_section(special_section)
@@ -427,5 +437,5 @@ class TestCLIReportFormatter(unittest.TestCase):
         self.assertIn("85%", formatted)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

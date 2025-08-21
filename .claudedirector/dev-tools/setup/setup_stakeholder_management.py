@@ -295,20 +295,29 @@ if __name__ == "__main__":
             recommendations = engine.get_pending_recommendations()
 
             if recommendations:
-                print(f"📋 {len(recommendations)} engagement recommendations generated:")
+                print(
+                    f"📋 {len(recommendations)} engagement recommendations generated:"
+                )
 
                 for i, rec in enumerate(recommendations[:3], 1):  # Show first 3
-                    urgency_emoji = {"urgent": "🔴", "high": "🟡", "medium": "🟢", "low": "🔵"}.get(
-                        rec["urgency_level"], "⚪"
-                    )
+                    urgency_emoji = {
+                        "urgent": "🔴",
+                        "high": "🟡",
+                        "medium": "🟢",
+                        "low": "🔵",
+                    }.get(rec["urgency_level"], "⚪")
 
                     print(f"\n   {i}. {urgency_emoji} {rec['display_name']}")
-                    print(f"      {rec['recommendation_type'].replace('_', ' ').title()}")
+                    print(
+                        f"      {rec['recommendation_type'].replace('_', ' ').title()}"
+                    )
                     print(f"      {rec['trigger_reason']}")
                     print(f"      💡 {rec['suggested_approach']}")
 
                 if len(recommendations) > 3:
-                    print(f"\n   ... and {len(recommendations) - 3} more recommendations")
+                    print(
+                        f"\n   ... and {len(recommendations) - 3} more recommendations"
+                    )
             else:
                 print("   No recommendations generated yet")
 
@@ -397,7 +406,9 @@ if __name__ == "__main__":
 
         # Step 4: Verify setup
         if not self.verify_setup():
-            print("\n⚠️  Setup completed with some issues - see verification results above")
+            print(
+                "\n⚠️  Setup completed with some issues - see verification results above"
+            )
 
         # Step 5: Show usage guide
         self.show_usage_guide()
@@ -409,9 +420,15 @@ def main():
     """Main entry point for setup script"""
     import argparse
 
-    parser = argparse.ArgumentParser(description="ClaudeDirector Stakeholder Management Setup")
-    parser.add_argument("--verify-only", action="store_true", help="Only verify existing setup")
-    parser.add_argument("--demo-only", action="store_true", help="Only show system demonstration")
+    parser = argparse.ArgumentParser(
+        description="ClaudeDirector Stakeholder Management Setup"
+    )
+    parser.add_argument(
+        "--verify-only", action="store_true", help="Only verify existing setup"
+    )
+    parser.add_argument(
+        "--demo-only", action="store_true", help="Only show system demonstration"
+    )
 
     args = parser.parse_args()
 

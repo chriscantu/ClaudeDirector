@@ -18,7 +18,7 @@ from claudedirector.phase4_conversation_intelligence import (
     simple_strategic_response,
     analyze_with_framework,
     get_conversation_insights,
-    default_director
+    default_director,
 )
 
 
@@ -30,7 +30,7 @@ class TestClaudeDirectorPhase4Main(unittest.TestCase):
             "intelligence_mode": "enhanced",
             "enable_context_memory": True,
             "enable_persona_collaboration": True,
-            "enable_framework_blending": True
+            "enable_framework_blending": True,
         }
         self.director = ClaudeDirectorPhase4(self.config)
         self.session_id = "main_test_session"
@@ -51,42 +51,47 @@ class TestClaudeDirectorPhase4Main(unittest.TestCase):
         self.assertIsInstance(director_no_config.enable_persona_collaboration, bool)
         self.assertIsInstance(director_no_config.enable_framework_blending, bool)
 
-    @patch('claudedirector.core.enhanced_framework_engine.EmbeddedFrameworkEngine.analyze_systematically')
+    @patch(
+        "claudedirector.core.enhanced_framework_engine.EmbeddedFrameworkEngine.analyze_systematically"
+    )
     def test_enhanced_conversation_response(self, mock_analyze):
         """Test enhanced conversation response with full intelligence"""
         # Setup mock framework response
-        from claudedirector.core.embedded_framework_engine import FrameworkAnalysis, SystematicResponse
+        from claudedirector.core.embedded_framework_engine import (
+            FrameworkAnalysis,
+            SystematicResponse,
+        )
 
         mock_analysis = FrameworkAnalysis(
             framework_name="rumelt_strategy_kernel",
             structured_insights={
                 "summary": "Strategic analysis complete",
                 "strategic_themes": ["platform_strategy", "organizational_alignment"],
-                "patterns": ["complexity", "coordination_challenges"]
+                "patterns": ["complexity", "coordination_challenges"],
             },
             recommendations=[
                 "Establish clear strategic priorities",
                 "Improve cross-team coordination",
-                "Implement structured decision process"
+                "Implement structured decision process",
             ],
             implementation_steps=[
                 "Conduct stakeholder alignment sessions",
                 "Define strategic framework adoption plan",
-                "Create measurement and feedback loops"
+                "Create measurement and feedback loops",
             ],
             key_considerations=[
                 "Executive sponsorship required",
                 "Change management complexity",
-                "Resource allocation needs"
+                "Resource allocation needs",
             ],
-            analysis_confidence=0.85
+            analysis_confidence=0.85,
         )
 
         mock_response = SystematicResponse(
             analysis=mock_analysis,
             persona_integrated_response="Strategic analysis indicates strong alignment opportunities for your platform strategy initiative.",
             processing_time_ms=750,
-            framework_applied="rumelt_strategy_kernel"
+            framework_applied="rumelt_strategy_kernel",
         )
 
         mock_analyze.return_value = mock_response
@@ -159,10 +164,10 @@ class TestClaudeDirectorPhase4Main(unittest.TestCase):
         """Test that all backwards compatibility methods exist and work"""
         # Core backwards compatibility methods
         compatibility_methods = [
-            'analyze_systematically',
-            'simple_response',
-            'get_available_frameworks',
-            'get_framework_info'
+            "analyze_systematically",
+            "simple_response",
+            "get_available_frameworks",
+            "get_framework_info",
         ]
 
         for method_name in compatibility_methods:
@@ -171,7 +176,9 @@ class TestClaudeDirectorPhase4Main(unittest.TestCase):
 
         # Test simple_response
         try:
-            simple_result = self.director.simple_response("Test strategy question", "camille")
+            simple_result = self.director.simple_response(
+                "Test strategy question", "camille"
+            )
             self.assertIsInstance(simple_result, str)
         except Exception:
             # Expected with mocks, but method should exist
@@ -189,10 +196,10 @@ class TestClaudeDirectorPhase4Main(unittest.TestCase):
         """Test Phase 4.1 specific enhanced methods"""
         # Phase 4.1 specific methods
         phase4_methods = [
-            'get_conversation_stats',
-            'get_persona_recommendations',
-            'set_intelligence_mode',
-            'get_system_status'
+            "get_conversation_stats",
+            "get_persona_recommendations",
+            "set_intelligence_mode",
+            "get_system_status",
         ]
 
         for method_name in phase4_methods:
@@ -210,7 +217,9 @@ class TestClaudeDirectorPhase4Main(unittest.TestCase):
 
         # Test get_persona_recommendations
         try:
-            recommendations = self.director.get_persona_recommendations("Platform strategy help")
+            recommendations = self.director.get_persona_recommendations(
+                "Platform strategy help"
+            )
             self.assertIsInstance(recommendations, list)
 
             if recommendations:
@@ -239,7 +248,9 @@ class TestClaudeDirectorPhase4Main(unittest.TestCase):
             pass
 
         # Test fallback response directly
-        fallback = self.director._fallback_response("Test strategic question", "camille")
+        fallback = self.director._fallback_response(
+            "Test strategic question", "camille"
+        )
         self.assertIsInstance(fallback, str)
         self.assertIn("camille", fallback.lower())
 
@@ -301,7 +312,7 @@ class TestChatOnlyInterfacePrinciple(unittest.TestCase):
     def test_all_functionality_through_conversation(self):
         """Test that all functionality is accessible through conversation"""
         # Primary interface should be respond method
-        self.assertTrue(hasattr(self.director, 'respond'))
+        self.assertTrue(hasattr(self.director, "respond"))
         self.assertTrue(callable(self.director.respond))
 
         # Convenience functions should also be conversation-based
@@ -349,10 +360,9 @@ class TestPerformanceCharacteristics(unittest.TestCase):
     """Test Phase 4.1 performance characteristics"""
 
     def setUp(self):
-        self.director = ClaudeDirectorPhase4({
-            "max_response_time_ms": 3000,
-            "fallback_on_timeout": True
-        })
+        self.director = ClaudeDirectorPhase4(
+            {"max_response_time_ms": 3000, "fallback_on_timeout": True}
+        )
 
     def test_response_time_monitoring(self):
         """Test that response times are monitored"""
@@ -385,7 +395,7 @@ class TestPerformanceCharacteristics(unittest.TestCase):
         self.assertGreater(len(fallback), 10)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Create comprehensive test suite for Phase 4.1 main integration
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
@@ -395,7 +405,7 @@ if __name__ == '__main__':
         TestClaudeDirectorPhase4Main,
         TestConvenienceFunctions,
         TestChatOnlyInterfacePrinciple,
-        TestPerformanceCharacteristics
+        TestPerformanceCharacteristics,
     ]
 
     for test_class in test_classes:
@@ -429,20 +439,22 @@ if __name__ == '__main__':
         print(f"🎯 PHASE 4.1 IMPLEMENTATION: COMPLETE & VALIDATED")
 
     else:
-        print(f"❌ {len(result.failures)} failures, {len(result.errors)} errors out of {result.testsRun} tests")
+        print(
+            f"❌ {len(result.failures)} failures, {len(result.errors)} errors out of {result.testsRun} tests"
+        )
 
         if result.failures:
             print(f"\n🔍 FAILURES:")
             for test, traceback in result.failures:
                 print(f"  - {test}")
-                error_msg = traceback.split('AssertionError:')[-1].strip()
+                error_msg = traceback.split("AssertionError:")[-1].strip()
                 print(f"    {error_msg}")
 
         if result.errors:
             print(f"\n🔍 ERRORS:")
             for test, traceback in result.errors:
                 print(f"  - {test}")
-                error_msg = traceback.split('Exception:')[-1].strip()
+                error_msg = traceback.split("Exception:")[-1].strip()
                 print(f"    {error_msg}")
 
     print(f"\n{'='*100}")

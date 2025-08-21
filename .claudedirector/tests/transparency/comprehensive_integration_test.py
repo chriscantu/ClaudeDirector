@@ -37,11 +37,23 @@ class ComprehensiveTransparencyTest:
         print("🧪 Testing Persona Detection Accuracy...")
 
         test_cases = [
-            ("How should we architect our platform for scalability and performance?", "martin"),
+            (
+                "How should we architect our platform for scalability and performance?",
+                "martin",
+            ),
             ("What's our engineering team structure and leadership strategy?", "diego"),
-            ("Platform investment ROI analysis and business value assessment", "alvaro"),
-            ("Design system component strategy and cross-functional UX coordination", "rachel"),
-            ("Strategic technology assessment and innovation roadmap planning", "camille")
+            (
+                "Platform investment ROI analysis and business value assessment",
+                "alvaro",
+            ),
+            (
+                "Design system component strategy and cross-functional UX coordination",
+                "rachel",
+            ),
+            (
+                "Strategic technology assessment and innovation roadmap planning",
+                "camille",
+            ),
         ]
 
         correct_detections = 0
@@ -51,17 +63,23 @@ class ComprehensiveTransparencyTest:
                 correct_detections += 1
                 print(f"  ✅ '{user_input[:40]}...' → {detected_persona}")
             else:
-                print(f"  ❌ '{user_input[:40]}...' → {detected_persona} (expected {expected_persona})")
+                print(
+                    f"  ❌ '{user_input[:40]}...' → {detected_persona} (expected {expected_persona})"
+                )
 
         accuracy = (correct_detections / len(test_cases)) * 100
-        print(f"  📊 Persona Detection Accuracy: {accuracy:.1f}% ({correct_detections}/{len(test_cases)})")
+        print(
+            f"  📊 Persona Detection Accuracy: {accuracy:.1f}% ({correct_detections}/{len(test_cases)})"
+        )
 
-        self.test_results.append({
-            'test': 'persona_detection_accuracy',
-            'passed': accuracy >= 80.0,  # 80% accuracy threshold
-            'score': accuracy,
-            'details': f"{correct_detections}/{len(test_cases)} correct"
-        })
+        self.test_results.append(
+            {
+                "test": "persona_detection_accuracy",
+                "passed": accuracy >= 80.0,  # 80% accuracy threshold
+                "score": accuracy,
+                "details": f"{correct_detections}/{len(test_cases)} correct",
+            }
+        )
 
         return accuracy >= 80.0
 
@@ -74,20 +92,32 @@ class ComprehensiveTransparencyTest:
                 "name": "Architecture Analysis",
                 "input": "Analyze our microservices architecture using established patterns",
                 "response": "Based on architectural patterns and Team Topologies principles, here's a systematic analysis...",
-                "expected_features": ["persona_header", "framework_detection", "mcp_transparency"]
+                "expected_features": [
+                    "persona_header",
+                    "framework_detection",
+                    "mcp_transparency",
+                ],
             },
             {
                 "name": "Strategic Planning",
                 "input": "Strategic business analysis using OGSM framework",
                 "response": "Using OGSM strategic framework for systematic planning and Good Strategy Bad Strategy principles...",
-                "expected_features": ["persona_header", "framework_detection", "strategic_analysis"]
+                "expected_features": [
+                    "persona_header",
+                    "framework_detection",
+                    "strategic_analysis",
+                ],
             },
             {
                 "name": "Design Systems",
                 "input": "Component architecture strategy for design system scaling",
                 "response": "Design thinking methodology and component patterns for cross-functional coordination...",
-                "expected_features": ["persona_header", "design_strategy", "pattern_analysis"]
-            }
+                "expected_features": [
+                    "persona_header",
+                    "design_strategy",
+                    "pattern_analysis",
+                ],
+            },
         ]
 
         pipeline_successes = 0
@@ -96,23 +126,25 @@ class ComprehensiveTransparencyTest:
 
             # Test enhanced transparency engine
             result = self.engine.enhance_response(
-                scenario['response'],
-                scenario['input']
+                scenario["response"], scenario["input"]
             )
 
             # Check features
             features_detected = []
 
             # Check persona header
-            if any(header in result['enhanced_response'] for header in ["🏗️", "🎯", "💼", "🎨", "📊"]):
+            if any(
+                header in result["enhanced_response"]
+                for header in ["🏗️", "🎯", "💼", "🎨", "📊"]
+            ):
                 features_detected.append("persona_header")
 
             # Check if transparency was applied
-            if result['transparency_summary'].get('transparency_applied'):
+            if result["transparency_summary"].get("transparency_applied"):
                 features_detected.append("transparency_applied")
 
             # Check frameworks (in full system mode)
-            if result['frameworks_detected']:
+            if result["frameworks_detected"]:
                 features_detected.append("framework_detection")
 
             success = len(features_detected) >= 2  # At least 2 features should work
@@ -123,14 +155,18 @@ class ComprehensiveTransparencyTest:
                 print(f"    ❌ Features: {', '.join(features_detected)} (insufficient)")
 
         pipeline_success_rate = (pipeline_successes / len(test_scenarios)) * 100
-        print(f"  📊 Pipeline Success Rate: {pipeline_success_rate:.1f}% ({pipeline_successes}/{len(test_scenarios)})")
+        print(
+            f"  📊 Pipeline Success Rate: {pipeline_success_rate:.1f}% ({pipeline_successes}/{len(test_scenarios)})"
+        )
 
-        self.test_results.append({
-            'test': 'transparency_integration_pipeline',
-            'passed': pipeline_success_rate >= 66.0,  # 2/3 scenarios must pass
-            'score': pipeline_success_rate,
-            'details': f"{pipeline_successes}/{len(test_scenarios)} scenarios passed"
-        })
+        self.test_results.append(
+            {
+                "test": "transparency_integration_pipeline",
+                "passed": pipeline_success_rate >= 66.0,  # 2/3 scenarios must pass
+                "score": pipeline_success_rate,
+                "details": f"{pipeline_successes}/{len(test_scenarios)} scenarios passed",
+            }
+        )
 
         return pipeline_success_rate >= 66.0
 
@@ -142,57 +178,70 @@ class ComprehensiveTransparencyTest:
             {
                 "input": "Complex strategic analysis requiring multiple frameworks",
                 "response": "This systematic analysis uses strategic frameworks and architectural patterns...",
-                "expected_mcp_features": ["server_disclosure", "processing_time", "capability_listing"]
+                "expected_mcp_features": [
+                    "server_disclosure",
+                    "processing_time",
+                    "capability_listing",
+                ],
             },
             {
                 "input": "Create visual representation of platform architecture",
                 "response": "I'll generate a diagram showing platform components and relationships...",
-                "expected_mcp_features": ["magic_server", "diagram_generation", "visual_intelligence"]
-            }
+                "expected_mcp_features": [
+                    "magic_server",
+                    "diagram_generation",
+                    "visual_intelligence",
+                ],
+            },
         ]
 
         mcp_successes = 0
         for test_case in test_cases:
             result = self.mcp_middleware.apply_mcp_transparency(
-                test_case['response'],
-                test_case['input']
+                test_case["response"], test_case["input"]
             )
 
             mcp_features = []
 
             # Check for MCP disclosure
-            if "🔧 **Enhanced Analysis Applied**" in result['enhanced_response']:
+            if "🔧 **Enhanced Analysis Applied**" in result["enhanced_response"]:
                 mcp_features.append("server_disclosure")
 
             # Check for processing time
-            if "Enhanced Intelligence" in result['enhanced_response']:
+            if "Enhanced Intelligence" in result["enhanced_response"]:
                 mcp_features.append("enhanced_intelligence")
 
             # Check MCP summary
-            summary = result['mcp_summary']
-            if summary['total_calls'] > 0:
+            summary = result["mcp_summary"]
+            if summary["total_calls"] > 0:
                 mcp_features.append("mcp_tracking")
 
-            if summary['servers_used']:
+            if summary["servers_used"]:
                 mcp_features.append("server_identification")
 
             success = len(mcp_features) >= 2
             if success:
                 mcp_successes += 1
                 print(f"  ✅ MCP Features: {', '.join(mcp_features)}")
-                print(f"    Servers: {summary['servers_used']}, Calls: {summary['total_calls']}")
+                print(
+                    f"    Servers: {summary['servers_used']}, Calls: {summary['total_calls']}"
+                )
             else:
                 print(f"  ❌ MCP Features: {', '.join(mcp_features)} (insufficient)")
 
         mcp_success_rate = (mcp_successes / len(test_cases)) * 100
-        print(f"  📊 MCP Transparency Success: {mcp_success_rate:.1f}% ({mcp_successes}/{len(test_cases)})")
+        print(
+            f"  📊 MCP Transparency Success: {mcp_success_rate:.1f}% ({mcp_successes}/{len(test_cases)})"
+        )
 
-        self.test_results.append({
-            'test': 'mcp_transparency_disclosure',
-            'passed': mcp_success_rate >= 50.0,  # 50% threshold for MCP features
-            'score': mcp_success_rate,
-            'details': f"{mcp_successes}/{len(test_cases)} MCP scenarios passed"
-        })
+        self.test_results.append(
+            {
+                "test": "mcp_transparency_disclosure",
+                "passed": mcp_success_rate >= 50.0,  # 50% threshold for MCP features
+                "score": mcp_success_rate,
+                "details": f"{mcp_successes}/{len(test_cases)} MCP scenarios passed",
+            }
+        )
 
         return mcp_success_rate >= 50.0
 
@@ -218,7 +267,9 @@ class ComprehensiveTransparencyTest:
         transparency_times = []
         for _ in range(10):
             start_time = time.time()
-            result = self.response_middleware.process_response(test_response, test_input)
+            result = self.response_middleware.process_response(
+                test_response, test_input
+            )
             transparency_times.append(time.time() - start_time)
 
         transparency_avg = sum(transparency_times) / len(transparency_times)
@@ -238,25 +289,31 @@ class ComprehensiveTransparencyTest:
         if overhead_acceptable and max_time_acceptable:
             print(f"  ✅ Performance: Within targets (<5ms avg, <10ms max)")
         elif overhead_acceptable:
-            print(f"  ⚠️  Performance: Avg good, max time high ({max_overhead_ms:.2f}ms)")
+            print(
+                f"  ⚠️  Performance: Avg good, max time high ({max_overhead_ms:.2f}ms)"
+            )
         else:
             print(f"  ❌ Performance: Overhead too high ({overhead_ms:.2f}ms)")
 
         performance_passed = overhead_acceptable and max_time_acceptable
 
-        self.test_results.append({
-            'test': 'performance_optimization',
-            'passed': performance_passed,
-            'score': max(0, 10 - overhead_ms),  # Score based on overhead
-            'details': f"{overhead_ms:.2f}ms avg overhead, {max_overhead_ms:.2f}ms max"
-        })
+        self.test_results.append(
+            {
+                "test": "performance_optimization",
+                "passed": performance_passed,
+                "score": max(0, 10 - overhead_ms),  # Score based on overhead
+                "details": f"{overhead_ms:.2f}ms avg overhead, {max_overhead_ms:.2f}ms max",
+            }
+        )
 
-        self.performance_results.append({
-            'baseline_avg_ms': baseline_avg * 1000,
-            'transparency_avg_ms': transparency_avg * 1000,
-            'overhead_ms': overhead_ms,
-            'max_time_ms': max_overhead_ms
-        })
+        self.performance_results.append(
+            {
+                "baseline_avg_ms": baseline_avg * 1000,
+                "transparency_avg_ms": transparency_avg * 1000,
+                "overhead_ms": overhead_ms,
+                "max_time_ms": max_overhead_ms,
+            }
+        )
 
         return performance_passed
 
@@ -269,7 +326,7 @@ class ComprehensiveTransparencyTest:
             ("x" * 5000, "Very long input"),
             (None, "Null input"),
             ("Special chars: @#$%^&*()[]{}|\\", "Special characters"),
-            ("Unicode: 测试 🚀 ñoño", "Unicode characters")
+            ("Unicode: 测试 🚀 ñoño", "Unicode characters"),
         ]
 
         error_handling_successes = 0
@@ -280,13 +337,12 @@ class ComprehensiveTransparencyTest:
                     continue
 
                 result = self.response_middleware.process_response(
-                    "Test response for error handling",
-                    test_input
+                    "Test response for error handling", test_input
                 )
 
                 # Should not crash and should have some transparency features
-                has_response = bool(result.get('enhanced_response'))
-                has_summary = bool(result.get('transparency_summary'))
+                has_response = bool(result.get("enhanced_response"))
+                has_summary = bool(result.get("transparency_summary"))
 
                 if has_response and has_summary:
                     error_handling_successes += 1
@@ -300,14 +356,18 @@ class ComprehensiveTransparencyTest:
         # Adjust count for skipped None test
         total_tests = len(error_test_cases) - 1
         error_handling_rate = (error_handling_successes / total_tests) * 100
-        print(f"  📊 Error Handling Success: {error_handling_rate:.1f}% ({error_handling_successes}/{total_tests})")
+        print(
+            f"  📊 Error Handling Success: {error_handling_rate:.1f}% ({error_handling_successes}/{total_tests})"
+        )
 
-        self.test_results.append({
-            'test': 'error_handling_robustness',
-            'passed': error_handling_rate >= 80.0,
-            'score': error_handling_rate,
-            'details': f"{error_handling_successes}/{total_tests} error cases handled"
-        })
+        self.test_results.append(
+            {
+                "test": "error_handling_robustness",
+                "passed": error_handling_rate >= 80.0,
+                "score": error_handling_rate,
+                "details": f"{error_handling_successes}/{total_tests} error cases handled",
+            }
+        )
 
         return error_handling_rate >= 80.0
 
@@ -326,10 +386,13 @@ class ComprehensiveTransparencyTest:
         # Run all tests
         tests = [
             ("Persona Detection Accuracy", self.test_persona_detection_accuracy),
-            ("Transparency Integration Pipeline", self.test_transparency_integration_pipeline),
+            (
+                "Transparency Integration Pipeline",
+                self.test_transparency_integration_pipeline,
+            ),
             ("MCP Transparency Disclosure", self.test_mcp_transparency_disclosure),
             ("Performance Optimization", self.test_performance_optimization),
-            ("Error Handling Robustness", self.test_error_handling_robustness)
+            ("Error Handling Robustness", self.test_error_handling_robustness),
         ]
 
         for test_name, test_func in tests:
@@ -337,12 +400,14 @@ class ComprehensiveTransparencyTest:
                 test_func()
             except Exception as e:
                 print(f"\n❌ {test_name}: Exception occurred - {str(e)[:100]}...")
-                self.test_results.append({
-                    'test': test_name.lower().replace(' ', '_'),
-                    'passed': False,
-                    'score': 0,
-                    'details': f"Exception: {str(e)[:50]}..."
-                })
+                self.test_results.append(
+                    {
+                        "test": test_name.lower().replace(" ", "_"),
+                        "passed": False,
+                        "score": 0,
+                        "details": f"Exception: {str(e)[:50]}...",
+                    }
+                )
 
         # Generate comprehensive report
         self.generate_comprehensive_report()
@@ -359,15 +424,15 @@ class ComprehensiveTransparencyTest:
         total_score = 0
 
         for result in self.test_results:
-            test_name = result['test'].replace('_', ' ').title()
-            status = "✅ PASS" if result['passed'] else "❌ FAIL"
-            score = result['score']
-            details = result['details']
+            test_name = result["test"].replace("_", " ").title()
+            status = "✅ PASS" if result["passed"] else "❌ FAIL"
+            score = result["score"]
+            details = result["details"]
 
             print(f"{status} | {test_name}")
             print(f"      Score: {score:.1f} | {details}")
 
-            if result['passed']:
+            if result["passed"]:
                 passed_tests += 1
             total_score += score
 
@@ -396,7 +461,7 @@ class ComprehensiveTransparencyTest:
 
     def calculate_overall_success(self):
         """Calculate overall test suite success"""
-        passed_tests = sum(1 for result in self.test_results if result['passed'])
+        passed_tests = sum(1 for result in self.test_results if result["passed"])
         total_tests = len(self.test_results)
 
         if total_tests == 0:
@@ -409,7 +474,9 @@ class ComprehensiveTransparencyTest:
             print("✅ Transparency system ready for production integration!")
             return True
         else:
-            print(f"\n⚠️ COMPREHENSIVE TEST SUITE: PARTIAL SUCCESS ({success_rate:.1f}%)")
+            print(
+                f"\n⚠️ COMPREHENSIVE TEST SUITE: PARTIAL SUCCESS ({success_rate:.1f}%)"
+            )
             print("🔧 Some components need attention before production integration.")
             return False
 

@@ -89,7 +89,21 @@ jobs:
           "
 
       - name: Code Quality - Black Formatting
-        run: echo "Black formatting check placeholder - black not configured yet"
+        run: |
+          echo "🎨 CODE QUALITY - Black Formatting"
+          # Install black if not available
+          python -m pip install black>=23.0.0
+          
+          # Check formatting compliance
+          python -m black --check --diff .
+          
+          if [ $? -eq 0 ]; then
+            echo "✅ Black formatting check passed"
+          else
+            echo "❌ Black formatting violations detected"
+            echo "💡 Fix with: python -m black ."
+            exit 1
+          fi
 
       - name: Code Quality - Flake8 Linting
         run: echo "Flake8 linting placeholder - flake8 not configured yet"

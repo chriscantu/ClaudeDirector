@@ -40,7 +40,8 @@ class TestDatabaseIntegration:
 
             # Test data insertion and retrieval
             db_manager.execute_query(
-                "INSERT INTO test_sessions (session_type) VALUES (?)", ("strategic_planning",)
+                "INSERT INTO test_sessions (session_type) VALUES (?)",
+                ("strategic_planning",),
             )
 
             result = db_manager.execute_query(
@@ -164,8 +165,12 @@ class TestDatabaseIntegration:
 
             # Test successful transaction
             with db_manager.get_connection() as conn:
-                conn.execute("INSERT INTO transaction_test (data) VALUES (?)", ("test1",))
-                conn.execute("INSERT INTO transaction_test (data) VALUES (?)", ("test2",))
+                conn.execute(
+                    "INSERT INTO transaction_test (data) VALUES (?)", ("test1",)
+                )
+                conn.execute(
+                    "INSERT INTO transaction_test (data) VALUES (?)", ("test2",)
+                )
                 conn.commit()
 
             # Verify data was committed
@@ -177,7 +182,9 @@ class TestDatabaseIntegration:
             # Test rollback on error
             try:
                 with db_manager.get_connection() as conn:
-                    conn.execute("INSERT INTO transaction_test (data) VALUES (?)", ("test3",))
+                    conn.execute(
+                        "INSERT INTO transaction_test (data) VALUES (?)", ("test3",)
+                    )
                     # Force an error
                     conn.execute("INVALID SQL")
                     conn.commit()
@@ -242,7 +249,9 @@ class TestDatabaseIntegration:
                 ("new_data", "custom_description"),
             )
 
-            count = db_manager.execute_query("SELECT COUNT(*) FROM migration_test", fetch_one=True)
+            count = db_manager.execute_query(
+                "SELECT COUNT(*) FROM migration_test", fetch_one=True
+            )
             assert count[0] == 2
 
         finally:
@@ -271,7 +280,9 @@ class TestDatabaseIntegration:
 
             test_data = ["item1", "item2", "item3"]
             for item in test_data:
-                db_manager.execute_query("INSERT INTO backup_test (data) VALUES (?)", (item,))
+                db_manager.execute_query(
+                    "INSERT INTO backup_test (data) VALUES (?)", (item,)
+                )
 
             # Simulate backup (copy database file)
             import shutil

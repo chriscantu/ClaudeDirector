@@ -22,7 +22,7 @@ import json
 # Import all test suites
 from .test_dynamic_persona_activation_e2e import (
     TestDynamicPersonaActivationE2E,
-    TestCLIIntegrationE2E
+    TestCLIIntegrationE2E,
 )
 from .test_chat_interface_e2e import TestChatInterfaceE2E
 
@@ -46,13 +46,18 @@ class E2ETestResult:
                 "chat_interface": False,
                 "cli_integration": False,
                 "performance_requirements": False,
-                "error_handling": False
-            }
+                "error_handling": False,
+            },
         }
         self.test_output = []
 
-    def add_test_result(self, test_name: str, status: str, duration_ms: float,
-                       details: Dict[str, Any] = None):
+    def add_test_result(
+        self,
+        test_name: str,
+        status: str,
+        duration_ms: float,
+        details: Dict[str, Any] = None,
+    ):
         """Add individual test result"""
         self.results["total_tests"] += 1
 
@@ -70,26 +75,27 @@ class E2ETestResult:
             "status": status,
             "duration_ms": duration_ms,
             "timestamp": datetime.now().isoformat(),
-            "details": details or {}
+            "details": details or {},
         }
 
         self.results["test_details"].append(test_result)
 
         # Track performance metrics
         if duration_ms > 0:
-            self.results["performance_metrics"].append({
-                "test": test_name,
-                "duration_ms": duration_ms
-            })
+            self.results["performance_metrics"].append(
+                {"test": test_name, "duration_ms": duration_ms}
+            )
 
     def add_performance_metric(self, metric_name: str, value: float, unit: str = "ms"):
         """Add performance metric"""
-        self.results["performance_metrics"].append({
-            "metric": metric_name,
-            "value": value,
-            "unit": unit,
-            "timestamp": datetime.now().isoformat()
-        })
+        self.results["performance_metrics"].append(
+            {
+                "metric": metric_name,
+                "value": value,
+                "unit": unit,
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
 
     def update_system_validation(self, component: str, validated: bool):
         """Update system component validation status"""
@@ -101,8 +107,11 @@ class E2ETestResult:
         total_duration = (time.time() - self.start_time) * 1000
 
         # Calculate performance statistics
-        perf_durations = [m["duration_ms"] for m in self.results["performance_metrics"]
-                         if "duration_ms" in m]
+        perf_durations = [
+            m["duration_ms"]
+            for m in self.results["performance_metrics"]
+            if "duration_ms" in m
+        ]
 
         performance_stats = {}
         if perf_durations:
@@ -110,7 +119,7 @@ class E2ETestResult:
                 "avg_test_duration_ms": sum(perf_durations) / len(perf_durations),
                 "max_test_duration_ms": max(perf_durations),
                 "min_test_duration_ms": min(perf_durations),
-                "total_test_time_ms": sum(perf_durations)
+                "total_test_time_ms": sum(perf_durations),
             }
 
         return {
@@ -121,11 +130,14 @@ class E2ETestResult:
                 "failed": self.results["failed"],
                 "skipped": self.results["skipped"],
                 "errors": self.results["errors"],
-                "success_rate": (self.results["passed"] / max(self.results["total_tests"], 1)) * 100
+                "success_rate": (
+                    self.results["passed"] / max(self.results["total_tests"], 1)
+                )
+                * 100,
             },
             "performance_stats": performance_stats,
             "system_validation": self.results["system_validation"],
-            "detailed_results": self.results["test_details"]
+            "detailed_results": self.results["test_details"],
         }
 
 
@@ -150,14 +162,18 @@ class EnhancedTestRunner:
         # Process test results
         for test, error in test_result.failures:
             self.result.add_test_result(
-                test._testMethodName, "FAIL", 0,
-                {"error": str(error), "suite": suite_name}
+                test._testMethodName,
+                "FAIL",
+                0,
+                {"error": str(error), "suite": suite_name},
             )
 
         for test, error in test_result.errors:
             self.result.add_test_result(
-                test._testMethodName, "ERROR", 0,
-                {"error": str(error), "suite": suite_name}
+                test._testMethodName,
+                "ERROR",
+                0,
+                {"error": str(error), "suite": suite_name},
             )
 
         # Calculate passed tests
@@ -166,7 +182,9 @@ class EnhancedTestRunner:
         passed_tests = total_tests - failed_tests
 
         for i in range(passed_tests):
-            self.result.add_test_result(f"{suite_name}_test_{i}", "PASS", duration / total_tests)
+            self.result.add_test_result(
+                f"{suite_name}_test_{i}", "PASS", duration / total_tests
+            )
 
         success = len(test_result.failures) == 0 and len(test_result.errors) == 0
 
@@ -182,7 +200,7 @@ class EnhancedTestRunner:
             "context_analysis_ms": 500,
             "persona_selection_ms": 300,
             "total_workflow_ms": 2000,
-            "accuracy_percent": 90
+            "accuracy_percent": 90,
         }
 
         # This would be populated by actual test results
@@ -191,8 +209,8 @@ class EnhancedTestRunner:
         validation_results = {
             "context_analysis": True,  # <500ms validated in tests
             "persona_selection": True,  # <300ms validated in tests
-            "total_workflow": True,    # <2000ms validated in tests
-            "accuracy": True           # 90%+ accuracy validated in tests
+            "total_workflow": True,  # <2000ms validated in tests
+            "accuracy": True,  # 90%+ accuracy validated in tests
         }
 
         all_validated = all(validation_results.values())
@@ -228,51 +246,63 @@ class EnhancedTestRunner:
         for component, validated in summary["system_validation"].items():
             status = "✅" if validated else "❌"
             component_name = component.replace("_", " ").title()
-            report_lines.append(f"- {status} **{component_name}**: {'VALIDATED' if validated else 'FAILED'}")
+            report_lines.append(
+                f"- {status} **{component_name}**: {'VALIDATED' if validated else 'FAILED'}"
+            )
 
         if summary["performance_stats"]:
-            report_lines.extend([
-                "",
-                "## Performance Statistics",
-                f"- **Average Test Duration**: {summary['performance_stats']['avg_test_duration_ms']:.1f}ms",
-                f"- **Maximum Test Duration**: {summary['performance_stats']['max_test_duration_ms']:.1f}ms",
-                f"- **Minimum Test Duration**: {summary['performance_stats']['min_test_duration_ms']:.1f}ms",
-            ])
+            report_lines.extend(
+                [
+                    "",
+                    "## Performance Statistics",
+                    f"- **Average Test Duration**: {summary['performance_stats']['avg_test_duration_ms']:.1f}ms",
+                    f"- **Maximum Test Duration**: {summary['performance_stats']['max_test_duration_ms']:.1f}ms",
+                    f"- **Minimum Test Duration**: {summary['performance_stats']['min_test_duration_ms']:.1f}ms",
+                ]
+            )
 
         # Add ADR compliance section
-        report_lines.extend([
-            "",
-            "## ADR-004 Compliance",
-            "- ✅ **Context Analysis**: <500ms requirement met",
-            "- ✅ **Persona Selection**: <300ms requirement met",
-            "- ✅ **Total Workflow**: <2000ms requirement met",
-            "- ✅ **Accuracy**: 90%+ requirement met",
-            "",
-            "## Test Coverage",
-            "- ✅ **Persona Activation Workflow**: Complete end-to-end testing",
-            "- ✅ **Template Discovery**: All director types validated",
-            "- ✅ **Chat Interface**: Natural conversation flow tested",
-            "- ✅ **CLI Integration**: Command-line interface validated",
-            "- ✅ **Performance**: ADR requirements verified",
-            "- ✅ **Error Handling**: Graceful degradation tested",
-            "- ✅ **Industry Contexts**: Fintech, healthcare, SaaS tested",
-            "- ✅ **Team Sizes**: Startup, scale, enterprise tested",
-            "",
-            "## Recommendations",
-        ])
+        report_lines.extend(
+            [
+                "",
+                "## ADR-004 Compliance",
+                "- ✅ **Context Analysis**: <500ms requirement met",
+                "- ✅ **Persona Selection**: <300ms requirement met",
+                "- ✅ **Total Workflow**: <2000ms requirement met",
+                "- ✅ **Accuracy**: 90%+ requirement met",
+                "",
+                "## Test Coverage",
+                "- ✅ **Persona Activation Workflow**: Complete end-to-end testing",
+                "- ✅ **Template Discovery**: All director types validated",
+                "- ✅ **Chat Interface**: Natural conversation flow tested",
+                "- ✅ **CLI Integration**: Command-line interface validated",
+                "- ✅ **Performance**: ADR requirements verified",
+                "- ✅ **Error Handling**: Graceful degradation tested",
+                "- ✅ **Industry Contexts**: Fintech, healthcare, SaaS tested",
+                "- ✅ **Team Sizes**: Startup, scale, enterprise tested",
+                "",
+                "## Recommendations",
+            ]
+        )
 
         # Add recommendations based on results
         if summary["execution_summary"]["success_rate"] >= 95:
-            report_lines.append("- 🎉 **System Ready**: All tests passing, ready for production")
+            report_lines.append(
+                "- 🎉 **System Ready**: All tests passing, ready for production"
+            )
         elif summary["execution_summary"]["success_rate"] >= 85:
-            report_lines.append("- ⚠️  **Minor Issues**: Address failed tests before deployment")
+            report_lines.append(
+                "- ⚠️  **Minor Issues**: Address failed tests before deployment"
+            )
         else:
-            report_lines.append("- ❌ **Critical Issues**: Significant failures require investigation")
+            report_lines.append(
+                "- ❌ **Critical Issues**: Significant failures require investigation"
+            )
 
         report_text = "\n".join(report_lines)
 
         if output_file:
-            with open(output_file, 'w') as f:
+            with open(output_file, "w") as f:
                 f.write(report_text)
             print(f"\n📋 Test report saved to: {output_file}")
 
@@ -282,14 +312,23 @@ class EnhancedTestRunner:
 def main():
     """Main test runner function"""
     parser = argparse.ArgumentParser(description="ClaudeDirector E2E Test Runner")
-    parser.add_argument("--performance-only", action="store_true",
-                       help="Run only performance-related tests")
-    parser.add_argument("--chat-only", action="store_true",
-                       help="Run only chat interface tests")
-    parser.add_argument("--report", type=str, default="e2e_test_report.md",
-                       help="Output file for test report")
-    parser.add_argument("--json", action="store_true",
-                       help="Also output results in JSON format")
+    parser.add_argument(
+        "--performance-only",
+        action="store_true",
+        help="Run only performance-related tests",
+    )
+    parser.add_argument(
+        "--chat-only", action="store_true", help="Run only chat interface tests"
+    )
+    parser.add_argument(
+        "--report",
+        type=str,
+        default="e2e_test_report.md",
+        help="Output file for test report",
+    )
+    parser.add_argument(
+        "--json", action="store_true", help="Also output results in JSON format"
+    )
 
     args = parser.parse_args()
 
@@ -304,18 +343,14 @@ def main():
     test_suites = []
 
     if args.chat_only:
-        test_suites = [
-            (TestChatInterfaceE2E, "Chat Interface Integration")
-        ]
+        test_suites = [(TestChatInterfaceE2E, "Chat Interface Integration")]
     elif args.performance_only:
-        test_suites = [
-            (TestDynamicPersonaActivationE2E, "Performance & Core System")
-        ]
+        test_suites = [(TestDynamicPersonaActivationE2E, "Performance & Core System")]
     else:
         test_suites = [
             (TestDynamicPersonaActivationE2E, "Dynamic Persona Activation"),
             (TestChatInterfaceE2E, "Chat Interface Integration"),
-            (TestCLIIntegrationE2E, "CLI Integration")
+            (TestCLIIntegrationE2E, "CLI Integration"),
         ]
 
     # Run test suites
@@ -354,7 +389,7 @@ def main():
     if args.json:
         json_file = args.report.replace(".md", ".json")
         summary = runner.result.get_summary()
-        with open(json_file, 'w') as f:
+        with open(json_file, "w") as f:
             json.dump(summary, f, indent=2)
         print(f"📊 JSON report saved to: {json_file}")
 

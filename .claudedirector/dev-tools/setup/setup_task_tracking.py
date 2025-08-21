@@ -130,9 +130,11 @@ class TaskTrackingSetup:
                 print(f"✅ AI detection working - found {len(tasks)} tasks")
                 print("   Sample detected tasks:")
                 for i, task in enumerate(tasks[:3], 1):
-                    direction_emoji = {"incoming": "📥", "outgoing": "📤", "self_assigned": "📝"}[
-                        task["assignment_direction"]
-                    ]
+                    direction_emoji = {
+                        "incoming": "📥",
+                        "outgoing": "📤",
+                        "self_assigned": "📝",
+                    }[task["assignment_direction"]]
                     print(
                         f"     {i}. {direction_emoji} {task['task_text'][:50]}... (confidence: {task['confidence_score']:.1%})"
                     )
@@ -179,7 +181,9 @@ class TaskTrackingSetup:
 
             if "summary" in alerts:
                 summary = alerts["summary"]
-                print(f"✅ Alert system working - {summary['total_alerts']} alerts generated")
+                print(
+                    f"✅ Alert system working - {summary['total_alerts']} alerts generated"
+                )
                 print(f"   Urgency level: {summary['urgency_level']}")
                 return True
             else:
@@ -262,14 +266,20 @@ class TaskTrackingSetup:
         print("-" * 35)
 
         print("📋 Basic Commands:")
-        print("   python strategic_task_manager.py scan       # Scan workspace for tasks")
+        print(
+            "   python strategic_task_manager.py scan       # Scan workspace for tasks"
+        )
         print("   python strategic_task_manager.py list       # Show my tasks")
-        print("   python strategic_task_manager.py assigned   # Show tasks I've assigned")
+        print(
+            "   python strategic_task_manager.py assigned   # Show tasks I've assigned"
+        )
         print("   python strategic_task_manager.py overdue    # Show overdue tasks")
         print("   python strategic_task_manager.py followups  # Show follow-ups due")
 
         print("\n🚨 Daily Alerts:")
-        print("   python daily_task_alerts.py                 # Show daily alert dashboard")
+        print(
+            "   python daily_task_alerts.py                 # Show daily alert dashboard"
+        )
         print("   python daily_task_alerts.py --quiet         # Summary for automation")
 
         print("\n🧠 AI Detection:")
@@ -335,8 +345,12 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="Strategic Task Tracking System Setup")
-    parser.add_argument("--verify-only", action="store_true", help="Only verify installation")
-    parser.add_argument("--demo-tasks", action="store_true", help="Only create demo tasks")
+    parser.add_argument(
+        "--verify-only", action="store_true", help="Only verify installation"
+    )
+    parser.add_argument(
+        "--demo-tasks", action="store_true", help="Only create demo tasks"
+    )
 
     args = parser.parse_args()
 

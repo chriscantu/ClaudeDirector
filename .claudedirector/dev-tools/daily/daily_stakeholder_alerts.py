@@ -24,7 +24,9 @@ def check_daily_alerts():
     recommendations = engine.generate_engagement_recommendations()
 
     # Filter for urgent and high priority
-    urgent_recs = [r for r in recommendations if r.get("urgency_level") in ["urgent", "high"]]
+    urgent_recs = [
+        r for r in recommendations if r.get("urgency_level") in ["urgent", "high"]
+    ]
 
     if not urgent_recs:
         print("✅ No urgent stakeholder engagements needed today")

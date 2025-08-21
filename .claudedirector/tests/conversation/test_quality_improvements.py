@@ -14,6 +14,7 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
 
+
 def test_conversation_quality_improvements():
     """Test the improved conversation quality scoring"""
     print("🧪 Testing Conversation Quality Improvements")
@@ -56,8 +57,8 @@ Key stakeholders to align: VP Engineering, Director Product, and executive team.
                 "strategic_frameworks": ["Capital Allocation Framework"],
                 "stakeholders_mentioned": ["vp_engineering", "director_product"],
                 "roi_discussion": True,
-                "complexity_score": 0.9
-            }
+                "complexity_score": 0.9,
+            },
         )
         print("✅ High-quality strategic turn captured")
 
@@ -77,8 +78,8 @@ This creates measurable value: 40% faster feature delivery, improved user experi
             context_metadata={
                 "design_systems": True,
                 "accessibility": True,
-                "stakeholder_coalition": "product_managers_support"
-            }
+                "stakeholder_coalition": "product_managers_support",
+            },
         )
         print("✅ Design systems strategic turn captured")
 
@@ -105,30 +106,36 @@ This creates measurable value: 40% faster feature delivery, improved user experi
 
         # Test ROI context
         roi_context = session_manager._get_roi_discussion_context()
-        roi_discussions = len(roi_context.get('recent_discussions', []))
+        roi_discussions = len(roi_context.get("recent_discussions", []))
         print(f"✅ ROI discussions found: {roi_discussions}")
 
         # Test coalition mapping
         coalition_context = session_manager._get_coalition_mapping_context()
         coalition_data = {
-            'advocates': len(coalition_context.get('platform_advocates', [])),
-            'opponents': len(coalition_context.get('platform_opponents', [])),
-            'neutral': len(coalition_context.get('neutral_stakeholders', []))
+            "advocates": len(coalition_context.get("platform_advocates", [])),
+            "opponents": len(coalition_context.get("platform_opponents", [])),
+            "neutral": len(coalition_context.get("neutral_stakeholders", [])),
         }
         print(f"✅ Coalition mapping: {coalition_data}")
 
         # Test 7: Quality score calculation
         print("\n🔧 Test 7: Direct Quality Score Test")
         test_context = {
-            'conversation_thread': [
-                {'user_input': 'test', 'assistant_response': 'strategic platform investment framework analysis'},
-                {'user_input': 'test2', 'assistant_response': 'stakeholder roi discussion with executive team'}
+            "conversation_thread": [
+                {
+                    "user_input": "test",
+                    "assistant_response": "strategic platform investment framework analysis",
+                },
+                {
+                    "user_input": "test2",
+                    "assistant_response": "stakeholder roi discussion with executive team",
+                },
             ],
-            'active_personas': ['diego', 'alvaro', 'rachel'],
-            'stakeholder_mentions': ['vp_engineering', 'director_product'],
-            'strategic_topics': ['platform', 'investment', 'roi', 'strategy'],
-            'decisions_made': ['implement platform strategy'],
-            'action_items': ['schedule stakeholder meeting', 'prepare roi analysis']
+            "active_personas": ["diego", "alvaro", "rachel"],
+            "stakeholder_mentions": ["vp_engineering", "director_product"],
+            "strategic_topics": ["platform", "investment", "roi", "strategy"],
+            "decisions_made": ["implement platform strategy"],
+            "action_items": ["schedule stakeholder meeting", "prepare roi analysis"],
         }
 
         quality_score = manager._calculate_conversation_quality(test_context)
@@ -167,8 +174,10 @@ This creates measurable value: 40% faster feature delivery, improved user experi
     except Exception as e:
         print(f"❌ Test failed: {e}")
         import traceback
+
         traceback.print_exc()
         return False
+
 
 if __name__ == "__main__":
     success = test_conversation_quality_improvements()
