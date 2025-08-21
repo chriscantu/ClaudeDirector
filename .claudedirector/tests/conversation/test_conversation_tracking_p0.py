@@ -179,15 +179,20 @@ class TestConversationTrackingP0(unittest.TestCase):
         try:
             # Try to import the conversation manager
             sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
-            from core.integrated_conversation_manager import (
-                IntegratedConversationManager,
-            )
 
-            # Test basic initialization (should not crash)
-            manager = IntegratedConversationManager()
-            self.assertIsNotNone(
-                manager, "Conversation manager must initialize successfully"
-            )
+            # Suppress warnings during import and initialization
+            import warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                from core.integrated_conversation_manager import (
+                    IntegratedConversationManager,
+                )
+
+                # Test basic initialization (should not crash)
+                manager = IntegratedConversationManager()
+                self.assertIsNotNone(
+                    manager, "Conversation manager must initialize successfully"
+                )
 
         except ImportError as e:
             # Check if there's a fallback or alternative implementation
