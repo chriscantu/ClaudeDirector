@@ -184,7 +184,16 @@ jobs:
       - name: Run Individual P0 Feature Tests
         run: |
           echo "💾 Testing P0 Conversation Tracking"
-          python .claudedirector/tests/conversation/test_conversation_tracking_p0.py
+          python .claudedirector/tests/conversation/test_conversation_tracking_p0.py 2>&1 || {
+            echo "❌ P0 Conversation Tracking test failed with exit code $?"
+            echo "📊 Environment debug info:"
+            echo "  Working directory: $(pwd)"
+            echo "  Python version: $(python --version)"
+            echo "  Python path: $(which python)"
+            echo "  ClaudeDirector lib exists: $(ls -la .claudedirector/lib/ | head -5)"
+            echo "  pyproject.toml exists: $(ls -la .claudedirector/lib/pyproject.toml)"
+            exit 1
+          }
 
           echo "🔧 Testing P0 MCP Transparency"
           python .claudedirector/tests/run_mcp_transparency_tests.py
