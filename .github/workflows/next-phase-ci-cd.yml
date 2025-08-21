@@ -142,12 +142,11 @@ jobs:
 
           echo "✅ SOLID principles validation completed"
 
-  # Phase 2: Unit Testing with Coverage (Disabled - tests not implemented yet)
-  unit-tests:
+  # Phase 2: Comprehensive P0 Regression Testing
+  regression-tests:
     runs-on: ubuntu-latest
-    name: Unit Tests & Coverage
+    name: P0 Regression Tests & Coverage
     needs: quality-gates
-    if: false  # Disabled until test infrastructure is implemented
     steps:
       - uses: actions/checkout@v4
 
@@ -161,15 +160,23 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Unit Tests with Coverage
+      - name: Install ClaudeDirector in Development Mode
         run: |
-          python -m pytest tests/unit/ \
-            --cov=lib/claudedirector \
-            --cov-report=xml \
-            --cov-report=html \
-            --cov-fail-under=85 \
-            --junitxml=test-results.xml \
-            -v
+          cd .claudedirector/lib
+          python -m pip install -e .
+
+      - name: Run P0 Regression Test Suite
+        run: |
+          echo "🚀 Running Comprehensive P0 Regression Tests"
+          python .claudedirector/tests/run_phase2_validation_tests.py
+
+      - name: Run Individual P0 Feature Tests
+        run: |
+          echo "💾 Testing P0 Conversation Tracking"
+          python .claudedirector/tests/conversation/test_conversation_tracking_p0.py
+
+          echo "🔧 Testing P0 MCP Transparency"
+          python .claudedirector/tests/run_mcp_transparency_tests.py
 
       - name: Upload Coverage Reports
         uses: codecov/codecov-action@v3
@@ -223,7 +230,7 @@ jobs:
   integration-tests:
     runs-on: ubuntu-latest
     name: Integration & API Tests
-    needs: [unit-tests, ux-accessibility-tests]
+    needs: [regression-tests, ux-accessibility-tests]
     if: false  # Disabled until integration test infrastructure is implemented
     services:
       postgres:
@@ -376,7 +383,7 @@ jobs:
   deployment-readiness:
     runs-on: ubuntu-latest
     name: Deployment Readiness Validation
-    needs: quality-gates
+    needs: regression-tests
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
@@ -400,7 +407,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Feature Branch Completeness Check
     if: startsWith(github.ref, 'refs/heads/feature/')
-    needs: quality-gates
+    needs: regression-tests
     steps:
       - uses: actions/checkout@v4
 

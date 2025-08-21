@@ -63,8 +63,8 @@ def check_environment():
         print("❌ Virtual environment not found at venv/bin/python")
         return False
 
-    # Check ClaudeDirector availability (either installed or via path)
-    check_cmd = f'{venv_python} -c "import sys; sys.path.insert(0, \\".claudedirector/lib\\"); import claudedirector; print(\\"ClaudeDirector import: OK\\")"'
+    # Check ClaudeDirector availability (using correct import path)
+    check_cmd = f'{venv_python} -c "import sys; sys.path.insert(0, \\".claudedirector/lib\\"); from core.integrated_conversation_manager import IntegratedConversationManager; print(\\"ClaudeDirector core modules: OK\\")"'
     if not run_command(check_cmd, "ClaudeDirector Import Check"):
         print("❌ ClaudeDirector not properly available")
         return False

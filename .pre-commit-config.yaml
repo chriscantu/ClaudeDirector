@@ -50,17 +50,17 @@ repos:
         always_run: true
         verbose: true
 
-  # MANDATORY TEST VALIDATION (TEMPORARILY DISABLED - MODULE IMPORT ISSUE)
-  # - repo: local
-  #   hooks:
-  #     - id: mandatory-test-validation
-  #       name: 🛡️ MANDATORY TEST VALIDATION
-  #       entry: python3 .claudedirector/dev-tools/testing/mandatory_test_validator.py
-  #       language: system
-  #       pass_filenames: false
-  #       stages: [pre-commit]
-  #       always_run: true
-  #       verbose: true
+  # MANDATORY TEST VALIDATION (RE-ENABLED - MODULE IMPORT FIXED)
+  - repo: local
+    hooks:
+      - id: mandatory-test-validation
+        name: 🛡️ MANDATORY TEST VALIDATION
+        entry: python3 .claudedirector/dev-tools/testing/mandatory_test_validator.py
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+        always_run: true
+        verbose: true
 
   # Architectural governance
   - repo: local
