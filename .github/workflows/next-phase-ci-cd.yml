@@ -29,7 +29,64 @@ jobs:
           pip install -r requirements.txt
 
       - name: Security Scan - Sensitive Data Protection
-        run: echo "Security scan placeholder - sensitive data scanner not implemented yet"
+        run: |
+          echo "🔒 SECURITY SCAN - Sensitive Data Protection"
+          python -c "
+          import os
+          import re
+
+          # Sensitive patterns to scan for
+          patterns = [
+              (r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', 'Email addresses'),
+              (r'(?:password|passwd|pwd)\s*[=:]\s*[a-zA-Z0-9_-]{8,}', 'Passwords'),
+              (r'(?:api_key|apikey|secret)\s*[=:]\s*[a-zA-Z0-9_-]{16,}', 'API Keys'),
+              (r'(?:token)\s*[=:]\s*[a-zA-Z0-9_-]{20,}', 'Tokens'),
+              (r'aws_access_key_id\s*[=:]\s*[A-Z0-9]{20}', 'AWS Access Keys'),
+              (r'ssh-rsa\s+[A-Za-z0-9+/]{100,}', 'SSH Keys')
+          ]
+
+          issues = []
+
+          for root, dirs, files in os.walk('.'):
+              # Skip certain directories
+              dirs[:] = [d for d in dirs if d not in ['.git', '__pycache__', '.mypy_cache', 'venv', '.venv', 'node_modules', 'target', 'build', 'dist']]
+              
+              for file in files:
+                  if file.endswith(('.py', '.js', '.ts', '.yaml', '.yml', '.json', '.md', '.txt', '.env')):
+                      file_path = os.path.join(root, file)
+                      
+                      # Skip documentation and workspace files to reduce false positives
+                      skip_patterns = ['docs/', 'readme', 'security.md', 'example', 'leadership-workspace/']
+                      if any(pattern in file_path.lower() for pattern in skip_patterns):
+                          continue
+                      
+                      try:
+                          with open(file_path, 'r', encoding='utf-8') as f:
+                              content = f.read()
+                              
+                              # Skip content with obvious documentation patterns
+                              content_lower = content.lower()
+                              if any(word in content_lower for word in ['@company.com', '@procore.com', 'platform-security.internal', 'example', 'test', 'dummy', 'placeholder', 'sample']):
+                                  continue
+                              
+                              for pattern, description in patterns:
+                                  matches = re.finditer(pattern, content, re.IGNORECASE)
+                                  for match in matches:
+                                      line_num = content[:match.start()].count('\n') + 1
+                                      issues.append(f'{file_path}:{line_num} - {description}: {match.group()[:50]}...')
+                      except (UnicodeDecodeError, IOError):
+                          continue
+
+          if issues:
+              print('❌ SECURITY VIOLATIONS DETECTED:')
+              for issue in issues[:10]:  # Limit output
+                  print(f'  {issue}')
+              if len(issues) > 10:
+                  print(f'  ... and {len(issues) - 10} more violations')
+              exit(1)
+          else:
+              print('✅ No sensitive data violations detected')
+          "
 
       - name: Code Quality - Black Formatting
         run: echo "Black formatting check placeholder - black not configured yet"
