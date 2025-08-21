@@ -60,10 +60,26 @@ Documentation = "https://claudedirector.readthedocs.io"
 Repository = "https://github.com/chriscantu/claudedirector.git"
 Issues = "https://github.com/chriscantu/claudedirector/issues"
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["*"]
-exclude = ["tests*", "*.egg-info*"]
+[tool.setuptools]
+packages = [
+    "core",
+    "bridges",
+    "config",
+    "integrations",
+    "intelligence",
+    "memory",
+    "monitoring",
+    "p0_features",
+    "p1_features",
+    "p2_communication",
+    "persona_integration",
+    "transparency",
+    "utils",
+    "mcp"
+]
+
+[tool.setuptools.package-data]
+"*" = ["*.py", "*.yaml", "*.yml", "*.json", "*.md", "*.txt"]
 
 [tool.black]
 line-length = 100
