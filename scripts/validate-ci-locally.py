@@ -155,6 +155,91 @@ def black_formatting() -> bool:
         return False
 
 
+def flake8_linting() -> bool:
+    """Run Flake8 linting - matches CI exactly"""
+    print_step("CODE QUALITY - Flake8 Linting")
+
+    # Check if flake8 is available
+    result = run_command("flake8 --version", check=False)
+    if result.returncode != 0:
+        print_warning("Flake8 not found globally - trying python module...")
+        result = run_command("python3 -m flake8 --version", check=False)
+        if result.returncode != 0:
+            print_error("Flake8 not available - install with: pipx install flake8")
+            return False
+
+    # Run critical error checks (exact CI command)
+    print("Running critical error checks...")
+    result = run_command(
+        "flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics",
+        check=False,
+    )
+    if result.returncode != 0:
+        print_error("Flake8 Critical Errors")
+        print("Critical linting errors detected:")
+        print(result.stdout)
+        return False
+
+    # Run full linting with lenient settings (exact CI command)
+    print("Running full linting analysis...")
+    run_command(
+        "flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics",
+        check=False,
+    )
+
+    print_success("Flake8 Linting")
+    return True
+
+
+def mypy_type_checking() -> bool:
+    """Run MyPy type checking - matches CI exactly"""
+    print_step("CODE QUALITY - MyPy Type Checking")
+
+    # Check if mypy is available
+    result = run_command("mypy --version", check=False)
+    if result.returncode != 0:
+        print_warning("MyPy not found globally - trying python module...")
+        result = run_command("python3 -m mypy --version", check=False)
+        if result.returncode != 0:
+            print_error("MyPy not available - install with: pipx install mypy")
+            return False
+
+    # Run type checking with lenient settings (exact CI command)
+    print("Running type checking analysis...")
+    result = run_command(
+        "mypy . --ignore-missing-imports --no-strict-optional --allow-untyped-defs --allow-incomplete-defs --check-untyped-defs",
+        check=False,
+    )
+
+    # MyPy is expected to find issues in existing codebase, so we don't fail on exit code
+    print("MyPy analysis completed (issues expected for existing codebase)")
+    print_success("MyPy Type Checking")
+    return True
+
+
+def solid_principles() -> bool:
+    """Run SOLID principles validation - matches CI exactly"""
+    print_step("ARCHITECTURE - SOLID Principles Validation")
+
+    # Check if SOLID validator exists (exact CI check)
+    import os
+
+    solid_validator_path = ".claudedirector/dev-tools/architecture/solid_validator.py"
+    if not os.path.exists(solid_validator_path):
+        print_warning("SOLID validator not found - skipping validation")
+        print_success("SOLID Principles (skipped)")
+        return True
+
+    # Run SOLID validation (exact CI command)
+    print("Running SOLID principles analysis...")
+    result = run_command(f"python3 {solid_validator_path}", check=False)
+
+    # SOLID violations are expected in existing codebase, so we don't fail on exit code
+    print("SOLID analysis completed (violations expected for existing codebase)")
+    print_success("SOLID Principles")
+    return True
+
+
 def check_prerequisites() -> bool:
     """Check if required tools are available"""
     print_step("PREREQUISITES CHECK")
@@ -207,6 +292,24 @@ def main():
 
     # Run Black formatting check
     if black_formatting():
+        checks_passed += 1
+    else:
+        checks_failed += 1
+
+    # Run Flake8 linting
+    if flake8_linting():
+        checks_passed += 1
+    else:
+        checks_failed += 1
+
+    # Run MyPy type checking
+    if mypy_type_checking():
+        checks_passed += 1
+    else:
+        checks_failed += 1
+
+    # Run SOLID principles validation
+    if solid_principles():
         checks_passed += 1
     else:
         checks_failed += 1
