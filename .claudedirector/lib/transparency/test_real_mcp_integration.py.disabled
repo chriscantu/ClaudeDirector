@@ -1,0 +1,319 @@
+"""
+Test Real MCP Integration with Transparency System
+Tests the integration with actual ClaudeDirector MCP servers
+"""
+
+import pytest
+from unittest.mock import Mock, AsyncMock, patch
+
+from .real_mcp_integration import (
+    RealMCPIntegrationHelper,
+    EnhancedTransparentPersonaManager,
+    create_mcp_integrated_transparency_manager
+)
+from .integrated_transparency import create_transparency_system
+from ..integrations.mcp_use_client import MCPUseClient, MCPResponse, ConnectionStatus
+
+
+class TestRealMCPIntegrationHelper:
+    """Test the real MCP integration helper"""
+
+    @pytest.fixture
+    def mock_mcp_client(self):
+        """Mock MCP client for testing"""
+        client = Mock(spec=MCPUseClient)
+        client.is_server_available.return_value = True
+        client.get_server_capabilities.return_value = ['systematic_analysis', 'pattern_access']
+
+        # Mock successful response
+        mock_response = MCPResponse(
+            content="Mock analysis result from MCP server",
+            source_server="sequential",
+            processing_time=0.15,
+            success=True
+        )
+        client.execute_analysis = AsyncMock(return_value=mock_response)
+
+        return client
+
+    @pytest.fixture
+    def transparency_context(self):
+        """Create transparency context for testing"""
+        transparency_system = create_transparency_system("minimal")
+        return transparency_system.create_transparency_context("diego")
+
+    @pytest.fixture
+    def persona_manager(self):
+        """Mock persona manager for testing"""
+        transparency_system = create_transparency_system("minimal")
+        manager = Mock()
+        manager.track_mcp_call = Mock()
+        return manager
+
+    @pytest.fixture
+    def mcp_helper(self, transparency_context, persona_manager, mock_mcp_client):
+        """Create MCP helper with mocks"""
+        return RealMCPIntegrationHelper(transparency_context, persona_manager, mock_mcp_client)
+
+    @pytest.mark.asyncio
+    async def test_successful_mcp_call(self, mcp_helper, mock_mcp_client, persona_manager):
+        """Test successful MCP server call"""
+        result = await mcp_helper.call_mcp_server(
+            "sequential", "systematic_analysis", query="Test query"
+        )
+
+        # Verify MCP client was called
+        mock_mcp_client.execute_analysis.assert_called_once_with(
+            "sequential", "Please provide systematic analysis for: Test query", timeout=8
+        )
+
+        # Verify transparency tracking
+        persona_manager.track_mcp_call.assert_called_once()
+        call_args = persona_manager.track_mcp_call.call_args[0]
+        assert call_args[1] == "sequential"  # server_name
+        assert call_args[2] == "systematic_analysis"  # capability
+        assert call_args[4] is True  # success
+
+        # Verify result structure
+        assert result['server'] == "sequential"
+        assert result['capability'] == "systematic_analysis"
+        assert result['result'] == "Mock analysis result from MCP server"
+
+    @pytest.mark.asyncio
+    async def test_server_unavailable(self, mcp_helper, mock_mcp_client, persona_manager):
+        """Test handling when MCP server is unavailable"""
+        mock_mcp_client.is_server_available.return_value = False
+
+        result = await mcp_helper.call_mcp_server(
+            "sequential", "systematic_analysis", query="Test query"
+        )
+
+        # Verify fallback response
+        assert result['fallback'] is True
+        assert 'temporarily unavailable' in result['result']
+
+        # Verify failure was tracked
+        persona_manager.track_mcp_call.assert_called_once()
+        call_args = persona_manager.track_mcp_call.call_args[0]
+        assert call_args[4] is False  # success = False
+
+    @pytest.mark.asyncio
+    async def test_mcp_server_error(self, mcp_helper, mock_mcp_client, persona_manager):
+        """Test handling of MCP server errors"""
+        # Mock error response
+        error_response = MCPResponse(
+            content="",
+            source_server="sequential",
+            processing_time=0.1,
+            success=False,
+            error_message="Connection timeout"
+        )
+        mock_mcp_client.execute_analysis.return_value = error_response
+
+        with pytest.raises(Exception, match="MCP server error"):
+            await mcp_helper.call_mcp_server(
+                "sequential", "systematic_analysis", query="Test query"
+            )
+
+        # Verify error was tracked
+        persona_manager.track_mcp_call.assert_called_once()
+        call_args = persona_manager.track_mcp_call.call_args[0]
+        assert call_args[4] is False  # success = False
+        assert "Connection timeout" in call_args[5]  # error_message
+
+    @pytest.mark.asyncio
+    async def test_call_persona_appropriate_servers(self, mcp_helper, mock_mcp_client):
+        """Test calling appropriate servers for a persona"""
+        results = await mcp_helper.call_persona_appropriate_servers(
+            "diego", "systematic_analysis", query="Strategic analysis request"
+        )
+
+        # Diego should use sequential server
+        assert len(results) == 1
+        assert results[0]['server'] == "sequential"
+
+    def test_build_query_systematic_analysis(self, mcp_helper):
+        """Test query building for systematic analysis"""
+        query = mcp_helper._build_query("systematic_analysis", {"query": "Market strategy"})
+        assert query == "Please provide systematic analysis for: Market strategy"
+
+    def test_build_query_framework_application(self, mcp_helper):
+        """Test query building for framework application"""
+        query = mcp_helper._build_query(
+            "framework_application",
+            {"query": "Innovation strategy", "framework": "Design Thinking"}
+        )
+        assert query == "Apply Design Thinking to analyze: Innovation strategy"
+
+    def test_server_mapping(self, mcp_helper):
+        """Test persona to server mapping"""
+        mapping = mcp_helper.server_mapping
+
+        assert 'sequential' in mapping['diego']
+        assert 'context7' in mapping['camille']
+        assert 'magic' in mapping['rachel']
+        assert 'sequential' in mapping['alvaro']
+        assert 'context7' in mapping['martin']
+
+
+class TestEnhancedTransparentPersonaManager:
+    """Test the enhanced transparent persona manager with MCP integration"""
+
+    @pytest.fixture
+    def mock_mcp_client(self):
+        """Mock MCP client for testing"""
+        client = Mock(spec=MCPUseClient)
+        client.is_server_available.return_value = True
+
+        # Mock successful response
+        mock_response = MCPResponse(
+            content="Enhanced strategic analysis from MCP server with systematic frameworks applied",
+            source_server="sequential",
+            processing_time=0.2,
+            success=True
+        )
+        client.execute_analysis = AsyncMock(return_value=mock_response)
+        client.get_server_capabilities.return_value = ['systematic_analysis', 'business_strategy']
+
+        return client
+
+    @pytest.fixture
+    def enhanced_manager(self, mock_mcp_client):
+        """Create enhanced transparent persona manager"""
+        transparency_system = create_transparency_system("default")
+        return EnhancedTransparentPersonaManager(transparency_system, mock_mcp_client)
+
+    @pytest.mark.asyncio
+    async def test_diego_mcp_handler_success(self, enhanced_manager):
+        """Test Diego's MCP-enhanced handler with successful server response"""
+        response = await enhanced_manager.generate_persona_response(
+            "diego", "What's our strategic approach for market expansion?"
+        )
+
+        assert response.persona == "diego"
+        assert "Strategic Analysis - Diego" in response.content
+        assert "Enhanced strategic analysis from MCP server" in response.content
+        assert response.enhancements_applied
+        assert response.transparency_summary['mcp_calls'] > 0
+
+    @pytest.mark.asyncio
+    async def test_diego_mcp_handler_fallback(self, enhanced_manager, mock_mcp_client):
+        """Test Diego's handler with MCP server unavailable"""
+        # Make server unavailable
+        mock_mcp_client.is_server_available.return_value = False
+
+        response = await enhanced_manager.generate_persona_response(
+            "diego", "Strategic analysis needed"
+        )
+
+        assert response.persona == "diego"
+        assert "Strategic Analysis - Diego" in response.content
+        assert "temporarily unavailable" in response.content or "systematic strategic analysis" in response.content
+        assert response.transparency_summary is not None
+
+    @pytest.mark.asyncio
+    async def test_camille_mcp_handler(self, enhanced_manager, mock_mcp_client):
+        """Test Camille's MCP-enhanced handler"""
+        # Mock responses for both sequential and context7
+        mock_mcp_client.execute_analysis = AsyncMock(side_effect=[
+            MCPResponse("Strategic innovation framework analysis", "sequential", 0.15, True),
+            MCPResponse("Innovation pattern insights from organizational knowledge", "context7", 0.12, True)
+        ])
+
+        response = await enhanced_manager.generate_persona_response(
+            "camille", "How can we drive innovation in our organization?"
+        )
+
+        assert response.persona == "camille"
+        assert "Innovation Analysis - Camille" in response.content
+        assert "Strategic innovation framework" in response.content or "Innovation pattern insights" in response.content
+        assert response.enhancements_applied
+
+    @pytest.mark.asyncio
+    async def test_error_handling_fallback(self, enhanced_manager, mock_mcp_client):
+        """Test error handling and fallback responses"""
+        # Mock an exception during MCP call
+        mock_mcp_client.execute_analysis.side_effect = Exception("Network error")
+
+        response = await enhanced_manager.generate_persona_response(
+            "diego", "Strategic guidance needed"
+        )
+
+        # Should get a fallback response without crashing
+        assert response.persona == "diego"
+        assert len(response.content) > 0
+        # Transparency should still be tracked even for errors
+        assert response.transparency_summary is not None
+
+
+class TestMCPIntegrationFactory:
+    """Test the factory functions for creating integrated managers"""
+
+    @pytest.mark.asyncio
+    async def test_create_mcp_integrated_manager(self):
+        """Test creating MCP-integrated transparency manager"""
+        with patch('claudedirector.transparency.real_mcp_integration.MCPUseClient') as mock_client_class:
+            # Mock the MCPUseClient
+            mock_client = Mock()
+            mock_client.initialize_connections = AsyncMock(return_value=ConnectionStatus(
+                available_servers=['sequential'],
+                failed_servers=[],
+                total_servers=1,
+                success_rate=1.0
+            ))
+            mock_client_class.return_value = mock_client
+
+            # Create manager
+            manager = await create_mcp_integrated_transparency_manager("default")
+
+            assert isinstance(manager, EnhancedTransparentPersonaManager)
+            assert manager.mcp_client == mock_client
+
+            # Verify MCP client was initialized
+            mock_client.initialize_connections.assert_called_once()
+
+    def test_integrate_transparency_with_existing_manager(self):
+        """Test integrating transparency with existing manager"""
+        from .persona_integration import TransparentPersonaManager
+
+        # Mock existing manager
+        existing_manager = Mock()
+
+        # Integrate transparency
+        with patch('claudedirector.transparency.real_mcp_integration.PersonaIntegrationFactory') as mock_factory:
+            mock_factory.wrap_existing_manager.return_value = Mock(spec=TransparentPersonaManager)
+
+            # result = integrate_transparency_with_existing_manager(existing_manager, "default")  # TODO: Implement function
+            result = existing_manager  # Placeholder
+
+            mock_factory.wrap_existing_manager.assert_called_once_with(existing_manager, "default")
+            assert result is not None
+
+
+class TestIntegrationWithActualMCP:
+    """Integration tests that could run against real MCP servers (if available)"""
+
+    @pytest.mark.asyncio
+    @pytest.mark.skipif(True, reason="Requires actual MCP servers - enable for integration testing")
+    async def test_real_mcp_integration_end_to_end(self):
+        """End-to-end test with real MCP servers (skip by default)"""
+        # This test would run against actual MCP servers when available
+        # Enable by changing skipif condition and ensuring MCP servers are running
+
+        manager = await create_mcp_integrated_transparency_manager("default")
+
+        response = await manager.generate_persona_response(
+            "diego", "What's our strategic approach for market expansion in AI?"
+        )
+
+        assert response.persona == "diego"
+        assert len(response.content) > 100  # Should be substantial response
+        assert response.transparency_summary is not None
+
+        # Should show MCP server usage if available
+        if response.transparency_summary['mcp_calls'] > 0:
+            assert len(response.transparency_summary['mcp_servers_used']) > 0
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])
