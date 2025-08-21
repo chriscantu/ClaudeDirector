@@ -38,23 +38,23 @@ COMMANDS:
 EXAMPLES:
     # Export for Claude CLI use
     claudedirector-context export-cli > ~/claude-context.md
-    
+
     # Create full export
     claudedirector-context export-full markdown ~/strategic-context.md
-    
+
     # Check session status
     claudedirector-context session-status
-    
+
     # Manual backup
     claudedirector-context session-backup
-    
+
     # Recovery from context loss
     claudedirector-context recover
 
 CONTEXT SHARING:
     Use the export-cli command to create context files for sharing
     with Claude CLI or other AI interfaces:
-    
+
     claude chat --context ~/claude-context.md "Continue strategic work..."
 """)
 
@@ -64,45 +64,45 @@ def main():
     if len(sys.argv) < 2:
         print_help()
         return 1
-    
+
     command = sys.argv[1]
-    
+
     try:
         if command == "help" or command == "--help" or command == "-h":
             print_help()
             return 0
-        
+
         elif command == "export-cli":
             bridge = CLIContextBridge()
             cli_export = bridge.create_cli_session_export()
             print(cli_export)
             return 0
-        
+
         elif command == "export-full":
             bridge = CLIContextBridge()
             format_type = sys.argv[2] if len(sys.argv) > 2 else "markdown"
             output_file = sys.argv[3] if len(sys.argv) > 3 else None
-            
+
             if format_type not in ["markdown", "json", "yaml"]:
                 print(f"❌ Invalid format: {format_type}. Use: markdown, json, yaml")
                 return 1
-            
+
             full_export = bridge.export_current_context(format_type, output_file)
-            
+
             if output_file:
                 print(f"✅ Context exported to {output_file}")
             else:
                 print(full_export)
             return 0
-        
+
         elif command == "import" and len(sys.argv) > 2:
             bridge = CLIContextBridge()
             file_path = sys.argv[2]
-            
+
             if not os.path.exists(file_path):
                 print(f"❌ File not found: {file_path}")
                 return 1
-            
+
             success = bridge.import_context_from_file(file_path)
             if success:
                 print("✅ Context imported successfully")
@@ -110,15 +110,15 @@ def main():
             else:
                 print("❌ Context import failed")
                 return 1
-        
+
         elif command == "session-status":
             manager = IntegratedConversationManager()
             status = manager.get_session_status()
-            
+
             print("📋 Session Status")
             print("=" * 20)
             print(f"Status: {status['status']}")
-            
+
             if status['status'] == 'active':
                 print(f"Session ID: {status['session_id'][:12]}...")
                 print(f"Conversation turns: {status['conversation_turns']}")
@@ -128,28 +128,28 @@ def main():
                 print(f"Next backup in: {status['next_backup_in']}s")
             else:
                 print("No active session")
-            
+
             return 0
-        
+
         elif command == "session-backup":
             manager = IntegratedConversationManager()
             success = manager.backup_conversation_context()
-            
+
             if success:
                 print("✅ Session backup completed")
                 return 0
             else:
                 print("❌ Session backup failed or no active session")
                 return 1
-        
+
         elif command == "session-export":
             if len(sys.argv) < 3:
                 print("❌ Output file required for session-export")
                 return 1
-            
+
             manager = IntegratedConversationManager()
             output_file = sys.argv[2]
-            
+
             try:
                 cli_export = manager.export_for_cli(output_file)
                 print(f"✅ Session exported to {output_file}")
@@ -157,23 +157,23 @@ def main():
             except Exception as e:
                 print(f"❌ Session export failed: {e}")
                 return 1
-        
+
         elif command == "recover":
             manager = IntegratedConversationManager()
             success = manager.recover_from_context_loss()
-            
+
             if success:
                 print("✅ Context recovery completed")
                 return 0
             else:
                 print("❌ Context recovery failed")
                 return 1
-        
+
         else:
             print(f"❌ Unknown command: {command}")
             print("Use 'claudedirector-context help' for usage information")
             return 1
-    
+
     except Exception as e:
         print(f"❌ Error: {e}")
         return 1

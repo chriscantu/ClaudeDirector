@@ -8,7 +8,7 @@ echo "🛡️ README.md PROTECTION SYSTEM - Active"
 if [ ! -f "README.md" ]; then
     echo "🚨 CRITICAL: README.md is missing!"
     echo "🔧 Attempting automatic restoration..."
-    
+
     # Try to restore from git history
     if git checkout HEAD~1 -- README.md 2>/dev/null; then
         echo "✅ README.md restored from git history"

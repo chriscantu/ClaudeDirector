@@ -6,15 +6,15 @@
 
 ## 📋 **FRAMEWORK OVERVIEW**
 
-**Source**: "Good Strategy Bad Strategy" by Richard Rumelt  
-**Application**: Platform strategy, competitive analysis, resource allocation decisions  
+**Source**: "Good Strategy Bad Strategy" by Richard Rumelt
+**Application**: Platform strategy, competitive analysis, resource allocation decisions
 **Best For**: Engineering directors making strategic platform and organizational investments
 
 ---
 
 ## 🔍 **THE THREE COMPONENTS**
 
-### **1. DIAGNOSIS** 
+### **1. DIAGNOSIS**
 **Define the Challenge**
 - What is the real problem or opportunity?
 - What are the critical constraints and bottlenecks?
@@ -22,7 +22,7 @@
 
 **Engineering Leadership Applications:**
 - Platform adoption challenges
-- Technical debt accumulation patterns  
+- Technical debt accumulation patterns
 - Team performance bottlenecks
 - Competitive technical positioning
 
@@ -35,11 +35,11 @@
 **Engineering Leadership Applications:**
 - Platform investment philosophy (build vs buy vs partner)
 - Technical architecture principles
-- Team organization approach  
+- Team organization approach
 - Resource allocation priorities
 
 ### **3. COHERENT ACTIONS**
-**Coordinated Steps to Implement the Policy**  
+**Coordinated Steps to Implement the Policy**
 - What specific actions will we take?
 - How do these actions reinforce each other?
 - What resources will we commit?
@@ -56,7 +56,7 @@
 
 ### **PLATFORM STRATEGY ANALYSIS**
 ```
-DIAGNOSIS: 
+DIAGNOSIS:
 - Multiple teams building similar infrastructure
 - 40% of engineering time spent on undifferentiated work
 - Slow time-to-market for new features
@@ -68,7 +68,7 @@ GUIDING POLICY:
 
 COHERENT ACTIONS:
 - Form dedicated platform team by Q2
-- Migrate payment processing to platform by Q3  
+- Migrate payment processing to platform by Q3
 - Establish platform adoption metrics and incentives
 - Create platform roadmap aligned with business priorities
 ```
@@ -80,7 +80,7 @@ DIAGNOSIS:
 - New feature development 3x slower than competitors
 - Engineering morale declining due to maintenance burden
 
-GUIDING POLICY:  
+GUIDING POLICY:
 - Strategic rewrite of core system over 18 months
 - Maintain feature velocity during transition
 - Invest in engineering experience and productivity
@@ -158,7 +158,7 @@ COHERENT ACTIONS:
 
 **When user mentions:**
 - "Platform strategy" → Apply diagnosis to platform challenges
-- "Technical debt" → Use framework for systematic debt strategy  
+- "Technical debt" → Use framework for systematic debt strategy
 - "Competitive positioning" → Leverage for market analysis
 - "Resource allocation" → Apply for investment prioritization
 - "Team organization" → Use for organizational strategy

@@ -6,8 +6,8 @@
 
 ## 🎯 **PERSONA PROFILE**
 
-**Role**: Senior UX & People Leadership Executive  
-**Background**: 12+ years in user experience design, organizational psychology, and engineering leadership  
+**Role**: Senior UX & People Leadership Executive
+**Background**: 12+ years in user experience design, organizational psychology, and engineering leadership
 **Expertise**: Stakeholder alignment, team dynamics, organizational design, user-centered thinking
 
 **Communication Style**: Empathetic, people-focused, design thinking approach with emphasis on user and team experience

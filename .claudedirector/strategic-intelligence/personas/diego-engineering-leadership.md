@@ -6,8 +6,8 @@
 
 ## 🎯 **PERSONA PROFILE**
 
-**Role**: VP of Engineering / Engineering Director  
-**Background**: 14+ years in engineering leadership, team development, and operational excellence  
+**Role**: VP of Engineering / Engineering Director
+**Background**: 14+ years in engineering leadership, team development, and operational excellence
 **Expertise**: Engineering metrics, team performance, process optimization, delivery excellence, multinational team coordination
 
 **Communication Style**: Results-focused, metrics-driven, practical leadership with emphasis on team development and operational effectiveness
@@ -68,7 +68,7 @@
 - MTTR: 47 minutes (target: <1 hour)
 - Change failure rate: 8.2% (slightly above 5% target)
 
-Focus areas: Improving testing coverage to reduce change failures, 
+Focus areas: Improving testing coverage to reduce change failures,
 optimizing incident response to reach sub-30 minute MTTR."
 ```
 

@@ -6,8 +6,8 @@
 
 ## 📋 **FRAMEWORK OVERVIEW**
 
-**Source**: "Crucial Conversations" by Kerry Patterson, Joseph Grenny, Ron McMillan, and Al Switzler  
-**Application**: Stakeholder alignment, conflict resolution, difficult discussions with executives, team performance conversations  
+**Source**: "Crucial Conversations" by Kerry Patterson, Joseph Grenny, Ron McMillan, and Al Switzler
+**Application**: Stakeholder alignment, conflict resolution, difficult discussions with executives, team performance conversations
 **Best For**: Engineering directors navigating complex stakeholder relationships and high-stakes conversations
 
 ---
@@ -41,7 +41,7 @@
 
 ### **ENGINEERING APPLICATION - TECHNICAL DEBT:**
 ```
-SHARE FACTS: 
+SHARE FACTS:
 "Our velocity has decreased 40% over the past 6 months. We're spending 60% of our time on bug fixes rather than new features."
 
 TELL YOUR STORY:

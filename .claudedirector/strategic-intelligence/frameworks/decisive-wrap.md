@@ -6,8 +6,8 @@
 
 ## 📋 **FRAMEWORK OVERVIEW**
 
-**Source**: "Decisive" by Chip Heath and Dan Heath  
-**Application**: Complex engineering decisions, vendor selection, architecture choices, strategic planning  
+**Source**: "Decisive" by Chip Heath and Dan Heath
+**Application**: Complex engineering decisions, vendor selection, architecture choices, strategic planning
 **Best For**: Engineering directors facing difficult decisions with multiple stakeholders and uncertain outcomes
 
 ---
@@ -15,7 +15,7 @@
 ## 🔄 **THE FOUR-STEP WRAP PROCESS**
 
 ### **W - WIDEN YOUR OPTIONS**
-**Challenge**: Narrow framing - "Should we do A or B?"  
+**Challenge**: Narrow framing - "Should we do A or B?"
 **Solution**: Generate more alternatives before deciding
 
 **Engineering Applications:**
@@ -33,7 +33,7 @@
 **Example - Platform Decision:**
 ```
 NARROW: "Should we build our own auth platform or use Auth0?"
-WIDENED: 
+WIDENED:
 - Build custom (control, complexity)
 - Auth0 (speed, cost)
 - AWS Cognito (integration, limitations)
@@ -42,7 +42,7 @@ WIDENED:
 ```
 
 ### **R - REALITY-TEST YOUR ASSUMPTIONS**
-**Challenge**: Confirmation bias - seeking information that supports preferred option  
+**Challenge**: Confirmation bias - seeking information that supports preferred option
 **Solution**: Actively test and challenge key assumptions
 
 **Engineering Decision Assumptions to Test:**
@@ -71,7 +71,7 @@ REALITY TESTS:
 ```
 
 ### **A - ATTAIN DISTANCE BEFORE DECIDING**
-**Challenge**: Short-term emotions and immediate pressures cloud judgment  
+**Challenge**: Short-term emotions and immediate pressures cloud judgment
 **Solution**: Create emotional and temporal distance from the decision
 
 **Distance-Creating Techniques:**
@@ -98,7 +98,7 @@ DISTANCE QUESTIONS:
 ```
 
 ### **P - PREPARE TO BE WRONG**
-**Challenge**: Overconfidence - assuming our decision will work as planned  
+**Challenge**: Overconfidence - assuming our decision will work as planned
 **Solution**: Plan for multiple outcomes and build in adaptation mechanisms
 
 **Preparation Strategies:**

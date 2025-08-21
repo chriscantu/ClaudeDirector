@@ -16,7 +16,7 @@ All persona responses MUST begin with standardized headers:
 
 **Strategic Leadership Personas**:
 - `🎯 Diego | Engineering Leadership`
-- `📊 Camille | Strategic Technology`  
+- `📊 Camille | Strategic Technology`
 - `🎨 Rachel | Design Systems Strategy`
 - `💼 Alvaro | Platform Investment Strategy`
 

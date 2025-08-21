@@ -44,11 +44,11 @@
 **Strategic Intelligence Fit:**
 ```python
 # Executive dashboard queries (DuckDB excels)
-SELECT stakeholder_category, 
+SELECT stakeholder_category,
        COUNT(*) as meetings,
        AVG(meeting_duration) as avg_duration,
        SUM(action_items) as total_actions
-FROM stakeholder_meetings 
+FROM stakeholder_meetings
 WHERE meeting_date >= '2024-01-01'
 GROUP BY stakeholder_category
 ORDER BY meetings DESC;
@@ -57,7 +57,7 @@ ORDER BY meetings DESC;
 SELECT date_trunc('month', engagement_date) as month,
        stakeholder_id,
        LAG(engagement_score) OVER (
-         PARTITION BY stakeholder_id 
+         PARTITION BY stakeholder_id
          ORDER BY engagement_date
        ) as prev_score
 FROM stakeholder_engagements
@@ -186,11 +186,11 @@ class StrategicIntelligence:
     def __init__(self):
         self.relational_db = OptimizedSQLiteManager()  # Current
         self.vector_index = FaissSemanticSearch()      # New
-    
+
     def find_similar_stakeholders(self, stakeholder_id):
         # Use Faiss for semantic similarity
         return self.vector_index.find_similar(stakeholder_id)
-    
+
     def get_stakeholder_meetings(self, stakeholder_id):
         # Use SQLite for relational queries
         return self.relational_db.query_meetings(stakeholder_id)
@@ -203,23 +203,23 @@ class StrategicIntelligence:
 - Database size >5GB
 - Complex time-series analysis needed
 
-**Migration Strategy**: 
+**Migration Strategy**:
 ```python
 # Dual-write pattern for zero-downtime migration
 class HybridDataManager:
     def __init__(self):
         self.sqlite = OptimizedSQLiteManager()  # Legacy
         self.duckdb = DuckDBAnalyticsEngine()   # New analytics
-    
+
     def write_data(self, data):
         # Write to both during transition
         self.sqlite.insert(data)
         self.duckdb.insert(data)
-    
+
     def read_analytics(self, query):
         # Route analytics to DuckDB
         return self.duckdb.execute_analytical_query(query)
-    
+
     def read_transactional(self, query):
         # Route transactions to SQLite
         return self.sqlite.execute_transactional_query(query)

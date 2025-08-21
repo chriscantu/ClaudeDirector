@@ -7,47 +7,47 @@ CREATE TABLE strategic_tasks (
     task_key TEXT UNIQUE NOT NULL,
     title TEXT NOT NULL,
     description TEXT,
-    
+
     -- Assignment tracking
     assigned_by TEXT, -- stakeholder_key if assigned by someone else
     assigned_to TEXT, -- stakeholder_key if assigned to someone else, 'self' if self-assigned
     assignment_direction TEXT NOT NULL, -- 'incoming', 'outgoing', 'self_assigned'
-    
+
     -- Context and categorization
     category TEXT NOT NULL, -- 'platform_initiative', 'stakeholder_followup', 'strategic_project', 'operational'
     priority TEXT NOT NULL DEFAULT 'medium', -- 'critical', 'high', 'medium', 'low'
     impact_scope TEXT, -- 'platform_wide', 'cross_team', 'single_team', 'individual'
     strategic_theme TEXT, -- 'architecture', 'technical_debt', 'scalability', 'coordination'
-    
+
     -- Timeline and status
     status TEXT NOT NULL DEFAULT 'active', -- 'active', 'blocked', 'completed', 'cancelled', 'deferred'
     due_date DATE,
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     completed_date TIMESTAMP,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     -- Source tracking
     source_type TEXT, -- 'meeting', 'email', 'manual', 'auto_detected'
     source_reference TEXT, -- meeting_id, file_path, etc.
     detection_confidence REAL, -- if auto-detected, confidence score
-    
+
     -- Follow-up and accountability
     follow_up_required BOOLEAN DEFAULT FALSE,
     follow_up_date DATE,
     follow_up_stakeholder TEXT, -- stakeholder_key for who to follow up with
     escalation_date DATE,
     escalation_stakeholder TEXT, -- stakeholder_key for escalation
-    
+
     -- Progress tracking
     progress_percentage INTEGER DEFAULT 0,
     blockers TEXT, -- JSON array of blocking issues
     dependencies TEXT, -- JSON array of dependent task IDs
-    
+
     -- Platform context
     affected_systems TEXT, -- JSON array of affected platform components
     architecture_impact TEXT, -- 'breaking_change', 'enhancement', 'maintenance', 'none'
     cross_team_coordination BOOLEAN DEFAULT FALSE,
-    
+
     -- Rich metadata
     tags TEXT, -- JSON array of tags for flexible categorization
     notes TEXT, -- Free-form notes and updates
@@ -136,7 +136,7 @@ CREATE INDEX idx_task_stakeholder_key ON task_stakeholder_involvement(stakeholde
 
 -- Strategic task analysis views
 CREATE VIEW active_tasks_by_priority AS
-SELECT 
+SELECT
     t.*,
     s.display_name as assigned_to_name,
     s2.display_name as assigned_by_name
@@ -144,28 +144,28 @@ FROM strategic_tasks t
 LEFT JOIN stakeholder_profiles_enhanced s ON t.assigned_to = s.stakeholder_key
 LEFT JOIN stakeholder_profiles_enhanced s2 ON t.assigned_by = s2.stakeholder_key
 WHERE t.status = 'active'
-ORDER BY 
-    CASE t.priority 
+ORDER BY
+    CASE t.priority
         WHEN 'critical' THEN 1
-        WHEN 'high' THEN 2  
+        WHEN 'high' THEN 2
         WHEN 'medium' THEN 3
         WHEN 'low' THEN 4
     END,
     t.due_date ASC;
 
 CREATE VIEW overdue_tasks AS
-SELECT 
+SELECT
     t.*,
     s.display_name as assigned_to_name,
     (julianday('now') - julianday(t.due_date)) as days_overdue
 FROM strategic_tasks t
 LEFT JOIN stakeholder_profiles_enhanced s ON t.assigned_to = s.stakeholder_key
-WHERE t.status = 'active' 
+WHERE t.status = 'active'
     AND t.due_date < date('now')
 ORDER BY days_overdue DESC;
 
 CREATE VIEW follow_up_due AS
-SELECT 
+SELECT
     t.*,
     s.display_name as follow_up_with_name,
     (julianday('now') - julianday(t.follow_up_date)) as days_since_due
@@ -177,7 +177,7 @@ WHERE t.follow_up_required = TRUE
 ORDER BY days_since_due DESC;
 
 CREATE VIEW platform_impact_tasks AS
-SELECT 
+SELECT
     t.*,
     COUNT(tsi.stakeholder_key) as stakeholder_count
 FROM strategic_tasks t
@@ -185,10 +185,10 @@ LEFT JOIN task_stakeholder_involvement tsi ON t.id = tsi.task_id
 WHERE t.impact_scope IN ('platform_wide', 'cross_team')
     AND t.status = 'active'
 GROUP BY t.id
-ORDER BY 
-    CASE t.priority 
+ORDER BY
+    CASE t.priority
         WHEN 'critical' THEN 1
-        WHEN 'high' THEN 2  
+        WHEN 'high' THEN 2
         WHEN 'medium' THEN 3
         WHEN 'low' THEN 4
     END,
