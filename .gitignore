@@ -73,6 +73,10 @@ eggs/
 .eggs/
 # Allow ClaudeDirector package lib directory
 !.claudedirector/lib/
+# But exclude Python cache files within it
+.claudedirector/lib/**/__pycache__/
+.claudedirector/lib/**/*.pyc
+.claudedirector/lib/**/*.pyo
 lib/
 lib64/
 parts/
