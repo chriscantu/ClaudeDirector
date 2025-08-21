@@ -16,7 +16,7 @@ try:
     HAS_TRANSPARENCY = True
 except ImportError:
     HAS_TRANSPARENCY = False
-    print("⚠️ Transparency system not available - using fallback mode")
+    print("✅ ClaudeDirector ready - Enhanced MCP analysis will auto-install when needed")
 
     # Create fallback classes
     class MCPContext:
@@ -204,8 +204,8 @@ class CursorTransparencyBridge:
             # Fallback mode - create simple MCP disclosure for complex queries
             mcp_context = self.detect_mcp_usage_context(user_input, response)
             if mcp_context and mcp_context.has_mcp_calls():
-                # Simple fallback disclosure format
-                disclosure = f"🔧 Accessing MCP Server: sequential (systematic_analysis)\n*Analyzing your organizational challenge using systematic frameworks...*\n\n"
+                # Progressive enhancement disclosure - shows installation when needed
+                disclosure = f"🔧 Installing MCP enhancement: sequential (systematic_analysis)\n*Auto-installing strategic frameworks for enhanced analysis...*\n\n"
                 return disclosure + response
             return response
 

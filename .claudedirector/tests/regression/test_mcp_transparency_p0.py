@@ -110,7 +110,10 @@ class TestMCPTransparencyP0(unittest.TestCase):
                 )
 
                 # CRITICAL: Must contain MCP disclosure
-                self.assertIn("🔧 Accessing MCP Server:", enhanced,
+                # Check for either format - old "Accessing" or new "Installing"
+                has_mcp_disclosure = ("🔧 Accessing MCP Server:" in enhanced or
+                                    "🔧 Installing MCP enhancement:" in enhanced)
+                self.assertTrue(has_mcp_disclosure,
                     f"FAILED P0: {test_case['name']} missing MCP disclosure")
 
                 # CRITICAL: Must contain processing indicator
@@ -267,7 +270,7 @@ class TestMCPTransparencyP0(unittest.TestCase):
 
         # CRITICAL: Complete integration checklist
         integration_checks = [
-            ("MCP disclosure present", "🔧 Accessing MCP Server:" in enhanced),
+            ("MCP disclosure present", ("🔧 Accessing MCP Server:" in enhanced or "🔧 Installing MCP enhancement:" in enhanced)),
             ("Processing indicator present", "*" in enhanced and "..." in enhanced),
             ("Persona header present", summary["has_persona_header"]),
             ("MCP enhancement detected", summary["has_mcp_enhancement"]),
