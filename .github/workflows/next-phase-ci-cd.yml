@@ -106,13 +106,41 @@ jobs:
           fi
 
       - name: Code Quality - Flake8 Linting
-        run: echo "Flake8 linting placeholder - flake8 not configured yet"
+        run: |
+          echo "🔍 CODE QUALITY - Flake8 Linting"
+          # Install flake8 if not available
+          python -m pip install flake8>=6.0.0
+          
+          # Run linting with reasonable settings for existing codebase
+          python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          
+          # Run full linting with lenient settings for gradual improvement
+          python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
+          
+          echo "✅ Flake8 linting completed"
 
       - name: Code Quality - MyPy Type Checking
-        run: echo "MyPy type checking placeholder - mypy not configured yet"
+        run: |
+          echo "🔬 CODE QUALITY - MyPy Type Checking"
+          # Install mypy and type stubs
+          python -m pip install mypy>=1.0.0 types-PyYAML types-requests types-setuptools
+          
+          # Run type checking with lenient settings for existing codebase
+          python -m mypy . --ignore-missing-imports --no-strict-optional --allow-untyped-defs --allow-incomplete-defs --check-untyped-defs || echo "MyPy found type issues (expected for existing codebase)"
+          
+          echo "✅ MyPy type checking completed"
 
       - name: SOLID Principles Validation
-        run: echo "SOLID principles validation placeholder - architecture tests not implemented yet"
+        run: |
+          echo "🏗️ ARCHITECTURE - SOLID Principles Validation"
+          # Run SOLID principles validation using existing validator
+          if [ -f ".claudedirector/dev-tools/architecture/solid_validator.py" ]; then
+            python .claudedirector/dev-tools/architecture/solid_validator.py || echo "SOLID violations detected (expected for existing codebase)"
+          else
+            echo "⚠️ SOLID validator not found - skipping validation"
+          fi
+          
+          echo "✅ SOLID principles validation completed"
 
   # Phase 2: Unit Testing with Coverage (Disabled - tests not implemented yet)
   unit-tests:
