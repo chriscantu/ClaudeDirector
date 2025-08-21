@@ -162,8 +162,9 @@ jobs:
 
       - name: Install ClaudeDirector in Development Mode
         run: |
-          cd .claudedirector/lib
-          python -m pip install -e .
+          echo "📦 Installing ClaudeDirector package in development mode"
+          ls -la .claudedirector/lib/pyproject.toml || echo "pyproject.toml not found"
+          python -m pip install -e .claudedirector/lib
 
       - name: Run P0 Regression Test Suite
         run: |
