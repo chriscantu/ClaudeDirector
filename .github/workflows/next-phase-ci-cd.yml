@@ -29,19 +29,156 @@ jobs:
           pip install -r requirements.txt
 
       - name: Security Scan - Sensitive Data Protection
-        run: echo "Security scan placeholder - sensitive data scanner not implemented yet"
+        run: |
+          echo "🔒 SECURITY SCAN - Sensitive Data Protection"
+          python -c "
+          import os
+          import re
+
+          # Sensitive patterns to scan for
+          patterns = [
+              (r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', 'Email addresses'),
+              (r'(?:password|passwd|pwd)\s*[=:]\s*[\"\'']?([^\"\''\s]{8,})', 'Passwords'),
+              (r'(?:api_key|apikey|secret)\s*[=:]\s*[\"\'']?([a-zA-Z0-9_-]{16,})', 'API Keys'),
+              (r'(?:token)\s*[=:]\s*[\"\'']?([a-zA-Z0-9_-]{20,})', 'Tokens'),
+              (r'aws_access_key_id\s*[=:]\s*[\"\'']?([A-Z0-9]{20})', 'AWS Access Keys'),
+              (r'ssh-rsa\s+[A-Za-z0-9+/]{100,}', 'SSH Keys')
+          ]
+
+          issues = []
+
+          for root, dirs, files in os.walk('.'):
+              # Skip .git and other system directories
+              dirs[:] = [d for d in dirs if not d.startswith('.') and d != '__pycache__']
+
+              for file in files:
+                  if file.endswith(('.py', '.yaml', '.yml', '.json', '.txt', '.md')):
+                      filepath = os.path.join(root, file)
+                      try:
+                          with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
+                              content = f.read()
+
+                          for pattern, desc in patterns:
+                              matches = re.finditer(pattern, content, re.IGNORECASE)
+                              for match in matches:
+                                  # Skip obvious test data or documentation
+                                  line = content[:match.start()].count('\n') + 1
+                                  context = match.group()
+                                  if not any(x in context.lower() for x in ['example', 'test', 'dummy', 'placeholder', 'xxx']):
+                                      issues.append(f'{filepath}:{line} - {desc}: {context[:50]}...')
+                      except Exception:
+                          pass
+
+          if issues:
+              print('❌ SECURITY VIOLATIONS DETECTED:')
+              for issue in issues[:10]:  # Limit to first 10
+                  print(f'   {issue}')
+              if len(issues) > 10:
+                  print(f'   ... and {len(issues) - 10} more issues')
+              exit(1)
+          else:
+              print('✅ No sensitive data patterns detected')
+          "
 
       - name: Code Quality - Black Formatting
-        run: echo "Black formatting check placeholder - black not configured yet"
+        run: |
+          echo "🎨 CODE QUALITY - Black Formatting Check"
+          black --check --diff .claudedirector/ || {
+            echo "❌ BLACK FORMATTING VIOLATIONS DETECTED"
+            echo "Run 'black .claudedirector/' to fix formatting issues"
+            exit 1
+          }
+          echo "✅ Black formatting check passed"
 
       - name: Code Quality - Flake8 Linting
-        run: echo "Flake8 linting placeholder - flake8 not configured yet"
+        run: |
+          echo "🔍 CODE QUALITY - Flake8 Linting"
+          pip install flake8
+          flake8 .claudedirector/ --max-line-length=88 --extend-ignore=E203,W503 --statistics --tee --output-file=flake8-report.txt || {
+            echo "❌ FLAKE8 LINTING VIOLATIONS DETECTED"
+            cat flake8-report.txt
+            exit 1
+          }
+          echo "✅ Flake8 linting check passed"
 
       - name: Code Quality - MyPy Type Checking
-        run: echo "MyPy type checking placeholder - mypy not configured yet"
+        run: |
+          echo "🏷️ CODE QUALITY - MyPy Type Checking"
+          mypy .claudedirector/lib/ --ignore-missing-imports --no-strict-optional --show-error-codes --pretty || {
+            echo "❌ MYPY TYPE CHECKING VIOLATIONS DETECTED"
+            echo "Fix type annotations and imports"
+            exit 1
+          }
+          echo "✅ MyPy type checking passed"
 
       - name: SOLID Principles Validation
-        run: echo "SOLID principles validation placeholder - architecture tests not implemented yet"
+        run: |
+          echo "🏗️ SOLID PRINCIPLES VALIDATION"
+          python -c "
+          import os
+          import re
+          import ast
+
+          class SOLIDAnalyzer(ast.NodeVisitor):
+              def __init__(self):
+                  self.violations = []
+                  self.current_file = ''
+
+              def visit_ClassDef(self, node):
+                  # Single Responsibility: Check for classes with too many methods
+                  methods = [n for n in node.body if isinstance(n, ast.FunctionDef)]
+                  if len(methods) > 15:
+                      self.violations.append(f'{self.current_file}:{node.lineno} - SRP Violation: Class {node.name} has {len(methods)} methods (>15)')
+
+                  # Check for god classes (too many lines)
+                  if hasattr(node, 'end_lineno') and node.end_lineno:
+                      lines = node.end_lineno - node.lineno
+                      if lines > 200:
+                          self.violations.append(f'{self.current_file}:{node.lineno} - SRP Violation: Class {node.name} has {lines} lines (>200)')
+
+                  self.generic_visit(node)
+
+              def visit_FunctionDef(self, node):
+                  # Single Responsibility: Check for functions with too many parameters
+                  if len(node.args.args) > 7:
+                      self.violations.append(f'{self.current_file}:{node.lineno} - ISP Violation: Function {node.name} has {len(node.args.args)} parameters (>7)')
+
+                  # Check for long functions
+                  if hasattr(node, 'end_lineno') and node.end_lineno:
+                      lines = node.end_lineno - node.lineno
+                      if lines > 50:
+                          self.violations.append(f'{self.current_file}:{node.lineno} - SRP Violation: Function {node.name} has {lines} lines (>50)')
+
+                  self.generic_visit(node)
+
+          analyzer = SOLIDAnalyzer()
+
+          for root, dirs, files in os.walk('.claudedirector/lib'):
+              for file in files:
+                  if file.endswith('.py'):
+                      filepath = os.path.join(root, file)
+                      try:
+                          with open(filepath, 'r') as f:
+                              content = f.read()
+
+                          tree = ast.parse(content)
+                          analyzer.current_file = filepath
+                          analyzer.visit(tree)
+                      except Exception as e:
+                          print(f'Warning: Could not analyze {filepath}: {e}')
+
+          if analyzer.violations:
+              print('❌ SOLID PRINCIPLES VIOLATIONS DETECTED:')
+              for violation in analyzer.violations[:20]:  # Limit output
+                  print(f'   {violation}')
+              if len(analyzer.violations) > 20:
+                  print(f'   ... and {len(analyzer.violations) - 20} more violations')
+              print(f'Total violations: {len(analyzer.violations)}')
+              if len(analyzer.violations) > 50:  # Only fail for major violations
+                  exit(1)
+          else:
+              print('✅ SOLID principles validation passed')
+          "
 
   # Phase 2: Unit Testing with Coverage
   unit-tests:
@@ -63,7 +200,19 @@ jobs:
 
       - name: Run Unit Tests with Coverage
         run: |
-          python3 .claudedirector/tests/unit/test_suite_runner.py
+          echo "🧪 UNIT TESTS WITH COVERAGE REPORTING"
+          # Install coverage tool
+          pip install coverage
+
+          # Run tests with coverage
+          coverage run --source=.claudedirector/lib .claudedirector/tests/unit/test_suite_runner.py
+
+          # Generate coverage reports
+          coverage report --fail-under=85 --show-missing
+          coverage xml
+          coverage html --directory=htmlcov
+
+          echo "✅ Unit tests completed with coverage reporting"
 
       - name: Upload Coverage Reports
         uses: codecov/codecov-action@v3
@@ -71,6 +220,13 @@ jobs:
           file: ./coverage.xml
           flags: unittests
           name: codecov-umbrella
+          fail_ci_if_error: true
+
+      - name: Archive Coverage HTML Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-html-report
+          path: htmlcov/
 
   # Phase 3: UX Component & Accessibility Testing
   ux-accessibility-tests:
