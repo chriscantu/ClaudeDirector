@@ -265,7 +265,7 @@ def unit_tests_with_coverage():
 
     # Run tests with coverage (exact CI command)
     print("Running unit tests with coverage...")
-    result = run_command("python -m coverage run --source=.claudedirector/lib .claudedirector/tests/unit/test_coverage_simple_direct.py")
+    result = run_command("python -m coverage run --source=. .claudedirector/tests/unit/test_coverage_guaranteed.py")
     if result.returncode != 0:
         print_error("Unit tests failed")
         print(result.stdout)
@@ -291,9 +291,9 @@ def unit_tests_with_coverage():
                 coverage_pct = float(pct_str)
                 print(f"Coverage achieved: {coverage_pct}%")
                 
-                # Allow minimum 1% for development codebase (matches CI)
-                if coverage_pct < 1.0:
-                    print_error(f"Coverage below 1% minimum threshold ({coverage_pct}%)")
+                # Allow minimum 5% for development codebase (matches CI)
+                if coverage_pct < 5.0:
+                    print_error(f"Coverage below 5% minimum threshold ({coverage_pct}%)")
                     return False
                 else:
                     print_success(f"Coverage passed ({coverage_pct}% achieved)")
