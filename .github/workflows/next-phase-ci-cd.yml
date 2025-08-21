@@ -142,12 +142,11 @@ jobs:
 
           echo "✅ SOLID principles validation completed"
 
-  # Phase 2: Unit Testing with Coverage (Disabled - tests not implemented yet)
-  unit-tests:
+  # Phase 2: Comprehensive P0 Regression Testing
+  regression-tests:
     runs-on: ubuntu-latest
-    name: Unit Tests & Coverage
+    name: P0 Regression Tests & Coverage
     needs: quality-gates
-    if: false  # Disabled until test infrastructure is implemented
     steps:
       - uses: actions/checkout@v4
 
@@ -161,15 +160,51 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Unit Tests with Coverage
+      - name: Install ClaudeDirector in Development Mode
         run: |
-          python -m pytest tests/unit/ \
-            --cov=lib/claudedirector \
-            --cov-report=xml \
-            --cov-report=html \
-            --cov-fail-under=85 \
-            --junitxml=test-results.xml \
-            -v
+          echo "📦 Installing ClaudeDirector package in development mode"
+          echo "🔍 Current working directory:"
+          pwd
+          echo "🔍 Repository structure:"
+          ls -la
+          echo "🔍 Checking .claudedirector directory:"
+          ls -la .claudedirector/
+          echo "🔍 Checking .claudedirector/lib directory:"
+          ls -la .claudedirector/lib/
+          echo "🔍 Looking for pyproject.toml:"
+          find . -name "pyproject.toml" -type f
+          echo "🔍 Attempting installation:"
+          python -m pip install -e ./.claudedirector/lib/
+
+      - name: Initialize Strategic Database for P0 Tests
+        run: |
+          echo "💾 Initializing strategic memory database for conversation tracking"
+          python .claudedirector/dev-tools/ci/init-database.py
+          echo "🔍 Verifying database creation:"
+          ls -la data/
+          sqlite3 data/strategic_memory.db ".tables"
+
+      - name: Run P0 Regression Test Suite
+        run: |
+          echo "🚀 Running Comprehensive P0 Regression Tests"
+          python .claudedirector/tests/run_phase2_validation_tests.py
+
+      - name: Run Individual P0 Feature Tests
+        run: |
+          echo "💾 Testing P0 Conversation Tracking"
+          python .claudedirector/tests/conversation/test_conversation_tracking_p0.py 2>&1 || {
+            echo "❌ P0 Conversation Tracking test failed with exit code $?"
+            echo "📊 Environment debug info:"
+            echo "  Working directory: $(pwd)"
+            echo "  Python version: $(python --version)"
+            echo "  Python path: $(which python)"
+            echo "  ClaudeDirector lib exists: $(ls -la .claudedirector/lib/ | head -5)"
+            echo "  pyproject.toml exists: $(ls -la .claudedirector/lib/pyproject.toml)"
+            exit 1
+          }
+
+          echo "🔧 Testing P0 MCP Transparency"
+          python .claudedirector/tests/run_mcp_transparency_tests.py
 
       - name: Upload Coverage Reports
         uses: codecov/codecov-action@v3
@@ -223,7 +258,7 @@ jobs:
   integration-tests:
     runs-on: ubuntu-latest
     name: Integration & API Tests
-    needs: [unit-tests, ux-accessibility-tests]
+    needs: [regression-tests, ux-accessibility-tests]
     if: false  # Disabled until integration test infrastructure is implemented
     services:
       postgres:
@@ -376,7 +411,7 @@ jobs:
   deployment-readiness:
     runs-on: ubuntu-latest
     name: Deployment Readiness Validation
-    needs: quality-gates
+    needs: regression-tests
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
@@ -400,7 +435,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Feature Branch Completeness Check
     if: startsWith(github.ref, 'refs/heads/feature/')
-    needs: quality-gates
+    needs: regression-tests
     steps:
       - uses: actions/checkout@v4
 
