@@ -250,7 +250,7 @@ class MCPIntegrationHelper:
 
         try:
             # TODO: Replace with actual MCP server call logic
-            # This is a placeholder for the actual MCP integration
+            # Simulate MCP integration - replace with actual MCP client
             result = await self._simulate_mcp_call(server_name, capability, call_kwargs)
 
             processing_time = time.time() - start_time

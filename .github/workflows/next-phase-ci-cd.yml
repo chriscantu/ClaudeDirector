@@ -28,6 +28,28 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Package Structure Validation
+        run: |
+          echo "📦 PACKAGE STRUCTURE VALIDATION"
+          echo "Validating ClaudeDirector package can be installed from git..."
+          
+          # Test package installation
+          pip install -e ./.claudedirector/lib
+          
+          # Verify core modules are importable
+          python -c "
+          try:
+              from claudedirector.core import integrated_conversation_manager
+              from claudedirector.transparency import mcp_transparency
+              from claudedirector.memory import session_context_manager
+              print('✅ Core modules importable')
+          except ImportError as e:
+              print(f'❌ Import failed: {e}')
+              exit(1)
+          "
+          
+          echo "✅ Package structure validation passed"
+
       - name: Security Scan - Sensitive Data Protection
         run: |
           echo "🔒 SECURITY SCAN - Sensitive Data Protection"
