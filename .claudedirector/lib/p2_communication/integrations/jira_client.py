@@ -133,7 +133,7 @@ class JIRAIntegrationClient(IDataSource):
             if self._should_rate_limit():
                 return False
 
-            # TODO: Implement actual JIRA ping
+            # Mock implementation - replace with actual JIRA ping
             # For now, assume available
             return True
         except Exception:
@@ -193,7 +193,7 @@ class JIRAIntegrationClient(IDataSource):
 
         self._track_api_call()
 
-        # TODO: Implement actual JIRA API calls
+        # Mock implementation - replace with actual JIRA API
         # For now, return mock data structure
         mock_data = {
             "team_velocity": {
