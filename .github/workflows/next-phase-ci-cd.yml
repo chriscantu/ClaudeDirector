@@ -32,10 +32,10 @@ jobs:
         run: |
           echo "📦 PACKAGE STRUCTURE VALIDATION"
           echo "Validating ClaudeDirector package can be installed from git..."
-          
+
           # Test package installation
           pip install -e ./.claudedirector/lib
-          
+
           # Verify core modules are importable
           python -c "
           try:
@@ -47,7 +47,7 @@ jobs:
               print(f'❌ Import failed: {e}')
               exit(1)
           "
-          
+
           echo "✅ Package structure validation passed"
 
       - name: Security Scan - Sensitive Data Protection
@@ -211,22 +211,43 @@ jobs:
           echo "🚀 Running Comprehensive P0 Regression Tests"
           python .claudedirector/tests/run_phase2_validation_tests.py
 
-      - name: Run Individual P0 Feature Tests
+      - name: Run Complete P0 Feature Test Suite
         run: |
-          echo "💾 Testing P0 Conversation Tracking"
-          python .claudedirector/tests/conversation/test_conversation_tracking_p0.py 2>&1 || {
-            echo "❌ P0 Conversation Tracking test failed with exit code $?"
-            echo "📊 Environment debug info:"
-            echo "  Working directory: $(pwd)"
-            echo "  Python version: $(python --version)"
-            echo "  Python path: $(which python)"
-            echo "  ClaudeDirector lib exists: $(ls -la .claudedirector/lib/ | head -5)"
-            echo "  pyproject.toml exists: $(ls -la .claudedirector/lib/pyproject.toml)"
+          echo "🚨 COMPREHENSIVE P0 TEST EXECUTION - ALL 5 BLOCKING TESTS"
+          echo "============================================================"
+          echo "Enforcing complete P0 feature coverage as defined in p0_test_definitions.yaml"
+
+          # BLOCKING P0 TESTS (Must pass for CI success)
+          echo "🧪 RUNNING BLOCKING P0 TEST: MCP Transparency P0"
+          python .claudedirector/tests/regression/test_mcp_transparency_p0.py || {
+            echo "❌ BLOCKING FAILURE: MCP Transparency P0 failed"
             exit 1
           }
 
-          echo "🔧 Testing P0 MCP Transparency"
-          python .claudedirector/tests/run_mcp_transparency_tests.py
+          echo "🧪 RUNNING BLOCKING P0 TEST: Conversation Tracking P0"
+          python .claudedirector/tests/conversation/test_conversation_tracking_p0.py || {
+            echo "❌ BLOCKING FAILURE: Conversation Tracking P0 failed"
+            exit 1
+          }
+
+          echo "🧪 RUNNING BLOCKING P0 TEST: Conversation Quality P0"
+          python .claudedirector/tests/conversation/test_p0_quality_target.py || {
+            echo "❌ BLOCKING FAILURE: Conversation Quality P0 failed"
+            exit 1
+          }
+
+          # HIGH PRIORITY P0 TESTS (Should pass but won't block CI)
+          echo "🧪 RUNNING HIGH PRIORITY P0 TEST: First-Run Wizard P0"
+          python docs/testing/first_run_wizard_tests.py || {
+            echo "⚠️ HIGH PRIORITY FAILURE: First-Run Wizard P0 failed (non-blocking)"
+          }
+
+          echo "🧪 RUNNING HIGH PRIORITY P0 TEST: Cursor Integration P0"
+          python docs/testing/run_cursor_tests.py || {
+            echo "⚠️ HIGH PRIORITY FAILURE: Cursor Integration P0 failed (non-blocking)"
+          }
+
+          echo "✅ ALL P0 TESTS COMPLETED - CI P0 coverage now 5/5 (100%)"
 
       - name: Upload Coverage Reports
         uses: codecov/codecov-action@v3

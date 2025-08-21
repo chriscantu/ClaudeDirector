@@ -48,6 +48,14 @@ repos:
         pass_filenames: false
         stages: [pre-commit]
         always_run: true
+      - id: p0-ci-coverage-guard
+        name: 🛡️ P0 CI COVERAGE GUARD
+        entry: python3 .claudedirector/dev-tools/hooks/p0-ci-coverage-guard.py
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+        always_run: true
+        files: '^(\.github/workflows/.*\.yml|\.claudedirector/tests/p0_enforcement/.*\.yaml)$'
         verbose: true
 
   # MANDATORY TEST VALIDATION (RE-ENABLED - MODULE IMPORT FIXED)
