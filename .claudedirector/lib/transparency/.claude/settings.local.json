@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m pytest test_transparency_integration.py::TestTransparencyDisclosure -v)",
+      "Bash(python3:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git fetch:*)",
+      "Bash(find:*)",
+      "Bash(rm:*)",
+      "Bash(grep:*)",
+      "Bash(gh pr edit:*)",
+      "Bash(python test:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(ls:*)",
+      "Bash(claude config --help)",
+      "Bash(claude config list)",
+      "Bash(git checkout:*)",
+      "Bash(python docs/testing/first_run_wizard_tests.py)",
+      "Bash(git merge:*)",
+      "Bash(git branch:*)",
+      "Bash(source:*)",
+      "Bash(pip install:*)",
+      "Bash(cp:*)",
+      "Bash(pre-commit:*)",
+      "Bash(pip uninstall:*)",
+      "Bash(./venv/bin/python:*)"
+    ],
+    "deny": []
+  }
+}
