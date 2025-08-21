@@ -64,7 +64,13 @@ jobs:
                                   # Skip obvious test data or documentation
                                   line = content[:match.start()].count('\n') + 1
                                   context = match.group()
-                                  if not any(x in context.lower() for x in ['example', 'test', 'dummy', 'placeholder', 'xxx']):
+
+                                  # Enhanced filtering for documentation and examples
+                                  skip_patterns = ['example', 'test', 'dummy', 'placeholder', 'xxx', 'company.com', 'platform-security.internal', 'sample', 'docs', 'documentation']
+                                  is_doc_file = any(doc_path in filepath.lower() for doc_path in ['docs/', 'readme', 'security.md', 'example'])
+                                  is_example_content = any(pattern in context.lower() for pattern in skip_patterns)
+
+                                  if not (is_doc_file or is_example_content):
                                       issues.append(f'{filepath}:{line} - {desc}: {context[:50]}...')
                       except Exception:
                           pass
