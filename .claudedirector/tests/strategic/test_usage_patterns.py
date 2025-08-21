@@ -13,7 +13,6 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 
-
 class StrategicUsageValidator:
     """Validates ClaudeDirector against real strategic usage patterns"""
 

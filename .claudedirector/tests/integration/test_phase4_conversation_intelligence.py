@@ -16,7 +16,6 @@ from claudedirector.core.persona_enhanced_integration import (
 )
 
 
-
 class TestConversationIntelligenceIntegration(unittest.TestCase):
     """Test complete conversation intelligence integration"""
 

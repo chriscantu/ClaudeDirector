@@ -153,7 +153,6 @@ class MeetingIntelligenceSetup:
         try:
             pass
 
-
             return True
         except ImportError:
             return False
