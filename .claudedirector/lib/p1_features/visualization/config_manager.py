@@ -62,7 +62,7 @@ class VisualizationConfigManager:
     def _load_config(self) -> None:
         """Load configuration from YAML file"""
         try:
-            with open(self.config_path, 'r', encoding='utf-8') as f:
+            with open(self.config_path, "r", encoding="utf-8") as f:
                 self._config_data = yaml.safe_load(f)
         except FileNotFoundError:
             # Fallback to default configuration
@@ -91,9 +91,36 @@ class VisualizationConfigManager:
                     "other_domains": {"current": 0.70, "default_target": 0.8},
                 },
                 "trends": {
-                    "design_system_leverage": [0.65, 0.68, 0.71, 0.73, 0.75, 0.77, 0.78, 0.78],
-                    "platform_adoption": [0.68, 0.70, 0.71, 0.72, 0.73, 0.74, 0.75, 0.75],
-                    "api_service_efficiency": [0.80, 0.82, 0.83, 0.84, 0.85, 0.85, 0.85, 0.85],
+                    "design_system_leverage": [
+                        0.65,
+                        0.68,
+                        0.71,
+                        0.73,
+                        0.75,
+                        0.77,
+                        0.78,
+                        0.78,
+                    ],
+                    "platform_adoption": [
+                        0.68,
+                        0.70,
+                        0.71,
+                        0.72,
+                        0.73,
+                        0.74,
+                        0.75,
+                        0.75,
+                    ],
+                    "api_service_efficiency": [
+                        0.80,
+                        0.82,
+                        0.83,
+                        0.84,
+                        0.85,
+                        0.85,
+                        0.85,
+                        0.85,
+                    ],
                 },
                 "investment_multipliers": {
                     "design_system_enhancement": 1.25,

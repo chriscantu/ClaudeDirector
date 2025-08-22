@@ -64,7 +64,12 @@ except ImportError:
             pass
 
         def scan_workspace(self):
-            return {"files_processed": 0, "tasks_detected": 0, "tasks_stored": 0, "errors": 0}
+            return {
+                "files_processed": 0,
+                "tasks_detected": 0,
+                "tasks_stored": 0,
+                "errors": 0,
+            }
 
         def get_my_tasks(self):
             return []
@@ -115,7 +120,9 @@ class TaskIntelligence:
         except Exception as e:
             raise AIDetectionError(f"Task detection failed: {e}", detection_type="task")
 
-    def process_workspace_for_tasks(self, workspace_path: Optional[str] = None) -> Dict[str, Any]:
+    def process_workspace_for_tasks(
+        self, workspace_path: Optional[str] = None
+    ) -> Dict[str, Any]:
         """
         Process entire workspace for task detection
 
@@ -144,7 +151,9 @@ class TaskIntelligence:
 
             return result
         except Exception as e:
-            raise AIDetectionError(f"Workspace task processing failed: {e}", detection_type="task")
+            raise AIDetectionError(
+                f"Workspace task processing failed: {e}", detection_type="task"
+            )
 
     def get_my_tasks(self, status_filter: Optional[str] = None) -> List[Dict[str, Any]]:
         """
@@ -193,8 +202,12 @@ class TaskIntelligence:
                 return self.task_manager.get_tasks_by_assignee(assignee)
             else:
                 # Fallback: filter all tasks
-                all_tasks = self.task_manager.get_my_tasks() if assignee == "self" else []
-                return [task for task in all_tasks if task.get("assigned_to") == assignee]
+                all_tasks = (
+                    self.task_manager.get_my_tasks() if assignee == "self" else []
+                )
+                return [
+                    task for task in all_tasks if task.get("assigned_to") == assignee
+                ]
         except Exception as e:
             raise DatabaseError(f"Failed to get tasks for assignee {assignee}: {e}")
 
@@ -319,7 +332,9 @@ class TaskIntelligence:
         """
         try:
             all_tasks = self.task_manager.get_my_tasks()
-            return [task for task in all_tasks if task.get("strategic_category") == category]
+            return [
+                task for task in all_tasks if task.get("strategic_category") == category
+            ]
         except Exception as e:
             raise DatabaseError(f"Failed to get tasks by category: {e}")
 
@@ -350,7 +365,9 @@ class TaskIntelligence:
                 priority = task.get("priority", "unknown")
                 category = task.get("strategic_category", "unknown")
 
-                summary["status_breakdown"][status] = summary["status_breakdown"].get(status, 0) + 1
+                summary["status_breakdown"][status] = (
+                    summary["status_breakdown"].get(status, 0) + 1
+                )
                 summary["priority_breakdown"][priority] = (
                     summary["priority_breakdown"].get(priority, 0) + 1
                 )

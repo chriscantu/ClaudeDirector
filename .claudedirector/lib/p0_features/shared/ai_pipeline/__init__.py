@@ -11,9 +11,9 @@ from .pattern_recognition import StrategicPatternRecognizer
 from .ai_base import AIEngineBase, AIModelConfig
 
 __all__ = [
-    'DecisionIntelligenceEngine',
-    'StrategicHealthPredictor',
-    'StrategicPatternRecognizer',
-    'AIEngineBase',
-    'AIModelConfig'
+    "DecisionIntelligenceEngine",
+    "StrategicHealthPredictor",
+    "StrategicPatternRecognizer",
+    "AIEngineBase",
+    "AIModelConfig",
 ]

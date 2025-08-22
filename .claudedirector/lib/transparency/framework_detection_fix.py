@@ -2,6 +2,7 @@
 Quick fix to add common strategic framework patterns to framework detection
 """
 
+
 def get_updated_framework_patterns():
     """Return updated framework patterns including common strategic frameworks"""
 
@@ -14,10 +15,10 @@ def get_updated_framework_patterns():
                 "ogsm framework",
                 "objectives goals strategies measures",
                 "ogsm analysis",
-                "ogsm planning"
+                "ogsm planning",
             ],
             "type": "strategic",
-            "confidence_weight": 0.9
+            "confidence_weight": 0.9,
         },
         "Blue Ocean Strategy": {
             "patterns": [
@@ -27,10 +28,10 @@ def get_updated_framework_patterns():
                 "value innovation",
                 "strategy canvas",
                 "four actions framework",
-                "blue ocean approach"
+                "blue ocean approach",
             ],
             "type": "strategic",
-            "confidence_weight": 0.9
+            "confidence_weight": 0.9,
         },
         "Design Thinking": {
             "patterns": [
@@ -39,10 +40,10 @@ def get_updated_framework_patterns():
                 "design thinking methodology",
                 "empathize define ideate prototype test",
                 "human-centered design",
-                "design thinking framework"
+                "design thinking framework",
             ],
             "type": "innovation",
-            "confidence_weight": 0.9
+            "confidence_weight": 0.9,
         },
         "Porter's Five Forces": {
             "patterns": [
@@ -51,10 +52,10 @@ def get_updated_framework_patterns():
                 "competitive forces",
                 "porter five forces",
                 "competitive analysis framework",
-                "industry analysis"
+                "industry analysis",
             ],
             "type": "strategic",
-            "confidence_weight": 0.9
+            "confidence_weight": 0.9,
         },
         "BCG Matrix": {
             "patterns": [
@@ -63,10 +64,10 @@ def get_updated_framework_patterns():
                 "stars cash cows dogs question marks",
                 "bcg growth share matrix",
                 "portfolio analysis",
-                "question mark products"
+                "question mark products",
             ],
             "type": "strategic",
-            "confidence_weight": 0.8
+            "confidence_weight": 0.8,
         },
         "Jobs-to-be-Done": {
             "patterns": [
@@ -75,10 +76,10 @@ def get_updated_framework_patterns():
                 "jtbd framework",
                 "customer jobs",
                 "jobs-to-be-done framework",
-                "job story"
+                "job story",
             ],
             "type": "innovation",
-            "confidence_weight": 0.8
+            "confidence_weight": 0.8,
         },
         "Lean Startup": {
             "patterns": [
@@ -87,10 +88,10 @@ def get_updated_framework_patterns():
                 "minimum viable product",
                 "mvp development",
                 "build measure learn",
-                "validated learning"
+                "validated learning",
             ],
             "type": "innovation",
-            "confidence_weight": 0.8
+            "confidence_weight": 0.8,
         },
         # Keep existing patterns
         "Sequential": {
@@ -100,10 +101,10 @@ def get_updated_framework_patterns():
                 "strategic framework analysis",
                 "systematic strategic analysis",
                 "sequential methodology",
-                "strategic analysis framework"
+                "strategic analysis framework",
             ],
             "type": "strategic",
-            "confidence_weight": 0.9
+            "confidence_weight": 0.9,
         },
         "Context7": {
             "patterns": [
@@ -113,10 +114,10 @@ def get_updated_framework_patterns():
                 "design system methodology",
                 "established architectural patterns",
                 "context7 framework",
-                "proven architectural methodologies"
+                "proven architectural methodologies",
             ],
             "type": "architectural_patterns",
-            "confidence_weight": 0.9
+            "confidence_weight": 0.9,
         },
         # Add more common frameworks
         "OKRs": {
@@ -126,10 +127,10 @@ def get_updated_framework_patterns():
                 "objectives and key results",
                 "objective key results",
                 "okr framework",
-                "quarterly objectives"
+                "quarterly objectives",
             ],
             "type": "strategic",
-            "confidence_weight": 0.8
+            "confidence_weight": 0.8,
         },
         "SWOT Analysis": {
             "patterns": [
@@ -137,9 +138,9 @@ def get_updated_framework_patterns():
                 "swot framework",
                 "strengths weaknesses opportunities threats",
                 "swot matrix",
-                "internal external analysis"
+                "internal external analysis",
             ],
             "type": "strategic",
-            "confidence_weight": 0.8
-        }
+            "confidence_weight": 0.8,
+        },
     }

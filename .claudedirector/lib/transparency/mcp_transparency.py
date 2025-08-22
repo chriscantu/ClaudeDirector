@@ -12,6 +12,7 @@ import time
 @dataclass
 class MCPCall:
     """Represents a single MCP server call"""
+
     server_name: str
     capability: str
     processing_time: float
@@ -23,6 +24,7 @@ class MCPCall:
 @dataclass
 class MCPContext:
     """Tracks MCP context during persona response generation"""
+
     mcp_calls: List[MCPCall]
     total_processing_time: float
     has_failures: bool
@@ -61,7 +63,7 @@ class MCPTransparencyMiddleware:
             "camille": "🔧 Consulting MCP Server: {server} for executive-level {capability}",
             "rachel": "🔧 Accessing MCP Server: {server} for design system {capability}",
             "alvaro": "🔧 Consulting MCP Server: {server} for business {capability}",
-            "martin": "🔧 Accessing MCP Server: {server} for architectural {capability}"
+            "martin": "🔧 Accessing MCP Server: {server} for architectural {capability}",
         }
 
         self.processing_indicators = {
@@ -69,7 +71,7 @@ class MCPTransparencyMiddleware:
             "camille": "Consulting executive strategy patterns for technology leadership...",
             "rachel": "Accessing design system scaling methodologies and coordination frameworks...",
             "alvaro": "Reviewing strategic business frameworks for competitive analysis...",
-            "martin": "Consulting proven architectural patterns and decision methodologies..."
+            "martin": "Consulting proven architectural patterns and decision methodologies...",
         }
 
         self.fallback_templates = {
@@ -77,10 +79,12 @@ class MCPTransparencyMiddleware:
             "camille": "The executive strategy framework is temporarily unavailable, so I'll provide guidance based on technology leadership experience...",
             "rachel": "The design system methodology framework is currently unavailable, so I'll share insights from my experience scaling design systems...",
             "alvaro": "The business strategy framework is currently unavailable, so I'll provide analysis based on competitive intelligence patterns...",
-            "martin": "The architectural pattern framework is temporarily unavailable, so I'll provide guidance based on architectural principles..."
+            "martin": "The architectural pattern framework is temporarily unavailable, so I'll provide guidance based on architectural principles...",
         }
 
-    def create_enhancement_announcement(self, persona: str, server_calls: List[MCPCall]) -> str:
+    def create_enhancement_announcement(
+        self, persona: str, server_calls: List[MCPCall]
+    ) -> str:
         """Generate enhancement announcement for MCP server access"""
         if not server_calls:
             return ""
@@ -94,10 +98,14 @@ class MCPTransparencyMiddleware:
 
         # Generate disclosure for each unique call
         disclosures = []
-        template = self.persona_disclosure_templates.get(persona, self.persona_disclosure_templates["diego"])
+        template = self.persona_disclosure_templates.get(
+            persona, self.persona_disclosure_templates["diego"]
+        )
 
         for call in unique_calls.values():
-            disclosure = template.format(server=call.server_name, capability=call.capability)
+            disclosure = template.format(
+                server=call.server_name, capability=call.capability
+            )
             disclosures.append(disclosure)
 
         if len(disclosures) > 1:
@@ -114,10 +122,14 @@ class MCPTransparencyMiddleware:
         if not failed_calls:
             return ""
 
-        fallback = self.fallback_templates.get(persona, self.fallback_templates["diego"])
+        fallback = self.fallback_templates.get(
+            persona, self.fallback_templates["diego"]
+        )
         return f"\n\n{fallback}"
 
-    def wrap_persona_response(self, persona: str, response: str, mcp_context: MCPContext) -> str:
+    def wrap_persona_response(
+        self, persona: str, response: str, mcp_context: MCPContext
+    ) -> str:
         """Wrap persona response with MCP transparency disclosure"""
         if not mcp_context.has_mcp_calls():
             return response
@@ -130,7 +142,9 @@ class MCPTransparencyMiddleware:
 
         # Add MCP server disclosure
         if successful_calls:
-            announcement = self.create_enhancement_announcement(persona, successful_calls)
+            announcement = self.create_enhancement_announcement(
+                persona, successful_calls
+            )
             if announcement:
                 parts.append(announcement)
 
@@ -150,8 +164,15 @@ class MCPTransparencyMiddleware:
 
         return "\n\n".join(parts)
 
-    def track_mcp_call(self, mcp_context: MCPContext, server_name: str, capability: str,
-                       processing_time: float, success: bool, error_message: Optional[str] = None):
+    def track_mcp_call(
+        self,
+        mcp_context: MCPContext,
+        server_name: str,
+        capability: str,
+        processing_time: float,
+        success: bool,
+        error_message: Optional[str] = None,
+    ):
         """Track an MCP call for transparency reporting"""
         call = MCPCall(
             server_name=server_name,
@@ -159,7 +180,7 @@ class MCPTransparencyMiddleware:
             processing_time=processing_time,
             timestamp=datetime.now(),
             success=success,
-            error_message=error_message
+            error_message=error_message,
         )
         mcp_context.add_mcp_call(call)
 
@@ -167,7 +188,11 @@ class MCPTransparencyMiddleware:
 class MCPCallTracker:
     """Context manager for tracking MCP calls during persona response generation"""
 
-    def __init__(self, mcp_context: MCPContext, transparency_middleware: MCPTransparencyMiddleware):
+    def __init__(
+        self,
+        mcp_context: MCPContext,
+        transparency_middleware: MCPTransparencyMiddleware,
+    ):
         self.mcp_context = mcp_context
         self.transparency_middleware = transparency_middleware
         self.start_time = None
@@ -186,9 +211,20 @@ class MCPCallTracker:
         #     self.mcp_context, server_name, capability, processing_time, success, error_message
         # )
 
-    def track_call(self, server_name: str, capability: str, success: bool = True, error_message: Optional[str] = None):
+    def track_call(
+        self,
+        server_name: str,
+        capability: str,
+        success: bool = True,
+        error_message: Optional[str] = None,
+    ):
         """Manually track an MCP call"""
         processing_time = time.time() - self.start_time if self.start_time else 0.0
         self.transparency_middleware.track_mcp_call(
-            self.mcp_context, server_name, capability, processing_time, success, error_message
+            self.mcp_context,
+            server_name,
+            capability,
+            processing_time,
+            success,
+            error_message,
         )

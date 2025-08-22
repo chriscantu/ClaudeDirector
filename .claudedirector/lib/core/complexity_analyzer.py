@@ -17,24 +17,27 @@ logger = structlog.get_logger(__name__)
 
 class AnalysisComplexity(Enum):
     """Complexity levels for user input analysis"""
-    SIMPLE = "simple"           # Basic questions, standard persona response sufficient
-    MEDIUM = "medium"           # Some complexity, might benefit from light enhancement
-    COMPLEX = "complex"         # High complexity, systematic analysis recommended
-    SYSTEMATIC = "systematic"   # Explicitly requesting systematic approach
+
+    SIMPLE = "simple"  # Basic questions, standard persona response sufficient
+    MEDIUM = "medium"  # Some complexity, might benefit from light enhancement
+    COMPLEX = "complex"  # High complexity, systematic analysis recommended
+    SYSTEMATIC = "systematic"  # Explicitly requesting systematic approach
 
 
 class EnhancementStrategy(Enum):
     """Strategies for enhancing persona responses"""
-    NONE = "none"                           # No enhancement needed
-    LIGHT_FRAMEWORK = "light_framework"     # Light framework reference
+
+    NONE = "none"  # No enhancement needed
+    LIGHT_FRAMEWORK = "light_framework"  # Light framework reference
     SYSTEMATIC_ANALYSIS = "systematic_analysis"  # Full systematic analysis
-    VISUAL_ENHANCEMENT = "visual_enhancement"    # Add visual components
-    MULTI_PERSPECTIVE = "multi_perspective"      # Multiple persona coordination
+    VISUAL_ENHANCEMENT = "visual_enhancement"  # Add visual components
+    MULTI_PERSPECTIVE = "multi_perspective"  # Multiple persona coordination
 
 
 @dataclass
 class ComplexityAnalysis:
     """Result of complexity analysis"""
+
     complexity: AnalysisComplexity
     confidence: float  # 0.0 - 1.0
     enhancement_strategy: EnhancementStrategy
@@ -66,14 +69,12 @@ class AnalysisComplexityDetector:
                 r"structured approach",
                 r"comprehensive analysis",
                 r"thorough evaluation",
-
                 # Planning and strategy patterns
                 r"strategic plan",
                 r"quarterly plan",
                 r"annual plan",
                 r"roadmap",
                 r"assessment",
-
                 # Decision-making patterns
                 r"decision framework",
                 r"evaluation criteria",
@@ -81,7 +82,6 @@ class AnalysisComplexityDetector:
                 r"pros and cons",
                 r"risk assessment",
             ],
-
             AnalysisComplexity.COMPLEX: [
                 # Organizational complexity
                 r"organizational?",
@@ -91,7 +91,6 @@ class AnalysisComplexityDetector:
                 r"cross[- ]team",
                 r"stakeholder",
                 r"alignment",
-
                 # Strategic complexity
                 r"strategy",
                 r"vision",
@@ -99,7 +98,6 @@ class AnalysisComplexityDetector:
                 r"initiative",
                 r"investment",
                 r"prioriti[sz]ation",
-
                 # Technical complexity
                 r"architecture",
                 r"platform",
@@ -107,7 +105,6 @@ class AnalysisComplexityDetector:
                 r"migration",
                 r"integration",
                 r"system design",
-
                 # Problem-solving complexity
                 r"challenge",
                 r"problem",
@@ -116,7 +113,6 @@ class AnalysisComplexityDetector:
                 r"conflict",
                 r"bottleneck",
             ],
-
             AnalysisComplexity.MEDIUM: [
                 # Moderate complexity indicators
                 r"how (do|should) (I|we)",
@@ -128,78 +124,150 @@ class AnalysisComplexityDetector:
                 r"approach",
                 r"thoughts on",
                 r"opinion",
-            ]
+            ],
         }
 
         # Domain-specific keywords that increase complexity
         self.domain_keywords = {
             "strategic": [
-                "strategic", "strategy", "planning", "roadmap", "vision",
-                "objectives", "goals", "priorities", "initiative"
+                "strategic",
+                "strategy",
+                "planning",
+                "roadmap",
+                "vision",
+                "objectives",
+                "goals",
+                "priorities",
+                "initiative",
             ],
             "organizational": [
-                "team", "org", "organizational", "structure", "reporting",
-                "hierarchy", "roles", "responsibilities", "culture"
+                "team",
+                "org",
+                "organizational",
+                "structure",
+                "reporting",
+                "hierarchy",
+                "roles",
+                "responsibilities",
+                "culture",
             ],
             "technical": [
-                "architecture", "platform", "system", "technical", "engineering",
-                "infrastructure", "design", "implementation", "technology"
+                "architecture",
+                "platform",
+                "system",
+                "technical",
+                "engineering",
+                "infrastructure",
+                "design",
+                "implementation",
+                "technology",
             ],
             "process": [
-                "process", "workflow", "procedure", "methodology", "framework",
-                "governance", "standards", "practices", "guidelines"
+                "process",
+                "workflow",
+                "procedure",
+                "methodology",
+                "framework",
+                "governance",
+                "standards",
+                "practices",
+                "guidelines",
             ],
             "people": [
-                "leadership", "management", "development", "career", "performance",
-                "hiring", "onboarding", "mentoring", "coaching", "feedback"
-            ]
+                "leadership",
+                "management",
+                "development",
+                "career",
+                "performance",
+                "hiring",
+                "onboarding",
+                "mentoring",
+                "coaching",
+                "feedback",
+            ],
         }
 
         # Persona capability mapping
         self.persona_capabilities = {
             "diego": {
                 "domains": ["strategic", "organizational", "people"],
-                "specialties": ["team_scaling", "cross_team_coordination", "strategic_planning"],
-                "mcp_servers": ["sequential", "context7"]
+                "specialties": [
+                    "team_scaling",
+                    "cross_team_coordination",
+                    "strategic_planning",
+                ],
+                "mcp_servers": ["sequential", "context7"],
             },
             "martin": {
                 "domains": ["technical", "process"],
-                "specialties": ["architecture", "technical_debt", "evolutionary_design"],
-                "mcp_servers": ["context7"]
+                "specialties": [
+                    "architecture",
+                    "technical_debt",
+                    "evolutionary_design",
+                ],
+                "mcp_servers": ["context7"],
             },
             "rachel": {
                 "domains": ["process", "organizational"],
-                "specialties": ["design_systems", "cross_team_alignment", "user_experience"],
-                "mcp_servers": ["context7", "magic"]
+                "specialties": [
+                    "design_systems",
+                    "cross_team_alignment",
+                    "user_experience",
+                ],
+                "mcp_servers": ["context7", "magic"],
             },
             "camille": {
                 "domains": ["strategic", "organizational", "people"],
-                "specialties": ["leadership", "organizational_health", "strategic_technology"],
-                "mcp_servers": ["sequential", "context7"]
+                "specialties": [
+                    "leadership",
+                    "organizational_health",
+                    "strategic_technology",
+                ],
+                "mcp_servers": ["sequential", "context7"],
             },
             "alvaro": {
                 "domains": ["strategic", "process"],
-                "specialties": ["product_strategy", "business_value", "market_analysis"],
-                "mcp_servers": ["magic", "sequential"]
-            }
+                "specialties": [
+                    "product_strategy",
+                    "business_value",
+                    "market_analysis",
+                ],
+                "mcp_servers": ["magic", "sequential"],
+            },
         }
 
         # Visual enhancement triggers
         self.visual_triggers = [
-            "diagram", "chart", "visual", "presentation", "slide", "graphic",
-            "map", "flow", "process", "timeline", "roadmap", "dashboard"
+            "diagram",
+            "chart",
+            "visual",
+            "presentation",
+            "slide",
+            "graphic",
+            "map",
+            "flow",
+            "process",
+            "timeline",
+            "roadmap",
+            "dashboard",
         ]
 
         # Framework request triggers
         self.framework_triggers = [
-            "framework", "methodology", "best practice", "pattern", "model",
-            "approach", "standard", "guideline", "template", "checklist"
+            "framework",
+            "methodology",
+            "best practice",
+            "pattern",
+            "model",
+            "approach",
+            "standard",
+            "guideline",
+            "template",
+            "checklist",
         ]
 
     def analyze_input_complexity(
-        self,
-        user_input: str,
-        context: Optional[Dict] = None
+        self, user_input: str, context: Optional[Dict] = None
     ) -> ComplexityAnalysis:
         """
         Analyze user input to determine complexity and enhancement needs.
@@ -226,8 +294,18 @@ class AnalysisComplexityDetector:
                 if matches:
                     complexity_scores[complexity_level] += len(matches) * 0.3
                     # Ensure matches are strings (flatten any tuple results from regex groups)
-                    string_matches = [str(match) if isinstance(match, str) else str(match[0]) if isinstance(match, tuple) else str(match)
-                                    for match in matches]
+                    string_matches = [
+                        (
+                            str(match)
+                            if isinstance(match, str)
+                            else (
+                                str(match[0])
+                                if isinstance(match, tuple)
+                                else str(match)
+                            )
+                        )
+                        for match in matches
+                    ]
                     trigger_keywords.extend(string_matches)
 
         # Domain keyword analysis
@@ -239,7 +317,7 @@ class AnalysisComplexityDetector:
 
         # Length and structure analysis
         word_count = len(normalized_input.split())
-        sentence_count = len([s for s in normalized_input.split('.') if s.strip()])
+        sentence_count = len([s for s in normalized_input.split(".") if s.strip()])
 
         # Longer, more structured inputs tend to be more complex
         if word_count > 50:
@@ -295,14 +373,14 @@ class AnalysisComplexityDetector:
             recommended_capabilities=recommended_capabilities,
             trigger_keywords=list(set(trigger_keywords)),
             reasoning=reasoning,
-            persona_suitability=persona_suitability
+            persona_suitability=persona_suitability,
         )
 
     def _determine_enhancement_strategy(
         self,
         complexity: AnalysisComplexity,
         domain_scores: Dict[str, float],
-        normalized_input: str
+        normalized_input: str,
     ) -> EnhancementStrategy:
         """Determine the appropriate enhancement strategy"""
 
@@ -330,9 +408,7 @@ class AnalysisComplexityDetector:
             return EnhancementStrategy.NONE
 
     def _determine_capabilities(
-        self,
-        domain_scores: Dict[str, float],
-        strategy: EnhancementStrategy
+        self, domain_scores: Dict[str, float], strategy: EnhancementStrategy
     ) -> List[str]:
         """Determine what MCP server capabilities would be most valuable"""
         capabilities = []
@@ -346,7 +422,7 @@ class AnalysisComplexityDetector:
             "organizational": ["systematic_analysis", "leadership_frameworks"],
             "technical": ["pattern_access", "architectural_patterns"],
             "process": ["methodology_lookup", "best_practices"],
-            "people": ["leadership_frameworks", "best_practices"]
+            "people": ["leadership_frameworks", "best_practices"],
         }
 
         # Add capabilities based on domain scores
@@ -366,7 +442,7 @@ class AnalysisComplexityDetector:
         self,
         domain_scores: Dict[str, float],
         capabilities: List[str],
-        context: Optional[Dict] = None
+        context: Optional[Dict] = None,
     ) -> Dict[str, float]:
         """Calculate how suitable each persona is for this analysis"""
         suitability = {}
@@ -402,7 +478,7 @@ class AnalysisComplexityDetector:
         complexity: AnalysisComplexity,
         domain_scores: Dict[str, float],
         trigger_keywords: List[str],
-        strategy: EnhancementStrategy
+        strategy: EnhancementStrategy,
     ) -> str:
         """Generate human-readable reasoning for the analysis"""
 
@@ -412,23 +488,35 @@ class AnalysisComplexityDetector:
         if complexity == AnalysisComplexity.SYSTEMATIC:
             reasoning_parts.append("Input explicitly requests systematic analysis")
         elif complexity == AnalysisComplexity.COMPLEX:
-            reasoning_parts.append("Input shows high complexity requiring structured approach")
+            reasoning_parts.append(
+                "Input shows high complexity requiring structured approach"
+            )
         elif complexity == AnalysisComplexity.MEDIUM:
-            reasoning_parts.append("Input has moderate complexity that could benefit from enhancement")
+            reasoning_parts.append(
+                "Input has moderate complexity that could benefit from enhancement"
+            )
         else:
-            reasoning_parts.append("Input is straightforward and suitable for standard response")
+            reasoning_parts.append(
+                "Input is straightforward and suitable for standard response"
+            )
 
         # Domain reasoning
-        significant_domains = [domain for domain, score in domain_scores.items() if score > 0.3]
+        significant_domains = [
+            domain for domain, score in domain_scores.items() if score > 0.3
+        ]
         if significant_domains:
             reasoning_parts.append(f"Primary domains: {', '.join(significant_domains)}")
 
         # Trigger keywords
         if trigger_keywords:
             # Ensure all keywords are strings (filter out any tuples)
-            string_keywords = [str(kw) for kw in trigger_keywords if isinstance(kw, (str, tuple))]
+            string_keywords = [
+                str(kw) for kw in trigger_keywords if isinstance(kw, (str, tuple))
+            ]
             if string_keywords:
-                top_keywords = sorted(set(string_keywords), key=string_keywords.count, reverse=True)[:3]
+                top_keywords = sorted(
+                    set(string_keywords), key=string_keywords.count, reverse=True
+                )[:3]
                 reasoning_parts.append(f"Key triggers: {', '.join(top_keywords)}")
 
         # Strategy reasoning
@@ -437,7 +525,7 @@ class AnalysisComplexityDetector:
             EnhancementStrategy.LIGHT_FRAMEWORK: "Light framework reference would add value",
             EnhancementStrategy.VISUAL_ENHANCEMENT: "Visual components would enhance understanding",
             EnhancementStrategy.MULTI_PERSPECTIVE: "Multiple persona perspectives recommended",
-            EnhancementStrategy.NONE: "Standard persona response sufficient"
+            EnhancementStrategy.NONE: "Standard persona response sufficient",
         }
 
         reasoning_parts.append(strategy_explanations[strategy])
@@ -448,7 +536,7 @@ class AnalysisComplexityDetector:
         self,
         analysis: ComplexityAnalysis,
         persona: str,
-        thresholds: Optional[Dict[str, float]] = None
+        thresholds: Optional[Dict[str, float]] = None,
     ) -> Tuple[bool, Optional[str]]:
         """
         Determine if MCP enhancement should be used for this specific persona.
@@ -462,12 +550,15 @@ class AnalysisComplexityDetector:
             Tuple of (should_enhance, recommended_server)
         """
         if not thresholds:
-            thresholds = self.config.get("enhancement_thresholds", {
-                "systematic_analysis": 0.7,
-                "framework_lookup": 0.6,
-                "visual_generation": 0.8,
-                "minimum_complexity": 0.5
-            })
+            thresholds = self.config.get(
+                "enhancement_thresholds",
+                {
+                    "systematic_analysis": 0.7,
+                    "framework_lookup": 0.6,
+                    "visual_generation": 0.8,
+                    "minimum_complexity": 0.5,
+                },
+            )
 
         # Check minimum complexity threshold
         if analysis.confidence < thresholds.get("minimum_complexity", 0.5):
@@ -487,9 +578,15 @@ class AnalysisComplexityDetector:
 
         # Check strategy-specific thresholds
         strategy_thresholds = {
-            EnhancementStrategy.SYSTEMATIC_ANALYSIS: thresholds.get("systematic_analysis", 0.7),
-            EnhancementStrategy.LIGHT_FRAMEWORK: thresholds.get("framework_lookup", 0.6),
-            EnhancementStrategy.VISUAL_ENHANCEMENT: thresholds.get("visual_generation", 0.8)
+            EnhancementStrategy.SYSTEMATIC_ANALYSIS: thresholds.get(
+                "systematic_analysis", 0.7
+            ),
+            EnhancementStrategy.LIGHT_FRAMEWORK: thresholds.get(
+                "framework_lookup", 0.6
+            ),
+            EnhancementStrategy.VISUAL_ENHANCEMENT: thresholds.get(
+                "visual_generation", 0.8
+            ),
         }
 
         required_threshold = strategy_thresholds.get(analysis.enhancement_strategy, 1.0)
@@ -514,11 +611,18 @@ class AnalysisComplexityDetector:
             "complexity_level": analysis.complexity.value,
             "confidence": analysis.confidence,
             "strategy": analysis.enhancement_strategy.value,
-            "domains": [domain for domain, score in
-                       zip(self.domain_keywords.keys(),
-                           [analysis.persona_suitability.get(p, 0) for p in self.persona_capabilities.keys()])
-                       if score > 0.3],
+            "domains": [
+                domain
+                for domain, score in zip(
+                    self.domain_keywords.keys(),
+                    [
+                        analysis.persona_suitability.get(p, 0)
+                        for p in self.persona_capabilities.keys()
+                    ],
+                )
+                if score > 0.3
+            ],
             "capabilities": analysis.recommended_capabilities,
             "keywords": analysis.trigger_keywords,
-            "reasoning": analysis.reasoning
+            "reasoning": analysis.reasoning,
         }

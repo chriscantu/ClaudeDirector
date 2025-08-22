@@ -18,6 +18,7 @@ from enum import Enum
 
 class EnhancementType(Enum):
     """Types of CLI enhancements that could be beneficial"""
+
     TEMPLATE_DISCOVERY = "template_discovery"
     WORKSPACE_ANALYSIS = "workspace_analysis"
     STAKEHOLDER_INTELLIGENCE = "stakeholder_intelligence"
@@ -28,6 +29,7 @@ class EnhancementType(Enum):
 @dataclass
 class EnhancementSuggestion:
     """Represents a contextual enhancement suggestion"""
+
     enhancement_type: EnhancementType
     confidence: float  # 0.0 to 1.0
     trigger_context: str
@@ -70,35 +72,56 @@ class ChatEnhancementDetector:
 
         # Template discovery context
         template_keywords = [
-            "director template", "engineering director for", "mobile director",
-            "backend director", "platform director", "data director",
-            "different type of director", "customize director"
+            "director template",
+            "engineering director for",
+            "mobile director",
+            "backend director",
+            "platform director",
+            "data director",
+            "different type of director",
+            "customize director",
         ]
         if any(keyword in message for keyword in template_keywords):
-            self.detected_context["template_discovery"] = self.detected_context.get("template_discovery", 0) + 1
+            self.detected_context["template_discovery"] = (
+                self.detected_context.get("template_discovery", 0) + 1
+            )
 
         # Workspace analysis context
         workspace_keywords = [
-            "analyze my project", "review my codebase", "assess my architecture",
-            "stakeholder map", "team structure", "current initiatives"
+            "analyze my project",
+            "review my codebase",
+            "assess my architecture",
+            "stakeholder map",
+            "team structure",
+            "current initiatives",
         ]
         if any(keyword in message for keyword in workspace_keywords):
-            self.detected_context["workspace_analysis"] = self.detected_context.get("workspace_analysis", 0) + 1
+            self.detected_context["workspace_analysis"] = (
+                self.detected_context.get("workspace_analysis", 0) + 1
+            )
 
         # Metrics/reporting context
         metrics_keywords = [
-            "quarterly report", "metrics dashboard", "kpi tracking",
-            "progress report", "status update", "executive summary"
+            "quarterly report",
+            "metrics dashboard",
+            "kpi tracking",
+            "progress report",
+            "status update",
+            "executive summary",
         ]
         if any(keyword in message for keyword in metrics_keywords):
-            self.detected_context["metrics_reporting"] = self.detected_context.get("metrics_reporting", 0) + 1
+            self.detected_context["metrics_reporting"] = (
+                self.detected_context.get("metrics_reporting", 0) + 1
+            )
 
     def _evaluate_enhancement_suggestions(self) -> Optional[EnhancementSuggestion]:
         """Evaluate if an enhancement suggestion should be made"""
 
         # Template discovery suggestion
-        if (self.detected_context.get("template_discovery", 0) >= 2 and
-            EnhancementType.TEMPLATE_DISCOVERY not in self.suggestion_cooldown):
+        if (
+            self.detected_context.get("template_discovery", 0) >= 2
+            and EnhancementType.TEMPLATE_DISCOVERY not in self.suggestion_cooldown
+        ):
 
             return EnhancementSuggestion(
                 enhancement_type=EnhancementType.TEMPLATE_DISCOVERY,
@@ -110,14 +133,16 @@ class ChatEnhancementDetector:
                     "💡 **Tip**: Since you're exploring different director types, "
                     "you might find the template discovery helpful. It can suggest "
                     "optimized director configurations for your specific domain.\n\n"
-                    "Try: `./claudedirector templates discover \"your domain\"`\n"
+                    'Try: `./claudedirector templates discover "your domain"`\n'
                     "*(Optional - your chat experience works perfectly without this)*"
-                )
+                ),
             )
 
         # Workspace analysis suggestion
-        if (self.detected_context.get("workspace_analysis", 0) >= 2 and
-            EnhancementType.WORKSPACE_ANALYSIS not in self.suggestion_cooldown):
+        if (
+            self.detected_context.get("workspace_analysis", 0) >= 2
+            and EnhancementType.WORKSPACE_ANALYSIS not in self.suggestion_cooldown
+        ):
 
             return EnhancementSuggestion(
                 enhancement_type=EnhancementType.WORKSPACE_ANALYSIS,
@@ -131,7 +156,7 @@ class ChatEnhancementDetector:
                     "stakeholder relationships and current initiatives.\n\n"
                     "Try: `./claudedirector workspace status`\n"
                     "*(This is optional - I can continue helping through chat)*"
-                )
+                ),
             )
 
         return None
@@ -145,9 +170,11 @@ class ChatEnhancementDetector:
         Determine if a gentle setup nudge is appropriate.
         Only after extended productive conversation.
         """
-        return (len(self.conversation_history) > 8 and
-                len(self.detected_context) >= 2 and
-                "setup_nudge_shown" not in self.suggestion_cooldown)
+        return (
+            len(self.conversation_history) > 8
+            and len(self.detected_context) >= 2
+            and "setup_nudge_shown" not in self.suggestion_cooldown
+        )
 
     def generate_setup_nudge(self) -> str:
         """Generate a gentle, optional setup nudge"""
@@ -157,7 +184,7 @@ class ChatEnhancementDetector:
             "stakeholder intelligence), there's an optional 2-minute setup that unlocks "
             "advanced features.\n\n"
             "But no pressure - everything we're doing works perfectly in chat! 😊\n\n"
-            "Interested? Just ask: *\"How do I set up the advanced features?\"*"
+            'Interested? Just ask: *"How do I set up the advanced features?"*'
         )
 
 

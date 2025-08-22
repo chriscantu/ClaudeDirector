@@ -40,25 +40,34 @@ class SQLiteAIOptimizer(DatabaseEngineBase):
 
         # AI workload patterns
         self._ai_query_patterns = {
-            'decision_intelligence': [
-                'decisions_made', 'action_items', 'agenda_topics',
-                'strategic_themes', 'meeting_outcomes'
+            "decision_intelligence": [
+                "decisions_made",
+                "action_items",
+                "agenda_topics",
+                "strategic_themes",
+                "meeting_outcomes",
             ],
-            'health_assessment': [
-                'milestone_history', 'roi_tracking', 'resource_allocation',
-                'stakeholder_impact', 'risk_level', 'status'
+            "health_assessment": [
+                "milestone_history",
+                "roi_tracking",
+                "resource_allocation",
+                "stakeholder_impact",
+                "risk_level",
+                "status",
             ],
-            'stakeholder_analysis': [
-                'interaction_history', 'decision_criteria', 'preferred_personas',
-                'communication_style'
-            ]
+            "stakeholder_analysis": [
+                "interaction_history",
+                "decision_criteria",
+                "preferred_personas",
+                "communication_style",
+            ],
         }
 
         # Performance tracking for AI queries
         self._ai_query_metrics: Dict[str, List[float]] = {
-            'decision_intelligence': [],
-            'health_assessment': [],
-            'stakeholder_analysis': []
+            "decision_intelligence": [],
+            "health_assessment": [],
+            "stakeholder_analysis": [],
         }
 
         # Optimization state
@@ -93,10 +102,12 @@ class SQLiteAIOptimizer(DatabaseEngineBase):
 
             connection_time = (time.time() - start_time) * 1000
 
-            self.logger.info("SQLite AI optimizer connected",
-                           connection_time_ms=connection_time,
-                           pool_size=len(self._connection_pool),
-                           optimizations_applied=list(self._optimizations_applied))
+            self.logger.info(
+                "SQLite AI optimizer connected",
+                connection_time_ms=connection_time,
+                pool_size=len(self._connection_pool),
+                optimizations_applied=list(self._optimizations_applied),
+            )
 
             return True
 
@@ -104,8 +115,12 @@ class SQLiteAIOptimizer(DatabaseEngineBase):
             self.logger.error("SQLite AI optimizer connection failed", error=str(e))
             return False
 
-    def execute_query(self, query: str, params: Optional[Dict] = None,
-                     context: Optional[QueryContext] = None) -> DatabaseResult:
+    def execute_query(
+        self,
+        query: str,
+        params: Optional[Dict] = None,
+        context: Optional[QueryContext] = None,
+    ) -> DatabaseResult:
         """Execute query with AI workload optimizations"""
         start_time = time.time()
 
@@ -134,27 +149,38 @@ class SQLiteAIOptimizer(DatabaseEngineBase):
 
                 # Validate SLA compliance
                 if execution_time > self.config.max_query_time_ms:
-                    self.logger.warning("AI query SLA violation",
-                                      execution_time_ms=execution_time,
-                                      threshold_ms=self.config.max_query_time_ms,
-                                      workload_type=workload_type,
-                                      query=query[:50])
+                    self.logger.warning(
+                        "AI query SLA violation",
+                        execution_time_ms=execution_time,
+                        threshold_ms=self.config.max_query_time_ms,
+                        workload_type=workload_type,
+                        query=query[:50],
+                    )
 
                 return DatabaseResult(
-                    success=True, data=data, execution_time_ms=execution_time,
-                    rows_affected=cursor.rowcount if cursor.rowcount != -1 else len(data)
+                    success=True,
+                    data=data,
+                    execution_time_ms=execution_time,
+                    rows_affected=(
+                        cursor.rowcount if cursor.rowcount != -1 else len(data)
+                    ),
                 )
 
         except Exception as e:
             execution_time = int((time.time() - start_time) * 1000)
-            self.logger.error("AI query execution failed",
-                            query=query[:100],
-                            execution_time_ms=execution_time,
-                            error=str(e))
+            self.logger.error(
+                "AI query execution failed",
+                query=query[:100],
+                execution_time_ms=execution_time,
+                error=str(e),
+            )
 
             return DatabaseResult(
-                success=False, data=[], execution_time_ms=execution_time,
-                rows_affected=0, error=str(e)
+                success=False,
+                data=[],
+                execution_time_ms=execution_time,
+                rows_affected=0,
+                error=str(e),
             )
 
     def optimize_performance(self, level: OptimizationLevel) -> bool:
@@ -187,9 +213,11 @@ class SQLiteAIOptimizer(DatabaseEngineBase):
             # Update optimization state
             self._optimizations_applied.update(optimizations_applied)
 
-            self.logger.info("AI performance optimization completed",
-                           level=level.value,
-                           optimizations_applied=optimizations_applied)
+            self.logger.info(
+                "AI performance optimization completed",
+                level=level.value,
+                optimizations_applied=optimizations_applied,
+            )
 
             return len(optimizations_applied) > 0
 
@@ -200,31 +228,39 @@ class SQLiteAIOptimizer(DatabaseEngineBase):
     def get_ai_performance_metrics(self) -> Dict[str, Any]:
         """Get AI-specific performance metrics"""
         metrics = {
-            'timestamp': time.time(),
-            'workload_performance': {},
-            'optimization_status': {
-                'applied_optimizations': list(self._optimizations_applied),
-                'ai_indexes_created': list(self._json_indexes_created),
-                'connection_pool_size': len(self._connection_pool)
+            "timestamp": time.time(),
+            "workload_performance": {},
+            "optimization_status": {
+                "applied_optimizations": list(self._optimizations_applied),
+                "ai_indexes_created": list(self._json_indexes_created),
+                "connection_pool_size": len(self._connection_pool),
             },
-            'sla_compliance': {}
+            "sla_compliance": {},
         }
 
         # Calculate performance by AI workload
         for workload, times in self._ai_query_metrics.items():
             if times:
                 recent_times = times[-50:]  # Last 50 queries
-                metrics['workload_performance'][workload] = {
-                    'avg_execution_time_ms': round(sum(recent_times) / len(recent_times), 2),
-                    'min_execution_time_ms': round(min(recent_times), 2),
-                    'max_execution_time_ms': round(max(recent_times), 2),
-                    'query_count': len(recent_times),
-                    'p95_execution_time_ms': round(self._calculate_percentile(recent_times, 95), 2)
+                metrics["workload_performance"][workload] = {
+                    "avg_execution_time_ms": round(
+                        sum(recent_times) / len(recent_times), 2
+                    ),
+                    "min_execution_time_ms": round(min(recent_times), 2),
+                    "max_execution_time_ms": round(max(recent_times), 2),
+                    "query_count": len(recent_times),
+                    "p95_execution_time_ms": round(
+                        self._calculate_percentile(recent_times, 95), 2
+                    ),
                 }
 
                 # SLA compliance
-                sla_compliant = sum(1 for t in recent_times if t < self.config.max_query_time_ms)
-                metrics['sla_compliance'][workload] = round(sla_compliant / len(recent_times), 3)
+                sla_compliant = sum(
+                    1 for t in recent_times if t < self.config.max_query_time_ms
+                )
+                metrics["sla_compliance"][workload] = round(
+                    sla_compliant / len(recent_times), 3
+                )
 
         return metrics
 
@@ -236,7 +272,7 @@ class SQLiteAIOptimizer(DatabaseEngineBase):
             conn = sqlite3.connect(
                 str(self.config.database_path),
                 timeout=self.config.connection_timeout,
-                check_same_thread=False  # Allow sharing across threads
+                check_same_thread=False,  # Allow sharing across threads
             )
 
             # Enable row factory for easier data access
@@ -251,7 +287,9 @@ class SQLiteAIOptimizer(DatabaseEngineBase):
 
             # AI-specific optimizations
             conn.execute("PRAGMA optimize;")  # Auto-optimize query planner
-            conn.execute("PRAGMA analysis_limit=1000;")  # Analyze more rows for better stats
+            conn.execute(
+                "PRAGMA analysis_limit=1000;"
+            )  # Analyze more rows for better stats
 
             return conn
 
@@ -266,7 +304,9 @@ class SQLiteAIOptimizer(DatabaseEngineBase):
             conn.execute("PRAGMA json_cache_size=10000;")  # Cache JSON parsing
 
             # Concurrent read optimizations
-            conn.execute("PRAGMA read_uncommitted=true;")  # Allow dirty reads for AI inference
+            conn.execute(
+                "PRAGMA read_uncommitted=true;"
+            )  # Allow dirty reads for AI inference
 
             # Memory optimizations for AI workloads
             conn.execute("PRAGMA cache_spill=false;")  # Keep cache in memory
@@ -280,13 +320,16 @@ class SQLiteAIOptimizer(DatabaseEngineBase):
         """Initialize connection pool for concurrent AI engines"""
         try:
             with self._pool_lock:
-                for i in range(self._max_pool_size - 1):  # -1 because we already have primary
+                for i in range(
+                    self._max_pool_size - 1
+                ):  # -1 because we already have primary
                     conn = self._create_optimized_connection()
                     if conn:
                         self._connection_pool.append(conn)
 
-            self.logger.info("AI connection pool initialized",
-                           pool_size=len(self._connection_pool))
+            self.logger.info(
+                "AI connection pool initialized", pool_size=len(self._connection_pool)
+            )
 
         except Exception as e:
             self.logger.error("Connection pool initialization failed", error=str(e))
@@ -296,53 +339,104 @@ class SQLiteAIOptimizer(DatabaseEngineBase):
         try:
             ai_indexes = [
                 # Decision intelligence indexes
-                ("idx_decisions_json", "executive_sessions", "json_extract(decisions_made, '$.decision_type')"),
-                ("idx_decisions_stakeholder", "executive_sessions", "stakeholder_key, session_type"),
-                ("idx_meeting_outcomes", "meeting_sessions", "json_extract(meeting_outcomes, '$.decision_count')"),
-
+                (
+                    "idx_decisions_json",
+                    "executive_sessions",
+                    "json_extract(decisions_made, '$.decision_type')",
+                ),
+                (
+                    "idx_decisions_stakeholder",
+                    "executive_sessions",
+                    "stakeholder_key, session_type",
+                ),
+                (
+                    "idx_meeting_outcomes",
+                    "meeting_sessions",
+                    "json_extract(meeting_outcomes, '$.decision_count')",
+                ),
                 # Health assessment indexes
-                ("idx_initiatives_status_risk", "strategic_initiatives", "status, risk_level"),
-                ("idx_initiatives_roi", "strategic_initiatives", "json_extract(roi_tracking, '$.current_roi')"),
-                ("idx_initiatives_milestone", "strategic_initiatives", "json_extract(milestone_history, '$.completion_rate')"),
-
+                (
+                    "idx_initiatives_status_risk",
+                    "strategic_initiatives",
+                    "status, risk_level",
+                ),
+                (
+                    "idx_initiatives_roi",
+                    "strategic_initiatives",
+                    "json_extract(roi_tracking, '$.current_roi')",
+                ),
+                (
+                    "idx_initiatives_milestone",
+                    "strategic_initiatives",
+                    "json_extract(milestone_history, '$.completion_rate')",
+                ),
                 # Stakeholder analysis indexes
-                ("idx_stakeholder_interaction", "stakeholder_profiles", "json_extract(interaction_history, '$.last_interaction')"),
-                ("idx_stakeholder_style", "stakeholder_profiles", "communication_style, role_title"),
-
+                (
+                    "idx_stakeholder_interaction",
+                    "stakeholder_profiles",
+                    "json_extract(interaction_history, '$.last_interaction')",
+                ),
+                (
+                    "idx_stakeholder_style",
+                    "stakeholder_profiles",
+                    "communication_style, role_title",
+                ),
                 # Platform intelligence indexes for analytics
-                ("idx_platform_trend", "platform_intelligence", "category, trend_direction, measurement_date"),
-                ("idx_platform_metrics", "platform_intelligence", "metric_name, value_numeric")
+                (
+                    "idx_platform_trend",
+                    "platform_intelligence",
+                    "category, trend_direction, measurement_date",
+                ),
+                (
+                    "idx_platform_metrics",
+                    "platform_intelligence",
+                    "metric_name, value_numeric",
+                ),
             ]
 
             for index_name, table, expression in ai_indexes:
                 try:
                     # Check if index already exists
-                    cursor = conn.execute("""
+                    cursor = conn.execute(
+                        """
                         SELECT name FROM sqlite_master
                         WHERE type='index' AND name=?
-                    """, (index_name,))
+                    """,
+                        (index_name,),
+                    )
 
                     if not cursor.fetchone():
                         # Create the index
                         if "json_extract" in expression:
                             # Expression index for JSON queries
-                            conn.execute(f"CREATE INDEX {index_name} ON {table} ({expression});")
+                            conn.execute(
+                                f"CREATE INDEX {index_name} ON {table} ({expression});"
+                            )
                         else:
                             # Regular composite index
-                            conn.execute(f"CREATE INDEX {index_name} ON {table} ({expression});")
+                            conn.execute(
+                                f"CREATE INDEX {index_name} ON {table} ({expression});"
+                            )
 
                         self._json_indexes_created.add(index_name)
-                        self.logger.debug("Created AI index", index_name=index_name, table=table)
+                        self.logger.debug(
+                            "Created AI index", index_name=index_name, table=table
+                        )
 
                 except sqlite3.OperationalError as e:
                     if "already exists" not in str(e):
-                        self.logger.warning("Failed to create AI index",
-                                          index_name=index_name, error=str(e))
+                        self.logger.warning(
+                            "Failed to create AI index",
+                            index_name=index_name,
+                            error=str(e),
+                        )
 
             # Update table statistics for query planner
             conn.execute("ANALYZE;")
 
-            self.logger.info("AI indexes created", count=len(self._json_indexes_created))
+            self.logger.info(
+                "AI indexes created", count=len(self._json_indexes_created)
+            )
 
         except Exception as e:
             self.logger.error("AI index creation failed", error=str(e))
@@ -356,19 +450,17 @@ class SQLiteAIOptimizer(DatabaseEngineBase):
                WHERE stakeholder_key = 'vp_engineering'
                AND session_type = 'strategic_planning'
                LIMIT 10""",
-
             # Health assessment test
             """SELECT status, risk_level,
                       json_extract(roi_tracking, '$.current_roi') as roi
                FROM strategic_initiatives
                WHERE status IN ('in_progress', 'at_risk')
                ORDER BY updated_at DESC LIMIT 20""",
-
             # Stakeholder analysis test
             """SELECT stakeholder_key, communication_style,
                       json_extract(interaction_history, '$.last_interaction') as last_contact
                FROM stakeholder_profiles
-               WHERE json_extract(decision_criteria, '$.data_driven') = 'true'"""
+               WHERE json_extract(decision_criteria, '$.data_driven') = 'true'""",
         ]
 
         performance_results = []
@@ -380,24 +472,32 @@ class SQLiteAIOptimizer(DatabaseEngineBase):
                 results = cursor.fetchall()
                 execution_time = (time.time() - start_time) * 1000
 
-                performance_results.append({
-                    'query_id': i,
-                    'execution_time_ms': execution_time,
-                    'result_count': len(results),
-                    'meets_sla': execution_time < self.config.max_query_time_ms
-                })
+                performance_results.append(
+                    {
+                        "query_id": i,
+                        "execution_time_ms": execution_time,
+                        "result_count": len(results),
+                        "meets_sla": execution_time < self.config.max_query_time_ms,
+                    }
+                )
 
             except Exception as e:
-                self.logger.warning("AI performance test failed", query_id=i, error=str(e))
+                self.logger.warning(
+                    "AI performance test failed", query_id=i, error=str(e)
+                )
 
         # Log performance validation results
-        sla_compliant = sum(1 for r in performance_results if r['meets_sla'])
-        avg_time = sum(r['execution_time_ms'] for r in performance_results) / len(performance_results)
+        sla_compliant = sum(1 for r in performance_results if r["meets_sla"])
+        avg_time = sum(r["execution_time_ms"] for r in performance_results) / len(
+            performance_results
+        )
 
-        self.logger.info("AI performance validation completed",
-                        sla_compliant_queries=sla_compliant,
-                        total_test_queries=len(performance_results),
-                        avg_execution_time_ms=round(avg_time, 2))
+        self.logger.info(
+            "AI performance validation completed",
+            sla_compliant_queries=sla_compliant,
+            total_test_queries=len(performance_results),
+            avg_execution_time_ms=round(avg_time, 2),
+        )
 
     @contextmanager
     def _get_optimized_connection(self):
@@ -427,43 +527,47 @@ class SQLiteAIOptimizer(DatabaseEngineBase):
         query_lower = query.lower()
 
         # Decision intelligence patterns
-        decision_patterns = self._ai_query_patterns['decision_intelligence']
+        decision_patterns = self._ai_query_patterns["decision_intelligence"]
         if any(pattern in query_lower for pattern in decision_patterns):
-            return 'decision_intelligence'
+            return "decision_intelligence"
 
         # Health assessment patterns
-        health_patterns = self._ai_query_patterns['health_assessment']
+        health_patterns = self._ai_query_patterns["health_assessment"]
         if any(pattern in query_lower for pattern in health_patterns):
-            return 'health_assessment'
+            return "health_assessment"
 
         # Stakeholder analysis patterns
-        stakeholder_patterns = self._ai_query_patterns['stakeholder_analysis']
+        stakeholder_patterns = self._ai_query_patterns["stakeholder_analysis"]
         if any(pattern in query_lower for pattern in stakeholder_patterns):
-            return 'stakeholder_analysis'
+            return "stakeholder_analysis"
 
-        return 'general'
+        return "general"
 
-    def _optimize_for_query(self, conn: sqlite3.Connection, query: str, workload_type: str):
+    def _optimize_for_query(
+        self, conn: sqlite3.Connection, query: str, workload_type: str
+    ):
         """Apply query-specific optimizations"""
         try:
-            if workload_type == 'decision_intelligence':
+            if workload_type == "decision_intelligence":
                 # Optimize for JSON extraction
                 conn.execute("PRAGMA optimize(0x10002);")  # Focus on JSON queries
 
-            elif workload_type == 'health_assessment':
+            elif workload_type == "health_assessment":
                 # Optimize for aggregations and analytics
                 conn.execute("PRAGMA optimize(0x20002);")  # Focus on GROUP BY queries
 
-            elif workload_type == 'stakeholder_analysis':
+            elif workload_type == "stakeholder_analysis":
                 # Optimize for complex WHERE clauses
                 conn.execute("PRAGMA optimize(0x40002);")  # Focus on WHERE optimization
 
         except Exception as e:
             self.logger.debug("Query-specific optimization failed", error=str(e))
 
-    def _fetch_results_optimized(self, cursor: sqlite3.Cursor, workload_type: str) -> List[Any]:
+    def _fetch_results_optimized(
+        self, cursor: sqlite3.Cursor, workload_type: str
+    ) -> List[Any]:
         """Fetch results with workload-specific optimizations"""
-        if workload_type in ['decision_intelligence', 'health_assessment']:
+        if workload_type in ["decision_intelligence", "health_assessment"]:
             # For AI workloads, use fetchall() with size limit
             results = cursor.fetchmany(1000)  # Limit to prevent memory issues
             if len(results) == 1000:
@@ -482,7 +586,9 @@ class SQLiteAIOptimizer(DatabaseEngineBase):
 
             # Keep only recent metrics (last 100 queries per workload)
             if len(self._ai_query_metrics[workload_type]) > 100:
-                self._ai_query_metrics[workload_type] = self._ai_query_metrics[workload_type][-100:]
+                self._ai_query_metrics[workload_type] = self._ai_query_metrics[
+                    workload_type
+                ][-100:]
 
     def _apply_basic_ai_optimizations(self, conn: sqlite3.Connection) -> bool:
         """Apply basic AI optimizations"""
@@ -491,7 +597,9 @@ class SQLiteAIOptimizer(DatabaseEngineBase):
             conn.execute("PRAGMA json_quote=false;")  # Faster JSON handling
 
             # Basic concurrency optimizations
-            conn.execute("PRAGMA busy_timeout=30000;")  # 30 second timeout for AI queries
+            conn.execute(
+                "PRAGMA busy_timeout=30000;"
+            )  # 30 second timeout for AI queries
 
             return True
         except Exception:

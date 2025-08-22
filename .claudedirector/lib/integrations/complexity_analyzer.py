@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 class ComplexityLevel(Enum):
     """Complexity levels for input analysis"""
+
     SIMPLE = "simple"
     MODERATE = "moderate"
     COMPLEX = "complex"
@@ -23,6 +24,7 @@ class ComplexityLevel(Enum):
 @dataclass
 class ComplexityAnalysis:
     """Result of complexity analysis"""
+
     level: ComplexityLevel
     confidence: float
     triggers: List[str]
@@ -41,56 +43,120 @@ class ComplexityAnalyzer:
             config: Configuration dictionary with enhancement thresholds
         """
         self.config = config
-        self.thresholds = config.get('enhancement_thresholds', {})
+        self.thresholds = config.get("enhancement_thresholds", {})
 
         # Core strategic keywords
         self.strategic_keywords = [
-            "restructure", "organization", "teams", "strategy",
-            "scaling", "architecture", "platform", "design system",
-            "governance", "adoption", "coordination", "alignment",
-            "framework", "methodology", "systematic", "process"
+            "restructure",
+            "organization",
+            "teams",
+            "strategy",
+            "scaling",
+            "architecture",
+            "platform",
+            "design system",
+            "governance",
+            "adoption",
+            "coordination",
+            "alignment",
+            "framework",
+            "methodology",
+            "systematic",
+            "process",
         ]
 
         # Business strategy keywords (Alvaro)
         self.business_strategy_keywords = [
-            "competitive analysis", "market positioning", "business strategy",
-            "ROI", "financial modeling", "investment decision",
-            "product strategy", "go-to-market", "market fit",
-            "business case", "competitive advantage", "strategic positioning",
-            "revenue", "profit", "cost analysis", "market share"
+            "competitive analysis",
+            "market positioning",
+            "business strategy",
+            "ROI",
+            "financial modeling",
+            "investment decision",
+            "product strategy",
+            "go-to-market",
+            "market fit",
+            "business case",
+            "competitive advantage",
+            "strategic positioning",
+            "revenue",
+            "profit",
+            "cost analysis",
+            "market share",
         ]
 
         # Technology leadership keywords (Camille)
         self.technology_leadership_keywords = [
-            "technology strategy", "organizational scaling", "strategic planning",
-            "executive decision", "technology roadmap", "architecture governance",
-            "team scaling", "organizational design", "technology leadership",
-            "strategic technology", "platform strategy", "technical vision",
-            "CTO", "executive", "board", "leadership team"
+            "technology strategy",
+            "organizational scaling",
+            "strategic planning",
+            "executive decision",
+            "technology roadmap",
+            "architecture governance",
+            "team scaling",
+            "organizational design",
+            "technology leadership",
+            "strategic technology",
+            "platform strategy",
+            "technical vision",
+            "CTO",
+            "executive",
+            "board",
+            "leadership team",
         ]
 
         # Engineering keywords (Diego, Martin, Rachel)
         self.engineering_keywords = [
-            "microservices", "distributed systems", "performance",
-            "scalability", "reliability", "observability",
-            "DevOps", "CI/CD", "testing", "deployment",
-            "database", "API", "infrastructure", "cloud"
+            "microservices",
+            "distributed systems",
+            "performance",
+            "scalability",
+            "reliability",
+            "observability",
+            "DevOps",
+            "CI/CD",
+            "testing",
+            "deployment",
+            "database",
+            "API",
+            "infrastructure",
+            "cloud",
         ]
 
         # Design system keywords (Rachel)
         self.design_system_keywords = [
-            "design system", "component library", "design tokens",
-            "style guide", "design patterns", "brand consistency",
-            "user interface", "user experience", "accessibility",
-            "design ops", "design tools", "figma", "sketch"
+            "design system",
+            "component library",
+            "design tokens",
+            "style guide",
+            "design patterns",
+            "brand consistency",
+            "user interface",
+            "user experience",
+            "accessibility",
+            "design ops",
+            "design tools",
+            "figma",
+            "sketch",
         ]
 
         # Complexity indicators
         self.complexity_indicators = [
-            "how should we", "what's the best approach", "framework",
-            "methodology", "best practices", "proven approach",
-            "systematic", "strategic", "comprehensive", "enterprise",
-            "scale", "complex", "multiple", "cross-team", "organization"
+            "how should we",
+            "what's the best approach",
+            "framework",
+            "methodology",
+            "best practices",
+            "proven approach",
+            "systematic",
+            "strategic",
+            "comprehensive",
+            "enterprise",
+            "scale",
+            "complex",
+            "multiple",
+            "cross-team",
+            "organization",
         ]
 
         # Question complexity patterns
@@ -99,7 +165,7 @@ class ComplexityAnalyzer:
             r"what(?:'s| is) the best (?:way|approach|method|strategy)",
             r"(?:help|guide|advise) (?:me|us) (?:with|on|for)",
             r"(?:framework|methodology|process) for",
-            r"(?:strategic|systematic|comprehensive) (?:approach|analysis|plan)"
+            r"(?:strategic|systematic|comprehensive) (?:approach|analysis|plan)",
         ]
 
     def analyze_complexity(self, input_text: str, persona: str) -> ComplexityAnalysis:
@@ -131,7 +197,9 @@ class ComplexityAnalyzer:
         triggers.extend(pattern_triggers)
 
         # Question complexity scoring
-        question_score, question_triggers = self._analyze_question_complexity(input_text)
+        question_score, question_triggers = self._analyze_question_complexity(
+            input_text
+        )
         total_score += question_score
         triggers.extend(question_triggers)
 
@@ -150,14 +218,16 @@ class ComplexityAnalyzer:
             persona, final_score, triggers
         )
 
-        logger.debug(f"Complexity analysis for {persona}: score={final_score:.2f}, level={complexity_level.value}")
+        logger.debug(
+            f"Complexity analysis for {persona}: score={final_score:.2f}, level={complexity_level.value}"
+        )
 
         return ComplexityAnalysis(
             level=complexity_level,
             confidence=final_score,
             triggers=triggers,
             recommended_enhancement=recommended_enhancement,
-            persona_specific_score=persona_score
+            persona_specific_score=persona_score,
         )
 
     def _analyze_base_complexity(self, input_text: str) -> float:
@@ -176,7 +246,9 @@ class ComplexityAnalyzer:
 
         return min(1.0, score)
 
-    def _analyze_persona_specific_complexity(self, input_text: str, persona: str) -> float:
+    def _analyze_persona_specific_complexity(
+        self, input_text: str, persona: str
+    ) -> float:
         """Analyze complexity specific to persona domain"""
         score = 0.0
 
@@ -201,8 +273,15 @@ class ComplexityAnalyzer:
             # Diego gets additional scoring for organizational and strategic terms
             if persona == "diego":
                 diego_specific = [
-                    "organizational", "cross-team", "coordination", "restructuring",
-                    "systematic", "teams", "delivery", "velocity", "alignment"
+                    "organizational",
+                    "cross-team",
+                    "coordination",
+                    "restructuring",
+                    "systematic",
+                    "teams",
+                    "delivery",
+                    "velocity",
+                    "alignment",
                 ]
                 for keyword in diego_specific:
                     if keyword in input_text:
@@ -235,18 +314,24 @@ class ComplexityAnalyzer:
         triggers = []
 
         # Multi-part questions
-        question_markers = input_text.count('?')
+        question_markers = input_text.count("?")
         if question_markers > 1:
             score += 0.2
             triggers.append(f"multi_part_question: {question_markers} questions")
 
         # Conditional or comparative questions
-        if any(word in input_text.lower() for word in ["versus", "vs", "compared to", "better than", "rather than"]):
+        if any(
+            word in input_text.lower()
+            for word in ["versus", "vs", "compared to", "better than", "rather than"]
+        ):
             score += 0.2
             triggers.append("comparative_question")
 
         # Open-ended strategic questions
-        if any(phrase in input_text.lower() for phrase in ["how should", "what should", "when should", "why should"]):
+        if any(
+            phrase in input_text.lower()
+            for phrase in ["how should", "what should", "when should", "why should"]
+        ):
             score += 0.15
             triggers.append("strategic_question")
 
@@ -264,13 +349,25 @@ class ComplexityAnalyzer:
             score += 0.1
 
         # Sentence complexity
-        sentence_count = input_text.count('.') + input_text.count('!') + input_text.count('?')
+        sentence_count = (
+            input_text.count(".") + input_text.count("!") + input_text.count("?")
+        )
         if sentence_count > 3:
             score += 0.15
 
         # Technical terminology density
-        technical_terms = ["system", "process", "implementation", "approach", "solution", "architecture", "framework"]
-        technical_count = sum(1 for term in technical_terms if term in input_text.lower())
+        technical_terms = [
+            "system",
+            "process",
+            "implementation",
+            "approach",
+            "solution",
+            "architecture",
+            "framework",
+        ]
+        technical_count = sum(
+            1 for term in technical_terms if term in input_text.lower()
+        )
         if technical_count > 2:
             score += 0.1
 
@@ -287,26 +384,28 @@ class ComplexityAnalyzer:
         else:
             return ComplexityLevel.SIMPLE
 
-    def _determine_recommended_enhancement(self, persona: str, score: float, triggers: List[str]) -> Optional[str]:
+    def _determine_recommended_enhancement(
+        self, persona: str, score: float, triggers: List[str]
+    ) -> Optional[str]:
         """Determine recommended enhancement type"""
         if score < 0.4:  # Conservative threshold (MODERATE level)
             return None
 
         # Persona-specific enhancement recommendations
         if persona == "diego":
-            if score >= self.thresholds.get('systematic_analysis', 0.7):
+            if score >= self.thresholds.get("systematic_analysis", 0.7):
                 return "systematic_analysis"
         elif persona == "martin":
-            if score >= self.thresholds.get('framework_lookup', 0.6):
+            if score >= self.thresholds.get("framework_lookup", 0.6):
                 return "architecture_patterns"
         elif persona == "rachel":
-            if score >= self.thresholds.get('framework_lookup', 0.6):
+            if score >= self.thresholds.get("framework_lookup", 0.6):
                 return "design_system_methodology"
         elif persona == "alvaro":
-            if score >= self.thresholds.get('business_strategy', 0.7):
+            if score >= self.thresholds.get("business_strategy", 0.7):
                 return "business_strategy"
         elif persona == "camille":
-            if score >= self.thresholds.get('technology_leadership', 0.7):
+            if score >= self.thresholds.get("technology_leadership", 0.7):
                 return "technology_leadership"
 
         return None
@@ -324,7 +423,9 @@ class ComplexityAnalyzer:
         """
         return analysis.recommended_enhancement is not None
 
-    def select_enhancement_type(self, analysis: ComplexityAnalysis, persona: str) -> Optional[str]:
+    def select_enhancement_type(
+        self, analysis: ComplexityAnalysis, persona: str
+    ) -> Optional[str]:
         """
         Select appropriate enhancement type based on analysis
 

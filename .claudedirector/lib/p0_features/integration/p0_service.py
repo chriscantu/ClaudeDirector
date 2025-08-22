@@ -11,7 +11,8 @@ from datetime import datetime
 import structlog
 
 from ..shared.ai_core.interfaces import (
-    IDecisionIntelligenceEngine, IHealthPredictionEngine
+    IDecisionIntelligenceEngine,
+    IHealthPredictionEngine,
 )
 from ..shared.infrastructure.config import get_config, P0FeatureConfig
 from .model_factory import get_model_factory, ModelFactory
@@ -22,6 +23,7 @@ logger = structlog.get_logger(__name__)
 @dataclass
 class StrategicIntelligenceRequest:
     """Request for strategic intelligence analysis"""
+
     content: str
     content_type: str  # 'meeting_notes', 'document', 'report'
     context: Optional[Dict[str, Any]] = None
@@ -31,6 +33,7 @@ class StrategicIntelligenceRequest:
 @dataclass
 class InitiativeHealthRequest:
     """Request for initiative health assessment"""
+
     initiative_data: Dict[str, Any]
     request_id: Optional[str] = None
 
@@ -38,6 +41,7 @@ class InitiativeHealthRequest:
 @dataclass
 class P0AnalysisResult:
     """Unified result from P0 analysis"""
+
     request_id: str
     timestamp: str
     success: bool
@@ -73,9 +77,11 @@ class P0StrategicIntelligenceService:
     Dependency Inversion: Depends on abstractions, not concrete implementations
     """
 
-    def __init__(self,
-                 config: Optional[P0FeatureConfig] = None,
-                 model_factory: Optional[ModelFactory] = None):
+    def __init__(
+        self,
+        config: Optional[P0FeatureConfig] = None,
+        model_factory: Optional[ModelFactory] = None,
+    ):
         """
         Initialize service with dependency injection
         """
@@ -87,11 +93,15 @@ class P0StrategicIntelligenceService:
         self._decision_engine: Optional[IDecisionIntelligenceEngine] = None
         self._health_engine: Optional[IHealthPredictionEngine] = None
 
-        self.logger.info("P0 Strategic Intelligence Service initialized",
-                        decision_enabled=self.config.enable_decision_intelligence,
-                        health_enabled=self.config.enable_health_prediction)
+        self.logger.info(
+            "P0 Strategic Intelligence Service initialized",
+            decision_enabled=self.config.enable_decision_intelligence,
+            health_enabled=self.config.enable_health_prediction,
+        )
 
-    async def analyze_strategic_content(self, request: StrategicIntelligenceRequest) -> P0AnalysisResult:
+    async def analyze_strategic_content(
+        self, request: StrategicIntelligenceRequest
+    ) -> P0AnalysisResult:
         """
         Analyze strategic content for decision intelligence
 
@@ -105,10 +115,12 @@ class P0StrategicIntelligenceService:
         request_id = request.request_id or f"req_{int(start_time.timestamp() * 1000)}"
 
         try:
-            self.logger.info("Starting strategic content analysis",
-                           request_id=request_id,
-                           content_type=request.content_type,
-                           content_length=len(request.content))
+            self.logger.info(
+                "Starting strategic content analysis",
+                request_id=request_id,
+                content_type=request.content_type,
+                content_length=len(request.content),
+            )
 
             # Get decision intelligence engine
             decision_engine = await self._get_decision_engine()
@@ -117,7 +129,9 @@ class P0StrategicIntelligenceService:
             decision_result = decision_engine.predict(request.content)
 
             # Calculate processing time
-            processing_time_ms = int((datetime.now() - start_time).total_seconds() * 1000)
+            processing_time_ms = int(
+                (datetime.now() - start_time).total_seconds() * 1000
+            )
 
             # Create unified result
             result = P0AnalysisResult(
@@ -136,24 +150,30 @@ class P0StrategicIntelligenceService:
                 recommendations=[],
                 processing_time_ms=processing_time_ms,
                 model_versions={
-                    'decision_intelligence': decision_engine.get_configuration().get('model_name', 'unknown')
+                    "decision_intelligence": decision_engine.get_configuration().get(
+                        "model_name", "unknown"
+                    )
                 },
-                error=decision_result.error
+                error=decision_result.error,
             )
 
-            self.logger.info("Strategic content analysis completed",
-                           request_id=request_id,
-                           decisions_detected=result.decisions_detected,
-                           confidence=result.decision_confidence,
-                           processing_time_ms=processing_time_ms)
+            self.logger.info(
+                "Strategic content analysis completed",
+                request_id=request_id,
+                decisions_detected=result.decisions_detected,
+                confidence=result.decision_confidence,
+                processing_time_ms=processing_time_ms,
+            )
 
             return result
 
         except Exception as e:
-            processing_time_ms = int((datetime.now() - start_time).total_seconds() * 1000)
-            self.logger.error("Strategic content analysis failed",
-                            request_id=request_id,
-                            error=str(e))
+            processing_time_ms = int(
+                (datetime.now() - start_time).total_seconds() * 1000
+            )
+            self.logger.error(
+                "Strategic content analysis failed", request_id=request_id, error=str(e)
+            )
 
             return P0AnalysisResult(
                 request_id=request_id,
@@ -171,10 +191,12 @@ class P0StrategicIntelligenceService:
                 recommendations=[],
                 processing_time_ms=processing_time_ms,
                 model_versions={},
-                error=str(e)
+                error=str(e),
             )
 
-    async def assess_initiative_health(self, request: InitiativeHealthRequest) -> P0AnalysisResult:
+    async def assess_initiative_health(
+        self, request: InitiativeHealthRequest
+    ) -> P0AnalysisResult:
         """
         Assess initiative health and generate recommendations
 
@@ -188,9 +210,11 @@ class P0StrategicIntelligenceService:
         request_id = request.request_id or f"req_{int(start_time.timestamp() * 1000)}"
 
         try:
-            self.logger.info("Starting initiative health assessment",
-                           request_id=request_id,
-                           initiative_id=request.initiative_data.get('id', 'unknown'))
+            self.logger.info(
+                "Starting initiative health assessment",
+                request_id=request_id,
+                initiative_id=request.initiative_data.get("id", "unknown"),
+            )
 
             # Get health assessment engine
             health_engine = await self._get_health_engine()
@@ -199,7 +223,9 @@ class P0StrategicIntelligenceService:
             health_result = health_engine.predict(request.initiative_data)
 
             # Calculate processing time
-            processing_time_ms = int((datetime.now() - start_time).total_seconds() * 1000)
+            processing_time_ms = int(
+                (datetime.now() - start_time).total_seconds() * 1000
+            )
 
             # Create unified result
             result = P0AnalysisResult(
@@ -218,26 +244,34 @@ class P0StrategicIntelligenceService:
                 recommendations=health_result.recommendations,
                 processing_time_ms=processing_time_ms,
                 model_versions={
-                    'health_prediction': health_engine.get_configuration().get('model_name', 'unknown')
+                    "health_prediction": health_engine.get_configuration().get(
+                        "model_name", "unknown"
+                    )
                 },
-                error=health_result.error
+                error=health_result.error,
             )
 
-            self.logger.info("Initiative health assessment completed",
-                           request_id=request_id,
-                           health_score=result.health_score,
-                           health_status=result.health_status,
-                           risk_level=result.risk_level,
-                           recommendations_count=len(result.recommendations),
-                           processing_time_ms=processing_time_ms)
+            self.logger.info(
+                "Initiative health assessment completed",
+                request_id=request_id,
+                health_score=result.health_score,
+                health_status=result.health_status,
+                risk_level=result.risk_level,
+                recommendations_count=len(result.recommendations),
+                processing_time_ms=processing_time_ms,
+            )
 
             return result
 
         except Exception as e:
-            processing_time_ms = int((datetime.now() - start_time).total_seconds() * 1000)
-            self.logger.error("Initiative health assessment failed",
-                            request_id=request_id,
-                            error=str(e))
+            processing_time_ms = int(
+                (datetime.now() - start_time).total_seconds() * 1000
+            )
+            self.logger.error(
+                "Initiative health assessment failed",
+                request_id=request_id,
+                error=str(e),
+            )
 
             return P0AnalysisResult(
                 request_id=request_id,
@@ -255,12 +289,12 @@ class P0StrategicIntelligenceService:
                 recommendations=[],
                 processing_time_ms=processing_time_ms,
                 model_versions={},
-                error=str(e)
+                error=str(e),
             )
 
-    async def comprehensive_analysis(self,
-                                   content: str,
-                                   initiative_data: Optional[Dict[str, Any]] = None) -> P0AnalysisResult:
+    async def comprehensive_analysis(
+        self, content: str, initiative_data: Optional[Dict[str, Any]] = None
+    ) -> P0AnalysisResult:
         """
         Perform comprehensive analysis combining decision intelligence and health assessment
 
@@ -275,9 +309,11 @@ class P0StrategicIntelligenceService:
         request_id = f"comprehensive_{int(start_time.timestamp() * 1000)}"
 
         try:
-            self.logger.info("Starting comprehensive strategic analysis",
-                           request_id=request_id,
-                           has_initiative_data=initiative_data is not None)
+            self.logger.info(
+                "Starting comprehensive strategic analysis",
+                request_id=request_id,
+                has_initiative_data=initiative_data is not None,
+            )
 
             # Parallel execution of both analyses
             tasks = []
@@ -285,8 +321,8 @@ class P0StrategicIntelligenceService:
             # Decision intelligence analysis
             decision_request = StrategicIntelligenceRequest(
                 content=content,
-                content_type='comprehensive',
-                request_id=f"{request_id}_decision"
+                content_type="comprehensive",
+                request_id=f"{request_id}_decision",
             )
             decision_task = self.analyze_strategic_content(decision_request)
 
@@ -294,8 +330,7 @@ class P0StrategicIntelligenceService:
             health_task = None
             if initiative_data:
                 health_request = InitiativeHealthRequest(
-                    initiative_data=initiative_data,
-                    request_id=f"{request_id}_health"
+                    initiative_data=initiative_data, request_id=f"{request_id}_health"
                 )
                 health_task = self.assess_initiative_health(health_request)
 
@@ -304,7 +339,9 @@ class P0StrategicIntelligenceService:
             health_result = await health_task if health_task else None
 
             # Calculate total processing time
-            processing_time_ms = int((datetime.now() - start_time).total_seconds() * 1000)
+            processing_time_ms = int(
+                (datetime.now() - start_time).total_seconds() * 1000
+            )
 
             # Combine results
             model_versions = decision_result.model_versions.copy()
@@ -314,36 +351,50 @@ class P0StrategicIntelligenceService:
             combined_result = P0AnalysisResult(
                 request_id=request_id,
                 timestamp=start_time.isoformat(),
-                success=decision_result.success and (health_result.success if health_result else True),
+                success=decision_result.success
+                and (health_result.success if health_result else True),
                 decisions_detected=decision_result.decisions_detected,
                 decisions=decision_result.decisions,
                 decision_confidence=decision_result.decision_confidence,
                 health_score=health_result.health_score if health_result else None,
                 health_status=health_result.health_status if health_result else None,
                 risk_level=health_result.risk_level if health_result else None,
-                health_confidence=health_result.health_confidence if health_result else None,
-                health_components=health_result.health_components if health_result else None,
-                risk_assessment=health_result.risk_assessment if health_result else None,
+                health_confidence=(
+                    health_result.health_confidence if health_result else None
+                ),
+                health_components=(
+                    health_result.health_components if health_result else None
+                ),
+                risk_assessment=(
+                    health_result.risk_assessment if health_result else None
+                ),
                 recommendations=health_result.recommendations if health_result else [],
                 processing_time_ms=processing_time_ms,
                 model_versions=model_versions,
-                error=decision_result.error or (health_result.error if health_result else None)
+                error=decision_result.error
+                or (health_result.error if health_result else None),
             )
 
-            self.logger.info("Comprehensive strategic analysis completed",
-                           request_id=request_id,
-                           decisions_detected=combined_result.decisions_detected,
-                           health_score=combined_result.health_score,
-                           recommendations_count=len(combined_result.recommendations),
-                           processing_time_ms=processing_time_ms)
+            self.logger.info(
+                "Comprehensive strategic analysis completed",
+                request_id=request_id,
+                decisions_detected=combined_result.decisions_detected,
+                health_score=combined_result.health_score,
+                recommendations_count=len(combined_result.recommendations),
+                processing_time_ms=processing_time_ms,
+            )
 
             return combined_result
 
         except Exception as e:
-            processing_time_ms = int((datetime.now() - start_time).total_seconds() * 1000)
-            self.logger.error("Comprehensive strategic analysis failed",
-                            request_id=request_id,
-                            error=str(e))
+            processing_time_ms = int(
+                (datetime.now() - start_time).total_seconds() * 1000
+            )
+            self.logger.error(
+                "Comprehensive strategic analysis failed",
+                request_id=request_id,
+                error=str(e),
+            )
 
             return P0AnalysisResult(
                 request_id=request_id,
@@ -361,7 +412,7 @@ class P0StrategicIntelligenceService:
                 recommendations=[],
                 processing_time_ms=processing_time_ms,
                 model_versions={},
-                error=str(e)
+                error=str(e),
             )
 
     async def get_service_health(self) -> Dict[str, Any]:
@@ -373,22 +424,22 @@ class P0StrategicIntelligenceService:
         """
         try:
             service_health = {
-                'timestamp': datetime.now().isoformat(),
-                'service_status': 'healthy',
-                'features': {
-                    'decision_intelligence': {
-                        'enabled': self.config.enable_decision_intelligence,
-                        'status': 'unknown'
+                "timestamp": datetime.now().isoformat(),
+                "service_status": "healthy",
+                "features": {
+                    "decision_intelligence": {
+                        "enabled": self.config.enable_decision_intelligence,
+                        "status": "unknown",
                     },
-                    'health_prediction': {
-                        'enabled': self.config.enable_health_prediction,
-                        'status': 'unknown'
-                    }
+                    "health_prediction": {
+                        "enabled": self.config.enable_health_prediction,
+                        "status": "unknown",
+                    },
                 },
-                'performance': {
-                    'decision_engine_loaded': self._decision_engine is not None,
-                    'health_engine_loaded': self._health_engine is not None
-                }
+                "performance": {
+                    "decision_engine_loaded": self._decision_engine is not None,
+                    "health_engine_loaded": self._health_engine is not None,
+                },
             }
 
             # Check decision engine health
@@ -396,52 +447,74 @@ class P0StrategicIntelligenceService:
                 try:
                     decision_engine = await self._get_decision_engine()
                     if decision_engine.is_model_loaded():
-                        service_health['features']['decision_intelligence']['status'] = 'healthy'
+                        service_health["features"]["decision_intelligence"][
+                            "status"
+                        ] = "healthy"
 
                         # Check SLA compliance
                         from ..shared.infrastructure.config import PerformanceThresholds
+
                         thresholds = PerformanceThresholds()
-                        sla_compliance = decision_engine.check_sla_compliance(thresholds)
-                        service_health['features']['decision_intelligence']['sla_compliance'] = sla_compliance
+                        sla_compliance = decision_engine.check_sla_compliance(
+                            thresholds
+                        )
+                        service_health["features"]["decision_intelligence"][
+                            "sla_compliance"
+                        ] = sla_compliance
                     else:
-                        service_health['features']['decision_intelligence']['status'] = 'model_not_loaded'
+                        service_health["features"]["decision_intelligence"][
+                            "status"
+                        ] = "model_not_loaded"
                 except Exception as e:
-                    service_health['features']['decision_intelligence']['status'] = f'error: {str(e)}'
+                    service_health["features"]["decision_intelligence"][
+                        "status"
+                    ] = f"error: {str(e)}"
 
             # Check health engine health
             if self.config.enable_health_prediction:
                 try:
                     health_engine = await self._get_health_engine()
                     if health_engine.is_model_loaded():
-                        service_health['features']['health_prediction']['status'] = 'healthy'
+                        service_health["features"]["health_prediction"][
+                            "status"
+                        ] = "healthy"
 
                         # Check SLA compliance
                         from ..shared.infrastructure.config import PerformanceThresholds
+
                         thresholds = PerformanceThresholds()
                         sla_compliance = health_engine.check_sla_compliance(thresholds)
-                        service_health['features']['health_prediction']['sla_compliance'] = sla_compliance
+                        service_health["features"]["health_prediction"][
+                            "sla_compliance"
+                        ] = sla_compliance
                     else:
-                        service_health['features']['health_prediction']['status'] = 'model_not_loaded'
+                        service_health["features"]["health_prediction"][
+                            "status"
+                        ] = "model_not_loaded"
                 except Exception as e:
-                    service_health['features']['health_prediction']['status'] = f'error: {str(e)}'
+                    service_health["features"]["health_prediction"][
+                        "status"
+                    ] = f"error: {str(e)}"
 
             # Determine overall service status
-            feature_statuses = [f['status'] for f in service_health['features'].values() if f['enabled']]
-            if all(status == 'healthy' for status in feature_statuses):
-                service_health['service_status'] = 'healthy'
-            elif any('error' in status for status in feature_statuses):
-                service_health['service_status'] = 'degraded'
+            feature_statuses = [
+                f["status"] for f in service_health["features"].values() if f["enabled"]
+            ]
+            if all(status == "healthy" for status in feature_statuses):
+                service_health["service_status"] = "healthy"
+            elif any("error" in status for status in feature_statuses):
+                service_health["service_status"] = "degraded"
             else:
-                service_health['service_status'] = 'starting'
+                service_health["service_status"] = "starting"
 
             return service_health
 
         except Exception as e:
             self.logger.error("Failed to get service health", error=str(e))
             return {
-                'timestamp': datetime.now().isoformat(),
-                'service_status': 'error',
-                'error': str(e)
+                "timestamp": datetime.now().isoformat(),
+                "service_status": "error",
+                "error": str(e),
             }
 
     # Private methods for lazy loading and dependency management
@@ -478,7 +551,9 @@ class P0StrategicIntelligenceService:
 _service_instance: Optional[P0StrategicIntelligenceService] = None
 
 
-def get_p0_service(config: Optional[P0FeatureConfig] = None) -> P0StrategicIntelligenceService:
+def get_p0_service(
+    config: Optional[P0FeatureConfig] = None,
+) -> P0StrategicIntelligenceService:
     """
     Get global P0 service instance (singleton pattern)
 

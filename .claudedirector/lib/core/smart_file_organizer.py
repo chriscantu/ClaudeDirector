@@ -11,29 +11,42 @@ from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass
 from collections import defaultdict, Counter
 
-from .file_lifecycle_manager import FileLifecycleManager, FileMetadata, FileRetentionStatus
+from .file_lifecycle_manager import (
+    FileLifecycleManager,
+    FileMetadata,
+    FileRetentionStatus,
+)
 from .advanced_archiving import AdvancedArchivingSystem
 from .pattern_recognition import PatternRecognitionEngine
+
 
 @dataclass
 class SessionPattern:
     """Detected pattern in user's strategic sessions"""
-    pattern_type: str  # "weekly_planning", "quarterly_review", "stakeholder_meeting", etc.
-    frequency: str     # "weekly", "monthly", "quarterly", "ad_hoc"
+
+    pattern_type: (
+        str  # "weekly_planning", "quarterly_review", "stakeholder_meeting", etc.
+    )
+    frequency: str  # "weekly", "monthly", "quarterly", "ad_hoc"
     content_types: List[str]
     naming_pattern: str
     business_context: str
     confidence_score: float
 
+
 @dataclass
 class ConsolidationOpportunity:
     """Identified opportunity for file consolidation"""
+
     files: List[str]
     suggested_name: str
     business_value: str
-    consolidation_type: str  # "session_summary", "quarterly_package", "stakeholder_package"
+    consolidation_type: (
+        str  # "session_summary", "quarterly_package", "stakeholder_package"
+    )
     priority: str  # "high", "medium", "low"
     size_reduction: float  # Estimated cognitive load reduction
+
 
 class SmartFileOrganizer:
     """Phase 2: Intelligent file organization and consolidation"""
@@ -41,8 +54,12 @@ class SmartFileOrganizer:
     def __init__(self, lifecycle_manager: FileLifecycleManager):
         self.lifecycle_manager = lifecycle_manager
         self.workspace_path = Path(lifecycle_manager.workspace_path)
-        self.patterns_file = self.workspace_path / ".claudedirector" / "session_patterns.json"
-        self.insights_file = self.workspace_path / ".claudedirector" / "cross_session_insights.json"
+        self.patterns_file = (
+            self.workspace_path / ".claudedirector" / "session_patterns.json"
+        )
+        self.insights_file = (
+            self.workspace_path / ".claudedirector" / "cross_session_insights.json"
+        )
 
         # Initialize advanced archiving system
         self.advanced_archiving = AdvancedArchivingSystem(str(self.workspace_path))
@@ -59,18 +76,30 @@ class SmartFileOrganizer:
             "platform": ["platform", "infrastructure", "architecture", "scaling"],
             "team": ["team", "hiring", "org", "structure", "performance"],
             "strategy": ["strategy", "roadmap", "vision", "planning", "objectives"],
-            "stakeholder": ["stakeholder", "executive", "board", "leadership", "communication"],
+            "stakeholder": [
+                "stakeholder",
+                "executive",
+                "board",
+                "leadership",
+                "communication",
+            ],
             "budget": ["budget", "cost", "roi", "investment", "financial"],
             "quarterly": ["q1", "q2", "q3", "q4", "quarterly", "okr", "goals"],
-            "technical": ["technical", "debt", "migration", "upgrade", "implementation"],
-            "process": ["process", "workflow", "methodology", "framework", "adoption"]
+            "technical": [
+                "technical",
+                "debt",
+                "migration",
+                "upgrade",
+                "implementation",
+            ],
+            "process": ["process", "workflow", "methodology", "framework", "adoption"],
         }
 
     def _load_session_patterns(self) -> List[SessionPattern]:
         """Load detected session patterns"""
         if self.patterns_file.exists():
             try:
-                with open(self.patterns_file, 'r') as f:
+                with open(self.patterns_file, "r") as f:
                     data = json.load(f)
                 return [SessionPattern(**item) for item in data]
             except Exception:
@@ -80,7 +109,7 @@ class SmartFileOrganizer:
     def _save_session_patterns(self):
         """Save session patterns to file"""
         self.patterns_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.patterns_file, 'w') as f:
+        with open(self.patterns_file, "w") as f:
             data = [vars(pattern) for pattern in self.session_patterns]
             json.dump(data, f, indent=2)
 
@@ -88,7 +117,7 @@ class SmartFileOrganizer:
         """Load cross-session insights"""
         if self.insights_file.exists():
             try:
-                with open(self.insights_file, 'r') as f:
+                with open(self.insights_file, "r") as f:
                     return json.load(f)
             except Exception:
                 return {}
@@ -97,7 +126,7 @@ class SmartFileOrganizer:
     def _save_cross_session_insights(self):
         """Save cross-session insights"""
         self.insights_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.insights_file, 'w') as f:
+        with open(self.insights_file, "w") as f:
             json.dump(self.cross_session_insights, f, indent=2)
 
     def generate_outcome_focused_filename(
@@ -105,15 +134,19 @@ class SmartFileOrganizer:
         content_preview: str,
         content_type: str,
         business_context: str,
-        persona: Optional[str] = None
+        persona: Optional[str] = None,
     ) -> str:
         """Generate filename based on business outcome rather than technical type"""
 
         # Extract business context from content
-        detected_contexts = self._detect_business_contexts(content_preview + " " + business_context)
+        detected_contexts = self._detect_business_contexts(
+            content_preview + " " + business_context
+        )
 
         # Determine primary business outcome
-        primary_outcome = self._determine_primary_outcome(detected_contexts, content_type)
+        primary_outcome = self._determine_primary_outcome(
+            detected_contexts, content_type
+        )
 
         # Generate time-based component
         timestamp = datetime.now()
@@ -132,7 +165,9 @@ class SmartFileOrganizer:
 
         # Add specific context if detected
         if detected_contexts:
-            specific_context = self._extract_specific_context(content_preview, detected_contexts)
+            specific_context = self._extract_specific_context(
+                content_preview, detected_contexts
+            )
             if specific_context:
                 filename_parts.append(specific_context)
 
@@ -142,7 +177,7 @@ class SmartFileOrganizer:
                 "alvaro": "strategy",
                 "rachel": "ux",
                 "diego": "engineering",
-                "camille": "technology"
+                "camille": "technology",
             }
             if persona_context[persona] not in filename_parts:
                 filename_parts.append(persona_context[persona])
@@ -177,7 +212,7 @@ class SmartFileOrganizer:
             "platform": 6,
             "team": 5,
             "technical": 4,
-            "process": 3
+            "process": 3,
         }
 
         # Find highest priority context
@@ -192,12 +227,14 @@ class SmartFileOrganizer:
             "executive_presentation": "presentation",
             "quarterly_planning": "planning",
             "framework_research": "research",
-            "session_summary": "summary"
+            "session_summary": "summary",
         }
 
         return content_type_mapping.get(content_type, "document")
 
-    def _extract_specific_context(self, text: str, contexts: List[str]) -> Optional[str]:
+    def _extract_specific_context(
+        self, text: str, contexts: List[str]
+    ) -> Optional[str]:
         """Extract specific context details from text"""
         text_lower = text.lower()
 
@@ -219,7 +256,7 @@ class SmartFileOrganizer:
         initiative_patterns = [
             r"initiative[:\s]+([a-zA-Z\-]+)",
             r"project[:\s]+([a-zA-Z\-]+)",
-            r"epic[:\s]+([a-zA-Z\-]+)"
+            r"epic[:\s]+([a-zA-Z\-]+)",
         ]
 
         for pattern in initiative_patterns:
@@ -247,10 +284,13 @@ class SmartFileOrganizer:
         opportunities.extend(self._analyze_temporal_groups(temporal_groups))
 
         # Sort by priority and potential impact
-        opportunities.sort(key=lambda x: (
-            {"high": 3, "medium": 2, "low": 1}[x.priority],
-            x.size_reduction
-        ), reverse=True)
+        opportunities.sort(
+            key=lambda x: (
+                {"high": 3, "medium": 2, "low": 1}[x.priority],
+                x.size_reduction,
+            ),
+            reverse=True,
+        )
 
         return opportunities
 
@@ -260,14 +300,18 @@ class SmartFileOrganizer:
         recent_files = []
 
         for filepath, metadata in self.lifecycle_manager.metadata_store.items():
-            if (metadata.created_at > cutoff_date and
-                metadata.retention_status != FileRetentionStatus.ARCHIVED and
-                Path(filepath).exists()):
+            if (
+                metadata.created_at > cutoff_date
+                and metadata.retention_status != FileRetentionStatus.ARCHIVED
+                and Path(filepath).exists()
+            ):
                 recent_files.append((filepath, metadata))
 
         return recent_files
 
-    def _group_files_by_session(self, files: List[Tuple[str, FileMetadata]]) -> Dict[str, List[Tuple[str, FileMetadata]]]:
+    def _group_files_by_session(
+        self, files: List[Tuple[str, FileMetadata]]
+    ) -> Dict[str, List[Tuple[str, FileMetadata]]]:
         """Group files by session ID"""
         groups = defaultdict(list)
 
@@ -278,14 +322,16 @@ class SmartFileOrganizer:
         # Only return groups with multiple files
         return {k: v for k, v in groups.items() if len(v) > 1}
 
-    def _group_files_by_business_context(self, files: List[Tuple[str, FileMetadata]]) -> Dict[str, List[Tuple[str, FileMetadata]]]:
+    def _group_files_by_business_context(
+        self, files: List[Tuple[str, FileMetadata]]
+    ) -> Dict[str, List[Tuple[str, FileMetadata]]]:
         """Group files by detected business context"""
         groups = defaultdict(list)
 
         for filepath, metadata in files:
             # Read file content to detect context
             try:
-                with open(filepath, 'r', encoding='utf-8') as f:
+                with open(filepath, "r", encoding="utf-8") as f:
                     content = f.read()
 
                 contexts = self._detect_business_contexts(content)
@@ -297,7 +343,9 @@ class SmartFileOrganizer:
 
         return {k: v for k, v in groups.items() if len(v) > 1}
 
-    def _group_files_by_time_period(self, files: List[Tuple[str, FileMetadata]]) -> Dict[str, List[Tuple[str, FileMetadata]]]:
+    def _group_files_by_time_period(
+        self, files: List[Tuple[str, FileMetadata]]
+    ) -> Dict[str, List[Tuple[str, FileMetadata]]]:
         """Group files by time period (daily, weekly)"""
         groups = defaultdict(list)
 
@@ -307,13 +355,17 @@ class SmartFileOrganizer:
             groups[f"daily_{day_key}"].append((filepath, metadata))
 
             # Group by week
-            week_start = metadata.created_at - timedelta(days=metadata.created_at.weekday())
+            week_start = metadata.created_at - timedelta(
+                days=metadata.created_at.weekday()
+            )
             week_key = week_start.strftime("%Y-W%U")
             groups[f"weekly_{week_key}"].append((filepath, metadata))
 
         return {k: v for k, v in groups.items() if len(v) > 2}
 
-    def _analyze_session_groups(self, groups: Dict[str, List[Tuple[str, FileMetadata]]]) -> List[ConsolidationOpportunity]:
+    def _analyze_session_groups(
+        self, groups: Dict[str, List[Tuple[str, FileMetadata]]]
+    ) -> List[ConsolidationOpportunity]:
         """Analyze session groups for consolidation opportunities"""
         opportunities = []
 
@@ -333,13 +385,16 @@ class SmartFileOrganizer:
                     business_value=business_value,
                     consolidation_type="session_summary",
                     priority="high",
-                    size_reduction=len(files) * 0.7  # Estimated cognitive load reduction
+                    size_reduction=len(files)
+                    * 0.7,  # Estimated cognitive load reduction
                 )
                 opportunities.append(opportunity)
 
         return opportunities
 
-    def _analyze_context_groups(self, groups: Dict[str, List[Tuple[str, FileMetadata]]]) -> List[ConsolidationOpportunity]:
+    def _analyze_context_groups(
+        self, groups: Dict[str, List[Tuple[str, FileMetadata]]]
+    ) -> List[ConsolidationOpportunity]:
         """Analyze business context groups for consolidation"""
         opportunities = []
 
@@ -347,7 +402,9 @@ class SmartFileOrganizer:
             if len(files) >= 2 and context != "general":
                 file_paths = [f[0] for f in files]
 
-                suggested_name = f"{context}-analysis-{datetime.now().strftime('%Y-%m-%d')}.md"
+                suggested_name = (
+                    f"{context}-analysis-{datetime.now().strftime('%Y-%m-%d')}.md"
+                )
                 business_value = f"Consolidated {context} strategic analysis"
 
                 opportunity = ConsolidationOpportunity(
@@ -356,13 +413,15 @@ class SmartFileOrganizer:
                     business_value=business_value,
                     consolidation_type="context_package",
                     priority="medium",
-                    size_reduction=len(files) * 0.5
+                    size_reduction=len(files) * 0.5,
                 )
                 opportunities.append(opportunity)
 
         return opportunities
 
-    def _analyze_temporal_groups(self, groups: Dict[str, List[Tuple[str, FileMetadata]]]) -> List[ConsolidationOpportunity]:
+    def _analyze_temporal_groups(
+        self, groups: Dict[str, List[Tuple[str, FileMetadata]]]
+    ) -> List[ConsolidationOpportunity]:
         """Analyze temporal groups for consolidation"""
         opportunities = []
 
@@ -389,13 +448,15 @@ class SmartFileOrganizer:
                     business_value=business_value,
                     consolidation_type=consolidation_type,
                     priority=priority,
-                    size_reduction=len(files) * 0.4
+                    size_reduction=len(files) * 0.4,
                 )
                 opportunities.append(opportunity)
 
         return opportunities
 
-    def _determine_session_business_value(self, files: List[Tuple[str, FileMetadata]]) -> str:
+    def _determine_session_business_value(
+        self, files: List[Tuple[str, FileMetadata]]
+    ) -> str:
         """Determine business value of a session based on files"""
         content_types = [f[1].content_type for f in files]
 
@@ -409,9 +470,7 @@ class SmartFileOrganizer:
             return "Strategic analysis session summary"
 
     def consolidate_files(
-        self,
-        opportunity: ConsolidationOpportunity,
-        user_approved: bool = True
+        self, opportunity: ConsolidationOpportunity, user_approved: bool = True
     ) -> Optional[str]:
         """Consolidate files based on opportunity"""
 
@@ -429,21 +488,23 @@ class SmartFileOrganizer:
             # Create consolidated file
             consolidated_path = target_dir / opportunity.suggested_name
 
-            with open(consolidated_path, 'w', encoding='utf-8') as f:
+            with open(consolidated_path, "w", encoding="utf-8") as f:
                 f.write(consolidated_content)
 
             # Register with lifecycle manager
             self.lifecycle_manager.register_file(
                 str(consolidated_path),
                 "session_summary",
-                session_id=f"consolidated_{datetime.now().strftime('%Y%m%d')}"
+                session_id=f"consolidated_{datetime.now().strftime('%Y%m%d')}",
             )
 
             # Archive original files with enhanced indexing
             for file_path in opportunity.files:
                 # Get metadata for enhanced archiving
                 metadata = self.lifecycle_manager.metadata_store.get(file_path)
-                content_type = metadata.content_type if metadata else "strategic_analysis"
+                content_type = (
+                    metadata.content_type if metadata else "strategic_analysis"
+                )
                 session_id = metadata.session_id if metadata else None
 
                 # Use advanced archiving system
@@ -451,7 +512,9 @@ class SmartFileOrganizer:
                     file_path, content_type, session_id
                 )
 
-            print(f"✅ Consolidated {len(opportunity.files)} files → {opportunity.suggested_name}")
+            print(
+                f"✅ Consolidated {len(opportunity.files)} files → {opportunity.suggested_name}"
+            )
             print(f"🎯 Business value: {opportunity.business_value}")
 
             return str(consolidated_path)
@@ -460,7 +523,9 @@ class SmartFileOrganizer:
             print(f"⚠️ Consolidation failed: {e}")
             return None
 
-    def _create_consolidated_content(self, opportunity: ConsolidationOpportunity) -> str:
+    def _create_consolidated_content(
+        self, opportunity: ConsolidationOpportunity
+    ) -> str:
         """Create consolidated content from multiple files"""
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
 
@@ -484,7 +549,7 @@ class SmartFileOrganizer:
         # Process each file and extract key content
         for i, file_path in enumerate(opportunity.files, 1):
             try:
-                with open(file_path, 'r', encoding='utf-8') as f:
+                with open(file_path, "r", encoding="utf-8") as f:
                     file_content = f.read()
 
                 filename = Path(file_path).name
@@ -515,27 +580,35 @@ class SmartFileOrganizer:
 
     def _extract_key_sections(self, content: str) -> str:
         """Extract key sections from file content"""
-        lines = content.split('\n')
+        lines = content.split("\n")
         key_content = []
 
         # Look for important sections
         important_markers = [
-            "# ", "## ", "### ",  # Headers
-            "**", "*", "- ",     # Formatting
-            "action", "decision", "recommendation",  # Key terms
-            "risk", "opportunity", "next steps"
+            "# ",
+            "## ",
+            "### ",  # Headers
+            "**",
+            "*",
+            "- ",  # Formatting
+            "action",
+            "decision",
+            "recommendation",  # Key terms
+            "risk",
+            "opportunity",
+            "next steps",
         ]
 
         for line in lines:
             line_lower = line.lower()
             if any(marker in line_lower for marker in important_markers):
                 key_content.append(line)
-            elif line.strip() and not line.startswith('---'):
+            elif line.strip() and not line.startswith("---"):
                 # Include non-empty, non-separator lines
                 key_content.append(line)
 
         # Return first 10 lines of key content
-        return '\n'.join(key_content[:10])
+        return "\n".join(key_content[:10])
 
     def suggest_consolidation_opportunities(self) -> bool:
         """Proactively suggest consolidation opportunities to user"""
@@ -554,16 +627,22 @@ class SmartFileOrganizer:
             print(f"   Priority: {opp.priority}")
             print(f"   Cognitive Load Reduction: {opp.size_reduction:.1f}x")
 
-        response = input(f"\nProceed with smart consolidation? [y/n/details]: ").strip().lower()
+        response = (
+            input(f"\nProceed with smart consolidation? [y/n/details]: ")
+            .strip()
+            .lower()
+        )
 
-        if response == 'y':
+        if response == "y":
             return self._execute_consolidation_batch(opportunities[:3])
-        elif response == 'details':
+        elif response == "details":
             return self._show_detailed_opportunities(opportunities)
 
         return False
 
-    def _execute_consolidation_batch(self, opportunities: List[ConsolidationOpportunity]) -> bool:
+    def _execute_consolidation_batch(
+        self, opportunities: List[ConsolidationOpportunity]
+    ) -> bool:
         """Execute a batch of consolidation opportunities"""
         consolidated_count = 0
 
@@ -580,7 +659,9 @@ class SmartFileOrganizer:
 
         return False
 
-    def _show_detailed_opportunities(self, opportunities: List[ConsolidationOpportunity]) -> bool:
+    def _show_detailed_opportunities(
+        self, opportunities: List[ConsolidationOpportunity]
+    ) -> bool:
         """Show detailed consolidation opportunities"""
         for i, opp in enumerate(opportunities, 1):
             print(f"\n📋 **Opportunity {i}: {opp.business_value}**")
@@ -596,11 +677,11 @@ class SmartFileOrganizer:
 
             response = input(f"Consolidate this group? [y/n/skip]: ").strip().lower()
 
-            if response == 'y':
+            if response == "y":
                 result = self.consolidate_files(opp, user_approved=True)
                 if result:
                     print(f"✅ Consolidated successfully!")
-            elif response == 'skip':
+            elif response == "skip":
                 continue
             else:
                 print(f"Skipped consolidation")
@@ -635,7 +716,7 @@ class SmartFileOrganizer:
             "content_type_evolution": self._analyze_content_evolution(recent_files),
             "business_context_focus": self._analyze_business_focus(recent_files),
             "workflow_efficiency": self._analyze_workflow_efficiency(recent_files),
-            "pattern_recommendations": self.suggest_workflow_optimizations()
+            "pattern_recommendations": self.suggest_workflow_optimizations(),
         }
 
         # Update cross-session insights
@@ -644,21 +725,29 @@ class SmartFileOrganizer:
 
         return insights
 
-    def _analyze_productivity_trends(self, files: List[Tuple[str, FileMetadata]]) -> Dict[str, Any]:
+    def _analyze_productivity_trends(
+        self, files: List[Tuple[str, FileMetadata]]
+    ) -> Dict[str, Any]:
         """Analyze productivity trends over time"""
 
         # Group files by week
         weekly_counts = defaultdict(int)
         for filepath, metadata in files:
-            week_key = metadata.created_at.strftime('%Y-W%U')
+            week_key = metadata.created_at.strftime("%Y-W%U")
             weekly_counts[week_key] += 1
 
         # Calculate trend
         weeks = sorted(weekly_counts.keys())
         if len(weeks) >= 2:
             recent_avg = sum(weekly_counts[w] for w in weeks[-2:]) / 2
-            earlier_avg = sum(weekly_counts[w] for w in weeks[:-2]) / max(1, len(weeks) - 2)
-            trend = "increasing" if recent_avg > earlier_avg else "stable" if recent_avg == earlier_avg else "decreasing"
+            earlier_avg = sum(weekly_counts[w] for w in weeks[:-2]) / max(
+                1, len(weeks) - 2
+            )
+            trend = (
+                "increasing"
+                if recent_avg > earlier_avg
+                else "stable" if recent_avg == earlier_avg else "decreasing"
+            )
         else:
             trend = "insufficient_data"
 
@@ -666,17 +755,20 @@ class SmartFileOrganizer:
             "weekly_file_counts": dict(weekly_counts),
             "trend": trend,
             "total_files_30_days": len(files),
-            "average_files_per_week": sum(weekly_counts.values()) / max(1, len(weekly_counts))
+            "average_files_per_week": sum(weekly_counts.values())
+            / max(1, len(weekly_counts)),
         }
 
-    def _analyze_content_evolution(self, files: List[Tuple[str, FileMetadata]]) -> Dict[str, Any]:
+    def _analyze_content_evolution(
+        self, files: List[Tuple[str, FileMetadata]]
+    ) -> Dict[str, Any]:
         """Analyze how content types evolve over time"""
 
         # Group by content type and time
         content_evolution = defaultdict(lambda: defaultdict(int))
 
         for filepath, metadata in files:
-            month_key = metadata.created_at.strftime('%Y-%m')
+            month_key = metadata.created_at.strftime("%Y-%m")
             content_evolution[metadata.content_type][month_key] += 1
 
         # Find trends in content types
@@ -685,7 +777,9 @@ class SmartFileOrganizer:
             months = sorted(monthly_counts.keys())
             if len(months) >= 2:
                 recent = monthly_counts[months[-1]]
-                earlier = sum(monthly_counts[m] for m in months[:-1]) / max(1, len(months) - 1)
+                earlier = sum(monthly_counts[m] for m in months[:-1]) / max(
+                    1, len(months) - 1
+                )
                 if recent > earlier * 1.2:
                     trends[content_type] = "increasing"
                 elif recent < earlier * 0.8:
@@ -696,13 +790,19 @@ class SmartFileOrganizer:
         return {
             "content_type_evolution": dict(content_evolution),
             "content_trends": trends,
-            "dominant_content_type": max(
-                Counter(m.content_type for _, m in files).items(),
-                key=lambda x: x[1]
-            )[0] if files else None
+            "dominant_content_type": (
+                max(
+                    Counter(m.content_type for _, m in files).items(),
+                    key=lambda x: x[1],
+                )[0]
+                if files
+                else None
+            ),
         }
 
-    def _analyze_business_focus(self, files: List[Tuple[str, FileMetadata]]) -> Dict[str, Any]:
+    def _analyze_business_focus(
+        self, files: List[Tuple[str, FileMetadata]]
+    ) -> Dict[str, Any]:
         """Analyze business context focus areas"""
 
         # Extract business contexts from filenames and content
@@ -717,12 +817,16 @@ class SmartFileOrganizer:
 
         return {
             "top_business_contexts": dict(context_counter.most_common(5)),
-            "primary_focus": context_counter.most_common(1)[0][0] if context_counter else None,
+            "primary_focus": (
+                context_counter.most_common(1)[0][0] if context_counter else None
+            ),
             "focus_diversity": len(set(business_contexts)),
-            "context_distribution": dict(context_counter)
+            "context_distribution": dict(context_counter),
         }
 
-    def _analyze_workflow_efficiency(self, files: List[Tuple[str, FileMetadata]]) -> Dict[str, Any]:
+    def _analyze_workflow_efficiency(
+        self, files: List[Tuple[str, FileMetadata]]
+    ) -> Dict[str, Any]:
         """Analyze workflow efficiency metrics"""
 
         # Group by session to analyze session efficiency
@@ -733,7 +837,9 @@ class SmartFileOrganizer:
 
         # Calculate efficiency metrics
         session_sizes = [len(files) for files in session_groups.values()]
-        avg_session_size = sum(session_sizes) / len(session_sizes) if session_sizes else 0
+        avg_session_size = (
+            sum(session_sizes) / len(session_sizes) if session_sizes else 0
+        )
 
         # Analyze consolidation opportunities
         opportunities = self.identify_consolidation_opportunities()
@@ -744,7 +850,9 @@ class SmartFileOrganizer:
             "total_sessions": len(session_groups),
             "consolidation_opportunities": len(opportunities),
             "potential_efficiency_gain": total_reduction,
-            "workflow_score": min(10, max(1, 10 - (avg_session_size - 3)))  # Optimal around 3 files per session
+            "workflow_score": min(
+                10, max(1, 10 - (avg_session_size - 3))
+            ),  # Optimal around 3 files per session
         }
 
     def detect_session_patterns(self):
@@ -756,12 +864,16 @@ class SmartFileOrganizer:
 
         for filepath, metadata in recent_files:
             session_id = metadata.session_id or "no_session"
-            session_analysis[session_id].append({
-                'content_type': metadata.content_type,
-                'filename': Path(filepath).name,
-                'created_at': metadata.created_at,
-                'business_context': self._detect_business_contexts(Path(filepath).name)
-            })
+            session_analysis[session_id].append(
+                {
+                    "content_type": metadata.content_type,
+                    "filename": Path(filepath).name,
+                    "created_at": metadata.created_at,
+                    "business_context": self._detect_business_contexts(
+                        Path(filepath).name
+                    ),
+                }
+            )
 
         # Update patterns based on analysis
         self._update_session_patterns(session_analysis)
@@ -776,29 +888,35 @@ class SmartFileOrganizer:
 
         for session_id, files in session_analysis.items():
             if len(files) >= 2:
-                content_types = [f['content_type'] for f in files]
+                content_types = [f["content_type"] for f in files]
                 business_contexts = []
                 for f in files:
-                    business_contexts.extend(f.get('business_context', []))
+                    business_contexts.extend(f.get("business_context", []))
 
                 # Detect pattern type
-                if 'quarterly_planning' in content_types:
-                    pattern_type = 'quarterly_review'
-                    frequency = 'quarterly'
-                elif 'meeting_prep' in content_types:
-                    pattern_type = 'stakeholder_meeting'
-                    frequency = 'weekly'
+                if "quarterly_planning" in content_types:
+                    pattern_type = "quarterly_review"
+                    frequency = "quarterly"
+                elif "meeting_prep" in content_types:
+                    pattern_type = "stakeholder_meeting"
+                    frequency = "weekly"
                 else:
-                    pattern_type = 'strategic_analysis'
-                    frequency = 'ad_hoc'
+                    pattern_type = "strategic_analysis"
+                    frequency = "ad_hoc"
 
                 pattern = SessionPattern(
                     pattern_type=pattern_type,
                     frequency=frequency,
                     content_types=list(set(content_types)),
                     naming_pattern=f"{pattern_type}_{frequency}",
-                    business_context=', '.join(set(business_contexts)) if business_contexts else 'general',
-                    confidence_score=min(len(files) / 5.0, 1.0)  # Confidence based on file count
+                    business_context=(
+                        ", ".join(set(business_contexts))
+                        if business_contexts
+                        else "general"
+                    ),
+                    confidence_score=min(
+                        len(files) / 5.0, 1.0
+                    ),  # Confidence based on file count
                 )
 
                 pattern_candidates.append(pattern)
@@ -810,11 +928,15 @@ class SmartFileOrganizer:
         session_data = []
         for session_id, files in session_analysis.items():
             for file_info in files:
-                session_data.append({
-                    'session_id': session_id,
-                    'content_type': file_info['content_type'],
-                    'created_at': file_info['created_at'].isoformat(),
-                    'business_context': ', '.join(file_info.get('business_context', []))
-                })
+                session_data.append(
+                    {
+                        "session_id": session_id,
+                        "content_type": file_info["content_type"],
+                        "created_at": file_info["created_at"].isoformat(),
+                        "business_context": ", ".join(
+                            file_info.get("business_context", [])
+                        ),
+                    }
+                )
 
         self.pattern_engine.update_patterns_from_usage(session_data)

@@ -33,7 +33,7 @@ class OptimizedSQLiteManager:
         return cls._instance
 
     def __init__(self, db_path: Optional[str] = None):
-        if hasattr(self, 'initialized'):
+        if hasattr(self, "initialized"):
             return
 
         self.db_path = db_path or "memory/strategic_memory.db"
@@ -44,10 +44,10 @@ class OptimizedSQLiteManager:
 
         # Performance monitoring
         self._query_stats = {
-            'total_queries': 0,
-            'slow_queries': 0,
-            'cache_hits': 0,
-            'connection_reuses': 0
+            "total_queries": 0,
+            "slow_queries": 0,
+            "cache_hits": 0,
+            "connection_reuses": 0,
         }
 
         # Ensure database directory exists
@@ -110,45 +110,34 @@ class OptimizedSQLiteManager:
             # Stakeholder engagement patterns
             """CREATE INDEX IF NOT EXISTS idx_stakeholder_engagement_temporal
                ON stakeholder_engagements(stakeholder_profile_id, last_activity_at DESC)""",
-
             """CREATE INDEX IF NOT EXISTS idx_stakeholder_relationship_health
                ON relationship_health_metrics(stakeholder_profile_id, measurement_date DESC)""",
-
             # Meeting intelligence optimization
             """CREATE INDEX IF NOT EXISTS idx_meeting_sessions_temporal
                ON meeting_sessions(session_date DESC, meeting_type, stakeholder_count)""",
-
             """CREATE INDEX IF NOT EXISTS idx_meeting_participants_lookup
                ON meeting_participants(meeting_session_id, participant_role)""",
-
             # Document intelligence patterns
             """CREATE INDEX IF NOT EXISTS idx_google_docs_intelligence_composite
                ON google_docs_intelligence(drive_file_id, intelligence_type, processed_into_system)""",
-
             """CREATE INDEX IF NOT EXISTS idx_google_docs_validation
                ON google_docs_intelligence(validation_status, extracted_at DESC)""",
-
             # Cross-system intelligence queries
             """CREATE INDEX IF NOT EXISTS idx_strategic_tasks_stakeholder
                ON strategic_tasks(responsible_stakeholder_id, due_date, priority_level)""",
-
             """CREATE INDEX IF NOT EXISTS idx_task_activity_temporal
                ON task_activity_log(task_id, activity_timestamp DESC)""",
-
             # Executive session optimization
             """CREATE INDEX IF NOT EXISTS idx_executive_sessions_stakeholder
                ON executive_sessions(stakeholder_key, session_date DESC)""",
-
             # Workspace monitoring
             """CREATE INDEX IF NOT EXISTS idx_workspace_changes_temporal
                ON workspace_changes(event_timestamp DESC, change_type)""",
-
             # Google Drive sync performance
             """CREATE INDEX IF NOT EXISTS idx_google_drive_sync_status
                ON google_drive_documents(sync_status, last_synced_at DESC)""",
-
             """CREATE INDEX IF NOT EXISTS idx_google_drive_sync_metrics_temporal
-               ON google_drive_sync_metrics(started_at DESC, sync_type)"""
+               ON google_drive_sync_metrics(started_at DESC, sync_type)""",
         ]
 
         for index_sql in strategic_indexes:
@@ -156,7 +145,9 @@ class OptimizedSQLiteManager:
                 conn.execute(index_sql)
             except sqlite3.OperationalError as e:
                 if "already exists" not in str(e).lower():
-                    self.logger.warning("Index creation warning", sql=index_sql, error=str(e))
+                    self.logger.warning(
+                        "Index creation warning", sql=index_sql, error=str(e)
+                    )
 
         conn.commit()
         self.logger.info(f"Created {len(strategic_indexes)} strategic indexes")
@@ -164,19 +155,17 @@ class OptimizedSQLiteManager:
     @contextmanager
     def _get_optimized_connection(self):
         """Get thread-local optimized connection"""
-        if not hasattr(self._local, 'connection'):
+        if not hasattr(self._local, "connection"):
             self._local.connection = sqlite3.connect(
-                self.db_path,
-                timeout=30.0,
-                check_same_thread=False
+                self.db_path, timeout=30.0, check_same_thread=False
             )
             self._local.connection.row_factory = sqlite3.Row
 
             # Apply performance settings to new connections
-            if hasattr(self, 'initialized'):
+            if hasattr(self, "initialized"):
                 self._apply_performance_settings(self._local.connection)
 
-            self._query_stats['connection_reuses'] += 1
+            self._query_stats["connection_reuses"] += 1
 
         try:
             yield self._local.connection
@@ -221,13 +210,13 @@ class OptimizedSQLiteManager:
             conn.commit()
 
         execution_time = time.time() - start_time
-        self._query_stats['total_queries'] += 1
+        self._query_stats["total_queries"] += 1
 
         if execution_time > 0.5:  # Log slow queries
-            self._query_stats['slow_queries'] += 1
-            self.logger.warning("Slow query detected",
-                              sql=sql[:100],
-                              execution_time=execution_time)
+            self._query_stats["slow_queries"] += 1
+            self.logger.warning(
+                "Slow query detected", sql=sql[:100], execution_time=execution_time
+            )
 
         return result
 
@@ -236,7 +225,7 @@ class OptimizedSQLiteManager:
         if not data:
             return
 
-        placeholders = ','.join(['?' for _ in columns])
+        placeholders = ",".join(["?" for _ in columns])
         sql = f"INSERT OR REPLACE INTO {table} ({','.join(columns)}) VALUES ({placeholders})"
 
         with self.get_optimized_connection() as conn:
@@ -267,7 +256,9 @@ class OptimizedSQLiteManager:
                     free_pages = freelist_result[0]
 
                     if total_pages > 0 and (free_pages / total_pages) > 0.1:
-                        self.logger.info("Database fragmentation detected, running VACUUM")
+                        self.logger.info(
+                            "Database fragmentation detected, running VACUUM"
+                        )
                         conn.execute("VACUUM")
 
             self.logger.info("Database maintenance completed")
@@ -290,25 +281,28 @@ class OptimizedSQLiteManager:
             cache_stats = conn.execute("PRAGMA cache_size").fetchone()
 
         return {
-            'database_size_mb': round(db_size_mb, 2),
-            'total_queries': self._query_stats['total_queries'],
-            'slow_queries': self._query_stats['slow_queries'],
-            'slow_query_percentage': (
-                self._query_stats['slow_queries'] / max(self._query_stats['total_queries'], 1) * 100
+            "database_size_mb": round(db_size_mb, 2),
+            "total_queries": self._query_stats["total_queries"],
+            "slow_queries": self._query_stats["slow_queries"],
+            "slow_query_percentage": (
+                self._query_stats["slow_queries"]
+                / max(self._query_stats["total_queries"], 1)
+                * 100
             ),
-            'connection_reuses': self._query_stats['connection_reuses'],
-            'cache_size': cache_stats[0] if cache_stats else 0
+            "connection_reuses": self._query_stats["connection_reuses"],
+            "cache_size": cache_stats[0] if cache_stats else 0,
         }
 
     def close_connections(self):
         """Clean up connections (for shutdown)"""
-        if hasattr(self._local, 'connection'):
+        if hasattr(self._local, "connection"):
             self._local.connection.close()
-            delattr(self._local, 'connection')
+            delattr(self._local, "connection")
 
 
 # Singleton instance for global use
 _db_manager = None
+
 
 def get_db_manager(db_path: Optional[str] = None) -> OptimizedSQLiteManager:
     """Get global database manager instance"""
@@ -324,9 +318,15 @@ if __name__ == "__main__":
     import json
 
     parser = argparse.ArgumentParser(description="ClaudeDirector Database Optimization")
-    parser.add_argument("--stats", action="store_true", help="Show performance statistics")
-    parser.add_argument("--maintenance", action="store_true", help="Run database maintenance")
-    parser.add_argument("--optimize", action="store_true", help="Apply performance optimizations")
+    parser.add_argument(
+        "--stats", action="store_true", help="Show performance statistics"
+    )
+    parser.add_argument(
+        "--maintenance", action="store_true", help="Run database maintenance"
+    )
+    parser.add_argument(
+        "--optimize", action="store_true", help="Apply performance optimizations"
+    )
     parser.add_argument("--db-path", help="Database path")
 
     args = parser.parse_args()

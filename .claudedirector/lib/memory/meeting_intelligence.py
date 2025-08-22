@@ -35,7 +35,9 @@ class MeetingIntelligenceManager:
 
             with sqlite3.connect(self.db_path) as conn:
                 # Split and execute each statement
-                statements = [stmt.strip() for stmt in schema_sql.split(";") if stmt.strip()]
+                statements = [
+                    stmt.strip() for stmt in schema_sql.split(";") if stmt.strip()
+                ]
                 for statement in statements:
                     if statement and not statement.startswith("--"):
                         try:
@@ -250,10 +252,17 @@ class MeetingIntelligenceManager:
 
     def scan_and_process_meeting_prep(self) -> Dict[str, Any]:
         """Scan meeting-prep directory and process all meetings."""
-        results = {"processed": 0, "new_meetings": 0, "updated_meetings": 0, "errors": []}
+        results = {
+            "processed": 0,
+            "new_meetings": 0,
+            "updated_meetings": 0,
+            "errors": [],
+        }
 
         if not self.meeting_prep_root.exists():
-            results["errors"].append(f"Meeting prep directory not found: {self.meeting_prep_root}")
+            results["errors"].append(
+                f"Meeting prep directory not found: {self.meeting_prep_root}"
+            )
             return results
 
         # Process each subdirectory as a potential meeting
@@ -344,12 +353,18 @@ def main():
     """Main CLI interface for meeting intelligence management."""
     import argparse
 
-    parser = argparse.ArgumentParser(description="SuperClaude Meeting Intelligence System")
+    parser = argparse.ArgumentParser(
+        description="SuperClaude Meeting Intelligence System"
+    )
     parser.add_argument(
         "--scan", action="store_true", help="Scan and process meeting-prep directory"
     )
-    parser.add_argument("--summary", action="store_true", help="Show meeting intelligence summary")
-    parser.add_argument("--db-path", default="memory/strategic_memory.db", help="Database path")
+    parser.add_argument(
+        "--summary", action="store_true", help="Show meeting intelligence summary"
+    )
+    parser.add_argument(
+        "--db-path", default="memory/strategic_memory.db", help="Database path"
+    )
 
     args = parser.parse_args()
 
@@ -390,7 +405,9 @@ def main():
         if summary["recent_meetings"]:
             print(f"\nRecent Meetings:")
             for rm in summary["recent_meetings"]:
-                print(f"   {rm['meeting_key']} ({rm['meeting_type']}) - {rm['created_at']}")
+                print(
+                    f"   {rm['meeting_key']} ({rm['meeting_type']}) - {rm['created_at']}"
+                )
 
     else:
         # Default: scan and show summary
