@@ -112,7 +112,7 @@ exemptions:
     - "docs/ARCHITECTURE.md"     # Architecture docs can be large
     - "docs/IMPLEMENTATION_GUIDE.md"  # Implementation guides are comprehensive
     - "README.md"                # Main readme exempt from size limits
-    - ".claudedirector/dev-tools/ai-cleanup/README.md"  # AI cleanup documentation
+    - ".claudedirector/tools/ai-cleanup/README.md"  # AI cleanup documentation
 
   patterns:
     - "test_.*integration.*"     # Integration tests can be large

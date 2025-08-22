@@ -36,19 +36,19 @@ docs/documentation-update
 #### **Pre-Commit Validation**
 ```bash
 # Required before every commit
-.claudedirector/dev-tools/testing/mandatory_test_validator.py
+.claudedirector/tools/testing/mandatory_test_validator.py
 
 # Recommended before push
-.claudedirector/dev-tools/cleanup/automated_cleanup.py
+.claudedirector/tools/cleanup/automated_cleanup.py
 ```
 
 #### **Local CI Simulation**
 ```bash
 # Run full CI pipeline locally
-python3 .claudedirector/dev-tools/ci/local-ci-runner.py
+python3 .claudedirector/tools/ci/local-ci-runner.py
 
 # Quick smoke test
-python3 .claudedirector/dev-tools/testing/smoke_tests.py
+python3 .claudedirector/tools/testing/smoke_tests.py
 ```
 
 ### **P0 Feature Protection**
@@ -99,7 +99,7 @@ from claudedirector.core import integrated_conversation_manager
 #### **Manual Cleanup (Weekly)**
 ```bash
 # Run comprehensive cleanup
-.claudedirector/dev-tools/cleanup/automated_cleanup.py
+.claudedirector/tools/cleanup/automated_cleanup.py
 
 # Review and archive old branches
 git branch -d $(git branch --merged | grep -v main)
