@@ -1,0 +1,17 @@
+{
+  "timestamp": "2025-08-22 07:27:20",
+  "success": true,
+  "errors": [],
+  "log": [
+    "[2025-08-22 07:27:20] INFO: \ud83d\ude80 STARTING CLAUDEDIRECTOR STRUCTURE CLEANUP MIGRATION",
+    "[2025-08-22 07:27:20] INFO: ======================================================================",
+    "[2025-08-22 07:27:20] INFO: \n\ud83d\udd04 EXECUTING: Prerequisites",
+    "[2025-08-22 07:27:20] INFO: \ud83d\udd0d VALIDATING MIGRATION PREREQUISITES",
+    "[2025-08-22 07:27:20] ERROR: \u274c Working directory not clean - commit changes first",
+    "[2025-08-22 07:27:20] ERROR: \u274c MIGRATION FAILED at Prerequisites"
+  ],
+  "backup_location": ".claudedirector/.migration-backup-1755865640",
+  "directories_before": 19,
+  "directories_after": 7,
+  "complexity_reduction": "63%"
+}
