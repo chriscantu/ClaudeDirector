@@ -17,6 +17,7 @@ from typing import Dict, List, Tuple
 import json
 import time
 
+
 class StructureCleanupMigration:
     def __init__(self):
         self.root_dir = Path(".claudedirector")
@@ -37,10 +38,16 @@ class StructureCleanupMigration:
 
         # Check git status
         try:
-            result = subprocess.run(['git', 'status', '--porcelain'],
-                                  capture_output=True, text=True, check=True)
+            result = subprocess.run(
+                ["git", "status", "--porcelain"],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
             if result.stdout.strip():
-                self.log("❌ Working directory not clean - commit changes first", "ERROR")
+                self.log(
+                    "❌ Working directory not clean - commit changes first", "ERROR"
+                )
                 return False
         except subprocess.CalledProcessError:
             self.log("❌ Not in a git repository", "ERROR")
@@ -49,9 +56,15 @@ class StructureCleanupMigration:
         # Validate all P0 tests pass before migration
         self.log("🧪 Running P0 tests validation...")
         try:
-            result = subprocess.run([
-                'python', '.claudedirector/tests/regression/run_complete_regression_suite.py'
-            ], capture_output=True, text=True, timeout=300)
+            result = subprocess.run(
+                [
+                    "python",
+                    ".claudedirector/tests/regression/run_complete_regression_suite.py",
+                ],
+                capture_output=True,
+                text=True,
+                timeout=300,
+            )
             if result.returncode != 0:
                 self.log("❌ P0 tests failing - fix before migration", "ERROR")
                 return False
@@ -73,7 +86,7 @@ class StructureCleanupMigration:
 
             # Copy entire .claudedirector structure
             for item in self.root_dir.iterdir():
-                if item.name.startswith('.migration-backup'):
+                if item.name.startswith(".migration-backup"):
                     continue
                 if item.is_dir():
                     shutil.copytree(item, self.backup_dir / item.name)
@@ -147,8 +160,16 @@ class StructureCleanupMigration:
         archive_moves = [
             ("dev-docs", "archive/dev-docs", "Archive development documentation"),
             ("framework", "archive/framework", "Archive framework artifacts"),
-            ("integration-protection", "archive/integration-protection", "Archive protection artifacts"),
-            ("strategic-intelligence", "archive/strategic-intelligence", "Archive strategic analysis"),
+            (
+                "integration-protection",
+                "archive/integration-protection",
+                "Archive protection artifacts",
+            ),
+            (
+                "strategic-intelligence",
+                "archive/strategic-intelligence",
+                "Archive strategic analysis",
+            ),
         ]
 
         for source, dest, description in archive_moves:
@@ -205,10 +226,10 @@ class StructureCleanupMigration:
         # Create functional subdirectories
         functional_dirs = [
             "architecture",  # SOLID validation, complexity analysis
-            "ci",           # GitHub CI scripts, coverage tools
-            "quality",      # Code quality, cleanup tools
-            "git-hooks",    # Pre-commit, pre-push hooks
-            "migration",    # One-time migration scripts
+            "ci",  # GitHub CI scripts, coverage tools
+            "quality",  # Code quality, cleanup tools
+            "git-hooks",  # Pre-commit, pre-push hooks
+            "migration",  # One-time migration scripts
         ]
 
         for dir_name in functional_dirs:
@@ -278,9 +299,10 @@ Copy this template structure to your working directory and customize as needed.
         for pattern in reference_files:
             try:
                 import glob
+
                 for file_path in glob.glob(pattern, recursive=True):
                     if Path(file_path).exists():
-                        with open(file_path, 'r') as f:
+                        with open(file_path, "r") as f:
                             content = f.read()
 
                         original_content = content
@@ -288,7 +310,7 @@ Copy this template structure to your working directory and customize as needed.
                             content = content.replace(old_path, new_path)
 
                         if content != original_content:
-                            with open(file_path, 'w') as f:
+                            with open(file_path, "w") as f:
                                 f.write(content)
                             updated_files.append(file_path)
 
@@ -308,7 +330,13 @@ Copy this template structure to your working directory and customize as needed.
 
         # Check expected structure exists
         expected_dirs = [
-            "lib", "config", "tools", "tests", "docs", "archive", "workspace-templates"
+            "lib",
+            "config",
+            "tools",
+            "tests",
+            "docs",
+            "archive",
+            "workspace-templates",
         ]
 
         for dir_name in expected_dirs:
@@ -320,9 +348,15 @@ Copy this template structure to your working directory and customize as needed.
         # Run P0 tests to ensure functionality preserved
         self.log("🧪 Running P0 validation...")
         try:
-            result = subprocess.run([
-                'python', '.claudedirector/tests/regression/run_complete_regression_suite.py'
-            ], capture_output=True, text=True, timeout=300)
+            result = subprocess.run(
+                [
+                    "python",
+                    ".claudedirector/tests/regression/run_complete_regression_suite.py",
+                ],
+                capture_output=True,
+                text=True,
+                timeout=300,
+            )
             if result.returncode != 0:
                 self.log("❌ P0 tests failing after migration", "ERROR")
                 return False
@@ -343,13 +377,13 @@ Copy this template structure to your working directory and customize as needed.
             "backup_location": str(self.backup_dir),
             "directories_before": 19,
             "directories_after": 7,
-            "complexity_reduction": "63%"
+            "complexity_reduction": "63%",
         }
 
         report_file = self.root_dir / "tools" / "migration" / "migration_report.json"
         report_file.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(report_file, 'w') as f:
+        with open(report_file, "w") as f:
             json.dump(report, f, indent=2)
 
         self.log(f"📋 Migration report saved: {report_file}")
@@ -385,6 +419,7 @@ Copy this template structure to your working directory and customize as needed.
         self.save_migration_report()
         return True
 
+
 def main():
     migration = StructureCleanupMigration()
     success = migration.execute_migration()
@@ -401,6 +436,7 @@ def main():
         print("🔄 Rollback available from backup if needed")
 
     return 0 if success else 1
+
 
 if __name__ == "__main__":
     sys.exit(main())

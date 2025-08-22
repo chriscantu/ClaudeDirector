@@ -12,8 +12,8 @@ import os
 import unittest
 from pathlib import Path
 
-# Add the integration protection path for testing
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "integration-protection"))
+# Add the lib path for testing
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "lib"))
 
 try:
     from cursor_transparency_bridge import (
