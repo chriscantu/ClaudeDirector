@@ -80,6 +80,36 @@ p0_features:
     introduced_version: "v2.0.0"
     owner: "rachel"
 
+  - name: "CLI Functionality P0"
+    test_module: ".claudedirector/tests/regression/user_journeys/test_cli_functionality.py"
+    critical_level: "HIGH"
+    timeout_seconds: 90
+    description: "Command-line interface functionality must work for daily user workflows"
+    failure_impact: "Users lose access to core ClaudeDirector functionality via CLI"
+    business_impact: "Daily user workflows broken - CLI unusable for core tasks"
+    introduced_version: "v1.0.0"
+    owner: "martin"
+
+  - name: "Memory Context Persistence P0"
+    test_module: ".claudedirector/tests/regression/user_journeys/test_memory_context_persistence.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 120
+    description: "Memory and context persistence must work for strategic continuity"
+    failure_impact: "Strategic context lost, relationships reset, initiative tracking broken"
+    business_impact: "Strategic continuity destroyed - context and memory unusable"
+    introduced_version: "v1.0.0"
+    owner: "alvaro"
+
+  - name: "Framework Attribution System P0"
+    test_module: ".claudedirector/tests/regression/user_journeys/test_framework_attribution_system.py"
+    critical_level: "HIGH"
+    timeout_seconds: 90
+    description: "Framework detection and attribution must work for strategic intelligence"
+    failure_impact: "Strategic frameworks not detected, attribution missing, intelligence degraded"
+    business_impact: "Strategic guidance becomes generic - framework intelligence unusable"
+    introduced_version: "v1.0.0"
+    owner: "rachel"
+
 
 
 # Enforcement settings
