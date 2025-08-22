@@ -17,7 +17,8 @@ from pathlib import Path
 test_dir = Path(__file__).parent
 sys.path.insert(0, str(test_dir / "regression"))
 sys.path.insert(0, str(test_dir / "integration"))
-sys.path.insert(0, str(test_dir.parent / "integration-protection"))
+# Updated path after structure cleanup
+sys.path.insert(0, str(test_dir.parent / "lib"))
 
 
 def run_test_module(module_path, description):
