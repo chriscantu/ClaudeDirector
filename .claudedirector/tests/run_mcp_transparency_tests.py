@@ -13,12 +13,16 @@ import subprocess
 import time
 from pathlib import Path
 
-# Add test paths
+# Add test paths - robust for different execution contexts
 test_dir = Path(__file__).parent
+claudedirector_root = test_dir.parent  # .claudedirector directory
+lib_path = claudedirector_root / "lib"
+
+# Add all necessary paths
 sys.path.insert(0, str(test_dir / "regression"))
 sys.path.insert(0, str(test_dir / "integration"))
-# Updated path after structure cleanup
-sys.path.insert(0, str(test_dir.parent / "lib"))
+# Use absolute path for lib to ensure imports work in all contexts
+sys.path.insert(0, str(lib_path.resolve()))
 
 
 def run_test_module(module_path, description):
