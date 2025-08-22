@@ -103,7 +103,6 @@ class ChatEnhancementDetector:
         # Metrics/reporting context
         metrics_keywords = [
             "quarterly report",
-
             "kpi tracking",
             "progress report",
             "status update",

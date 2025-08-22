@@ -249,7 +249,6 @@ class AnalysisComplexityDetector:
             "process",
             "timeline",
             "roadmap",
-
         ]
 
         # Framework request triggers

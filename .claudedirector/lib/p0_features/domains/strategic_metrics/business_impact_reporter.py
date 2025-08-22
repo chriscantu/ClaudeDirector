@@ -253,7 +253,6 @@ class BusinessImpactReporter:
                 f"Q{quarter} {year}"
             )
 
-
             # Generate executive summary
             executive_summary = self._generate_qbr_executive_summary(
                 business_impact, portfolio_summary, reporting_period
@@ -275,9 +274,7 @@ class BusinessImpactReporter:
             )
 
             # Generate operational metrics
-            operational_metrics = self._generate_operational_metrics(
-                business_impact
-            )
+            operational_metrics = self._generate_operational_metrics(business_impact)
 
             # Create strategic narratives
             strategic_narratives = self._create_strategic_narratives(
