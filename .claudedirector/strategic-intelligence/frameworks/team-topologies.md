@@ -6,8 +6,8 @@
 
 ## 📋 **FRAMEWORK OVERVIEW**
 
-**Source**: "Team Topologies" by Matthew Skelton and Manuel Pais  
-**Application**: Engineering organization design, team boundaries, communication optimization  
+**Source**: "Team Topologies" by Matthew Skelton and Manuel Pais
+**Application**: Engineering organization design, team boundaries, communication optimization
 **Best For**: Engineering directors structuring teams for flow, autonomy, and reduced cognitive load
 
 ---
@@ -58,7 +58,7 @@
 
 **Engineering Applications:**
 - Architecture guidance teams
-- DevOps transformation teams  
+- DevOps transformation teams
 - Security consulting teams
 - Performance optimization specialists
 - Technology research teams
@@ -97,7 +97,7 @@
 - **Purpose**: Rapid discovery, innovation, learning
 - **Example**: Platform team + stream-aligned team building new capability
 
-### **X-AS-A-SERVICE MODE** 
+### **X-AS-A-SERVICE MODE**
 **When**: One team provides something "as a service" to another
 - **Duration**: Ongoing
 - **Purpose**: Clear boundaries, reduced cognitive load
@@ -119,7 +119,7 @@
 - **Cannot be reduced** - core complexity of the business domain
 - **Example**: Understanding payment processing rules and regulations
 
-**EXTRANEOUS LOAD**: Environment and context where work happens  
+**EXTRANEOUS LOAD**: Environment and context where work happens
 - **CAN be reduced** - tooling, process, platform complexity
 - **Example**: Complex deployment processes, unclear interfaces
 
@@ -156,7 +156,7 @@
 BUSINESS DOMAIN: Customer Onboarding
 TEAM COMPOSITION:
 ├── Product Manager (business priorities)
-├── Engineering Lead (technical decisions)  
+├── Engineering Lead (technical decisions)
 ├── Frontend Engineers (2-3)
 ├── Backend Engineers (2-3)
 ├── QA Engineer (quality assurance)
@@ -236,7 +236,7 @@ PRODUCTS PROVIDED:
 
 **Combine with personas:**
 - **Rachel**: Organizational design and people impact
-- **Diego**: Engineering performance and team effectiveness  
+- **Diego**: Engineering performance and team effectiveness
 - **Martin**: Technical architecture alignment with team structure
 - **Alvaro**: Business value and organizational ROI
 

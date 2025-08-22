@@ -1,9 +1,9 @@
 # ClaudeDirector P0 Features Architecture
 
-**Lead Architect**: Martin  
-**AI/ML Specialist**: Berny  
-**Data Engineer**: Delbert  
-**Business Validation**: Alvaro  
+**Lead Architect**: Martin
+**AI/ML Specialist**: Berny
+**Data Engineer**: Delbert
+**Business Validation**: Alvaro
 
 ## Architecture Overview
 

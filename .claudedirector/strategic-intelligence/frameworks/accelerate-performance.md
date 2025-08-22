@@ -6,8 +6,8 @@
 
 ## 📋 **FRAMEWORK OVERVIEW**
 
-**Source**: "Accelerate" by Nicole Forsgren, Jez Humble, and Gene Kim  
-**Application**: Engineering team performance measurement, DevOps transformation, delivery optimization  
+**Source**: "Accelerate" by Nicole Forsgren, Jez Humble, and Gene Kim
+**Application**: Engineering team performance measurement, DevOps transformation, delivery optimization
 **Best For**: Engineering directors measuring and improving team performance using research-backed metrics
 
 ---

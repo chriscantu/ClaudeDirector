@@ -55,7 +55,7 @@ python3 .claudedirector/dev-tools/testing/smoke_tests.py
 
 #### **Mandatory P0 Tests**
 - **MCP Transparency**: Real-time disclosure
-- **Conversation Tracking**: Persistent memory  
+- **Conversation Tracking**: Persistent memory
 - **Quality Targets**: 85% conversation quality
 - **First-Run Wizard**: Zero-setup experience
 - **Cursor Integration**: Live conversation flow

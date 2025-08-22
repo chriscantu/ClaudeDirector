@@ -60,6 +60,26 @@ p0_features:
     introduced_version: "v1.0.0"
     owner: "martin"
 
+  - name: "MCP Integration P0"
+    test_module: ".claudedirector/tests/integration/test_cursor_integration.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 120
+    description: "MCP server integration and enhancement system must work"
+    failure_impact: "Strategic personas lose MCP enhancement capabilities"
+    business_impact: "AI strategic intelligence severely degraded without MCP"
+    introduced_version: "v2.0.0"
+    owner: "martin"
+
+  - name: "Persona Strategic Thinking P0"
+    test_module: ".claudedirector/tests/persona/test_persona_personalities.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 120
+    description: "Persona strategic thinking and pushback capabilities must work"
+    failure_impact: "Personas lose ability to challenge assumptions and provide strategic pushback"
+    business_impact: "Strategic guidance becomes passive and loses critical thinking value"
+    introduced_version: "v2.0.0"
+    owner: "rachel"
+
 # Enforcement settings
 enforcement:
   run_on_commit: true

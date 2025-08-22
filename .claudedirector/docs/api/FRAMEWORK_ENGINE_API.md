@@ -47,7 +47,7 @@ result = framework_engine.analyze_strategic_context(
 ## Available Strategic Frameworks
 
 ### 1. Rumelt Strategy Kernel
-**Source**: "Good Strategy Bad Strategy" by Richard Rumelt  
+**Source**: "Good Strategy Bad Strategy" by Richard Rumelt
 **Purpose**: Strategic analysis and formulation
 
 ```python
@@ -64,11 +64,11 @@ result = framework_engine.analyze_strategic_context(
 
 **Key Components**:
 - **Diagnosis**: Understanding the challenge
-- **Guiding Policy**: Overall approach to dealing with the challenge  
+- **Guiding Policy**: Overall approach to dealing with the challenge
 - **Coherent Actions**: Coordinated steps to implement the policy
 
 ### 2. Decisive WRAP Decision Framework
-**Source**: "Decisive" by Chip Heath and Dan Heath  
+**Source**: "Decisive" by Chip Heath and Dan Heath
 **Purpose**: Better decision-making process
 
 ```python
@@ -85,12 +85,12 @@ result = framework_engine.analyze_strategic_context(
 
 **WRAP Process**:
 - **W**iden your options
-- **R**eality-test your assumptions  
+- **R**eality-test your assumptions
 - **A**ttain distance before deciding
 - **P**repare to be wrong
 
-### 3. Scaling Up Excellence  
-**Source**: "Scaling Up Excellence" by Bob Sutton and Huggy Rao  
+### 3. Scaling Up Excellence
+**Source**: "Scaling Up Excellence" by Bob Sutton and Huggy Rao
 **Purpose**: Organizational scaling and excellence propagation
 
 ```python
@@ -106,7 +106,7 @@ result = framework_engine.analyze_strategic_context(
 ```
 
 ### 4. Team Topologies
-**Source**: "Team Topologies" by Matthew Skelton and Manuel Pais  
+**Source**: "Team Topologies" by Matthew Skelton and Manuel Pais
 **Purpose**: Team structure and communication optimization
 
 ```python
@@ -123,12 +123,12 @@ result = framework_engine.analyze_strategic_context(
 
 **Team Types**:
 - Stream-aligned teams
-- Enabling teams  
+- Enabling teams
 - Complicated-subsystem teams
 - Platform teams
 
 ### 5. Accelerate Team Performance
-**Source**: "Accelerate" by Nicole Forsgren, Jez Humble, and Gene Kim  
+**Source**: "Accelerate" by Nicole Forsgren, Jez Humble, and Gene Kim
 **Purpose**: High-performing team practices
 
 ```python
@@ -144,7 +144,7 @@ result = framework_engine.analyze_strategic_context(
 ```
 
 ### 6. Crucial Conversations
-**Source**: "Crucial Conversations" by Patterson, Grenny, McMillan, Switzler  
+**Source**: "Crucial Conversations" by Patterson, Grenny, McMillan, Switzler
 **Purpose**: Stakeholder communication and difficult conversations
 
 ```python
@@ -160,7 +160,7 @@ result = framework_engine.analyze_strategic_context(
 ```
 
 ### 7. Capital Allocation Framework
-**Source**: Strategic resource allocation principles  
+**Source**: Strategic resource allocation principles
 **Purpose**: Strategic investment and resource allocation decisions
 
 ```python
@@ -199,7 +199,7 @@ The engine can activate multiple frameworks simultaneously when context overlaps
 ```python
 # Complex scenario activating multiple frameworks
 result = framework_engine.analyze_strategic_context("""
-    We need to make a strategic decision about scaling our platform team 
+    We need to make a strategic decision about scaling our platform team
     while managing stakeholder expectations and budget constraints.
 """)
 
@@ -214,7 +214,7 @@ Strategic personas automatically incorporate framework guidance:
 ```python
 # Personas that leverage frameworks:
 - diego: Engineering leadership (Team Topologies, Accelerate)
-- alvaro: Business strategy (Rumelt, Capital Allocation)  
+- alvaro: Business strategy (Rumelt, Capital Allocation)
 - rachel: Design systems strategy (Scaling Up Excellence)
 - camille: Executive strategy (Rumelt, Crucial Conversations)
 ```
@@ -325,7 +325,7 @@ for context in contexts:
 planning_context = """
 Q3 Engineering Strategy Planning:
 - Scale platform team from 8 to 15 people
-- Launch 2 new product integrations  
+- Launch 2 new product integrations
 - Improve deployment frequency by 50%
 - Manage increased stakeholder expectations
 """

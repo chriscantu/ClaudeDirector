@@ -133,7 +133,7 @@ async def validate_persona_integration():
 
     # Test basic persona response (using default handler)
     # response = await manager.generate_persona_response("diego", "Test strategic query")
-    
+
     # assert response.persona == "diego"
     # assert "strategic" in response.content.lower()
     # assert response.transparency_summary is not None

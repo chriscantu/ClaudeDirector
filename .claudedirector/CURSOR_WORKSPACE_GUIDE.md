@@ -44,7 +44,7 @@ Instead of specifying file paths, use natural language:
 ❌ "Read engineering-director-workspace/current-initiatives/q1-platform-goals.md"
 ✅ "Review my Q1 platform goals"
 
-❌ "Analyze the file in budget-planning directory"  
+❌ "Analyze the file in budget-planning directory"
 ✅ "Help me with budget planning using capital allocation framework"
 
 ❌ "Use the crucial conversations framework from .claudedirector"

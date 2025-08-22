@@ -6,8 +6,8 @@
 
 ## 📋 **FRAMEWORK OVERVIEW**
 
-**Source**: Financial strategy and portfolio management principles adapted for engineering leadership  
-**Application**: Engineering budget planning, platform investment decisions, resource prioritization, technology ROI analysis  
+**Source**: Financial strategy and portfolio management principles adapted for engineering leadership
+**Application**: Engineering budget planning, platform investment decisions, resource prioritization, technology ROI analysis
 **Best For**: Engineering directors making strategic investment decisions with limited resources and competing priorities
 
 ---
@@ -154,7 +154,7 @@ OPTION A: Platform Team (8 engineers)
 - Risk: Medium (adoption, timeline)
 
 OPTION B: Feature Teams (16 engineers)
-- Cost: $2.4M annually  
+- Cost: $2.4M annually
 - Benefit: 60% more feature delivery
 - ROI: Depends on feature revenue impact
 - Risk: Low (execution), High (market)

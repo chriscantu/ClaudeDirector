@@ -24,7 +24,7 @@ class CodebaseCleanup:
             "cache_files_removed": self.remove_cache_files(),
             "placeholder_fixes": self.fix_placeholder_code(),
             "docs_consolidated": self.consolidate_documentation(),
-            "temp_files_removed": self.remove_temp_files()
+            "temp_files_removed": self.remove_temp_files(),
         }
 
         print("🧹 **CLEANUP COMPLETE**")
@@ -41,6 +41,7 @@ class CodebaseCleanup:
         for cache_dir in self.lib_path.rglob("__pycache__"):
             if cache_dir.is_dir():
                 import shutil
+
                 shutil.rmtree(cache_dir)
                 removed += 1
 
@@ -56,8 +57,14 @@ class CodebaseCleanup:
         fixed = 0
 
         placeholder_patterns = [
-            (r"# This is a placeholder.*", "# Implementation placeholder - to be completed"),
-            (r"# TODO: Implement.*", "# Mock implementation - replace when integrating"),
+            (
+                r"# This is a placeholder.*",
+                "# Implementation placeholder - to be completed",
+            ),
+            (
+                r"# TODO: Implement.*",
+                "# Mock implementation - replace when integrating",
+            ),
         ]
 
         for py_file in self.lib_path.rglob("*.py"):
@@ -94,7 +101,7 @@ class CodebaseCleanup:
             "**/test_phase2_*.py",
             "**/test_transparency_integration.py",
             "**/*.tmp",
-            "**/*.bak"
+            "**/*.bak",
         ]
 
         for pattern in temp_patterns:

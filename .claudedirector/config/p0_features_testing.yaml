@@ -23,7 +23,7 @@ database:
   query_timeout: 2
   max_connections: 5
 
-# Reduced monitoring for tests  
+# Reduced monitoring for tests
 monitoring:
   enable_performance_tracking: false
   enable_accuracy_tracking: false

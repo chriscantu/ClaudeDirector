@@ -42,7 +42,7 @@ def test_database():
             # Test existing stakeholder table compatibility
             conn.execute(
                 """
-                INSERT INTO stakeholder_profiles_enhanced 
+                INSERT INTO stakeholder_profiles_enhanced
                 (stakeholder_key, display_name, role_title, organization, strategic_importance)
                 VALUES ('test_stakeholder', 'Test User', 'Test Role', 'Test Org', 'high')
             """
@@ -70,38 +70,38 @@ def sample_meeting_content():
         "strategic_decision": """
         Meeting Notes: Product Strategy Review
         Date: 2025-01-09
-        
+
         DECISION POINT: We need to prioritize the mobile app redesign project.
-        
+
         Discussion:
         - Current mobile app has 60% user satisfaction
         - Competitor apps averaging 85% satisfaction
         - Engineering team estimates 6 months for complete redesign
         - Product team recommends phased approach over 3 months
-        
+
         DECISION MADE: Proceed with phased mobile redesign approach
         Timeline: Start Q1 2025, complete by end Q1
         Owner: Sarah (Product Director)
         Budget: $150K approved
-        
+
         Next steps:
         1. Sarah to create detailed project plan by Jan 15
-        2. Engineering team to assess technical feasibility  
+        2. Engineering team to assess technical feasibility
         3. Design team to begin user research phase
         """,
         "no_decision": """
         Weekly Team Standup
         Date: 2025-01-09
-        
+
         Team updates:
         - Bob finished API integration
         - Alice working on UI components
         - Charlie debugging test suite
-        
+
         Blockers:
         - Waiting for design assets from external team
         - Database performance needs optimization
-        
+
         Next week focus:
         - Complete current sprint tasks
         - Plan next sprint priorities
@@ -109,17 +109,17 @@ def sample_meeting_content():
         "multiple_decisions": """
         Executive Planning Session
         Date: 2025-01-09
-        
+
         DECISION 1: Platform Architecture
         We will migrate from monolith to microservices architecture
         Timeline: 18 months, starting Q2 2025
         Budget: $2M approved
-        
-        DECISION 2: Team Structure 
+
+        DECISION 2: Team Structure
         Create dedicated Platform Engineering team
         Headcount: 8 engineers, 2 leads
         Start date: March 1, 2025
-        
+
         DECISION 3: Technology Stack
         Standardize on Kubernetes for container orchestration
         Migration plan: Pilot in Q2, full deployment by Q4
