@@ -23,7 +23,7 @@ repos:
     hooks:
       - id: readme-protection
         name: 🛡️ README.md PROTECTION SYSTEM
-        entry: .claudedirector/git-hooks/readme-protection.sh
+        entry: .claudedirector/tools/git-hooks/readme-protection.sh
         language: system
         pass_filenames: false
         stages: [pre-commit]
@@ -35,7 +35,7 @@ repos:
     hooks:
       - id: enhanced-security-scanner
         name: 🛡️ ENHANCED SECURITY SCAN
-        entry: python3 .claudedirector/dev-tools/security/enhanced_security_scanner.py
+        entry: python3 .claudedirector/tools/security/enhanced_security_scanner.py
         language: system
         pass_filenames: false
         stages: [pre-commit]
@@ -43,7 +43,7 @@ repos:
         verbose: true
       - id: stakeholder-name-scanner
         name: 🚨 STAKEHOLDER INTELLIGENCE SCAN
-        entry: python3 .claudedirector/dev-tools/security/stakeholder_name_scanner.py --staged
+        entry: python3 .claudedirector/tools/security/stakeholder_name_scanner.py --staged
         language: system
         pass_filenames: false
         stages: [pre-commit]
@@ -55,7 +55,7 @@ repos:
     hooks:
       - id: mandatory-test-validation
         name: 🛡️ MANDATORY TEST VALIDATION
-        entry: python3 .claudedirector/dev-tools/testing/mandatory_test_validator.py
+        entry: python3 .claudedirector/tools/testing/mandatory_test_validator.py
         language: system
         pass_filenames: false
         stages: [pre-commit]
@@ -67,7 +67,7 @@ repos:
     hooks:
       - id: solid-principle-validator
         name: SOLID Principle Validation
-        entry: python .claudedirector/dev-tools/architecture/solid_validator.py
+        entry: python .claudedirector/tools/architecture/solid_validator.py
         language: python
         files: ^lib/claudedirector/(p0_features|p1_features)/.*\.py$
         pass_filenames: true
@@ -75,14 +75,14 @@ repos:
       # P1 Feature Testing
       - id: p1-unit-tests
         name: P1 Unit Tests
-        entry: python .claudedirector/dev-tools/testing/run_p1_unit_tests.py
+        entry: python .claudedirector/tools/testing/run_p1_unit_tests.py
         language: python
         files: ^(lib/claudedirector/p1_features/.*\.py|tests/p1_features/unit/.*\.py)$
         pass_filenames: false
 
       - id: p1-test-coverage
         name: P1 Test Coverage Check
-        entry: python .claudedirector/dev-tools/testing/check_p1_coverage.py
+        entry: python .claudedirector/tools/testing/check_p1_coverage.py
         language: python
         files: ^lib/claudedirector/p1_features/.*\.py$
         pass_filenames: false

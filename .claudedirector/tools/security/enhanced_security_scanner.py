@@ -65,7 +65,7 @@ class EnhancedSecurityScanner:
 
         self.security_exclusions = {
             # Self-exclusion to prevent scanner from flagging itself
-            ".claudedirector/dev-tools/security/",
+            ".claudedirector/tools/security/",
             ".claudedirector/archive/",  # Archive directory contains development artifacts
             ".claudedirector/lib/claudedirector/",  # Symlink for backward compatibility
             ".claudedirector/tests/",  # Test files contain generic test data, not real sensitive data

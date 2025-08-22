@@ -6,8 +6,8 @@ Runs the same checks locally that run in the GitHub Actions CI pipeline,
 eliminating push-and-wait iteration cycles.
 
 Usage:
-    python3 .claudedirector/dev-tools/ci/validate-ci-locally.py
-    python3 .claudedirector/dev-tools/ci/validate-ci-locally.py --fix  # Auto-fix formatting issues
+    python3 .claudedirector/tools/ci/validate-ci-locally.py
+    python3 .claudedirector/tools/ci/validate-ci-locally.py --fix  # Auto-fix formatting issues
 """
 
 import subprocess
@@ -224,7 +224,7 @@ def solid_principles() -> bool:
     # Check if SOLID validator exists (exact CI check)
     import os
 
-    solid_validator_path = ".claudedirector/dev-tools/architecture/solid_validator.py"
+    solid_validator_path = ".claudedirector/tools/architecture/solid_validator.py"
     if not os.path.exists(solid_validator_path):
         print_warning("SOLID validator not found - skipping validation")
         print_success("SOLID Principles (skipped)")

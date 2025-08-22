@@ -18,10 +18,10 @@ Additional checks will be added in future iterations:
 ### Usage
 ```bash
 # Check all CI requirements locally
-python3 .claudedirector/dev-tools/ci/validate-ci-locally.py
+python3 .claudedirector/tools/ci/validate-ci-locally.py
 
 # Future: Auto-fix formatting issues (Part 3)
-# python3 .claudedirector/dev-tools/ci/validate-ci-locally.py --fix
+# python3 .claudedirector/tools/ci/validate-ci-locally.py --fix
 ```
 
 ### Prerequisites
