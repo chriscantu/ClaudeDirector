@@ -159,7 +159,7 @@ def main():
 
         print("\n💡 SOLUTIONS:")
         print("🔧 For temp files: git reset HEAD <file> && git add to .gitignore")
-        print("🚨 For README.md: python3 .claudedirector/dev-tools/protect-readme.py")
+        print("🚨 For README.md: python3 .claudedirector/tools/protect-readme.py")
         print("\n🛡️ NEW RULE: Keep temporary working files out of source control")
         print("=" * 60)
 

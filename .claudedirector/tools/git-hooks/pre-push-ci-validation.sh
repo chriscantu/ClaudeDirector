@@ -180,8 +180,8 @@ echo '✅ MyPy type checking completed'
 # 6. SOLID Principles Validation
 run_step "SOLID Principles Validation" "
 echo '🏗️ ARCHITECTURE - SOLID Principles Validation'
-if [ -f '.claudedirector/dev-tools/architecture/solid_validator.py' ]; then
-    python .claudedirector/dev-tools/architecture/solid_validator.py > /dev/null 2>&1 || echo 'SOLID violations detected (expected for existing codebase)'
+if [ -f '.claudedirector/tools/architecture/solid_validator.py' ]; then
+    python .claudedirector/tools/architecture/solid_validator.py > /dev/null 2>&1 || echo 'SOLID violations detected (expected for existing codebase)'
 else
     echo '⚠️ SOLID validator not found - skipping validation'
 fi
@@ -264,8 +264,8 @@ echo '✅ ALL P0 TESTS COMPLETED - CI P0 coverage now 7/7 (100%)'
 # 8. P0 CI Coverage Validation
 run_step "P0 CI Coverage Validation" "
 echo '🛡️ P0 CI Coverage Guard Validation'
-if [ -f '.claudedirector/dev-tools/ci/validate_p0_coverage.py' ]; then
-    python .claudedirector/dev-tools/ci/validate_p0_coverage.py > /dev/null 2>&1
+if [ -f '.claudedirector/tools/ci/validate_p0_coverage.py' ]; then
+    python .claudedirector/tools/ci/validate_p0_coverage.py > /dev/null 2>&1
     echo '✅ P0 CI coverage validation: PASSED'
 else
     echo '⚠️ P0 coverage validator not found - skipping'
@@ -284,7 +284,7 @@ if command -v pre-commit >/dev/null 2>&1; then
     )
 else
     echo '⚠️ pre-commit not installed - running manual validation'
-    .claudedirector/dev-tools/testing/mandatory_test_validator.py > /dev/null 2>&1
+    .claudedirector/tools/testing/mandatory_test_validator.py > /dev/null 2>&1
 fi
 echo '✅ Pre-commit validation completed'
 "
