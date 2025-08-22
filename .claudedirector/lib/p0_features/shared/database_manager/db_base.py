@@ -17,18 +17,20 @@ logger = structlog.get_logger(__name__)
 
 class QueryType(Enum):
     """Query type classification for intelligent routing"""
+
     TRANSACTIONAL = "transactional"  # SQLite
-    ANALYTICAL = "analytical"        # DuckDB
-    SEMANTIC = "semantic"            # Faiss
-    MIXED = "mixed"                  # Multiple databases
+    ANALYTICAL = "analytical"  # DuckDB
+    SEMANTIC = "semantic"  # Faiss
+    MIXED = "mixed"  # Multiple databases
 
 
 class WorkloadPattern(Enum):
     """Workload pattern classification"""
-    OLTP = "oltp"                   # Online Transaction Processing
-    OLAP = "olap"                   # Online Analytical Processing
-    VECTOR_SEARCH = "vector_search" # Semantic/Vector Search
-    HYBRID = "hybrid"               # Mixed workload
+
+    OLTP = "oltp"  # Online Transaction Processing
+    OLAP = "olap"  # Online Analytical Processing
+    VECTOR_SEARCH = "vector_search"  # Semantic/Vector Search
+    HYBRID = "hybrid"  # Mixed workload
 
 
 @dataclass
@@ -53,24 +55,24 @@ class DatabaseConfig:
     def __post_init__(self):
         if self.sqlite_config is None:
             self.sqlite_config = {
-                'journal_mode': 'WAL',
-                'synchronous': 'NORMAL',
-                'cache_size': -10000,  # 10MB
-                'mmap_size': 268435456  # 256MB
+                "journal_mode": "WAL",
+                "synchronous": "NORMAL",
+                "cache_size": -10000,  # 10MB
+                "mmap_size": 268435456,  # 256MB
             }
 
         if self.duckdb_config is None:
             self.duckdb_config = {
-                'memory_limit': '1GB',
-                'threads': 4,
-                'max_memory': '80%'
+                "memory_limit": "1GB",
+                "threads": 4,
+                "max_memory": "80%",
             }
 
         if self.faiss_config is None:
             self.faiss_config = {
-                'index_type': 'IVF',
-                'embedding_dim': 768,
-                'nlist': 100
+                "index_type": "IVF",
+                "embedding_dim": 768,
+                "nlist": 100,
             }
 
 
@@ -81,7 +83,7 @@ class QueryContext:
     query_type: QueryType
     workload_pattern: WorkloadPattern
     expected_result_size: int = 0
-    priority: str = 'normal'  # 'low', 'normal', 'high', 'critical'
+    priority: str = "normal"  # 'low', 'normal', 'high', 'critical'
     cache_enabled: bool = True
 
     # Performance hints
@@ -172,68 +174,83 @@ class DatabaseEngineBase(ABC):
     def get_performance_stats(self) -> Dict[str, Any]:
         """Get comprehensive performance statistics"""
 
-    def record_query_performance(self, query: str, execution_time_ms: int,
-                                result_count: int, context: QueryContext):
+    def record_query_performance(
+        self,
+        query: str,
+        execution_time_ms: int,
+        result_count: int,
+        context: QueryContext,
+    ):
         """Record query performance for optimization"""
         metric = {
-            'timestamp': logger.info("Query executed",
-                                   execution_time_ms=execution_time_ms,
-                                   result_count=result_count,
-                                   query_type=context.query_type.value),
-            'query_hash': hash(query),
-            'execution_time_ms': execution_time_ms,
-            'result_count': result_count,
-            'query_type': context.query_type.value,
-            'workload_pattern': context.workload_pattern.value,
-            'meets_sla': execution_time_ms < self.config.max_query_time_ms
+            "timestamp": logger.info(
+                "Query executed",
+                execution_time_ms=execution_time_ms,
+                result_count=result_count,
+                query_type=context.query_type.value,
+            ),
+            "query_hash": hash(query),
+            "execution_time_ms": execution_time_ms,
+            "result_count": result_count,
+            "query_type": context.query_type.value,
+            "workload_pattern": context.workload_pattern.value,
+            "meets_sla": execution_time_ms < self.config.max_query_time_ms,
         }
 
         self._performance_metrics.append(metric)
 
         # Alert if performance SLA violated
         if execution_time_ms > self.config.max_query_time_ms:
-            self.logger.warning("Query SLA violation",
-                              execution_time_ms=execution_time_ms,
-                              sla_threshold_ms=self.config.max_query_time_ms,
-                              query_type=context.query_type.value)
+            self.logger.warning(
+                "Query SLA violation",
+                execution_time_ms=execution_time_ms,
+                sla_threshold_ms=self.config.max_query_time_ms,
+                query_type=context.query_type.value,
+            )
 
     def get_health_status(self) -> Dict[str, Any]:
         """Get database engine health status"""
         if not self._performance_metrics:
-            return {'status': 'no_data', 'metrics': {}}
+            return {"status": "no_data", "metrics": {}}
 
         recent_metrics = self._performance_metrics[-100:]  # Last 100 queries
 
-        avg_time = sum(m['execution_time_ms'] for m in recent_metrics) / len(recent_metrics)
-        sla_violation_rate = sum(1 for m in recent_metrics if not m['meets_sla']) / len(recent_metrics)
+        avg_time = sum(m["execution_time_ms"] for m in recent_metrics) / len(
+            recent_metrics
+        )
+        sla_violation_rate = sum(1 for m in recent_metrics if not m["meets_sla"]) / len(
+            recent_metrics
+        )
 
-        status = 'healthy'
+        status = "healthy"
         if avg_time > self.config.max_query_time_ms * 0.8:
-            status = 'warning'
+            status = "warning"
         if sla_violation_rate > 0.05:  # >5% SLA violations
-            status = 'critical'
+            status = "critical"
 
         return {
-            'status': status,
-            'metrics': {
-                'avg_query_time_ms': avg_time,
-                'sla_violation_rate': sla_violation_rate,
-                'total_queries': len(self._performance_metrics),
-                'recent_queries': len(recent_metrics)
-            }
+            "status": status,
+            "metrics": {
+                "avg_query_time_ms": avg_time,
+                "sla_violation_rate": sla_violation_rate,
+                "total_queries": len(self._performance_metrics),
+                "recent_queries": len(recent_metrics),
+            },
         }
 
 
 class DatabaseResult:
     """Standard result format for all database operations"""
 
-    def __init__(self,
-                 success: bool,
-                 data: List[Dict[str, Any]],
-                 execution_time_ms: int,
-                 engine_used: str,
-                 query_hash: str = "",
-                 cache_hit: bool = False):
+    def __init__(
+        self,
+        success: bool,
+        data: List[Dict[str, Any]],
+        execution_time_ms: int,
+        engine_used: str,
+        query_hash: str = "",
+        cache_hit: bool = False,
+    ):
         self.success = success
         self.data = data
         self.execution_time_ms = execution_time_ms
@@ -246,12 +263,12 @@ class DatabaseResult:
     def to_dict(self) -> Dict[str, Any]:
         """Convert result to dictionary for API responses"""
         return {
-            'success': self.success,
-            'data': self.data,
-            'execution_time_ms': self.execution_time_ms,
-            'engine_used': self.engine_used,
-            'query_hash': self.query_hash,
-            'cache_hit': self.cache_hit,
-            'performance_sla_met': self.meets_performance_sla,
-            'result_count': self.result_count
+            "success": self.success,
+            "data": self.data,
+            "execution_time_ms": self.execution_time_ms,
+            "engine_used": self.engine_used,
+            "query_hash": self.query_hash,
+            "cache_hit": self.cache_hit,
+            "performance_sla_met": self.meets_performance_sla,
+            "result_count": self.result_count,
         }

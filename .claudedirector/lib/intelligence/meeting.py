@@ -64,10 +64,19 @@ except ImportError:
             }
 
         def scan_directory(self, directory_path=None):
-            return {"files_processed": 0, "meetings_detected": 0, "errors": 0, "new_sessions": 0}
+            return {
+                "files_processed": 0,
+                "meetings_detected": 0,
+                "errors": 0,
+                "new_sessions": 0,
+            }
 
         def get_meeting_patterns(self):
-            return {"total_sessions": 0, "stakeholder_patterns": {}, "meeting_types": {}}
+            return {
+                "total_sessions": 0,
+                "stakeholder_patterns": {},
+                "meeting_types": {},
+            }
 
         def extract_metadata(self, content):
             return {
@@ -124,9 +133,13 @@ class MeetingIntelligence:
         try:
             return self.meeting_manager.process_meeting_file(file_path, content)
         except Exception as e:
-            raise AIDetectionError(f"Meeting processing failed: {e}", detection_type="meeting")
+            raise AIDetectionError(
+                f"Meeting processing failed: {e}", detection_type="meeting"
+            )
 
-    def scan_workspace_for_meetings(self, workspace_path: Optional[str] = None) -> Dict[str, Any]:
+    def scan_workspace_for_meetings(
+        self, workspace_path: Optional[str] = None
+    ) -> Dict[str, Any]:
         """
         Scan workspace for meeting files and process them
 
@@ -144,7 +157,9 @@ class MeetingIntelligence:
                 f"Workspace meeting scanning failed: {e}", detection_type="meeting"
             )
 
-    def get_meeting_patterns(self, stakeholder_filter: Optional[str] = None) -> Dict[str, Any]:
+    def get_meeting_patterns(
+        self, stakeholder_filter: Optional[str] = None
+    ) -> Dict[str, Any]:
         """
         Get meeting patterns and insights
 
@@ -188,9 +203,13 @@ class MeetingIntelligence:
         try:
             return self.meeting_manager.extract_metadata(content)
         except Exception as e:
-            raise AIDetectionError(f"Metadata extraction failed: {e}", detection_type="meeting")
+            raise AIDetectionError(
+                f"Metadata extraction failed: {e}", detection_type="meeting"
+            )
 
-    def suggest_optimal_personas(self, meeting_context: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def suggest_optimal_personas(
+        self, meeting_context: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
         """
         Suggest optimal AI personas for meeting context
 
@@ -203,7 +222,9 @@ class MeetingIntelligence:
         try:
             return self.meeting_manager.suggest_personas(meeting_context)
         except Exception as e:
-            raise AIDetectionError(f"Persona suggestion failed: {e}", detection_type="meeting")
+            raise AIDetectionError(
+                f"Persona suggestion failed: {e}", detection_type="meeting"
+            )
 
     def infer_meeting_type(self, meeting_indicators: Dict[str, Any]) -> str:
         """
@@ -218,9 +239,13 @@ class MeetingIntelligence:
         try:
             return self.meeting_manager.infer_meeting_type(meeting_indicators)
         except Exception as e:
-            raise AIDetectionError(f"Meeting type inference failed: {e}", detection_type="meeting")
+            raise AIDetectionError(
+                f"Meeting type inference failed: {e}", detection_type="meeting"
+            )
 
-    def track_stakeholder_interactions(self, session_data: Dict[str, Any]) -> Dict[str, Any]:
+    def track_stakeholder_interactions(
+        self, session_data: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """
         Track stakeholder interactions through meeting data
 
@@ -264,7 +289,9 @@ class MeetingIntelligence:
                     analysis["frequency_analysis"][stakeholder] = {
                         "frequency": frequency,
                         "last_meeting": last_meeting,
-                        "needs_follow_up": self._should_follow_up(frequency, last_meeting),
+                        "needs_follow_up": self._should_follow_up(
+                            frequency, last_meeting
+                        ),
                     }
 
                     if analysis["frequency_analysis"][stakeholder]["needs_follow_up"]:
@@ -308,13 +335,15 @@ class MeetingIntelligence:
                     engagement_scores.append(score)
 
                 if engagement_scores:
-                    metrics["stakeholder_engagement_score"] = sum(engagement_scores) / len(
+                    metrics["stakeholder_engagement_score"] = sum(
                         engagement_scores
-                    )
+                    ) / len(engagement_scores)
 
             return metrics
         except Exception as e:
-            raise DatabaseError(f"Meeting effectiveness metrics calculation failed: {e}")
+            raise DatabaseError(
+                f"Meeting effectiveness metrics calculation failed: {e}"
+            )
 
     def _should_follow_up(self, frequency: str, last_meeting: Optional[str]) -> bool:
         """Check if stakeholder needs follow-up based on frequency and last meeting"""

@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class MCPResponse:
     """Response from MCP server execution"""
+
     content: str
     source_server: str
     processing_time: float
@@ -27,6 +28,7 @@ class MCPResponse:
 @dataclass
 class ConnectionStatus:
     """Status of MCP server connections"""
+
     available_servers: List[str]
     failed_servers: List[str]
     total_servers: int
@@ -57,7 +59,7 @@ class MCPUseClient:
     def _load_config(self) -> Dict[str, Any]:
         """Load MCP server configuration"""
         try:
-            with open(self.config_path, 'r') as f:
+            with open(self.config_path, "r") as f:
                 return yaml.safe_load(f)
         except FileNotFoundError:
             logger.warning(f"MCP config file not found: {self.config_path}")
@@ -113,22 +115,28 @@ class MCPUseClient:
                     else:
                         failed_servers.append(server_name)
                         self.failed_servers.add(server_name)
-                        logger.warning(f"Failed to connect to MCP server: {server_name}")
+                        logger.warning(
+                            f"Failed to connect to MCP server: {server_name}"
+                        )
                 except Exception as e:
                     failed_servers.append(server_name)
                     self.failed_servers.add(server_name)
                     logger.error(f"Error connecting to {server_name}: {e}")
 
             total_servers = len(self.config.get("servers", {}))
-            success_rate = len(available_servers) / total_servers if total_servers > 0 else 0.0
+            success_rate = (
+                len(available_servers) / total_servers if total_servers > 0 else 0.0
+            )
 
-            logger.info(f"MCP connections initialized: {len(available_servers)}/{total_servers} servers available")
+            logger.info(
+                f"MCP connections initialized: {len(available_servers)}/{total_servers} servers available"
+            )
 
             return ConnectionStatus(
                 available_servers=available_servers,
                 failed_servers=failed_servers,
                 total_servers=total_servers,
-                success_rate=success_rate
+                success_rate=success_rate,
             )
 
         except Exception as e:
@@ -144,18 +152,20 @@ class MCPUseClient:
                 # STDIO connection configuration
                 client_config["mcpServers"][server_name] = {
                     "command": server_config.get("command"),
-                    "args": server_config.get("args", [])
+                    "args": server_config.get("args", []),
                 }
             elif server_config.get("fallback", {}).get("transport") == "http":
                 # HTTP fallback configuration
                 client_config["mcpServers"][server_name] = {
                     "transport": "http",
-                    "url": server_config["fallback"]["url"]
+                    "url": server_config["fallback"]["url"],
                 }
 
         return client_config
 
-    async def execute_analysis(self, server: str, query: str, timeout: int = 8) -> MCPResponse:
+    async def execute_analysis(
+        self, server: str, query: str, timeout: int = 8
+    ) -> MCPResponse:
         """
         Execute analysis request on specified MCP server
 
@@ -177,7 +187,7 @@ class MCPUseClient:
                     source_server=server,
                     processing_time=0.0,
                     success=False,
-                    error_message=f"Server {server} is not available"
+                    error_message=f"Server {server} is not available",
                 )
 
             if not self.mcp_client or server not in self.connected_servers:
@@ -186,7 +196,7 @@ class MCPUseClient:
                     source_server=server,
                     processing_time=0.0,
                     success=False,
-                    error_message=f"No connection to server {server}"
+                    error_message=f"No connection to server {server}",
                 )
 
             # Execute request with timeout
@@ -194,17 +204,20 @@ class MCPUseClient:
 
             # Use asyncio.wait_for for timeout handling
             result = await asyncio.wait_for(
-                session.call_tool("analyze", {"query": query}),
-                timeout=timeout
+                session.call_tool("analyze", {"query": query}), timeout=timeout
             )
 
             processing_time = asyncio.get_event_loop().time() - start_time
 
             # Extract content from result
             content = ""
-            if result and hasattr(result, 'content') and result.content:
+            if result and hasattr(result, "content") and result.content:
                 if isinstance(result.content, list) and len(result.content) > 0:
-                    content = result.content[0].text if hasattr(result.content[0], 'text') else str(result.content[0])
+                    content = (
+                        result.content[0].text
+                        if hasattr(result.content[0], "text")
+                        else str(result.content[0])
+                    )
                 else:
                     content = str(result.content)
 
@@ -214,7 +227,7 @@ class MCPUseClient:
                 content=content,
                 source_server=server,
                 processing_time=processing_time,
-                success=True
+                success=True,
             )
 
         except asyncio.TimeoutError:
@@ -225,7 +238,7 @@ class MCPUseClient:
                 source_server=server,
                 processing_time=processing_time,
                 success=False,
-                error_message=f"Request timeout after {timeout}s"
+                error_message=f"Request timeout after {timeout}s",
             )
 
         except Exception as e:
@@ -236,7 +249,7 @@ class MCPUseClient:
                 source_server=server,
                 processing_time=processing_time,
                 success=False,
-                error_message=str(e)
+                error_message=str(e),
             )
 
     async def cleanup_connections(self) -> None:

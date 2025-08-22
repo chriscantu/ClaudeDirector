@@ -108,7 +108,9 @@ class ParallelProcessor:
         if self.validation_mode and len(file_paths) <= 3:
             # For small batches, run sequential validation
             seq_start = time.time()
-            sequential_results = self._process_files_sequential(file_paths, processor_func)
+            sequential_results = self._process_files_sequential(
+                file_paths, processor_func
+            )
             sequential_time = time.time() - seq_start
 
             logger.debug(
@@ -199,7 +201,9 @@ class ParallelProcessor:
                 }
             else:
                 # Emergency sequential processing
-                emergency_results = self._process_files_sequential(file_paths, processor_func)
+                emergency_results = self._process_files_sequential(
+                    file_paths, processor_func
+                )
                 emergency_time = time.time() - start_time
 
                 self.stats["fallback_activations"] += 1
@@ -228,7 +232,9 @@ class ParallelProcessor:
                     results.append(result)
             except Exception as e:
                 logger.warning(
-                    "Sequential processing error for file", file=str(file_path), error=str(e)
+                    "Sequential processing error for file",
+                    file=str(file_path),
+                    error=str(e),
                 )
                 # Continue processing other files
                 continue
@@ -243,7 +249,8 @@ class ParallelProcessor:
 
         # Chunk files for better memory management
         file_chunks = [
-            file_paths[i : i + chunk_size] for i in range(0, len(file_paths), chunk_size)
+            file_paths[i : i + chunk_size]
+            for i in range(0, len(file_paths), chunk_size)
         ]
 
         with concurrent.futures.ThreadPoolExecutor(
@@ -262,14 +269,20 @@ class ParallelProcessor:
                     chunk_results = future.result()
                     results.extend(chunk_results)
                 except Exception as e:
-                    logger.error("Chunk processing failed", chunk_size=len(chunk), error=str(e))
+                    logger.error(
+                        "Chunk processing failed", chunk_size=len(chunk), error=str(e)
+                    )
                     # Process chunk sequentially as fallback
-                    chunk_results = self._process_files_sequential(chunk, processor_func)
+                    chunk_results = self._process_files_sequential(
+                        chunk, processor_func
+                    )
                     results.extend(chunk_results)
 
         return results
 
-    def _process_chunk(self, file_paths: List[Path], processor_func: Callable) -> List[Any]:
+    def _process_chunk(
+        self, file_paths: List[Path], processor_func: Callable
+    ) -> List[Any]:
         """Process a chunk of files in a single thread"""
         chunk_results = []
 
@@ -280,7 +293,9 @@ class ParallelProcessor:
                     chunk_results.append(result)
             except Exception as e:
                 logger.warning(
-                    "File processing error in parallel chunk", file=str(file_path), error=str(e)
+                    "File processing error in parallel chunk",
+                    file=str(file_path),
+                    error=str(e),
                 )
                 continue
 
@@ -344,7 +359,8 @@ class ParallelProcessor:
 
         # Process in batches for memory management
         batches = [
-            content_items[i : i + batch_size] for i in range(0, len(content_items), batch_size)
+            content_items[i : i + batch_size]
+            for i in range(0, len(content_items), batch_size)
         ]
 
         try:
@@ -352,18 +368,24 @@ class ParallelProcessor:
                 max_workers=min(self.max_workers, len(batches))
             ) as executor:
                 future_to_batch = {
-                    executor.submit(self._process_content_batch, batch, processor_func): batch
+                    executor.submit(
+                        self._process_content_batch, batch, processor_func
+                    ): batch
                     for batch in batches
                 }
 
-                for future in concurrent.futures.as_completed(future_to_batch, timeout=180):
+                for future in concurrent.futures.as_completed(
+                    future_to_batch, timeout=180
+                ):
                     try:
                         batch_results = future.result()
                         all_results.extend(batch_results)
                     except Exception as e:
                         batch = future_to_batch[future]
                         logger.error(
-                            "Content batch processing failed", batch_size=len(batch), error=str(e)
+                            "Content batch processing failed",
+                            batch_size=len(batch),
+                            error=str(e),
                         )
                         # Sequential fallback for failed batch
                         for content, context in batch:
@@ -389,9 +411,9 @@ class ParallelProcessor:
                 "results": all_results,
                 "batches_processed": len(batches),
                 "processing_time": processing_time,
-                "items_per_second": len(content_items) / processing_time
-                if processing_time > 0
-                else 0,
+                "items_per_second": (
+                    len(content_items) / processing_time if processing_time > 0 else 0
+                ),
             }
 
         except Exception as e:
@@ -413,7 +435,9 @@ class ParallelProcessor:
                     batch_results.append(result)
             except Exception as e:
                 logger.warning(
-                    "Content processing error in batch", content_length=len(content), error=str(e)
+                    "Content processing error in batch",
+                    content_length=len(content),
+                    error=str(e),
                 )
                 continue
 
@@ -428,7 +452,9 @@ class ParallelProcessor:
             "validation_checks_passed": self.stats["validation_checks_passed"],
             "fallback_activations": self.stats["fallback_activations"],
             "fallback_rate": round(
-                self.stats["fallback_activations"] / max(self.stats["operations_completed"], 1), 2
+                self.stats["fallback_activations"]
+                / max(self.stats["operations_completed"], 1),
+                2,
             ),
             "max_workers": self.max_workers,
             "validation_mode": self.validation_mode,

@@ -16,6 +16,6 @@ from .memory_manager import StrategicMemoryManager
 from .optimized_db_manager import OptimizedSQLiteManager
 
 __all__ = [
-    'StrategicMemoryManager',
-    'OptimizedSQLiteManager',
+    "StrategicMemoryManager",
+    "OptimizedSQLiteManager",
 ]

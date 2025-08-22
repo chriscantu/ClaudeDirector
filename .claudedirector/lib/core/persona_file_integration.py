@@ -7,6 +7,7 @@ from typing import Dict, Optional, List, Any
 
 from .workspace_file_handler import WorkspaceFileHandler
 
+
 class PersonaFileIntegration:
     """Integrates AI personas with workspace file lifecycle management"""
 
@@ -16,65 +17,79 @@ class PersonaFileIntegration:
         # Map personas to their preferred content types
         self.persona_content_preferences = {
             "alvaro": [
-                "strategic_analysis", "executive_presentation",
-                "quarterly_planning", "meeting_prep"
+                "strategic_analysis",
+                "executive_presentation",
+                "quarterly_planning",
+                "meeting_prep",
             ],
             "rachel": [
-                "strategic_analysis", "methodology_documentation",
-                "executive_presentation", "meeting_prep"
+                "strategic_analysis",
+                "methodology_documentation",
+                "executive_presentation",
+                "meeting_prep",
             ],
             "diego": [
-                "strategic_analysis", "meeting_prep",
-                "quarterly_planning", "session_summary"
+                "strategic_analysis",
+                "meeting_prep",
+                "quarterly_planning",
+                "session_summary",
             ],
             "camille": [
-                "strategic_analysis", "framework_research",
-                "methodology_documentation", "executive_presentation"
+                "strategic_analysis",
+                "framework_research",
+                "methodology_documentation",
+                "executive_presentation",
             ],
             "martin": [
-                "strategic_analysis", "framework_research",
-                "methodology_documentation", "session_summary"
+                "strategic_analysis",
+                "framework_research",
+                "methodology_documentation",
+                "session_summary",
             ],
             "marcus": [
-                "strategic_analysis", "meeting_prep",
-                "session_summary", "quarterly_planning"
+                "strategic_analysis",
+                "meeting_prep",
+                "session_summary",
+                "quarterly_planning",
             ],
             "david": [
-                "strategic_analysis", "executive_presentation",
-                "quarterly_planning", "meeting_prep"
-            ]
+                "strategic_analysis",
+                "executive_presentation",
+                "quarterly_planning",
+                "meeting_prep",
+            ],
         }
 
         # Content type templates for different scenarios
         self.content_templates = {
             "strategic_analysis": {
                 "business_context": "Strategic analysis and recommendations",
-                "filename_pattern": "strategic-analysis-{persona}-{timestamp}.md"
+                "filename_pattern": "strategic-analysis-{persona}-{timestamp}.md",
             },
             "meeting_prep": {
                 "business_context": "Executive meeting preparation materials",
-                "filename_pattern": "meeting-prep-{persona}-{timestamp}.md"
+                "filename_pattern": "meeting-prep-{persona}-{timestamp}.md",
             },
             "executive_presentation": {
                 "business_context": "Executive stakeholder presentation",
-                "filename_pattern": "executive-presentation-{timestamp}.md"
+                "filename_pattern": "executive-presentation-{timestamp}.md",
             },
             "quarterly_planning": {
                 "business_context": "Quarterly strategic planning",
-                "filename_pattern": "q{quarter}-planning-{timestamp}.md"
+                "filename_pattern": "q{quarter}-planning-{timestamp}.md",
             },
             "framework_research": {
                 "business_context": "Strategic framework research and methodology",
-                "filename_pattern": "framework-research-{timestamp}.md"
+                "filename_pattern": "framework-research-{timestamp}.md",
             },
             "methodology_documentation": {
                 "business_context": "Strategic methodology documentation",
-                "filename_pattern": "methodology-{timestamp}.md"
+                "filename_pattern": "methodology-{timestamp}.md",
             },
             "session_summary": {
                 "business_context": "Strategic session summary and action items",
-                "filename_pattern": "session-summary-{timestamp}.md"
-            }
+                "filename_pattern": "session-summary-{timestamp}.md",
+            },
         }
 
     def persona_generate_file(
@@ -83,7 +98,7 @@ class PersonaFileIntegration:
         content: str,
         content_type: str,
         business_context: Optional[str] = None,
-        custom_filename: Optional[str] = None
+        custom_filename: Optional[str] = None,
     ) -> Optional[str]:
         """Generate file through persona with lifecycle management"""
 
@@ -94,7 +109,9 @@ class PersonaFileIntegration:
         # Use template business context if not provided
         if not business_context:
             template = self.content_templates.get(content_type, {})
-            business_context = template.get("business_context", f"{persona} strategic analysis")
+            business_context = template.get(
+                "business_context", f"{persona} strategic analysis"
+            )
 
         # Generate filename if not provided
         if not custom_filename:
@@ -109,7 +126,7 @@ class PersonaFileIntegration:
             content_type=content_type,
             suggested_filename=custom_filename,
             business_context=business_context,
-            persona=persona
+            persona=persona,
         )
 
         return created_file
@@ -127,18 +144,22 @@ class PersonaFileIntegration:
         quarter = (datetime.now().month - 1) // 3 + 1
 
         template = self.content_templates.get(content_type, {})
-        pattern = template.get("filename_pattern", "{persona}-{content_type}-{timestamp}.md")
+        pattern = template.get(
+            "filename_pattern", "{persona}-{content_type}-{timestamp}.md"
+        )
 
         filename = pattern.format(
             persona=persona,
             content_type=content_type.replace("_", "-"),
             timestamp=timestamp,
-            quarter=quarter
+            quarter=quarter,
         )
 
         return filename
 
-    def _add_persona_context(self, content: str, persona: str, content_type: str) -> str:
+    def _add_persona_context(
+        self, content: str, persona: str, content_type: str
+    ) -> str:
         """Add persona context to content"""
 
         persona_headers = {
@@ -148,17 +169,17 @@ class PersonaFileIntegration:
             "camille": "# 💡 Strategic Technology & Transformation\n*Camille - Executive Technology Strategy*\n\n",
             "martin": "# 🔧 Platform Architecture & Technical Strategy\n*Martin - Technical Architecture & Systems*\n\n",
             "marcus": "# 📈 Platform Adoption & Change Management\n*Marcus - Internal Adoption & Marketing*\n\n",
-            "david": "# 💰 Financial Planning & Investment Strategy\n*David - Budget & Resource Allocation*\n\n"
+            "david": "# 💰 Financial Planning & Investment Strategy\n*David - Budget & Resource Allocation*\n\n",
         }
 
-        header = persona_headers.get(persona, f"# Strategic Analysis\n*{persona.title()}*\n\n")
+        header = persona_headers.get(
+            persona, f"# Strategic Analysis\n*{persona.title()}*\n\n"
+        )
 
         return header + content
 
     def create_consolidated_session_summary(
-        self,
-        session_insights: Dict[str, Any],
-        participating_personas: List[str]
+        self, session_insights: Dict[str, Any], participating_personas: List[str]
     ) -> Optional[str]:
         """Create consolidated summary from multiple persona insights"""
 
@@ -166,7 +187,9 @@ class PersonaFileIntegration:
             return None
 
         # Build comprehensive session summary
-        summary_content = self._build_session_summary(session_insights, participating_personas)
+        summary_content = self._build_session_summary(
+            session_insights, participating_personas
+        )
 
         # Request creation of session summary
         created_file = self.file_handler.request_file_creation(
@@ -174,15 +197,13 @@ class PersonaFileIntegration:
             content_type="session_summary",
             suggested_filename="session-summary",
             business_context="Multi-persona strategic session summary",
-            persona="collaborative"
+            persona="collaborative",
         )
 
         return created_file
 
     def _build_session_summary(
-        self,
-        insights: Dict[str, Any],
-        personas: List[str]
+        self, insights: Dict[str, Any], personas: List[str]
     ) -> str:
         """Build comprehensive session summary content"""
         from datetime import datetime
@@ -213,13 +234,15 @@ class PersonaFileIntegration:
             "camille": "## 💡 Technology Strategy (Camille)",
             "martin": "## 🔧 Technical Architecture (Martin)",
             "marcus": "## 📈 Adoption Strategy (Marcus)",
-            "david": "## 💰 Financial Strategy (David)"
+            "david": "## 💰 Financial Strategy (David)",
         }
 
         for persona in personas:
             if persona in persona_sections:
                 summary += f"\n{persona_sections[persona]}\n\n"
-                persona_insights = insights.get(persona, "No specific insights captured.")
+                persona_insights = insights.get(
+                    persona, "No specific insights captured."
+                )
                 summary += f"{persona_insights}\n\n---\n"
 
         summary += """
@@ -241,10 +264,12 @@ class PersonaFileIntegration:
     def offer_session_consolidation(self) -> bool:
         """Offer to consolidate current session files"""
         print("\n💡 **Session Consolidation Available**")
-        print("Would you like to consolidate this session's insights into a comprehensive summary?")
+        print(
+            "Would you like to consolidate this session's insights into a comprehensive summary?"
+        )
 
         response = input("Create session summary? [y/n]: ").strip().lower()
-        return response == 'y'
+        return response == "y"
 
     def show_workspace_status(self):
         """Show current workspace and lifecycle status"""
@@ -260,8 +285,12 @@ class PersonaFileIntegration:
 
         print(f"\n🎯 **Persona File Integration Ready**")
         print(f"Workspace: {self.file_handler.workspace_path}")
-        print(f"Generation Mode: {self.file_handler.lifecycle_manager.config.generation_mode.value}")
-        print(f"Auto-archive: {self.file_handler.lifecycle_manager.config.auto_archive_days} days")
+        print(
+            f"Generation Mode: {self.file_handler.lifecycle_manager.config.generation_mode.value}"
+        )
+        print(
+            f"Auto-archive: {self.file_handler.lifecycle_manager.config.auto_archive_days} days"
+        )
 
         # Show persona capabilities
         print(f"\n**🎭 Persona Content Capabilities:**")
@@ -284,7 +313,7 @@ def get_content_type_for_request(request_context: str) -> str:
         "framework": "framework_research",
         "methodology": "methodology_documentation",
         "summary": "session_summary",
-        "analysis": "strategic_analysis"
+        "analysis": "strategic_analysis",
     }
 
     request_lower = request_context.lower()
@@ -302,8 +331,15 @@ def extract_business_context(request: str) -> str:
 
     # Look for business context indicators
     business_indicators = [
-        "platform", "engineering", "team", "strategy", "roi",
-        "budget", "stakeholder", "executive", "leadership"
+        "platform",
+        "engineering",
+        "team",
+        "strategy",
+        "roi",
+        "budget",
+        "stakeholder",
+        "executive",
+        "leadership",
     ]
 
     request_words = request.lower().split()

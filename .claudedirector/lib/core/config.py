@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class ThresholdConfig:
     """Threshold configuration with validation"""
+
     quality_threshold: float = 0.7
     complexity_threshold: float = 0.4
     confidence_threshold: float = 0.8
@@ -37,20 +38,42 @@ class ThresholdConfig:
         """Validate threshold ranges"""
         for field_name, value in self.__dict__.items():
             if not isinstance(value, (int, float)):
-                raise ValueError(f"Threshold {field_name} must be numeric, got {type(value)}")
+                raise ValueError(
+                    f"Threshold {field_name} must be numeric, got {type(value)}"
+                )
             if not 0.0 <= value <= 1.0:
-                raise ValueError(f"Threshold {field_name} must be between 0.0 and 1.0, got {value}")
+                raise ValueError(
+                    f"Threshold {field_name} must be between 0.0 and 1.0, got {value}"
+                )
 
 
 @dataclass
 class EnumConfig:
     """Enumeration values configuration"""
-    priority_levels: List[str] = field(default_factory=lambda: ["urgent", "high", "medium", "low"])
-    health_statuses: List[str] = field(default_factory=lambda: ["excellent", "healthy", "at_risk", "failing"])
-    decision_types: List[str] = field(default_factory=lambda: ["strategic", "operational", "technical", "organizational"])
-    stakeholder_types: List[str] = field(default_factory=lambda: ["stakeholder", "internal", "external", "executive"])
-    risk_levels: List[str] = field(default_factory=lambda: ["low", "medium", "high", "critical"])
-    complexity_levels: List[str] = field(default_factory=lambda: ["simple", "moderate", "complex", "very_complex"])
+
+    priority_levels: List[str] = field(
+        default_factory=lambda: ["urgent", "high", "medium", "low"]
+    )
+    health_statuses: List[str] = field(
+        default_factory=lambda: ["excellent", "healthy", "at_risk", "failing"]
+    )
+    decision_types: List[str] = field(
+        default_factory=lambda: [
+            "strategic",
+            "operational",
+            "technical",
+            "organizational",
+        ]
+    )
+    stakeholder_types: List[str] = field(
+        default_factory=lambda: ["stakeholder", "internal", "external", "executive"]
+    )
+    risk_levels: List[str] = field(
+        default_factory=lambda: ["low", "medium", "high", "critical"]
+    )
+    complexity_levels: List[str] = field(
+        default_factory=lambda: ["simple", "moderate", "complex", "very_complex"]
+    )
 
     def __post_init__(self):
         """Validate enum configurations"""
@@ -66,17 +89,26 @@ class EnumConfig:
 @dataclass
 class MessageConfig:
     """Message templates configuration"""
-    framework_detection_message: str = "📚 Strategic Framework: {framework_name} detected"
-    mcp_enhancement_message: str = "🔧 Accessing MCP Server: {server_name} ({capability})"
+
+    framework_detection_message: str = (
+        "📚 Strategic Framework: {framework_name} detected"
+    )
+    mcp_enhancement_message: str = (
+        "🔧 Accessing MCP Server: {server_name} ({capability})"
+    )
     persona_activation_message: str = "{emoji} {name} | {domain}"
     p0_failure_message: str = "❌ BLOCKING FAILURE: {test_name} failed"
-    quality_threshold_message: str = "⚠️ Quality below threshold ({score:.2f} < {threshold:.2f})"
+    quality_threshold_message: str = (
+        "⚠️ Quality below threshold ({score:.2f} < {threshold:.2f})"
+    )
 
     def __post_init__(self):
         """Validate message templates"""
         for field_name, value in self.__dict__.items():
             if not isinstance(value, str):
-                raise ValueError(f"Message {field_name} must be a string, got {type(value)}")
+                raise ValueError(
+                    f"Message {field_name} must be a string, got {type(value)}"
+                )
             if len(value.strip()) == 0:
                 raise ValueError(f"Message {field_name} cannot be empty")
 
@@ -84,9 +116,12 @@ class MessageConfig:
 @dataclass
 class PathConfig:
     """File path configuration"""
+
     strategic_memory_db: str = ".claudedirector/data/strategic_memory.db"
     user_config_path: str = ".claudedirector/config/user_identity.yaml"
-    p0_test_definitions: str = ".claudedirector/tests/p0_enforcement/p0_test_definitions.yaml"
+    p0_test_definitions: str = (
+        ".claudedirector/tests/p0_enforcement/p0_test_definitions.yaml"
+    )
     quality_reports_dir: str = ".claudedirector/reports/quality"
     backup_dir: str = ".claudedirector/backups"
 
@@ -94,7 +129,9 @@ class PathConfig:
         """Validate path configurations"""
         for field_name, value in self.__dict__.items():
             if not isinstance(value, str):
-                raise ValueError(f"Path {field_name} must be a string, got {type(value)}")
+                raise ValueError(
+                    f"Path {field_name} must be a string, got {type(value)}"
+                )
             if len(value.strip()) == 0:
                 raise ValueError(f"Path {field_name} cannot be empty")
 
@@ -109,7 +146,10 @@ class ClaudeDirectorConfig:
 
     def __init__(self, config_file: Optional[Path] = None):
         """Initialize configuration system"""
-        self.config_file = config_file or Path.home() / ".claudedirector" / "config" / "system_config.yaml"
+        self.config_file = (
+            config_file
+            or Path.home() / ".claudedirector" / "config" / "system_config.yaml"
+        )
 
         # Initialize with defaults
         self.thresholds = ThresholdConfig()
@@ -127,37 +167,39 @@ class ClaudeDirectorConfig:
         """Load configuration from YAML file if it exists"""
         if self.config_file.exists():
             try:
-                with open(self.config_file, 'r', encoding='utf-8') as f:
+                with open(self.config_file, "r", encoding="utf-8") as f:
                     config_data = yaml.safe_load(f) or {}
 
                 # Update thresholds
-                if 'thresholds' in config_data:
-                    for key, value in config_data['thresholds'].items():
+                if "thresholds" in config_data:
+                    for key, value in config_data["thresholds"].items():
                         if hasattr(self.thresholds, key):
                             setattr(self.thresholds, key, value)
 
                 # Update enums
-                if 'enums' in config_data:
-                    for key, value in config_data['enums'].items():
+                if "enums" in config_data:
+                    for key, value in config_data["enums"].items():
                         if hasattr(self.enums, key):
                             setattr(self.enums, key, value)
 
                 # Update messages
-                if 'messages' in config_data:
-                    for key, value in config_data['messages'].items():
+                if "messages" in config_data:
+                    for key, value in config_data["messages"].items():
                         if hasattr(self.messages, key):
                             setattr(self.messages, key, value)
 
                 # Update paths
-                if 'paths' in config_data:
-                    for key, value in config_data['paths'].items():
+                if "paths" in config_data:
+                    for key, value in config_data["paths"].items():
                         if hasattr(self.paths, key):
                             setattr(self.paths, key, value)
 
                 logger.info(f"Configuration loaded from {self.config_file}")
 
             except Exception as e:
-                logger.warning(f"Failed to load configuration from {self.config_file}: {e}")
+                logger.warning(
+                    f"Failed to load configuration from {self.config_file}: {e}"
+                )
                 logger.info("Using default configuration")
 
     def _create_lookup_dict(self):
@@ -263,16 +305,16 @@ class ClaudeDirectorConfig:
     def save_config(self):
         """Save current configuration to file"""
         config_data = {
-            'thresholds': self.thresholds.__dict__,
-            'enums': self.enums.__dict__,
-            'messages': self.messages.__dict__,
-            'paths': self.paths.__dict__
+            "thresholds": self.thresholds.__dict__,
+            "enums": self.enums.__dict__,
+            "messages": self.messages.__dict__,
+            "paths": self.paths.__dict__,
         }
 
         # Ensure directory exists
         self.config_file.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(self.config_file, 'w', encoding='utf-8') as f:
+        with open(self.config_file, "w", encoding="utf-8") as f:
             yaml.dump(config_data, f, default_flow_style=False, sort_keys=True)
 
         logger.info(f"Configuration saved to {self.config_file}")
@@ -289,9 +331,9 @@ class ClaudeDirectorConfig:
             "0.85": self.get_threshold("stakeholder_auto_create_threshold"),
             "0.8": self.get_threshold("confidence_threshold"),
             "0.4": self.get_threshold("complexity_threshold"),
-            "0.5": self.get_threshold("performance_degradation_limit") * 10,  # 0.05 * 10 = 0.5
+            "0.5": self.get_threshold("performance_degradation_limit")
+            * 10,  # 0.05 * 10 = 0.5
             "0.6": self.get_threshold("stakeholder_profiling_threshold"),
-
             # Common string patterns
             "strategic": "strategic",
             "operational": "operational",
@@ -347,15 +389,15 @@ def get_path(name: str) -> str:
 
 # Export main classes and functions
 __all__ = [
-    'ClaudeDirectorConfig',
-    'ThresholdConfig',
-    'EnumConfig',
-    'MessageConfig',
-    'PathConfig',
-    'get_config',
-    'reload_config',
-    'get_threshold',
-    'get_enum_values',
-    'get_message_template',
-    'get_path'
+    "ClaudeDirectorConfig",
+    "ThresholdConfig",
+    "EnumConfig",
+    "MessageConfig",
+    "PathConfig",
+    "get_config",
+    "reload_config",
+    "get_threshold",
+    "get_enum_values",
+    "get_message_template",
+    "get_path",
 ]

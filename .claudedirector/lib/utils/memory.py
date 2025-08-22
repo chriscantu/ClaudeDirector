@@ -155,7 +155,9 @@ class MemoryOptimizer:
             Processing results for each batch of chunks
         """
         if not file_path.exists():
-            raise ClaudeDirectorError(f"File not found: {file_path}", component="memory_optimizer")
+            raise ClaudeDirectorError(
+                f"File not found: {file_path}", component="memory_optimizer"
+            )
 
         try:
             file_size = file_path.stat().st_size
@@ -436,7 +438,9 @@ class MemoryOptimizer:
         for generation in range(3):
             collected = gc.collect(generation)
             if collected > 0:
-                logger.debug(f"Emergency GC generation {generation}", objects_collected=collected)
+                logger.debug(
+                    f"Emergency GC generation {generation}", objects_collected=collected
+                )
 
         self.stats["gc_collections"] += 3
 

@@ -14,10 +14,10 @@ from .dashboard_builder import ExecutiveDashboardBuilder
 from .metrics_base import MetricsEngineBase, MetricDefinition, BusinessValue
 
 __all__ = [
-    'StrategicMetricsEngine',
-    'ROICalculator',
-    'ExecutiveDashboardBuilder',
-    'MetricsEngineBase',
-    'MetricDefinition',
-    'BusinessValue'
+    "StrategicMetricsEngine",
+    "ROICalculator",
+    "ExecutiveDashboardBuilder",
+    "MetricsEngineBase",
+    "MetricDefinition",
+    "BusinessValue",
 ]

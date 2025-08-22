@@ -12,8 +12,4 @@ from .persona_bridge import PersonaP2Bridge
 __version__ = "2.1.0"
 __author__ = "ClaudeDirector Team"
 
-__all__ = [
-    "PersonaChatInterface",
-    "ConversationFormatter",
-    "PersonaP2Bridge"
-]
+__all__ = ["PersonaChatInterface", "ConversationFormatter", "PersonaP2Bridge"]

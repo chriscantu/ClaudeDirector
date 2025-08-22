@@ -25,7 +25,9 @@ try:
     HAS_TRANSPARENCY = True
 except ImportError:
     HAS_TRANSPARENCY = False
-    print("✅ ClaudeDirector ready - Enhanced MCP analysis will auto-install when needed")
+    print(
+        "✅ ClaudeDirector ready - Enhanced MCP analysis will auto-install when needed"
+    )
 
     # Create fallback classes
     class MCPContext:
@@ -36,7 +38,11 @@ except ImportError:
             return len(self.mcp_calls) > 0
 
         def get_server_names(self):
-            return [call.server_name for call in self.mcp_calls if hasattr(call, "server_name")]
+            return [
+                call.server_name
+                for call in self.mcp_calls
+                if hasattr(call, "server_name")
+            ]
 
         def add_mcp_call(self, call):
             self.mcp_calls.append(call)
@@ -139,7 +145,9 @@ class CursorTransparencyBridge:
             self.framework_detector = None
             self.mcp_middleware = None
 
-    def detect_persona_from_context(self, user_input: str, assistant_response: str = "") -> str:
+    def detect_persona_from_context(
+        self, user_input: str, assistant_response: str = ""
+    ) -> str:
         """Detect which persona should be activated based on context"""
 
         # Check if response already has persona header
@@ -202,7 +210,9 @@ class CursorTransparencyBridge:
 
         return response
 
-    def detect_mcp_usage_context(self, user_input: str, response: str) -> Optional[MCPContext]:
+    def detect_mcp_usage_context(
+        self, user_input: str, response: str
+    ) -> Optional[MCPContext]:
         """Detect if response should show MCP enhancement based on complexity"""
         # Note: We always run detection even in fallback mode
 
@@ -239,7 +249,10 @@ class CursorTransparencyBridge:
             mcp_context = MCPContext()
 
             # Determine appropriate MCP server based on context
-            if any(word in combined_text for word in ["strategic", "organizational", "framework"]):
+            if any(
+                word in combined_text
+                for word in ["strategic", "organizational", "framework"]
+            ):
                 mcp_context.add_mcp_call(
                     MCPCall(
                         server_name="sequential",
@@ -250,7 +263,10 @@ class CursorTransparencyBridge:
                     )
                 )
 
-            if any(word in combined_text for word in ["architecture", "platform", "technical"]):
+            if any(
+                word in combined_text
+                for word in ["architecture", "platform", "technical"]
+            ):
                 mcp_context.add_mcp_call(
                     MCPCall(
                         server_name="context7",
@@ -265,7 +281,9 @@ class CursorTransparencyBridge:
 
         return None
 
-    def apply_mcp_transparency(self, response: str, persona: str, user_input: str = "") -> str:
+    def apply_mcp_transparency(
+        self, response: str, persona: str, user_input: str = ""
+    ) -> str:
         """Apply MCP transparency disclosure if enhancement detected"""
         if not self.mcp_middleware:
             # Fallback mode - create simple MCP disclosure for complex queries
@@ -279,7 +297,9 @@ class CursorTransparencyBridge:
         # Full transparency mode
         mcp_context = self.detect_mcp_usage_context(user_input, response)
         if mcp_context and mcp_context.has_mcp_calls():
-            return self.mcp_middleware.wrap_persona_response(persona, response, mcp_context)
+            return self.mcp_middleware.wrap_persona_response(
+                persona, response, mcp_context
+            )
 
         return response
 
@@ -345,8 +365,12 @@ def ensure_transparency_compliance(response: str, user_input: str = "") -> str:
 def get_transparency_summary(response: str, user_input: str = "") -> Dict:
     """Get summary of transparency features"""
     # First apply transparency to get the enhanced response, then analyze it
-    enhanced_response = transparency_bridge.apply_transparency_system(response, user_input)
-    return transparency_bridge.create_transparency_summary(enhanced_response, user_input)
+    enhanced_response = transparency_bridge.apply_transparency_system(
+        response, user_input
+    )
+    return transparency_bridge.create_transparency_summary(
+        enhanced_response, user_input
+    )
 
 
 # Example usage for testing

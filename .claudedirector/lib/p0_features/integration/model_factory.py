@@ -9,11 +9,16 @@ from typing import Dict, Any, Optional, Type, Union, List
 import structlog
 
 from ..shared.ai_core.interfaces import (
-    ModelFactory, IDecisionIntelligenceEngine, IHealthPredictionEngine,
-    AIModelType
+    ModelFactory,
+    IDecisionIntelligenceEngine,
+    IHealthPredictionEngine,
+    AIModelType,
 )
 from ..shared.infrastructure.config import (
-    get_config, P0FeatureConfig, DecisionDetectionConfig, HealthPredictionConfig
+    get_config,
+    P0FeatureConfig,
+    DecisionDetectionConfig,
+    HealthPredictionConfig,
 )
 from ..domains.decision_intelligence.engine import DecisionIntelligenceEngine
 from ..domains.health_assessment.engine import HealthAssessmentEngine
@@ -39,16 +44,18 @@ class P0ModelFactory(ModelFactory):
         # Registry of supported models (Open/Closed - extensible)
         self._model_registry: Dict[AIModelType, Type] = {
             AIModelType.DECISION_INTELLIGENCE: DecisionIntelligenceEngine,
-            AIModelType.HEALTH_PREDICTION: HealthAssessmentEngine
+            AIModelType.HEALTH_PREDICTION: HealthAssessmentEngine,
         }
 
         # Configuration mapping
         self._config_mapping = {
             AIModelType.DECISION_INTELLIGENCE: self.config.decision_detection,
-            AIModelType.HEALTH_PREDICTION: self.config.health_prediction
+            AIModelType.HEALTH_PREDICTION: self.config.health_prediction,
         }
 
-    def create_decision_engine(self, config: Optional[Dict[str, Any]] = None) -> IDecisionIntelligenceEngine:
+    def create_decision_engine(
+        self, config: Optional[Dict[str, Any]] = None
+    ) -> IDecisionIntelligenceEngine:
         """
         Create decision intelligence engine with configuration injection
 
@@ -71,27 +78,32 @@ class P0ModelFactory(ModelFactory):
             # Apply configuration overrides if provided
             if config:
                 # Create a copy to avoid mutating the base config
-                engine_config = DecisionDetectionConfig(**{
-                    **base_config.dict(),
-                    **config
-                })
+                engine_config = DecisionDetectionConfig(
+                    **{**base_config.dict(), **config}
+                )
             else:
                 engine_config = base_config
 
             # Create engine with dependency injection
             engine = DecisionIntelligenceEngine(config=engine_config)
 
-            self.logger.info("Decision intelligence engine created",
-                           model_name=engine_config.model_name,
-                           accuracy_threshold=engine_config.accuracy_threshold)
+            self.logger.info(
+                "Decision intelligence engine created",
+                model_name=engine_config.model_name,
+                accuracy_threshold=engine_config.accuracy_threshold,
+            )
 
             return engine
 
         except Exception as e:
-            self.logger.error("Failed to create decision intelligence engine", error=str(e))
+            self.logger.error(
+                "Failed to create decision intelligence engine", error=str(e)
+            )
             raise ValueError(f"Failed to create decision engine: {str(e)}")
 
-    def create_health_engine(self, config: Optional[Dict[str, Any]] = None) -> IHealthPredictionEngine:
+    def create_health_engine(
+        self, config: Optional[Dict[str, Any]] = None
+    ) -> IHealthPredictionEngine:
         """
         Create health prediction engine with configuration injection
 
@@ -114,22 +126,22 @@ class P0ModelFactory(ModelFactory):
             # Apply configuration overrides if provided
             if config:
                 # Create a copy to avoid mutating the base config
-                engine_config = HealthPredictionConfig(**{
-                    **base_config.dict(),
-                    **config
-                })
+                engine_config = HealthPredictionConfig(
+                    **{**base_config.dict(), **config}
+                )
             else:
                 engine_config = base_config
 
             # Create engine with dependency injection
             engine = HealthAssessmentEngine(
-                config=engine_config,
-                recommendation_config=self.config.recommendations
+                config=engine_config, recommendation_config=self.config.recommendations
             )
 
-            self.logger.info("Health assessment engine created",
-                           model_name=engine_config.model_name,
-                           accuracy_threshold=engine_config.accuracy_threshold)
+            self.logger.info(
+                "Health assessment engine created",
+                model_name=engine_config.model_name,
+                accuracy_threshold=engine_config.accuracy_threshold,
+            )
 
             return engine
 
@@ -162,11 +174,15 @@ class P0ModelFactory(ModelFactory):
             model_class: Model implementation class
         """
         self._model_registry[model_type] = model_class
-        self.logger.info("New model type registered",
-                        model_type=model_type.value,
-                        model_class=model_class.__name__)
+        self.logger.info(
+            "New model type registered",
+            model_type=model_type.value,
+            model_class=model_class.__name__,
+        )
 
-    def create_model(self, model_type: AIModelType, config: Optional[Dict[str, Any]] = None) -> Union[IDecisionIntelligenceEngine, IHealthPredictionEngine]:
+    def create_model(
+        self, model_type: AIModelType, config: Optional[Dict[str, Any]] = None
+    ) -> Union[IDecisionIntelligenceEngine, IHealthPredictionEngine]:
         """
         Generic model creation method
 
@@ -195,10 +211,10 @@ class ModelFactoryRegistry:
     Enables multiple factory implementations while maintaining global access
     """
 
-    _instance: Optional['ModelFactoryRegistry'] = None
+    _instance: Optional["ModelFactoryRegistry"] = None
     _factories: Dict[str, ModelFactory] = {}
 
-    def __new__(cls) -> 'ModelFactoryRegistry':
+    def __new__(cls) -> "ModelFactoryRegistry":
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
@@ -232,7 +248,9 @@ class ModelFactoryRegistry:
             factory: Factory implementation
         """
         cls._factories[name] = factory
-        logger.info("Model factory registered", name=name, factory_type=type(factory).__name__)
+        logger.info(
+            "Model factory registered", name=name, factory_type=type(factory).__name__
+        )
 
     @classmethod
     def list_factories(cls) -> List[str]:
@@ -241,6 +259,7 @@ class ModelFactoryRegistry:
 
 
 # Convenience functions for easy access
+
 
 def get_model_factory(factory_name: str = "default") -> ModelFactory:
     """
@@ -255,7 +274,9 @@ def get_model_factory(factory_name: str = "default") -> ModelFactory:
     return ModelFactoryRegistry.get_factory(factory_name)
 
 
-def create_decision_engine(config: Optional[Dict[str, Any]] = None) -> IDecisionIntelligenceEngine:
+def create_decision_engine(
+    config: Optional[Dict[str, Any]] = None,
+) -> IDecisionIntelligenceEngine:
     """
     Convenience function to create decision intelligence engine
 
@@ -269,7 +290,9 @@ def create_decision_engine(config: Optional[Dict[str, Any]] = None) -> IDecision
     return factory.create_decision_engine(config)
 
 
-def create_health_engine(config: Optional[Dict[str, Any]] = None) -> IHealthPredictionEngine:
+def create_health_engine(
+    config: Optional[Dict[str, Any]] = None,
+) -> IHealthPredictionEngine:
     """
     Convenience function to create health prediction engine
 
@@ -293,14 +316,20 @@ class MockModelFactory(ModelFactory):
     def __init__(self):
         self.logger = logger.bind(component="mock_factory")
 
-    def create_decision_engine(self, config: Optional[Dict[str, Any]] = None) -> IDecisionIntelligenceEngine:
+    def create_decision_engine(
+        self, config: Optional[Dict[str, Any]] = None
+    ) -> IDecisionIntelligenceEngine:
         """Create mock decision engine for testing"""
         from ..testing.mocks import MockDecisionEngine
+
         return MockDecisionEngine(config or {})
 
-    def create_health_engine(self, config: Optional[Dict[str, Any]] = None) -> IHealthPredictionEngine:
+    def create_health_engine(
+        self, config: Optional[Dict[str, Any]] = None
+    ) -> IHealthPredictionEngine:
         """Create mock health engine for testing"""
         from ..testing.mocks import MockHealthEngine
+
         return MockHealthEngine(config or {})
 
     def supports_model_type(self, model_type: AIModelType) -> bool:

@@ -17,9 +17,12 @@ logger = structlog.get_logger(__name__)
 class RealMCPIntegrationHelper(MCPIntegrationHelper):
     """Enhanced MCP Integration Helper that uses real ClaudeDirector MCP servers"""
 
-    def __init__(self, transparency_context: TransparencyContext,
-                 persona_manager: TransparentPersonaManager,
-                 mcp_client: MCPUseClient):
+    def __init__(
+        self,
+        transparency_context: TransparencyContext,
+        persona_manager: TransparentPersonaManager,
+        mcp_client: MCPUseClient,
+    ):
         super().__init__(transparency_context, persona_manager)
         self.mcp_client = mcp_client
         self.server_mapping = self._build_server_mapping()
@@ -27,15 +30,29 @@ class RealMCPIntegrationHelper(MCPIntegrationHelper):
     def _build_server_mapping(self) -> Dict[str, List[str]]:
         """Build mapping of persona capabilities to MCP servers"""
         mapping = {
-            'diego': ['sequential'],  # Strategic analysis and systematic frameworks
-            'camille': ['sequential', 'context7'],  # Executive strategy and innovation patterns
-            'rachel': ['context7', 'magic'],  # Design systems and organizational patterns
-            'alvaro': ['sequential', 'context7'],  # Business strategy and competitive analysis
-            'martin': ['context7', 'magic']  # Architecture patterns and technical visualization
+            "diego": ["sequential"],  # Strategic analysis and systematic frameworks
+            "camille": [
+                "sequential",
+                "context7",
+            ],  # Executive strategy and innovation patterns
+            "rachel": [
+                "context7",
+                "magic",
+            ],  # Design systems and organizational patterns
+            "alvaro": [
+                "sequential",
+                "context7",
+            ],  # Business strategy and competitive analysis
+            "martin": [
+                "context7",
+                "magic",
+            ],  # Architecture patterns and technical visualization
         }
         return mapping
 
-    async def call_mcp_server(self, server_name: str, capability: str, **call_kwargs) -> Any:
+    async def call_mcp_server(
+        self, server_name: str, capability: str, **call_kwargs
+    ) -> Any:
         """
         Make an actual MCP server call with automatic transparency tracking
 
@@ -56,17 +73,21 @@ class RealMCPIntegrationHelper(MCPIntegrationHelper):
 
                 # Track failed call
                 self.persona_manager.track_mcp_call(
-                    self.transparency_context, server_name, capability,
-                    processing_time, success=False, error_message=f"Server {server_name} not available"
+                    self.transparency_context,
+                    server_name,
+                    capability,
+                    processing_time,
+                    success=False,
+                    error_message=f"Server {server_name} not available",
                 )
 
                 # Return fallback response
                 return {
-                    'server': server_name,
-                    'capability': capability,
-                    'result': f'Server {server_name} temporarily unavailable',
-                    'fallback': True,
-                    'kwargs': call_kwargs
+                    "server": server_name,
+                    "capability": capability,
+                    "result": f"Server {server_name} temporarily unavailable",
+                    "fallback": True,
+                    "kwargs": call_kwargs,
                 }
 
             # Build query from capability and kwargs
@@ -82,22 +103,29 @@ class RealMCPIntegrationHelper(MCPIntegrationHelper):
             if response.success:
                 # Track successful call
                 self.persona_manager.track_mcp_call(
-                    self.transparency_context, server_name, capability,
-                    processing_time, success=True
+                    self.transparency_context,
+                    server_name,
+                    capability,
+                    processing_time,
+                    success=True,
                 )
 
                 return {
-                    'server': server_name,
-                    'capability': capability,
-                    'result': response.content,
-                    'processing_time': response.processing_time,
-                    'kwargs': call_kwargs
+                    "server": server_name,
+                    "capability": capability,
+                    "result": response.content,
+                    "processing_time": response.processing_time,
+                    "kwargs": call_kwargs,
                 }
             else:
                 # Track failed call
                 self.persona_manager.track_mcp_call(
-                    self.transparency_context, server_name, capability,
-                    processing_time, success=False, error_message=response.error_message
+                    self.transparency_context,
+                    server_name,
+                    capability,
+                    processing_time,
+                    success=False,
+                    error_message=response.error_message,
                 )
 
                 raise Exception(f"MCP server error: {response.error_message}")
@@ -107,35 +135,43 @@ class RealMCPIntegrationHelper(MCPIntegrationHelper):
 
             # Track failed call
             self.persona_manager.track_mcp_call(
-                self.transparency_context, server_name, capability,
-                processing_time, success=False, error_message=str(e)
+                self.transparency_context,
+                server_name,
+                capability,
+                processing_time,
+                success=False,
+                error_message=str(e),
             )
 
-            logger.error("mcp_server_call_failed",
-                        server=server_name, capability=capability, error=str(e))
+            logger.error(
+                "mcp_server_call_failed",
+                server=server_name,
+                capability=capability,
+                error=str(e),
+            )
             raise e
 
     def _build_query(self, capability: str, kwargs: Dict[str, Any]) -> str:
         """Build MCP query from capability and arguments"""
 
-        base_query = kwargs.get('query', kwargs.get('prompt', ''))
+        base_query = kwargs.get("query", kwargs.get("prompt", ""))
 
         # Add capability-specific context
-        if capability == 'systematic_analysis':
+        if capability == "systematic_analysis":
             query = f"Please provide systematic analysis for: {base_query}"
-        elif capability == 'framework_application':
-            framework = kwargs.get('framework', 'strategic framework')
+        elif capability == "framework_application":
+            framework = kwargs.get("framework", "strategic framework")
             query = f"Apply {framework} to analyze: {base_query}"
-        elif capability == 'pattern_access':
-            pattern_type = kwargs.get('pattern_type', 'business pattern')
+        elif capability == "pattern_access":
+            pattern_type = kwargs.get("pattern_type", "business pattern")
             query = f"Access {pattern_type} patterns for: {base_query}"
-        elif capability == 'architecture_patterns':
+        elif capability == "architecture_patterns":
             query = f"Provide architecture pattern guidance for: {base_query}"
-        elif capability == 'business_visualization':
-            viz_type = kwargs.get('visualization_type', 'business diagram')
+        elif capability == "business_visualization":
+            viz_type = kwargs.get("visualization_type", "business diagram")
             query = f"Create {viz_type} visualization for: {base_query}"
-        elif capability == 'competitive_intel':
-            market = kwargs.get('market', 'current market')
+        elif capability == "competitive_intel":
+            market = kwargs.get("market", "current market")
             query = f"Analyze competitive intelligence in {market} for: {base_query}"
         else:
             # Generic capability query
@@ -143,7 +179,9 @@ class RealMCPIntegrationHelper(MCPIntegrationHelper):
 
         return query
 
-    async def call_persona_appropriate_servers(self, persona: str, capability: str, **kwargs) -> List[Dict[str, Any]]:
+    async def call_persona_appropriate_servers(
+        self, persona: str, capability: str, **kwargs
+    ) -> List[Dict[str, Any]]:
         """
         Call MCP servers appropriate for the given persona and capability
 
@@ -178,8 +216,11 @@ class EnhancedTransparentPersonaManager(TransparentPersonaManager):
     Enhanced Transparent Persona Manager integrated with real ClaudeDirector MCP infrastructure
     """
 
-    def __init__(self, transparency_system: IntegratedTransparencySystem,
-                 mcp_client: MCPUseClient):
+    def __init__(
+        self,
+        transparency_system: IntegratedTransparencySystem,
+        mcp_client: MCPUseClient,
+    ):
         super().__init__(transparency_system)
         self.mcp_client = mcp_client
 
@@ -206,13 +247,15 @@ class EnhancedTransparentPersonaManager(TransparentPersonaManager):
 
     async def _diego_mcp_handler(self, query: str, **kwargs) -> str:
         """Diego - Strategic Leadership with real MCP server integration"""
-        transparency_context = kwargs.get('transparency_context')
-        mcp_helper = RealMCPIntegrationHelper(transparency_context, self, self.mcp_client)
+        transparency_context = kwargs.get("transparency_context")
+        mcp_helper = RealMCPIntegrationHelper(
+            transparency_context, self, self.mcp_client
+        )
 
         try:
             # Use Sequential server for systematic strategic analysis
             results = await mcp_helper.call_persona_appropriate_servers(
-                'diego', 'systematic_analysis', query=query
+                "diego", "systematic_analysis", query=query
             )
 
             # Build enhanced response
@@ -224,7 +267,7 @@ I'm excited to explore this challenge with you. Let me break this down systemati
 
             if results:
                 # Incorporate MCP analysis
-                mcp_analysis = results[0].get('result', 'Analysis completed')
+                mcp_analysis = results[0].get("result", "Analysis completed")
                 base_response += f"""
 
 {mcp_analysis}
@@ -256,17 +299,25 @@ While my enhanced strategic analysis systems are temporarily unavailable, I'm dr
 
     async def _camille_mcp_handler(self, query: str, **kwargs) -> str:
         """Camille - Innovation & Technology with MCP integration"""
-        transparency_context = kwargs.get('transparency_context')
-        mcp_helper = RealMCPIntegrationHelper(transparency_context, self, self.mcp_client)
+        transparency_context = kwargs.get("transparency_context")
+        mcp_helper = RealMCPIntegrationHelper(
+            transparency_context, self, self.mcp_client
+        )
 
         try:
             # Use Sequential for strategic analysis + Context7 for innovation patterns
             strategic_results = await mcp_helper.call_mcp_server(
-                'sequential', 'framework_application', query=query, framework='innovation framework'
+                "sequential",
+                "framework_application",
+                query=query,
+                framework="innovation framework",
             )
 
             pattern_results = await mcp_helper.call_mcp_server(
-                'context7', 'pattern_access', query=query, pattern_type='innovation pattern'
+                "context7",
+                "pattern_access",
+                query=query,
+                pattern_type="innovation pattern",
             )
 
             base_response = f"""**Innovation Analysis - Camille**
@@ -276,13 +327,13 @@ As we think about organizational strategy, let's be honest about what we're deal
 **Innovation Framework Application:**"""
 
             if strategic_results or pattern_results:
-                if strategic_results and strategic_results.get('result'):
+                if strategic_results and strategic_results.get("result"):
                     base_response += f"""
 
 **Strategic Innovation Analysis:**
 {strategic_results['result']}"""
 
-                if pattern_results and pattern_results.get('result'):
+                if pattern_results and pattern_results.get("result"):
                     base_response += f"""
 
 **Innovation Pattern Insights:**
@@ -315,20 +366,28 @@ While my enhanced innovation analysis systems are temporarily offline, I'm apply
 
     async def _rachel_mcp_handler(self, query: str, **kwargs) -> str:
         """Rachel - Change Management with Context7 and Magic integration"""
-        transparency_context = kwargs.get('transparency_context')
-        mcp_helper = RealMCPIntegrationHelper(transparency_context, self, self.mcp_client)
+        transparency_context = kwargs.get("transparency_context")
+        mcp_helper = RealMCPIntegrationHelper(
+            transparency_context, self, self.mcp_client
+        )
 
         try:
             # Use Context7 for organizational patterns + Magic for visualizations
             org_results = await mcp_helper.call_mcp_server(
-                'context7', 'pattern_access', query=query, pattern_type='organizational pattern'
+                "context7",
+                "pattern_access",
+                query=query,
+                pattern_type="organizational pattern",
             )
 
             # Try to get visualization support
             viz_results = None
-            if self.mcp_client.is_server_available('magic'):
+            if self.mcp_client.is_server_available("magic"):
                 viz_results = await mcp_helper.call_mcp_server(
-                    'magic', 'business_visualization', query=query, visualization_type='change roadmap'
+                    "magic",
+                    "business_visualization",
+                    query=query,
+                    visualization_type="change roadmap",
                 )
 
             base_response = f"""**Change Management Analysis - Rachel**
@@ -337,7 +396,7 @@ I love how this impacts the user experience. Let's think about this holistically
 
 **Organizational Change Assessment:**"""
 
-            if org_results and org_results.get('result'):
+            if org_results and org_results.get("result"):
                 base_response += f"""
 
 **Organizational Pattern Analysis:**
@@ -348,7 +407,7 @@ I love how this impacts the user experience. Let's think about this holistically
 - ADKAR framework for individual change readiness
 - Design system scaling methodology for organizational alignment"""
 
-                if viz_results and viz_results.get('result'):
+                if viz_results and viz_results.get("result"):
                     base_response += f"""
 
 **Change Visualization:**
@@ -383,17 +442,19 @@ While my enhanced organizational analysis systems are temporarily unavailable, I
 
     async def _alvaro_mcp_handler(self, query: str, **kwargs) -> str:
         """Alvaro - Technical Excellence with Sequential and Context7 integration"""
-        transparency_context = kwargs.get('transparency_context')
-        mcp_helper = RealMCPIntegrationHelper(transparency_context, self, self.mcp_client)
+        transparency_context = kwargs.get("transparency_context")
+        mcp_helper = RealMCPIntegrationHelper(
+            transparency_context, self, self.mcp_client
+        )
 
         try:
             # Use Sequential for business analysis + Context7 for technical patterns
             business_results = await mcp_helper.call_mcp_server(
-                'sequential', 'business_strategy', query=query
+                "sequential", "business_strategy", query=query
             )
 
             tech_results = await mcp_helper.call_mcp_server(
-                'context7', 'architecture_patterns', query=query
+                "context7", "architecture_patterns", query=query
             )
 
             base_response = f"""**Technical Excellence Analysis - Alvaro**
@@ -403,13 +464,13 @@ Let's get real about the business impact here. What's the ROI story we're tellin
 **Business-Technical Alignment:**"""
 
             if business_results or tech_results:
-                if business_results and business_results.get('result'):
+                if business_results and business_results.get("result"):
                     base_response += f"""
 
 **Business Impact Analysis:**
 {business_results['result']}"""
 
-                if tech_results and tech_results.get('result'):
+                if tech_results and tech_results.get("result"):
                     base_response += f"""
 
 **Technical Architecture Patterns:**
@@ -448,19 +509,24 @@ While my enhanced business intelligence and architecture pattern systems are tem
 
     async def _martin_mcp_handler(self, query: str, **kwargs) -> str:
         """Martin - Business Development with Context7 and Magic integration"""
-        transparency_context = kwargs.get('transparency_context')
-        mcp_helper = RealMCPIntegrationHelper(transparency_context, self, self.mcp_client)
+        transparency_context = kwargs.get("transparency_context")
+        mcp_helper = RealMCPIntegrationHelper(
+            transparency_context, self, self.mcp_client
+        )
 
         try:
             # Use Context7 for architectural patterns + Magic for business visualizations
             arch_results = await mcp_helper.call_mcp_server(
-                'context7', 'architecture_patterns', query=query
+                "context7", "architecture_patterns", query=query
             )
 
             viz_results = None
-            if self.mcp_client.is_server_available('magic'):
+            if self.mcp_client.is_server_available("magic"):
                 viz_results = await mcp_helper.call_mcp_server(
-                    'magic', 'business_visualization', query=query, visualization_type='business architecture'
+                    "magic",
+                    "business_visualization",
+                    query=query,
+                    visualization_type="business architecture",
                 )
 
             base_response = f"""**Business Development Analysis - Martin**
@@ -470,13 +536,13 @@ Let me think about this architecturally. There are some interesting patterns her
 **Architectural Business Strategy:**"""
 
             if arch_results or viz_results:
-                if arch_results and arch_results.get('result'):
+                if arch_results and arch_results.get("result"):
                     base_response += f"""
 
 **Architecture Pattern Analysis:**
 {arch_results['result']}"""
 
-                if viz_results and viz_results.get('result'):
+                if viz_results and viz_results.get("result"):
                     base_response += f"""
 
 **Business Architecture Visualization:**
@@ -517,20 +583,22 @@ While my enhanced architectural pattern and business visualization systems are t
         """Generate fallback response when MCP integration fails"""
 
         persona_styles = {
-            'diego': "I'm excited to help you think through this strategic challenge. While my enhanced analysis capabilities are temporarily offline, I can still provide strategic guidance based on proven frameworks.",
-            'camille': "Let's approach this innovation challenge systematically. Although my enhanced innovation intelligence is temporarily unavailable, I'll apply organizational strategy principles to help.",
-            'rachel': "This is an interesting user experience challenge. While my design system analysis capabilities are offline, I can still provide change management guidance based on proven methodologies.",
-            'alvaro': "Let's focus on the business impact here. Even though my enhanced business intelligence systems are temporarily down, I can provide technical analysis based on proven patterns.",
-            'martin': "Let me think about this from an architectural perspective. While my pattern analysis systems are temporarily offline, I can apply evolutionary architecture principles to help."
+            "diego": "I'm excited to help you think through this strategic challenge. While my enhanced analysis capabilities are temporarily offline, I can still provide strategic guidance based on proven frameworks.",
+            "camille": "Let's approach this innovation challenge systematically. Although my enhanced innovation intelligence is temporarily unavailable, I'll apply organizational strategy principles to help.",
+            "rachel": "This is an interesting user experience challenge. While my design system analysis capabilities are offline, I can still provide change management guidance based on proven methodologies.",
+            "alvaro": "Let's focus on the business impact here. Even though my enhanced business intelligence systems are temporarily down, I can provide technical analysis based on proven patterns.",
+            "martin": "Let me think about this from an architectural perspective. While my pattern analysis systems are temporarily offline, I can apply evolutionary architecture principles to help.",
         }
 
-        return persona_styles.get(persona, "I understand your question and will provide the best guidance I can with my standard capabilities.")
+        return persona_styles.get(
+            persona,
+            "I understand your question and will provide the best guidance I can with my standard capabilities.",
+        )
 
 
 # Factory function for easy integration
 async def create_mcp_integrated_transparency_manager(
-    transparency_config: str = "default",
-    mcp_config_path: Optional[str] = None
+    transparency_config: str = "default", mcp_config_path: Optional[str] = None
 ) -> EnhancedTransparentPersonaManager:
     """
     Create a transparency manager integrated with real ClaudeDirector MCP servers
@@ -553,9 +621,11 @@ async def create_mcp_integrated_transparency_manager(
     # Initialize MCP connections
     connection_status = await mcp_client.initialize_connections()
 
-    logger.info("mcp_integration_initialized",
-                available_servers=connection_status.available_servers,
-                success_rate=connection_status.success_rate)
+    logger.info(
+        "mcp_integration_initialized",
+        available_servers=connection_status.available_servers,
+        success_rate=connection_status.success_rate,
+    )
 
     # Create enhanced transparent persona manager
     manager = EnhancedTransparentPersonaManager(transparency_system, mcp_client)
@@ -565,8 +635,7 @@ async def create_mcp_integrated_transparency_manager(
 
 # Utility function for connecting to existing ClaudeDirector enhanced persona manager
 def integrate_transparency_with_existing_manager(
-    existing_manager,
-    transparency_config: str = "default"
+    existing_manager, transparency_config: str = "default"
 ) -> TransparentPersonaManager:
     """
     Integrate transparency with an existing ClaudeDirector enhanced persona manager
@@ -585,8 +654,10 @@ def integrate_transparency_with_existing_manager(
         existing_manager, transparency_config
     )
 
-    logger.info("transparency_integrated_with_existing_manager",
-                manager_type=type(existing_manager).__name__,
-                transparency_config=transparency_config)
+    logger.info(
+        "transparency_integrated_with_existing_manager",
+        manager_type=type(existing_manager).__name__,
+        transparency_config=transparency_config,
+    )
 
     return transparent_manager

@@ -11,11 +11,14 @@ from dataclasses import dataclass
 from typing import Dict, List, Optional, Any, Tuple
 import structlog
 
-from .embedded_framework_engine import EmbeddedFrameworkEngine, EmbeddedPersonaIntegrator
+from .embedded_framework_engine import (
+    EmbeddedFrameworkEngine,
+    EmbeddedPersonaIntegrator,
+)
 from .complexity_analyzer import (
     AnalysisComplexityDetector,
     ComplexityAnalysis,
-    EnhancementStrategy
+    EnhancementStrategy,
 )
 
 # Configure logging
@@ -25,6 +28,7 @@ logger = structlog.get_logger(__name__)
 @dataclass
 class EnhancementContext:
     """Context for persona enhancement"""
+
     persona_name: str
     user_input: str
     base_response: str
@@ -36,6 +40,7 @@ class EnhancementContext:
 @dataclass
 class EnhancementResult:
     """Result of persona enhancement"""
+
     enhanced_response: str
     enhancement_applied: bool
     framework_used: Optional[str]
@@ -55,7 +60,7 @@ class PersonaEnhancementEngine:
     def __init__(
         self,
         complexity_detector: AnalysisComplexityDetector,
-        config: Optional[Dict] = None
+        config: Optional[Dict] = None,
     ):
         self.complexity_detector = complexity_detector
         self.config = config or {}
@@ -68,63 +73,115 @@ class PersonaEnhancementEngine:
         self.persona_filters = {
             "diego": {
                 "voice_characteristics": [
-                    "warm and engaging", "collaborative", "multinational perspective",
-                    "emotionally intelligent", "pragmatic", "solution-focused"
+                    "warm and engaging",
+                    "collaborative",
+                    "multinational perspective",
+                    "emotionally intelligent",
+                    "pragmatic",
+                    "solution-focused",
                 ],
                 "communication_patterns": {
-                    "opening_style": ["Great to connect!", "I'm excited about this challenge", "Let's dive into this"],
-                    "transition_phrases": ["Here's what I'm thinking", "From my experience", "Let me share what's worked"],
-                    "analytical_markers": ["Looking at this systematically", "Breaking this down", "Here's the framework I'd use"],
-                    "personal_touches": ["😊", "What's your gut feeling?", "Let's get real about this"],
-                    "closure_style": ["What resonates most?", "How does this land?", "Let's build on this together"]
+                    "opening_style": [
+                        "Great to connect!",
+                        "I'm excited about this challenge",
+                        "Let's dive into this",
+                    ],
+                    "transition_phrases": [
+                        "Here's what I'm thinking",
+                        "From my experience",
+                        "Let me share what's worked",
+                    ],
+                    "analytical_markers": [
+                        "Looking at this systematically",
+                        "Breaking this down",
+                        "Here's the framework I'd use",
+                    ],
+                    "personal_touches": [
+                        "😊",
+                        "What's your gut feeling?",
+                        "Let's get real about this",
+                    ],
+                    "closure_style": [
+                        "What resonates most?",
+                        "How does this land?",
+                        "Let's build on this together",
+                    ],
                 },
                 "systematic_integration": {
                     "prefix_patterns": [
                         "Let me work through this systematically...",
                         "I've been thinking about frameworks for this...",
-                        "Here's how I'd approach this step-by-step..."
+                        "Here's how I'd approach this step-by-step...",
                     ],
                     "framework_intro": [
                         "Using proven strategic planning approaches...",
                         "Drawing from organizational analysis frameworks...",
-                        "Following systematic methodology..."
+                        "Following systematic methodology...",
                     ],
                     "analysis_wrapping": [
                         "What this analysis tells us is...",
                         "The systematic approach suggests...",
-                        "Based on this framework..."
-                    ]
-                }
+                        "Based on this framework...",
+                    ],
+                },
             },
             "martin": {
                 "voice_characteristics": [
-                    "thoughtful", "measured", "precise", "pattern-focused",
-                    "evolutionary thinking", "principled"
+                    "thoughtful",
+                    "measured",
+                    "precise",
+                    "pattern-focused",
+                    "evolutionary thinking",
+                    "principled",
                 ],
                 "communication_patterns": {
-                    "opening_style": ["Let me think about this", "There's an interesting pattern here", "This reminds me of"],
-                    "analytical_markers": ["The trade-offs are", "Evolutionarily", "From an architectural perspective"],
-                    "framework_integration": ["This follows the pattern of", "Using established principles", "The framework suggests"]
-                }
+                    "opening_style": [
+                        "Let me think about this",
+                        "There's an interesting pattern here",
+                        "This reminds me of",
+                    ],
+                    "analytical_markers": [
+                        "The trade-offs are",
+                        "Evolutionarily",
+                        "From an architectural perspective",
+                    ],
+                    "framework_integration": [
+                        "This follows the pattern of",
+                        "Using established principles",
+                        "The framework suggests",
+                    ],
+                },
             },
             "rachel": {
                 "voice_characteristics": [
-                    "collaborative", "user-centered", "systems thinking",
-                    "inclusive", "practical", "empathetic"
+                    "collaborative",
+                    "user-centered",
+                    "systems thinking",
+                    "inclusive",
+                    "practical",
+                    "empathetic",
                 ],
                 "communication_patterns": {
-                    "opening_style": ["Let's think about the user experience", "I love where this is going", "How does this feel for teams?"],
-                    "framework_integration": ["Design systems research shows", "User-centered frameworks suggest", "Cross-team patterns indicate"]
-                }
-            }
+                    "opening_style": [
+                        "Let's think about the user experience",
+                        "I love where this is going",
+                        "How does this feel for teams?",
+                    ],
+                    "framework_integration": [
+                        "Design systems research shows",
+                        "User-centered frameworks suggest",
+                        "Cross-team patterns indicate",
+                    ],
+                },
+            },
         }
 
         # Enhancement quality thresholds
         self.quality_thresholds = {
             "minimum_enhancement_value": 0.3,  # Don't enhance unless adding significant value
-            "personality_preservation": 0.8,   # Must maintain persona authenticity
-            "response_coherence": 0.7,         # Enhanced response must be coherent
-            "processing_timeout": 10.0         # Maximum time for enhancement (seconds)
+            "personality_preservation": 0.8,  # Must maintain persona authenticity
+            "response_coherence": 0.7,  # Enhanced response must be coherent
+            "processing_timeout": 10.0,  # Maximum time for enhancement (seconds)
         }
 
     def enhance_response(
@@ -132,7 +189,7 @@ class PersonaEnhancementEngine:
         persona_name: str,
         user_input: str,
         base_response: str,
-        conversation_context: Optional[Dict[str, Any]] = None
+        conversation_context: Optional[Dict[str, Any]] = None,
     ) -> EnhancementResult:
         """
         Enhance persona response with embedded framework capabilities.
@@ -155,15 +212,16 @@ class PersonaEnhancementEngine:
                 context_dict.update(conversation_context)
 
             complexity_analysis = self.complexity_detector.analyze_input_complexity(
-                user_input,
-                context=context_dict
+                user_input, context=context_dict
             )
 
             # Determine if enhancement should be applied
-            should_enhance, enhancement_type = self._should_enhance_with_embedded_framework(
-                complexity_analysis,
-                persona_name,
-                self.config.get("enhancement_thresholds")
+            should_enhance, enhancement_type = (
+                self._should_enhance_with_embedded_framework(
+                    complexity_analysis,
+                    persona_name,
+                    self.config.get("enhancement_thresholds"),
+                )
             )
 
             if not should_enhance:
@@ -174,7 +232,7 @@ class PersonaEnhancementEngine:
                     framework_used=None,
                     analysis_data=None,
                     processing_time_ms=processing_time,
-                    fallback_reason="Below enhancement threshold or persona not suitable"
+                    fallback_reason="Below enhancement threshold or persona not suitable",
                 )
 
             # Create enhancement context
@@ -184,7 +242,7 @@ class PersonaEnhancementEngine:
                 base_response=base_response,
                 complexity_analysis=complexity_analysis,
                 enhancement_type=enhancement_type,
-                conversation_context=conversation_context
+                conversation_context=conversation_context,
             )
 
             # Apply embedded framework enhancement
@@ -199,7 +257,7 @@ class PersonaEnhancementEngine:
                     framework_type=enhancement_type,
                     complexity=complexity_analysis.complexity.value,
                     strategy=complexity_analysis.enhancement_strategy.value,
-                    processing_time_ms=processing_time
+                    processing_time_ms=processing_time,
                 )
 
                 return EnhancementResult(
@@ -207,7 +265,7 @@ class PersonaEnhancementEngine:
                     enhancement_applied=True,
                     framework_used=enhancement_type,
                     analysis_data=self._extract_analysis_metadata(complexity_analysis),
-                    processing_time_ms=processing_time
+                    processing_time_ms=processing_time,
                 )
             else:
                 # Fallback to base response
@@ -218,7 +276,7 @@ class PersonaEnhancementEngine:
                     framework_used=None,
                     analysis_data=None,
                     processing_time_ms=processing_time,
-                    fallback_reason="Embedded framework enhancement failed"
+                    fallback_reason="Embedded framework enhancement failed",
                 )
 
         except Exception as e:
@@ -227,7 +285,7 @@ class PersonaEnhancementEngine:
                 "persona_enhancement_error",
                 persona=persona_name,
                 error=str(e),
-                processing_time_ms=processing_time
+                processing_time_ms=processing_time,
             )
 
             return EnhancementResult(
@@ -236,14 +294,14 @@ class PersonaEnhancementEngine:
                 framework_used=None,
                 analysis_data=None,
                 processing_time_ms=processing_time,
-                fallback_reason=f"Enhancement error: {str(e)}"
+                fallback_reason=f"Enhancement error: {str(e)}",
             )
 
     def _should_enhance_with_embedded_framework(
         self,
         analysis: ComplexityAnalysis,
         persona: str,
-        thresholds: Optional[Dict[str, float]] = None
+        thresholds: Optional[Dict[str, float]] = None,
     ) -> Tuple[bool, Optional[str]]:
         """
         Determine if embedded framework enhancement should be used for this persona.
@@ -257,12 +315,15 @@ class PersonaEnhancementEngine:
             Tuple of (should_enhance, enhancement_type)
         """
         if not thresholds:
-            thresholds = self.config.get("enhancement_thresholds", {
-                "systematic_analysis": 0.7,
-                "framework_lookup": 0.6,
-                "visual_generation": 0.8,
-                "minimum_complexity": 0.5
-            })
+            thresholds = self.config.get(
+                "enhancement_thresholds",
+                {
+                    "systematic_analysis": 0.7,
+                    "framework_lookup": 0.6,
+                    "visual_generation": 0.8,
+                    "minimum_complexity": 0.5,
+                },
+            )
 
         # Check minimum complexity threshold
         if analysis.confidence < thresholds.get("minimum_complexity", 0.5):
@@ -277,7 +338,7 @@ class PersonaEnhancementEngine:
         strategy_mapping = {
             EnhancementStrategy.SYSTEMATIC_ANALYSIS: "systematic_analysis",
             EnhancementStrategy.LIGHT_FRAMEWORK: "framework_lookup",
-            EnhancementStrategy.VISUAL_ENHANCEMENT: "visual_generation"
+            EnhancementStrategy.VISUAL_ENHANCEMENT: "visual_generation",
         }
 
         enhancement_type = strategy_mapping.get(analysis.enhancement_strategy)
@@ -305,7 +366,7 @@ class PersonaEnhancementEngine:
                 user_input=context.user_input,
                 base_response=context.base_response,
                 domain_focus=domain_focus,
-                complexity_level=context.complexity_analysis.complexity.value
+                complexity_level=context.complexity_analysis.complexity.value,
             )
 
             if systematic_response and systematic_response.persona_integrated_response:
@@ -313,14 +374,14 @@ class PersonaEnhancementEngine:
                     "embedded_framework_enhancement_success",
                     persona=context.persona_name,
                     framework=systematic_response.framework_applied,
-                    processing_time_ms=systematic_response.processing_time_ms
+                    processing_time_ms=systematic_response.processing_time_ms,
                 )
                 return systematic_response.persona_integrated_response
             else:
                 logger.warning(
                     "embedded_framework_enhancement_failed",
                     persona=context.persona_name,
-                    enhancement_type=context.enhancement_type
+                    enhancement_type=context.enhancement_type,
                 )
                 return None
 
@@ -328,7 +389,7 @@ class PersonaEnhancementEngine:
             logger.error(
                 "embedded_framework_enhancement_error",
                 persona=context.persona_name,
-                error=str(e)
+                error=str(e),
             )
             return None
 
@@ -344,7 +405,7 @@ class PersonaEnhancementEngine:
             "pattern_access": "technical",
             "architectural_patterns": "technical",
             "methodology_lookup": "process",
-            "best_practices": "process"
+            "best_practices": "process",
         }
 
         # Extract domains from recommended capabilities
@@ -360,7 +421,9 @@ class PersonaEnhancementEngine:
 
         return domains
 
-    def _extract_analysis_metadata(self, analysis: ComplexityAnalysis) -> Dict[str, Any]:
+    def _extract_analysis_metadata(
+        self, analysis: ComplexityAnalysis
+    ) -> Dict[str, Any]:
         """Extract metadata from complexity analysis for tracking"""
         return {
             "complexity": analysis.complexity.value,
@@ -368,5 +431,5 @@ class PersonaEnhancementEngine:
             "strategy": analysis.enhancement_strategy.value,
             "capabilities": analysis.recommended_capabilities,
             "trigger_keywords": analysis.trigger_keywords,
-            "reasoning": analysis.reasoning
+            "reasoning": analysis.reasoning,
         }

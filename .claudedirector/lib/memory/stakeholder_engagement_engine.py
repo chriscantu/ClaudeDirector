@@ -50,7 +50,9 @@ class StakeholderEngagementEngine:
         except Exception as e:
             error_msg = str(e)
             if "already exists" in error_msg:
-                self.logger.info("Stakeholder engagement schema already exists - skipping")
+                self.logger.info(
+                    "Stakeholder engagement schema already exists - skipping"
+                )
                 return True
             else:
                 self.logger.error("Failed to apply engagement schema", error=str(e))
@@ -96,7 +98,9 @@ class StakeholderEngagementEngine:
                         ),
                     )
 
-                    self.logger.info("Updated stakeholder profile", stakeholder=stakeholder_key)
+                    self.logger.info(
+                        "Updated stakeholder profile", stakeholder=stakeholder_key
+                    )
                 else:
                     # Insert new stakeholder
                     cursor.execute(
@@ -114,13 +118,17 @@ class StakeholderEngagementEngine:
                         ),
                     )
 
-                    self.logger.info("Created new stakeholder profile", stakeholder=stakeholder_key)
+                    self.logger.info(
+                        "Created new stakeholder profile", stakeholder=stakeholder_key
+                    )
 
                 return True
 
         except Exception as e:
             self.logger.error(
-                "Failed to add/update stakeholder", stakeholder=stakeholder_key, error=str(e)
+                "Failed to add/update stakeholder",
+                stakeholder=stakeholder_key,
+                error=str(e),
             )
             return False
 
@@ -211,7 +219,9 @@ class StakeholderEngagementEngine:
                 # Store recommendations in database
                 self._store_recommendations(recommendations)
 
-                self.logger.info("Generated engagement recommendations", count=len(recommendations))
+                self.logger.info(
+                    "Generated engagement recommendations", count=len(recommendations)
+                )
 
                 return recommendations
 
@@ -250,7 +260,9 @@ class StakeholderEngagementEngine:
                         {
                             "stakeholder_key": stakeholder_key,
                             "recommendation_type": "initial_connection",
-                            "urgency_level": "high" if importance == "critical" else "medium",
+                            "urgency_level": (
+                                "high" if importance == "critical" else "medium"
+                            ),
                             "trigger_reason": "No previous engagement recorded",
                             "suggested_approach": "Schedule initial strategic alignment meeting",
                             "confidence_score": 0.9,
@@ -285,7 +297,9 @@ class StakeholderEngagementEngine:
                             "suggested_approach": self._suggest_engagement_approach(
                                 stakeholder_key
                             ),
-                            "confidence_score": min(0.9, 0.5 + (days_since / threshold) * 0.4),
+                            "confidence_score": min(
+                                0.9, 0.5 + (days_since / threshold) * 0.4
+                            ),
                         }
                     )
 
@@ -303,7 +317,9 @@ class StakeholderEngagementEngine:
             )
             return []
 
-    def _calculate_urgency(self, days_since: int, threshold: int, importance: str) -> str:
+    def _calculate_urgency(
+        self, days_since: int, threshold: int, importance: str
+    ) -> str:
         """Calculate urgency level based on various factors"""
 
         ratio = days_since / threshold
@@ -364,7 +380,9 @@ class StakeholderEngagementEngine:
 
         except Exception as e:
             self.logger.error(
-                "Failed to suggest engagement approach", stakeholder=stakeholder_key, error=str(e)
+                "Failed to suggest engagement approach",
+                stakeholder=stakeholder_key,
+                error=str(e),
             )
             return "Schedule a check-in meeting"
 
@@ -392,7 +410,10 @@ class StakeholderEngagementEngine:
                 for project in projects:
                     project_key, interest, frequency = project
 
-                    if interest in ["critical", "high"] and frequency in ["weekly", "biweekly"]:
+                    if interest in ["critical", "high"] and frequency in [
+                        "weekly",
+                        "biweekly",
+                    ]:
                         opportunities.append(
                             {
                                 "stakeholder_key": stakeholder_key,
@@ -411,7 +432,9 @@ class StakeholderEngagementEngine:
 
         except Exception as e:
             self.logger.error(
-                "Failed to check strategic opportunities", stakeholder=stakeholder_key, error=str(e)
+                "Failed to check strategic opportunities",
+                stakeholder=stakeholder_key,
+                error=str(e),
             )
             return []
 
@@ -439,7 +462,9 @@ class StakeholderEngagementEngine:
                             rec["suggested_approach"],
                             rec["confidence_score"],
                             rec.get("strategic_context"),
-                            (datetime.now() + timedelta(days=7)).isoformat(),  # Expire in 1 week
+                            (
+                                datetime.now() + timedelta(days=7)
+                            ).isoformat(),  # Expire in 1 week
                         ),
                     )
 
@@ -468,12 +493,15 @@ class StakeholderEngagementEngine:
                 )
 
                 self.logger.info(
-                    "Updated recommendations after engagement", stakeholder=stakeholder_key
+                    "Updated recommendations after engagement",
+                    stakeholder=stakeholder_key,
                 )
 
         except Exception as e:
             self.logger.error(
-                "Failed to update recommendations", stakeholder=stakeholder_key, error=str(e)
+                "Failed to update recommendations",
+                stakeholder=stakeholder_key,
+                error=str(e),
             )
 
     def get_pending_recommendations(self, urgency_filter: str = None) -> List[Dict]:
@@ -592,14 +620,21 @@ class StakeholderEngagementEngine:
                         for eng in engagements
                     ],
                     "pending_recommendations": [
-                        {"type": rec[0], "urgency": rec[1], "reason": rec[2], "approach": rec[3]}
+                        {
+                            "type": rec[0],
+                            "urgency": rec[1],
+                            "reason": rec[2],
+                            "approach": rec[3],
+                        }
                         for rec in recommendations
                     ],
                 }
 
         except Exception as e:
             self.logger.error(
-                "Failed to get stakeholder summary", stakeholder=stakeholder_key, error=str(e)
+                "Failed to get stakeholder summary",
+                stakeholder=stakeholder_key,
+                error=str(e),
             )
             return {}
 
@@ -608,18 +643,26 @@ def main():
     """CLI interface for stakeholder engagement management"""
     import argparse
 
-    parser = argparse.ArgumentParser(description="Stakeholder Engagement Management System")
-    parser.add_argument("--init", action="store_true", help="Initialize the engagement schema")
+    parser = argparse.ArgumentParser(
+        description="Stakeholder Engagement Management System"
+    )
+    parser.add_argument(
+        "--init", action="store_true", help="Initialize the engagement schema"
+    )
     parser.add_argument(
         "--generate-recommendations",
         action="store_true",
         help="Generate engagement recommendations",
     )
     parser.add_argument(
-        "--show-recommendations", action="store_true", help="Show pending recommendations"
+        "--show-recommendations",
+        action="store_true",
+        help="Show pending recommendations",
     )
     parser.add_argument(
-        "--urgency", choices=["urgent", "high", "medium", "low"], help="Filter by urgency level"
+        "--urgency",
+        choices=["urgent", "high", "medium", "low"],
+        help="Filter by urgency level",
     )
     parser.add_argument("--stakeholder", help="Show summary for specific stakeholder")
 
@@ -650,9 +693,12 @@ def main():
             return
 
         for rec in recommendations:
-            urgency_emoji = {"urgent": "🔴", "high": "🟡", "medium": "🟢", "low": "🔵"}.get(
-                rec["urgency_level"], "⚪"
-            )
+            urgency_emoji = {
+                "urgent": "🔴",
+                "high": "🟡",
+                "medium": "🟢",
+                "low": "🔵",
+            }.get(rec["urgency_level"], "⚪")
 
             print(f"{urgency_emoji} {rec['display_name']} ({rec['stakeholder_key']})")
             print(f"   Type: {rec['recommendation_type']}")
@@ -682,9 +728,12 @@ def main():
 
         print(f"\nPending Recommendations ({len(summary['pending_recommendations'])}):")
         for rec in summary["pending_recommendations"]:
-            urgency_emoji = {"urgent": "🔴", "high": "🟡", "medium": "🟢", "low": "🔵"}.get(
-                rec["urgency"], "⚪"
-            )
+            urgency_emoji = {
+                "urgent": "🔴",
+                "high": "🟡",
+                "medium": "🟢",
+                "low": "🔵",
+            }.get(rec["urgency"], "⚪")
             print(f"  {urgency_emoji} {rec['type']}: {rec['reason']}")
 
     else:
