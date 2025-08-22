@@ -77,7 +77,7 @@ eggs/
 .claudedirector/lib/**/__pycache__/
 .claudedirector/lib/**/*.pyc
 .claudedirector/lib/**/*.pyo
-lib/
+/lib/
 lib64/
 parts/
 sdist/
