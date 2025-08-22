@@ -13,16 +13,30 @@ import subprocess
 import time
 from pathlib import Path
 
-# Add test paths - robust for different execution contexts
-test_dir = Path(__file__).parent
-claudedirector_root = test_dir.parent  # .claudedirector directory
+# Add test paths - completely independent of working directory
+# Get absolute paths based on this file's actual location
+test_dir = Path(__file__).parent.resolve()  # Absolute path to tests/
+claudedirector_root = test_dir.parent.resolve()  # Absolute path to .claudedirector/
 lib_path = claudedirector_root / "lib"
 
-# Add all necessary paths
-sys.path.insert(0, str(test_dir / "regression"))
-sys.path.insert(0, str(test_dir / "integration"))
-# Use absolute path for lib to ensure imports work in all contexts
-sys.path.insert(0, str(lib_path.resolve()))
+# Ensure all paths exist before adding them
+paths_to_add = [
+    test_dir / "regression",
+    test_dir / "integration", 
+    lib_path
+]
+
+for path in paths_to_add:
+    abs_path = str(path.resolve())
+    if abs_path not in sys.path:
+        sys.path.insert(0, abs_path)
+        
+# Debug: Print paths being added (will help CI debugging)
+if os.getenv('CI'):  # Only in CI environment
+    print(f"🔧 CI DEBUG: Added paths to sys.path:")
+    for path in paths_to_add:
+        print(f"   - {path.resolve()}")
+    print(f"🔧 CI DEBUG: cursor_transparency_bridge.py exists: {(lib_path / 'cursor_transparency_bridge.py').exists()}")
 
 
 def run_test_module(module_path, description):
