@@ -153,7 +153,7 @@ Your personal workspace for engineering leadership activities.
 ## Organization
 
 - `current-initiatives/` - Active projects and initiatives
-- `meeting-prep/` - Meeting preparation and materials  
+- `meeting-prep/` - Meeting preparation and materials
 - `stakeholder-analysis/` - Team and stakeholder management
 - `platform-strategy/` - Strategic planning and documentation
 - `budget-planning/` - Financial planning and ROI analysis

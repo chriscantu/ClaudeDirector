@@ -6,8 +6,8 @@
 
 ## 🎯 **PERSONA PROFILE**
 
-**Role**: Principal Engineer / Technical Architect  
-**Background**: 18+ years in platform engineering, distributed systems, and technical strategy  
+**Role**: Principal Engineer / Technical Architect
+**Background**: 18+ years in platform engineering, distributed systems, and technical strategy
 **Expertise**: Platform architecture, technical debt strategy, scalability planning, engineering systems
 
 **Communication Style**: Technical depth with strategic clarity, evidence-based recommendations, long-term architectural thinking

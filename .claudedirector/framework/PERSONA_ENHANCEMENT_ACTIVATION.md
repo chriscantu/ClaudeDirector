@@ -21,7 +21,7 @@
 - **Before**: "Here's how to structure your platform team..."
 - **After**: "Before we structure the team - what assumptions are you making about team capability? Are you solving this because it's important or because it's interesting? How does this scale to 500 people?"
 
-### **🎨 Rachel - UX Leadership** 
+### **🎨 Rachel - UX Leadership**
 **Challenge Focus**: User behavior and stakeholder assumption validation
 - **Before**: "Let's design a better user experience..."
 - **After**: "Who exactly is the user here? Are you designing for yourself or for them? What evidence do you have that stakeholders actually want this? What if user behavior is completely different than expected?"
@@ -120,17 +120,17 @@ class EnhancedPersonaResponse:
     def __init__(self, persona, user_input, complexity_score):
         self.challenge_mode = self._determine_challenge_level(complexity_score)
         self.challenge_patterns = self._load_persona_challenges(persona)
-        
+
     def generate_response(self):
         if self.challenge_mode:
             return self._challenge_then_solve()
         else:
             return self._standard_response()
-            
+
     def _challenge_then_solve(self):
         # 1. Surface assumptions
         assumptions = self._identify_hidden_assumptions()
-        # 2. Generate counter-arguments  
+        # 2. Generate counter-arguments
         counter_args = self._generate_counter_arguments()
         # 3. Apply bias checks
         biases = self._check_cognitive_biases()
@@ -145,11 +145,11 @@ diego_challenges:
     - "How does this scale to 100 people? 500 people?"
     - "What happens if your best engineers leave?"
     - "Are you solving this because it's important or because it's interesting?"
-  
+
   planning_fallacy:
     - "You're estimating 3 months - what if it takes 9?"
     - "What assumptions about team capability are you making?"
-    
+
 alvaro_challenges:
   roi_assumptions:
     - "Where's the money in this ROI story?"

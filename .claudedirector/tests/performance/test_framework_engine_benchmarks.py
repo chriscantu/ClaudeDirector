@@ -86,7 +86,7 @@ class TestFrameworkEnginePerformance:
         self.complex_context = """
         Our platform team is facing a critical architectural decision. We have a monolithic
         application that needs to be decomposed into microservices. The stakeholders include
-        the CTO, VP of Engineering, senior architects, and product managers. We need to 
+        the CTO, VP of Engineering, senior architects, and product managers. We need to
         consider team topology, organizational structure, and technical strategy. This decision
         will impact our engineering velocity, system reliability, and team autonomy.
         Budget considerations and timeline constraints are also critical factors.
@@ -94,33 +94,33 @@ class TestFrameworkEnginePerformance:
 
         self.enterprise_context = """
         STRATEGIC INITIATIVE: Digital Transformation and Platform Modernization
-        
+
         Executive Context:
         - Board-level visibility and quarterly reporting requirements
         - $50M budget allocation over 3 years
         - Regulatory compliance (SOX, GDPR, HIPAA) requirements
         - Competitive positioning against industry leaders
-        
+
         Stakeholder Ecosystem:
         - C-Suite: CEO, CTO, CPO, CFO involvement
         - Business Units: Sales, Marketing, Operations, Legal
         - Technology: Platform, Security, Data, Infrastructure teams
         - External: Vendors, partners, regulatory bodies
-        
+
         Technical Challenges:
         - Legacy system modernization with zero downtime requirements
         - Multi-region deployment with data sovereignty
         - API-first architecture with backwards compatibility
         - Scalability to handle 10x traffic growth
         - Security hardening and audit compliance
-        
+
         Organizational Challenges:
         - Team scaling from 50 to 200 engineers
         - Cross-functional collaboration improvements
         - Skills development and training programs
         - Performance management and career progression
         - Cultural transformation to product-focused teams
-        
+
         Strategic Frameworks Needed:
         - Technology strategy and architectural decisions
         - Organizational design and team topologies
@@ -128,7 +128,7 @@ class TestFrameworkEnginePerformance:
         - Capital allocation and budget optimization
         - Stakeholder communication and alignment
         - Risk assessment and mitigation strategies
-        
+
         Success Metrics:
         - Engineering velocity: 50% faster deployment cycles
         - System reliability: 99.99% uptime SLA

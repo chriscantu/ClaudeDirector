@@ -17,7 +17,7 @@
 
 #### **Elements (Stocks)**
 - **Engineering Teams**: People, skills, knowledge, relationships
-- **Platform Components**: Code, infrastructure, tools, documentation  
+- **Platform Components**: Code, infrastructure, tools, documentation
 - **Organizational Capital**: Culture, processes, reputation, trust
 - **Information**: Metrics, feedback, tribal knowledge, decisions
 
@@ -321,14 +321,14 @@ More Investment ← Demonstrated Value ← Success Stories ← User Satisfaction
 
 ### **Essential Systems Concepts**
 - **Mental Models**: How internal pictures of the world shape actions
-- **Bounded Rationality**: People make rational decisions within their perceived constraints  
+- **Bounded Rationality**: People make rational decisions within their perceived constraints
 - **Emergence**: System properties that arise from component interactions
 - **Hierarchy**: Systems within systems, each with their own purpose
 - **Non-linearity**: Small changes can have large effects, large changes small effects
 
 ### **Common Systems Traps**
 - **Policy Resistance**: Push harder, system pushes back harder
-- **Tragedy of Commons**: Individual rational behavior creates collective irrationality  
+- **Tragedy of Commons**: Individual rational behavior creates collective irrationality
 - **Drift to Low Performance**: Gradually lowering standards to meet declining performance
 - **Competitiveness**: Focus on beating others rather than improving system performance
 - **Addiction**: Reliance on outside intervention weakens internal capability

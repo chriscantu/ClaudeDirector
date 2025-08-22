@@ -317,12 +317,12 @@ class StrategicTaskManager:
                 cursor.execute(
                     f"""
                     SELECT id, title, priority, due_date, status, category, assignment_direction
-                    FROM strategic_tasks 
+                    FROM strategic_tasks
                     {where_clause}
-                    ORDER BY 
-                        CASE priority 
+                    ORDER BY
+                        CASE priority
                             WHEN 'critical' THEN 1
-                            WHEN 'high' THEN 2  
+                            WHEN 'high' THEN 2
                             WHEN 'medium' THEN 3
                             WHEN 'low' THEN 4
                         END,
@@ -391,10 +391,10 @@ class StrategicTaskManager:
                     FROM strategic_tasks t
                     LEFT JOIN stakeholder_profiles_enhanced s ON t.assigned_to = s.stakeholder_key
                     WHERE t.assignment_direction = 'outgoing'
-                    ORDER BY 
-                        CASE t.priority 
+                    ORDER BY
+                        CASE t.priority
                             WHEN 'critical' THEN 1
-                            WHEN 'high' THEN 2  
+                            WHEN 'high' THEN 2
                             WHEN 'medium' THEN 3
                             WHEN 'low' THEN 4
                         END,
@@ -458,8 +458,8 @@ class StrategicTaskManager:
                     """
                     SELECT id, title, priority, due_date, assignment_direction, assigned_to,
                            (julianday('now') - julianday(due_date)) as days_overdue
-                    FROM strategic_tasks 
-                    WHERE status = 'active' 
+                    FROM strategic_tasks
+                    WHERE status = 'active'
                         AND due_date < date('now')
                     ORDER BY days_overdue DESC
                 """
