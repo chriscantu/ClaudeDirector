@@ -20,23 +20,21 @@ claudedirector_root = test_dir.parent.resolve()  # Absolute path to .claudedirec
 lib_path = claudedirector_root / "lib"
 
 # Ensure all paths exist before adding them
-paths_to_add = [
-    test_dir / "regression",
-    test_dir / "integration", 
-    lib_path
-]
+paths_to_add = [test_dir / "regression", test_dir / "integration", lib_path]
 
 for path in paths_to_add:
     abs_path = str(path.resolve())
     if abs_path not in sys.path:
         sys.path.insert(0, abs_path)
-        
+
 # Debug: Print paths being added (will help CI debugging)
-if os.getenv('CI'):  # Only in CI environment
+if os.getenv("CI"):  # Only in CI environment
     print(f"🔧 CI DEBUG: Added paths to sys.path:")
     for path in paths_to_add:
         print(f"   - {path.resolve()}")
-    print(f"🔧 CI DEBUG: cursor_transparency_bridge.py exists: {(lib_path / 'cursor_transparency_bridge.py').exists()}")
+    print(
+        f"🔧 CI DEBUG: cursor_transparency_bridge.py exists: {(lib_path / 'cursor_transparency_bridge.py').exists()}"
+    )
 
 
 def run_test_module(module_path, description):
