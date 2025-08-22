@@ -192,7 +192,7 @@ print_section "PHASE 2: P0 Regression Tests & Coverage"
 
 # 7. P0 Feature Test Suite
 run_step "P0 Feature Test Suite" "
-echo '🚨 COMPREHENSIVE P0 TEST EXECUTION - ALL 5 BLOCKING TESTS'
+echo '🚨 COMPREHENSIVE P0 TEST EXECUTION - ALL 7 P0 TESTS'
 echo 'Enforcing complete P0 feature coverage as defined in p0_test_definitions.yaml'
 
 # BLOCKING P0 TESTS (Must pass for CI success)
@@ -225,7 +225,19 @@ timeout 60 python docs/testing/run_cursor_tests.py > /dev/null 2>&1 || (
     echo '⚠️ HIGH PRIORITY FAILURE: Cursor Integration P0 failed (non-blocking)'
 )
 
-echo '✅ ALL P0 TESTS COMPLETED - CI P0 coverage now 5/5 (100%)'
+echo '🧪 RUNNING BLOCKING P0 TEST: MCP Integration P0'
+timeout 120 python .claudedirector/tests/integration/test_cursor_integration.py > /dev/null 2>&1 || (
+    echo '❌ BLOCKING FAILURE: MCP Integration P0 failed'
+    exit 1
+)
+
+echo '🧪 RUNNING BLOCKING P0 TEST: Persona Strategic Thinking P0'
+timeout 120 python .claudedirector/tests/persona/test_persona_personalities.py > /dev/null 2>&1 || (
+    echo '❌ BLOCKING FAILURE: Persona Strategic Thinking P0 failed'
+    exit 1
+)
+
+echo '✅ ALL P0 TESTS COMPLETED - CI P0 coverage now 7/7 (100%)'
 "
 
 # 8. P0 CI Coverage Validation

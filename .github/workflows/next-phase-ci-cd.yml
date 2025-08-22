@@ -256,7 +256,19 @@ jobs:
             echo "⚠️ HIGH PRIORITY FAILURE: Cursor Integration P0 failed (non-blocking)"
           }
 
-          echo "✅ ALL P0 TESTS COMPLETED - CI P0 coverage now 5/5 (100%)"
+          echo "🧪 RUNNING BLOCKING P0 TEST: MCP Integration P0"
+          python .claudedirector/tests/integration/test_cursor_integration.py || {
+            echo "❌ BLOCKING FAILURE: MCP Integration P0 failed"
+            exit 1
+          }
+
+          echo "🧪 RUNNING BLOCKING P0 TEST: Persona Strategic Thinking P0"
+          python .claudedirector/tests/persona/test_persona_personalities.py || {
+            echo "❌ BLOCKING FAILURE: Persona Strategic Thinking P0 failed"
+            exit 1
+          }
+
+          echo "✅ ALL P0 TESTS COMPLETED - CI P0 coverage now 7/7 (100%)"
 
       - name: Upload Coverage Reports
         uses: codecov/codecov-action@v3
