@@ -17,7 +17,7 @@ def main():
     print("Ensuring all P0 tests remain in CI pipeline...")
 
     # Check if the validator exists
-    validator_path = ".claudedirector/dev-tools/ci/validate_p0_coverage.py"
+    validator_path = ".claudedirector/tools/ci/validate_p0_coverage.py"
     if not os.path.exists(validator_path):
         print(f"⚠️ P0 coverage validator not found: {validator_path}")
         print("✅ Skipping P0 coverage validation")
