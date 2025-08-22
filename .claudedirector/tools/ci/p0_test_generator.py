@@ -234,11 +234,11 @@ def main():
         validator = generator.generate_validation_script()
 
         # Write validator script
-        with open(".claudedirector/dev-tools/ci/validate_p0_coverage.py", "w") as f:
+        with open(".claudedirector/tools/ci/validate_p0_coverage.py", "w") as f:
             f.write(validator)
-        os.chmod(".claudedirector/dev-tools/ci/validate_p0_coverage.py", 0o755)
+        os.chmod(".claudedirector/tools/ci/validate_p0_coverage.py", 0o755)
         print(
-            "✅ Generated P0 coverage validator: .claudedirector/dev-tools/ci/validate_p0_coverage.py"
+            "✅ Generated P0 coverage validator: .claudedirector/tools/ci/validate_p0_coverage.py"
         )
 
     else:

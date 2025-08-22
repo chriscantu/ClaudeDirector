@@ -92,7 +92,7 @@ class SecurityValidationSystem:
         try:
             # Test 1: Scanner exists and is executable
             scanner_path = Path(
-                ".claudedirector/dev-tools/security/enhanced_security_scanner.py"
+                ".claudedirector/tools/security/enhanced_security_scanner.py"
             )
             if scanner_path.exists():
                 validation["tests_performed"].append("Scanner file exists: ✅")
@@ -332,7 +332,7 @@ sensitive_stakeholder_info = "test threat"
             test_file.write_text(test_content)
 
             # Import and run scanner on test file
-            sys.path.append(".claudedirector/dev-tools/security")
+            sys.path.append(".claudedirector/tools/security")
             from enhanced_security_scanner import EnhancedSecurityScanner
 
             scanner = EnhancedSecurityScanner()

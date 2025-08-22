@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 # Add security modules to path
-sys.path.append(".claudedirector/dev-tools/security")
+sys.path.append(".claudedirector/tools/security")
 
 from enhanced_security_scanner import EnhancedSecurityScanner
 from security_validation_system import SecurityValidationSystem
@@ -175,7 +175,7 @@ class TestEnhancedSecuritySystem(unittest.TestCase):
         )
 
         # Test exclusion by making the path look like a security file
-        security_file_path = ".claudedirector/dev-tools/security/test_security.py"
+        security_file_path = ".claudedirector/tools/security/test_security.py"
         security_file = Path(self.temp_dir) / "test_security.py"
         security_file.write_text(
             """
