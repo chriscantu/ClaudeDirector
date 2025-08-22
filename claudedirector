@@ -67,11 +67,7 @@ class ClaudeDirectorCLI:
   claudedirector org-intelligence customize # Interactive customization
   claudedirector org-intelligence quick-setup # Template-based setup
 
-📊 Visual Dashboard (P1.1):
-  claudedirector dashboard executive      # Executive summary dashboard
-  claudedirector dashboard status         # Quick status overview
-  claudedirector dashboard domains        # Domain performance visualization
-  claudedirector dashboard roi            # Investment ROI analysis
+
 
 ⚡ Smart Git (Development):
   claudedirector git setup                # Setup intelligent git hooks
@@ -256,28 +252,7 @@ Examples:
         org_domain_parser = org_intel_sub.add_parser('configure-domain', help='Configure specific measurement domains')
         org_domain_parser.add_argument('--domain', help='Specific domain to configure')
 
-        # P1.1 Visual Dashboard
-        dashboard_parser = subparsers.add_parser('dashboard', help='Visual Intelligence Dashboard (P1.1)')
-        dashboard_sub = dashboard_parser.add_subparsers(dest='dashboard_action', help='Dashboard visualization actions')
 
-        # Executive dashboard
-        exec_dash_parser = dashboard_sub.add_parser('executive', help='Executive summary dashboard')
-        exec_dash_parser.add_argument('--sample-data', action='store_true', help='Use sample data for demonstration')
-        exec_dash_parser.add_argument('--compact', action='store_true', help='Compact display mode')
-
-        # Quick status
-        dashboard_sub.add_parser('status', help='Quick status overview')
-
-        # Domain performance
-        domain_perf_parser = dashboard_sub.add_parser('domains', help='Domain performance visualization')
-        domain_perf_parser.add_argument('--domain', help='Focus on specific domain')
-
-        # ROI analysis
-        dashboard_sub.add_parser('roi', help='Investment ROI visualization')
-
-        # Export dashboard data
-        export_parser = dashboard_sub.add_parser('export', help='Export dashboard data')
-        export_parser.add_argument('--format', choices=['json', 'csv'], default='json', help='Export format')
 
         return parser
 
@@ -750,8 +725,7 @@ Examples:
         elif args.command == 'org-intelligence':
             self.handle_org_intelligence(args)
 
-        elif args.command == 'dashboard':
-            self.handle_dashboard(args)
+
 
         elif args.command == 'reports':
             self.handle_reports(args)
@@ -987,66 +961,7 @@ Examples:
         except Exception as e:
             print(f"❌ Organizational Intelligence command failed: {e}")
 
-    def handle_dashboard(self, args):
-        """Handle visual dashboard commands (P1.1)"""
-        print("📊 Visual Intelligence Dashboard (P1.1)")
-        print("=" * 42)
 
-        try:
-            from claudedirector.p1_features.visualization.dashboard_engine import DashboardEngine
-
-            # Initialize dashboard engine
-            dashboard = DashboardEngine()
-
-            if args.dashboard_action == 'executive':
-                # Customize layout if compact mode requested
-                if hasattr(args, 'compact') and args.compact:
-                    dashboard.customize_layout(compact_mode=True, sparkline_width=15, chart_width=50)
-
-                # Render executive dashboard
-                use_sample = hasattr(args, 'sample_data') and args.sample_data
-                dashboard_output = dashboard.render_executive_dashboard(sample_data=use_sample)
-                print(dashboard_output)
-
-            elif args.dashboard_action == 'status':
-                # Quick status overview
-                status_output = dashboard.get_quick_status()
-                print(status_output)
-
-            elif args.dashboard_action == 'domains':
-                # Domain performance focus
-                org_data = dashboard._generate_sample_data()
-                domain_chart = dashboard._render_domain_performance_section(org_data)
-                print(domain_chart)
-
-            elif args.dashboard_action == 'roi':
-                # ROI analysis
-                org_data = dashboard._generate_sample_data()
-                roi_output = dashboard._render_roi_section(org_data)
-                print(roi_output)
-
-            elif args.dashboard_action == 'export':
-                # Export dashboard data
-                export_format = args.format if hasattr(args, 'format') else 'json'
-                export_data = dashboard.export_dashboard_data(format=export_format)
-
-                if export_format == 'json':
-                    import json
-                    print(json.dumps(export_data, indent=2))
-                else:
-                    print("CSV export not yet implemented")
-
-            else:
-                print("Available dashboard actions: executive, status, domains, roi, export")
-                print("💡 Try: ./claudedirector dashboard executive --sample-data")
-
-        except ImportError as e:
-            print(f"❌ P1.1 dashboard features not available: {e}")
-            print("💡 This is a P1.1 feature - ensure visualization modules are installed")
-        except Exception as e:
-            print(f"❌ Dashboard error: {e}")
-            import traceback
-            traceback.print_exc()
 
     def handle_reports(self, args):
         """Handle P2.1 Executive Communication reports"""
