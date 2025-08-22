@@ -32,7 +32,7 @@ class ThresholdConfig:
     stakeholder_profiling_threshold: float = 0.6
     conversation_quality_minimum: float = 0.7
     performance_degradation_limit: float = 0.05
-    
+
     def __post_init__(self):
         """Validate threshold ranges"""
         for field_name, value in self.__dict__.items():
@@ -51,7 +51,7 @@ class EnumConfig:
     stakeholder_types: List[str] = field(default_factory=lambda: ["stakeholder", "internal", "external", "executive"])
     risk_levels: List[str] = field(default_factory=lambda: ["low", "medium", "high", "critical"])
     complexity_levels: List[str] = field(default_factory=lambda: ["simple", "moderate", "complex", "very_complex"])
-    
+
     def __post_init__(self):
         """Validate enum configurations"""
         for field_name, value in self.__dict__.items():
@@ -71,7 +71,7 @@ class MessageConfig:
     persona_activation_message: str = "{emoji} {name} | {domain}"
     p0_failure_message: str = "❌ BLOCKING FAILURE: {test_name} failed"
     quality_threshold_message: str = "⚠️ Quality below threshold ({score:.2f} < {threshold:.2f})"
-    
+
     def __post_init__(self):
         """Validate message templates"""
         for field_name, value in self.__dict__.items():
@@ -89,7 +89,7 @@ class PathConfig:
     p0_test_definitions: str = ".claudedirector/tests/p0_enforcement/p0_test_definitions.yaml"
     quality_reports_dir: str = ".claudedirector/reports/quality"
     backup_dir: str = ".claudedirector/backups"
-    
+
     def __post_init__(self):
         """Validate path configurations"""
         for field_name, value in self.__dict__.items():
@@ -102,164 +102,164 @@ class PathConfig:
 class ClaudeDirectorConfig:
     """
     Central configuration system for ClaudeDirector
-    
+
     Provides type-safe access to all configuration values with validation.
     Supports both dict-like access and property access for backwards compatibility.
     """
-    
+
     def __init__(self, config_file: Optional[Path] = None):
         """Initialize configuration system"""
         self.config_file = config_file or Path.home() / ".claudedirector" / "config" / "system_config.yaml"
-        
+
         # Initialize with defaults
         self.thresholds = ThresholdConfig()
         self.enums = EnumConfig()
         self.messages = MessageConfig()
         self.paths = PathConfig()
-        
+
         # Load custom configuration if available
         self._load_config()
-        
+
         # Create lookup dictionary for backwards compatibility
         self._create_lookup_dict()
-    
+
     def _load_config(self):
         """Load configuration from YAML file if it exists"""
         if self.config_file.exists():
             try:
                 with open(self.config_file, 'r', encoding='utf-8') as f:
                     config_data = yaml.safe_load(f) or {}
-                
+
                 # Update thresholds
                 if 'thresholds' in config_data:
                     for key, value in config_data['thresholds'].items():
                         if hasattr(self.thresholds, key):
                             setattr(self.thresholds, key, value)
-                
+
                 # Update enums
                 if 'enums' in config_data:
                     for key, value in config_data['enums'].items():
                         if hasattr(self.enums, key):
                             setattr(self.enums, key, value)
-                
+
                 # Update messages
                 if 'messages' in config_data:
                     for key, value in config_data['messages'].items():
                         if hasattr(self.messages, key):
                             setattr(self.messages, key, value)
-                
+
                 # Update paths
                 if 'paths' in config_data:
                     for key, value in config_data['paths'].items():
                         if hasattr(self.paths, key):
                             setattr(self.paths, key, value)
-                            
+
                 logger.info(f"Configuration loaded from {self.config_file}")
-                
+
             except Exception as e:
                 logger.warning(f"Failed to load configuration from {self.config_file}: {e}")
                 logger.info("Using default configuration")
-    
+
     def _create_lookup_dict(self):
         """Create lookup dictionary for backwards compatibility"""
         self._lookup = {}
-        
+
         # Add thresholds
         for key, value in self.thresholds.__dict__.items():
             self._lookup[key] = value
             self._lookup[f"threshold_{key}"] = value
-        
+
         # Add enums
         for key, value in self.enums.__dict__.items():
             self._lookup[key] = value
             self._lookup[f"enum_{key}"] = value
-        
+
         # Add messages
         for key, value in self.messages.__dict__.items():
             self._lookup[key] = value
             self._lookup[f"message_{key}"] = value
-        
+
         # Add paths
         for key, value in self.paths.__dict__.items():
             self._lookup[key] = value
             self._lookup[f"path_{key}"] = value
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """Get configuration value by key (dict-like interface)"""
         return self._lookup.get(key, default)
-    
+
     def __getitem__(self, key: str) -> Any:
         """Dict-like access"""
         if key not in self._lookup:
             raise KeyError(f"Configuration key '{key}' not found")
         return self._lookup[key]
-    
+
     def __contains__(self, key: str) -> bool:
         """Check if key exists"""
         return key in self._lookup
-    
+
     def get_threshold(self, name: str) -> float:
         """Get threshold value with validation"""
         threshold_key = name if hasattr(self.thresholds, name) else f"{name}_threshold"
-        
+
         if hasattr(self.thresholds, name):
             return getattr(self.thresholds, name)
         elif hasattr(self.thresholds, threshold_key):
             return getattr(self.thresholds, threshold_key)
         else:
             raise ValueError(f"Unknown threshold: {name}")
-    
+
     def get_enum_values(self, category: str) -> List[str]:
         """Get enum values for category"""
         if hasattr(self.enums, category):
             return getattr(self.enums, category)
         else:
             raise ValueError(f"Unknown enum category: {category}")
-    
+
     def get_message_template(self, name: str) -> str:
         """Get message template"""
         if hasattr(self.messages, name):
             return getattr(self.messages, name)
         else:
             raise ValueError(f"Unknown message template: {name}")
-    
+
     def get_path(self, name: str) -> str:
         """Get file path"""
         if hasattr(self.paths, name):
             return getattr(self.paths, name)
         else:
             raise ValueError(f"Unknown path: {name}")
-    
+
     def validate_all(self) -> List[str]:
         """Validate all configuration values"""
         errors = []
-        
+
         try:
             # Validate thresholds (done in __post_init__)
             ThresholdConfig(**self.thresholds.__dict__)
         except Exception as e:
             errors.append(f"Threshold validation failed: {e}")
-        
+
         try:
             # Validate enums (done in __post_init__)
             EnumConfig(**self.enums.__dict__)
         except Exception as e:
             errors.append(f"Enum validation failed: {e}")
-        
+
         try:
             # Validate messages (done in __post_init__)
             MessageConfig(**self.messages.__dict__)
         except Exception as e:
             errors.append(f"Message validation failed: {e}")
-        
+
         try:
             # Validate paths (done in __post_init__)
             PathConfig(**self.paths.__dict__)
         except Exception as e:
             errors.append(f"Path validation failed: {e}")
-        
+
         return errors
-    
+
     def save_config(self):
         """Save current configuration to file"""
         config_data = {
@@ -268,19 +268,19 @@ class ClaudeDirectorConfig:
             'messages': self.messages.__dict__,
             'paths': self.paths.__dict__
         }
-        
+
         # Ensure directory exists
         self.config_file.parent.mkdir(parents=True, exist_ok=True)
-        
+
         with open(self.config_file, 'w', encoding='utf-8') as f:
             yaml.dump(config_data, f, default_flow_style=False, sort_keys=True)
-        
+
         logger.info(f"Configuration saved to {self.config_file}")
-    
+
     def get_all_keys(self) -> List[str]:
         """Get all available configuration keys"""
         return list(self._lookup.keys())
-    
+
     def get_consolidated_hardcoded_values(self) -> Dict[str, Any]:
         """Get all hard-coded values that should be replaced with config access"""
         return {
@@ -291,10 +291,10 @@ class ClaudeDirectorConfig:
             "0.4": self.get_threshold("complexity_threshold"),
             "0.5": self.get_threshold("performance_degradation_limit") * 10,  # 0.05 * 10 = 0.5
             "0.6": self.get_threshold("stakeholder_profiling_threshold"),
-            
+
             # Common string patterns
             "strategic": "strategic",
-            "operational": "operational", 
+            "operational": "operational",
             "technical": "technical",
             "organizational": "organizational",
             "stakeholder": "stakeholder",
@@ -348,14 +348,14 @@ def get_path(name: str) -> str:
 # Export main classes and functions
 __all__ = [
     'ClaudeDirectorConfig',
-    'ThresholdConfig', 
+    'ThresholdConfig',
     'EnumConfig',
     'MessageConfig',
     'PathConfig',
     'get_config',
     'reload_config',
     'get_threshold',
-    'get_enum_values', 
+    'get_enum_values',
     'get_message_template',
     'get_path'
 ]
