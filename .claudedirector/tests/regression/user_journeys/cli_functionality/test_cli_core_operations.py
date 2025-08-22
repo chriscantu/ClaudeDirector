@@ -398,11 +398,11 @@ class TestCLICoreOperations(unittest.TestCase):
                         # Should show help or usage information
                         output = result.stdout + result.stderr
                         help_indicators = ["usage", "help", "commands", "options"]
-                        
+
                         has_help_content = any(
                             indicator in output.lower() for indicator in help_indicators
                         )
-                        
+
                         # Only check if command succeeded
                         if result.returncode in [0, 1, 2]:
                             self.assertTrue(
@@ -416,7 +416,9 @@ class TestCLICoreOperations(unittest.TestCase):
                 except Exception as e:
                     # Only fail if this was supposed to succeed
                     if test_case.get("should_succeed"):
-                        self.fail(f"Command {test_case['name']} failed unexpectedly: {e}")
+                        self.fail(
+                            f"Command {test_case['name']} failed unexpectedly: {e}"
+                        )
 
         except Exception as e:
             self.fail(f"CLI command structure validation failed: {e}")
@@ -458,8 +460,11 @@ class TestCLICoreOperations(unittest.TestCase):
             )
 
             # Test with minimal environment
-            minimal_env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
-            
+            minimal_env = {
+                "PATH": os.environ.get("PATH", ""),
+                "HOME": os.environ.get("HOME", ""),
+            }
+
             try:
                 minimal_result = subprocess.run(
                     [str(self.cli_script), "version"],
@@ -488,10 +493,10 @@ if __name__ == "__main__":
     print("=" * 50)
     print("Testing core CLI functionality and essential user workflows...")
     print()
-    
+
     # Run the focused test suite
     unittest.main(verbosity=2, exit=False)
-    
+
     print()
     print("✅ CLI CORE OPERATIONS REGRESSION TESTS COMPLETE")
     print("Core CLI functionality protected against regressions")

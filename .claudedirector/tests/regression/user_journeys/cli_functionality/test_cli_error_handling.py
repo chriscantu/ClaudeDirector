@@ -382,17 +382,19 @@ class TestCLIErrorHandling(unittest.TestCase):
             # Test with limited memory (if ulimit is available)
             try:
                 import resource
-                
+
                 # Get current memory limit
                 current_limit = resource.getrlimit(resource.RLIMIT_AS)
-                
+
                 # Set a reasonable memory limit (100MB)
                 limited_memory = 100 * 1024 * 1024
-                
+
                 if current_limit[0] == -1 or current_limit[0] > limited_memory:
                     # Only test if we can actually limit memory
-                    resource.setrlimit(resource.RLIMIT_AS, (limited_memory, current_limit[1]))
-                    
+                    resource.setrlimit(
+                        resource.RLIMIT_AS, (limited_memory, current_limit[1])
+                    )
+
                     try:
                         result = subprocess.run(
                             [str(self.cli_script), "help"],
@@ -486,7 +488,7 @@ class TestCLIErrorHandling(unittest.TestCase):
 
             # Check that concurrent executions completed
             completed_count = sum(1 for result_list in results if len(result_list) > 0)
-            
+
             self.assertGreater(
                 completed_count,
                 0,
@@ -495,7 +497,8 @@ class TestCLIErrorHandling(unittest.TestCase):
 
             # Check for any successful executions
             successful_count = sum(
-                1 for result_list in results 
+                1
+                for result_list in results
                 if len(result_list) > 0 and result_list[0][0] == "success"
             )
 
@@ -515,10 +518,10 @@ if __name__ == "__main__":
     print("=" * 50)
     print("Testing CLI robustness and error recovery...")
     print()
-    
+
     # Run the focused test suite
     unittest.main(verbosity=2, exit=False)
-    
+
     print()
     print("✅ CLI ERROR HANDLING REGRESSION TESTS COMPLETE")
     print("CLI robustness and error recovery protected against regressions")
