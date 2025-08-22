@@ -11,9 +11,11 @@ from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
 import sqlite3
 
+
 @dataclass
 class ArchivedFileIndex:
     """Index entry for archived files to enable search"""
+
     file_path: str
     original_name: str
     archived_date: datetime
@@ -24,9 +26,11 @@ class ArchivedFileIndex:
     session_id: Optional[str]
     retention_score: float  # Business value score for retrieval priority
 
+
 @dataclass
 class SearchResult:
     """Result from archive search"""
+
     file_path: str
     relevance_score: float
     content_summary: str
@@ -34,13 +38,16 @@ class SearchResult:
     archived_date: datetime
     preview: str
 
+
 class AdvancedArchivingSystem:
     """Advanced archiving with search and pattern recognition"""
 
     def __init__(self, workspace_path: str):
         self.workspace_path = Path(workspace_path)
         self.archive_base = self.workspace_path / "archived-sessions"
-        self.index_db_path = self.workspace_path / ".claudedirector" / "archive_index.db"
+        self.index_db_path = (
+            self.workspace_path / ".claudedirector" / "archive_index.db"
+        )
 
         # Initialize archive search database
         self._init_archive_database()
@@ -52,7 +59,7 @@ class AdvancedArchivingSystem:
             "strategy": self._extract_strategy_context,
             "stakeholder": self._extract_stakeholder_context,
             "budget": self._extract_budget_context,
-            "technical": self._extract_technical_context
+            "technical": self._extract_technical_context,
         }
 
     def _init_archive_database(self):
@@ -60,7 +67,8 @@ class AdvancedArchivingSystem:
         self.index_db_path.parent.mkdir(parents=True, exist_ok=True)
 
         with sqlite3.connect(str(self.index_db_path)) as conn:
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS archived_files (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     file_path TEXT UNIQUE NOT NULL,
@@ -74,10 +82,12 @@ class AdvancedArchivingSystem:
                     retention_score REAL,
                     full_content TEXT  -- For full-text search
                 )
-            """)
+            """
+            )
 
             # Create full-text search virtual table
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE VIRTUAL TABLE IF NOT EXISTS archived_files_fts USING fts5(
                     original_name,
                     business_context,
@@ -87,15 +97,13 @@ class AdvancedArchivingSystem:
                     content='archived_files',
                     content_rowid='id'
                 )
-            """)
+            """
+            )
 
             conn.commit()
 
     def archive_file_with_indexing(
-        self,
-        file_path: str,
-        content_type: str,
-        session_id: Optional[str] = None
+        self, file_path: str, content_type: str, session_id: Optional[str] = None
     ) -> Optional[str]:
         """Archive file with enhanced indexing for search"""
 
@@ -105,7 +113,7 @@ class AdvancedArchivingSystem:
                 return None
 
             # Read file content for analysis
-            with open(source_path, 'r', encoding='utf-8') as f:
+            with open(source_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
             # Extract business intelligence from content
@@ -140,10 +148,12 @@ class AdvancedArchivingSystem:
                 keywords,
                 session_id,
                 retention_score,
-                content
+                content,
             )
 
-            print(f"📁 Archived with indexing: {source_path.name} → {archive_month}/{archived_filename}")
+            print(
+                f"📁 Archived with indexing: {source_path.name} → {archive_month}/{archived_filename}"
+            )
             return str(archived_path)
 
         except Exception as e:
@@ -261,18 +271,18 @@ class AdvancedArchivingSystem:
 
     def _generate_content_summary(self, content: str) -> str:
         """Generate intelligent content summary"""
-        lines = content.split('\n')
+        lines = content.split("\n")
 
         # Extract headers and key content
         summary_lines = []
         for line in lines[:20]:  # First 20 lines
             line = line.strip()
-            if line.startswith('#') or line.startswith('**') or line.startswith('*'):
-                summary_lines.append(line.replace('#', '').replace('*', '').strip())
+            if line.startswith("#") or line.startswith("**") or line.startswith("*"):
+                summary_lines.append(line.replace("#", "").replace("*", "").strip())
             elif line and len(line) > 20:
                 summary_lines.append(line)
 
-        summary = ' '.join(summary_lines)
+        summary = " ".join(summary_lines)
 
         # Truncate to reasonable length
         if len(summary) > 300:
@@ -286,12 +296,36 @@ class AdvancedArchivingSystem:
 
         # Business keywords
         business_keywords = [
-            "platform", "architecture", "scaling", "performance", "migration",
-            "team", "hiring", "organization", "structure", "growth",
-            "strategy", "roadmap", "vision", "objectives", "quarterly",
-            "stakeholder", "executive", "board", "leadership", "communication",
-            "budget", "roi", "cost", "investment", "financial",
-            "technical", "debt", "implementation", "framework", "system"
+            "platform",
+            "architecture",
+            "scaling",
+            "performance",
+            "migration",
+            "team",
+            "hiring",
+            "organization",
+            "structure",
+            "growth",
+            "strategy",
+            "roadmap",
+            "vision",
+            "objectives",
+            "quarterly",
+            "stakeholder",
+            "executive",
+            "board",
+            "leadership",
+            "communication",
+            "budget",
+            "roi",
+            "cost",
+            "investment",
+            "financial",
+            "technical",
+            "debt",
+            "implementation",
+            "framework",
+            "system",
         ]
 
         # Extract mentioned keywords
@@ -301,7 +335,7 @@ class AdvancedArchivingSystem:
                 found_keywords.append(keyword)
 
         # Extract proper nouns (potential project/system names)
-        proper_nouns = re.findall(r'\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b', content)
+        proper_nouns = re.findall(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b", content)
         found_keywords.extend(proper_nouns[:10])  # Limit to 10 proper nouns
 
         return list(set(found_keywords))
@@ -318,7 +352,7 @@ class AdvancedArchivingSystem:
             "quarterly_planning": 9.5,
             "meeting_prep": 6.0,
             "session_summary": 7.0,
-            "framework_research": 5.0
+            "framework_research": 5.0,
         }
 
         score += type_scores.get(content_type, 5.0)
@@ -332,7 +366,7 @@ class AdvancedArchivingSystem:
             "strategy": 1.0,
             "architecture": 1.0,
             "migration": 1.5,
-            "budget": 1.5
+            "budget": 1.5,
         }
 
         for keyword, bonus in high_value_keywords.items():
@@ -346,10 +380,7 @@ class AdvancedArchivingSystem:
         return min(score, 10.0)  # Cap at 10.0
 
     def _generate_archived_filename(
-        self,
-        original_name: str,
-        business_context: str,
-        archive_date: datetime
+        self, original_name: str, business_context: str, archive_date: datetime
     ) -> str:
         """Generate searchable archived filename"""
 
@@ -383,38 +414,48 @@ class AdvancedArchivingSystem:
         keywords: List[str],
         session_id: Optional[str],
         retention_score: float,
-        full_content: str
+        full_content: str,
     ):
         """Index archived file in search database"""
 
         with sqlite3.connect(str(self.index_db_path)) as conn:
             # Insert into main table
-            conn.execute("""
+            conn.execute(
+                """
                 INSERT OR REPLACE INTO archived_files
                 (file_path, original_name, archived_date, content_type, business_context,
                  content_summary, keywords, session_id, retention_score, full_content)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                str(archived_path), original_name, archived_date.isoformat(),
-                content_type, business_context, content_summary,
-                json.dumps(keywords), session_id, retention_score, full_content
-            ))
+            """,
+                (
+                    str(archived_path),
+                    original_name,
+                    archived_date.isoformat(),
+                    content_type,
+                    business_context,
+                    content_summary,
+                    json.dumps(keywords),
+                    session_id,
+                    retention_score,
+                    full_content,
+                ),
+            )
 
             # Insert into FTS table
-            conn.execute("""
+            conn.execute(
+                """
                 INSERT OR REPLACE INTO archived_files_fts
                 (rowid, original_name, business_context, content_summary, keywords, full_content)
                 SELECT id, original_name, business_context, content_summary, keywords, full_content
                 FROM archived_files WHERE file_path = ?
-            """, (str(archived_path),))
+            """,
+                (str(archived_path),),
+            )
 
             conn.commit()
 
     def search_archived_files(
-        self,
-        query: str,
-        limit: int = 10,
-        context_filter: Optional[str] = None
+        self, query: str, limit: int = 10, context_filter: Optional[str] = None
     ) -> List[SearchResult]:
         """Search archived files with relevance ranking"""
 
@@ -447,13 +488,24 @@ class AdvancedArchivingSystem:
             cursor = conn.execute(sql, params)
 
             for row in cursor.fetchall():
-                file_path, original_name, archived_date, content_type, business_context, content_summary, retention_score, rank = row
+                (
+                    file_path,
+                    original_name,
+                    archived_date,
+                    content_type,
+                    business_context,
+                    content_summary,
+                    retention_score,
+                    rank,
+                ) = row
 
                 # Generate preview
                 preview = self._generate_search_preview(file_path, query)
 
                 # Calculate relevance score
-                relevance_score = self._calculate_relevance_score(rank, retention_score, query, content_summary)
+                relevance_score = self._calculate_relevance_score(
+                    rank, retention_score, query, content_summary
+                )
 
                 result = SearchResult(
                     file_path=file_path,
@@ -461,7 +513,7 @@ class AdvancedArchivingSystem:
                     content_summary=content_summary,
                     business_context=business_context,
                     archived_date=datetime.fromisoformat(archived_date),
-                    preview=preview
+                    preview=preview,
                 )
                 results.append(result)
 
@@ -470,20 +522,16 @@ class AdvancedArchivingSystem:
     def _build_fts_query(self, query: str) -> str:
         """Build FTS query from user input"""
         # Clean and tokenize query
-        query_tokens = re.findall(r'\w+', query.lower())
+        query_tokens = re.findall(r"\w+", query.lower())
 
         # Build FTS query with OR logic for flexibility
         if len(query_tokens) == 1:
             return query_tokens[0]
         else:
-            return ' OR '.join(query_tokens)
+            return " OR ".join(query_tokens)
 
     def _calculate_relevance_score(
-        self,
-        fts_rank: float,
-        retention_score: float,
-        query: str,
-        content_summary: str
+        self, fts_rank: float, retention_score: float, query: str, content_summary: str
     ) -> float:
         """Calculate combined relevance score"""
 
@@ -501,11 +549,11 @@ class AdvancedArchivingSystem:
     def _generate_search_preview(self, file_path: str, query: str) -> str:
         """Generate search result preview with highlighted terms"""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
             # Find relevant excerpt
-            query_terms = re.findall(r'\w+', query.lower())
+            query_terms = re.findall(r"\w+", query.lower())
             content_lower = content.lower()
 
             # Find first occurrence of any query term
@@ -538,43 +586,51 @@ class AdvancedArchivingSystem:
         with sqlite3.connect(str(self.index_db_path)) as conn:
             # Total archived files
             cursor = conn.execute("SELECT COUNT(*) FROM archived_files")
-            stats['total_files'] = cursor.fetchone()[0]
+            stats["total_files"] = cursor.fetchone()[0]
 
             # Files by content type
-            cursor = conn.execute("""
+            cursor = conn.execute(
+                """
                 SELECT content_type, COUNT(*)
                 FROM archived_files
                 GROUP BY content_type
-            """)
-            stats['by_content_type'] = dict(cursor.fetchall())
+            """
+            )
+            stats["by_content_type"] = dict(cursor.fetchall())
 
             # Files by business context
-            cursor = conn.execute("""
+            cursor = conn.execute(
+                """
                 SELECT business_context, COUNT(*)
                 FROM archived_files
                 GROUP BY business_context
                 ORDER BY COUNT(*) DESC
                 LIMIT 10
-            """)
-            stats['by_business_context'] = dict(cursor.fetchall())
+            """
+            )
+            stats["by_business_context"] = dict(cursor.fetchall())
 
             # Archive timeline
-            cursor = conn.execute("""
+            cursor = conn.execute(
+                """
                 SELECT DATE(archived_date), COUNT(*)
                 FROM archived_files
                 GROUP BY DATE(archived_date)
                 ORDER BY DATE(archived_date) DESC
                 LIMIT 30
-            """)
-            stats['timeline'] = dict(cursor.fetchall())
+            """
+            )
+            stats["timeline"] = dict(cursor.fetchall())
 
             # High-value archived files
-            cursor = conn.execute("""
+            cursor = conn.execute(
+                """
                 SELECT original_name, retention_score
                 FROM archived_files
                 ORDER BY retention_score DESC
                 LIMIT 10
-            """)
-            stats['high_value_files'] = cursor.fetchall()
+            """
+            )
+            stats["high_value_files"] = cursor.fetchall()
 
         return stats

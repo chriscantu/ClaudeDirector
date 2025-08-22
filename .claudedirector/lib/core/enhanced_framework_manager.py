@@ -46,7 +46,7 @@ class EnhancedFrameworkManager:
             self._handle_session_recovery()
         else:
             print("🚀 Starting new strategic session...")
-            self.current_session = self.session_manager.start_session('strategic')
+            self.current_session = self.session_manager.start_session("strategic")
             self.context_validated = True
 
     def _handle_session_recovery(self):
@@ -56,7 +56,9 @@ class EnhancedFrameworkManager:
             context = self.session_manager.restore_session_context()
 
             if context:
-                print(f"✅ Context restored (Quality: {context.get('quality_score', 0):.1%})")
+                print(
+                    f"✅ Context restored (Quality: {context.get('quality_score', 0):.1%})"
+                )
 
                 # Validate context completeness
                 gaps = self.session_manager.validate_context_completeness()
@@ -70,14 +72,14 @@ class EnhancedFrameworkManager:
                     self.recovery_required = False
             else:
                 print("❌ No recoverable context found - starting fresh session")
-                self.current_session = self.session_manager.start_session('strategic')
+                self.current_session = self.session_manager.start_session("strategic")
                 self.context_validated = True
                 self.recovery_required = False
 
         except Exception as e:
             print(f"❌ Context recovery failed: {e}")
             print("🔄 Starting new session...")
-            self.current_session = self.session_manager.start_session('strategic')
+            self.current_session = self.session_manager.start_session("strategic")
             self.context_validated = True
             self.recovery_required = False
 
@@ -85,11 +87,11 @@ class EnhancedFrameworkManager:
         """Present context recovery prompt to user"""
         prompt = self.session_manager.get_context_recovery_prompt()
 
-        print("\n" + "="*60)
+        print("\n" + "=" * 60)
         print("🔄 CONTEXT RECOVERY REQUIRED")
-        print("="*60)
+        print("=" * 60)
         print(prompt)
-        print("="*60)
+        print("=" * 60)
 
         # Mark as requiring manual recovery
         self.context_validated = False
@@ -136,22 +138,22 @@ class EnhancedFrameworkManager:
         """Get current context status and quality information"""
         if not self.current_session:
             return {
-                'session_active': False,
-                'context_validated': False,
-                'recovery_required': False
+                "session_active": False,
+                "context_validated": False,
+                "recovery_required": False,
             }
 
         context = self.session_manager.restore_session_context()
         gaps = self.session_manager.validate_context_completeness()
 
         return {
-            'session_id': self.current_session,
-            'session_active': True,
-            'context_validated': self.context_validated,
-            'recovery_required': self.recovery_required,
-            'context_quality': context.get('quality_score', 0.0),
-            'context_gaps': len(gaps),
-            'gap_details': gaps
+            "session_id": self.current_session,
+            "session_active": True,
+            "context_validated": self.context_validated,
+            "recovery_required": self.recovery_required,
+            "context_quality": context.get("quality_score", 0.0),
+            "context_gaps": len(gaps),
+            "gap_details": gaps,
         }
 
     def mark_context_recovered(self, recovery_details: Dict[str, Any] = None):
@@ -177,13 +179,13 @@ class EnhancedFrameworkManager:
 
     def store_strategic_context(self, context_type: str, context_data: Dict[str, Any]):
         """Store strategic context for preservation"""
-        if context_type == 'stakeholder_update':
+        if context_type == "stakeholder_update":
             self._store_stakeholder_context(context_data)
-        elif context_type == 'initiative_update':
+        elif context_type == "initiative_update":
             self._store_initiative_context(context_data)
-        elif context_type == 'executive_session':
+        elif context_type == "executive_session":
             self._store_executive_context(context_data)
-        elif context_type == 'roi_discussion':
+        elif context_type == "roi_discussion":
             self._store_roi_context(context_data)
 
         # Trigger automatic backup after context update
@@ -194,9 +196,9 @@ class EnhancedFrameworkManager:
         for stakeholder_key, details in data.items():
             self.session_manager.store_stakeholder_profile(
                 stakeholder_key=stakeholder_key,
-                display_name=details.get('name', ''),
-                role_title=details.get('role', ''),
-                communication_style=details.get('style', '')
+                display_name=details.get("name", ""),
+                role_title=details.get("role", ""),
+                communication_style=details.get("style", ""),
             )
 
     def _store_initiative_context(self, data: Dict[str, Any]):
@@ -204,24 +206,24 @@ class EnhancedFrameworkManager:
         for initiative_key, details in data.items():
             self.session_manager.store_strategic_initiative(
                 initiative_key=initiative_key,
-                initiative_name=details.get('name', ''),
-                status=details.get('status', 'new'),
-                priority=details.get('priority', 'medium'),
-                business_value=details.get('business_value', ''),
-                assignee=details.get('assignee', '')
+                initiative_name=details.get("name", ""),
+                status=details.get("status", "new"),
+                priority=details.get("priority", "medium"),
+                business_value=details.get("business_value", ""),
+                assignee=details.get("assignee", ""),
             )
 
     def _store_executive_context(self, data: Dict[str, Any]):
         """Store executive session context"""
         self.session_manager.store_executive_session(
-            session_type=data.get('type', 'strategic_planning'),
-            stakeholder_key=data.get('stakeholder', 'unknown'),
-            meeting_date=data.get('date', datetime.now().date().isoformat()),
-            agenda_topics=data.get('agenda', []),
-            decisions_made=data.get('decisions', {}),
-            business_impact=data.get('impact', ''),
-            next_session_prep=data.get('prep', ''),
-            persona_activated=data.get('persona', '')
+            session_type=data.get("type", "strategic_planning"),
+            stakeholder_key=data.get("stakeholder", "unknown"),
+            meeting_date=data.get("date", datetime.now().date().isoformat()),
+            agenda_topics=data.get("agenda", []),
+            decisions_made=data.get("decisions", {}),
+            business_impact=data.get("impact", ""),
+            next_session_prep=data.get("prep", ""),
+            persona_activated=data.get("persona", ""),
         )
 
     def _store_roi_context(self, data: Dict[str, Any]):
@@ -229,10 +231,10 @@ class EnhancedFrameworkManager:
         # This would store ROI-specific context
         # For now, store as platform intelligence
         self.session_manager.store_platform_intelligence(
-            intelligence_type='roi_discussion',
-            category='platform_investment',
+            intelligence_type="roi_discussion",
+            category="platform_investment",
             value_text=json.dumps(data),
-            data_source='user_input'
+            data_source="user_input",
         )
 
     def end_session(self):
@@ -247,14 +249,14 @@ class EnhancedFrameworkManager:
         """Get formatted framework status for display"""
         status = self.get_context_status()
 
-        if not status['session_active']:
+        if not status["session_active"]:
             return "❌ No active session"
 
-        if status['recovery_required']:
+        if status["recovery_required"]:
             return f"⚠️  Context recovery required ({status['context_gaps']} gaps)"
 
-        if status['context_validated']:
-            quality = status['context_quality']
+        if status["context_validated"]:
+            quality = status["context_quality"]
             quality_str = f"{quality:.1%}"
             return f"✅ Strategic session ready (Context quality: {quality_str})"
 
@@ -285,11 +287,17 @@ def ensure_context_ready() -> bool:
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="ClaudeDirector Enhanced Framework Manager")
+    parser = argparse.ArgumentParser(
+        description="ClaudeDirector Enhanced Framework Manager"
+    )
     parser.add_argument("--status", action="store_true", help="Show framework status")
     parser.add_argument("--backup", action="store_true", help="Backup current context")
-    parser.add_argument("--recover", action="store_true", help="Show context recovery prompt")
-    parser.add_argument("--validate", action="store_true", help="Validate context completeness")
+    parser.add_argument(
+        "--recover", action="store_true", help="Show context recovery prompt"
+    )
+    parser.add_argument(
+        "--validate", action="store_true", help="Validate context completeness"
+    )
 
     args = parser.parse_args()
 

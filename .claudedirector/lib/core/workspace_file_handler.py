@@ -12,6 +12,7 @@ from typing import Optional, List
 from .file_lifecycle_manager import FileLifecycleManager, GenerationMode
 from .smart_file_organizer import SmartFileOrganizer
 
+
 class WorkspaceFileHandler:
     """Handles file operations in leadership-workspace with user control"""
 
@@ -27,7 +28,7 @@ class WorkspaceFileHandler:
             return provided_path
 
         # Check environment variable
-        env_path = os.environ.get('CLAUDEDIRECTOR_WORKSPACE')
+        env_path = os.environ.get("CLAUDEDIRECTOR_WORKSPACE")
         if env_path and Path(env_path).exists():
             return env_path
 
@@ -58,18 +59,23 @@ class WorkspaceFileHandler:
         mode = self.lifecycle_manager.config.generation_mode
 
         mode_content_types = {
-            GenerationMode.MINIMAL: [
-                "strategic_analysis", "session_summary"
-            ],
+            GenerationMode.MINIMAL: ["strategic_analysis", "session_summary"],
             GenerationMode.PROFESSIONAL: [
-                "strategic_analysis", "meeting_prep", "session_summary",
-                "executive_presentation", "quarterly_planning"
+                "strategic_analysis",
+                "meeting_prep",
+                "session_summary",
+                "executive_presentation",
+                "quarterly_planning",
             ],
             GenerationMode.RESEARCH: [
-                "strategic_analysis", "meeting_prep", "session_summary",
-                "framework_research", "methodology_documentation",
-                "executive_presentation", "quarterly_planning"
-            ]
+                "strategic_analysis",
+                "meeting_prep",
+                "session_summary",
+                "framework_research",
+                "methodology_documentation",
+                "executive_presentation",
+                "quarterly_planning",
+            ],
         }
 
         return content_type in mode_content_types.get(mode, [])
@@ -80,7 +86,7 @@ class WorkspaceFileHandler:
         content_type: str,
         suggested_filename: str,
         business_context: str,
-        persona: Optional[str] = None
+        persona: Optional[str] = None,
     ) -> Optional[str]:
         """Request to create a file with user control"""
 
@@ -98,7 +104,7 @@ class WorkspaceFileHandler:
             content_type=content_type,
             proposed_filename=final_filename,
             content_preview=content[:300],
-            business_context=business_context
+            business_context=business_context,
         )
 
         if not approved:
@@ -120,17 +126,20 @@ class WorkspaceFileHandler:
         suggested_filename: str,
         content_type: str,
         business_context: str,
-        persona: Optional[str] = None
+        persona: Optional[str] = None,
     ) -> str:
         """Generate intelligent filename based on content and mode"""
 
         # Use Phase 2 outcome-focused naming if enabled
-        if self.lifecycle_manager.config.generation_mode.value in ["professional", "research"]:
+        if self.lifecycle_manager.config.generation_mode.value in [
+            "professional",
+            "research",
+        ]:
             outcome_filename = self.smart_organizer.generate_outcome_focused_filename(
                 content_preview=business_context,
                 content_type=content_type,
                 business_context=business_context,
-                persona=persona
+                persona=persona,
             )
 
             # Determine target directory
@@ -147,7 +156,7 @@ class WorkspaceFileHandler:
             "executive_presentation": f"{timestamp}-executive-presentation.md",
             "quarterly_planning": f"q{self._get_current_quarter()}-planning-{timestamp}.md",
             "framework_research": f"{timestamp}-framework-research.md",
-            "methodology_documentation": f"{timestamp}-methodology-doc.md"
+            "methodology_documentation": f"{timestamp}-methodology-doc.md",
         }
 
         base_filename = filename_patterns.get(content_type, suggested_filename)
@@ -169,7 +178,7 @@ class WorkspaceFileHandler:
             "executive_presentation": base_path / "meeting-prep",
             "quarterly_planning": base_path / "strategic-docs",
             "framework_research": base_path / "analysis-results",
-            "methodology_documentation": base_path / "strategic-docs"
+            "methodology_documentation": base_path / "strategic-docs",
         }
 
         target_dir = directory_mapping.get(content_type, base_path / "current-work")
@@ -177,7 +186,9 @@ class WorkspaceFileHandler:
 
         return target_dir
 
-    def _create_file(self, filename: str, content: str, content_type: str) -> Optional[str]:
+    def _create_file(
+        self, filename: str, content: str, content_type: str
+    ) -> Optional[str]:
         """Create file with metadata tracking"""
         try:
             file_path = Path(filename)
@@ -189,14 +200,12 @@ class WorkspaceFileHandler:
             full_content = self._add_file_header(content, content_type)
 
             # Write file
-            with open(file_path, 'w', encoding='utf-8') as f:
+            with open(file_path, "w", encoding="utf-8") as f:
                 f.write(full_content)
 
             # Register with lifecycle manager
             self.lifecycle_manager.register_file(
-                str(file_path),
-                content_type,
-                self.current_session_id
+                str(file_path), content_type, self.current_session_id
             )
 
             return str(file_path)
@@ -239,13 +248,15 @@ retention_status: standard
             print(f"You have {len(recent_files)} files from this session.")
 
             # Use Phase 2 smart consolidation
-            consolidation_suggested = self.smart_organizer.suggest_consolidation_opportunities()
+            consolidation_suggested = (
+                self.smart_organizer.suggest_consolidation_opportunities()
+            )
 
             if not consolidation_suggested:
                 # Fallback to Phase 1 consolidation
                 print(f"Consider consolidating related analyses for easier reference.")
                 response = input("Show consolidation options? [y/n]: ").strip().lower()
-                if response == 'y':
+                if response == "y":
                     self._show_consolidation_options(recent_files)
 
     def _show_consolidation_options(self, recent_files: List[str]):
@@ -306,11 +317,15 @@ retention_status: standard
             metadata = self.lifecycle_manager.metadata_store.get(filepath)
             content_type = metadata.content_type if metadata else "unknown"
 
-            response = input(f"Retain {filename} ({content_type})? [y/n/notes]: ").strip().lower()
+            response = (
+                input(f"Retain {filename} ({content_type})? [y/n/notes]: ")
+                .strip()
+                .lower()
+            )
 
-            if response == 'y':
+            if response == "y":
                 self.lifecycle_manager.mark_for_retention(filepath)
-            elif response == 'notes':
+            elif response == "notes":
                 notes = input("Business value/retention reason: ").strip()
                 self.lifecycle_manager.mark_for_retention(filepath, user_notes=notes)
 
@@ -328,7 +343,7 @@ retention_status: standard
             print(f"🎯 Potential cognitive load reduction: {total_reduction:.1f}x")
 
             response = input("Show smart organization options? [y/n]: ").strip().lower()
-            if response == 'y':
+            if response == "y":
                 self.smart_organizer.suggest_consolidation_opportunities()
         else:
             print("✅ No consolidation opportunities detected")
@@ -338,7 +353,7 @@ retention_status: standard
         if archivable:
             print(f"\n⏰ **{len(archivable)} files eligible for archiving**")
             response = input("Run auto-archive? [y/n]: ").strip().lower()
-            if response == 'y':
+            if response == "y":
                 archived = self.lifecycle_manager.auto_archive_eligible_files()
                 print(f"📁 Archived {len(archived)} files")
 
@@ -353,11 +368,15 @@ retention_status: standard
 
         if not config_path.exists():
             # Copy template to workspace
-            template_path = Path(__file__).parent.parent.parent / "templates" / "workspace_config.yaml"
+            template_path = (
+                Path(__file__).parent.parent.parent
+                / "templates"
+                / "workspace_config.yaml"
+            )
 
             if template_path.exists():
                 config_path.parent.mkdir(parents=True, exist_ok=True)
-                with open(template_path, 'r') as src, open(config_path, 'w') as dst:
+                with open(template_path, "r") as src, open(config_path, "w") as dst:
                     dst.write(src.read())
                 print(f"✅ Initialized workspace configuration: {config_path}")
             else:

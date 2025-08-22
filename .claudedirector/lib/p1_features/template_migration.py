@@ -531,7 +531,9 @@ class TemplateMigrationEngine:
         ]
         for required_field in required_fields:
             if required_field not in config:
-                errors.append(f"Template {template_id} missing required field: {required_field}")
+                errors.append(
+                    f"Template {template_id} missing required field: {required_field}"
+                )
 
         # Validate personas structure
         if "personas" in config:

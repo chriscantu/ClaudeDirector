@@ -7,6 +7,7 @@ Tests core components independently
 import asyncio
 import time
 
+
 # Test MCP Transparency Components
 def test_mcp_transparency():
     """Test MCP transparency functionality"""
@@ -18,6 +19,7 @@ def test_mcp_transparency():
     # Test basic MCP call tracking
     context = MCPContext()
     from datetime import datetime
+
     call = MCPCall("test_server", "analysis", 0.15, datetime.now(), True)
     context.add_mcp_call(call)
 
@@ -41,7 +43,7 @@ def test_mcp_transparency():
     print(f"    DEBUG: Wrapped response: {wrapped}")
 
     assert test_response in wrapped
-    assert ("MCP" in wrapped or "server" in wrapped.lower() or "🔧" in wrapped)
+    assert "MCP" in wrapped or "server" in wrapped.lower() or "🔧" in wrapped
     print("  ✓ Response wrapping with transparency working")
 
     print("  ✅ MCP Transparency tests passed\n")
@@ -65,23 +67,34 @@ def test_framework_detection():
 
     detected_frameworks = middleware.detect_frameworks_used(test_text)
 
-    print(f"    DEBUG: Detected frameworks: {[(f.framework_name, f.confidence_score) for f in detected_frameworks]}")
+    print(
+        f"    DEBUG: Detected frameworks: {[(f.framework_name, f.confidence_score) for f in detected_frameworks]}"
+    )
 
     assert len(detected_frameworks) > 0
     framework_names = [f.framework_name for f in detected_frameworks]
 
     # Check that key frameworks were detected
-    expected_frameworks = ["OGSM", "Blue Ocean Strategy", "Design Thinking", "Porter's Five Forces"]
+    expected_frameworks = [
+        "OGSM",
+        "Blue Ocean Strategy",
+        "Design Thinking",
+        "Porter's Five Forces",
+    ]
     detected_count = sum(1 for fw in expected_frameworks if fw in framework_names)
 
-    assert detected_count >= 2, f"Expected at least 2 frameworks, detected: {framework_names}"
+    assert (
+        detected_count >= 2
+    ), f"Expected at least 2 frameworks, detected: {framework_names}"
     print(f"  ✓ Detected {len(detected_frameworks)} frameworks: {framework_names}")
 
     # Test framework attribution
-    enhanced = middleware.add_framework_attribution("camille", test_text, detected_frameworks)
+    enhanced = middleware.add_framework_attribution(
+        "camille", test_text, detected_frameworks
+    )
 
     assert test_text in enhanced
-    assert ("Framework" in enhanced or "methodology" in enhanced)
+    assert "Framework" in enhanced or "methodology" in enhanced
     print("  ✓ Framework attribution working")
 
     print("  ✅ Framework Detection tests passed\n")
@@ -101,14 +114,21 @@ def test_persona_communication_patterns():
     for persona in personas_to_test:
         context = MCPContext()
         from datetime import datetime
-        context.add_mcp_call(MCPCall(f"{persona}_server", "analysis", 0.1, datetime.now(), True))
+
+        context.add_mcp_call(
+            MCPCall(f"{persona}_server", "analysis", 0.1, datetime.now(), True)
+        )
 
         response = f"Test response from {persona}"
         enhanced = middleware.wrap_persona_response(persona, response, context)
 
         # Verify persona-specific elements are present
         assert response in enhanced
-        assert ("🔧" in enhanced or "MCP" in enhanced.lower() or "server" in enhanced.lower())
+        assert (
+            "🔧" in enhanced
+            or "MCP" in enhanced.lower()
+            or "server" in enhanced.lower()
+        )
 
         print(f"  ✓ {persona.title()} communication pattern working")
 
@@ -128,6 +148,7 @@ def test_performance_characteristics():
     mcp_middleware = MCPTransparencyMiddleware()
 
     from datetime import datetime
+
     for i in range(100):
         context = MCPContext()
         context.add_mcp_call(MCPCall(f"server_{i}", "test", 0.01, datetime.now(), True))
@@ -148,8 +169,12 @@ def test_performance_characteristics():
         framework_middleware.add_framework_attribution("test", test_text, frameworks)
 
     framework_time = time.time() - start_time
-    assert framework_time < 2.0, f"Framework detection took too long: {framework_time:.3f}s"
-    print(f"  ✓ Framework detection processing: {framework_time:.3f}s for 50 operations")
+    assert (
+        framework_time < 2.0
+    ), f"Framework detection took too long: {framework_time:.3f}s"
+    print(
+        f"  ✓ Framework detection processing: {framework_time:.3f}s for 50 operations"
+    )
 
     print("  ✅ Performance tests passed\n")
 
@@ -172,12 +197,15 @@ async def test_integration_scenario():
     mcp_calls = [
         ("market_analysis", "competitive_intel", 0.15),
         ("strategic_research", "industry_trends", 0.08),
-        ("financial_modeling", "revenue_projection", 0.12)
+        ("financial_modeling", "revenue_projection", 0.12),
     ]
 
     from datetime import datetime
+
     for server, capability, duration in mcp_calls:
-        mcp_context.add_mcp_call(MCPCall(server, capability, duration, datetime.now(), True))
+        mcp_context.add_mcp_call(
+            MCPCall(server, capability, duration, datetime.now(), True)
+        )
 
     # Step 2: Generate base response with strategic frameworks
     base_response = """
@@ -204,7 +232,9 @@ async def test_integration_scenario():
     """
 
     # Step 3: Apply MCP transparency
-    mcp_enhanced = mcp_middleware.wrap_persona_response("diego", base_response, mcp_context)
+    mcp_enhanced = mcp_middleware.wrap_persona_response(
+        "diego", base_response, mcp_context
+    )
 
     # Step 4: Apply framework detection and attribution
     framework_middleware = FrameworkDetectionMiddleware()
@@ -218,13 +248,25 @@ async def test_integration_scenario():
 
     # Validate the integrated response
     assert base_response in final_response
-    assert len(detected_frameworks) >= 4  # OGSM, Blue Ocean, Design Thinking, Porter's, BCG
+    assert (
+        len(detected_frameworks) >= 4
+    )  # OGSM, Blue Ocean, Design Thinking, Porter's, BCG
     assert len(mcp_context.mcp_calls) == 3
     assert "market_analysis" in mcp_context.get_server_names()
 
     framework_names = [f.framework_name for f in detected_frameworks]
-    expected_frameworks = ["OGSM", "Blue Ocean", "Design Thinking", "Porter's Five Forces", "BCG Matrix"]
-    detected_expected = [fw for fw in expected_frameworks if any(fw in fname for fname in framework_names)]
+    expected_frameworks = [
+        "OGSM",
+        "Blue Ocean",
+        "Design Thinking",
+        "Porter's Five Forces",
+        "BCG Matrix",
+    ]
+    detected_expected = [
+        fw
+        for fw in expected_frameworks
+        if any(fw in fname for fname in framework_names)
+    ]
 
     print(f"  ✓ Integration test completed in {processing_time:.3f}s")
     print(f"    - MCP calls tracked: {len(mcp_context.mcp_calls)}")
@@ -269,11 +311,14 @@ async def main():
     except Exception as e:
         print(f"❌ Validation error: {str(e)}")
         import traceback
+
         traceback.print_exc()
         return False
 
 
 if __name__ == "__main__":
     success = asyncio.run(main())
-    print(f"\n{'🚀 SUCCESS' if success else '💥 FAILURE'}: Transparency system validation {'completed' if success else 'failed'}")
+    print(
+        f"\n{'🚀 SUCCESS' if success else '💥 FAILURE'}: Transparency system validation {'completed' if success else 'failed'}"
+    )
     exit(0 if success else 1)

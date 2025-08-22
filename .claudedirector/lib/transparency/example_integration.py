@@ -19,7 +19,9 @@ class ClaudeDirectorTransparencyExample:
     """Example integration of transparency system with ClaudeDirector personas"""
 
     def __init__(self):
-        self.persona_manager = PersonaIntegrationFactory.create_transparent_manager("default")
+        self.persona_manager = PersonaIntegrationFactory.create_transparent_manager(
+            "default"
+        )
         self._setup_strategic_personas()
 
     def _setup_strategic_personas(self):
@@ -42,12 +44,16 @@ class ClaudeDirectorTransparencyExample:
 
     async def _diego_handler(self, query: str, **kwargs) -> str:
         """Diego - Strategic Leadership with MCP integration"""
-        transparency_context = kwargs.get('transparency_context')
+        transparency_context = kwargs.get("transparency_context")
         mcp_helper = MCPIntegrationHelper(transparency_context, self.persona_manager)
 
         # Simulate strategic analysis MCP calls
-        await mcp_helper.call_mcp_server("strategic_analysis", "market_assessment", query=query)
-        await mcp_helper.call_mcp_server("competitive_intel", "competitor_analysis", market="current")
+        await mcp_helper.call_mcp_server(
+            "strategic_analysis", "market_assessment", query=query
+        )
+        await mcp_helper.call_mcp_server(
+            "competitive_intel", "competitor_analysis", market="current"
+        )
 
         response = f"""
         **Strategic Analysis - Diego**
@@ -72,11 +78,13 @@ class ClaudeDirectorTransparencyExample:
 
     async def _camille_handler(self, query: str, **kwargs) -> str:
         """Camille - Innovation & Technology with framework integration"""
-        transparency_context = kwargs.get('transparency_context')
+        transparency_context = kwargs.get("transparency_context")
         mcp_helper = MCPIntegrationHelper(transparency_context, self.persona_manager)
 
         # Simulate innovation research MCP calls
-        await mcp_helper.call_mcp_server("innovation_tracker", "trend_analysis", domain="technology")
+        await mcp_helper.call_mcp_server(
+            "innovation_tracker", "trend_analysis", domain="technology"
+        )
         await mcp_helper.call_mcp_server("patent_research", "ip_landscape", query=query)
 
         response = f"""
@@ -108,12 +116,16 @@ class ClaudeDirectorTransparencyExample:
 
     async def _rachel_handler(self, query: str, **kwargs) -> str:
         """Rachel - Change Management with organizational insights"""
-        transparency_context = kwargs.get('transparency_context')
+        transparency_context = kwargs.get("transparency_context")
         mcp_helper = MCPIntegrationHelper(transparency_context, self.persona_manager)
 
         # Simulate organizational analysis MCP calls
-        await mcp_helper.call_mcp_server("org_analytics", "culture_assessment", scope="department")
-        await mcp_helper.call_mcp_server("change_readiness", "stakeholder_analysis", initiative=query)
+        await mcp_helper.call_mcp_server(
+            "org_analytics", "culture_assessment", scope="department"
+        )
+        await mcp_helper.call_mcp_server(
+            "change_readiness", "stakeholder_analysis", initiative=query
+        )
 
         response = f"""
         **Change Management Analysis - Rachel**
@@ -149,13 +161,19 @@ class ClaudeDirectorTransparencyExample:
 
     async def _alvaro_handler(self, query: str, **kwargs) -> str:
         """Alvaro - Technical Excellence with system analysis"""
-        transparency_context = kwargs.get('transparency_context')
+        transparency_context = kwargs.get("transparency_context")
         mcp_helper = MCPIntegrationHelper(transparency_context, self.persona_manager)
 
         # Simulate technical analysis MCP calls
-        await mcp_helper.call_mcp_server("code_analyzer", "architecture_review", codebase=query)
-        await mcp_helper.call_mcp_server("security_scanner", "vulnerability_assessment", scope="application")
-        await mcp_helper.call_mcp_server("performance_monitor", "bottleneck_analysis", system="production")
+        await mcp_helper.call_mcp_server(
+            "code_analyzer", "architecture_review", codebase=query
+        )
+        await mcp_helper.call_mcp_server(
+            "security_scanner", "vulnerability_assessment", scope="application"
+        )
+        await mcp_helper.call_mcp_server(
+            "performance_monitor", "bottleneck_analysis", system="production"
+        )
 
         response = f"""
         **Technical Analysis - Alvaro**
@@ -193,13 +211,19 @@ class ClaudeDirectorTransparencyExample:
 
     async def _martin_handler(self, query: str, **kwargs) -> str:
         """Martin - Business Development with market intelligence"""
-        transparency_context = kwargs.get('transparency_context')
+        transparency_context = kwargs.get("transparency_context")
         mcp_helper = MCPIntegrationHelper(transparency_context, self.persona_manager)
 
         # Simulate business intelligence MCP calls
-        await mcp_helper.call_mcp_server("market_intelligence", "opportunity_analysis", sector="technology")
-        await mcp_helper.call_mcp_server("financial_modeling", "revenue_projection", timeframe="quarterly")
-        await mcp_helper.call_mcp_server("partnership_network", "alliance_opportunities", vertical="saas")
+        await mcp_helper.call_mcp_server(
+            "market_intelligence", "opportunity_analysis", sector="technology"
+        )
+        await mcp_helper.call_mcp_server(
+            "financial_modeling", "revenue_projection", timeframe="quarterly"
+        )
+        await mcp_helper.call_mcp_server(
+            "partnership_network", "alliance_opportunities", vertical="saas"
+        )
 
         response = f"""
         **Business Development Analysis - Martin**
@@ -269,7 +293,9 @@ class ClaudeDirectorTransparencyExample:
             print(f"{'-'*60}")
 
             try:
-                response = await self.persona_manager.generate_persona_response(persona, query)
+                response = await self.persona_manager.generate_persona_response(
+                    persona, query
+                )
 
                 print(f"\\n{response.content}")
 
@@ -279,11 +305,15 @@ class ClaudeDirectorTransparencyExample:
                     summary = response.transparency_summary
                     print(f"   • Processing time: {summary['processing_time']:.3f}s")
                     print(f"   • MCP calls made: {summary['mcp_calls']}")
-                    if summary['mcp_servers_used']:
-                        print(f"   • MCP servers: {', '.join(summary['mcp_servers_used'])}")
+                    if summary["mcp_servers_used"]:
+                        print(
+                            f"   • MCP servers: {', '.join(summary['mcp_servers_used'])}"
+                        )
                     print(f"   • Frameworks detected: {summary['frameworks_detected']}")
-                    if summary['framework_names']:
-                        print(f"   • Frameworks: {', '.join(summary['framework_names'])}")
+                    if summary["framework_names"]:
+                        print(
+                            f"   • Frameworks: {', '.join(summary['framework_names'])}"
+                        )
                 else:
                     print(f"\\n📊 **TRANSPARENCY SUMMARY:** No enhancements applied")
 
@@ -305,7 +335,7 @@ class ClaudeDirectorTransparencyExample:
             "What's the best strategy for entering the European market?",
             "How can we improve our software development lifecycle?",
             "What innovation opportunities exist in AI and machine learning?",
-            "How should we manage organizational change during the merger?"
+            "How should we manage organizational change during the merger?",
         ]
 
         for i, query in enumerate(test_queries, 1):
@@ -316,7 +346,9 @@ class ClaudeDirectorTransparencyExample:
             await asyncio.sleep(1)
 
         print(f"\\n\\n✅ **TRANSPARENCY SYSTEM DEMONSTRATION COMPLETE**")
-        print("All personas successfully integrated with MCP transparency and framework attribution.")
+        print(
+            "All personas successfully integrated with MCP transparency and framework attribution."
+        )
 
 
 async def main():

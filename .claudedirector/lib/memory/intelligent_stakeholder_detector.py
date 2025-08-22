@@ -34,101 +34,116 @@ class IntelligentStakeholderDetector:
         """Process content for stakeholder detection and management"""
 
         result = {
-            'candidates_detected': 0,
-            'auto_created': 0,
-            'profiling_needed': 0,
-            'updates_suggested': 0,
-            'actions_taken': []
+            "candidates_detected": 0,
+            "auto_created": 0,
+            "profiling_needed": 0,
+            "updates_suggested": 0,
+            "actions_taken": [],
         }
 
         try:
-            self.logger.info("Processing content for stakeholder detection",
-                           content_length=len(content),
-                           context_type=context.get('category', 'unknown'))
+            self.logger.info(
+                "Processing content for stakeholder detection",
+                content_length=len(content),
+                context_type=context.get("category", "unknown"),
+            )
 
             # Detect stakeholder candidates using local AI
             candidates = self.ai_engine.detect_stakeholders_in_content(content, context)
-            result['candidates_detected'] = len(candidates)
+            result["candidates_detected"] = len(candidates)
 
             for candidate in candidates:
                 action = self._process_stakeholder_candidate(candidate)
-                result['actions_taken'].append(action)
+                result["actions_taken"].append(action)
 
-                if action['type'] == 'auto_created':
-                    result['auto_created'] += 1
-                elif action['type'] == 'profiling_initiated':
-                    result['profiling_needed'] += 1
-                elif action['type'] == 'update_suggested':
-                    result['updates_suggested'] += 1
+                if action["type"] == "auto_created":
+                    result["auto_created"] += 1
+                elif action["type"] == "profiling_initiated":
+                    result["profiling_needed"] += 1
+                elif action["type"] == "update_suggested":
+                    result["updates_suggested"] += 1
 
             self.logger.info("Stakeholder detection completed", **result)
             return result
 
         except Exception as e:
-            self.logger.error("Failed to process content for stakeholders", error=str(e))
+            self.logger.error(
+                "Failed to process content for stakeholders", error=str(e)
+            )
             return result
 
     def _process_stakeholder_candidate(self, candidate: Dict) -> Dict:
         """Process individual stakeholder candidate"""
 
-        stakeholder_key = candidate['stakeholder_key']
+        stakeholder_key = candidate["stakeholder_key"]
 
         # Check if stakeholder already exists
         existing = self.ai_engine.check_existing_stakeholder(stakeholder_key)
 
         if existing:
             # Existing stakeholder - check for updates
-            return self._handle_existing_stakeholder(stakeholder_key, candidate, existing)
+            return self._handle_existing_stakeholder(
+                stakeholder_key, candidate, existing
+            )
         else:
             # New stakeholder - determine creation approach
             return self._handle_new_stakeholder(candidate)
 
-    def _handle_existing_stakeholder(self, stakeholder_key: str, candidate: Dict, existing: Dict) -> Dict:
+    def _handle_existing_stakeholder(
+        self, stakeholder_key: str, candidate: Dict, existing: Dict
+    ) -> Dict:
         """Handle updates to existing stakeholders"""
 
         if not self.update_detection_enabled:
-            return {'type': 'no_action', 'reason': 'update_detection_disabled'}
+            return {"type": "no_action", "reason": "update_detection_disabled"}
 
         # Check for suggested updates
-        suggestions = self.ai_engine.suggest_stakeholder_updates(stakeholder_key, candidate)
+        suggestions = self.ai_engine.suggest_stakeholder_updates(
+            stakeholder_key, candidate
+        )
 
         if suggestions:
             # Store update suggestions for user review
             self._store_update_suggestions(stakeholder_key, suggestions)
 
             return {
-                'type': 'update_suggested',
-                'stakeholder_key': stakeholder_key,
-                'suggestions': suggestions,
-                'reason': f'Detected {len(suggestions)} potential updates'
+                "type": "update_suggested",
+                "stakeholder_key": stakeholder_key,
+                "suggestions": suggestions,
+                "reason": f"Detected {len(suggestions)} potential updates",
             }
 
         return {
-            'type': 'no_updates_needed',
-            'stakeholder_key': stakeholder_key,
-            'reason': 'No significant changes detected'
+            "type": "no_updates_needed",
+            "stakeholder_key": stakeholder_key,
+            "reason": "No significant changes detected",
         }
 
     def _handle_new_stakeholder(self, candidate: Dict) -> Dict:
         """Handle new stakeholder discovery"""
 
-        confidence = candidate['confidence_score']
+        confidence = candidate["confidence_score"]
 
-        if confidence >= self.ai_engine.AUTO_CREATE_THRESHOLD and self.auto_create_enabled:
+        if (
+            confidence >= self.ai_engine.AUTO_CREATE_THRESHOLD
+            and self.auto_create_enabled
+        ):
             # High confidence - auto-create
             return self._auto_create_stakeholder(candidate)
 
-        elif confidence >= self.ai_engine.PROFILING_THRESHOLD and self.profiling_enabled:
+        elif (
+            confidence >= self.ai_engine.PROFILING_THRESHOLD and self.profiling_enabled
+        ):
             # Medium confidence - initiate smart profiling
             return self._initiate_smart_profiling(candidate)
 
         else:
             # Low confidence - log for potential manual review
             return {
-                'type': 'low_confidence',
-                'stakeholder_key': candidate['stakeholder_key'],
-                'confidence': confidence,
-                'reason': 'Confidence too low for automatic processing'
+                "type": "low_confidence",
+                "stakeholder_key": candidate["stakeholder_key"],
+                "confidence": confidence,
+                "reason": "Confidence too low for automatic processing",
             }
 
     def _auto_create_stakeholder(self, candidate: Dict) -> Dict:
@@ -140,46 +155,52 @@ class IntelligentStakeholderDetector:
 
             # Create stakeholder using engagement engine
             success = self.engagement_engine.add_stakeholder(
-                stakeholder_key=candidate['stakeholder_key'],
-                display_name=candidate['name'],
-                role_title=profile.get('role_title'),
-                organization=profile.get('organization'),
-                strategic_importance=candidate['strategic_importance']
+                stakeholder_key=candidate["stakeholder_key"],
+                display_name=candidate["name"],
+                role_title=profile.get("role_title"),
+                organization=profile.get("organization"),
+                strategic_importance=candidate["strategic_importance"],
             )
 
             if success:
                 # Update detailed preferences
-                self._update_stakeholder_preferences(candidate['stakeholder_key'], profile)
+                self._update_stakeholder_preferences(
+                    candidate["stakeholder_key"], profile
+                )
 
                 # Generate initial recommendations
                 self.engagement_engine.generate_engagement_recommendations()
 
-                self.logger.info("Auto-created stakeholder",
-                               stakeholder_key=candidate['stakeholder_key'],
-                               confidence=candidate['confidence_score'])
+                self.logger.info(
+                    "Auto-created stakeholder",
+                    stakeholder_key=candidate["stakeholder_key"],
+                    confidence=candidate["confidence_score"],
+                )
 
                 return {
-                    'type': 'auto_created',
-                    'stakeholder_key': candidate['stakeholder_key'],
-                    'name': candidate['name'],
-                    'confidence': candidate['confidence_score'],
-                    'profile': profile
+                    "type": "auto_created",
+                    "stakeholder_key": candidate["stakeholder_key"],
+                    "name": candidate["name"],
+                    "confidence": candidate["confidence_score"],
+                    "profile": profile,
                 }
             else:
                 return {
-                    'type': 'creation_failed',
-                    'stakeholder_key': candidate['stakeholder_key'],
-                    'reason': 'Database creation failed'
+                    "type": "creation_failed",
+                    "stakeholder_key": candidate["stakeholder_key"],
+                    "reason": "Database creation failed",
                 }
 
         except Exception as e:
-            self.logger.error("Failed to auto-create stakeholder",
-                            stakeholder_key=candidate['stakeholder_key'],
-                            error=str(e))
+            self.logger.error(
+                "Failed to auto-create stakeholder",
+                stakeholder_key=candidate["stakeholder_key"],
+                error=str(e),
+            )
             return {
-                'type': 'creation_error',
-                'stakeholder_key': candidate['stakeholder_key'],
-                'error': str(e)
+                "type": "creation_error",
+                "stakeholder_key": candidate["stakeholder_key"],
+                "error": str(e),
             }
 
     def _initiate_smart_profiling(self, candidate: Dict) -> Dict:
@@ -191,36 +212,40 @@ class IntelligentStakeholderDetector:
 
             # Store profiling task for user interaction
             profiling_task = {
-                'stakeholder_key': candidate['stakeholder_key'],
-                'name': candidate['name'],
-                'confidence': candidate['confidence_score'],
-                'auto_detected_info': {
-                    'role': candidate.get('detected_role'),
-                    'importance': candidate['strategic_importance'],
-                    'communication_prefs': candidate.get('communication_preferences', {})
+                "stakeholder_key": candidate["stakeholder_key"],
+                "name": candidate["name"],
+                "confidence": candidate["confidence_score"],
+                "auto_detected_info": {
+                    "role": candidate.get("detected_role"),
+                    "importance": candidate["strategic_importance"],
+                    "communication_prefs": candidate.get(
+                        "communication_preferences", {}
+                    ),
                 },
-                'questions': questions,
-                'created_at': datetime.now().isoformat()
+                "questions": questions,
+                "created_at": datetime.now().isoformat(),
             }
 
             self._store_profiling_task(profiling_task)
 
             return {
-                'type': 'profiling_initiated',
-                'stakeholder_key': candidate['stakeholder_key'],
-                'name': candidate['name'],
-                'questions': questions,
-                'confidence': candidate['confidence_score']
+                "type": "profiling_initiated",
+                "stakeholder_key": candidate["stakeholder_key"],
+                "name": candidate["name"],
+                "questions": questions,
+                "confidence": candidate["confidence_score"],
             }
 
         except Exception as e:
-            self.logger.error("Failed to initiate smart profiling",
-                            stakeholder_key=candidate['stakeholder_key'],
-                            error=str(e))
+            self.logger.error(
+                "Failed to initiate smart profiling",
+                stakeholder_key=candidate["stakeholder_key"],
+                error=str(e),
+            )
             return {
-                'type': 'profiling_error',
-                'stakeholder_key': candidate['stakeholder_key'],
-                'error': str(e)
+                "type": "profiling_error",
+                "stakeholder_key": candidate["stakeholder_key"],
+                "error": str(e),
             }
 
     def _map_candidate_to_profile(self, candidate: Dict) -> Dict:
@@ -229,37 +254,39 @@ class IntelligentStakeholderDetector:
         profile = {}
 
         # Map role
-        if candidate.get('detected_role'):
+        if candidate.get("detected_role"):
             role_mapping = {
-                'executive': candidate['detected_role'].title(),
-                'director': 'Director',
-                'manager': 'Manager',
-                'principal': 'Principal',
-                'senior': 'Senior',
-                'external': 'External Partner'
+                "executive": candidate["detected_role"].title(),
+                "director": "Director",
+                "manager": "Manager",
+                "principal": "Principal",
+                "senior": "Senior",
+                "external": "External Partner",
             }
-            profile['role_title'] = role_mapping.get(candidate['detected_role'], candidate['detected_role'].title())
+            profile["role_title"] = role_mapping.get(
+                candidate["detected_role"], candidate["detected_role"].title()
+            )
 
         # Map communication preferences
-        comm_prefs = candidate.get('communication_preferences', {})
-        if comm_prefs.get('channels'):
-            profile['preferred_channels'] = comm_prefs['channels']
+        comm_prefs = candidate.get("communication_preferences", {})
+        if comm_prefs.get("channels"):
+            profile["preferred_channels"] = comm_prefs["channels"]
 
-        if comm_prefs.get('style'):
-            profile['communication_style'] = comm_prefs['style']
+        if comm_prefs.get("style"):
+            profile["communication_style"] = comm_prefs["style"]
 
         # Infer meeting frequency based on importance
-        importance = candidate['strategic_importance']
+        importance = candidate["strategic_importance"]
         frequency_mapping = {
-            'critical': 'weekly',
-            'high': 'biweekly',
-            'medium': 'monthly',
-            'low': 'quarterly'
+            "critical": "weekly",
+            "high": "biweekly",
+            "medium": "monthly",
+            "low": "quarterly",
         }
-        profile['meeting_frequency'] = frequency_mapping.get(importance, 'monthly')
+        profile["meeting_frequency"] = frequency_mapping.get(importance, "monthly")
 
         # Suggest personas based on role and style
-        profile['suggested_personas'] = self._suggest_personas(candidate)
+        profile["suggested_personas"] = self._suggest_personas(candidate)
 
         return profile
 
@@ -268,31 +295,31 @@ class IntelligentStakeholderDetector:
 
         personas = []
 
-        role = candidate.get('detected_role')
-        importance = candidate['strategic_importance']
-        style = candidate.get('communication_preferences', {}).get('style')
+        role = candidate.get("detected_role")
+        importance = candidate["strategic_importance"]
+        style = candidate.get("communication_preferences", {}).get("style")
 
         # Role-based persona suggestions
-        if role == 'executive':
-            personas.extend(['camille', 'alvaro'])
-        elif role == 'director':
-            personas.extend(['diego', 'alvaro'])
-        elif role == 'manager':
-            personas.extend(['diego', 'marcus'])
-        elif role == 'principal':
-            personas.extend(['martin', 'diego'])
+        if role == "executive":
+            personas.extend(["camille", "alvaro"])
+        elif role == "director":
+            personas.extend(["diego", "alvaro"])
+        elif role == "manager":
+            personas.extend(["diego", "marcus"])
+        elif role == "principal":
+            personas.extend(["martin", "diego"])
 
         # Style-based adjustments
-        if style == 'data_driven':
-            personas.append('alvaro')
-        elif style == 'visual':
-            personas.append('rachel')
-        elif style == 'collaborative':
-            personas.append('diego')
+        if style == "data_driven":
+            personas.append("alvaro")
+        elif style == "visual":
+            personas.append("rachel")
+        elif style == "collaborative":
+            personas.append("diego")
 
         # Importance-based adjustments
-        if importance == 'critical':
-            personas.extend(['camille', 'alvaro'])
+        if importance == "critical":
+            personas.extend(["camille", "alvaro"])
 
         # Remove duplicates and limit to top 3
         return list(dict.fromkeys(personas))[:3]
@@ -303,52 +330,62 @@ class IntelligentStakeholderDetector:
         questions = []
 
         # Role confirmation if detected with medium confidence
-        if candidate.get('detected_role') and candidate.get('role_confidence', 0) < 0.8:
-            questions.append({
-                'type': 'role_confirmation',
-                'question': f"Is {candidate['name']} a {candidate['detected_role'].title()}?",
-                'options': ['yes', 'no', 'similar_role'],
-                'pre_filled': candidate['detected_role']
-            })
+        if candidate.get("detected_role") and candidate.get("role_confidence", 0) < 0.8:
+            questions.append(
+                {
+                    "type": "role_confirmation",
+                    "question": f"Is {candidate['name']} a {candidate['detected_role'].title()}?",
+                    "options": ["yes", "no", "similar_role"],
+                    "pre_filled": candidate["detected_role"],
+                }
+            )
 
         # Strategic importance if unclear
-        if candidate['importance_score'] < 3:
-            questions.append({
-                'type': 'importance_clarification',
-                'question': f"How strategically important is {candidate['name']} to your platform objectives?",
-                'options': ['critical', 'high', 'medium', 'low'],
-                'pre_filled': candidate['strategic_importance']
-            })
+        if candidate["importance_score"] < 3:
+            questions.append(
+                {
+                    "type": "importance_clarification",
+                    "question": f"How strategically important is {candidate['name']} to your platform objectives?",
+                    "options": ["critical", "high", "medium", "low"],
+                    "pre_filled": candidate["strategic_importance"],
+                }
+            )
 
         # Communication preferences if not detected
-        comm_prefs = candidate.get('communication_preferences', {})
-        if not comm_prefs.get('channels'):
-            questions.append({
-                'type': 'communication_channels',
-                'question': f"What's the best way to communicate with {candidate['name']}?",
-                'options': ['slack', 'email', 'in_person', 'video'],
-                'multiple_choice': True
-            })
+        comm_prefs = candidate.get("communication_preferences", {})
+        if not comm_prefs.get("channels"):
+            questions.append(
+                {
+                    "type": "communication_channels",
+                    "question": f"What's the best way to communicate with {candidate['name']}?",
+                    "options": ["slack", "email", "in_person", "video"],
+                    "multiple_choice": True,
+                }
+            )
 
         # Meeting frequency based on importance
-        questions.append({
-            'type': 'meeting_frequency',
-            'question': f"How often should you engage with {candidate['name']}?",
-            'options': ['weekly', 'biweekly', 'monthly', 'quarterly', 'as_needed'],
-            'pre_filled': self._suggest_frequency(candidate['strategic_importance'])
-        })
+        questions.append(
+            {
+                "type": "meeting_frequency",
+                "question": f"How often should you engage with {candidate['name']}?",
+                "options": ["weekly", "biweekly", "monthly", "quarterly", "as_needed"],
+                "pre_filled": self._suggest_frequency(
+                    candidate["strategic_importance"]
+                ),
+            }
+        )
 
         return questions
 
     def _suggest_frequency(self, importance: str) -> str:
         """Suggest meeting frequency based on importance"""
         mapping = {
-            'critical': 'weekly',
-            'high': 'biweekly',
-            'medium': 'monthly',
-            'low': 'quarterly'
+            "critical": "weekly",
+            "high": "biweekly",
+            "medium": "monthly",
+            "low": "quarterly",
         }
-        return mapping.get(importance, 'monthly')
+        return mapping.get(importance, "monthly")
 
     def _update_stakeholder_preferences(self, stakeholder_key: str, profile: Dict):
         """Update stakeholder preferences in database"""
@@ -357,24 +394,30 @@ class IntelligentStakeholderDetector:
             with self.engagement_engine.get_connection() as conn:
                 cursor = conn.cursor()
 
-                cursor.execute("""
+                cursor.execute(
+                    """
                     UPDATE stakeholder_profiles_enhanced
                     SET optimal_meeting_frequency = ?,
                         preferred_communication_channels = ?,
                         communication_style = ?,
                         most_effective_personas = ?
                     WHERE stakeholder_key = ?
-                """, (
-                    profile.get('meeting_frequency'),
-                    json.dumps(profile.get('preferred_channels', [])),
-                    profile.get('communication_style'),
-                    json.dumps(profile.get('suggested_personas', [])),
-                    stakeholder_key
-                ))
+                """,
+                    (
+                        profile.get("meeting_frequency"),
+                        json.dumps(profile.get("preferred_channels", [])),
+                        profile.get("communication_style"),
+                        json.dumps(profile.get("suggested_personas", [])),
+                        stakeholder_key,
+                    ),
+                )
 
         except Exception as e:
-            self.logger.error("Failed to update stakeholder preferences",
-                            stakeholder_key=stakeholder_key, error=str(e))
+            self.logger.error(
+                "Failed to update stakeholder preferences",
+                stakeholder_key=stakeholder_key,
+                error=str(e),
+            )
 
     def _store_profiling_task(self, task: Dict):
         """Store profiling task for user interaction"""
@@ -385,7 +428,8 @@ class IntelligentStakeholderDetector:
                 cursor = conn.cursor()
 
                 # Create profiling tasks table if not exists
-                cursor.execute("""
+                cursor.execute(
+                    """
                     CREATE TABLE IF NOT EXISTS stakeholder_profiling_tasks (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         stakeholder_key TEXT NOT NULL,
@@ -393,13 +437,17 @@ class IntelligentStakeholderDetector:
                         status TEXT DEFAULT 'pending',
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
-                """)
+                """
+                )
 
-                cursor.execute("""
+                cursor.execute(
+                    """
                     INSERT INTO stakeholder_profiling_tasks
                     (stakeholder_key, task_data)
                     VALUES (?, ?)
-                """, (task['stakeholder_key'], json.dumps(task)))
+                """,
+                    (task["stakeholder_key"], json.dumps(task)),
+                )
 
         except Exception as e:
             self.logger.error("Failed to store profiling task", error=str(e))
@@ -412,7 +460,8 @@ class IntelligentStakeholderDetector:
                 cursor = conn.cursor()
 
                 # Create update suggestions table if not exists
-                cursor.execute("""
+                cursor.execute(
+                    """
                     CREATE TABLE IF NOT EXISTS stakeholder_update_suggestions (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         stakeholder_key TEXT NOT NULL,
@@ -420,13 +469,17 @@ class IntelligentStakeholderDetector:
                         status TEXT DEFAULT 'pending',
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
-                """)
+                """
+                )
 
-                cursor.execute("""
+                cursor.execute(
+                    """
                     INSERT INTO stakeholder_update_suggestions
                     (stakeholder_key, suggestions)
                     VALUES (?, ?)
-                """, (stakeholder_key, json.dumps(suggestions)))
+                """,
+                    (stakeholder_key, json.dumps(suggestions)),
+                )
 
         except Exception as e:
             self.logger.error("Failed to store update suggestions", error=str(e))
@@ -438,18 +491,20 @@ class IntelligentStakeholderDetector:
             with self.engagement_engine.get_connection() as conn:
                 cursor = conn.cursor()
 
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT id, stakeholder_key, task_data, created_at
                     FROM stakeholder_profiling_tasks
                     WHERE status = 'pending'
                     ORDER BY created_at ASC
-                """)
+                """
+                )
 
                 tasks = []
                 for row in cursor.fetchall():
                     task_data = json.loads(row[2])
-                    task_data['task_id'] = row[0]
-                    task_data['created_at'] = row[3]
+                    task_data["task_id"] = row[0]
+                    task_data["created_at"] = row[3]
                     tasks.append(task_data)
 
                 return tasks
@@ -465,23 +520,25 @@ class IntelligentStakeholderDetector:
             with self.engagement_engine.get_connection() as conn:
                 cursor = conn.cursor()
 
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT s.id, s.stakeholder_key, s.suggestions, s.created_at,
                            p.display_name
                     FROM stakeholder_update_suggestions s
                     JOIN stakeholder_profiles_enhanced p ON s.stakeholder_key = p.stakeholder_key
                     WHERE s.status = 'pending'
                     ORDER BY s.created_at ASC
-                """)
+                """
+                )
 
                 suggestions = []
                 for row in cursor.fetchall():
                     suggestion_data = {
-                        'suggestion_id': row[0],
-                        'stakeholder_key': row[1],
-                        'suggestions': json.loads(row[2]),
-                        'created_at': row[3],
-                        'stakeholder_name': row[4]
+                        "suggestion_id": row[0],
+                        "stakeholder_key": row[1],
+                        "suggestions": json.loads(row[2]),
+                        "created_at": row[3],
+                        "stakeholder_name": row[4],
                     }
                     suggestions.append(suggestion_data)
 
@@ -496,11 +553,21 @@ def main():
     """CLI interface for intelligent stakeholder detection"""
     import argparse
 
-    parser = argparse.ArgumentParser(description="Intelligent Stakeholder Detection Engine")
+    parser = argparse.ArgumentParser(
+        description="Intelligent Stakeholder Detection Engine"
+    )
     parser.add_argument("--process-file", help="Process file for stakeholder detection")
     parser.add_argument("--context", help="JSON context for processing")
-    parser.add_argument("--show-profiling-tasks", action="store_true", help="Show pending profiling tasks")
-    parser.add_argument("--show-update-suggestions", action="store_true", help="Show pending update suggestions")
+    parser.add_argument(
+        "--show-profiling-tasks",
+        action="store_true",
+        help="Show pending profiling tasks",
+    )
+    parser.add_argument(
+        "--show-update-suggestions",
+        action="store_true",
+        help="Show pending update suggestions",
+    )
 
     args = parser.parse_args()
 
@@ -510,7 +577,7 @@ def main():
         context = json.loads(args.context) if args.context else {}
 
         try:
-            with open(args.process_file, 'r') as f:
+            with open(args.process_file, "r") as f:
                 content = f.read()
 
             result = detector.process_content_for_stakeholders(content, context)
@@ -522,19 +589,21 @@ def main():
             print(f"❓ Profiling needed: {result['profiling_needed']}")
             print(f"🔄 Updates suggested: {result['updates_suggested']}")
 
-            if result['actions_taken']:
+            if result["actions_taken"]:
                 print("\n📋 Actions taken:")
-                for action in result['actions_taken']:
+                for action in result["actions_taken"]:
                     action_emoji = {
-                        'auto_created': '✅',
-                        'profiling_initiated': '❓',
-                        'update_suggested': '🔄',
-                        'no_action': 'ℹ️',
-                        'low_confidence': '⚠️'
-                    }.get(action['type'], '📝')
+                        "auto_created": "✅",
+                        "profiling_initiated": "❓",
+                        "update_suggested": "🔄",
+                        "no_action": "ℹ️",
+                        "low_confidence": "⚠️",
+                    }.get(action["type"], "📝")
 
-                    print(f"  {action_emoji} {action['type']}: {action.get('stakeholder_key', 'N/A')}")
-                    if action.get('reason'):
+                    print(
+                        f"  {action_emoji} {action['type']}: {action.get('stakeholder_key', 'N/A')}"
+                    )
+                    if action.get("reason"):
                         print(f"     Reason: {action['reason']}")
 
         except FileNotFoundError:
@@ -556,7 +625,7 @@ def main():
             print(f"👤 {task['name']} ({task['stakeholder_key']})")
             print(f"   Confidence: {task['confidence']:.1%}")
             print(f"   Questions: {len(task['questions'])}")
-            for q in task['questions']:
+            for q in task["questions"]:
                 print(f"     • {q['question']}")
             print()
 
@@ -571,10 +640,14 @@ def main():
             return
 
         for suggestion in suggestions:
-            print(f"👤 {suggestion['stakeholder_name']} ({suggestion['stakeholder_key']})")
+            print(
+                f"👤 {suggestion['stakeholder_name']} ({suggestion['stakeholder_key']})"
+            )
             print(f"   Suggestions: {len(suggestion['suggestions'])}")
-            for s in suggestion['suggestions']:
-                print(f"     • {s['type']}: {s['current_value']} → {s['suggested_value']}")
+            for s in suggestion["suggestions"]:
+                print(
+                    f"     • {s['type']}: {s['current_value']} → {s['suggested_value']}"
+                )
                 print(f"       Confidence: {s['confidence']:.1%} - {s['reason']}")
             print()
 
