@@ -12,7 +12,7 @@ if [ ! -d ".git" ]; then
 fi
 
 # Copy the pre-push hook
-cp .claudedirector/git-hooks/pre-push-ci-validation.sh .git/hooks/pre-push
+cp .claudedirector/tools/git-hooks/pre-push-ci-validation.sh .git/hooks/pre-push
 chmod +x .git/hooks/pre-push
 
 echo "✅ Pre-push CI validation hook installed successfully"

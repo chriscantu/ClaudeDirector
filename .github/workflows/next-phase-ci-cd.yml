@@ -165,8 +165,8 @@ jobs:
         run: |
           echo "🏗️ ARCHITECTURE - SOLID Principles Validation"
           # Run SOLID principles validation using existing validator
-          if [ -f ".claudedirector/dev-tools/architecture/solid_validator.py" ]; then
-            python .claudedirector/dev-tools/architecture/solid_validator.py || echo "SOLID violations detected (expected for existing codebase)"
+          if [ -f ".claudedirector/tools/architecture/solid_validator.py" ]; then
+            python .claudedirector/tools/architecture/solid_validator.py || echo "SOLID violations detected (expected for existing codebase)"
           else
             echo "⚠️ SOLID validator not found - skipping validation"
           fi
@@ -210,7 +210,7 @@ jobs:
       - name: Initialize Strategic Database for P0 Tests
         run: |
           echo "💾 Initializing strategic memory database for conversation tracking"
-          python .claudedirector/dev-tools/ci/init-database.py
+          python .claudedirector/tools/ci/init-database.py
           echo "🔍 Verifying database creation:"
           ls -la data/
           sqlite3 data/strategic_memory.db ".tables"
