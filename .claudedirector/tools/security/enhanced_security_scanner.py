@@ -30,13 +30,13 @@ class EnhancedSecurityScanner:
     def __init__(self):
         # Enhanced threat patterns (real but generic)
         self.stakeholder_patterns = [
-            # Executive title patterns (real threats)
-            r"(?i)\b(hemendra|hisham|steve)\s+(pal|younis|davis)\b",
-            r"(?i)\b(beth|jeff|victor|zach)\s+(nelson|williams|davis|mckenzie)\b",
-            r"(?i)\b(marfise)\b",  # Single names are also sensitive
-            # Pattern-based detection for strategic roles (with real names, not test data)
-            r"(?i)\b(director|vp|cpo|cto)\s+(hemendra|hisham|steve|beth|jeff|victor|zach|marfise)\b",
-            r"(?i)\b(senior|principal|distinguished)\s+(engineer|architect)\s+(hemendra|hisham|steve|beth|jeff|victor|zach|marfise)\b",
+            # Generic executive pattern detection (security-safe)
+            r"(?i)\b(real[_\s-]?executive[_\s-]?name)\b",
+            r"(?i)\b(actual[_\s-]?stakeholder[_\s-]?identity)\b",
+            r"(?i)\b(confidential[_\s-]?leadership[_\s-]?data)\b",
+            # Pattern-based detection for strategic roles (generic patterns only)
+            r"(?i)\b(director|vp|cpo|cto)\s+[a-z]+\s*[a-z]+\b",  # Generic title + name pattern
+            r"(?i)\b(senior|principal|distinguished)\s+(engineer|architect)\s+[a-z]+\s*[a-z]+\b",
             # Strategic context markers
             r"(?i)(real[_\s-]?stakeholder[_\s-]?name)",
             r"(?i)(actual[_\s-]?procore[_\s-]?stakeholder)",
