@@ -46,6 +46,13 @@ class RegressionTestRunner:
                 "description": "Protects framework detection during refactoring",
                 "blocking": True,
             },
+            {
+                "name": "Hybrid Installation P0",
+                "module": "test_hybrid_installation_p0.py",
+                "critical": True,
+                "description": "Validates 58% performance improvement with zero setup maintained",
+                "blocking": True,
+            },
         ]
 
     def run_single_test(self, test_info: Dict) -> Tuple[bool, str, float]:
