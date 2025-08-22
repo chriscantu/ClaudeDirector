@@ -87,7 +87,8 @@ class StrategicMemoryManager:
 
             # Check if initiative exists
             cursor.execute(
-                "SELECT id FROM strategic_initiatives WHERE initiative_key = ?", (initiative_key,)
+                "SELECT id FROM strategic_initiatives WHERE initiative_key = ?",
+                (initiative_key,),
             )
             existing = cursor.fetchone()
 
@@ -144,7 +145,8 @@ class StrategicMemoryManager:
             cursor = conn.cursor()
 
             cursor.execute(
-                "SELECT id FROM stakeholder_profiles WHERE stakeholder_key = ?", (stakeholder_key,)
+                "SELECT id FROM stakeholder_profiles WHERE stakeholder_key = ?",
+                (stakeholder_key,),
             )
             existing = cursor.fetchone()
 
@@ -205,7 +207,9 @@ class StrategicMemoryManager:
             )
             return cursor.lastrowid
 
-    def recall_executive_sessions(self, stakeholder_key: str = None, days: int = 90) -> List[Dict]:
+    def recall_executive_sessions(
+        self, stakeholder_key: str = None, days: int = 90
+    ) -> List[Dict]:
         """Recall recent executive sessions for stakeholder preparation"""
         with self.get_connection() as conn:
             cursor = conn.cursor()
@@ -224,7 +228,9 @@ class StrategicMemoryManager:
 
             return [dict(row) for row in cursor.fetchall()]
 
-    def recall_strategic_initiatives(self, status: str = None, assignee: str = None) -> List[Dict]:
+    def recall_strategic_initiatives(
+        self, status: str = None, assignee: str = None
+    ) -> List[Dict]:
         """Recall strategic initiatives by status or assignee"""
         with self.get_connection() as conn:
             cursor = conn.cursor()
@@ -328,10 +334,14 @@ class StrategicMemoryManager:
 def main():
     parser = argparse.ArgumentParser(description="SuperClaude Strategic Memory Manager")
     parser.add_argument("--status", action="store_true", help="Show database status")
-    parser.add_argument("--db-path", default="memory/strategic_memory.db", help="Database path")
+    parser.add_argument(
+        "--db-path", default="memory/strategic_memory.db", help="Database path"
+    )
 
     # Storage commands
-    parser.add_argument("--store-executive", action="store_true", help="Store executive session")
+    parser.add_argument(
+        "--store-executive", action="store_true", help="Store executive session"
+    )
     parser.add_argument(
         "--store-initiative", action="store_true", help="Store strategic initiative"
     )
@@ -340,7 +350,9 @@ def main():
     )
 
     # Recall commands
-    parser.add_argument("--recall-sessions", action="store_true", help="Recall executive sessions")
+    parser.add_argument(
+        "--recall-sessions", action="store_true", help="Recall executive sessions"
+    )
     parser.add_argument(
         "--recall-initiatives", action="store_true", help="Recall strategic initiatives"
     )
@@ -365,10 +377,14 @@ def main():
                 f"  {session['meeting_date']} - {session['stakeholder_key']} ({session['session_type']})"
             )
     elif args.recall_initiatives:
-        initiatives = manager.recall_strategic_initiatives(args.status_filter, args.assignee)
+        initiatives = manager.recall_strategic_initiatives(
+            args.status_filter, args.assignee
+        )
         print(f"Found {len(initiatives)} strategic initiatives:")
         for init in initiatives:
-            print(f"  {init['initiative_key']} - {init['initiative_name']} ({init['status']})")
+            print(
+                f"  {init['initiative_key']} - {init['initiative_name']} ({init['status']})"
+            )
     else:
         manager.print_status()
 

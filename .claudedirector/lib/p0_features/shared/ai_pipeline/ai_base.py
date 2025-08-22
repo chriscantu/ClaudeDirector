@@ -102,41 +102,43 @@ class AIEngineBase(ABC):
     def get_model_health(self) -> Dict[str, Any]:
         """Get comprehensive model health metrics"""
         return {
-            'accuracy_current': self._accuracy_history[-1] if self._accuracy_history else 0.0,
-            'accuracy_trend': self._calculate_accuracy_trend(),
-            'performance_status': self._check_performance_status(),
-            'model_age_days': self._get_model_age_days(),
-            'needs_retraining': self._needs_retraining()
+            "accuracy_current": (
+                self._accuracy_history[-1] if self._accuracy_history else 0.0
+            ),
+            "accuracy_trend": self._calculate_accuracy_trend(),
+            "performance_status": self._check_performance_status(),
+            "model_age_days": self._get_model_age_days(),
+            "needs_retraining": self._needs_retraining(),
         }
 
     def _calculate_accuracy_trend(self) -> str:
         """Calculate accuracy trend over recent predictions"""
         if len(self._accuracy_history) < 5:
-            return 'insufficient_data'
+            return "insufficient_data"
 
         recent = self._accuracy_history[-5:]
         trend = (recent[-1] - recent[0]) / len(recent)
 
         if trend > 0.02:
-            return 'improving'
+            return "improving"
         elif trend < -0.02:
-            return 'declining'
+            return "declining"
         else:
-            return 'stable'
+            return "stable"
 
     def _check_performance_status(self) -> str:
         """Check if model meets performance requirements"""
         if not self._accuracy_history:
-            return 'not_evaluated'
+            return "not_evaluated"
 
         current_accuracy = self._accuracy_history[-1]
 
         if current_accuracy >= self.config.accuracy_threshold:
-            return 'excellent'
+            return "excellent"
         elif current_accuracy >= self.config.accuracy_threshold - 0.05:
-            return 'acceptable'
+            return "acceptable"
         else:
-            return 'needs_improvement'
+            return "needs_improvement"
 
     def _get_model_age_days(self) -> int:
         """Get model age in days (implementation specific)"""
@@ -152,19 +154,20 @@ class AIEngineBase(ABC):
         current_accuracy = self._accuracy_history[-1]
         trend = self._calculate_accuracy_trend()
 
-        return (current_accuracy < self.config.accuracy_threshold or
-                trend == 'declining')
+        return current_accuracy < self.config.accuracy_threshold or trend == "declining"
 
 
 class StrategicIntelligenceResult:
     """Standard result format for all strategic intelligence operations"""
 
-    def __init__(self,
-                 success: bool,
-                 confidence: float,
-                 result_data: Dict[str, Any],
-                 processing_time_ms: int,
-                 model_version: str = "unknown"):
+    def __init__(
+        self,
+        success: bool,
+        confidence: float,
+        result_data: Dict[str, Any],
+        processing_time_ms: int,
+        model_version: str = "unknown",
+    ):
         self.success = success
         self.confidence = confidence
         self.result_data = result_data
@@ -176,11 +179,11 @@ class StrategicIntelligenceResult:
     def to_dict(self) -> Dict[str, Any]:
         """Convert result to dictionary for API responses"""
         return {
-            'success': self.success,
-            'confidence': self.confidence,
-            'result_data': self.result_data,
-            'processing_time_ms': self.processing_time_ms,
-            'model_version': self.model_version,
-            'performance_sla_met': self.meets_performance_sla,
-            'confidence_threshold_met': self.meets_confidence_threshold
+            "success": self.success,
+            "confidence": self.confidence,
+            "result_data": self.result_data,
+            "processing_time_ms": self.processing_time_ms,
+            "model_version": self.model_version,
+            "performance_sla_met": self.meets_performance_sla,
+            "confidence_threshold_met": self.meets_confidence_threshold,
         }

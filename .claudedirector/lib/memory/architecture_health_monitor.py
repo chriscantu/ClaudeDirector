@@ -179,7 +179,9 @@ class ArchitectureHealthMonitor:
                 execution_time = time.time() - start_time
                 query_times.append(execution_time)
             except Exception as e:
-                self.logger.warning("Query performance test failed", query=query[:50], error=str(e))
+                self.logger.warning(
+                    "Query performance test failed", query=query[:50], error=str(e)
+                )
                 query_times.append(5.0)  # Assume slow if failed
 
         avg_query_time = sum(query_times) / len(query_times) if query_times else 0.0
@@ -201,13 +203,17 @@ class ArchitectureHealthMonitor:
         stats = db_manager.get_performance_stats()
 
         # Estimate concurrency pressure based on database activity
-        estimated_concurrent_ops = min(stats["total_queries"] / 1000, 10)  # Rough estimate
+        estimated_concurrent_ops = min(
+            stats["total_queries"] / 1000, 10
+        )  # Rough estimate
 
         return {
             "estimated_concurrent_operations": estimated_concurrent_ops,
             "connection_reuses": stats.get("connection_reuses", 0),
             "wal_mode_enabled": True,  # Our optimization enables this
-            "lock_contention_estimate": "low" if estimated_concurrent_ops < 5 else "moderate",
+            "lock_contention_estimate": (
+                "low" if estimated_concurrent_ops < 5 else "moderate"
+            ),
         }
 
     def _assess_scale_metrics(self) -> Dict[str, any]:
@@ -227,15 +233,23 @@ class ArchitectureHealthMonitor:
                 )
 
                 # Count documents
-                doc_result = conn.execute("SELECT COUNT(*) FROM google_drive_documents").fetchone()
+                doc_result = conn.execute(
+                    "SELECT COUNT(*) FROM google_drive_documents"
+                ).fetchone()
                 scale_metrics["document_count"] = doc_result[0] if doc_result else 0
 
                 # Count meetings
-                meeting_result = conn.execute("SELECT COUNT(*) FROM meeting_sessions").fetchone()
-                scale_metrics["meeting_count"] = meeting_result[0] if meeting_result else 0
+                meeting_result = conn.execute(
+                    "SELECT COUNT(*) FROM meeting_sessions"
+                ).fetchone()
+                scale_metrics["meeting_count"] = (
+                    meeting_result[0] if meeting_result else 0
+                )
 
                 # Count strategic tasks
-                task_result = conn.execute("SELECT COUNT(*) FROM strategic_tasks").fetchone()
+                task_result = conn.execute(
+                    "SELECT COUNT(*) FROM strategic_tasks"
+                ).fetchone()
                 scale_metrics["task_count"] = task_result[0] if task_result else 0
 
         except Exception as e:
@@ -284,7 +298,9 @@ class ArchitectureHealthMonitor:
                 if collab_result:
                     org_metrics["estimated_org_count"] = max(collab_result[0], 1)
                     # Estimate users based on stakeholder patterns
-                    org_metrics["estimated_user_count"] = min(max(collab_result[1] // 10, 1), 20)
+                    org_metrics["estimated_user_count"] = min(
+                        max(collab_result[1] // 10, 1), 20
+                    )
 
                 # Check for meeting collaboration patterns
                 meeting_collab = conn.execute(
@@ -299,11 +315,17 @@ class ArchitectureHealthMonitor:
                 if meeting_collab and meeting_collab[0] > 0:
                     org_metrics["collaboration_indicators"] = meeting_collab[0]
                     org_metrics["estimated_user_count"] = min(
-                        max(int(meeting_collab[1] or 1), org_metrics["estimated_user_count"]), 20
+                        max(
+                            int(meeting_collab[1] or 1),
+                            org_metrics["estimated_user_count"],
+                        ),
+                        20,
                     )
 
         except Exception as e:
-            self.logger.warning("Organizational complexity assessment failed", error=str(e))
+            self.logger.warning(
+                "Organizational complexity assessment failed", error=str(e)
+            )
 
         return org_metrics
 
@@ -318,7 +340,11 @@ class ArchitectureHealthMonitor:
         }
 
     def _calculate_migration_readiness(
-        self, perf_metrics: Dict, scale_metrics: Dict, org_metrics: Dict, debt_metrics: Dict
+        self,
+        perf_metrics: Dict,
+        scale_metrics: Dict,
+        org_metrics: Dict,
+        debt_metrics: Dict,
     ) -> float:
         """Calculate migration readiness score (0.0 = stay SQLite, 1.0 = migrate now)"""
         score = 0.0
@@ -398,14 +424,19 @@ class ArchitectureHealthMonitor:
         ):
             score += 0.15
         elif (
-            org_metrics.get("estimated_org_count", 1) > self.migration_criteria["org_count_warning"]
+            org_metrics.get("estimated_org_count", 1)
+            > self.migration_criteria["org_count_warning"]
         ):
             score += 0.08
 
         return min(score, 1.0)
 
     def _generate_migration_recommendation(
-        self, readiness_score: float, perf_metrics: Dict, scale_metrics: Dict, org_metrics: Dict
+        self,
+        readiness_score: float,
+        perf_metrics: Dict,
+        scale_metrics: Dict,
+        org_metrics: Dict,
     ) -> Dict[str, any]:
         """Generate migration recommendation based on assessment"""
 
@@ -421,10 +452,14 @@ class ArchitectureHealthMonitor:
                 reasoning = "Analytics workload requires columnar database (DuckDB)"
             elif graph_heavy:
                 recommendation = "consider_kuzu"
-                reasoning = "Complex stakeholder relationships require graph database (Kuzu)"
+                reasoning = (
+                    "Complex stakeholder relationships require graph database (Kuzu)"
+                )
             else:
                 recommendation = "hybrid_architecture"
-                reasoning = "Multi-component architecture needed (SQLite + DuckDB/Faiss)"
+                reasoning = (
+                    "Multi-component architecture needed (SQLite + DuckDB/Faiss)"
+                )
             priority = "critical"
         elif readiness_score >= 0.4:
             if analytics_heavy:
@@ -457,7 +492,9 @@ class ArchitectureHealthMonitor:
         )
 
         # Generate ADR requirements
-        adr_requirements = self._generate_adr_requirements(recommendation, readiness_score)
+        adr_requirements = self._generate_adr_requirements(
+            recommendation, readiness_score
+        )
 
         return {
             "recommendation": recommendation,
@@ -474,7 +511,9 @@ class ArchitectureHealthMonitor:
             },
         }
 
-    def _assess_analytics_workload(self, perf_metrics: Dict, scale_metrics: Dict) -> bool:
+    def _assess_analytics_workload(
+        self, perf_metrics: Dict, scale_metrics: Dict
+    ) -> bool:
         """Assess if workload is analytics-heavy (favors DuckDB)"""
         # Indicators: large document count, slow aggregation queries
         doc_count = scale_metrics.get("document_count", 0)
@@ -507,8 +546,12 @@ class ArchitectureHealthMonitor:
         criteria["performance"] = {
             "slow_queries": {
                 "current": perf_metrics.get("slow_query_percentage", 0),
-                "warning_threshold": self.migration_criteria["slow_query_percentage_warning"],
-                "critical_threshold": self.migration_criteria["slow_query_percentage_critical"],
+                "warning_threshold": self.migration_criteria[
+                    "slow_query_percentage_warning"
+                ],
+                "critical_threshold": self.migration_criteria[
+                    "slow_query_percentage_critical"
+                ],
                 "status": self._get_threshold_status(
                     perf_metrics.get("slow_query_percentage", 0),
                     self.migration_criteria["slow_query_percentage_warning"],
@@ -516,9 +559,13 @@ class ArchitectureHealthMonitor:
                 ),
             },
             "avg_query_time": {
-                "current": perf_metrics.get("query_timing", {}).get("average_query_time", 0),
+                "current": perf_metrics.get("query_timing", {}).get(
+                    "average_query_time", 0
+                ),
                 "warning_threshold": self.migration_criteria["avg_query_time_warning"],
-                "critical_threshold": self.migration_criteria["avg_query_time_critical"],
+                "critical_threshold": self.migration_criteria[
+                    "avg_query_time_critical"
+                ],
                 "status": self._get_threshold_status(
                     perf_metrics.get("query_timing", {}).get("average_query_time", 0),
                     self.migration_criteria["avg_query_time_warning"],
@@ -531,8 +578,12 @@ class ArchitectureHealthMonitor:
         criteria["scale"] = {
             "database_size": {
                 "current_mb": scale_metrics.get("database_size_mb", 0),
-                "warning_threshold_gb": self.migration_criteria["database_size_warning"],
-                "critical_threshold_gb": self.migration_criteria["database_size_critical"],
+                "warning_threshold_gb": self.migration_criteria[
+                    "database_size_warning"
+                ],
+                "critical_threshold_gb": self.migration_criteria[
+                    "database_size_critical"
+                ],
                 "status": self._get_threshold_status(
                     scale_metrics.get("database_size_mb", 0) / 1024,
                     self.migration_criteria["database_size_warning"],
@@ -541,8 +592,12 @@ class ArchitectureHealthMonitor:
             },
             "stakeholder_count": {
                 "current": scale_metrics.get("stakeholder_count", 0),
-                "warning_threshold": self.migration_criteria["stakeholder_count_warning"],
-                "critical_threshold": self.migration_criteria["stakeholder_count_critical"],
+                "warning_threshold": self.migration_criteria[
+                    "stakeholder_count_warning"
+                ],
+                "critical_threshold": self.migration_criteria[
+                    "stakeholder_count_critical"
+                ],
                 "status": self._get_threshold_status(
                     scale_metrics.get("stakeholder_count", 0),
                     self.migration_criteria["stakeholder_count_warning"],
@@ -567,7 +622,9 @@ class ArchitectureHealthMonitor:
 
         return criteria
 
-    def _get_threshold_status(self, current: float, warning: float, critical: float) -> str:
+    def _get_threshold_status(
+        self, current: float, warning: float, critical: float
+    ) -> str:
         """Get threshold status for a metric"""
         if current >= critical:
             return "critical"
@@ -698,7 +755,9 @@ class ArchitectureHealthMonitor:
 
         return actions
 
-    def _generate_adr_requirements(self, recommendation: str, readiness_score: float) -> List[str]:
+    def _generate_adr_requirements(
+        self, recommendation: str, readiness_score: float
+    ) -> List[str]:
         """Generate ADR requirements for architectural decisions"""
         adr_requirements = []
 
@@ -829,9 +888,17 @@ class ArchitectureHealthMonitor:
                     "assessments_count": len(results),
                     "recent_recommendations": recommendations[:5],
                     "trend_indicators": {
-                        "improving": scores[0] < scores[-1] if len(scores) > 1 else False,
-                        "degrading": scores[0] > scores[-1] if len(scores) > 1 else False,
-                        "stable": abs(scores[0] - scores[-1]) < 0.1 if len(scores) > 1 else True,
+                        "improving": (
+                            scores[0] < scores[-1] if len(scores) > 1 else False
+                        ),
+                        "degrading": (
+                            scores[0] > scores[-1] if len(scores) > 1 else False
+                        ),
+                        "stable": (
+                            abs(scores[0] - scores[-1]) < 0.1
+                            if len(scores) > 1
+                            else True
+                        ),
                     },
                 }
 
@@ -863,10 +930,18 @@ if __name__ == "__main__":
     """CLI for architecture health monitoring"""
     import argparse
 
-    parser = argparse.ArgumentParser(description="ClaudeDirector Architecture Health Monitor")
-    parser.add_argument("--assess", action="store_true", help="Run architecture health assessment")
-    parser.add_argument("--trends", action="store_true", help="Show migration readiness trends")
-    parser.add_argument("--criteria", action="store_true", help="Show migration criteria")
+    parser = argparse.ArgumentParser(
+        description="ClaudeDirector Architecture Health Monitor"
+    )
+    parser.add_argument(
+        "--assess", action="store_true", help="Run architecture health assessment"
+    )
+    parser.add_argument(
+        "--trends", action="store_true", help="Show migration readiness trends"
+    )
+    parser.add_argument(
+        "--criteria", action="store_true", help="Show migration criteria"
+    )
     parser.add_argument("--db-path", help="Database path")
 
     args = parser.parse_args()

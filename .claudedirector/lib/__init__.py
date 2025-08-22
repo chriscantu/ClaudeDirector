@@ -35,7 +35,7 @@ if str(lib_dir) not in sys.path:
 
 # Core framework components - using direct imports from flattened structure
 try:
-    __all__ = ['EnhancedFrameworkManager', 'auto_capture_conversation']
+    __all__ = ["EnhancedFrameworkManager", "auto_capture_conversation"]
 except ImportError:
     # Graceful degradation if components not available
     __all__ = []

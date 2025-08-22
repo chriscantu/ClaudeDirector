@@ -13,12 +13,14 @@ sys.path.insert(0, str(integration_path))
 
 try:
     from cursor_transparency_bridge import ensure_transparency_compliance
+
     BRIDGE_AVAILABLE = True
 except ImportError:
     BRIDGE_AVAILABLE = False
 
 try:
     from .mcp_transparency_integration import apply_mcp_transparency_to_response
+
     MCP_AVAILABLE = True
 except ImportError:
     MCP_AVAILABLE = False
@@ -40,7 +42,7 @@ class CursorResponseEnhancer:
             "marcus": "📈 Marcus | Platform Adoption",
             "david": "💰 David | Financial Planning",
             "sofia": "🤝 Sofia | Vendor Strategy",
-            "elena": "⚖️ Elena | Compliance Strategy"
+            "elena": "⚖️ Elena | Compliance Strategy",
         }
 
         # Keywords that trigger MCP transparency
@@ -52,7 +54,7 @@ class CursorResponseEnhancer:
             "analysis": ["systematic_analysis"],
             "design": ["pattern_access"],
             "scalability": ["architectural_patterns"],
-            "organization": ["systematic_analysis"]
+            "organization": ["systematic_analysis"],
         }
 
     def detect_persona_from_context(self, user_input: str) -> str:
@@ -60,38 +62,82 @@ class CursorResponseEnhancer:
         input_lower = user_input.lower()
 
         # Architecture/technical keywords → Martin
-        if any(word in input_lower for word in [
-            "architecture", "platform", "scalability", "technical", "system",
-            "infrastructure", "api", "service", "performance", "design patterns"
-        ]):
+        if any(
+            word in input_lower
+            for word in [
+                "architecture",
+                "platform",
+                "scalability",
+                "technical",
+                "system",
+                "infrastructure",
+                "api",
+                "service",
+                "performance",
+                "design patterns",
+            ]
+        ):
             return "martin"
 
         # Leadership/team keywords → Diego
-        elif any(word in input_lower for word in [
-            "team", "leadership", "organization", "management", "strategy",
-            "coordination", "structure", "culture"
-        ]):
+        elif any(
+            word in input_lower
+            for word in [
+                "team",
+                "leadership",
+                "organization",
+                "management",
+                "strategy",
+                "coordination",
+                "structure",
+                "culture",
+            ]
+        ):
             return "diego"
 
         # Business/ROI keywords → Alvaro
-        elif any(word in input_lower for word in [
-            "business", "roi", "investment", "value", "cost", "budget",
-            "stakeholder", "executive"
-        ]):
+        elif any(
+            word in input_lower
+            for word in [
+                "business",
+                "roi",
+                "investment",
+                "value",
+                "cost",
+                "budget",
+                "stakeholder",
+                "executive",
+            ]
+        ):
             return "alvaro"
 
         # Design/UX keywords → Rachel
-        elif any(word in input_lower for word in [
-            "design", "ux", "ui", "component", "user", "experience",
-            "interface", "usability"
-        ]):
+        elif any(
+            word in input_lower
+            for word in [
+                "design",
+                "ux",
+                "ui",
+                "component",
+                "user",
+                "experience",
+                "interface",
+                "usability",
+            ]
+        ):
             return "rachel"
 
         # Strategic technology → Camille
-        elif any(word in input_lower for word in [
-            "innovation", "technology strategy", "competitive", "market",
-            "transformation"
-        ]):
+        elif any(
+            word in input_lower
+            for word in [
+                "innovation",
+                "technology strategy",
+                "competitive",
+                "market",
+                "transformation",
+            ]
+        ):
             return "camille"
 
         # Default to Martin for technical contexts
@@ -103,8 +149,15 @@ class CursorResponseEnhancer:
 
         # Check for complexity indicators
         complexity_indicators = [
-            "strategic", "systematic", "framework", "analysis", "architecture",
-            "organizational", "platform", "complex", "comprehensive"
+            "strategic",
+            "systematic",
+            "framework",
+            "analysis",
+            "architecture",
+            "organizational",
+            "platform",
+            "complex",
+            "comprehensive",
         ]
 
         return any(indicator in combined_text for indicator in complexity_indicators)
@@ -117,30 +170,42 @@ class CursorResponseEnhancer:
 
         # Strategic analysis
         if any(word in input_lower for word in ["strategic", "analysis", "systematic"]):
-            mcp_calls.append({
-                "server_name": "sequential",
-                "capability": "systematic_analysis",
-                "processing_time": 0.15,
-                "success": True
-            })
+            mcp_calls.append(
+                {
+                    "server_name": "sequential",
+                    "capability": "systematic_analysis",
+                    "processing_time": 0.15,
+                    "success": True,
+                }
+            )
 
         # Architecture patterns
-        if any(word in input_lower for word in ["architecture", "platform", "scalability", "design"]):
-            mcp_calls.append({
-                "server_name": "context7",
-                "capability": "architectural_patterns",
-                "processing_time": 0.10,
-                "success": True
-            })
+        if any(
+            word in input_lower
+            for word in ["architecture", "platform", "scalability", "design"]
+        ):
+            mcp_calls.append(
+                {
+                    "server_name": "context7",
+                    "capability": "architectural_patterns",
+                    "processing_time": 0.10,
+                    "success": True,
+                }
+            )
 
         # Framework application
-        if any(word in response_lower for word in ["team topologies", "ogsm", "design thinking", "good strategy"]):
-            mcp_calls.append({
-                "server_name": "context7",
-                "capability": "pattern_access",
-                "processing_time": 0.08,
-                "success": True
-            })
+        if any(
+            word in response_lower
+            for word in ["team topologies", "ogsm", "design thinking", "good strategy"]
+        ):
+            mcp_calls.append(
+                {
+                    "server_name": "context7",
+                    "capability": "pattern_access",
+                    "processing_time": 0.08,
+                    "success": True,
+                }
+            )
 
         return mcp_calls
 
@@ -155,7 +220,9 @@ class CursorResponseEnhancer:
         persona = self.detect_persona_from_context(user_input)
         header = self.persona_headers.get(persona, self.persona_headers["martin"])
 
-        if not enhanced_response.strip().startswith(("🏗️", "🎯", "📊", "🎨", "💼", "📈", "💰", "🤝", "⚖️")):
+        if not enhanced_response.strip().startswith(
+            ("🏗️", "🎯", "📊", "🎨", "💼", "📈", "💰", "🤝", "⚖️")
+        ):
             enhanced_response = f"{header}\n\n{enhanced_response}"
 
         # Step 2: Add MCP transparency if warranted
@@ -168,12 +235,16 @@ class CursorResponseEnhancer:
                 )
             else:
                 # Fallback MCP disclosure
-                enhanced_response = self._add_fallback_mcp_disclosure(enhanced_response, user_input)
+                enhanced_response = self._add_fallback_mcp_disclosure(
+                    enhanced_response, user_input
+                )
 
         # Step 3: Apply bridge transparency if available
         if BRIDGE_AVAILABLE:
             try:
-                enhanced_response = ensure_transparency_compliance(enhanced_response, user_input)
+                enhanced_response = ensure_transparency_compliance(
+                    enhanced_response, user_input
+                )
             except Exception as e:
                 print(f"⚠️ Bridge transparency failed: {e}")
 
@@ -212,12 +283,13 @@ class CursorResponseEnhancer:
             "persona_header_applied": True,
             "mcp_transparency_applied": has_mcp,
             "bridge_available": BRIDGE_AVAILABLE,
-            "mcp_available": MCP_AVAILABLE
+            "mcp_available": MCP_AVAILABLE,
         }
 
 
 # Global enhancer instance
 _cursor_enhancer = None
+
 
 def get_cursor_enhancer() -> CursorResponseEnhancer:
     """Get global cursor response enhancer"""
@@ -244,8 +316,16 @@ def auto_enhance_if_strategic(response: str, user_input: str = "") -> str:
     # Check if this looks like a strategic conversation
     combined = f"{user_input} {response}".lower()
     strategic_indicators = [
-        "architecture", "platform", "strategy", "framework", "systematic",
-        "organization", "leadership", "design", "scalability", "analysis"
+        "architecture",
+        "platform",
+        "strategy",
+        "framework",
+        "systematic",
+        "organization",
+        "leadership",
+        "design",
+        "scalability",
+        "analysis",
     ]
 
     if any(indicator in combined for indicator in strategic_indicators):

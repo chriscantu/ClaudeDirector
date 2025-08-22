@@ -67,7 +67,9 @@ class DatabaseManager:
         if not hasattr(self._local, "connection") or self._local.connection is None:
             try:
                 self._local.connection = sqlite3.connect(
-                    self.db_path, check_same_thread=False, timeout=30.0  # 30 second timeout
+                    self.db_path,
+                    check_same_thread=False,
+                    timeout=30.0,  # 30 second timeout
                 )
                 # Enable foreign keys and WAL mode for better performance
                 self._local.connection.execute("PRAGMA foreign_keys = ON")
@@ -91,7 +93,9 @@ class DatabaseManager:
             conn.commit()
         except Exception as e:
             conn.rollback()
-            raise DatabaseError(f"Database operation failed: {e}", db_path=str(self.db_path))
+            raise DatabaseError(
+                f"Database operation failed: {e}", db_path=str(self.db_path)
+            )
         finally:
             cursor.close()
 
@@ -119,9 +123,13 @@ class DatabaseManager:
                 )
 
         except Exception as e:
-            raise DatabaseError(f"Failed to initialize database: {e}", db_path=str(self.db_path))
+            raise DatabaseError(
+                f"Failed to initialize database: {e}", db_path=str(self.db_path)
+            )
 
-    def ensure_schema(self, schema_name: str, schema_path: Optional[Path] = None) -> bool:
+    def ensure_schema(
+        self, schema_name: str, schema_path: Optional[Path] = None
+    ) -> bool:
         """
         Ensure specific schema is applied to database
         Returns True if schema was applied, False if already current
@@ -137,7 +145,9 @@ class DatabaseManager:
 
         if not schema_path or not schema_path.exists():
             logger.warning(
-                "Schema file not found", schema_name=schema_name, schema_path=str(schema_path)
+                "Schema file not found",
+                schema_name=schema_name,
+                schema_path=str(schema_path),
             )
             return False
 
@@ -147,7 +157,8 @@ class DatabaseManager:
         try:
             with self.get_cursor() as cursor:
                 cursor.execute(
-                    "SELECT value FROM claudedirector_metadata WHERE key = ?", (schema_version_key,)
+                    "SELECT value FROM claudedirector_metadata WHERE key = ?",
+                    (schema_version_key,),
                 )
                 result = cursor.fetchone()
 
@@ -179,7 +190,8 @@ class DatabaseManager:
 
         except Exception as e:
             raise DatabaseError(
-                f"Failed to apply schema '{schema_name}': {e}", db_path=str(self.db_path)
+                f"Failed to apply schema '{schema_name}': {e}",
+                db_path=str(self.db_path),
             )
 
     def get_table_info(self, table_name: str) -> Dict[str, Any]:

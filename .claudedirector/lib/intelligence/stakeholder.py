@@ -128,7 +128,12 @@ class StakeholderIntelligence:
     Provides modern API while maintaining backward compatibility
     """
 
-    def __init__(self, config=None, db_path: Optional[str] = None, enable_performance: bool = True):
+    def __init__(
+        self,
+        config=None,
+        db_path: Optional[str] = None,
+        enable_performance: bool = True,
+    ):
         """Initialize stakeholder intelligence with optional config override"""
         self.config = config or get_config()
         self.db_path = db_path or self.config.database_path
@@ -142,7 +147,8 @@ class StakeholderIntelligence:
                 self.memory_optimizer = MemoryOptimizer(self.config)
             except Exception as e:
                 logger.warning(
-                    "Performance components unavailable, using standard processing", error=str(e)
+                    "Performance components unavailable, using standard processing",
+                    error=str(e),
                 )
                 self.enable_performance = False
 
@@ -152,7 +158,9 @@ class StakeholderIntelligence:
             self.detector = IntelligentStakeholderDetector(self.db_path)
             self.engagement_engine = StakeholderEngagementEngine(self.db_path)
         except Exception as e:
-            raise AIDetectionError(f"Failed to initialize stakeholder intelligence: {e}")
+            raise AIDetectionError(
+                f"Failed to initialize stakeholder intelligence: {e}"
+            )
 
     def detect_stakeholders_in_content(
         self, content: str, context: Dict[str, Any]
@@ -189,9 +197,7 @@ class StakeholderIntelligence:
         """
         if self.enable_performance:
             # Check cache first
-            cache_key = (
-                f"stakeholder_detection:{hash(content)}:{hash(str(sorted(context.items())))}"
-            )
+            cache_key = f"stakeholder_detection:{hash(content)}:{hash(str(sorted(context.items())))}"
             cached_result = self.cache_manager.get(cache_key)
             if cached_result is not None:
                 logger.debug("Using cached stakeholder detection result")
@@ -203,7 +209,9 @@ class StakeholderIntelligence:
 
             # Cache successful results
             if self.enable_performance and result.get("candidates_detected", 0) > 0:
-                self.cache_manager.set(cache_key, result, ttl_override=7200)  # 2 hour cache
+                self.cache_manager.set(
+                    cache_key, result, ttl_override=7200
+                )  # 2 hour cache
 
             return result
         except Exception as e:
@@ -235,7 +243,9 @@ class StakeholderIntelligence:
         except Exception as e:
             raise DatabaseError(f"Failed to get update suggestions: {e}")
 
-    def list_stakeholders(self, filter_by: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+    def list_stakeholders(
+        self, filter_by: Optional[Dict[str, Any]] = None
+    ) -> List[Dict[str, Any]]:
         """
         List all stakeholders with optional filtering
 
@@ -250,7 +260,9 @@ class StakeholderIntelligence:
         except Exception as e:
             raise DatabaseError(f"Failed to list stakeholders: {e}")
 
-    def add_stakeholder(self, stakeholder_key: str, display_name: str, **kwargs) -> bool:
+    def add_stakeholder(
+        self, stakeholder_key: str, display_name: str, **kwargs
+    ) -> bool:
         """
         Add a new stakeholder manually
 
@@ -306,7 +318,9 @@ class StakeholderIntelligence:
         """
         try:
             workspace_dir = (
-                Path(workspace_path) if workspace_path else self.config.workspace_path_obj
+                Path(workspace_path)
+                if workspace_path
+                else self.config.workspace_path_obj
             )
 
             # Find all relevant files
@@ -320,7 +334,8 @@ class StakeholderIntelligence:
             relevant_files = [
                 f
                 for f in all_files
-                if f.stat().st_size > 10 and f.stat().st_size < 50 * 1024 * 1024  # 10 bytes to 50MB
+                if f.stat().st_size > 10
+                and f.stat().st_size < 50 * 1024 * 1024  # 10 bytes to 50MB
             ]
 
             if not relevant_files:
@@ -344,7 +359,9 @@ class StakeholderIntelligence:
                 f"Workspace processing failed: {e}", detection_type="stakeholder"
             )
 
-    def _process_files_parallel(self, files: List[Path], workspace_dir: Path) -> Dict[str, Any]:
+    def _process_files_parallel(
+        self, files: List[Path], workspace_dir: Path
+    ) -> Dict[str, Any]:
         """Process files using parallel processing"""
 
         def process_single_file(file_path: Path) -> Optional[Dict[str, Any]]:
@@ -366,7 +383,9 @@ class StakeholderIntelligence:
                 return {"file_path": str(file_path), "result": result}
 
             except Exception as e:
-                logger.warning("File processing error", file=str(file_path), error=str(e))
+                logger.warning(
+                    "File processing error", file=str(file_path), error=str(e)
+                )
                 return None
 
         # Use parallel processor
@@ -396,7 +415,9 @@ class StakeholderIntelligence:
             "parallel_processing_used": True,
         }
 
-    def _process_files_sequential(self, files: List[Path], workspace_dir: Path) -> Dict[str, Any]:
+    def _process_files_sequential(
+        self, files: List[Path], workspace_dir: Path
+    ) -> Dict[str, Any]:
         """Process files sequentially with memory optimization"""
         import time
 
@@ -409,8 +430,10 @@ class StakeholderIntelligence:
 
         if self.enable_performance:
             # Use memory-optimized chunked processing
-            chunk_processor = lambda file_path: self._process_single_file_for_stakeholders(
-                file_path, workspace_dir
+            chunk_processor = (
+                lambda file_path: self._process_single_file_for_stakeholders(
+                    file_path, workspace_dir
+                )
             )
 
             for chunk_result in self.memory_optimizer.process_items_in_chunks(
@@ -425,7 +448,9 @@ class StakeholderIntelligence:
         else:
             # Standard sequential processing
             for file_path in files:
-                result = self._process_single_file_for_stakeholders(file_path, workspace_dir)
+                result = self._process_single_file_for_stakeholders(
+                    file_path, workspace_dir
+                )
                 if result:
                     total_stakeholders += result.get("candidates_detected", 0)
                     total_auto_created += result.get("auto_created", 0)
@@ -464,7 +489,9 @@ class StakeholderIntelligence:
             logger.warning("File processing error", file=str(file_path), error=str(e))
             return None
 
-    def _build_file_context(self, file_path: Path, workspace_dir: Path) -> Dict[str, Any]:
+    def _build_file_context(
+        self, file_path: Path, workspace_dir: Path
+    ) -> Dict[str, Any]:
         """Build context for file analysis"""
         relative_path = file_path.relative_to(workspace_dir)
 
@@ -513,7 +540,9 @@ class StakeholderIntelligence:
 
 
 # Backward compatibility functions
-def get_stakeholder_intelligence(db_path: Optional[str] = None) -> StakeholderIntelligence:
+def get_stakeholder_intelligence(
+    db_path: Optional[str] = None,
+) -> StakeholderIntelligence:
     """Get stakeholder intelligence instance"""
     return StakeholderIntelligence(db_path=db_path)
 

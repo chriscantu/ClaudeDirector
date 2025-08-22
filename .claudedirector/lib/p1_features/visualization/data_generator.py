@@ -5,7 +5,11 @@ Follows Single Responsibility Principle - focused only on data generation
 """
 
 from typing import Dict, List, Any
-from .interfaces import DataGeneratorInterface, ConfigManagerInterface, OrganizationalData
+from .interfaces import (
+    DataGeneratorInterface,
+    ConfigManagerInterface,
+    OrganizationalData,
+)
 from .config_manager import visualization_config
 
 
@@ -30,7 +34,11 @@ class SampleDataGenerator(DataGeneratorInterface):
         impact_score = self._calculate_impact_score(profile_manager, sample_metrics)
 
         # Get the actual profile
-        profile = profile_manager.current_profile if hasattr(profile_manager, 'current_profile') else profile_manager
+        profile = (
+            profile_manager.current_profile
+            if hasattr(profile_manager, "current_profile")
+            else profile_manager
+        )
 
         # Generate domain data
         domains = self._generate_domain_data(profile)
@@ -42,11 +50,13 @@ class SampleDataGenerator(DataGeneratorInterface):
         investments = self._generate_investment_data(profile)
 
         return OrganizationalData(
-            impact_score=max(impact_score, self.config.sample_data.minimum_impact_score),
+            impact_score=max(
+                impact_score, self.config.sample_data.minimum_impact_score
+            ),
             domains=domains,
             trends=trends,
             investments=investments,
-            sample_metrics=sample_metrics
+            sample_metrics=sample_metrics,
         )
 
     def collect_real_data(self, profile_manager: Any) -> OrganizationalData:
@@ -62,10 +72,12 @@ class SampleDataGenerator(DataGeneratorInterface):
         """Get sample metrics from configuration"""
         return self.config.sample_data.metrics.copy()
 
-    def _calculate_impact_score(self, profile_manager: Any, metrics: Dict[str, float]) -> float:
+    def _calculate_impact_score(
+        self, profile_manager: Any, metrics: Dict[str, float]
+    ) -> float:
         """Calculate impact score using profile manager"""
         # This delegates to the profile manager's calculation logic
-        if hasattr(profile_manager, 'calculate_organizational_impact_score'):
+        if hasattr(profile_manager, "calculate_organizational_impact_score"):
             return profile_manager.calculate_organizational_impact_score(metrics)
         else:
             # Fallback calculation if method not available
@@ -75,27 +87,35 @@ class SampleDataGenerator(DataGeneratorInterface):
         """Generate domain performance data from profile and configuration"""
         domain_data = []
 
-        if hasattr(profile, 'enabled_domains'):
+        if hasattr(profile, "enabled_domains"):
             for domain_name, metrics in profile.enabled_domains.items():
                 if metrics:
                     weight = metrics[0].weight
-                    target = metrics[0].target_value if metrics[0].target_value > 0 else self._get_default_target()
+                    target = (
+                        metrics[0].target_value
+                        if metrics[0].target_value > 0
+                        else self._get_default_target()
+                    )
 
                     # Get performance from configuration based on domain type
                     current = self._get_domain_current_performance(domain_name)
 
-                    domain_data.append({
-                        "name": domain_name,
-                        "current": current,
-                        "target": target,
-                        "weight": weight,
-                    })
+                    domain_data.append(
+                        {
+                            "name": domain_name,
+                            "current": current,
+                            "target": target,
+                            "weight": weight,
+                        }
+                    )
 
         return domain_data
 
     def _get_default_target(self) -> float:
         """Get default target from configuration"""
-        return self.config.sample_data.domain_performance["design_domains"]["default_target"]
+        return self.config.sample_data.domain_performance["design_domains"][
+            "default_target"
+        ]
 
     def _get_domain_current_performance(self, domain_name: str) -> float:
         """Get current performance for domain from configuration"""
@@ -110,20 +130,24 @@ class SampleDataGenerator(DataGeneratorInterface):
         """Generate investment ROI data from profile and configuration"""
         investment_data = []
 
-        if hasattr(profile, 'investment_categories'):
+        if hasattr(profile, "investment_categories"):
             for name, investment in profile.investment_categories.items():
                 # Get ROI multiplier from configuration
                 roi_multiplier = self.config.get_investment_multiplier(name)
 
-                invested = self.config.sample_data.investment_base * investment.priority_weight
+                invested = (
+                    self.config.sample_data.investment_base * investment.priority_weight
+                )
                 projected_return = invested * roi_multiplier
 
-                investment_data.append({
-                    "name": name,
-                    "invested": invested,
-                    "projected_return": projected_return,
-                    "measurement_period": investment.measurement_period_months,
-                })
+                investment_data.append(
+                    {
+                        "name": name,
+                        "invested": invested,
+                        "projected_return": projected_return,
+                        "measurement_period": investment.measurement_period_months,
+                    }
+                )
 
         return investment_data
 

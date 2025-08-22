@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class PersonaResponse:
     """Enhanced persona response with transparency information"""
+
     content: str
     persona: str
     transparency_summary: Optional[Dict[str, Any]] = None
@@ -30,14 +31,17 @@ class TransparentPersonaManager:
     Designed to be a drop-in replacement for existing persona managers
     """
 
-    def __init__(self, transparency_system: IntegratedTransparencySystem,
-                 original_persona_manager=None):
+    def __init__(
+        self,
+        transparency_system: IntegratedTransparencySystem,
+        original_persona_manager=None,
+    ):
         self.transparency_system = transparency_system
         self.original_persona_manager = original_persona_manager
         self.persona_handlers = {}
 
         # Performance and debugging
-        self.debug_mode = transparency_system.config.get('debug_mode', False)
+        self.debug_mode = transparency_system.config.get("debug_mode", False)
         self._setup_logging()
 
     def _setup_logging(self):
@@ -51,9 +55,13 @@ class TransparentPersonaManager:
         self.persona_handlers[persona_name] = handler
         logger.debug(f"Registered persona: {persona_name}")
 
-    async def generate_persona_response(self, persona: str, query: str,
-                                      context: Optional[Dict[str, Any]] = None,
-                                      **kwargs) -> PersonaResponse:
+    async def generate_persona_response(
+        self,
+        persona: str,
+        query: str,
+        context: Optional[Dict[str, Any]] = None,
+        **kwargs,
+    ) -> PersonaResponse:
         """
         Generate a persona response with full transparency integration
 
@@ -67,13 +75,15 @@ class TransparentPersonaManager:
             PersonaResponse with transparency information
         """
         # Create transparency context
-        transparency_context = self.transparency_system.create_transparency_context(persona)
+        transparency_context = self.transparency_system.create_transparency_context(
+            persona
+        )
 
         try:
             # Add transparency context to persona handler kwargs
             handler_kwargs = kwargs.copy()
-            handler_kwargs['transparency_context'] = transparency_context
-            handler_kwargs['context'] = context or {}
+            handler_kwargs["transparency_context"] = transparency_context
+            handler_kwargs["context"] = context or {}
 
             # Generate base response using appropriate method
             if self.original_persona_manager:
@@ -101,13 +111,17 @@ class TransparentPersonaManager:
             persona_response = PersonaResponse(
                 content=enhanced_response,
                 persona=persona,
-                transparency_summary=self.transparency_system.create_transparency_summary(transparency_context),
+                transparency_summary=self.transparency_system.create_transparency_summary(
+                    transparency_context
+                ),
                 processing_time=transparency_context.total_processing_time,
-                enhancements_applied=transparency_context.has_enhancements
+                enhancements_applied=transparency_context.has_enhancements,
             )
 
             if self.debug_mode:
-                logger.debug(f"Generated transparent response for {persona}: {persona_response.transparency_summary}")
+                logger.debug(
+                    f"Generated transparent response for {persona}: {persona_response.transparency_summary}"
+                )
 
             return persona_response
 
@@ -119,40 +133,52 @@ class TransparentPersonaManager:
             return PersonaResponse(
                 content=error_response,
                 persona=persona,
-                transparency_summary=self.transparency_system.create_transparency_summary(transparency_context),
+                transparency_summary=self.transparency_system.create_transparency_summary(
+                    transparency_context
+                ),
                 processing_time=transparency_context.total_processing_time,
-                enhancements_applied=False
+                enhancements_applied=False,
             )
 
-    async def _delegate_to_original_manager(self, persona: str, query: str,
-                                          kwargs: Dict[str, Any]) -> str:
+    async def _delegate_to_original_manager(
+        self, persona: str, query: str, kwargs: Dict[str, Any]
+    ) -> str:
         """Delegate to original persona manager if available"""
-        if hasattr(self.original_persona_manager, 'generate_response'):
-            return await self.original_persona_manager.generate_response(persona, query, **kwargs)
-        elif hasattr(self.original_persona_manager, 'get_persona_response'):
-            return await self.original_persona_manager.get_persona_response(persona, query, **kwargs)
+        if hasattr(self.original_persona_manager, "generate_response"):
+            return await self.original_persona_manager.generate_response(
+                persona, query, **kwargs
+            )
+        elif hasattr(self.original_persona_manager, "get_persona_response"):
+            return await self.original_persona_manager.get_persona_response(
+                persona, query, **kwargs
+            )
         else:
             # Fallback method call
             return await self.original_persona_manager(persona, query, **kwargs)
 
-    async def _default_persona_handler(self, persona: str, query: str,
-                                     kwargs: Dict[str, Any]) -> str:
+    async def _default_persona_handler(
+        self, persona: str, query: str, kwargs: Dict[str, Any]
+    ) -> str:
         """Default persona handler for unregistered personas"""
-        transparency_context = kwargs.get('transparency_context')
+        transparency_context = kwargs.get("transparency_context")
 
         # Basic persona-style response
         response = f"As {persona}, I understand your query: {query}. "
 
         # Add persona-specific flavor based on known personas
-        if persona.lower() == 'diego':
-            response += "From a strategic perspective, let me analyze this systematically..."
-        elif persona.lower() == 'camille':
-            response += "Taking an innovative approach, I see several opportunities here..."
-        elif persona.lower() == 'rachel':
+        if persona.lower() == "diego":
+            response += (
+                "From a strategic perspective, let me analyze this systematically..."
+            )
+        elif persona.lower() == "camille":
+            response += (
+                "Taking an innovative approach, I see several opportunities here..."
+            )
+        elif persona.lower() == "rachel":
             response += "From a change management standpoint, we need to consider..."
-        elif persona.lower() == 'alvaro':
+        elif persona.lower() == "alvaro":
             response += "Looking at this through a technical lens, I can identify..."
-        elif persona.lower() == 'martin':
+        elif persona.lower() == "martin":
             response += "From a business development angle, this presents..."
         else:
             response += "Let me provide you with a comprehensive analysis..."
@@ -162,13 +188,23 @@ class TransparentPersonaManager:
 
         return response
 
-    def track_mcp_call(self, transparency_context: TransparencyContext,
-                       server_name: str, capability: str, processing_time: float,
-                       success: bool = True, error_message: Optional[str] = None):
+    def track_mcp_call(
+        self,
+        transparency_context: TransparencyContext,
+        server_name: str,
+        capability: str,
+        processing_time: float,
+        success: bool = True,
+        error_message: Optional[str] = None,
+    ):
         """Convenience method to track MCP calls"""
         self.transparency_system.track_mcp_call(
-            transparency_context, server_name, capability,
-            processing_time, success, error_message
+            transparency_context,
+            server_name,
+            capability,
+            processing_time,
+            success,
+            error_message,
         )
 
     def get_performance_stats(self) -> Dict[str, Any]:
@@ -178,10 +214,10 @@ class TransparentPersonaManager:
     def get_persona_stats(self) -> Dict[str, Any]:
         """Get persona-specific statistics"""
         return {
-            'registered_personas': list(self.persona_handlers.keys()),
-            'has_original_manager': self.original_persona_manager is not None,
-            'debug_mode': self.debug_mode,
-            'transparency_config': self.transparency_system.config
+            "registered_personas": list(self.persona_handlers.keys()),
+            "has_original_manager": self.original_persona_manager is not None,
+            "debug_mode": self.debug_mode,
+            "transparency_config": self.transparency_system.config,
         }
 
 
@@ -189,8 +225,9 @@ class PersonaIntegrationFactory:
     """Factory for creating integrated persona managers"""
 
     @staticmethod
-    def create_transparent_manager(transparency_config: str = "default",
-                                  original_manager=None) -> TransparentPersonaManager:
+    def create_transparent_manager(
+        transparency_config: str = "default", original_manager=None
+    ) -> TransparentPersonaManager:
         """
         Create a transparent persona manager
 
@@ -226,13 +263,17 @@ class PersonaIntegrationFactory:
 class MCPIntegrationHelper:
     """Helper class for integrating MCP calls with transparency"""
 
-    def __init__(self, transparency_context: TransparencyContext,
-                 persona_manager: TransparentPersonaManager):
+    def __init__(
+        self,
+        transparency_context: TransparencyContext,
+        persona_manager: TransparentPersonaManager,
+    ):
         self.transparency_context = transparency_context
         self.persona_manager = persona_manager
 
-    async def call_mcp_server(self, server_name: str, capability: str,
-                             **call_kwargs) -> Any:
+    async def call_mcp_server(
+        self, server_name: str, capability: str, **call_kwargs
+    ) -> Any:
         """
         Make an MCP server call with automatic transparency tracking
 
@@ -257,8 +298,11 @@ class MCPIntegrationHelper:
 
             # Track successful call
             self.persona_manager.track_mcp_call(
-                self.transparency_context, server_name, capability,
-                processing_time, success=True
+                self.transparency_context,
+                server_name,
+                capability,
+                processing_time,
+                success=True,
             )
 
             return result
@@ -268,20 +312,25 @@ class MCPIntegrationHelper:
 
             # Track failed call
             self.persona_manager.track_mcp_call(
-                self.transparency_context, server_name, capability,
-                processing_time, success=False, error_message=str(e)
+                self.transparency_context,
+                server_name,
+                capability,
+                processing_time,
+                success=False,
+                error_message=str(e),
             )
 
             raise e
 
-    async def _simulate_mcp_call(self, server_name: str, capability: str,
-                               call_kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    async def _simulate_mcp_call(
+        self, server_name: str, capability: str, call_kwargs: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Simulate MCP server call for demonstration"""
         await asyncio.sleep(0.05)  # Simulate network call
 
         return {
-            'server': server_name,
-            'capability': capability,
-            'result': 'simulated_result',
-            'kwargs': call_kwargs
+            "server": server_name,
+            "capability": capability,
+            "result": "simulated_result",
+            "kwargs": call_kwargs,
         }

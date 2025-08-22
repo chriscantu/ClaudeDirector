@@ -9,6 +9,7 @@ Part of Phase 1 implementation addressing Martin's TD-1 and TD-3 requirements.
 
 try:
     import yaml
+
     YAML_AVAILABLE = True
 except ImportError:
     YAML_AVAILABLE = False
@@ -25,7 +26,6 @@ logger = logging.getLogger(__name__)
 
 class TemplateValidationError(Exception):
     """Raised when template validation fails"""
-
 
 
 class TemplateDomain(Enum):
