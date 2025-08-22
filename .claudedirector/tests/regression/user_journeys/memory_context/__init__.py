@@ -41,7 +41,7 @@ from .test_memory_performance import TestMemoryPerformance
 
 __all__ = [
     "TestUserConfiguration",
-    "TestStrategicContext", 
+    "TestStrategicContext",
     "TestStakeholderIntelligence",
     "TestMemoryPerformance",
 ]

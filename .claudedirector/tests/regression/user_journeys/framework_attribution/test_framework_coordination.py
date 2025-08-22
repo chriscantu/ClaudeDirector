@@ -32,7 +32,7 @@ class TestFrameworkCoordination(unittest.TestCase):
     def setUp(self):
         """Set up test environment for coordination testing"""
         self.test_dir = tempfile.mkdtemp()
-        
+
         # Multi-framework test scenarios
         self.coordination_scenarios = [
             {
@@ -56,11 +56,14 @@ class TestFrameworkCoordination(unittest.TestCase):
                     },
                 },
                 "expected_primary": "Team Topologies",
-                "expected_supporting": ["Capital Allocation Framework", "Strategic Platform Assessment"],
+                "expected_supporting": [
+                    "Capital Allocation Framework",
+                    "Strategic Platform Assessment",
+                ],
                 "min_frameworks": 2,
             },
             {
-                "name": "Design System Strategy Scenario", 
+                "name": "Design System Strategy Scenario",
                 "query": "How do we scale our design system while ensuring accessibility compliance and user-centered design?",
                 "detected_frameworks": {
                     "Design System Maturity Model": {
@@ -80,7 +83,10 @@ class TestFrameworkCoordination(unittest.TestCase):
                     },
                 },
                 "expected_primary": "Design System Maturity Model",
-                "expected_supporting": ["User-Centered Design", "Scaling Up Excellence"],
+                "expected_supporting": [
+                    "User-Centered Design",
+                    "Scaling Up Excellence",
+                ],
                 "min_frameworks": 2,
             },
             {
@@ -104,7 +110,10 @@ class TestFrameworkCoordination(unittest.TestCase):
                     },
                 },
                 "expected_primary": "Good Strategy Bad Strategy",
-                "expected_supporting": ["Capital Allocation Framework", "Crucial Conversations"],
+                "expected_supporting": [
+                    "Capital Allocation Framework",
+                    "Crucial Conversations",
+                ],
                 "min_frameworks": 2,
             },
         ]
@@ -112,6 +121,7 @@ class TestFrameworkCoordination(unittest.TestCase):
     def tearDown(self):
         """Clean up test environment"""
         import shutil
+
         shutil.rmtree(self.test_dir, ignore_errors=True)
 
     def test_multi_framework_coordination(self):
@@ -124,75 +134,75 @@ class TestFrameworkCoordination(unittest.TestCase):
                 expected_primary = scenario["expected_primary"]
                 expected_supporting = scenario["expected_supporting"]
                 min_frameworks = scenario["min_frameworks"]
-                
+
                 # Verify multiple frameworks are detected
                 self.assertGreaterEqual(
                     len(detected_frameworks),
                     min_frameworks,
                     f"{scenario_name}: Should detect at least {min_frameworks} frameworks. Query: {query[:50]}...",
                 )
-                
+
                 # Verify frameworks are ranked by confidence
                 framework_confidences = [
                     (name, data["confidence"])
                     for name, data in detected_frameworks.items()
                 ]
                 framework_confidences.sort(key=lambda x: x[1], reverse=True)
-                
+
                 # Primary framework should have highest confidence
                 primary_framework = framework_confidences[0][0]
                 primary_confidence = framework_confidences[0][1]
-                
+
                 self.assertEqual(
                     primary_framework,
                     expected_primary,
-                    f"{scenario_name}: Primary framework should be '{expected_primary}', got '{primary_framework}'"
+                    f"{scenario_name}: Primary framework should be '{expected_primary}', got '{primary_framework}'",
                 )
-                
+
                 self.assertGreaterEqual(
                     primary_confidence,
                     0.7,
                     f"{scenario_name}: Primary framework '{primary_framework}' should have high confidence",
                 )
-                
+
                 # Test framework coordination logic
                 coordination_result = self._coordinate_frameworks(detected_frameworks)
-                
+
                 self.assertIn(
                     "primary_framework",
                     coordination_result,
                     f"{scenario_name}: Framework coordination should identify primary framework",
                 )
-                
+
                 self.assertIn(
                     "supporting_frameworks",
                     coordination_result,
                     f"{scenario_name}: Framework coordination should identify supporting frameworks",
                 )
-                
+
                 # Verify coordination reasoning
                 self.assertIn(
                     "coordination_rationale",
                     coordination_result,
                     f"{scenario_name}: Framework coordination should provide rationale",
                 )
-                
+
                 # Verify primary framework matches expectation
                 self.assertEqual(
                     coordination_result["primary_framework"],
                     expected_primary,
-                    f"{scenario_name}: Coordinated primary framework should match expected"
+                    f"{scenario_name}: Coordinated primary framework should match expected",
                 )
-                
+
                 # Verify supporting frameworks are identified
                 coordinated_supporting = coordination_result["supporting_frameworks"]
                 for expected_framework in expected_supporting[:2]:  # Top 2 supporting
                     self.assertIn(
                         expected_framework,
                         coordinated_supporting,
-                        f"{scenario_name}: Supporting framework '{expected_framework}' should be identified"
+                        f"{scenario_name}: Supporting framework '{expected_framework}' should be identified",
                     )
-                
+
         except Exception as e:
             self.fail(f"Multi-framework coordination test failed: {e}")
 
@@ -227,47 +237,47 @@ class TestFrameworkCoordination(unittest.TestCase):
                     "expected_order": ["Solo Framework"],
                 },
             ]
-            
+
             for test in prioritization_tests:
                 test_name = test["name"]
                 frameworks = test["frameworks"]
                 expected_order = test["expected_order"]
-                
+
                 # Test coordination prioritization
                 coordination_result = self._coordinate_frameworks(frameworks)
-                
+
                 if len(frameworks) == 1:
                     # Single framework case
                     self.assertEqual(
                         coordination_result["primary_framework"],
                         expected_order[0],
-                        f"{test_name}: Single framework should be primary"
+                        f"{test_name}: Single framework should be primary",
                     )
                     self.assertEqual(
                         len(coordination_result["supporting_frameworks"]),
                         0,
-                        f"{test_name}: Single framework should have no supporting frameworks"
+                        f"{test_name}: Single framework should have no supporting frameworks",
                     )
                 else:
                     # Multi-framework case
                     self.assertEqual(
                         coordination_result["primary_framework"],
                         expected_order[0],
-                        f"{test_name}: Highest confidence framework should be primary"
+                        f"{test_name}: Highest confidence framework should be primary",
                     )
-                    
+
                     # Supporting frameworks should be in confidence order
                     supporting_frameworks = coordination_result["supporting_frameworks"]
                     expected_supporting = expected_order[1:3]  # Top 2 supporting
-                    
+
                     for i, expected_framework in enumerate(expected_supporting):
                         if i < len(supporting_frameworks):
                             self.assertEqual(
                                 supporting_frameworks[i],
                                 expected_framework,
-                                f"{test_name}: Supporting framework {i+1} should be '{expected_framework}'"
+                                f"{test_name}: Supporting framework {i+1} should be '{expected_framework}'",
                             )
-                            
+
         except Exception as e:
             self.fail(f"Framework prioritization logic test failed: {e}")
 
@@ -277,45 +287,52 @@ class TestFrameworkCoordination(unittest.TestCase):
             for scenario in self.coordination_scenarios:
                 scenario_name = scenario["name"]
                 detected_frameworks = scenario["detected_frameworks"]
-                
+
                 coordination_result = self._coordinate_frameworks(detected_frameworks)
                 rationale = coordination_result["coordination_rationale"]
-                
+
                 # Rationale should be meaningful
                 self.assertGreater(
                     len(rationale),
                     20,
-                    f"{scenario_name}: Rationale should be meaningful, got: {rationale}"
+                    f"{scenario_name}: Rationale should be meaningful, got: {rationale}",
                 )
-                
+
                 # Rationale should mention primary framework
                 primary_framework = coordination_result["primary_framework"]
                 self.assertIn(
                     primary_framework,
                     rationale,
-                    f"{scenario_name}: Rationale should mention primary framework '{primary_framework}'"
+                    f"{scenario_name}: Rationale should mention primary framework '{primary_framework}'",
                 )
-                
+
                 # Rationale should explain selection criteria
                 criteria_keywords = ["confidence", "highest", "selected", "score"]
-                has_criteria = any(keyword in rationale.lower() for keyword in criteria_keywords)
+                has_criteria = any(
+                    keyword in rationale.lower() for keyword in criteria_keywords
+                )
                 self.assertTrue(
                     has_criteria,
-                    f"{scenario_name}: Rationale should explain selection criteria. Got: {rationale}"
+                    f"{scenario_name}: Rationale should explain selection criteria. Got: {rationale}",
                 )
-                
+
                 # If supporting frameworks exist, rationale should mention them
                 supporting_frameworks = coordination_result["supporting_frameworks"]
                 if supporting_frameworks:
-                    support_keywords = ["supporting", "additional", "context", "provide"]
+                    support_keywords = [
+                        "supporting",
+                        "additional",
+                        "context",
+                        "provide",
+                    ]
                     has_support_explanation = any(
                         keyword in rationale.lower() for keyword in support_keywords
                     )
                     self.assertTrue(
                         has_support_explanation,
-                        f"{scenario_name}: Rationale should explain supporting frameworks. Got: {rationale}"
+                        f"{scenario_name}: Rationale should explain supporting frameworks. Got: {rationale}",
                     )
-                    
+
         except Exception as e:
             self.fail(f"Coordination rationale quality test failed: {e}")
 
@@ -332,9 +349,7 @@ class TestFrameworkCoordination(unittest.TestCase):
                 },
                 {
                     "name": "Single Framework",
-                    "frameworks": {
-                        "Lone Framework": {"confidence": 0.80}
-                    },
+                    "frameworks": {"Lone Framework": {"confidence": 0.80}},
                     "expected_primary": "Lone Framework",
                     "expected_supporting": [],
                     "expected_rationale_keywords": ["lone framework", "selected"],
@@ -351,40 +366,40 @@ class TestFrameworkCoordination(unittest.TestCase):
                     "expected_rationale_keywords": ["framework alpha", "confidence"],
                 },
             ]
-            
+
             for case in edge_cases:
                 case_name = case["name"]
                 frameworks = case["frameworks"]
                 expected_primary = case["expected_primary"]
                 expected_supporting = case["expected_supporting"]
                 expected_keywords = case["expected_rationale_keywords"]
-                
+
                 coordination_result = self._coordinate_frameworks(frameworks)
-                
+
                 # Verify primary framework
                 self.assertEqual(
                     coordination_result["primary_framework"],
                     expected_primary,
-                    f"{case_name}: Primary framework should be '{expected_primary}'"
+                    f"{case_name}: Primary framework should be '{expected_primary}'",
                 )
-                
+
                 # Verify supporting frameworks
                 actual_supporting = coordination_result["supporting_frameworks"]
                 self.assertEqual(
                     len(actual_supporting),
                     len(expected_supporting),
-                    f"{case_name}: Should have {len(expected_supporting)} supporting frameworks"
+                    f"{case_name}: Should have {len(expected_supporting)} supporting frameworks",
                 )
-                
+
                 # Verify rationale contains expected keywords
                 rationale = coordination_result["coordination_rationale"].lower()
                 for keyword in expected_keywords:
                     self.assertIn(
                         keyword.lower(),
                         rationale,
-                        f"{case_name}: Rationale should contain '{keyword}'. Got: {rationale}"
+                        f"{case_name}: Rationale should contain '{keyword}'. Got: {rationale}",
                     )
-                    
+
         except Exception as e:
             self.fail(f"Coordination edge cases test failed: {e}")
 
@@ -398,28 +413,26 @@ class TestFrameworkCoordination(unittest.TestCase):
                 "supporting_frameworks": [],
                 "coordination_rationale": "No frameworks detected",
             }
-        
+
         frameworks_by_confidence = sorted(
-            detected_frameworks.items(), 
-            key=lambda x: x[1]["confidence"], 
-            reverse=True
+            detected_frameworks.items(), key=lambda x: x[1]["confidence"], reverse=True
         )
-        
+
         primary_framework = frameworks_by_confidence[0][0]
         supporting_frameworks = [
             name for name, _ in frameworks_by_confidence[1:3]
         ]  # Top 2 supporting
-        
+
         # Generate rationale
         if len(frameworks_by_confidence) == 1:
             rationale = f"Primary framework '{primary_framework}' selected as the only detected framework"
         else:
             primary_confidence = frameworks_by_confidence[0][1]["confidence"]
             rationale = f"Primary framework '{primary_framework}' selected based on highest confidence score ({primary_confidence:.2f})"
-            
+
             if supporting_frameworks:
                 rationale += f". Supporting frameworks {supporting_frameworks} provide additional context."
-        
+
         return {
             "primary_framework": primary_framework,
             "supporting_frameworks": supporting_frameworks,
@@ -432,10 +445,12 @@ if __name__ == "__main__":
     print("=" * 50)
     print("Testing multi-framework coordination and prioritization...")
     print()
-    
+
     # Run the focused test suite
     unittest.main(verbosity=2, exit=False)
-    
+
     print()
     print("✅ FRAMEWORK COORDINATION REGRESSION TESTS COMPLETE")
-    print("Multi-framework coordination and prioritization protected against regressions")
+    print(
+        "Multi-framework coordination and prioritization protected against regressions"
+    )

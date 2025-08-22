@@ -38,10 +38,10 @@ class TestStrategicContext(unittest.TestCase):
         self.config_dir = Path(self.test_dir) / ".claudedirector"
         self.memory_dir = self.config_dir / "memory"
         self.memory_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Context file paths
         self.context_file = self.memory_dir / "strategic_context.json"
-        
+
         # Test strategic context data
         self.test_strategic_context = {
             "session_id": "session_1",
@@ -84,6 +84,7 @@ class TestStrategicContext(unittest.TestCase):
     def tearDown(self):
         """Clean up test environment"""
         import shutil
+
         shutil.rmtree(self.test_dir, ignore_errors=True)
 
     def test_strategic_context_preservation(self):
@@ -92,54 +93,54 @@ class TestStrategicContext(unittest.TestCase):
             # Save strategic context
             with open(self.context_file, "w") as f:
                 json.dump(self.test_strategic_context, f, indent=2)
-            
+
             # Verify context file creation
             self.assertTrue(
                 self.context_file.exists(), "Strategic context file should be created"
             )
-            
+
             # Load context back
             with open(self.context_file, "r") as f:
                 loaded_context = json.load(f)
-            
+
             # Verify initiative tracking
             initiatives = loaded_context["current_initiatives"]
             self.assertGreater(
                 len(initiatives), 0, "Current initiatives should be preserved"
             )
-            
+
             platform_initiative = initiatives[0]
             self.assertEqual(
                 platform_initiative["id"],
                 "platform_scaling_2024",
                 "Initiative IDs should persist",
             )
-            
+
             self.assertEqual(
                 platform_initiative["status"],
                 "in_progress",
                 "Initiative status should be preserved",
             )
-            
+
             # Verify conversation history
             conversations = loaded_context["recent_conversations"]
             self.assertGreater(
                 len(conversations), 0, "Recent conversations should be preserved"
             )
-            
+
             recent_conv = conversations[0]
             self.assertEqual(
                 recent_conv["persona_used"],
                 "diego",
                 "Persona usage history should be preserved",
             )
-            
+
             self.assertEqual(
                 recent_conv["framework_applied"],
                 "Team Topologies",
                 "Framework application history should be preserved",
             )
-            
+
             # Verify session metadata preservation
             metadata = loaded_context["session_metadata"]
             self.assertGreater(
@@ -147,13 +148,13 @@ class TestStrategicContext(unittest.TestCase):
                 0,
                 "Session conversation count should be preserved",
             )
-            
+
             self.assertIn(
                 "Team Topologies",
                 metadata["frameworks_used"],
                 "Framework usage history should be comprehensive",
             )
-            
+
         except Exception as e:
             self.fail(f"Strategic context preservation failed: {e}")
 
@@ -174,24 +175,32 @@ class TestStrategicContext(unittest.TestCase):
                                 "id": "milestone_1",
                                 "title": "Component Audit Complete",
                                 "status": "completed",
-                                "completed_date": (datetime.now() - timedelta(days=7)).isoformat(),
+                                "completed_date": (
+                                    datetime.now() - timedelta(days=7)
+                                ).isoformat(),
                             },
                             {
-                                "id": "milestone_2", 
+                                "id": "milestone_2",
                                 "title": "Token System Implementation",
                                 "status": "in_progress",
-                                "target_date": (datetime.now() + timedelta(days=14)).isoformat(),
+                                "target_date": (
+                                    datetime.now() + timedelta(days=14)
+                                ).isoformat(),
                             },
                             {
                                 "id": "milestone_3",
                                 "title": "Team Training Rollout",
                                 "status": "planned",
-                                "target_date": (datetime.now() + timedelta(days=30)).isoformat(),
+                                "target_date": (
+                                    datetime.now() + timedelta(days=30)
+                                ).isoformat(),
                             },
                         ],
                         "decision_log": [
                             {
-                                "date": (datetime.now() - timedelta(days=5)).isoformat(),
+                                "date": (
+                                    datetime.now() - timedelta(days=5)
+                                ).isoformat(),
                                 "decision": "Adopt Figma Tokens for design system",
                                 "rationale": "Better designer-developer handoff",
                                 "participants": ["rachel", "design_team"],
@@ -203,15 +212,15 @@ class TestStrategicContext(unittest.TestCase):
                     "last_initiative_update": datetime.now().isoformat(),
                 },
             }
-            
+
             # Save initial context
             with open(self.context_file, "w") as f:
                 json.dump(initial_context, f, indent=2)
-            
+
             # Simulate initiative progression
             with open(self.context_file, "r") as f:
                 context = json.load(f)
-            
+
             # Progress milestone 2 to completed
             initiative = context["current_initiatives"][0]
             for milestone in initiative["milestones"]:
@@ -219,29 +228,33 @@ class TestStrategicContext(unittest.TestCase):
                     milestone["status"] = "completed"
                     milestone["completed_date"] = datetime.now().isoformat()
                     milestone["actual_duration_days"] = 12  # Completed early
-            
+
             # Add new decision
-            initiative["decision_log"].append({
-                "date": datetime.now().isoformat(),
-                "decision": "Accelerate training timeline due to early completion",
-                "rationale": "Team ready earlier than expected",
-                "participants": ["rachel", "diego", "training_team"],
-            })
-            
+            initiative["decision_log"].append(
+                {
+                    "date": datetime.now().isoformat(),
+                    "decision": "Accelerate training timeline due to early completion",
+                    "rationale": "Team ready earlier than expected",
+                    "participants": ["rachel", "diego", "training_team"],
+                }
+            )
+
             # Update initiative status
             initiative["status"] = "execution"
-            context["session_metadata"]["last_initiative_update"] = datetime.now().isoformat()
-            
+            context["session_metadata"][
+                "last_initiative_update"
+            ] = datetime.now().isoformat()
+
             # Save updated context
             with open(self.context_file, "w") as f:
                 json.dump(context, f, indent=2)
-            
+
             # Reload and verify progression tracking
             with open(self.context_file, "r") as f:
                 updated_context = json.load(f)
-            
+
             updated_initiative = updated_context["current_initiatives"][0]
-            
+
             # Verify milestone progression
             milestone_2 = next(
                 m for m in updated_initiative["milestones"] if m["id"] == "milestone_2"
@@ -251,27 +264,27 @@ class TestStrategicContext(unittest.TestCase):
                 "completed",
                 "Milestone status should be updated",
             )
-            
+
             self.assertIn(
                 "completed_date",
                 milestone_2,
                 "Completed milestone should have completion date",
             )
-            
+
             # Verify decision log growth
             self.assertEqual(
                 len(updated_initiative["decision_log"]),
                 2,
                 "Decision log should track new decisions",
             )
-            
+
             # Verify initiative status progression
             self.assertEqual(
                 updated_initiative["status"],
                 "execution",
                 "Initiative status should progress",
             )
-            
+
         except Exception as e:
             self.fail(f"Initiative progression tracking failed: {e}")
 
@@ -300,29 +313,29 @@ class TestStrategicContext(unittest.TestCase):
                     }
                 ],
             }
-            
+
             # Save Session 1 context
             with open(self.context_file, "w") as f:
                 json.dump(session1_context, f, indent=2)
-            
+
             # Simulate gap between sessions (time passage)
             time.sleep(0.1)  # Small delay to ensure different timestamps
-            
+
             # Load Session 1 context (simulating new session startup)
             with open(self.context_file, "r") as f:
                 loaded_session1 = json.load(f)
-            
+
             # Simulate Session 2: Continue previous conversation
             session2_context = loaded_session1.copy()
             session2_context["session_id"] = "session_2"
             session2_context["timestamp"] = datetime.now().isoformat()
-            
+
             # Add Session 2 progress
             session2_context["current_initiatives"][0]["status"] = "in_progress"
             session2_context["current_initiatives"][0]["decisions_made"].append(
                 "stakeholder_meetings_scheduled"
             )
-            
+
             session2_context["conversation_history"].append(
                 {
                     "topic": "stakeholder_alignment",
@@ -332,15 +345,15 @@ class TestStrategicContext(unittest.TestCase):
                     "continues_from": "session_1",
                 }
             )
-            
+
             # Save Session 2 context
             with open(self.context_file, "w") as f:
                 json.dump(session2_context, f, indent=2)
-            
+
             # Verify continuity preservation
             with open(self.context_file, "r") as f:
                 final_context = json.load(f)
-            
+
             # Check initiative progression
             initiative = final_context["current_initiatives"][0]
             self.assertEqual(
@@ -348,38 +361,38 @@ class TestStrategicContext(unittest.TestCase):
                 "in_progress",
                 "Initiative status should progress across sessions",
             )
-            
+
             self.assertIn(
                 "team_structure_review",
                 initiative["decisions_made"],
                 "Previous session decisions should be preserved",
             )
-            
+
             self.assertIn(
                 "stakeholder_meetings_scheduled",
                 initiative["decisions_made"],
                 "New session decisions should be added",
             )
-            
+
             # Check conversation continuity
             conversations = final_context["conversation_history"]
             self.assertEqual(
                 len(conversations), 2, "All session conversations should be preserved"
             )
-            
+
             session2_conv = conversations[1]
             self.assertEqual(
                 session2_conv["continues_from"],
                 "session_1",
                 "Cross-session conversation continuity should be tracked",
             )
-            
+
             self.assertEqual(
                 session2_conv["persona"],
                 "rachel",
                 "Different personas across sessions should be preserved",
             )
-            
+
         except Exception as e:
             self.fail(f"Cross-session continuity failed: {e}")
 
@@ -403,9 +416,12 @@ class TestStrategicContext(unittest.TestCase):
                         "framework": "Capital Allocation Framework",
                         "confidence": 0.85,
                         "query_context": "platform investment justification",
-                        "persona": "alvaro", 
+                        "persona": "alvaro",
                         "outcome": "ROI model for platform team investment",
-                        "supporting_data": ["team_productivity_metrics", "delivery_velocity"],
+                        "supporting_data": [
+                            "team_productivity_metrics",
+                            "delivery_velocity",
+                        ],
                     },
                     {
                         "timestamp": (datetime.now() - timedelta(hours=1)).isoformat(),
@@ -419,46 +435,69 @@ class TestStrategicContext(unittest.TestCase):
                 ],
                 "framework_analytics": {
                     "most_used_frameworks": [
-                        {"framework": "Team Topologies", "usage_count": 8, "avg_confidence": 0.89},
-                        {"framework": "Capital Allocation Framework", "usage_count": 5, "avg_confidence": 0.82},
-                        {"framework": "Design System Maturity Model", "usage_count": 4, "avg_confidence": 0.85},
+                        {
+                            "framework": "Team Topologies",
+                            "usage_count": 8,
+                            "avg_confidence": 0.89,
+                        },
+                        {
+                            "framework": "Capital Allocation Framework",
+                            "usage_count": 5,
+                            "avg_confidence": 0.82,
+                        },
+                        {
+                            "framework": "Design System Maturity Model",
+                            "usage_count": 4,
+                            "avg_confidence": 0.85,
+                        },
                     ],
                     "persona_framework_affinity": {
                         "diego": ["Team Topologies", "Technical Strategy Framework"],
-                        "alvaro": ["Capital Allocation Framework", "Good Strategy Bad Strategy"],
-                        "rachel": ["Design System Maturity Model", "User-Centered Design"],
+                        "alvaro": [
+                            "Capital Allocation Framework",
+                            "Good Strategy Bad Strategy",
+                        ],
+                        "rachel": [
+                            "Design System Maturity Model",
+                            "User-Centered Design",
+                        ],
                     },
                     "framework_combinations": [
                         {
-                            "combination": ["Team Topologies", "Capital Allocation Framework"],
+                            "combination": [
+                                "Team Topologies",
+                                "Capital Allocation Framework",
+                            ],
                             "frequency": 3,
                             "effectiveness_rating": 0.91,
                         }
                     ],
                 },
             }
-            
+
             # Save framework history context
             with open(self.context_file, "w") as f:
                 json.dump(framework_history_context, f, indent=2)
-            
+
             # Load and verify framework history
             with open(self.context_file, "r") as f:
                 loaded_context = json.load(f)
-            
+
             # Verify framework application tracking
             applications = loaded_context["framework_applications"]
             self.assertEqual(
                 len(applications), 3, "All framework applications should be tracked"
             )
-            
+
             # Verify chronological ordering
             timestamps = [app["timestamp"] for app in applications]
             sorted_timestamps = sorted(timestamps)
             self.assertEqual(
-                timestamps, sorted_timestamps, "Applications should be in chronological order"
+                timestamps,
+                sorted_timestamps,
+                "Applications should be in chronological order",
             )
-            
+
             # Verify framework linkage tracking
             team_topologies_app = next(
                 app for app in applications if app["framework"] == "Team Topologies"
@@ -468,11 +507,11 @@ class TestStrategicContext(unittest.TestCase):
                 team_topologies_app,
                 "Framework linkages should be tracked",
             )
-            
+
             # Verify analytics accuracy
             analytics = loaded_context["framework_analytics"]
             most_used = analytics["most_used_frameworks"]
-            
+
             # Team Topologies should be most used
             top_framework = most_used[0]
             self.assertEqual(
@@ -480,7 +519,7 @@ class TestStrategicContext(unittest.TestCase):
                 "Team Topologies",
                 "Most used framework should be identified correctly",
             )
-            
+
             # Verify persona affinity tracking
             persona_affinity = analytics["persona_framework_affinity"]
             self.assertIn(
@@ -488,13 +527,13 @@ class TestStrategicContext(unittest.TestCase):
                 persona_affinity["diego"],
                 "Persona framework affinity should be tracked",
             )
-            
+
             # Verify framework combination tracking
             combinations = analytics["framework_combinations"]
             self.assertGreater(
                 len(combinations), 0, "Framework combinations should be tracked"
             )
-            
+
         except Exception as e:
             self.fail(f"Framework application history tracking failed: {e}")
 
@@ -507,73 +546,89 @@ class TestStrategicContext(unittest.TestCase):
                 "conversation_history": [],
                 "framework_applications": [],
             }
-            
+
             # Generate 50 initiatives
             for i in range(50):
-                large_context["current_initiatives"].append({
-                    "id": f"initiative_{i}",
-                    "title": f"Strategic Initiative {i}",
-                    "status": "in_progress" if i < 30 else "completed",
-                    "priority": "P0" if i % 10 == 0 else "P1",
-                    "created": (datetime.now() - timedelta(days=i)).isoformat(),
-                })
-            
+                large_context["current_initiatives"].append(
+                    {
+                        "id": f"initiative_{i}",
+                        "title": f"Strategic Initiative {i}",
+                        "status": "in_progress" if i < 30 else "completed",
+                        "priority": "P0" if i % 10 == 0 else "P1",
+                        "created": (datetime.now() - timedelta(days=i)).isoformat(),
+                    }
+                )
+
             # Generate 200 conversations
             for i in range(200):
-                large_context["conversation_history"].append({
-                    "id": f"conv_{i}",
-                    "timestamp": (datetime.now() - timedelta(hours=i)).isoformat(),
-                    "persona": ["diego", "martin", "rachel", "alvaro"][i % 4],
-                    "topic": f"strategic_topic_{i}",
-                    "framework": ["Team Topologies", "Capital Allocation", "Strategic Analysis"][i % 3],
-                })
-            
+                large_context["conversation_history"].append(
+                    {
+                        "id": f"conv_{i}",
+                        "timestamp": (datetime.now() - timedelta(hours=i)).isoformat(),
+                        "persona": ["diego", "martin", "rachel", "alvaro"][i % 4],
+                        "topic": f"strategic_topic_{i}",
+                        "framework": [
+                            "Team Topologies",
+                            "Capital Allocation",
+                            "Strategic Analysis",
+                        ][i % 3],
+                    }
+                )
+
             # Generate 100 framework applications
             for i in range(100):
-                large_context["framework_applications"].append({
-                    "timestamp": (datetime.now() - timedelta(minutes=i*30)).isoformat(),
-                    "framework": ["Team Topologies", "Capital Allocation", "Design System Maturity Model"][i % 3],
-                    "confidence": 0.7 + (i % 3) * 0.1,
-                })
-            
+                large_context["framework_applications"].append(
+                    {
+                        "timestamp": (
+                            datetime.now() - timedelta(minutes=i * 30)
+                        ).isoformat(),
+                        "framework": [
+                            "Team Topologies",
+                            "Capital Allocation",
+                            "Design System Maturity Model",
+                        ][i % 3],
+                        "confidence": 0.7 + (i % 3) * 0.1,
+                    }
+                )
+
             # Measure save performance
             start_time = time.time()
             with open(self.context_file, "w") as f:
                 json.dump(large_context, f, indent=2)
             save_time = time.time() - start_time
-            
+
             # Measure load performance
             start_time = time.time()
             with open(self.context_file, "r") as f:
                 loaded_large_context = json.load(f)
             load_time = time.time() - start_time
-            
+
             # Verify data integrity
             self.assertEqual(
                 len(loaded_large_context["current_initiatives"]),
                 50,
                 "All initiatives should be preserved in large dataset",
             )
-            
+
             self.assertEqual(
                 len(loaded_large_context["conversation_history"]),
                 200,
                 "All conversations should be preserved in large dataset",
             )
-            
+
             # Performance assertions (reasonable thresholds)
             self.assertLess(
                 save_time,
                 1.0,
                 f"Large context save should complete in <1s, took {save_time:.2f}s",
             )
-            
+
             self.assertLess(
                 load_time,
                 0.5,
                 f"Large context load should complete in <0.5s, took {load_time:.2f}s",
             )
-            
+
         except Exception as e:
             self.fail(f"Context performance optimization failed: {e}")
 
@@ -583,10 +638,12 @@ if __name__ == "__main__":
     print("=" * 50)
     print("Testing strategic context preservation and conversation continuity...")
     print()
-    
+
     # Run the focused test suite
     unittest.main(verbosity=2, exit=False)
-    
+
     print()
     print("✅ STRATEGIC CONTEXT REGRESSION TESTS COMPLETE")
-    print("Strategic context preservation and conversation continuity protected against regressions")
+    print(
+        "Strategic context preservation and conversation continuity protected against regressions"
+    )

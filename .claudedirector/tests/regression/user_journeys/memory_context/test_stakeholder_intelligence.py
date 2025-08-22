@@ -37,10 +37,10 @@ class TestStakeholderIntelligence(unittest.TestCase):
         self.config_dir = Path(self.test_dir) / ".claudedirector"
         self.memory_dir = self.config_dir / "memory"
         self.memory_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Stakeholder intelligence file path
         self.stakeholder_file = self.memory_dir / "stakeholder_intelligence.json"
-        
+
         # Test stakeholder intelligence data
         self.test_stakeholder_data = {
             "stakeholder_relationships": {
@@ -84,6 +84,7 @@ class TestStakeholderIntelligence(unittest.TestCase):
     def tearDown(self):
         """Clean up test environment"""
         import shutil
+
         shutil.rmtree(self.test_dir, ignore_errors=True)
 
     def test_stakeholder_intelligence_tracking(self):
@@ -92,39 +93,39 @@ class TestStakeholderIntelligence(unittest.TestCase):
             # Save stakeholder intelligence
             with open(self.stakeholder_file, "w") as f:
                 json.dump(self.test_stakeholder_data, f, indent=2)
-            
+
             # Verify stakeholder file creation
             self.assertTrue(
                 self.stakeholder_file.exists(),
                 "Stakeholder intelligence file should be created",
             )
-            
+
             # Load stakeholder data back
             with open(self.stakeholder_file, "r") as f:
                 loaded_stakeholders = json.load(f)
-            
+
             # Verify individual stakeholder relationships
             relationships = loaded_stakeholders["stakeholder_relationships"]
-            
+
             self.assertIn(
                 "jeff_williams",
                 relationships,
                 "Executive stakeholder relationships should persist",
             )
-            
+
             jeff_data = relationships["jeff_williams"]
             self.assertEqual(
                 jeff_data["role"],
                 "VP Engineering",
                 "Stakeholder roles should be preserved",
             )
-            
+
             self.assertEqual(
                 jeff_data["relationship"],
                 "direct_report",
                 "Relationship types should be preserved",
             )
-            
+
             # Verify interaction history
             interactions = jeff_data["recent_interactions"]
             self.assertGreater(
@@ -132,29 +133,29 @@ class TestStakeholderIntelligence(unittest.TestCase):
                 0,
                 "Stakeholder interaction history should be preserved",
             )
-            
+
             recent_interaction = interactions[0]
             self.assertEqual(
                 recent_interaction["topic"],
                 "platform_strategy",
                 "Interaction topics should be preserved",
             )
-            
+
             # Verify organizational dynamics
             dynamics = loaded_stakeholders["organizational_dynamics"]
-            
+
             self.assertIn(
                 "jeff_williams",
                 dynamics["platform_advocates"],
                 "Platform advocacy tracking should persist",
             )
-            
+
             self.assertIn(
                 "hisham_younis",
                 dynamics["product_focused"],
                 "Organizational positioning should be preserved",
             )
-            
+
             # Verify influence network mapping
             influence = dynamics["influence_network"]
             self.assertIn(
@@ -162,7 +163,7 @@ class TestStakeholderIntelligence(unittest.TestCase):
                 influence["technical"],
                 "Technical influence networks should be preserved",
             )
-            
+
         except Exception as e:
             self.fail(f"Stakeholder intelligence tracking failed: {e}")
 
@@ -178,7 +179,9 @@ class TestStakeholderIntelligence(unittest.TestCase):
                         "communication_style": "executive_summary",
                         "recent_interactions": [
                             {
-                                "date": (datetime.now() - timedelta(days=14)).isoformat(),
+                                "date": (
+                                    datetime.now() - timedelta(days=14)
+                                ).isoformat(),
                                 "type": "quarterly_review",
                                 "topic": "platform_progress",
                                 "outcome": "requested_roi_metrics",
@@ -193,59 +196,63 @@ class TestStakeholderIntelligence(unittest.TestCase):
                     }
                 }
             }
-            
+
             # Save initial data
             with open(self.stakeholder_file, "w") as f:
                 json.dump(initial_data, f, indent=2)
-            
+
             # Simulate new interactions over time
             with open(self.stakeholder_file, "r") as f:
                 data = json.load(f)
-            
+
             steve_data = data["stakeholder_relationships"]["steve_davis"]
-            
+
             # Add new interaction
-            steve_data["recent_interactions"].append({
-                "date": (datetime.now() - timedelta(days=7)).isoformat(),
-                "type": "email_exchange",
-                "topic": "platform_roi_analysis",
-                "outcome": "shared_detailed_metrics",
-                "sentiment": "positive",
-                "follow_up_requested": True,
-            })
-            
+            steve_data["recent_interactions"].append(
+                {
+                    "date": (datetime.now() - timedelta(days=7)).isoformat(),
+                    "type": "email_exchange",
+                    "topic": "platform_roi_analysis",
+                    "outcome": "shared_detailed_metrics",
+                    "sentiment": "positive",
+                    "follow_up_requested": True,
+                }
+            )
+
             # Add another interaction
-            steve_data["recent_interactions"].append({
-                "date": datetime.now().isoformat(),
-                "type": "executive_presentation",
-                "topic": "q4_platform_strategy",
-                "outcome": "approved_increased_investment",
-                "sentiment": "highly_positive",
-                "key_decisions": ["expand_platform_team", "accelerate_timeline"],
-            })
-            
+            steve_data["recent_interactions"].append(
+                {
+                    "date": datetime.now().isoformat(),
+                    "type": "executive_presentation",
+                    "topic": "q4_platform_strategy",
+                    "outcome": "approved_increased_investment",
+                    "sentiment": "highly_positive",
+                    "key_decisions": ["expand_platform_team", "accelerate_timeline"],
+                }
+            )
+
             # Update relationship status based on interactions
             steve_data["platform_stance"] = "strong_advocate"
             steve_data["trust_level"] = "high"
             steve_data["last_positive_interaction"] = datetime.now().isoformat()
-            
+
             # Save updated data
             with open(self.stakeholder_file, "w") as f:
                 json.dump(data, f, indent=2)
-            
+
             # Reload and verify interaction accumulation
             with open(self.stakeholder_file, "r") as f:
                 updated_data = json.load(f)
-            
+
             updated_steve = updated_data["stakeholder_relationships"]["steve_davis"]
-            
+
             # Verify interaction history growth
             self.assertEqual(
                 len(updated_steve["recent_interactions"]),
                 3,
                 "Interaction history should accumulate over time",
             )
-            
+
             # Verify chronological ordering
             interactions = updated_steve["recent_interactions"]
             dates = [interaction["date"] for interaction in interactions]
@@ -253,7 +260,7 @@ class TestStakeholderIntelligence(unittest.TestCase):
             self.assertEqual(
                 dates, sorted_dates, "Interactions should be chronologically ordered"
             )
-            
+
             # Verify sentiment tracking
             latest_interaction = interactions[-1]
             self.assertEqual(
@@ -261,21 +268,21 @@ class TestStakeholderIntelligence(unittest.TestCase):
                 "highly_positive",
                 "Recent interaction sentiment should be tracked",
             )
-            
+
             # Verify relationship evolution
             self.assertEqual(
                 updated_steve["platform_stance"],
                 "strong_advocate",
                 "Stakeholder stance should evolve based on interactions",
             )
-            
+
             # Verify contextual insights
             self.assertIn(
                 "expand_platform_team",
                 latest_interaction["key_decisions"],
                 "Key decisions from interactions should be captured",
             )
-            
+
         except Exception as e:
             self.fail(f"Interaction history accumulation failed: {e}")
 
@@ -296,7 +303,11 @@ class TestStakeholderIntelligence(unittest.TestCase):
                         "reporting_structure": "jeff_williams -> steve_davis",
                     },
                     "cross_functional_teams": {
-                        "platform_steering": ["chris_cantu", "beth_nelson", "zach_mckenzie"],
+                        "platform_steering": [
+                            "chris_cantu",
+                            "beth_nelson",
+                            "zach_mckenzie",
+                        ],
                         "design_council": ["beth_nelson", "rachel_persona", "ux_leads"],
                     },
                 },
@@ -332,77 +343,85 @@ class TestStakeholderIntelligence(unittest.TestCase):
                 "relationship_dynamics": {
                     "jeff_williams": {
                         "influence_style": "collaborative_leadership",
-                        "key_relationships": ["steve_davis", "chris_cantu", "executive_team"],
+                        "key_relationships": [
+                            "steve_davis",
+                            "chris_cantu",
+                            "executive_team",
+                        ],
                         "decision_patterns": ["data_driven", "consensus_building"],
                     },
                     "beth_nelson": {
                         "influence_style": "design_thinking",
-                        "key_relationships": ["user_research", "design_team", "chris_cantu"],
+                        "key_relationships": [
+                            "user_research",
+                            "design_team",
+                            "chris_cantu",
+                        ],
                         "collaboration_strength": ["user_experience", "design_systems"],
                     },
                 },
             }
-            
+
             # Save network data
             with open(self.stakeholder_file, "w") as f:
                 json.dump(network_data, f, indent=2)
-            
+
             # Load and verify organizational mapping
             with open(self.stakeholder_file, "r") as f:
                 loaded_network = json.load(f)
-            
+
             # Verify organizational structure mapping
             org_structure = loaded_network["organizational_structure"]
             exec_team = org_structure["executive_team"]
-            
+
             self.assertIn(
                 "steve_davis",
                 exec_team["members"],
                 "Executive team membership should be tracked",
             )
-            
+
             self.assertEqual(
                 exec_team["decision_authority"],
                 "strategic_direction",
                 "Decision authority levels should be mapped",
             )
-            
+
             # Verify influence pattern tracking
             influence = loaded_network["influence_patterns"]
             decision_makers = influence["decision_makers"]
-            
+
             self.assertIn(
                 "jeff_williams",
                 decision_makers["strategic"],
                 "Strategic decision makers should be identified",
             )
-            
+
             # Verify communication flow mapping
             comm_flows = influence["communication_flows"]
             upward_flows = comm_flows["upward"]
-            
+
             self.assertIn(
                 "chris_cantu -> jeff_williams",
                 upward_flows,
                 "Communication flows should be mapped",
             )
-            
+
             # Verify coalition tracking
             coalitions = influence["coalition_building"]
             platform_advocates = coalitions["platform_advocates"]
-            
+
             self.assertEqual(
                 len(platform_advocates["core"]),
                 3,
                 "Coalition core members should be tracked",
             )
-            
+
             self.assertIn(
                 "strategy",
                 platform_advocates,
                 "Coalition strategies should be documented",
             )
-            
+
         except Exception as e:
             self.fail(f"Organizational network mapping failed: {e}")
 
@@ -413,7 +432,11 @@ class TestStakeholderIntelligence(unittest.TestCase):
             communication_data = {
                 "communication_profiles": {
                     "jeff_williams": {
-                        "preferred_formats": ["dashboard", "executive_summary", "metrics"],
+                        "preferred_formats": [
+                            "dashboard",
+                            "executive_summary",
+                            "metrics",
+                        ],
                         "communication_frequency": "weekly",
                         "decision_timeline": "2_weeks",
                         "information_density": "high",
@@ -424,12 +447,16 @@ class TestStakeholderIntelligence(unittest.TestCase):
                         },
                         "response_patterns": {
                             "email": "same_day",
-                            "slack": "within_hours", 
+                            "slack": "within_hours",
                             "meetings": "well_prepared",
                         },
                     },
                     "beth_nelson": {
-                        "preferred_formats": ["visual_presentations", "user_stories", "prototypes"],
+                        "preferred_formats": [
+                            "visual_presentations",
+                            "user_stories",
+                            "prototypes",
+                        ],
                         "communication_frequency": "bi_weekly",
                         "decision_timeline": "1_week",
                         "information_density": "medium",
@@ -437,11 +464,19 @@ class TestStakeholderIntelligence(unittest.TestCase):
                         "influence_factors": ["user_impact", "design_consistency"],
                     },
                     "steve_davis": {
-                        "preferred_formats": ["executive_dashboard", "roi_analysis", "risk_assessment"],
+                        "preferred_formats": [
+                            "executive_dashboard",
+                            "roi_analysis",
+                            "risk_assessment",
+                        ],
                         "communication_frequency": "monthly",
                         "decision_timeline": "3_weeks",
                         "information_density": "executive_summary",
-                        "key_metrics": ["business_impact", "competitive_advantage", "risk_mitigation"],
+                        "key_metrics": [
+                            "business_impact",
+                            "competitive_advantage",
+                            "risk_mitigation",
+                        ],
                     },
                 },
                 "communication_optimization": {
@@ -464,31 +499,31 @@ class TestStakeholderIntelligence(unittest.TestCase):
                     },
                 },
             }
-            
+
             # Save communication data
             with open(self.stakeholder_file, "w") as f:
                 json.dump(communication_data, f, indent=2)
-            
+
             # Load and verify communication optimization
             with open(self.stakeholder_file, "r") as f:
                 loaded_comm = json.load(f)
-            
+
             # Verify communication profiles
             profiles = loaded_comm["communication_profiles"]
             jeff_profile = profiles["jeff_williams"]
-            
+
             self.assertIn(
                 "dashboard",
                 jeff_profile["preferred_formats"],
                 "Communication format preferences should be tracked",
             )
-            
+
             self.assertEqual(
                 jeff_profile["communication_frequency"],
                 "weekly",
                 "Communication frequency preferences should be preserved",
             )
-            
+
             # Verify meeting preferences
             meeting_prefs = jeff_profile["meeting_preferences"]
             self.assertEqual(
@@ -496,7 +531,7 @@ class TestStakeholderIntelligence(unittest.TestCase):
                 "30_minutes",
                 "Meeting preferences should be detailed",
             )
-            
+
             # Verify response patterns
             response_patterns = jeff_profile["response_patterns"]
             self.assertEqual(
@@ -504,7 +539,7 @@ class TestStakeholderIntelligence(unittest.TestCase):
                 "same_day",
                 "Response patterns should be tracked for optimization",
             )
-            
+
             # Verify stakeholder-specific optimization
             beth_profile = profiles["beth_nelson"]
             self.assertIn(
@@ -512,17 +547,17 @@ class TestStakeholderIntelligence(unittest.TestCase):
                 beth_profile["influence_factors"],
                 "Stakeholder influence factors should be identified",
             )
-            
+
             # Verify timing optimization
             optimization = loaded_comm["communication_optimization"]
             timing = optimization["timing_patterns"]["jeff_williams"]
-            
+
             self.assertIn(
                 "tuesday_morning",
                 timing["best_times"],
                 "Optimal communication timing should be tracked",
             )
-            
+
             # Verify message template optimization
             templates = optimization["message_templates"]["platform_update"]
             self.assertEqual(
@@ -530,7 +565,7 @@ class TestStakeholderIntelligence(unittest.TestCase):
                 "business_value_summary",
                 "Stakeholder-specific message templates should be optimized",
             )
-            
+
         except Exception as e:
             self.fail(f"Stakeholder communication optimization failed: {e}")
 
@@ -546,7 +581,7 @@ class TestStakeholderIntelligence(unittest.TestCase):
                         "public_priorities": ["platform_strategy", "team_development"],
                     },
                     "beth_nelson": {
-                        "role": "Design Director", 
+                        "role": "Design Director",
                         "team": "Design",
                         "public_priorities": ["user_experience", "design_systems"],
                     },
@@ -586,35 +621,35 @@ class TestStakeholderIntelligence(unittest.TestCase):
                     },
                 },
             }
-            
+
             # Save privacy-controlled data
             with open(self.stakeholder_file, "w") as f:
                 json.dump(privacy_data, f, indent=2)
-            
+
             # Simulate access control verification
             with open(self.stakeholder_file, "r") as f:
                 loaded_data = json.load(f)
-            
+
             # Verify access control structure
             access_controls = loaded_data["access_controls"]
             user_levels = access_controls["user_access_levels"]
-            
+
             self.assertEqual(
                 user_levels["chris_cantu"],
                 "director",
                 "User access levels should be defined",
             )
-            
+
             # Verify data classification
             data_classification = access_controls["data_classification"]
             public_fields = data_classification["public"]
-            
+
             self.assertIn(
                 "role",
                 public_fields,
                 "Public data fields should be classified",
             )
-            
+
             # Verify confidential data separation
             confidential_info = loaded_data["confidential_stakeholder_info"]
             self.assertEqual(
@@ -622,7 +657,7 @@ class TestStakeholderIntelligence(unittest.TestCase):
                 "director_and_above",
                 "Confidential data access levels should be specified",
             )
-            
+
             # Verify restricted data protection
             restricted_info = loaded_data["restricted_stakeholder_info"]
             self.assertEqual(
@@ -630,33 +665,41 @@ class TestStakeholderIntelligence(unittest.TestCase):
                 "vp_and_above",
                 "Restricted data access should be properly controlled",
             )
-            
+
             # Simulate access control filtering
             def filter_stakeholder_data_by_access_level(data, user_level):
                 """Simulate access control filtering"""
                 access_hierarchy = {"director": 1, "vp": 2, "cto": 3}
                 user_access_level = access_hierarchy.get(user_level, 0)
-                
-                filtered_data = {"public_stakeholder_info": data["public_stakeholder_info"]}
-                
+
+                filtered_data = {
+                    "public_stakeholder_info": data["public_stakeholder_info"]
+                }
+
                 if user_access_level >= 1:  # Director and above
-                    filtered_data["confidential_stakeholder_info"] = data["confidential_stakeholder_info"]
-                
+                    filtered_data["confidential_stakeholder_info"] = data[
+                        "confidential_stakeholder_info"
+                    ]
+
                 if user_access_level >= 2:  # VP and above
-                    filtered_data["restricted_stakeholder_info"] = data["restricted_stakeholder_info"]
-                
+                    filtered_data["restricted_stakeholder_info"] = data[
+                        "restricted_stakeholder_info"
+                    ]
+
                 return filtered_data
-            
+
             # Test director level access
-            director_data = filter_stakeholder_data_by_access_level(loaded_data, "director")
+            director_data = filter_stakeholder_data_by_access_level(
+                loaded_data, "director"
+            )
             self.assertIn("public_stakeholder_info", director_data)
             self.assertIn("confidential_stakeholder_info", director_data)
             self.assertNotIn("restricted_stakeholder_info", director_data)
-            
+
             # Test VP level access
             vp_data = filter_stakeholder_data_by_access_level(loaded_data, "vp")
             self.assertIn("restricted_stakeholder_info", vp_data)
-            
+
         except Exception as e:
             self.fail(f"Stakeholder context privacy isolation failed: {e}")
 
@@ -666,10 +709,12 @@ if __name__ == "__main__":
     print("=" * 50)
     print("Testing stakeholder intelligence tracking and relationship management...")
     print()
-    
+
     # Run the focused test suite
     unittest.main(verbosity=2, exit=False)
-    
+
     print()
     print("✅ STAKEHOLDER INTELLIGENCE REGRESSION TESTS COMPLETE")
-    print("Stakeholder intelligence and relationship management protected against regressions")
+    print(
+        "Stakeholder intelligence and relationship management protected against regressions"
+    )
