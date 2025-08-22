@@ -41,14 +41,14 @@ p0_features:
 
   # HIGH PRIORITY: Should pass but won't block commit
   - name: "First-Run Wizard P0"
-    test_module: "docs/testing/first_run_wizard_tests.py"
+    test_module: ".claudedirector/tests/regression/user_journeys/test_first_run_wizard_journey.py"
     critical_level: "HIGH"
     timeout_seconds: 60
-    description: "First-run user experience must work"
-    failure_impact: "New users cannot customize system properly"
-    business_impact: "User onboarding experience degraded"
+    description: "Complete first-run wizard user journey must work end-to-end"
+    failure_impact: "New users cannot onboard or customize system properly"
+    business_impact: "User abandonment on first use - critical onboarding failure"
     introduced_version: "v1.0.0"
-    owner: "rachel"
+    owner: "martin"
 
   - name: "Cursor Integration P0"
     test_module: "docs/testing/run_cursor_tests.py"
@@ -79,6 +79,8 @@ p0_features:
     business_impact: "Strategic guidance becomes passive and loses critical thinking value"
     introduced_version: "v2.0.0"
     owner: "rachel"
+
+
 
 # Enforcement settings
 enforcement:
