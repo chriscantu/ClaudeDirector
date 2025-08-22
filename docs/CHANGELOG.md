@@ -192,7 +192,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial ClaudeDirector framework with strategic leadership AI
 - 12 specialized personas for engineering leadership contexts
 - P0 Features: Strategic metrics framework with AI/data integration
-- P1 Features: Organizational intelligence and visual dashboards
+- P1 Features: Organizational intelligence and strategic frameworks
 - P2 Features: Executive communication and reporting
 - Memory-enhanced strategic intelligence system
 - CLI interface with unified `claudedirector` command

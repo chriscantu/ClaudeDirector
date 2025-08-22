@@ -281,7 +281,7 @@ class PerformanceMonitor:
     def track_response_times(self, operation: str, duration: float) -> None:
         """Monitor response times with alerting thresholds"""
 
-    def monitor_mcp_server_health(self) -> HealthDashboard:
+    def monitor_mcp_server_health(self) -> HealthStatus:
         """Track MCP server availability and performance"""
 
     def optimize_memory_usage(self) -> MemoryOptimizationReport:

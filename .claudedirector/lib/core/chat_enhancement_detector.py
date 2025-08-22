@@ -22,7 +22,7 @@ class EnhancementType(Enum):
     TEMPLATE_DISCOVERY = "template_discovery"
     WORKSPACE_ANALYSIS = "workspace_analysis"
     STAKEHOLDER_INTELLIGENCE = "stakeholder_intelligence"
-    METRICS_DASHBOARD = "metrics_dashboard"
+
     AUTOMATED_REPORTING = "automated_reporting"
 
 
@@ -103,7 +103,7 @@ class ChatEnhancementDetector:
         # Metrics/reporting context
         metrics_keywords = [
             "quarterly report",
-            "metrics dashboard",
+
             "kpi tracking",
             "progress report",
             "status update",

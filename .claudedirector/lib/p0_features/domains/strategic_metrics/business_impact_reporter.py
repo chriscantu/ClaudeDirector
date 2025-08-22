@@ -16,7 +16,7 @@ from decimal import Decimal
 from ...shared.infrastructure.config import get_config
 from .business_value_calculator import BusinessValueCalculator, BusinessImpactReport
 from .roi_investment_tracker import ROIInvestmentTracker
-from .executive_dashboard import ExecutiveDashboardGenerator
+
 
 logger = structlog.get_logger(__name__)
 
@@ -150,11 +150,9 @@ class BusinessImpactReporter:
         self,
         business_calculator: BusinessValueCalculator,
         roi_tracker: ROIInvestmentTracker,
-        dashboard_generator: ExecutiveDashboardGenerator,
     ):
         self.business_calculator = business_calculator
         self.roi_tracker = roi_tracker
-        self.dashboard_generator = dashboard_generator
         self.config = get_config()
         self.logger = logger.bind(component="business_impact_reporter")
 
@@ -254,9 +252,7 @@ class BusinessImpactReporter:
             portfolio_summary = self.roi_tracker.generate_portfolio_summary(
                 f"Q{quarter} {year}"
             )
-            dashboard_metrics = (
-                self.business_calculator.generate_executive_dashboard_metrics()
-            )
+
 
             # Generate executive summary
             executive_summary = self._generate_qbr_executive_summary(
@@ -280,7 +276,7 @@ class BusinessImpactReporter:
 
             # Generate operational metrics
             operational_metrics = self._generate_operational_metrics(
-                business_impact, dashboard_metrics
+                business_impact
             )
 
             # Create strategic narratives
@@ -662,7 +658,7 @@ The strategic platform initiatives continue delivering exceptional business valu
         }
 
     def _generate_operational_metrics(
-        self, business_impact, dashboard_metrics
+        self, business_impact
     ) -> List[BusinessImpactMetric]:
         """Generate operational metrics for reporting"""
         return [
