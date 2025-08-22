@@ -1,8 +1,8 @@
 # ADR-003: Architectural Governance & SOLID Enforcement
 
-**Status**: Active  
-**Date**: 2025-01-09  
-**Authors**: Martin (Principal Platform Architect)  
+**Status**: Active
+**Date**: 2025-01-09
+**Authors**: Martin (Principal Platform Architect)
 **Reviewers**: Berny, Delbert, Alvaro
 
 ## Context
@@ -55,13 +55,13 @@ repos:
         entry: python tools/architecture/solid_validator.py
         language: python
         files: \.py$
-        
+
       - id: hard-coded-string-detector
         name: Hard-coded String Detection
         entry: python tools/architecture/hardcode_detector.py
         language: python
         files: \.py$
-        
+
       - id: domain-boundary-enforcer
         name: Domain Boundary Enforcement
         entry: python tools/architecture/boundary_checker.py
@@ -75,13 +75,13 @@ repos:
 class TestSOLIDCompliance:
     def test_single_responsibility_principle(self):
         """Ensure classes have single, well-defined responsibility"""
-        
+
     def test_open_closed_principle(self):
         """Ensure extension without modification"""
-        
+
     def test_interface_segregation(self):
         """Ensure no fat interfaces"""
-        
+
     def test_dependency_inversion(self):
         """Ensure dependencies on abstractions"""
 ```
@@ -92,10 +92,10 @@ class TestSOLIDCompliance:
 class ConfigurationGovernance:
     def validate_no_hardcoded_values(self):
         """Ensure all behavior is configuration-driven"""
-        
+
     def validate_schema_consistency(self):
         """Ensure config schemas match code expectations"""
-        
+
     def validate_environment_coverage(self):
         """Ensure all environments have proper configs"""
 ```
@@ -136,11 +136,11 @@ class ConfigurationGovernance:
 
 ## Risk Mitigation
 
-**Risk**: Governance adds development friction  
+**Risk**: Governance adds development friction
 **Mitigation**: Fast-fail validation, clear error messages, automated fixes
 
-**Risk**: False positives in violation detection  
+**Risk**: False positives in violation detection
 **Mitigation**: Configurable rules, whitelist capability, human override
 
-**Risk**: Governance tools become maintenance burden  
+**Risk**: Governance tools become maintenance burden
 **Mitigation**: Self-validating tools, minimal external dependencies

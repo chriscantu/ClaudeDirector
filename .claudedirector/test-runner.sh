@@ -36,16 +36,16 @@ log_error() {
 # Test categories
 run_unit_tests() {
     log_info "Running unit tests..."
-    
+
     if [ -d "$TESTS_DIR/unit" ]; then
         cd "$PROJECT_ROOT"
-        
+
         # Set PYTHONPATH to include our modules
         export PYTHONPATH="$SCRIPT_DIR/lib:$PYTHONPATH"
-        
+
         # Run unit tests with coverage
         python -m pytest "$TESTS_DIR/unit" -v --tb=short --cov="$SCRIPT_DIR/lib" --cov-report=term-missing --cov-fail-under=90
-        
+
         if [ $? -eq 0 ]; then
             log_success "Unit tests passed"
         else
@@ -59,13 +59,13 @@ run_unit_tests() {
 
 run_regression_tests() {
     log_info "Running regression tests..."
-    
+
     if [ -d "$TESTS_DIR/regression" ]; then
         cd "$PROJECT_ROOT"
         export PYTHONPATH="$SCRIPT_DIR/lib:$PYTHONPATH"
-        
+
         python -m pytest "$TESTS_DIR/regression" -v --tb=short
-        
+
         if [ $? -eq 0 ]; then
             log_success "Regression tests passed"
         else
@@ -79,13 +79,13 @@ run_regression_tests() {
 
 run_policy_tests() {
     log_info "Running policy validation tests..."
-    
+
     if [ -d "$TESTS_DIR/policy" ]; then
         cd "$PROJECT_ROOT"
         export PYTHONPATH="$SCRIPT_DIR/lib:$PYTHONPATH"
-        
+
         python -m pytest "$TESTS_DIR/policy" -v --tb=short
-        
+
         if [ $? -eq 0 ]; then
             log_success "Policy validation passed"
         else
@@ -99,13 +99,13 @@ run_policy_tests() {
 
 run_integration_tests() {
     log_info "Running integration tests..."
-    
+
     if [ -d "$TESTS_DIR/integration" ]; then
         cd "$PROJECT_ROOT"
         export PYTHONPATH="$SCRIPT_DIR/lib:$PYTHONPATH"
-        
+
         python -m pytest "$TESTS_DIR/integration" -v --tb=short
-        
+
         if [ $? -eq 0 ]; then
             log_success "Integration tests passed"
         else
@@ -119,13 +119,13 @@ run_integration_tests() {
 
 run_performance_tests() {
     log_info "Running performance tests..."
-    
+
     if [ -d "$TESTS_DIR/performance" ]; then
         cd "$PROJECT_ROOT"
         export PYTHONPATH="$SCRIPT_DIR/lib:$PYTHONPATH"
-        
+
         python -m pytest "$TESTS_DIR/performance" -v --tb=short
-        
+
         if [ $? -eq 0 ]; then
             log_success "Performance tests passed"
         else
@@ -140,39 +140,39 @@ run_performance_tests() {
 # Quality Gates
 regression_gate() {
     log_info "=== REGRESSION GATE ==="
-    
+
     run_regression_tests
     if [ $? -ne 0 ]; then
         log_error "REGRESSION GATE FAILED"
         return 1
     fi
-    
+
     log_success "REGRESSION GATE PASSED"
     return 0
 }
 
 policy_gate() {
     log_info "=== POLICY GATE ==="
-    
+
     run_policy_tests
     if [ $? -ne 0 ]; then
         log_error "POLICY GATE FAILED"
         return 1
     fi
-    
+
     log_success "POLICY GATE PASSED"
     return 0
 }
 
 performance_gate() {
     log_info "=== PERFORMANCE GATE ==="
-    
+
     run_performance_tests
     if [ $? -ne 0 ]; then
         log_error "PERFORMANCE GATE FAILED"
         return 1
     fi
-    
+
     log_success "PERFORMANCE GATE PASSED"
     return 0
 }
@@ -180,40 +180,40 @@ performance_gate() {
 # Comprehensive test suites
 run_sprint1_validation() {
     log_info "=== SPRINT 1 VALIDATION ==="
-    
+
     # Foundation tests
     run_unit_tests || return 1
-    
+
     # Quality gates
     regression_gate || return 1
     policy_gate || return 1
-    
+
     log_success "SPRINT 1 VALIDATION PASSED"
 }
 
 run_sprint2_validation() {
     log_info "=== SPRINT 2 VALIDATION ==="
-    
+
     # All previous tests
     run_sprint1_validation || return 1
-    
+
     # Enhanced functionality tests
     run_integration_tests || return 1
     performance_gate || return 1
-    
+
     log_success "SPRINT 2 VALIDATION PASSED"
 }
 
 run_comprehensive_validation() {
     log_info "=== COMPREHENSIVE VALIDATION ==="
-    
+
     # All test categories
     run_unit_tests || return 1
     run_integration_tests || return 1
     run_regression_tests || return 1
     run_policy_tests || return 1
     run_performance_tests || return 1
-    
+
     log_success "COMPREHENSIVE VALIDATION PASSED"
 }
 

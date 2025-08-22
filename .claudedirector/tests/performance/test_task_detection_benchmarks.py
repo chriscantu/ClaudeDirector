@@ -101,29 +101,29 @@ class TestTaskDetectionPerformance:
 
         self.enterprise_task = """
         Strategic initiative: Platform modernization and microservices migration
-        
+
         CRITICAL DEADLINE: Q2 2024 board presentation
-        
+
         Phase 1 Requirements (High Priority):
         - Assess current monolithic architecture dependencies
         - Design microservices domain boundaries using DDD principles
         - Implement API gateway with rate limiting and authentication
         - Set up service mesh for inter-service communication
         - Establish monitoring and observability stack (Prometheus, Grafana, Jaeger)
-        
+
         Phase 2 Requirements (Medium Priority):
         - Migrate user service to new architecture
         - Implement event-driven architecture with message queues
         - Set up CI/CD pipeline for containerized deployments
         - Database sharding strategy for user data
         - Performance testing framework for load validation
-        
+
         Phase 3 Requirements (Low Priority but nice to have):
         - Advanced analytics and business intelligence dashboard
         - Machine learning recommendation engine
         - International expansion support (i18n, multi-region)
         - Advanced security hardening and penetration testing
-        
+
         Stakeholders: CTO, VP Engineering, Platform team leads, Security team
         Budget approved: $2M over 18 months
         Success metrics: 99.9% uptime, 50% faster deployment cycles, 30% cost reduction

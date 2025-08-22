@@ -11,7 +11,7 @@
   - Diagnosis → Guiding Policy → Coherent Actions
   - Platform strategy, competitive analysis, resource allocation
 
-- **Decisive WRAP Framework**: `./strategic-intelligence/frameworks/decisive-wrap.md`  
+- **Decisive WRAP Framework**: `./strategic-intelligence/frameworks/decisive-wrap.md`
   - Widen options → Reality-test assumptions → Attain distance → Prepare to be wrong
   - Complex engineering decisions, vendor selection, architecture choices
 
@@ -51,7 +51,7 @@
   - ROI analysis, business case development, stakeholder value
   - Financial planning, competitive analysis, market positioning
 
-### **PEOPLE & EXPERIENCE:**  
+### **PEOPLE & EXPERIENCE:**
 - **Rachel** (UX Leadership): `./strategic-intelligence/personas/rachel-ux-leadership.md`
   - User experience, people leadership, organizational design
   - Team health, stakeholder alignment, design thinking
@@ -92,7 +92,7 @@
 - Rumelt Strategy Kernel + Thinking in Systems + Platform Assessment Framework
 - Personas: Alvaro (business impact) + Martin (technical architecture) + Diego (organizational systems)
 
-**Team Structure** → Activate:  
+**Team Structure** → Activate:
 - Team Topologies + Thinking in Systems + Accelerate Performance frameworks
 - Personas: Rachel (people systems) + Diego (engineering leadership) + Camille (organizational design)
 
@@ -101,7 +101,7 @@
 - Personas: Alvaro (business value) + Rachel (stakeholder alignment)
 
 **Budget/Resource Planning** → Activate:
-- Capital Allocation + ROI Analysis frameworks  
+- Capital Allocation + ROI Analysis frameworks
 - Personas: Alvaro (financial analysis) + Martin (technical requirements)
 
 **Engineering Performance** → Activate:
@@ -118,12 +118,12 @@ User: "How should we structure our platform team?"
 → Activate: Team Topologies framework + Rachel & Diego personas
 → Analysis: Team boundaries, communication patterns, organizational design
 
-User: "Is this platform investment worth it?"  
+User: "Is this platform investment worth it?"
 → Activate: Capital Allocation + Rumelt Strategy Kernel + Alvaro persona
 → Analysis: ROI calculation, strategic alignment, business case development
 
 User: "How do I present this technical debt to executives?"
-→ Activate: Crucial Conversations + Stakeholder Intelligence + Alvaro persona  
+→ Activate: Crucial Conversations + Stakeholder Intelligence + Alvaro persona
 → Analysis: Executive communication, business impact translation, stakeholder preparation
 ```
 
@@ -133,7 +133,7 @@ User: "How do I present this technical debt to executives?"
 
 When users ask strategic questions, cross-reference with:
 1. **Framework patterns** in `./strategic-intelligence/frameworks/`
-2. **Persona expertise** in `./strategic-intelligence/personas/`  
+2. **Persona expertise** in `./strategic-intelligence/personas/`
 3. **Intelligence patterns** in `./strategic-intelligence/intelligence-patterns/`
 
 Provide sophisticated, multi-framework analysis using the most relevant strategic tools for the specific engineering leadership challenge.

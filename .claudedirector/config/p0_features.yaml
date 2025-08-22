@@ -6,7 +6,7 @@ debug_mode: true
 
 # Feature flags for controlled rollout
 enable_decision_intelligence: true
-enable_health_prediction: true  
+enable_health_prediction: true
 enable_pattern_recognition: false  # P1 feature
 
 # Decision Intelligence Configuration
@@ -15,7 +15,7 @@ decision_detection:
   accuracy_threshold: 0.85
   confidence_threshold: 0.60
   max_inference_time_ms: 200
-  
+
   # Decision type classification keywords
   classification_keywords:
     strategic: ["vision", "strategy", "roadmap", "architecture", "investment"]
@@ -23,14 +23,14 @@ decision_detection:
     technical: ["technology", "platform", "system", "infrastructure"]
     organizational: ["team", "hiring", "structure", "role"]
     financial: ["budget", "cost", "investment", "funding"]
-  
+
   # Lifecycle detection patterns
   lifecycle_patterns:
     identified: ["proposed", "considering", "evaluating"]
     analyzed: ["analyzing", "reviewing", "discussing"]
     decided: ["decided", "approved", "chosen", "selected"]
     implemented: ["implementing", "executing", "started"]
-  
+
   # Urgency classification
   urgency_keywords:
     urgent: ["urgent", "critical", "immediate", "asap"]
@@ -43,7 +43,7 @@ health_prediction:
   model_name: "health_prediction_v1"
   accuracy_threshold: 0.80
   max_inference_time_ms: 200
-  
+
   # Health scoring component weights (must sum to 1.0)
   scoring_weights:
     progress_completion: 0.25
@@ -52,14 +52,14 @@ health_prediction:
     budget_health: 0.15
     timeline_adherence: 0.10
     risk_indicators: 0.10
-  
+
   # Health status thresholds
   status_thresholds:
     excellent: 0.85
     healthy: 0.70
     at_risk: 0.50
     failing: 0.30
-  
+
   # Risk indicator weights
   risk_weights:
     # High impact risks
@@ -74,10 +74,10 @@ health_prediction:
     # Low impact risks
     external_dependencies: 0.05
     team_turnover: 0.05
-  
+
   # Optimal budget utilization range
   optimal_budget_range: [0.70, 0.80]
-  
+
   # Confidence calculation
   base_confidence: 0.85
   missing_field_penalty: 0.05
@@ -86,7 +86,7 @@ health_prediction:
 # Recommendation Generation
 recommendations:
   max_recommendations: 5
-  
+
   templates:
     stakeholder_engagement:
       descriptions:
@@ -97,7 +97,7 @@ recommendations:
         - "Review current stakeholder engagement metrics"
         - "Develop improvement plan for stakeholder engagement"
         - "Monitor stakeholder engagement progress weekly"
-    
+
     timeline_management:
       descriptions:
         - "Review and adjust project timeline"
@@ -107,7 +107,7 @@ recommendations:
         - "Review current timeline management metrics"
         - "Develop improvement plan for timeline management"
         - "Monitor timeline management progress weekly"
-    
+
     budget_management:
       descriptions:
         - "Conduct budget review and reforecasting"
@@ -117,7 +117,7 @@ recommendations:
         - "Review current budget management metrics"
         - "Develop improvement plan for budget management"
         - "Monitor budget management progress weekly"
-    
+
     risk_mitigation:
       descriptions:
         - "Develop comprehensive risk mitigation plan"
@@ -127,7 +127,7 @@ recommendations:
         - "Review current risk mitigation metrics"
         - "Develop improvement plan for risk mitigation"
         - "Monitor risk mitigation progress weekly"
-    
+
     resource_optimization:
       descriptions:
         - "Assess resource allocation and utilization"
@@ -143,7 +143,7 @@ database:
   connection_timeout: 30
   query_timeout: 10
   max_connections: 10
-  
+
   sqlite_config:
     journal_mode: "WAL"
     synchronous: "NORMAL"

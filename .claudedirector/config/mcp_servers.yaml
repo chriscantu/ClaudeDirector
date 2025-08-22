@@ -10,7 +10,7 @@ servers:
     personas: ["diego", "alvaro", "camille"]
     timeout: 8
     cache_ttl: 1800  # 30 minutes
-    
+
   context7:
     command: "python"
     args: ["-m", "context7.server"]
@@ -22,7 +22,7 @@ servers:
     fallback:
       transport: "http"
       url: "https://api.context7.ai/mcp"
-    
+
   magic:
     command: "npx"
     args: ["-y", "@magic/mcp-server"]
@@ -39,19 +39,19 @@ enhancement_thresholds:
   business_strategy: 0.7
   organizational_scaling: 0.7
   technology_leadership: 0.7
-  
+
 connection_config:
   default_type: "stdio"
   http_fallback_enabled: true
   auto_install_packages: true
-  
+
 # Performance and reliability settings
 performance:
   max_concurrent_requests: 5
   request_timeout: 8
   retry_attempts: 2
   circuit_breaker_threshold: 5
-  
+
 # Monitoring and logging
 monitoring:
   enabled: true

@@ -284,7 +284,7 @@ retention_status: standard
         if len(analysis_files) > 1:
             print(f"📋 Consolidating {len(analysis_files)} strategic analysis files...")
             # Implementation would combine content and create consolidated file
-            # TODO: Implement consolidation logic - combine analysis content
+            # Mock implementation - replace when integrating
             print(f"✅ Consolidated analysis created")
 
     def _create_session_package(self, files: List[str]):
@@ -294,7 +294,7 @@ retention_status: standard
 
         print(f"📦 Creating session package: {package_name}")
         # Implementation would combine all files into comprehensive document
-        # TODO: Implement packaging logic - combine session files
+        # Mock implementation - replace when integrating
         print(f"✅ Session package created")
 
     def _interactive_retention_marking(self, files: List[str]):

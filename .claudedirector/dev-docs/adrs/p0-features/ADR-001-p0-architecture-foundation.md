@@ -1,10 +1,10 @@
 # ADR-001: P0 Features Architecture Foundation
 
-**Status**: Accepted  
-**Date**: 2025-01-09  
-**Architect**: Martin  
-**Specialists**: Berny (AI/ML), Delbert (Data Engineering)  
-**Business Owner**: Alvaro  
+**Status**: Accepted
+**Date**: 2025-01-09
+**Architect**: Martin
+**Specialists**: Berny (AI/ML), Delbert (Data Engineering)
+**Business Owner**: Alvaro
 
 ## Context
 
@@ -50,7 +50,7 @@ Implement evolutionary architecture with clear separation of concerns and specia
 - **Pattern Recognition**: Strategic intelligence extraction from unstructured data
 - **Performance SLA**: <200ms inference time, continuous model improvement
 
-#### **Database Manager (Delbert's Domain)**  
+#### **Database Manager (Delbert's Domain)**
 - **Hybrid Architecture**: SQLite (OLTP) + DuckDB (OLAP) + Faiss (Vector Search)
 - **Query Intelligence**: Automatic workload routing to optimal database engine
 - **Performance Engineering**: <200ms query response, 99.9% uptime SLA

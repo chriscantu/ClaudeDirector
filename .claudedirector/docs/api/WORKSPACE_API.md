@@ -391,14 +391,14 @@ workspace_config = {
         "auto_save_interval": 300,  # 5 minutes
         "pattern_analysis": "detailed"
     },
-    
+
     # For strategic analysis
     "strategic_analyst": {
         "retention_default": 60,  # days
         "consolidation_threshold": 0.8,
         "framework_integration": True
     },
-    
+
     # For team leadership
     "team_leader": {
         "stakeholder_tracking": True,
