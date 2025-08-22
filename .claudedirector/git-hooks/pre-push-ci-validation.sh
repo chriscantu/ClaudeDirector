@@ -190,7 +190,28 @@ echo '✅ SOLID principles validation completed'
 
 print_section "PHASE 2: P0 Regression Tests & Coverage"
 
-# 7. P0 Feature Test Suite
+# 7. REGRESSION TEST SUITE (MANDATORY - BLOCKS ALL COMMITS)
+run_step "Regression Test Suite" "
+echo '🚨 MANDATORY REGRESSION TEST SUITE - 100% SUCCESS REQUIRED'
+echo '🛡️ PROTECTS AGAINST REGRESSIONS DURING SOLID REFACTORING'
+echo '🚫 CANNOT BE BYPASSED - NO EXCEPTIONS'
+echo '============================================================'
+
+# Run complete regression suite
+if ! timeout 600 python .claudedirector/tests/regression/run_complete_regression_suite.py; then
+    echo '❌ REGRESSION TEST SUITE FAILED'
+    echo '🚫 COMMIT BLOCKED - ALL REGRESSION TESTS MUST PASS'
+    echo '💡 Run tests individually to debug:'
+    echo '    python .claudedirector/tests/regression/test_configuration_integrity.py'
+    echo '    python .claudedirector/tests/regression/test_framework_engine_regression.py'
+    echo '🚫 DO NOT use --no-verify to bypass regression failures'
+    exit 1
+fi
+
+echo '✅ ALL REGRESSION TESTS PASSED - COMMIT APPROVED'
+"
+
+# 8. P0 Feature Test Suite
 run_step "P0 Feature Test Suite" "
 echo '🚨 COMPREHENSIVE P0 TEST EXECUTION - ALL 7 P0 TESTS'
 echo 'Enforcing complete P0 feature coverage as defined in p0_test_definitions.yaml'
