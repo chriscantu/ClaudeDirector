@@ -142,7 +142,7 @@ class StrategicFrameworkStrategy(FrameworkSelectionStrategy):
 
 ### **Automated Quality Enforcement**
 ```yaml
-# .claudedirector/dev-tools/quality/quality_gates.yaml
+# .claudedirector/tools/quality/quality_gates.yaml
 quality_gates:
   solid_violations:
     max_total: 50  # Down from 404

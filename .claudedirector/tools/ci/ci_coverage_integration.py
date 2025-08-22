@@ -180,7 +180,7 @@ fi
 echo "✅ CI Coverage generation completed"
 """
 
-    script_path = Path(".claudedirector/dev-tools/ci/generate_coverage.sh")
+    script_path = Path(".claudedirector/tools/ci/generate_coverage.sh")
     with open(script_path, "w") as f:
         f.write(script_content)
 
@@ -215,7 +215,7 @@ def main():
     # 3. Test the coverage script locally
     print("\n3. Testing coverage script locally...")
     try:
-        result = os.system("bash .claudedirector/dev-tools/ci/generate_coverage.sh")
+        result = os.system("bash .claudedirector/tools/ci/generate_coverage.sh")
         if result == 0:
             print("✅ Coverage script test successful")
         else:
