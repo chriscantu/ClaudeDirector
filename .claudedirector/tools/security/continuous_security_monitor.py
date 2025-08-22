@@ -114,7 +114,7 @@ class ContinuousSecurityMonitor:
                 scanner_result = subprocess.run(
                     [
                         "python3",
-                        ".claudedirector/dev-tools/security/enhanced_security_scanner.py",
+                        ".claudedirector/tools/security/enhanced_security_scanner.py",
                     ],
                     capture_output=True,
                     text=True,
