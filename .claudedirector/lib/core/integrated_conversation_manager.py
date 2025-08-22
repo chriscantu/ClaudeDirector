@@ -22,6 +22,7 @@ class IntegratedConversationManager:
         if db_path is None:
             # Default to ClaudeDirector strategic memory database
             from pathlib import Path
+
             base_path = Path(__file__).parent.parent.parent.parent.parent
             db_path = str(base_path / "data" / "strategic_memory.db")
 
@@ -48,7 +49,7 @@ class IntegratedConversationManager:
         if recent_session:
             response = self._prompt_session_recovery(recent_session)
             if response:
-                return self._resume_session(recent_session['session_id'])
+                return self._resume_session(recent_session["session_id"])
 
         # Start new session
         self.current_session_id = self.session_manager.start_session(session_type)
@@ -61,9 +62,13 @@ class IntegratedConversationManager:
         print(f"✅ Strategic session started (ID: {self.current_session_id[:8]}...)")
         return self.current_session_id
 
-    def capture_conversation_turn(self, user_input: str, assistant_response: str,
-                                personas_activated: List[str] = None,
-                                context_metadata: Dict[str, Any] = None) -> None:
+    def capture_conversation_turn(
+        self,
+        user_input: str,
+        assistant_response: str,
+        personas_activated: List[str] = None,
+        context_metadata: Dict[str, Any] = None,
+    ) -> None:
         """
         Capture conversation turn for context preservation
 
@@ -80,32 +85,39 @@ class IntegratedConversationManager:
         # Apply transparency middleware to enhance the response
         try:
             from .response_middleware import enhance_conversation_turn
+
             enhanced_turn = enhance_conversation_turn(
                 user_input, assistant_response, personas_activated, context_metadata
             )
 
             conversation_turn = {
-                'timestamp': datetime.now().isoformat(),
-                'user_input': enhanced_turn['user_input'],
-                'assistant_response': enhanced_turn['assistant_response'],  # Enhanced with transparency
-                'personas_activated': enhanced_turn['personas_activated'],
-                'metadata': enhanced_turn['metadata'],
-                'transparency_summary': enhanced_turn['transparency_summary']
+                "timestamp": datetime.now().isoformat(),
+                "user_input": enhanced_turn["user_input"],
+                "assistant_response": enhanced_turn[
+                    "assistant_response"
+                ],  # Enhanced with transparency
+                "personas_activated": enhanced_turn["personas_activated"],
+                "metadata": enhanced_turn["metadata"],
+                "transparency_summary": enhanced_turn["transparency_summary"],
             }
 
             # Log transparency application
-            if enhanced_turn['transparency_summary'].get('transparency_applied'):
-                persona = enhanced_turn['transparency_summary'].get('persona_detected', 'unknown')
-                print(f"💾 Strategic conversation captured with {persona} persona transparency")
+            if enhanced_turn["transparency_summary"].get("transparency_applied"):
+                persona = enhanced_turn["transparency_summary"].get(
+                    "persona_detected", "unknown"
+                )
+                print(
+                    f"💾 Strategic conversation captured with {persona} persona transparency"
+                )
 
         except ImportError:
             # Fallback to original behavior if middleware not available
             conversation_turn = {
-                'timestamp': datetime.now().isoformat(),
-                'user_input': user_input,
-                'assistant_response': assistant_response,
-                'personas_activated': personas_activated or [],
-                'metadata': context_metadata or {}
+                "timestamp": datetime.now().isoformat(),
+                "user_input": user_input,
+                "assistant_response": assistant_response,
+                "personas_activated": personas_activated or [],
+                "metadata": context_metadata or {},
             }
 
         self.conversation_buffer.append(conversation_turn)
@@ -130,16 +142,18 @@ class IntegratedConversationManager:
         try:
             # Prepare context data
             context_data = {
-                'conversation_thread': self.conversation_buffer,
-                'active_personas': self._extract_active_personas(),
-                'stakeholder_mentions': self._extract_stakeholder_mentions(),
-                'strategic_topics': self._extract_strategic_topics(),
-                'decisions_made': self._extract_decisions(),
-                'action_items': self._extract_action_items()
+                "conversation_thread": self.conversation_buffer,
+                "active_personas": self._extract_active_personas(),
+                "stakeholder_mentions": self._extract_stakeholder_mentions(),
+                "strategic_topics": self._extract_strategic_topics(),
+                "decisions_made": self._extract_decisions(),
+                "action_items": self._extract_action_items(),
             }
 
             # Calculate quality score before updating
-            context_data['quality_score'] = self._calculate_conversation_quality(context_data)
+            context_data["quality_score"] = self._calculate_conversation_quality(
+                context_data
+            )
 
             # Update session context
             success = self.session_manager.update_session_context(
@@ -148,7 +162,9 @@ class IntegratedConversationManager:
 
             if success:
                 self.last_backup_time = datetime.now()
-                print(f"✅ Context backup completed ({len(self.conversation_buffer)} turns)")
+                print(
+                    f"✅ Context backup completed ({len(self.conversation_buffer)} turns)"
+                )
                 return True
             else:
                 print("⚠️ Context backup failed")
@@ -178,7 +194,9 @@ class IntegratedConversationManager:
         self._create_session_cli_export()
 
         if backup_success and end_success:
-            print(f"✅ Session ended successfully (ID: {self.current_session_id[:8]}...)")
+            print(
+                f"✅ Session ended successfully (ID: {self.current_session_id[:8]}...)"
+            )
         else:
             print("⚠️ Session ended with some issues")
 
@@ -190,17 +208,19 @@ class IntegratedConversationManager:
     def get_session_status(self) -> Dict[str, Any]:
         """Get current session status and metrics"""
         if not self.current_session_id:
-            return {'status': 'no_active_session'}
+            return {"status": "no_active_session"}
 
         status = {
-            'status': 'active',
-            'session_id': self.current_session_id,
-            'conversation_turns': len(self.conversation_buffer),
-            'last_backup': self.last_backup_time.isoformat() if self.last_backup_time else None,
-            'time_since_backup': self._time_since_backup(),
-            'context_quality': self._estimate_context_quality(),
-            'active_personas': self._extract_active_personas(),
-            'next_backup_in': self._time_until_next_backup()
+            "status": "active",
+            "session_id": self.current_session_id,
+            "conversation_turns": len(self.conversation_buffer),
+            "last_backup": (
+                self.last_backup_time.isoformat() if self.last_backup_time else None
+            ),
+            "time_since_backup": self._time_since_backup(),
+            "context_quality": self._estimate_context_quality(),
+            "active_personas": self._extract_active_personas(),
+            "next_backup_in": self._time_until_next_backup(),
         }
 
         return status
@@ -218,7 +238,7 @@ class IntegratedConversationManager:
         cli_export = self.cli_bridge.create_cli_session_export()
 
         if output_file:
-            with open(output_file, 'w') as f:
+            with open(output_file, "w") as f:
                 f.write(cli_export)
             print(f"✅ CLI context exported to {output_file}")
 
@@ -241,15 +261,21 @@ class IntegratedConversationManager:
             print(f"📋 Found recent session: {latest_session['session_id'][:8]}...")
 
             # Restore context
-            context = self.session_manager.restore_session_context(latest_session['session_id'])
+            context = self.session_manager.restore_session_context(
+                latest_session["session_id"]
+            )
 
             if context:
                 # Analyze context gaps
-                gaps = self.session_manager.validate_context_completeness(latest_session['session_id'])
+                gaps = self.session_manager.validate_context_completeness(
+                    latest_session["session_id"]
+                )
 
                 if gaps:
                     print(f"⚠️ Context gaps detected: {len(gaps)} issues")
-                    recovery_prompt = self.session_manager.get_context_recovery_prompt(latest_session['session_id'])
+                    recovery_prompt = self.session_manager.get_context_recovery_prompt(
+                        latest_session["session_id"]
+                    )
                     print("\n📋 Context Recovery Guidance:")
                     print(recovery_prompt)
                 else:
@@ -267,7 +293,7 @@ class IntegratedConversationManager:
         recent_sessions = self.session_manager.get_recent_sessions(hours=2)
 
         for session in recent_sessions:
-            if not session.get('session_end_timestamp'):
+            if not session.get("session_end_timestamp"):
                 return session
 
         return None
@@ -276,7 +302,7 @@ class IntegratedConversationManager:
         """Prompt user for session recovery (simplified for auto-mode)"""
         # In a full implementation, this would prompt the user
         # For now, auto-recover if session is less than 30 minutes old
-        session_start = datetime.fromisoformat(session_info['session_start_timestamp'])
+        session_start = datetime.fromisoformat(session_info["session_start_timestamp"])
         age = datetime.now() - session_start
 
         return age < timedelta(minutes=30)
@@ -287,19 +313,23 @@ class IntegratedConversationManager:
 
         # Restore conversation buffer from database
         context = self.session_manager.restore_session_context(session_id)
-        self.conversation_buffer = context.get('conversation_thread', [])
+        self.conversation_buffer = context.get("conversation_thread", [])
 
-        print(f"🔄 Resumed session {session_id[:8]}... ({len(self.conversation_buffer)} turns)")
+        print(
+            f"🔄 Resumed session {session_id[:8]}... ({len(self.conversation_buffer)} turns)"
+        )
         return session_id
 
     def _capture_initial_context(self) -> None:
         """Capture initial session context"""
         initial_context = {
-            'session_start_time': datetime.now().isoformat(),
-            'initial_strategic_state': 'session_initialized'
+            "session_start_time": datetime.now().isoformat(),
+            "initial_strategic_state": "session_initialized",
         }
 
-        self.session_manager.update_session_context(self.current_session_id, initial_context)
+        self.session_manager.update_session_context(
+            self.current_session_id, initial_context
+        )
 
     def _should_backup(self) -> bool:
         """Check if backup should be triggered"""
@@ -330,10 +360,10 @@ class IntegratedConversationManager:
             return 0.0
 
         quality_factors = {
-            'conversation_length': min(len(self.conversation_buffer) / 10, 1.0),
-            'persona_diversity': len(self._extract_active_personas()) / 5,
-            'strategic_depth': self._measure_strategic_depth(),
-            'recent_backup': 1.0 if self._time_since_backup() < 600 else 0.5  # 10 min
+            "conversation_length": min(len(self.conversation_buffer) / 10, 1.0),
+            "persona_diversity": len(self._extract_active_personas()) / 5,
+            "strategic_depth": self._measure_strategic_depth(),
+            "recent_backup": 1.0 if self._time_since_backup() < 600 else 0.5,  # 10 min
         }
 
         return sum(quality_factors.values()) / len(quality_factors)
@@ -343,10 +373,12 @@ class IntegratedConversationManager:
         quality_factors = {}
 
         # Conversation thread quality (30% weight)
-        conversation_thread = context_data.get('conversation_thread', [])
+        conversation_thread = context_data.get("conversation_thread", [])
         if conversation_thread:
             # Quality based on conversation depth and completeness
-            quality_factors['conversation_completeness'] = min(len(conversation_thread) / 8, 1.0) * 0.3
+            quality_factors["conversation_completeness"] = (
+                min(len(conversation_thread) / 8, 1.0) * 0.3
+            )
 
             # Check for strategic content richness
             strategic_content_score = 0.0
@@ -354,32 +386,45 @@ class IntegratedConversationManager:
                 if isinstance(turn, dict):
                     text = f"{turn.get('user_input', '')} {turn.get('assistant_response', '')}".lower()
                     # Strategic keywords indicate quality conversation
-                    strategic_keywords = ['strategy', 'framework', 'stakeholder', 'roi', 'platform', 'investment']
+                    strategic_keywords = [
+                        "strategy",
+                        "framework",
+                        "stakeholder",
+                        "roi",
+                        "platform",
+                        "investment",
+                    ]
                     if any(keyword in text for keyword in strategic_keywords):
                         strategic_content_score += 0.1
 
-            quality_factors['strategic_richness'] = min(strategic_content_score, 1.0) * 0.2
+            quality_factors["strategic_richness"] = (
+                min(strategic_content_score, 1.0) * 0.2
+            )
         else:
-            quality_factors['conversation_completeness'] = 0.0
-            quality_factors['strategic_richness'] = 0.0
+            quality_factors["conversation_completeness"] = 0.0
+            quality_factors["strategic_richness"] = 0.0
 
         # Active personas diversity (15% weight)
-        active_personas = context_data.get('active_personas', [])
-        quality_factors['persona_diversity'] = min(len(active_personas) / 4, 1.0) * 0.15
+        active_personas = context_data.get("active_personas", [])
+        quality_factors["persona_diversity"] = min(len(active_personas) / 4, 1.0) * 0.15
 
         # Stakeholder context depth (15% weight)
-        stakeholder_mentions = context_data.get('stakeholder_mentions', [])
-        quality_factors['stakeholder_depth'] = min(len(stakeholder_mentions) / 3, 1.0) * 0.15
+        stakeholder_mentions = context_data.get("stakeholder_mentions", [])
+        quality_factors["stakeholder_depth"] = (
+            min(len(stakeholder_mentions) / 3, 1.0) * 0.15
+        )
 
         # Strategic topics coverage (10% weight)
-        strategic_topics = context_data.get('strategic_topics', [])
-        quality_factors['strategic_coverage'] = min(len(strategic_topics) / 5, 1.0) * 0.10
+        strategic_topics = context_data.get("strategic_topics", [])
+        quality_factors["strategic_coverage"] = (
+            min(len(strategic_topics) / 5, 1.0) * 0.10
+        )
 
         # Decisions and actions captured (10% weight)
-        decisions_made = context_data.get('decisions_made', [])
-        action_items = context_data.get('action_items', [])
+        decisions_made = context_data.get("decisions_made", [])
+        action_items = context_data.get("action_items", [])
         total_outcomes = len(decisions_made) + len(action_items)
-        quality_factors['actionable_outcomes'] = min(total_outcomes / 3, 1.0) * 0.10
+        quality_factors["actionable_outcomes"] = min(total_outcomes / 3, 1.0) * 0.10
 
         # Calculate final quality score
         total_quality = sum(quality_factors.values())
@@ -395,19 +440,25 @@ class IntegratedConversationManager:
         personas = set()
 
         for turn in self.conversation_buffer:
-            if turn.get('personas_activated'):
-                personas.update(turn['personas_activated'])
+            if turn.get("personas_activated"):
+                personas.update(turn["personas_activated"])
 
         return list(personas)
 
     def _extract_stakeholder_mentions(self) -> List[str]:
         """Extract stakeholder mentions from conversation"""
-        stakeholder_keywords = ['vp_engineering', 'director_product', 'director_platform', 'vp_product', 'cto']
+        stakeholder_keywords = [
+            "vp_engineering",
+            "director_product",
+            "director_platform",
+            "vp_product",
+            "cto",
+        ]
         mentions = []
 
         for turn in self.conversation_buffer:
-            user_text = turn.get('user_input', '').lower()
-            assistant_text = turn.get('assistant_response', '').lower()
+            user_text = turn.get("user_input", "").lower()
+            assistant_text = turn.get("assistant_response", "").lower()
 
             for keyword in stakeholder_keywords:
                 if keyword in user_text or keyword in assistant_text:
@@ -417,7 +468,14 @@ class IntegratedConversationManager:
 
     def _extract_strategic_topics(self) -> List[str]:
         """Extract strategic topics from conversation"""
-        strategic_keywords = ['platform', 'roi', 'investment', 'strategy', 'stakeholder', 'budget']
+        strategic_keywords = [
+            "platform",
+            "roi",
+            "investment",
+            "strategy",
+            "stakeholder",
+            "budget",
+        ]
         topics = []
 
         for turn in self.conversation_buffer:
@@ -431,16 +489,21 @@ class IntegratedConversationManager:
 
     def _extract_decisions(self) -> List[str]:
         """Extract decisions from conversation"""
-        decision_patterns = ['decided to', 'we should', 'the plan is', 'moving forward with']
+        decision_patterns = [
+            "decided to",
+            "we should",
+            "the plan is",
+            "moving forward with",
+        ]
         decisions = []
 
         for turn in self.conversation_buffer:
-            text = turn.get('assistant_response', '').lower()
+            text = turn.get("assistant_response", "").lower()
 
             for pattern in decision_patterns:
                 if pattern in text:
                     # Extract the sentence containing the decision
-                    sentences = text.split('.')
+                    sentences = text.split(".")
                     for sentence in sentences:
                         if pattern in sentence:
                             decisions.append(sentence.strip())
@@ -449,16 +512,22 @@ class IntegratedConversationManager:
 
     def _extract_action_items(self) -> List[str]:
         """Extract action items from conversation"""
-        action_patterns = ['next step', 'action item', 'need to', 'should implement', 'todo']
+        action_patterns = [
+            "next step",
+            "action item",
+            "need to",
+            "should implement",
+            "todo",
+        ]
         actions = []
 
         for turn in self.conversation_buffer:
-            text = turn.get('assistant_response', '').lower()
+            text = turn.get("assistant_response", "").lower()
 
             for pattern in action_patterns:
                 if pattern in text:
                     # Extract action context
-                    sentences = text.split('.')
+                    sentences = text.split(".")
                     for sentence in sentences:
                         if pattern in sentence:
                             actions.append(sentence.strip())
@@ -467,7 +536,13 @@ class IntegratedConversationManager:
 
     def _measure_strategic_depth(self) -> float:
         """Measure strategic depth of conversation"""
-        strategic_indicators = ['framework', 'methodology', 'analysis', 'assessment', 'strategy']
+        strategic_indicators = [
+            "framework",
+            "methodology",
+            "analysis",
+            "assessment",
+            "strategy",
+        ]
         depth_score = 0.0
 
         for turn in self.conversation_buffer:
@@ -479,24 +554,30 @@ class IntegratedConversationManager:
 
         return min(depth_score, 1.0)
 
-    def _analyze_conversation_for_context_updates(self, conversation_turn: Dict[str, Any]) -> None:
+    def _analyze_conversation_for_context_updates(
+        self, conversation_turn: Dict[str, Any]
+    ) -> None:
         """Analyze conversation turn for strategic context updates"""
         # This would implement intelligent analysis of conversation content
         # to detect when stakeholder information, strategic decisions, etc. are mentioned
         # For now, simplified implementation
 
-        user_input = conversation_turn.get('user_input', '').lower()
-        assistant_response = conversation_turn.get('assistant_response', '').lower()
+        user_input = conversation_turn.get("user_input", "").lower()
+        assistant_response = conversation_turn.get("assistant_response", "").lower()
 
         # Detect stakeholder updates
-        if any(name in user_input or name in assistant_response
-               for name in ['vp_engineering', 'director', 'executive']):
+        if any(
+            name in user_input or name in assistant_response
+            for name in ["vp_engineering", "director", "executive"]
+        ):
             # Update stakeholder context
             pass
 
         # Detect strategic decisions
-        if any(phrase in assistant_response
-               for phrase in ['recommend', 'strategy', 'decision', 'approach']):
+        if any(
+            phrase in assistant_response
+            for phrase in ["recommend", "strategy", "decision", "approach"]
+        ):
             # Update strategic intelligence
             pass
 
@@ -525,7 +606,7 @@ def main():
         "How should we approach the platform investment strategy?",
         "Based on our strategic analysis, I recommend using the Capital Allocation Framework...",
         ["alvaro", "diego"],
-        {"complexity_score": 0.8, "enhancement_used": "sequential"}
+        {"complexity_score": 0.8, "enhancement_used": "sequential"},
     )
 
     # Test backup

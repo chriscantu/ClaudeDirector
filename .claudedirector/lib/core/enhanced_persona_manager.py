@@ -20,7 +20,7 @@ from .persona_activation_engine import (
     PersonaSelectionEngine,
     ConversationStateEngine,
     ContextResult,
-    PersonaSelection
+    PersonaSelection,
 )
 from .complexity_analyzer import AnalysisComplexityDetector
 from .persona_enhancement_engine import PersonaEnhancementEngine, EnhancementResult
@@ -45,7 +45,7 @@ class EnhancedPersonaManager:
     def __init__(
         self,
         template_discovery: TemplateDiscoveryEngine,
-        enhancement_config: Optional[Dict] = None
+        enhancement_config: Optional[Dict] = None,
     ):
         """
         Initialize enhanced persona manager
@@ -64,8 +64,7 @@ class EnhancedPersonaManager:
         # Initialize embedded framework enhancement system
         self.complexity_detector = AnalysisComplexityDetector(enhancement_config or {})
         self.enhancement_engine = PersonaEnhancementEngine(
-            self.complexity_detector,
-            enhancement_config or {}
+            self.complexity_detector, enhancement_config or {}
         )
 
         # Configuration
@@ -78,19 +77,17 @@ class EnhancedPersonaManager:
             "total_requests": 0,
             "enhanced_requests": 0,
             "fallback_requests": 0,
-            "average_enhancement_time": 0.0
+            "average_enhancement_time": 0.0,
         }
 
         logger.info(
             "embedded_framework_system_initialized",
             enabled=True,
-            enhancement_config=bool(enhancement_config)
+            enhancement_config=bool(enhancement_config),
         )
 
     def process_user_input(
-        self,
-        user_input: str,
-        conversation_context: Optional[Dict[str, Any]] = None
+        self, user_input: str, conversation_context: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
         Process user input through complete enhanced persona workflow
@@ -112,7 +109,9 @@ class EnhancedPersonaManager:
             persona_selection = self.persona_engine.select_persona(context_result)
 
             # Step 3: Update conversation state (existing system)
-            self.state_engine.update_state(persona_selection, context_result, user_input)
+            self.state_engine.update_state(
+                persona_selection, context_result, user_input
+            )
 
             # Step 4: Generate base persona response (simulated for now)
             base_response = self._generate_base_persona_response(
@@ -124,7 +123,7 @@ class EnhancedPersonaManager:
                 persona_selection.primary,
                 user_input,
                 base_response,
-                conversation_context
+                conversation_context,
             )
 
             # Step 6: Track statistics
@@ -136,14 +135,14 @@ class EnhancedPersonaManager:
                 persona_selection,
                 base_response,
                 enhancement_result,
-                start_time
+                start_time,
             )
 
             logger.info(
                 "persona_workflow_completed",
                 persona=persona_selection.primary,
                 enhanced=enhancement_result.enhancement_applied,
-                total_time_ms=int((time.time() - start_time) * 1000)
+                total_time_ms=int((time.time() - start_time) * 1000),
             )
 
             return final_response
@@ -152,7 +151,7 @@ class EnhancedPersonaManager:
             logger.error(
                 "persona_workflow_failed",
                 error=str(e),
-                user_input=user_input[:100]  # Truncate for logging
+                user_input=user_input[:100],  # Truncate for logging
             )
 
             # Return fallback response
@@ -162,7 +161,7 @@ class EnhancedPersonaManager:
         self,
         persona_selection: PersonaSelection,
         user_input: str,
-        conversation_context: Optional[Dict[str, Any]]
+        conversation_context: Optional[Dict[str, Any]],
     ) -> str:
         """
         Generate base persona response (simulated for integration)
@@ -177,12 +176,11 @@ class EnhancedPersonaManager:
             "martin": f"Let me think about this architecturally. {self._get_martin_response_style()}",
             "rachel": f"From a user experience standpoint, {self._get_rachel_response_style()}",
             "alvaro": f"Looking at this from a product strategy perspective, {self._get_alvaro_response_style()}",
-            "camille": f"As we think about organizational strategy, {self._get_camille_response_style()}"
+            "camille": f"As we think about organizational strategy, {self._get_camille_response_style()}",
         }
 
         base_template = persona_responses.get(
-            persona_selection.primary,
-            "Let me help you think through this challenge..."
+            persona_selection.primary, "Let me help you think through this challenge..."
         )
 
         # Add context-specific elements
@@ -220,7 +218,7 @@ class EnhancedPersonaManager:
         persona_name: str,
         user_input: str,
         base_response: str,
-        conversation_context: Optional[Dict[str, Any]]
+        conversation_context: Optional[Dict[str, Any]],
     ) -> EnhancementResult:
         """Apply embedded framework enhancement if appropriate"""
 
@@ -231,16 +229,13 @@ class EnhancedPersonaManager:
                 framework_used=None,
                 analysis_data=None,
                 processing_time_ms=0,
-                fallback_reason="Enhancement system not available"
+                fallback_reason="Enhancement system not available",
             )
 
         try:
             # Apply embedded framework enhancement
             enhancement_result = self.enhancement_engine.enhance_response(
-                persona_name,
-                user_input,
-                base_response,
-                conversation_context
+                persona_name, user_input, base_response, conversation_context
             )
 
             return enhancement_result
@@ -249,7 +244,7 @@ class EnhancedPersonaManager:
             logger.error(
                 "embedded_framework_enhancement_error",
                 persona=persona_name,
-                error=str(e)
+                error=str(e),
             )
 
             # Return fallback with base response
@@ -259,10 +254,12 @@ class EnhancedPersonaManager:
                 framework_used=None,
                 analysis_data=None,
                 processing_time_ms=0,
-                fallback_reason=f"Enhancement error: {str(e)}"
+                fallback_reason=f"Enhancement error: {str(e)}",
             )
 
-    def _update_statistics(self, enhancement_result: EnhancementResult, start_time: float) -> None:
+    def _update_statistics(
+        self, enhancement_result: EnhancementResult, start_time: float
+    ) -> None:
         """Update performance and usage statistics"""
 
         self.enhancement_stats["total_requests"] += 1
@@ -278,8 +275,8 @@ class EnhancedPersonaManager:
         total_requests = self.enhancement_stats["total_requests"]
 
         self.enhancement_stats["average_enhancement_time"] = (
-            (current_avg * (total_requests - 1) + total_time) / total_requests
-        )
+            current_avg * (total_requests - 1) + total_time
+        ) / total_requests
 
     def _prepare_final_response(
         self,
@@ -287,7 +284,7 @@ class EnhancedPersonaManager:
         persona_selection: PersonaSelection,
         base_response: str,
         enhancement_result: EnhancementResult,
-        start_time: float
+        start_time: float,
     ) -> Dict[str, Any]:
         """Prepare the final response with all metadata"""
 
@@ -298,42 +295,44 @@ class EnhancedPersonaManager:
             "response": enhancement_result.enhanced_response,
             "persona": persona_selection.primary,
             "template_id": persona_selection.template_id,
-
             # Context analysis
             "context": context_result.to_dict(),
-
             # Persona selection
             "persona_selection": persona_selection.to_dict(),
-
             # Enhancement information
             "enhancement": {
                 "applied": enhancement_result.enhancement_applied,
                 "framework_used": enhancement_result.framework_used,
                 "analysis_data": enhancement_result.analysis_data,
                 "processing_time_ms": enhancement_result.processing_time_ms,
-                "fallback_reason": enhancement_result.fallback_reason
+                "fallback_reason": enhancement_result.fallback_reason,
             },
-
             # Performance metrics
             "performance": {
                 "total_processing_time_ms": total_processing_time,
                 "context_analysis_time_ms": context_result.analysis_time_ms,
                 "persona_selection_time_ms": persona_selection.selection_time_ms,
-                "enhancement_time_ms": enhancement_result.processing_time_ms
+                "enhancement_time_ms": enhancement_result.processing_time_ms,
             },
-
             # System state
             "conversation_state": self.state_engine.get_current_state(),
-
             # System capabilities
             "capabilities": {
                 "enhancement_enabled": self.enhancement_enabled,
-                "enhanced_personas": ["diego", "martin", "rachel", "camille", "alvaro"] if self.enhancement_enabled else [],
-                "available_templates": [t.template_id for t in self.template_discovery.list_templates()]
-            }
+                "enhanced_personas": (
+                    ["diego", "martin", "rachel", "camille", "alvaro"]
+                    if self.enhancement_enabled
+                    else []
+                ),
+                "available_templates": [
+                    t.template_id for t in self.template_discovery.list_templates()
+                ],
+            },
         }
 
-    def _create_fallback_response(self, user_input: str, error_message: str) -> Dict[str, Any]:
+    def _create_fallback_response(
+        self, user_input: str, error_message: str
+    ) -> Dict[str, Any]:
         """Create fallback response when main workflow fails"""
 
         return {
@@ -342,10 +341,13 @@ class EnhancedPersonaManager:
             "template_id": "fallback",
             "context": {"confidence": 0.0, "fallback": True},
             "persona_selection": {"method": "emergency_fallback"},
-            "enhancement": {"applied": False, "fallback_reason": f"System error: {error_message}"},
+            "enhancement": {
+                "applied": False,
+                "fallback_reason": f"System error: {error_message}",
+            },
             "performance": {"total_processing_time_ms": 0},
             "conversation_state": self.state_engine.get_current_state(),
-            "capabilities": {"enhancement_enabled": False, "error": error_message}
+            "capabilities": {"enhancement_enabled": False, "error": error_message},
         }
 
     # Public interface methods
@@ -363,10 +365,10 @@ class EnhancedPersonaManager:
         return {
             **self.enhancement_stats,
             "enhancement_rate": (
-                self.enhancement_stats["enhanced_requests"] /
-                max(self.enhancement_stats["total_requests"], 1)
+                self.enhancement_stats["enhanced_requests"]
+                / max(self.enhancement_stats["total_requests"], 1)
             ),
-            "enhancement_enabled": self.enhancement_enabled
+            "enhancement_enabled": self.enhancement_enabled,
         }
 
     async def get_mcp_server_status(self) -> Dict[str, Any]:
@@ -388,7 +390,7 @@ class EnhancedPersonaManager:
             "total_requests": 0,
             "enhanced_requests": 0,
             "fallback_requests": 0,
-            "average_enhancement_time": 0.0
+            "average_enhancement_time": 0.0,
         }
 
         logger.info("conversation_reset", enhancement_enabled=self.enhancement_enabled)
@@ -403,10 +405,11 @@ class EnhancedPersonaManager:
 
 # Utility functions for easy integration
 
+
 async def create_enhanced_persona_manager(
     template_config_path: str,
     mcp_config_path: Optional[str] = None,
-    enhancement_config: Optional[Dict] = None
+    enhancement_config: Optional[Dict] = None,
 ) -> EnhancedPersonaManager:
     """
     Create enhanced persona manager with all components
@@ -425,9 +428,7 @@ async def create_enhanced_persona_manager(
 
     # Create enhanced persona manager
     manager = EnhancedPersonaManager(
-        template_discovery,
-        mcp_config_path,
-        enhancement_config
+        template_discovery, mcp_config_path, enhancement_config
     )
 
     # Wait for MCP initialization if config provided
@@ -451,7 +452,10 @@ def create_demo_enhanced_manager(enable_mcp: bool = True) -> EnhancedPersonaMana
 
     # Create mock template discovery for demo
     from .template_engine import TemplateDiscoveryEngine
-    template_discovery = TemplateDiscoveryEngine(".claudedirector/config/director_templates.yaml")
+
+    template_discovery = TemplateDiscoveryEngine(
+        ".claudedirector/config/director_templates.yaml"
+    )
 
     # Create manager without MCP for now (would need mock servers for full demo)
     manager = EnhancedPersonaManager(template_discovery)

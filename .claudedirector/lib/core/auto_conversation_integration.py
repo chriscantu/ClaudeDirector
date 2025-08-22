@@ -44,8 +44,7 @@ class ConversationInterceptor:
         try:
             # Attempt automatic capture
             captured = auto_capture_conversation(
-                user_input=self.last_user_input,
-                assistant_response=assistant_response
+                user_input=self.last_user_input, assistant_response=assistant_response
             )
 
             # Clear stored input after capture attempt
@@ -57,18 +56,22 @@ class ConversationInterceptor:
             print(f"⚠️ Auto-capture error: {e}")
             return False
 
+
 # Global interceptor instance
 _interceptor = ConversationInterceptor()
+
 
 def enable_auto_capture() -> None:
     """Enable automatic conversation capture"""
     _interceptor.capture_enabled = True
     print("✅ Automatic conversation capture enabled")
 
+
 def disable_auto_capture() -> None:
     """Disable automatic conversation capture"""
     _interceptor.capture_enabled = False
     print("⏸️ Automatic conversation capture disabled")
+
 
 def capture_user_input(user_input: str) -> None:
     """
@@ -76,6 +79,7 @@ def capture_user_input(user_input: str) -> None:
     Call this before generating assistant response
     """
     _interceptor.set_user_input(user_input)
+
 
 def capture_assistant_response(assistant_response: str) -> bool:
     """
@@ -87,11 +91,12 @@ def capture_assistant_response(assistant_response: str) -> bool:
     """
     return _interceptor.capture_response(assistant_response)
 
+
 def get_capture_status() -> dict:
     """Get current capture status"""
     return {
-        'enabled': _interceptor.capture_enabled,
-        'has_pending_input': _interceptor.last_user_input is not None
+        "enabled": _interceptor.capture_enabled,
+        "has_pending_input": _interceptor.last_user_input is not None,
     }
 
 

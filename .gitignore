@@ -77,7 +77,7 @@ eggs/
 .claudedirector/lib/**/__pycache__/
 .claudedirector/lib/**/*.pyc
 .claudedirector/lib/**/*.pyo
-lib/
+/lib/
 lib64/
 parts/
 sdist/
@@ -300,3 +300,6 @@ workspace-backup-*/
 # User identity configuration contains personal information and should not be committed
 .claudedirector/config/user_identity.yaml
 **/user_identity.yaml
+
+# Migration backups (temporary safety)
+.claudedirector/.migration-backup-*

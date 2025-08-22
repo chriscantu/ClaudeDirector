@@ -15,6 +15,7 @@ from ..interfaces.report_interface import IAlertSystem, StakeholderType
 
 class AlertSeverity(Enum):
     """Alert severity levels."""
+
     CRITICAL = "critical"
     HIGH = "high"
     MEDIUM = "medium"
@@ -24,6 +25,7 @@ class AlertSeverity(Enum):
 
 class AlertCategory(Enum):
     """Alert categories for filtering and routing."""
+
     DELIVERY_RISK = "delivery_risk"
     TEAM_HEALTH = "team_health"
     TECHNICAL_DEBT = "technical_debt"
@@ -36,6 +38,7 @@ class AlertCategory(Enum):
 @dataclass
 class Alert:
     """Individual alert with metadata and routing information."""
+
     id: str
     title: str
     message: str
@@ -52,6 +55,7 @@ class Alert:
 @dataclass
 class AlertRule:
     """Alert rule configuration."""
+
     name: str
     category: AlertCategory
     severity: AlertSeverity
@@ -125,7 +129,9 @@ class IntelligentAlertSystem(IAlertSystem):
 
         return alerts
 
-    def get_stakeholder_alerts(self, stakeholder_type: StakeholderType, data: Dict[str, Any]) -> List[Alert]:
+    def get_stakeholder_alerts(
+        self, stakeholder_type: StakeholderType, data: Dict[str, Any]
+    ) -> List[Alert]:
         """Get alerts filtered for specific stakeholder type."""
         all_alerts = self.generate_alerts(data)
         return [alert for alert in all_alerts if stakeholder_type in alert.stakeholders]
@@ -166,16 +172,22 @@ class IntelligentAlertSystem(IAlertSystem):
                 lines.append(self._format_alert_for_cli(alert))
 
             if len(medium_alerts) > 3:
-                lines.append(f"   ... and {len(medium_alerts) - 3} more medium priority alerts")
+                lines.append(
+                    f"   ... and {len(medium_alerts) - 3} more medium priority alerts"
+                )
 
         # Summary and next actions
         lines.append(f"\n📊 SUMMARY")
         lines.append(f"   Total alerts: {len(alerts)}")
         lines.append(f"   Highest priority: {alerts[0].severity.value.upper()}")
-        lines.append(f"   Requires immediate attention: {len(critical_alerts) + len(high_alerts)}")
+        lines.append(
+            f"   Requires immediate attention: {len(critical_alerts) + len(high_alerts)}"
+        )
 
         lines.append(f"\n💡 NEXT ACTIONS")
-        lines.append(f"   ./claudedirector reports executive    # Generate detailed report")
+        lines.append(
+            f"   ./claudedirector reports executive    # Generate detailed report"
+        )
         lines.append(f"   ./claudedirector dashboard --refresh  # Update all data")
 
         return "\n".join(lines)
@@ -190,15 +202,18 @@ class IntelligentAlertSystem(IAlertSystem):
                 severity=AlertSeverity.CRITICAL,
                 stakeholders=[StakeholderType.VP_ENGINEERING, StakeholderType.CEO],
                 condition_func="check_critical_blocked_issues",
-                cooldown_hours=4
+                cooldown_hours=4,
             ),
             AlertRule(
                 name="velocity_crash",
                 category=AlertCategory.DELIVERY_RISK,
                 severity=AlertSeverity.HIGH,
-                stakeholders=[StakeholderType.VP_ENGINEERING, StakeholderType.PRODUCT_TEAM],
+                stakeholders=[
+                    StakeholderType.VP_ENGINEERING,
+                    StakeholderType.PRODUCT_TEAM,
+                ],
                 condition_func="check_velocity_crash",
-                cooldown_hours=12
+                cooldown_hours=12,
             ),
             AlertRule(
                 name="initiative_at_risk",
@@ -206,16 +221,19 @@ class IntelligentAlertSystem(IAlertSystem):
                 severity=AlertSeverity.HIGH,
                 stakeholders=[StakeholderType.CEO, StakeholderType.VP_ENGINEERING],
                 condition_func="check_strategic_initiatives_at_risk",
-                cooldown_hours=24
+                cooldown_hours=24,
             ),
             # Team health alerts
             AlertRule(
                 name="team_health_degrading",
                 category=AlertCategory.TEAM_HEALTH,
                 severity=AlertSeverity.MEDIUM,
-                stakeholders=[StakeholderType.VP_ENGINEERING, StakeholderType.ENGINEERING_MANAGER],
+                stakeholders=[
+                    StakeholderType.VP_ENGINEERING,
+                    StakeholderType.ENGINEERING_MANAGER,
+                ],
                 condition_func="check_team_health_degrading",
-                cooldown_hours=48
+                cooldown_hours=48,
             ),
             # Technical debt alerts
             AlertRule(
@@ -224,7 +242,7 @@ class IntelligentAlertSystem(IAlertSystem):
                 severity=AlertSeverity.MEDIUM,
                 stakeholders=[StakeholderType.VP_ENGINEERING],
                 condition_func="check_technical_debt_spike",
-                cooldown_hours=72
+                cooldown_hours=72,
             ),
             # Security alerts
             AlertRule(
@@ -233,17 +251,20 @@ class IntelligentAlertSystem(IAlertSystem):
                 severity=AlertSeverity.CRITICAL,
                 stakeholders=[StakeholderType.CEO, StakeholderType.VP_ENGINEERING],
                 condition_func="check_security_vulnerabilities",
-                cooldown_hours=1
+                cooldown_hours=1,
             ),
             # Performance alerts
             AlertRule(
                 name="delivery_predictability_drop",
                 category=AlertCategory.PERFORMANCE,
                 severity=AlertSeverity.MEDIUM,
-                stakeholders=[StakeholderType.VP_ENGINEERING, StakeholderType.PRODUCT_TEAM],
+                stakeholders=[
+                    StakeholderType.VP_ENGINEERING,
+                    StakeholderType.PRODUCT_TEAM,
+                ],
                 condition_func="check_delivery_predictability_drop",
-                cooldown_hours=24
-            )
+                cooldown_hours=24,
+            ),
         ]
 
     def _is_in_cooldown(self, rule_name: str) -> bool:
@@ -273,7 +294,7 @@ class IntelligentAlertSystem(IAlertSystem):
             "check_team_health_degrading": self._check_team_health_degrading,
             "check_technical_debt_spike": self._check_technical_debt_spike,
             "check_security_vulnerabilities": self._check_security_vulnerabilities,
-            "check_delivery_predictability_drop": self._check_delivery_predictability_drop
+            "check_delivery_predictability_drop": self._check_delivery_predictability_drop,
         }
 
         condition_func = condition_map.get(rule.condition_func)
@@ -282,7 +303,9 @@ class IntelligentAlertSystem(IAlertSystem):
 
         return condition_func(data)
 
-    def _create_alert_from_rule(self, rule: AlertRule, data: Dict[str, Any]) -> Optional[Alert]:
+    def _create_alert_from_rule(
+        self, rule: AlertRule, data: Dict[str, Any]
+    ) -> Optional[Alert]:
         """Create alert instance from triggered rule."""
         # Generate alert content based on rule type
         alert_generators = {
@@ -292,7 +315,7 @@ class IntelligentAlertSystem(IAlertSystem):
             "check_team_health_degrading": self._generate_team_health_alert,
             "check_technical_debt_spike": self._generate_technical_debt_alert,
             "check_security_vulnerabilities": self._generate_security_alert,
-            "check_delivery_predictability_drop": self._generate_predictability_alert
+            "check_delivery_predictability_drop": self._generate_predictability_alert,
         }
 
         generator = alert_generators.get(rule.condition_func)
@@ -311,7 +334,7 @@ class IntelligentAlertSystem(IAlertSystem):
             AlertSeverity.HIGH: "🟡",
             AlertSeverity.MEDIUM: "🟠",
             AlertSeverity.LOW: "🟢",
-            AlertSeverity.INFO: "ℹ️"
+            AlertSeverity.INFO: "ℹ️",
         }
 
         icon = severity_icons.get(alert.severity, "•")
@@ -324,7 +347,9 @@ class IntelligentAlertSystem(IAlertSystem):
             for action in alert.actionable_items[:2]:  # Limit for CLI brevity
                 lines.append(f"   • {action}")
 
-        lines.append(f"   Confidence: {alert.confidence_score:.0%} | {alert.created_at.strftime('%H:%M')}")
+        lines.append(
+            f"   Confidence: {alert.confidence_score:.0%} | {alert.created_at.strftime('%H:%M')}"
+        )
         lines.append("")
 
         return "\n".join(lines)
@@ -388,7 +413,9 @@ class IntelligentAlertSystem(IAlertSystem):
         return accuracy < 0.70  # Alert if accuracy drops below 70%
 
     # Alert generation methods
-    def _generate_blocked_issues_alert(self, rule: AlertRule, data: Dict[str, Any]) -> Alert:
+    def _generate_blocked_issues_alert(
+        self, rule: AlertRule, data: Dict[str, Any]
+    ) -> Alert:
         """Generate alert for blocked issues."""
         risk_data = data.get("risk_indicators", {})
         blocked_issues = risk_data.get("blocked_issues", 0)
@@ -407,12 +434,14 @@ class IntelligentAlertSystem(IAlertSystem):
             actionable_items=[
                 "Review blocked issues in daily standup",
                 "Escalate critical bugs to senior engineers",
-                "Consider scope reduction if timeline at risk"
+                "Consider scope reduction if timeline at risk",
             ],
-            confidence_score=0.95
+            confidence_score=0.95,
         )
 
-    def _generate_velocity_crash_alert(self, rule: AlertRule, data: Dict[str, Any]) -> Alert:
+    def _generate_velocity_crash_alert(
+        self, rule: AlertRule, data: Dict[str, Any]
+    ) -> Alert:
         """Generate alert for velocity crash."""
         velocity_data = data.get("team_velocity", {})
         current = velocity_data.get("current_sprint", 0)
@@ -429,16 +458,22 @@ class IntelligentAlertSystem(IAlertSystem):
             stakeholders=rule.stakeholders,
             data_source="jira",
             created_at=datetime.now(),
-            context={"current_velocity": current, "average_velocity": average, "drop_percentage": drop_percentage},
+            context={
+                "current_velocity": current,
+                "average_velocity": average,
+                "drop_percentage": drop_percentage,
+            },
             actionable_items=[
                 "Investigate team capacity and blockers",
                 "Review sprint commitment accuracy",
-                "Consider team support and process improvements"
+                "Consider team support and process improvements",
             ],
-            confidence_score=0.90
+            confidence_score=0.90,
         )
 
-    def _generate_initiatives_alert(self, rule: AlertRule, data: Dict[str, Any]) -> Alert:
+    def _generate_initiatives_alert(
+        self, rule: AlertRule, data: Dict[str, Any]
+    ) -> Alert:
         """Generate alert for strategic initiatives at risk."""
         initiative_data = data.get("initiative_health", {})
         at_risk = initiative_data.get("at_risk", 0)
@@ -457,12 +492,14 @@ class IntelligentAlertSystem(IAlertSystem):
             actionable_items=[
                 "Review initiative roadmaps and dependencies",
                 "Reallocate resources to critical initiatives",
-                "Consider scope adjustments or timeline extensions"
+                "Consider scope adjustments or timeline extensions",
             ],
-            confidence_score=0.85
+            confidence_score=0.85,
         )
 
-    def _generate_team_health_alert(self, rule: AlertRule, data: Dict[str, Any]) -> Alert:
+    def _generate_team_health_alert(
+        self, rule: AlertRule, data: Dict[str, Any]
+    ) -> Alert:
         """Generate alert for team health degradation."""
         health_data = data.get("team_health", {})
         overall_score = health_data.get("overall_score", 100)
@@ -480,12 +517,14 @@ class IntelligentAlertSystem(IAlertSystem):
             actionable_items=[
                 "Schedule team retrospective and feedback sessions",
                 "Review workload distribution and burnout indicators",
-                "Consider team building and process improvements"
+                "Consider team building and process improvements",
             ],
-            confidence_score=0.80
+            confidence_score=0.80,
         )
 
-    def _generate_technical_debt_alert(self, rule: AlertRule, data: Dict[str, Any]) -> Alert:
+    def _generate_technical_debt_alert(
+        self, rule: AlertRule, data: Dict[str, Any]
+    ) -> Alert:
         """Generate alert for technical debt spike."""
         health_data = data.get("team_health", {})
         debt_ratio = health_data.get("technical_debt_ratio", 0)
@@ -503,9 +542,9 @@ class IntelligentAlertSystem(IAlertSystem):
             actionable_items=[
                 "Schedule technical debt reduction sprint",
                 "Review code quality standards and practices",
-                "Allocate time for refactoring in upcoming sprints"
+                "Allocate time for refactoring in upcoming sprints",
             ],
-            confidence_score=0.75
+            confidence_score=0.75,
         )
 
     def _generate_security_alert(self, rule: AlertRule, data: Dict[str, Any]) -> Alert:
@@ -526,12 +565,14 @@ class IntelligentAlertSystem(IAlertSystem):
             actionable_items=[
                 "Prioritize security patches in current sprint",
                 "Review security scanning and monitoring processes",
-                "Escalate to security team for immediate assessment"
+                "Escalate to security team for immediate assessment",
             ],
-            confidence_score=0.98
+            confidence_score=0.98,
         )
 
-    def _generate_predictability_alert(self, rule: AlertRule, data: Dict[str, Any]) -> Alert:
+    def _generate_predictability_alert(
+        self, rule: AlertRule, data: Dict[str, Any]
+    ) -> Alert:
         """Generate alert for delivery predictability drop."""
         velocity_data = data.get("team_velocity", {})
         accuracy = velocity_data.get("sprint_commitment_accuracy", 1.0)
@@ -549,7 +590,7 @@ class IntelligentAlertSystem(IAlertSystem):
             actionable_items=[
                 "Review estimation and planning processes",
                 "Analyze sprint commitment vs delivery patterns",
-                "Consider team capacity and external dependency factors"
+                "Consider team capacity and external dependency factors",
             ],
-            confidence_score=0.85
+            confidence_score=0.85,
         )

@@ -10,7 +10,9 @@ from datetime import datetime
 
 from .persona_bridge import PersonaP2Bridge
 from ..p2_communication.integrations.demo_data_source import DemoDataSource
-from ..p2_communication.report_generation.executive_summary import ExecutiveSummaryGenerator
+from ..p2_communication.report_generation.executive_summary import (
+    ExecutiveSummaryGenerator,
+)
 from ..p2_communication.integrations.alert_system import IntelligentAlertSystem
 
 
@@ -30,7 +32,9 @@ class P2ChatAdapter:
         self.summary_generator = ExecutiveSummaryGenerator(self.data_source)
         self.alert_system = IntelligentAlertSystem(self.data_source)
 
-    def get_executive_summary(self, persona_name: str, stakeholder: str = "auto", period: str = "current_week") -> str:
+    def get_executive_summary(
+        self, persona_name: str, stakeholder: str = "auto", period: str = "current_week"
+    ) -> str:
         """
         Get executive summary for persona.
 
@@ -49,7 +53,7 @@ class P2ChatAdapter:
                 "camille": "ceo",
                 "rachel": "product_team",
                 "alvaro": "ceo",
-                "martin": "vp_engineering"
+                "martin": "vp_engineering",
             }
             stakeholder = stakeholder_map.get(persona_name.lower(), "vp_engineering")
 
@@ -117,7 +121,9 @@ class P2ChatAdapter:
         response = self.bridge.handle_persona_request(persona_name, request)
         return response.response_text
 
-    def handle_natural_request(self, persona_name: str, user_message: str) -> Dict[str, Any]:
+    def handle_natural_request(
+        self, persona_name: str, user_message: str
+    ) -> Dict[str, Any]:
         """
         Handle any natural language request.
 
@@ -136,7 +142,7 @@ class P2ChatAdapter:
             "data_sources": response.data_sources,
             "suggestions": response.follow_up_suggestions,
             "metadata": response.metadata,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
     def get_persona_capabilities(self, persona_name: str) -> Dict[str, Any]:
@@ -205,7 +211,6 @@ summary = executive_summary("diego")
 # Get CEO-focused summary via Camille
 summary = executive_summary("camille", stakeholder="ceo", period="current_month")
 """,
-
     "current_alerts": """
 # Alerts Examples
 from lib.claudedirector.persona_integration.p2_chat_adapter import current_alerts
@@ -216,7 +221,6 @@ alerts = current_alerts("rachel")
 # Get only critical alerts for Martin
 alerts = current_alerts("martin", severity="critical")
 """,
-
     "natural_language": """
 # Natural Language Examples
 from lib.claudedirector.persona_integration.p2_chat_adapter import ask_persona
@@ -230,7 +234,6 @@ response = ask_persona("alvaro", "Any ROI concerns I should know about?")
 # Ask Rachel about UX health
 response = ask_persona("rachel", "How is our design system adoption?")
 """,
-
     "persona_discovery": """
 # Persona Discovery
 from lib.claudedirector.persona_integration.p2_chat_adapter import list_personas, get_capabilities
@@ -240,5 +243,5 @@ personas = list_personas()
 
 # Get detailed capabilities for a specific persona
 caps = get_capabilities("martin")
-"""
+""",
 }

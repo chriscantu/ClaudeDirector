@@ -11,13 +11,20 @@ from dataclasses import dataclass
 from enum import Enum
 
 from ..p2_communication.integrations.demo_data_source import DemoDataSource
-from ..p2_communication.report_generation.executive_summary import ExecutiveSummaryGenerator
+from ..p2_communication.report_generation.executive_summary import (
+    ExecutiveSummaryGenerator,
+)
 from ..p2_communication.integrations.alert_system import IntelligentAlertSystem
-from ..p2_communication.interfaces.report_interface import StakeholderType, ReportContext, ReportFormat
+from ..p2_communication.interfaces.report_interface import (
+    StakeholderType,
+    ReportContext,
+    ReportFormat,
+)
 
 
 class PersonaType(Enum):
     """Supported persona types for chat integration."""
+
     DIEGO = "diego"
     CAMILLE = "camille"
     RACHEL = "rachel"
@@ -34,6 +41,7 @@ class PersonaType(Enum):
 @dataclass
 class ChatRequest:
     """Structured chat request from persona interaction."""
+
     persona: PersonaType
     request_type: str
     stakeholder_context: Optional[StakeholderType]
@@ -45,6 +53,7 @@ class ChatRequest:
 @dataclass
 class ChatResponse:
     """Structured response for persona chat interaction."""
+
     response_text: str
     data_sources: List[str]
     confidence_score: Optional[float]
@@ -81,7 +90,7 @@ class PersonaChatInterface:
             PersonaType.MARCUS: StakeholderType.VP_ENGINEERING,
             PersonaType.DAVID: StakeholderType.CEO,
             PersonaType.SECURITY: StakeholderType.VP_ENGINEERING,
-            PersonaType.DATA: StakeholderType.VP_ENGINEERING
+            PersonaType.DATA: StakeholderType.VP_ENGINEERING,
         }
 
         # Request pattern matching
@@ -92,7 +101,7 @@ class PersonaChatInterface:
                 r"status update",
                 r"how are things",
                 r"team status",
-                r"overview"
+                r"overview",
             ],
             "alerts": [
                 r"alerts?",
@@ -100,26 +109,21 @@ class PersonaChatInterface:
                 r"problems?",
                 r"what should I know",
                 r"urgent",
-                r"blockers?"
+                r"blockers?",
             ],
             "team_health": [
                 r"team health",
                 r"how is the team",
                 r"team performance",
-                r"velocity"
+                r"velocity",
             ],
             "risks": [
                 r"risks?",
                 r"concerns?",
                 r"what worries you",
-                r"potential issues"
+                r"potential issues",
             ],
-            "initiatives": [
-                r"initiatives?",
-                r"projects?",
-                r"strategic",
-                r"roadmap"
-            ]
+            "initiatives": [r"initiatives?", r"projects?", r"strategic", r"roadmap"],
         }
 
     def handle_chat_request(self, persona_name: str, message: str) -> ChatResponse:
@@ -159,9 +163,9 @@ class PersonaChatInterface:
                 follow_up_suggestions=[
                     "Try asking for an executive summary",
                     "Ask about current alerts",
-                    "Request team health status"
+                    "Request team health status",
                 ],
-                technical_details={"error": str(e)}
+                technical_details={"error": str(e)},
             )
 
     def _parse_chat_request(self, persona_name: str, message: str) -> ChatRequest:
@@ -193,7 +197,9 @@ class PersonaChatInterface:
             time_period = "current_quarter"
 
         # Map persona to stakeholder context
-        stakeholder_context = self.persona_stakeholder_map.get(persona, StakeholderType.VP_ENGINEERING)
+        stakeholder_context = self.persona_stakeholder_map.get(
+            persona, StakeholderType.VP_ENGINEERING
+        )
 
         return ChatRequest(
             persona=persona,
@@ -201,7 +207,7 @@ class PersonaChatInterface:
             stakeholder_context=stakeholder_context,
             time_period=time_period,
             additional_context={},
-            raw_message=message
+            raw_message=message,
         )
 
     def _handle_executive_summary_request(self, request: ChatRequest) -> ChatResponse:
@@ -212,33 +218,41 @@ class PersonaChatInterface:
             time_period=request.time_period,
             format=ReportFormat.CLI_RICH,  # Will be converted to conversation
             include_predictions=True,
-            include_risks=True
+            include_risks=True,
         )
 
         report = self.summary_generator.generate_report(context)
 
         # Convert to conversational response
-        response_text = self._format_executive_summary_for_conversation(report, request.persona)
+        response_text = self._format_executive_summary_for_conversation(
+            report, request.persona
+        )
 
         # Generate follow-up suggestions
-        follow_ups = self._generate_follow_up_suggestions(request.persona, "executive_summary")
+        follow_ups = self._generate_follow_up_suggestions(
+            request.persona, "executive_summary"
+        )
 
         return ChatResponse(
             response_text=response_text,
             data_sources=report.data_sources,
             confidence_score=report.confidence_score,
             follow_up_suggestions=follow_ups,
-            technical_details={"report_sections": len(report.sections)}
+            technical_details={"report_sections": len(report.sections)},
         )
 
     def _handle_alerts_request(self, request: ChatRequest) -> ChatResponse:
         """Handle alerts and critical issues requests."""
         # Get current data and generate alerts
-        current_data = self.data_source.get_data("current_status",
-            ["team_velocity", "risk_indicators", "initiative_health", "team_health"])
+        current_data = self.data_source.get_data(
+            "current_status",
+            ["team_velocity", "risk_indicators", "initiative_health", "team_health"],
+        )
 
         # Get stakeholder-specific alerts
-        alerts = self.alert_system.get_stakeholder_alerts(request.stakeholder_context, current_data)
+        alerts = self.alert_system.get_stakeholder_alerts(
+            request.stakeholder_context, current_data
+        )
 
         # Convert to conversational response
         response_text = self._format_alerts_for_conversation(alerts, request.persona)
@@ -250,31 +264,41 @@ class PersonaChatInterface:
             data_sources=["jira", "claudedirector"],
             confidence_score=0.95 if alerts else 1.0,
             follow_up_suggestions=follow_ups,
-            technical_details={"alert_count": len(alerts)}
+            technical_details={"alert_count": len(alerts)},
         )
 
     def _handle_team_health_request(self, request: ChatRequest) -> ChatResponse:
         """Handle team health and performance requests."""
-        current_data = self.data_source.get_data("team_health", ["team_velocity", "team_health", "delivery_metrics"])
+        current_data = self.data_source.get_data(
+            "team_health", ["team_velocity", "team_health", "delivery_metrics"]
+        )
 
-        response_text = self._format_team_health_for_conversation(current_data, request.persona)
+        response_text = self._format_team_health_for_conversation(
+            current_data, request.persona
+        )
 
-        follow_ups = self._generate_follow_up_suggestions(request.persona, "team_health")
+        follow_ups = self._generate_follow_up_suggestions(
+            request.persona, "team_health"
+        )
 
         return ChatResponse(
             response_text=response_text,
             data_sources=["jira", "claudedirector"],
             confidence_score=0.90,
             follow_up_suggestions=follow_ups,
-            technical_details={"metrics_analyzed": len(current_data)}
+            technical_details={"metrics_analyzed": len(current_data)},
         )
 
     def _handle_risks_request(self, request: ChatRequest) -> ChatResponse:
         """Handle risk and concern requests."""
-        current_data = self.data_source.get_data("risk_analysis",
-            ["risk_indicators", "initiative_health", "cross_team_dependencies"])
+        current_data = self.data_source.get_data(
+            "risk_analysis",
+            ["risk_indicators", "initiative_health", "cross_team_dependencies"],
+        )
 
-        response_text = self._format_risks_for_conversation(current_data, request.persona)
+        response_text = self._format_risks_for_conversation(
+            current_data, request.persona
+        )
 
         follow_ups = self._generate_follow_up_suggestions(request.persona, "risks")
 
@@ -283,38 +307,47 @@ class PersonaChatInterface:
             data_sources=["jira", "claudedirector"],
             confidence_score=0.85,
             follow_up_suggestions=follow_ups,
-            technical_details={"risk_factors_analyzed": 5}
+            technical_details={"risk_factors_analyzed": 5},
         )
 
     def _handle_initiatives_request(self, request: ChatRequest) -> ChatResponse:
         """Handle strategic initiatives requests."""
-        current_data = self.data_source.get_data("initiatives", ["initiative_health", "strategic_alignment"])
+        current_data = self.data_source.get_data(
+            "initiatives", ["initiative_health", "strategic_alignment"]
+        )
 
-        response_text = self._format_initiatives_for_conversation(current_data, request.persona)
+        response_text = self._format_initiatives_for_conversation(
+            current_data, request.persona
+        )
 
-        follow_ups = self._generate_follow_up_suggestions(request.persona, "initiatives")
+        follow_ups = self._generate_follow_up_suggestions(
+            request.persona, "initiatives"
+        )
 
         return ChatResponse(
             response_text=response_text,
             data_sources=["jira", "claudedirector"],
             confidence_score=0.88,
             follow_up_suggestions=follow_ups,
-            technical_details={"initiatives_tracked": 11}
+            technical_details={"initiatives_tracked": 11},
         )
 
     def _handle_general_request(self, request: ChatRequest) -> ChatResponse:
         """Handle general requests with overview."""
         # Provide a general status overview
-        current_data = self.data_source.get_data("overview",
-            ["team_velocity", "risk_indicators", "initiative_health"])
+        current_data = self.data_source.get_data(
+            "overview", ["team_velocity", "risk_indicators", "initiative_health"]
+        )
 
-        response_text = self._format_general_overview_for_conversation(current_data, request.persona)
+        response_text = self._format_general_overview_for_conversation(
+            current_data, request.persona
+        )
 
         follow_ups = [
             "Ask for a detailed executive summary",
             "Check current alerts and critical issues",
             "Review team health and performance metrics",
-            "Analyze strategic initiative progress"
+            "Analyze strategic initiative progress",
         ]
 
         return ChatResponse(
@@ -322,16 +355,20 @@ class PersonaChatInterface:
             data_sources=["jira", "claudedirector"],
             confidence_score=0.80,
             follow_up_suggestions=follow_ups,
-            technical_details={"overview_scope": "general"}
+            technical_details={"overview_scope": "general"},
         )
 
-    def _format_executive_summary_for_conversation(self, report, persona: PersonaType) -> str:
+    def _format_executive_summary_for_conversation(
+        self, report, persona: PersonaType
+    ) -> str:
         """Convert P2.1 executive summary to conversational format."""
         lines = []
 
         # Persona-specific opening
         if persona == PersonaType.DIEGO:
-            lines.append("📊 **Executive Summary - Engineering Leadership Perspective**")
+            lines.append(
+                "📊 **Executive Summary - Engineering Leadership Perspective**"
+            )
         elif persona == PersonaType.CAMILLE:
             lines.append("🎯 **Strategic Technology Executive Summary**")
         elif persona == PersonaType.RACHEL:
@@ -347,17 +384,17 @@ class PersonaChatInterface:
         for section in report.sections:
             if section.title == "Executive Summary":
                 lines.append("**Key Highlights:**")
-                content_lines = section.content.split('\n')
+                content_lines = section.content.split("\n")
                 for line in content_lines:
-                    if line.strip() and line.startswith('•'):
+                    if line.strip() and line.startswith("•"):
                         lines.append(f"• {line[1:].strip()}")
                 lines.append("")
 
             elif section.title == "Risks & Opportunities":
                 lines.append("**Critical Items:**")
-                content_lines = section.content.split('\n')
+                content_lines = section.content.split("\n")
                 for line in content_lines:
-                    if line.strip() and (line.startswith('⚠️') or line.startswith('✅')):
+                    if line.strip() and (line.startswith("⚠️") or line.startswith("✅")):
                         lines.append(f"{line.strip()}")
                 lines.append("")
 
@@ -365,7 +402,9 @@ class PersonaChatInterface:
         lines.append(self._add_persona_specific_insights(persona, report))
 
         # Data freshness
-        lines.append(f"*Data as of {report.generated_at.split('T')[0]} | Confidence: {report.confidence_score:.0%}*")
+        lines.append(
+            f"*Data as of {report.generated_at.split('T')[0]} | Confidence: {report.confidence_score:.0%}*"
+        )
 
         return "\n".join(lines)
 
@@ -402,7 +441,9 @@ class PersonaChatInterface:
             for alert in medium_alerts:
                 lines.append(f"• {alert.title}")
         elif medium_alerts:
-            lines.append(f"**🟠 Medium Priority:** {len(medium_alerts)} additional items tracking normally")
+            lines.append(
+                f"**🟠 Medium Priority:** {len(medium_alerts)} additional items tracking normally"
+            )
 
         return "\n".join(lines)
 
@@ -425,11 +466,17 @@ class PersonaChatInterface:
 
         overall_score = team_health.get("overall_score", 80)
         if overall_score >= 80:
-            lines.append(f"✅ **Overall Health: {overall_score}%** - Team performing well")
+            lines.append(
+                f"✅ **Overall Health: {overall_score}%** - Team performing well"
+            )
         elif overall_score >= 70:
-            lines.append(f"⚠️ **Overall Health: {overall_score}%** - Some areas need attention")
+            lines.append(
+                f"⚠️ **Overall Health: {overall_score}%** - Some areas need attention"
+            )
         else:
-            lines.append(f"🔴 **Overall Health: {overall_score}%** - Requires immediate focus")
+            lines.append(
+                f"🔴 **Overall Health: {overall_score}%** - Requires immediate focus"
+            )
 
         lines.append("")
 
@@ -438,11 +485,17 @@ class PersonaChatInterface:
         trend = team_velocity.get("trend", "stable")
 
         if trend == "increasing":
-            lines.append(f"📈 **Velocity: {current_velocity} points** - Trending upward, good momentum")
+            lines.append(
+                f"📈 **Velocity: {current_velocity} points** - Trending upward, good momentum"
+            )
         elif trend == "decreasing":
-            lines.append(f"📉 **Velocity: {current_velocity} points** - Declining, investigate blockers")
+            lines.append(
+                f"📉 **Velocity: {current_velocity} points** - Declining, investigate blockers"
+            )
         else:
-            lines.append(f"📊 **Velocity: {current_velocity} points** - Stable and predictable")
+            lines.append(
+                f"📊 **Velocity: {current_velocity} points** - Stable and predictable"
+            )
 
         return "\n".join(lines)
 
@@ -460,13 +513,19 @@ class PersonaChatInterface:
         security_vulns = risk_indicators.get("security_vulnerabilities", 0)
 
         if security_vulns > 0:
-            lines.append(f"🔴 **Security**: {security_vulns} vulnerabilities need immediate attention")
+            lines.append(
+                f"🔴 **Security**: {security_vulns} vulnerabilities need immediate attention"
+            )
 
         if blocked_issues > 2:
-            lines.append(f"🔴 **Delivery Risk**: {blocked_issues} blocked issues may impact timelines")
+            lines.append(
+                f"🔴 **Delivery Risk**: {blocked_issues} blocked issues may impact timelines"
+            )
 
         if critical_bugs > 1:
-            lines.append(f"🔴 **Quality Risk**: {critical_bugs} critical bugs require escalation")
+            lines.append(
+                f"🔴 **Quality Risk**: {critical_bugs} critical bugs require escalation"
+            )
 
         # Dependencies
         dependencies = data.get("cross_team_dependencies", {})
@@ -474,10 +533,16 @@ class PersonaChatInterface:
         blocked_deps = dependencies.get("blocked_dependencies", 0)
 
         if blocked_deps > 0:
-            lines.append(f"🟡 **Dependencies**: {blocked_deps}/{total_deps} cross-team dependencies blocked")
+            lines.append(
+                f"🟡 **Dependencies**: {blocked_deps}/{total_deps} cross-team dependencies blocked"
+            )
 
-        if not any([security_vulns, blocked_issues > 2, critical_bugs > 1, blocked_deps]):
-            lines.append("✅ **Risk Status**: No significant risks identified. Operations within normal parameters.")
+        if not any(
+            [security_vulns, blocked_issues > 2, critical_bugs > 1, blocked_deps]
+        ):
+            lines.append(
+                "✅ **Risk Status**: No significant risks identified. Operations within normal parameters."
+            )
 
         return "\n".join(lines)
 
@@ -502,21 +567,29 @@ class PersonaChatInterface:
         total = on_track + at_risk + critical
         if total > 0:
             success_rate = (on_track / total) * 100
-            lines.append(f"📊 **Success Rate: {success_rate:.0f}%** ({on_track}/{total} initiatives on track)")
+            lines.append(
+                f"📊 **Success Rate: {success_rate:.0f}%** ({on_track}/{total} initiatives on track)"
+            )
             lines.append("")
 
             if critical > 0:
-                lines.append(f"🔴 **Critical**: {critical} initiatives need immediate intervention")
+                lines.append(
+                    f"🔴 **Critical**: {critical} initiatives need immediate intervention"
+                )
             if at_risk > 0:
                 lines.append(f"🟡 **At Risk**: {at_risk} initiatives require attention")
             if on_track > 0:
-                lines.append(f"✅ **On Track**: {on_track} initiatives progressing well")
+                lines.append(
+                    f"✅ **On Track**: {on_track} initiatives progressing well"
+                )
         else:
             lines.append("📋 No tracked initiatives at this time.")
 
         return "\n".join(lines)
 
-    def _format_general_overview_for_conversation(self, data, persona: PersonaType) -> str:
+    def _format_general_overview_for_conversation(
+        self, data, persona: PersonaType
+    ) -> str:
         """Format general overview for conversation."""
         lines = []
 
@@ -526,10 +599,12 @@ class PersonaChatInterface:
             PersonaType.CAMILLE: "🎯 Strategic technology status at a glance:",
             PersonaType.RACHEL: "🎨 Design systems and UX overview:",
             PersonaType.ALVARO: "💼 Business value and ROI snapshot:",
-            PersonaType.MARTIN: "🏗️ Platform architecture status:"
+            PersonaType.MARTIN: "🏗️ Platform architecture status:",
         }
 
-        greeting = persona_greetings.get(persona, "📊 Here's your current status overview:")
+        greeting = persona_greetings.get(
+            persona, "📊 Here's your current status overview:"
+        )
         lines.append(greeting)
         lines.append("")
 
@@ -545,11 +620,15 @@ class PersonaChatInterface:
         elif blocked_issues <= 2:
             lines.append("⚠️ **Status: Minor Issues** - Some items need attention")
         else:
-            lines.append("🔴 **Status: Attention Needed** - Multiple blockers identified")
+            lines.append(
+                "🔴 **Status: Attention Needed** - Multiple blockers identified"
+            )
 
         lines.append(f"📈 **Current Velocity**: {current_velocity} story points")
         lines.append("")
-        lines.append("*Ask me for a detailed executive summary, alerts, or specific area deep-dive.*")
+        lines.append(
+            "*Ask me for a detailed executive summary, alerts, or specific area deep-dive.*"
+        )
 
         return "\n".join(lines)
 
@@ -568,28 +647,33 @@ class PersonaChatInterface:
         else:
             return "**Overall Assessment:** Operations proceeding within expected parameters."
 
-    def _generate_follow_up_suggestions(self, persona: PersonaType, request_type: str) -> List[str]:
+    def _generate_follow_up_suggestions(
+        self, persona: PersonaType, request_type: str
+    ) -> List[str]:
         """Generate persona-appropriate follow-up suggestions."""
         base_suggestions = {
             "executive_summary": [
                 "Ask about specific team performance metrics",
                 "Review current risk factors and mitigation strategies",
-                "Check strategic initiative progress"
+                "Check strategic initiative progress",
             ],
             "alerts": [
                 "Request detailed executive summary",
                 "Ask about team health and capacity",
-                "Review upcoming deliverable timeline"
+                "Review upcoming deliverable timeline",
             ],
             "team_health": [
                 "Analyze velocity trends over time",
                 "Check for blockers and dependencies",
-                "Review individual team performance"
-            ]
+                "Review individual team performance",
+            ],
         }
 
-        return base_suggestions.get(request_type, [
-            "Ask for an executive summary",
-            "Check current alerts",
-            "Review team health status"
-        ])
+        return base_suggestions.get(
+            request_type,
+            [
+                "Ask for an executive summary",
+                "Check current alerts",
+                "Review team health status",
+            ],
+        )

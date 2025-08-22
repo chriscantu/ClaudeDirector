@@ -13,6 +13,7 @@ from dataclasses import dataclass, asdict
 # Try to import yaml, fall back to json if not available
 try:
     import yaml
+
     YAML_AVAILABLE = True
 except ImportError:
     YAML_AVAILABLE = False
@@ -21,6 +22,7 @@ except ImportError:
 @dataclass
 class UserIdentity:
     """User identity configuration with fallback hierarchy"""
+
     name: str = "User"
     work_name: str = ""
     full_name: str = ""
@@ -53,7 +55,7 @@ class UserIdentity:
     def get_possessive(self, context: str = "default") -> str:
         """Get possessive form of name (e.g., 'Cantu's')"""
         name = self.get_name(context)
-        return f"{name}'s" if not name.endswith('s') else f"{name}'"
+        return f"{name}'s" if not name.endswith("s") else f"{name}'"
 
 
 class UserConfigManager:
@@ -74,7 +76,9 @@ class UserConfigManager:
             config_path: Optional path to config file, defaults to standard location
         """
         if config_path is None:
-            config_path = Path(__file__).parent.parent.parent / "config" / "user_identity.yaml"
+            config_path = (
+                Path(__file__).parent.parent.parent / "config" / "user_identity.yaml"
+            )
 
         self.config_path = config_path
         self.template_path = config_path.parent / "user_identity.yaml.template"
@@ -88,16 +92,16 @@ class UserConfigManager:
                 self._create_config_from_template()
 
             if self.config_path.exists():
-                with open(self.config_path, 'r') as f:
-                    if YAML_AVAILABLE and self.config_path.suffix == '.yaml':
+                with open(self.config_path, "r") as f:
+                    if YAML_AVAILABLE and self.config_path.suffix == ".yaml":
                         config = yaml.safe_load(f)
-                        return config.get('user', {}) if config else {}
+                        return config.get("user", {}) if config else {}
                     else:
                         # Try to parse as JSON or simple key-value
                         content = f.read().strip()
-                        if content.startswith('{'):
+                        if content.startswith("{"):
                             config = json.loads(content)
-                            return config.get('user', {})
+                            return config.get("user", {})
                         else:
                             # Simple manual parsing for YAML-like content
                             return self._parse_simple_yaml(content)
@@ -111,6 +115,7 @@ class UserConfigManager:
         try:
             if self.template_path.exists():
                 import shutil
+
                 shutil.copy2(self.template_path, self.config_path)
                 print(f"Created user config from template: {self.config_path}")
         except Exception as e:
@@ -121,24 +126,24 @@ class UserConfigManager:
         config = {}
         in_user_section = False
 
-        for line in content.split('\n'):
+        for line in content.split("\n"):
             line = line.strip()
-            if line.startswith('user:'):
+            if line.startswith("user:"):
                 in_user_section = True
                 continue
 
-            if in_user_section and line and not line.startswith('#'):
-                if line.startswith('name:'):
-                    config['name'] = line.split(':', 1)[1].strip().strip('"\'')
-                elif line.startswith('work_name:'):
-                    config['work_name'] = line.split(':', 1)[1].strip().strip('"\'')
-                elif line.startswith('full_name:'):
-                    config['full_name'] = line.split(':', 1)[1].strip().strip('"\'')
-                elif line.startswith('role:'):
-                    config['role'] = line.split(':', 1)[1].strip().strip('"\'')
-                elif line.startswith('organization:'):
-                    config['organization'] = line.split(':', 1)[1].strip().strip('"\'')
-                elif not line.startswith(' ') and line.endswith(':'):
+            if in_user_section and line and not line.startswith("#"):
+                if line.startswith("name:"):
+                    config["name"] = line.split(":", 1)[1].strip().strip("\"'")
+                elif line.startswith("work_name:"):
+                    config["work_name"] = line.split(":", 1)[1].strip().strip("\"'")
+                elif line.startswith("full_name:"):
+                    config["full_name"] = line.split(":", 1)[1].strip().strip("\"'")
+                elif line.startswith("role:"):
+                    config["role"] = line.split(":", 1)[1].strip().strip("\"'")
+                elif line.startswith("organization:"):
+                    config["organization"] = line.split(":", 1)[1].strip().strip("\"'")
+                elif not line.startswith(" ") and line.endswith(":"):
                     # New section, exit user section
                     break
 
@@ -147,11 +152,11 @@ class UserConfigManager:
     def _load_from_env(self) -> Dict[str, str]:
         """Load configuration from environment variables"""
         env_mapping = {
-            'name': 'CLAUDEDIRECTOR_USER_NAME',
-            'work_name': 'CLAUDEDIRECTOR_WORK_NAME',
-            'full_name': 'CLAUDEDIRECTOR_FULL_NAME',
-            'role': 'CLAUDEDIRECTOR_USER_ROLE',
-            'organization': 'CLAUDEDIRECTOR_ORGANIZATION'
+            "name": "CLAUDEDIRECTOR_USER_NAME",
+            "work_name": "CLAUDEDIRECTOR_WORK_NAME",
+            "full_name": "CLAUDEDIRECTOR_FULL_NAME",
+            "role": "CLAUDEDIRECTOR_USER_ROLE",
+            "organization": "CLAUDEDIRECTOR_ORGANIZATION",
         }
 
         env_config = {}
@@ -202,12 +207,12 @@ class UserConfigManager:
 
             # Prepare config structure
             config = {
-                'user': asdict(user_identity),
-                '# Configuration': 'See comments in template for usage guidance'
+                "user": asdict(user_identity),
+                "# Configuration": "See comments in template for usage guidance",
             }
 
             # Write to file
-            with open(self.config_path, 'w') as f:
+            with open(self.config_path, "w") as f:
                 yaml.dump(config, f, default_flow_style=False, sort_keys=False)
 
             # Clear cached identity to force reload
@@ -235,10 +240,21 @@ class UserConfigManager:
 
         # Get user input with current values as defaults
         name = input(f"Primary name [{current.name}]: ").strip() or current.name
-        work_name = input(f"Work name (optional) [{current.work_name}]: ").strip() or current.work_name
-        full_name = input(f"Full name (optional) [{current.full_name}]: ").strip() or current.full_name
-        role = input(f"Role/title (optional) [{current.role}]: ").strip() or current.role
-        organization = input(f"Organization (optional) [{current.organization}]: ").strip() or current.organization
+        work_name = (
+            input(f"Work name (optional) [{current.work_name}]: ").strip()
+            or current.work_name
+        )
+        full_name = (
+            input(f"Full name (optional) [{current.full_name}]: ").strip()
+            or current.full_name
+        )
+        role = (
+            input(f"Role/title (optional) [{current.role}]: ").strip() or current.role
+        )
+        organization = (
+            input(f"Organization (optional) [{current.organization}]: ").strip()
+            or current.organization
+        )
 
         # Create new identity
         new_identity = UserIdentity(
@@ -246,7 +262,7 @@ class UserConfigManager:
             work_name=work_name,
             full_name=full_name,
             role=role,
-            organization=organization
+            organization=organization,
         )
 
         # Show preview
@@ -261,7 +277,7 @@ class UserConfigManager:
 
         # Confirm and save
         confirm = input("\nSave this configuration? [Y/n]: ").strip().lower()
-        if confirm in ('', 'y', 'yes'):
+        if confirm in ("", "y", "yes"):
             if self.save_user_config(new_identity):
                 print("✅ User configuration saved successfully!")
             else:
@@ -273,6 +289,7 @@ class UserConfigManager:
 # Global instance for easy access
 _user_config_manager = None
 
+
 def get_user_config_manager() -> UserConfigManager:
     """Get global user configuration manager instance"""
     global _user_config_manager
@@ -280,13 +297,16 @@ def get_user_config_manager() -> UserConfigManager:
         _user_config_manager = UserConfigManager()
     return _user_config_manager
 
+
 def get_user_identity() -> UserIdentity:
     """Get current user identity configuration"""
     return get_user_config_manager().get_user_identity()
 
+
 def get_user_name(context: str = "default") -> str:
     """Get user name for specified context"""
     return get_user_identity().get_name(context)
+
 
 def get_user_attribution() -> str:
     """Get user attribution string (e.g., 'Cantu's requirement')"""

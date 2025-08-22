@@ -13,6 +13,7 @@ from ..infrastructure.config import AIModelType, PerformanceThresholds
 
 class InferenceResult(Protocol):
     """Protocol for AI inference results"""
+
     success: bool
     confidence: float
     processing_time_ms: int
@@ -21,6 +22,7 @@ class InferenceResult(Protocol):
 
 class ValidationResult(Protocol):
     """Protocol for validation results"""
+
     accuracy: float
     test_cases: int
     passed: bool
@@ -29,6 +31,7 @@ class ValidationResult(Protocol):
 
 class PerformanceMetric(Protocol):
     """Protocol for performance metrics"""
+
     timestamp: str
     execution_time_ms: int
     confidence: float
@@ -103,8 +106,9 @@ class IPerformanceMonitor(Protocol):
     Separated from inference to enable independent performance tracking.
     """
 
-    def record_query_performance(self, query: str, execution_time_ms: int,
-                                result_count: int, confidence: float) -> None:
+    def record_query_performance(
+        self, query: str, execution_time_ms: int, result_count: int, confidence: float
+    ) -> None:
         """Record performance metrics for a query"""
         ...
 
@@ -167,9 +171,14 @@ class DecisionIntelligenceResult:
     Replaces generic dictionaries with type-safe data structures.
     """
 
-    def __init__(self, success: bool, decisions: List[Dict[str, Any]],
-                 overall_confidence: float, processing_time_ms: int,
-                 error: Optional[str] = None):
+    def __init__(
+        self,
+        success: bool,
+        decisions: List[Dict[str, Any]],
+        overall_confidence: float,
+        processing_time_ms: int,
+        error: Optional[str] = None,
+    ):
         self.success = success
         self.decisions = decisions
         self.overall_confidence = overall_confidence
@@ -180,14 +189,14 @@ class DecisionIntelligenceResult:
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for backwards compatibility"""
         result = {
-            'success': self.success,
-            'decisions_detected': self.decisions_detected,
-            'decisions': self.decisions,
-            'overall_confidence': self.overall_confidence,
-            'processing_time_ms': self.processing_time_ms
+            "success": self.success,
+            "decisions_detected": self.decisions_detected,
+            "decisions": self.decisions,
+            "overall_confidence": self.overall_confidence,
+            "processing_time_ms": self.processing_time_ms,
         }
         if self.error:
-            result['error'] = self.error
+            result["error"] = self.error
         return result
 
 
@@ -198,11 +207,20 @@ class HealthPredictionResult:
     Replaces generic dictionaries with type-safe data structures.
     """
 
-    def __init__(self, success: bool, health_score: float, health_status: str,
-                 risk_level: str, confidence: float, processing_time_ms: int,
-                 health_components: Dict[str, float], risk_assessment: Dict[str, Any],
-                 trend_analysis: Dict[str, Any], recommendations: List[Dict[str, Any]],
-                 error: Optional[str] = None):
+    def __init__(
+        self,
+        success: bool,
+        health_score: float,
+        health_status: str,
+        risk_level: str,
+        confidence: float,
+        processing_time_ms: int,
+        health_components: Dict[str, float],
+        risk_assessment: Dict[str, Any],
+        trend_analysis: Dict[str, Any],
+        recommendations: List[Dict[str, Any]],
+        error: Optional[str] = None,
+    ):
         self.success = success
         self.health_score = health_score
         self.health_status = health_status
@@ -218,24 +236,26 @@ class HealthPredictionResult:
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for backwards compatibility"""
         result = {
-            'success': self.success,
-            'health_score': self.health_score,
-            'health_status': self.health_status,
-            'risk_level': self.risk_level,
-            'confidence': self.confidence,
-            'processing_time_ms': self.processing_time_ms,
-            'health_components': self.health_components,
-            'risk_assessment': self.risk_assessment,
-            'trend_analysis': self.trend_analysis,
-            'recommendations': self.recommendations
+            "success": self.success,
+            "health_score": self.health_score,
+            "health_status": self.health_status,
+            "risk_level": self.risk_level,
+            "confidence": self.confidence,
+            "processing_time_ms": self.processing_time_ms,
+            "health_components": self.health_components,
+            "risk_assessment": self.risk_assessment,
+            "trend_analysis": self.trend_analysis,
+            "recommendations": self.recommendations,
         }
         if self.error:
-            result['error'] = self.error
+            result["error"] = self.error
         return result
 
 
 @runtime_checkable
-class IDecisionIntelligenceEngine(IInferenceEngine, IModelValidator, IPerformanceMonitor, IConfigurable, Protocol):
+class IDecisionIntelligenceEngine(
+    IInferenceEngine, IModelValidator, IPerformanceMonitor, IConfigurable, Protocol
+):
     """
     Composite interface for decision intelligence
 
@@ -249,7 +269,9 @@ class IDecisionIntelligenceEngine(IInferenceEngine, IModelValidator, IPerformanc
 
 
 @runtime_checkable
-class IHealthPredictionEngine(IInferenceEngine, IModelValidator, IPerformanceMonitor, IConfigurable, Protocol):
+class IHealthPredictionEngine(
+    IInferenceEngine, IModelValidator, IPerformanceMonitor, IConfigurable, Protocol
+):
     """
     Composite interface for health prediction
 
@@ -270,7 +292,9 @@ class ModelFactory(ABC):
     """
 
     @abstractmethod
-    def create_decision_engine(self, config: Dict[str, Any]) -> IDecisionIntelligenceEngine:
+    def create_decision_engine(
+        self, config: Dict[str, Any]
+    ) -> IDecisionIntelligenceEngine:
         """Create decision intelligence engine"""
 
     @abstractmethod

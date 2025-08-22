@@ -10,6 +10,7 @@ from dataclasses import dataclass
 @dataclass
 class FrameworkUsage:
     """Represents usage of a strategic framework"""
+
     framework_name: str
     confidence_score: float
     matched_patterns: List[str]
@@ -31,10 +32,10 @@ class FrameworkDetectionMiddleware:
                     "objectives goals strategies measures",
                     "ogsm analysis",
                     "ogsm planning",
-                    "ogsm strategic planning"
+                    "ogsm strategic planning",
                 ],
                 "type": "strategic",
-                "confidence_weight": 0.9
+                "confidence_weight": 0.9,
             },
             "Blue Ocean Strategy": {
                 "patterns": [
@@ -45,10 +46,10 @@ class FrameworkDetectionMiddleware:
                     "value innovation",
                     "strategy canvas",
                     "four actions framework",
-                    "blue ocean approach"
+                    "blue ocean approach",
                 ],
                 "type": "strategic",
-                "confidence_weight": 0.9
+                "confidence_weight": 0.9,
             },
             "Design Thinking": {
                 "patterns": [
@@ -60,10 +61,10 @@ class FrameworkDetectionMiddleware:
                     "design thinking framework",
                     "empathize",
                     "ideate",
-                    "prototype"
+                    "prototype",
                 ],
                 "type": "innovation",
-                "confidence_weight": 0.9
+                "confidence_weight": 0.9,
             },
             "Porter's Five Forces": {
                 "patterns": [
@@ -73,10 +74,10 @@ class FrameworkDetectionMiddleware:
                     "porter five forces",
                     "competitive analysis framework",
                     "industry analysis",
-                    "porter's five forces analysis"
+                    "porter's five forces analysis",
                 ],
                 "type": "strategic",
-                "confidence_weight": 0.9
+                "confidence_weight": 0.9,
             },
             "BCG Matrix": {
                 "patterns": [
@@ -87,10 +88,10 @@ class FrameworkDetectionMiddleware:
                     "portfolio analysis",
                     "question mark products",
                     "cash cows",
-                    "stars"
+                    "stars",
                 ],
                 "type": "strategic",
-                "confidence_weight": 0.8
+                "confidence_weight": 0.8,
             },
             "Jobs-to-be-Done": {
                 "patterns": [
@@ -99,10 +100,10 @@ class FrameworkDetectionMiddleware:
                     "jtbd framework",
                     "customer jobs",
                     "jobs-to-be-done framework",
-                    "job story"
+                    "job story",
                 ],
                 "type": "innovation",
-                "confidence_weight": 0.8
+                "confidence_weight": 0.8,
             },
             "Lean Startup": {
                 "patterns": [
@@ -112,10 +113,10 @@ class FrameworkDetectionMiddleware:
                     "mvp development",
                     "build measure learn",
                     "validated learning",
-                    "mvp"
+                    "mvp",
                 ],
                 "type": "innovation",
-                "confidence_weight": 0.8
+                "confidence_weight": 0.8,
             },
             "OKRs": {
                 "patterns": [
@@ -124,10 +125,10 @@ class FrameworkDetectionMiddleware:
                     "objectives and key results",
                     "objective key results",
                     "okr framework",
-                    "quarterly objectives"
+                    "quarterly objectives",
                 ],
                 "type": "strategic",
-                "confidence_weight": 0.8
+                "confidence_weight": 0.8,
             },
             "SWOT Analysis": {
                 "patterns": [
@@ -135,10 +136,10 @@ class FrameworkDetectionMiddleware:
                     "swot framework",
                     "strengths weaknesses opportunities threats",
                     "swot matrix",
-                    "internal external analysis"
+                    "internal external analysis",
                 ],
                 "type": "strategic",
-                "confidence_weight": 0.8
+                "confidence_weight": 0.8,
             },
             "Kotter's 8-Step Change Model": {
                 "patterns": [
@@ -147,20 +148,20 @@ class FrameworkDetectionMiddleware:
                     "8-step change model",
                     "kotter change model",
                     "create urgency",
-                    "guiding coalition"
+                    "guiding coalition",
                 ],
                 "type": "change_management",
-                "confidence_weight": 0.8
+                "confidence_weight": 0.8,
             },
             "ADKAR Framework": {
                 "patterns": [
                     "adkar",
                     "adkar framework",
                     "awareness desire knowledge ability reinforcement",
-                    "adkar change model"
+                    "adkar change model",
                 ],
                 "type": "change_management",
-                "confidence_weight": 0.8
+                "confidence_weight": 0.8,
             },
             # Specialized ClaudeDirector Frameworks
             "Sequential": {
@@ -170,10 +171,10 @@ class FrameworkDetectionMiddleware:
                     "strategic framework analysis",
                     "systematic strategic analysis",
                     "sequential methodology",
-                    "strategic analysis framework"
+                    "strategic analysis framework",
                 ],
                 "type": "strategic",
-                "confidence_weight": 0.9
+                "confidence_weight": 0.9,
             },
             "Context7": {
                 "patterns": [
@@ -183,10 +184,10 @@ class FrameworkDetectionMiddleware:
                     "design system methodology",
                     "established architectural patterns",
                     "context7 framework",
-                    "proven architectural methodologies"
+                    "proven architectural methodologies",
                 ],
                 "type": "architectural_patterns",
-                "confidence_weight": 0.9
+                "confidence_weight": 0.9,
             },
             "Magic": {
                 "patterns": [
@@ -195,10 +196,10 @@ class FrameworkDetectionMiddleware:
                     "visualization",
                     "business visualization",
                     "presentation creation",
-                    "magic implementation"
+                    "magic implementation",
                 ],
                 "type": "implementation",
-                "confidence_weight": 0.8
+                "confidence_weight": 0.8,
             },
             "Team Topologies": {
                 "patterns": [
@@ -208,10 +209,10 @@ class FrameworkDetectionMiddleware:
                     "team topology patterns",
                     "stream-aligned teams",
                     "platform teams",
-                    "complicated subsystem teams"
+                    "complicated subsystem teams",
                 ],
                 "type": "organizational",
-                "confidence_weight": 0.8
+                "confidence_weight": 0.8,
             },
             "WRAP Framework": {
                 "patterns": [
@@ -221,10 +222,10 @@ class FrameworkDetectionMiddleware:
                     "widen your options",
                     "reality-test",
                     "attain distance",
-                    "prepare to be wrong"
+                    "prepare to be wrong",
                 ],
                 "type": "decision",
-                "confidence_weight": 0.8
+                "confidence_weight": 0.8,
             },
             "Good Strategy Bad Strategy": {
                 "patterns": [
@@ -234,10 +235,10 @@ class FrameworkDetectionMiddleware:
                     "rumelt framework",
                     "diagnosis",
                     "guiding policy",
-                    "coherent action"
+                    "coherent action",
                 ],
                 "type": "strategic",
-                "confidence_weight": 0.7
+                "confidence_weight": 0.7,
             },
             "Crucial Conversations": {
                 "patterns": [
@@ -247,10 +248,10 @@ class FrameworkDetectionMiddleware:
                     "start with heart",
                     "learn to look",
                     "make it safe",
-                    "state your path"
+                    "state your path",
                 ],
                 "type": "communication",
-                "confidence_weight": 0.7
+                "confidence_weight": 0.7,
             },
             "Accelerate": {
                 "patterns": [
@@ -260,10 +261,10 @@ class FrameworkDetectionMiddleware:
                     "lead time",
                     "change failure rate",
                     "recovery time",
-                    "dora metrics"
+                    "dora metrics",
                 ],
                 "type": "performance",
-                "confidence_weight": 0.8
+                "confidence_weight": 0.8,
             },
             "Thinking in Systems": {
                 "patterns": [
@@ -273,10 +274,10 @@ class FrameworkDetectionMiddleware:
                     "system patterns",
                     "systems behavior",
                     "mental models",
-                    "system structure"
+                    "system structure",
                 ],
                 "type": "systems",
-                "confidence_weight": 0.7
+                "confidence_weight": 0.7,
             },
             "Design System Scaling": {
                 "patterns": [
@@ -285,10 +286,10 @@ class FrameworkDetectionMiddleware:
                     "design system methodology",
                     "component adoption",
                     "design system maturity",
-                    "cross-team design coordination"
+                    "cross-team design coordination",
                 ],
                 "type": "design",
-                "confidence_weight": 0.8
+                "confidence_weight": 0.8,
             },
             "Business Model Canvas": {
                 "patterns": [
@@ -297,10 +298,10 @@ class FrameworkDetectionMiddleware:
                     "customer segments",
                     "revenue streams",
                     "key partnerships",
-                    "business model framework"
+                    "business model framework",
                 ],
                 "type": "business",
-                "confidence_weight": 0.8
+                "confidence_weight": 0.8,
             },
             "Competitive Analysis": {
                 "patterns": [
@@ -309,11 +310,11 @@ class FrameworkDetectionMiddleware:
                     "market positioning",
                     "competitive intelligence",
                     "competitive advantage",
-                    "market differentiation"
+                    "market differentiation",
                 ],
                 "type": "business",
-                "confidence_weight": 0.7
-            }
+                "confidence_weight": 0.7,
+            },
         }
 
         # Persona-specific attribution templates
@@ -322,7 +323,7 @@ class FrameworkDetectionMiddleware:
             "camille": "This strategic approach uses {frameworks} framework, positioned through my executive technology leadership perspective.",
             "rachel": "This recommendation follows {frameworks} methodology, customized through my cross-functional design experience.",
             "alvaro": "This analysis leverages {frameworks} framework, applied through my competitive business strategy experience.",
-            "martin": "This approach uses {frameworks} patterns, adapted through my evolutionary architecture experience."
+            "martin": "This approach uses {frameworks} patterns, adapted through my evolutionary architecture experience.",
         }
 
         # Minimum confidence threshold for framework attribution
@@ -353,7 +354,9 @@ class FrameworkDetectionMiddleware:
                 if pattern_count > 0:
                     matched_patterns.append(pattern)
                     # Add confidence based on pattern occurrence
-                    confidence_score += min(pattern_count * 0.3, 0.8)  # Cap per pattern at 0.8
+                    confidence_score += min(
+                        pattern_count * 0.3, 0.8
+                    )  # Cap per pattern at 0.8
 
             # Apply base confidence weight
             if matched_patterns:
@@ -361,25 +364,31 @@ class FrameworkDetectionMiddleware:
 
                 # Only include if above threshold
                 if confidence_score >= self.confidence_threshold:
-                    detected_frameworks.append(FrameworkUsage(
-                        framework_name=framework_name,
-                        confidence_score=confidence_score,
-                        matched_patterns=matched_patterns,
-                        framework_type=framework_type
-                    ))
+                    detected_frameworks.append(
+                        FrameworkUsage(
+                            framework_name=framework_name,
+                            confidence_score=confidence_score,
+                            matched_patterns=matched_patterns,
+                            framework_type=framework_type,
+                        )
+                    )
 
         # Sort by confidence score (highest first)
         detected_frameworks.sort(key=lambda f: f.confidence_score, reverse=True)
 
         return detected_frameworks
 
-    def create_framework_attribution(self, persona: str, frameworks: List[FrameworkUsage]) -> str:
+    def create_framework_attribution(
+        self, persona: str, frameworks: List[FrameworkUsage]
+    ) -> str:
         """Generate framework attribution text for a persona"""
         if not frameworks:
             return ""
 
         # Get framework names for high-confidence frameworks only
-        high_confidence_frameworks = [f for f in frameworks if f.confidence_score >= 0.8]
+        high_confidence_frameworks = [
+            f for f in frameworks if f.confidence_score >= 0.8
+        ]
 
         if not high_confidence_frameworks:
             # Use top framework if no high-confidence ones
@@ -392,17 +401,20 @@ class FrameworkDetectionMiddleware:
         elif len(framework_names) == 2:
             frameworks_text = f"{framework_names[0]} and {framework_names[1]}"
         else:
-            frameworks_text = ", ".join(framework_names[:-1]) + f", and {framework_names[-1]}"
+            frameworks_text = (
+                ", ".join(framework_names[:-1]) + f", and {framework_names[-1]}"
+            )
 
         # Get persona-specific template
         template = self.persona_attribution_templates.get(
-            persona,
-            self.persona_attribution_templates["diego"]
+            persona, self.persona_attribution_templates["diego"]
         )
 
         return template.format(frameworks=frameworks_text)
 
-    def add_framework_attribution(self, persona: str, response: str, frameworks: List[FrameworkUsage]) -> str:
+    def add_framework_attribution(
+        self, persona: str, response: str, frameworks: List[FrameworkUsage]
+    ) -> str:
         """Add framework attribution to a response"""
         if not frameworks:
             return response
@@ -421,7 +433,7 @@ class FrameworkDetectionMiddleware:
                 "total_frameworks": 0,
                 "framework_types": [],
                 "highest_confidence": 0.0,
-                "frameworks_used": []
+                "frameworks_used": [],
             }
 
         framework_types = list(set(f.framework_type for f in frameworks))
@@ -432,7 +444,7 @@ class FrameworkDetectionMiddleware:
             "total_frameworks": len(frameworks),
             "framework_types": framework_types,
             "highest_confidence": highest_confidence,
-            "frameworks_used": frameworks_used
+            "frameworks_used": frameworks_used,
         }
 
     def create_framework_disclosure(self, frameworks: List[FrameworkUsage]) -> str:
