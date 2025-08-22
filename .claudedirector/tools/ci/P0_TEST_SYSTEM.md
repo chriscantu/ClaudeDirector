@@ -12,17 +12,17 @@ This system ensures that **ALL P0 features defined in YAML are automatically inc
 - **Format**: YAML with test modules, critical levels, timeouts, business impact
 
 ### **2. P0 Test Generator**
-- **File**: `.claudedirector/dev-tools/ci/p0_test_generator.py`
+- **File**: `.claudedirector/tools/ci/p0_test_generator.py`
 - **Purpose**: Generates CI steps from YAML definitions
 - **Usage**: `./p0_test_generator.py --generate-ci`
 
 ### **3. P0 Coverage Validator**
-- **File**: `.claudedirector/dev-tools/ci/validate_p0_coverage.py`
+- **File**: `.claudedirector/tools/ci/validate_p0_coverage.py`
 - **Purpose**: Validates 100% CI coverage of P0 tests
 - **Usage**: `./validate_p0_coverage.py`
 
 ### **4. P0 CI Coverage Guard**
-- **File**: `.claudedirector/dev-tools/hooks/p0-ci-coverage-guard.py`
+- **File**: `.claudedirector/tools/hooks/p0-ci-coverage-guard.py`
 - **Purpose**: Pre-commit hook preventing coverage regressions
 - **Integration**: Automatically runs via `.pre-commit-config.yaml`
 
@@ -59,7 +59,7 @@ The system automatically:
 ### **3. Coverage Validation**
 ```bash
 # Validate current CI coverage
-.claudedirector/dev-tools/ci/validate_p0_coverage.py
+.claudedirector/tools/ci/validate_p0_coverage.py
 
 # Expected output:
 ✅ MCP Transparency P0
@@ -91,16 +91,16 @@ The system automatically:
 2. Update CI workflow:
 ```bash
 # Generate new CI step
-.claudedirector/dev-tools/ci/p0_test_generator.py --generate-ci
+.claudedirector/tools/ci/p0_test_generator.py --generate-ci
 
 # Validate coverage
-.claudedirector/dev-tools/ci/validate_p0_coverage.py
+.claudedirector/tools/ci/validate_p0_coverage.py
 ```
 
 ### **Validating CI Changes**
 ```bash
 # Before committing CI workflow changes
-.claudedirector/dev-tools/ci/validate_p0_coverage.py
+.claudedirector/tools/ci/validate_p0_coverage.py
 
 # Should show 100% coverage or block commit
 ```
@@ -108,7 +108,7 @@ The system automatically:
 ### **Debugging Coverage Issues**
 ```bash
 # Check current definitions
-.claudedirector/dev-tools/ci/p0_test_generator.py
+.claudedirector/tools/ci/p0_test_generator.py
 
 # Output shows:
 Total P0 Features: 5

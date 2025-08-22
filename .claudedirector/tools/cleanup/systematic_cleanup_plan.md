@@ -62,7 +62,7 @@ The recent 48,454-line addition exposed critical architecture debt:
 **Target**: Catch issues before they reach main
 - **Rule**: All feature branches must pass CI before merge
 - **Process**: Local CI validation before push
-- **Tool**: `python3 .claudedirector/dev-tools/ci/validate-ci-locally.py`
+- **Tool**: `python3 .claudedirector/tools/ci/validate-ci-locally.py`
 
 ## **Implementation Timeline**
 
