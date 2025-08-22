@@ -12,8 +12,15 @@ import os
 import unittest
 from pathlib import Path
 
-# Add the lib path for testing
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "lib"))
+# Add the lib path for testing - robust CI and local support
+# Try multiple path strategies for different environments
+test_file_dir = Path(__file__).parent
+repo_root = test_file_dir.parent.parent.parent  # Should be /path/to/ai-leadership
+claudedirector_lib = repo_root / ".claudedirector" / "lib"
+
+# Add both possible paths
+sys.path.insert(0, str(claudedirector_lib))
+sys.path.insert(0, str(test_file_dir.parent.parent / "lib"))  # fallback
 
 try:
     from cursor_transparency_bridge import (
