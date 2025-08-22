@@ -18,6 +18,7 @@ from memory.meeting_intelligence import MeetingIntelligenceManager
 # Import stakeholder detection if available
 try:
     from memory.intelligent_stakeholder_detector import IntelligentStakeholderDetector
+
     STAKEHOLDER_DETECTION_AVAILABLE = True
 except ImportError:
     STAKEHOLDER_DETECTION_AVAILABLE = False
@@ -240,7 +241,14 @@ class StrategicWorkspaceHandler(FileSystemEventHandler):
                 )
 
                 # Set memory trigger for strategic content
-                strategic_keywords = ["strategic", "vp", "slt", "initiative", "roadmap", "1on1"]
+                strategic_keywords = [
+                    "strategic",
+                    "vp",
+                    "slt",
+                    "initiative",
+                    "roadmap",
+                    "1on1",
+                ]
                 if any(keyword in content.lower() for keyword in strategic_keywords):
                     intelligence["memory_trigger"] = True
                     intelligence["strategic_value"] = "high"
@@ -296,7 +304,9 @@ class StrategicWorkspaceHandler(FileSystemEventHandler):
             meeting_data = self.meeting_manager.parse_meeting_prep_directory(dir_path)
             meeting_id = self.meeting_manager.store_meeting_session(meeting_data)
 
-            print(f"✅ Meeting session created: {meeting_data['meeting_key']} -> ID {meeting_id}")
+            print(
+                f"✅ Meeting session created: {meeting_data['meeting_key']} -> ID {meeting_id}"
+            )
 
             # Update workspace change with memory storage info
             with sqlite3.connect(self.db_path) as conn:
@@ -320,7 +330,9 @@ class StrategicWorkspaceHandler(FileSystemEventHandler):
         # Extract initiative information and store in strategic_initiatives table
         # This could be enhanced to parse initiative details from directory structure
 
-    def _apply_directory_templates(self, dir_path: Path, category: str, subcategory: str):
+    def _apply_directory_templates(
+        self, dir_path: Path, category: str, subcategory: str
+    ):
         """Apply automatic directory templates based on category."""
         # Query workspace_templates for matching templates
         with sqlite3.connect(self.db_path) as conn:
@@ -339,7 +351,9 @@ class StrategicWorkspaceHandler(FileSystemEventHandler):
                     # Check if template matches this directory
                     if self._template_matches(dir_path, template_name):
                         print(f"📋 Applying template: {template_name}")
-                        self._create_template_structure(dir_path, dir_structure, default_files)
+                        self._create_template_structure(
+                            dir_path, dir_structure, default_files
+                        )
                         break
 
             except sqlite3.OperationalError:
@@ -361,7 +375,9 @@ class StrategicWorkspaceHandler(FileSystemEventHandler):
 
         return False
 
-    def _create_template_structure(self, dir_path: Path, dir_structure: str, default_files: str):
+    def _create_template_structure(
+        self, dir_path: Path, dir_structure: str, default_files: str
+    ):
         """Create directory structure and default files from template."""
         try:
             structure = json.loads(dir_structure) if dir_structure else {}
@@ -396,7 +412,9 @@ class WorkspaceMonitor:
     """Main workspace monitoring service."""
 
     def __init__(
-        self, workspace_path: str = "workspace", db_path: str = "memory/strategic_memory.db"
+        self,
+        workspace_path: str = "workspace",
+        db_path: str = "memory/strategic_memory.db",
     ):
         self.workspace_path = Path(workspace_path)
         self.db_path = db_path
@@ -427,15 +445,16 @@ class WorkspaceMonitor:
         self.observer.join()
         print("✅ Workspace monitor stopped")
 
-
-    def _process_stakeholder_detection(self, file_path: Path, category: str, subcategory: str):
+    def _process_stakeholder_detection(
+        self, file_path: Path, category: str, subcategory: str
+    ):
         """Process file for intelligent stakeholder detection"""
         if not self.stakeholder_detector:
             return
 
         try:
             # Read file content
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
             if len(content.strip()) < 10:  # Skip very short files
@@ -443,29 +462,47 @@ class WorkspaceMonitor:
 
             # Build context for AI analysis
             context = {
-                'category': category,
-                'subcategory': subcategory,
-                'file_path': str(file_path),
-                'relative_path': str(self._get_relative_path(file_path)),
-                'meeting_type': self._infer_meeting_type(file_path.parent.name) if category == 'meeting-prep' else None
+                "category": category,
+                "subcategory": subcategory,
+                "file_path": str(file_path),
+                "relative_path": str(self._get_relative_path(file_path)),
+                "meeting_type": (
+                    self._infer_meeting_type(file_path.parent.name)
+                    if category == "meeting-prep"
+                    else None
+                ),
             }
 
             # Process with intelligent stakeholder detector
-            result = self.stakeholder_detector.process_content_for_stakeholders(content, context)
+            result = self.stakeholder_detector.process_content_for_stakeholders(
+                content, context
+            )
 
-            if result['candidates_detected'] > 0:
-                print(f"🧠 AI detected {result['candidates_detected']} stakeholder candidates in {file_path.name}")
+            if result["candidates_detected"] > 0:
+                print(
+                    f"🧠 AI detected {result['candidates_detected']} stakeholder candidates in {file_path.name}"
+                )
 
-                if result['auto_created'] > 0:
-                    print(f"   ✅ Auto-created {result['auto_created']} stakeholder profiles")
+                if result["auto_created"] > 0:
+                    print(
+                        f"   ✅ Auto-created {result['auto_created']} stakeholder profiles"
+                    )
 
-                if result['profiling_needed'] > 0:
-                    print(f"   ❓ {result['profiling_needed']} stakeholders need profiling")
-                    print("   💡 Run 'python stakeholder_ai_manager.py profile' to complete")
+                if result["profiling_needed"] > 0:
+                    print(
+                        f"   ❓ {result['profiling_needed']} stakeholders need profiling"
+                    )
+                    print(
+                        "   💡 Run 'python stakeholder_ai_manager.py profile' to complete"
+                    )
 
-                if result['updates_suggested'] > 0:
-                    print(f"   🔄 {result['updates_suggested']} stakeholder updates suggested")
-                    print("   💡 Run 'python stakeholder_ai_manager.py updates' to review")
+                if result["updates_suggested"] > 0:
+                    print(
+                        f"   🔄 {result['updates_suggested']} stakeholder updates suggested"
+                    )
+                    print(
+                        "   💡 Run 'python stakeholder_ai_manager.py updates' to review"
+                    )
 
         except Exception as e:
             print(f"⚠️  Error in stakeholder detection for {file_path.name}: {e}")
@@ -474,16 +511,16 @@ class WorkspaceMonitor:
         """Infer meeting type from directory name"""
         name_lower = directory_name.lower()
 
-        if 'vp' in name_lower or 'vice-president' in name_lower:
-            return 'vp_1on1'
-        elif '1on1' in name_lower or 'one-on-one' in name_lower:
-            return '1on1_reports'
-        elif 'strategic' in name_lower or 'planning' in name_lower:
-            return 'strategic_planning'
-        elif 'team' in name_lower or 'all-hands' in name_lower:
-            return 'team_meeting'
+        if "vp" in name_lower or "vice-president" in name_lower:
+            return "vp_1on1"
+        elif "1on1" in name_lower or "one-on-one" in name_lower:
+            return "1on1_reports"
+        elif "strategic" in name_lower or "planning" in name_lower:
+            return "strategic_planning"
+        elif "team" in name_lower or "all-hands" in name_lower:
+            return "team_meeting"
         else:
-            return 'general_meeting'
+            return "general_meeting"
 
 
 def main():
@@ -491,9 +528,15 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="SuperClaude Workspace Monitor")
-    parser.add_argument("--workspace", default="workspace", help="Workspace directory to monitor")
-    parser.add_argument("--db-path", default="memory/strategic_memory.db", help="Database path")
-    parser.add_argument("--test", action="store_true", help="Test handler without monitoring")
+    parser.add_argument(
+        "--workspace", default="workspace", help="Workspace directory to monitor"
+    )
+    parser.add_argument(
+        "--db-path", default="memory/strategic_memory.db", help="Database path"
+    )
+    parser.add_argument(
+        "--test", action="store_true", help="Test handler without monitoring"
+    )
 
     args = parser.parse_args()
 

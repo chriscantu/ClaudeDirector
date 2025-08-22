@@ -38,7 +38,7 @@ class DecisionIntelligenceEngine(AIEngineBase):
             r"(?i)we\s+(?:will|shall|decided to|agree to)\s+(.+)",
             r"(?i)(?:approved|rejected|postponed):\s*(.+)",
             r"(?i)action\s+item:\s*(.+)",
-            r"(?i)next\s+steps?:\s*(.+)"
+            r"(?i)next\s+steps?:\s*(.+)",
         ]
 
         # Timeline extraction patterns
@@ -47,7 +47,7 @@ class DecisionIntelligenceEngine(AIEngineBase):
             r"(?i)(?:Q[1-4] \d{4})",
             r"(?i)(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{4}",
             r"(?i)(?:in \d+ (?:days?|weeks?|months?))",
-            r"(?i)(?:next (?:week|month|quarter))"
+            r"(?i)(?:next (?:week|month|quarter))",
         ]
 
         # Ownership extraction patterns
@@ -55,16 +55,22 @@ class DecisionIntelligenceEngine(AIEngineBase):
             r"(?i)owner:\s*([A-Za-z ]+)",
             r"(?i)responsible:\s*([A-Za-z ]+)",
             r"(?i)assigned to:\s*([A-Za-z ]+)",
-            r"(?i)([A-Za-z ]+)\s+(?:will|to)\s+(?:lead|own|manage)"
+            r"(?i)([A-Za-z ]+)\s+(?:will|to)\s+(?:lead|own|manage)",
         ]
 
         # Decision type classification
         self._decision_types = {
-            'strategic': ['vision', 'strategy', 'roadmap', 'architecture', 'investment'],
-            'operational': ['process', 'workflow', 'procedure', 'policy'],
-            'technical': ['technology', 'platform', 'system', 'infrastructure'],
-            'organizational': ['team', 'hiring', 'structure', 'role'],
-            'financial': ['budget', 'cost', 'investment', 'funding']
+            "strategic": [
+                "vision",
+                "strategy",
+                "roadmap",
+                "architecture",
+                "investment",
+            ],
+            "operational": ["process", "workflow", "procedure", "policy"],
+            "technical": ["technology", "platform", "system", "infrastructure"],
+            "organizational": ["team", "hiring", "structure", "role"],
+            "financial": ["budget", "cost", "investment", "funding"],
         }
 
         self._model_loaded = False
@@ -83,29 +89,36 @@ class DecisionIntelligenceEngine(AIEngineBase):
 
             # In production, this would load actual ML models
             # For now, we use optimized rule-based system that achieves >85% accuracy
-            self.logger.info("Loading decision intelligence model",
-                           model_name=self.config.model_name)
+            self.logger.info(
+                "Loading decision intelligence model", model_name=self.config.model_name
+            )
 
             # Simulate model loading time
-            if not self.config.parameters.get('test_mode', False):
+            if not self.config.parameters.get("test_mode", False):
                 time.sleep(0.1)  # Realistic loading time
 
             # Validate model configuration
             if self.config.accuracy_threshold < 0.85:
-                self.logger.warning("Accuracy threshold below recommended 85%",
-                                  threshold=self.config.accuracy_threshold)
+                self.logger.warning(
+                    "Accuracy threshold below recommended 85%",
+                    threshold=self.config.accuracy_threshold,
+                )
 
             self._model_loaded = True
             load_time = (time.time() - start_time) * 1000
 
-            self.logger.info("Decision intelligence model loaded successfully",
-                           load_time_ms=load_time,
-                           accuracy_threshold=self.config.accuracy_threshold)
+            self.logger.info(
+                "Decision intelligence model loaded successfully",
+                load_time_ms=load_time,
+                accuracy_threshold=self.config.accuracy_threshold,
+            )
 
             return True
 
         except Exception as e:
-            self.logger.error("Failed to load decision intelligence model", error=str(e))
+            self.logger.error(
+                "Failed to load decision intelligence model", error=str(e)
+            )
             return False
 
     def predict(self, input_data: Any) -> Dict[str, Any]:
@@ -134,8 +147,8 @@ class DecisionIntelligenceEngine(AIEngineBase):
                 text_content = input_data
                 metadata = {}
             elif isinstance(input_data, dict):
-                text_content = input_data.get('content', '')
-                metadata = {k: v for k, v in input_data.items() if k != 'content'}
+                text_content = input_data.get("content", "")
+                metadata = {k: v for k, v in input_data.items() if k != "content"}
             else:
                 return self._create_error_result("Invalid input format")
 
@@ -148,29 +161,37 @@ class DecisionIntelligenceEngine(AIEngineBase):
                 decision.update(self._extract_decision_metadata(decision, text_content))
 
             # Calculate overall confidence
-            overall_confidence = self._calculate_overall_confidence(decisions, text_content)
+            overall_confidence = self._calculate_overall_confidence(
+                decisions, text_content
+            )
 
             processing_time_ms = int((time.time() - start_time) * 1000)
 
             # Record performance metrics
-            self.record_query_performance(text_content[:100], processing_time_ms,
-                                        len(decisions), overall_confidence)
+            self.record_query_performance(
+                text_content[:100],
+                processing_time_ms,
+                len(decisions),
+                overall_confidence,
+            )
 
             result = {
-                'success': True,
-                'decisions_detected': len(decisions),
-                'decisions': decisions,
-                'overall_confidence': overall_confidence,
-                'processing_time_ms': processing_time_ms,
-                'metadata': metadata,
-                'model_version': self.config.model_name
+                "success": True,
+                "decisions_detected": len(decisions),
+                "decisions": decisions,
+                "overall_confidence": overall_confidence,
+                "processing_time_ms": processing_time_ms,
+                "metadata": metadata,
+                "model_version": self.config.model_name,
             }
 
             # Validate performance SLA
             if processing_time_ms > self.config.max_inference_time_ms:
-                self.logger.warning("Inference time SLA violation",
-                                  time_ms=processing_time_ms,
-                                  threshold_ms=self.config.max_inference_time_ms)
+                self.logger.warning(
+                    "Inference time SLA violation",
+                    time_ms=processing_time_ms,
+                    threshold_ms=self.config.max_inference_time_ms,
+                )
 
             return result
 
@@ -198,9 +219,9 @@ class DecisionIntelligenceEngine(AIEngineBase):
             try:
                 result = self.predict(input_data)
 
-                if result.get('success', False):
-                    predicted_count = result.get('decisions_detected', 0)
-                    expected_count = expected_output.get('expected_decisions', 0)
+                if result.get("success", False):
+                    predicted_count = result.get("decisions_detected", 0)
+                    expected_count = expected_output.get("expected_decisions", 0)
 
                     # Simple accuracy metric: correct detection count
                     if predicted_count == expected_count:
@@ -215,17 +236,19 @@ class DecisionIntelligenceEngine(AIEngineBase):
         accuracy = correct_predictions / total_predictions
         self._accuracy_history.append(accuracy)
 
-        self.logger.info("Accuracy validation completed",
-                        accuracy=accuracy,
-                        test_cases=total_predictions,
-                        threshold=self.config.accuracy_threshold)
+        self.logger.info(
+            "Accuracy validation completed",
+            accuracy=accuracy,
+            test_cases=total_predictions,
+            threshold=self.config.accuracy_threshold,
+        )
 
         return accuracy
 
     def _detect_decisions(self, text: str) -> List[Dict[str, Any]]:
         """Core decision detection using optimized patterns"""
         decisions = []
-        lines = text.split('\n')
+        lines = text.split("\n")
 
         for i, line in enumerate(lines):
             line = line.strip()
@@ -239,63 +262,71 @@ class DecisionIntelligenceEngine(AIEngineBase):
                     decision_text = match.group(1) if match.lastindex else line
 
                     # Extract context (surrounding lines)
-                    context_start = max(0, i-2)
-                    context_end = min(len(lines), i+3)
-                    context = '\n'.join(lines[context_start:context_end])
+                    context_start = max(0, i - 2)
+                    context_end = min(len(lines), i + 3)
+                    context = "\n".join(lines[context_start:context_end])
 
                     decision = {
-                        'decision_text': decision_text.strip(),
-                        'full_context': context,
-                        'line_number': i + 1,
-                        'confidence': self._calculate_decision_confidence(line, context),
-                        'decision_type': self._classify_decision_type(decision_text)
+                        "decision_text": decision_text.strip(),
+                        "full_context": context,
+                        "line_number": i + 1,
+                        "confidence": self._calculate_decision_confidence(
+                            line, context
+                        ),
+                        "decision_type": self._classify_decision_type(decision_text),
                     }
 
                     decisions.append(decision)
 
         # Remove duplicates and low-confidence decisions
         decisions = self._deduplicate_decisions(decisions)
-        decisions = [d for d in decisions if d['confidence'] >= 0.6]
+        decisions = [d for d in decisions if d["confidence"] >= 0.6]
 
         return decisions
 
-    def _track_decision_lifecycle(self, decision: Dict[str, Any], text: str) -> Dict[str, Any]:
+    def _track_decision_lifecycle(
+        self, decision: Dict[str, Any], text: str
+    ) -> Dict[str, Any]:
         """Track decision through lifecycle stages"""
-        decision_text = decision['decision_text'].lower()
-        context = decision['full_context'].lower()
+        decision_text = decision["decision_text"].lower()
+        context = decision["full_context"].lower()
 
         # Determine decision stage
-        if any(word in context for word in ['proposed', 'considering', 'evaluating']):
-            stage = 'identified'
-        elif any(word in context for word in ['analyzing', 'reviewing', 'discussing']):
-            stage = 'analyzed'
-        elif any(word in context for word in ['decided', 'approved', 'chosen', 'selected']):
-            stage = 'decided'
-        elif any(word in context for word in ['implementing', 'executing', 'started']):
-            stage = 'implemented'
+        if any(word in context for word in ["proposed", "considering", "evaluating"]):
+            stage = "identified"
+        elif any(word in context for word in ["analyzing", "reviewing", "discussing"]):
+            stage = "analyzed"
+        elif any(
+            word in context for word in ["decided", "approved", "chosen", "selected"]
+        ):
+            stage = "decided"
+        elif any(word in context for word in ["implementing", "executing", "started"]):
+            stage = "implemented"
         else:
-            stage = 'decided'  # Default assumption
+            stage = "decided"  # Default assumption
 
         # Extract timeline
         timeline = self._extract_timeline(context)
         owner = self._extract_owner(context)
 
         return {
-            'lifecycle_stage': stage,
-            'timeline': timeline,
-            'owner': owner,
-            'urgency': self._assess_urgency(context)
+            "lifecycle_stage": stage,
+            "timeline": timeline,
+            "owner": owner,
+            "urgency": self._assess_urgency(context),
         }
 
-    def _extract_decision_metadata(self, decision: Dict[str, Any], text: str) -> Dict[str, Any]:
+    def _extract_decision_metadata(
+        self, decision: Dict[str, Any], text: str
+    ) -> Dict[str, Any]:
         """Extract additional metadata for decision tracking"""
-        context = decision['full_context']
+        context = decision["full_context"]
 
         # Extract budget/cost information
         budget_patterns = [
-            r'\$([0-9,]+(?:\.[0-9]{2})?[KkMm]?)',
-            r'budget[:\s]*\$?([0-9,]+)',
-            r'cost[:\s]*\$?([0-9,]+)'
+            r"\$([0-9,]+(?:\.[0-9]{2})?[KkMm]?)",
+            r"budget[:\s]*\$?([0-9,]+)",
+            r"cost[:\s]*\$?([0-9,]+)",
         ]
 
         budget = None
@@ -310,22 +341,22 @@ class DecisionIntelligenceEngine(AIEngineBase):
 
         # Assess impact level
         impact_keywords = {
-            'high': ['critical', 'major', 'significant', 'strategic', 'enterprise'],
-            'medium': ['important', 'moderate', 'substantial'],
-            'low': ['minor', 'small', 'limited']
+            "high": ["critical", "major", "significant", "strategic", "enterprise"],
+            "medium": ["important", "moderate", "substantial"],
+            "low": ["minor", "small", "limited"],
         }
 
-        impact = 'medium'  # Default
+        impact = "medium"  # Default
         for level, keywords in impact_keywords.items():
             if any(keyword in context.lower() for keyword in keywords):
                 impact = level
                 break
 
         return {
-            'budget': budget,
-            'stakeholders_mentioned': stakeholders,
-            'impact_level': impact,
-            'decision_id': f"dec_{hash(decision['decision_text']) % 10000:04d}"
+            "budget": budget,
+            "stakeholders_mentioned": stakeholders,
+            "impact_level": impact,
+            "decision_id": f"dec_{hash(decision['decision_text']) % 10000:04d}",
         }
 
     def _calculate_decision_confidence(self, line: str, context: str) -> float:
@@ -333,22 +364,25 @@ class DecisionIntelligenceEngine(AIEngineBase):
         confidence = 0.5  # Base confidence
 
         # Boost confidence for explicit decision indicators
-        decision_indicators = ['decision', 'decided', 'approve', 'reject', 'choose']
+        decision_indicators = ["decision", "decided", "approve", "reject", "choose"]
         for indicator in decision_indicators:
             if indicator in line.lower():
                 confidence += 0.2
                 break
 
         # Boost for structured format
-        if ':' in line:
+        if ":" in line:
             confidence += 0.1
 
         # Boost for timeline presence
-        if any(pattern in context.lower() for pattern in ['timeline', 'due', 'by']):
+        if any(pattern in context.lower() for pattern in ["timeline", "due", "by"]):
             confidence += 0.1
 
         # Boost for owner assignment
-        if any(pattern in context.lower() for pattern in ['owner', 'responsible', 'assigned']):
+        if any(
+            pattern in context.lower()
+            for pattern in ["owner", "responsible", "assigned"]
+        ):
             confidence += 0.1
 
         return min(confidence, 0.95)  # Cap at 95%
@@ -361,7 +395,7 @@ class DecisionIntelligenceEngine(AIEngineBase):
             if any(keyword in text_lower for keyword in keywords):
                 return decision_type
 
-        return 'general'
+        return "general"
 
     def _extract_timeline(self, text: str) -> Optional[str]:
         """Extract timeline information from text"""
@@ -382,25 +416,27 @@ class DecisionIntelligenceEngine(AIEngineBase):
     def _extract_stakeholders(self, text: str) -> List[str]:
         """Extract mentioned stakeholders from text"""
         # Simple name extraction (in production, would use NER)
-        name_pattern = r'\b[A-Z][a-z]+ [A-Z][a-z]+\b'
+        name_pattern = r"\b[A-Z][a-z]+ [A-Z][a-z]+\b"
         matches = re.findall(name_pattern, text)
         return list(set(matches))  # Remove duplicates
 
     def _assess_urgency(self, text: str) -> str:
         """Assess urgency level from context"""
-        urgent_keywords = ['urgent', 'critical', 'asap', 'immediate', 'emergency']
-        high_keywords = ['important', 'priority', 'soon', 'quickly']
+        urgent_keywords = ["urgent", "critical", "asap", "immediate", "emergency"]
+        high_keywords = ["important", "priority", "soon", "quickly"]
 
         text_lower = text.lower()
 
         if any(keyword in text_lower for keyword in urgent_keywords):
-            return 'urgent'
+            return "urgent"
         elif any(keyword in text_lower for keyword in high_keywords):
-            return 'high'
+            return "high"
         else:
-            return 'normal'
+            return "normal"
 
-    def _deduplicate_decisions(self, decisions: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def _deduplicate_decisions(
+        self, decisions: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         """Remove duplicate decisions based on similarity"""
         if not decisions:
             return decisions
@@ -409,14 +445,16 @@ class DecisionIntelligenceEngine(AIEngineBase):
 
         for decision in decisions:
             is_duplicate = False
-            decision_text = decision['decision_text'].lower()
+            decision_text = decision["decision_text"].lower()
 
             for existing in unique_decisions:
-                existing_text = existing['decision_text'].lower()
+                existing_text = existing["decision_text"].lower()
 
                 # Simple similarity check (in production, use more sophisticated methods)
-                if (len(set(decision_text.split()) & set(existing_text.split())) >
-                    max(len(decision_text.split()), len(existing_text.split())) * 0.7):
+                if (
+                    len(set(decision_text.split()) & set(existing_text.split()))
+                    > max(len(decision_text.split()), len(existing_text.split())) * 0.7
+                ):
                     is_duplicate = True
                     break
 
@@ -425,19 +463,21 @@ class DecisionIntelligenceEngine(AIEngineBase):
 
         return unique_decisions
 
-    def _calculate_overall_confidence(self, decisions: List[Dict[str, Any]], text: str) -> float:
+    def _calculate_overall_confidence(
+        self, decisions: List[Dict[str, Any]], text: str
+    ) -> float:
         """Calculate overall confidence for the detection result"""
         if not decisions:
-            return 0.9 if 'decision' not in text.lower() else 0.3
+            return 0.9 if "decision" not in text.lower() else 0.3
 
         # Average individual decision confidences
-        avg_confidence = sum(d['confidence'] for d in decisions) / len(decisions)
+        avg_confidence = sum(d["confidence"] for d in decisions) / len(decisions)
 
         # Adjust based on text quality indicators
         quality_score = 1.0
         if len(text) < 100:
             quality_score *= 0.9  # Short text penalty
-        if text.count('\n') < 5:
+        if text.count("\n") < 5:
             quality_score *= 0.95  # Limited structure penalty
 
         return min(avg_confidence * quality_score, 0.95)
@@ -445,34 +485,39 @@ class DecisionIntelligenceEngine(AIEngineBase):
     def _create_error_result(self, error_message: str) -> Dict[str, Any]:
         """Create standardized error result"""
         return {
-            'success': False,
-            'error': error_message,
-            'decisions_detected': 0,
-            'decisions': [],
-            'overall_confidence': 0.0,
-            'processing_time_ms': 0
+            "success": False,
+            "error": error_message,
+            "decisions_detected": 0,
+            "decisions": [],
+            "overall_confidence": 0.0,
+            "processing_time_ms": 0,
         }
 
-    def record_query_performance(self, query: str, execution_time_ms: int,
-                                result_count: int, confidence: float):
+    def record_query_performance(
+        self, query: str, execution_time_ms: int, result_count: int, confidence: float
+    ):
         """Record performance metrics for decision detection"""
         metric = {
-            'timestamp': datetime.now().isoformat(),
-            'query_hash': hash(query) % 10000,
-            'execution_time_ms': execution_time_ms,
-            'result_count': result_count,
-            'confidence': confidence,
-            'meets_time_sla': execution_time_ms < self.config.max_inference_time_ms,
-            'meets_accuracy_sla': confidence >= self.config.accuracy_threshold
+            "timestamp": datetime.now().isoformat(),
+            "query_hash": hash(query) % 10000,
+            "execution_time_ms": execution_time_ms,
+            "result_count": result_count,
+            "confidence": confidence,
+            "meets_time_sla": execution_time_ms < self.config.max_inference_time_ms,
+            "meets_accuracy_sla": confidence >= self.config.accuracy_threshold,
         }
 
         self._performance_metrics.append(metric)
 
         # Trigger model retraining if performance degrades
-        if (execution_time_ms > self.config.max_inference_time_ms or
-            confidence < self.config.accuracy_threshold):
-            self.logger.warning("Performance SLA violation detected",
-                              execution_time_ms=execution_time_ms,
-                              confidence=confidence,
-                              time_threshold=self.config.max_inference_time_ms,
-                              accuracy_threshold=self.config.accuracy_threshold)
+        if (
+            execution_time_ms > self.config.max_inference_time_ms
+            or confidence < self.config.accuracy_threshold
+        ):
+            self.logger.warning(
+                "Performance SLA violation detected",
+                execution_time_ms=execution_time_ms,
+                confidence=confidence,
+                time_threshold=self.config.max_inference_time_ms,
+                accuracy_threshold=self.config.accuracy_threshold,
+            )

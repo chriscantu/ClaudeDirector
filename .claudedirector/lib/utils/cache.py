@@ -212,7 +212,9 @@ class CacheManager:
         try:
             # Validation: Ensure value is cacheable
             if self.enable_validation and not self._is_value_cacheable(value):
-                logger.warning("Value not cacheable", key=key, type=type(value).__name__)
+                logger.warning(
+                    "Value not cacheable", key=key, type=type(value).__name__
+                )
                 self.stats["validation_failures"] += 1
                 return False
 
@@ -227,7 +229,9 @@ class CacheManager:
                 self.stats["writes"]["file"] += 1
                 success_count += 1
 
-            if self.db_cache_available and self._store_in_database_cache(cache_key, value, ttl):
+            if self.db_cache_available and self._store_in_database_cache(
+                cache_key, value, ttl
+            ):
                 self.stats["writes"]["database"] += 1
                 success_count += 1
 
@@ -266,7 +270,9 @@ class CacheManager:
             except:
                 return False
 
-    def _store_in_memory_cache(self, cache_key: str, value: Any, ttl: int = None) -> bool:
+    def _store_in_memory_cache(
+        self, cache_key: str, value: Any, ttl: int = None
+    ) -> bool:
         """Store in memory cache"""
         try:
             ttl = ttl or self.ttl_seconds
@@ -298,7 +304,9 @@ class CacheManager:
         except Exception:
             return False
 
-    def _store_in_database_cache(self, cache_key: str, value: Any, ttl: int = None) -> bool:
+    def _store_in_database_cache(
+        self, cache_key: str, value: Any, ttl: int = None
+    ) -> bool:
         """Store in database cache"""
         try:
             ttl = ttl or self.ttl_seconds
