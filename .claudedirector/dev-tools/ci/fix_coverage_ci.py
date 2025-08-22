@@ -19,7 +19,9 @@ def run_command(cmd, description, check=True):
     """Run a command with proper error handling"""
     print(f"🔧 {description}...")
     try:
-        result = subprocess.run(cmd, shell=True, check=check, capture_output=True, text=True)
+        result = subprocess.run(
+            cmd, shell=True, check=check, capture_output=True, text=True
+        )
         if result.returncode == 0:
             print(f"✅ {description} - SUCCESS")
             if result.stdout.strip():
@@ -41,7 +43,9 @@ def main():
 
     # 1. Install claudedirector package in development mode
     print("\n1. INSTALLING CLAUDEDIRECTOR PACKAGE")
-    if not run_command("pip install -e .claudedirector/lib", "Installing claudedirector package"):
+    if not run_command(
+        "pip install -e .claudedirector/lib", "Installing claudedirector package"
+    ):
         print("❌ Cannot proceed without package installation")
         return False
 
@@ -93,7 +97,8 @@ output = "coverage.xml"
     else:
         # Create standalone .coveragerc
         with open(".coveragerc", "w") as f:
-            f.write("""[run]
+            f.write(
+                """[run]
 source = .claudedirector/lib
 omit =
     */tests/*
@@ -120,14 +125,18 @@ skip_covered = False
 
 [xml]
 output = coverage.xml
-""")
+"""
+            )
         print("✅ Created .coveragerc configuration file")
 
     # 3. Test basic coverage functionality
     print("\n3. TESTING BASIC COVERAGE FUNCTIONALITY")
 
     # Test simple import
-    if not run_command("python -c 'import sys; sys.path.insert(0, \".claudedirector/lib\"); from core.config import get_config; print(\"Import successful\")'", "Testing basic import"):
+    if not run_command(
+        'python -c \'import sys; sys.path.insert(0, ".claudedirector/lib"); from core.config import get_config; print("Import successful")\'',
+        "Testing basic import",
+    ):
         print("❌ Basic import failed")
         return False
 
@@ -139,20 +148,30 @@ output = coverage.xml
 
         # Try with direct script execution
         simple_cmd = "python -m coverage run --source=.claudedirector/lib -m pytest .claudedirector/tests/regression/test_mcp_transparency_p0.py -v --tb=short"
-        if not run_command(simple_cmd, "Testing coverage with MCP transparency test", check=False):
+        if not run_command(
+            simple_cmd, "Testing coverage with MCP transparency test", check=False
+        ):
             print("⚠️ Pytest approach failed, trying direct test execution...")
 
             # Try running test directly
             direct_cmd = "python -m coverage run --source=.claudedirector/lib .claudedirector/tests/regression/test_mcp_transparency_p0.py"
-            if not run_command(direct_cmd, "Running test directly with coverage", check=False):
-                print("⚠️ All test approaches failed, but continuing to check coverage report generation...")
+            if not run_command(
+                direct_cmd, "Running test directly with coverage", check=False
+            ):
+                print(
+                    "⚠️ All test approaches failed, but continuing to check coverage report generation..."
+                )
 
     # 5. Generate coverage reports
     print("\n5. GENERATING COVERAGE REPORTS")
-    if not run_command("python -m coverage report", "Generating coverage report", check=False):
+    if not run_command(
+        "python -m coverage report", "Generating coverage report", check=False
+    ):
         print("⚠️ Coverage report generation had issues")
 
-    if not run_command("python -m coverage xml", "Generating XML coverage report", check=False):
+    if not run_command(
+        "python -m coverage xml", "Generating XML coverage report", check=False
+    ):
         print("⚠️ XML coverage report generation had issues")
 
     # 6. Check if coverage.xml was created
@@ -184,7 +203,11 @@ output = coverage.xml
     print("=" * 60)
 
     # Final status check
-    package_installed = run_command("python -c 'import claudedirector.core.config'", "Package import check", check=False)
+    package_installed = run_command(
+        "python -c 'import claudedirector.core.config'",
+        "Package import check",
+        check=False,
+    )
     coverage_xml_exists = Path("coverage.xml").exists()
 
     print(f"✅ Package installed: {'YES' if package_installed else 'NO'}")

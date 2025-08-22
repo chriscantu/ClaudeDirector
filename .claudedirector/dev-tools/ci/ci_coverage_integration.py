@@ -20,7 +20,7 @@ def update_github_ci_coverage():
         return False
 
     # Read current CI content
-    with open(ci_file, 'r') as f:
+    with open(ci_file, "r") as f:
         content = f.read()
 
     # Create new coverage step that works with current structure
@@ -86,9 +86,13 @@ EOF
         upload_section = content.find("- name: Upload Coverage Reports")
         if upload_section > 0:
             # Insert our new step before the upload
-            new_content = content[:upload_section] + f"      {new_coverage_step.strip()}\n\n      " + content[upload_section:]
+            new_content = (
+                content[:upload_section]
+                + f"      {new_coverage_step.strip()}\n\n      "
+                + content[upload_section:]
+            )
 
-            with open(ci_file, 'w') as f:
+            with open(ci_file, "w") as f:
                 f.write(new_content)
 
             print("✅ Updated GitHub CI with coverage generation step")
@@ -104,7 +108,7 @@ EOF
 def create_coverage_script():
     """Create a standalone coverage script for CI"""
 
-    script_content = '''#!/bin/bash
+    script_content = """#!/bin/bash
 # CI Coverage Generation Script
 set -e
 
@@ -174,10 +178,10 @@ EOF
 fi
 
 echo "✅ CI Coverage generation completed"
-'''
+"""
 
     script_path = Path(".claudedirector/dev-tools/ci/generate_coverage.sh")
-    with open(script_path, 'w') as f:
+    with open(script_path, "w") as f:
         f.write(script_content)
 
     # Make executable
