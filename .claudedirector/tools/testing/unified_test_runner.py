@@ -121,6 +121,9 @@ class UnifiedTestRunner:
         # Setup environment
         self._setup_environment()
 
+        # Detect best Python executable (venv if available)
+        self.python_executable = self._detect_python_executable()
+
         # Initialize tracking
         self.start_time = time.time()
         self.results: List[SuiteResult] = []
@@ -133,6 +136,18 @@ class UnifiedTestRunner:
             return Environment.PRE_PUSH
         else:
             return Environment.LOCAL
+
+    def _detect_python_executable(self) -> str:
+        """Detect the best Python executable to use (prefer venv if available)"""
+        # Check for venv Python first (for dependencies like psutil)
+        venv_python = self.project_root / "venv" / "bin" / "python"
+        if venv_python.exists():
+            self._log(f"🐍 Using venv Python: {venv_python}", "INFO")
+            return str(venv_python)
+
+        # Fall back to current Python executable
+        self._log(f"🐍 Using system Python: {sys.executable}", "INFO")
+        return sys.executable
 
     def _load_test_registry(self) -> Dict[str, Any]:
         """Load test registry configuration"""
@@ -300,9 +315,19 @@ class UnifiedTestRunner:
 
         try:
             if test_config.get("type") == "command":
-                # Run shell command
+                # Run shell command (replace python with detected executable)
+                command = test_config["command"]
+                if command.startswith("python "):
+                    command = command.replace(
+                        "python ", f"{self.python_executable} ", 1
+                    )
+                elif command.startswith("python3 "):
+                    command = command.replace(
+                        "python3 ", f"{self.python_executable} ", 1
+                    )
+
                 result = subprocess.run(
-                    test_config["command"],
+                    command,
                     shell=True,
                     capture_output=True,
                     text=True,
@@ -321,7 +346,7 @@ class UnifiedTestRunner:
                     raise FileNotFoundError(f"Test file not found: {test_path}")
 
                 result = subprocess.run(
-                    [sys.executable, str(test_path)],
+                    [self.python_executable, str(test_path)],
                     capture_output=True,
                     text=True,
                     timeout=timeout,

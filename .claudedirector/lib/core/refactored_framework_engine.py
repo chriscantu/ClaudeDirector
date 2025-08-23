@@ -37,8 +37,8 @@ from .services.framework_analysis_service import FrameworkAnalysisService
 from .services.insight_generation_service import InsightGenerationService
 from .services.confidence_calculation_service import ConfidenceCalculationService
 
-# Import the original classes for backward compatibility
-from .embedded_framework_engine import FrameworkAnalysis, SystematicResponse
+# Import shared types to avoid circular imports
+from .framework_types import FrameworkAnalysis, SystematicResponse
 
 logger = structlog.get_logger(__name__)
 
@@ -52,14 +52,29 @@ class DefaultFrameworkProvider:
     """
 
     def __init__(self):
-        # Import the original framework definitions for compatibility
-        from .embedded_framework_engine import EmbeddedFrameworkEngine
-
-        # Create temporary instance to extract framework definitions
-        temp_engine = EmbeddedFrameworkEngine()
-        self.framework_definitions = self._convert_framework_definitions(
-            temp_engine.strategic_frameworks
+        """Initialize with static framework definitions to avoid circular dependencies"""
+        # Import static framework definitions to avoid circular dependency
+        from .framework_definitions import get_strategic_frameworks
+        from .interfaces.framework_provider_interface import (
+            FrameworkDefinition,
+            FrameworkDomain,
         )
+
+        # Convert static definitions to FrameworkDefinition objects
+        static_definitions = get_strategic_frameworks()
+        self.framework_definitions = {}
+
+        for name, definition in static_definitions.items():
+            # Create FrameworkDefinition object
+            framework_def = FrameworkDefinition(
+                name=name,
+                description=definition["description"],
+                domains=[FrameworkDomain.STRATEGIC],  # Default to strategic for all
+                keywords=definition["keywords"],
+                analysis_components=definition["analysis_components"],
+                confidence_threshold=definition["confidence_threshold"],
+            )
+            self.framework_definitions[name] = framework_def
 
     def get_framework_definition(self, framework_name: str):
         """Get definition for a specific framework"""
@@ -212,6 +227,8 @@ class RefactoredFrameworkEngine:
         user_input: str,
         persona_context: Optional[Dict] = None,
         session_id: str = "default",
+        domain_focus: Optional[List[str]] = None,
+        **kwargs,
     ) -> SystematicAnalysisResult:
         """
         Perform systematic analysis using the orchestrated services.
