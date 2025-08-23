@@ -46,10 +46,15 @@
 
 ## 🧪 **Testing & Quality**
 
-### **Test Suites**
-- **[Test Overview](testing/TESTING_OVERVIEW.md)** - Comprehensive testing strategy
-- **[MCP Tests](testing/MCP_TESTS.md)** - MCP transparency regression tests
-- **[Integration Tests](testing/INTEGRATION_TESTS.md)** - End-to-end integration validation
+### **Unified Testing Architecture**
+- **[Testing Architecture](architecture/TESTING_ARCHITECTURE.md)** - Unified testing system design
+- **[Test Registry](../claudedirector/config/test_registry.yaml)** - Single source of truth for all tests
+- **[Unified Test Runner](../claudedirector/tools/testing/unified_test_runner.py)** - Consistent test execution
+
+### **Test Execution**
+- **Local Validation**: `python .claudedirector/tools/testing/unified_test_runner.py local_quick`
+- **Pre-Push Validation**: `python .claudedirector/tools/testing/unified_test_runner.py pre_push`
+- **CI Full Suite**: `python .claudedirector/tools/testing/unified_test_runner.py ci_full`
 
 ### **Quality Assurance**
 - **[Quality Standards](reference/QUALITY_STANDARDS.md)** - Code quality and standards
@@ -78,26 +83,32 @@
 
 ### **Essential Commands**
 ```bash
-# Run all tests
-python3 .claudedirector/tests/run_mcp_transparency_tests.py
+# Run quick local validation
+python .claudedirector/tools/testing/unified_test_runner.py local_quick
 
-# Check system health
-python3 -c "from claudedirector.monitoring import health_check; health_check()"
+# Run pre-push validation (before git push)
+python .claudedirector/tools/testing/unified_test_runner.py pre_push --validate
 
-# Validate configuration
-python3 -c "from claudedirector.config import validate_config; validate_config()"
+# Run complete CI test suite locally
+python .claudedirector/tools/testing/unified_test_runner.py ci_full
+
+# Validate test architecture consistency
+python .claudedirector/tools/testing/unified_test_runner.py local_quick --validate
 ```
 
 ### **Key File Locations**
 ```
 📁 ClaudeDirector/
-├── 📁 docs/setup/               # Installation and quick start
-├── 📁 docs/development/         # Development guides
-├── 📁 docs/reference/           # API and configuration reference
-├── 📁 docs/architecture/        # Architecture documentation
-├── 📁 .claudedirector/config/   # Configuration files
-├── 📁 .claudedirector/tests/    # Test suites
-└── 📄 README.md                 # Project overview
+├── 📁 docs/setup/                           # Installation and quick start
+├── 📁 docs/development/                     # Development guides
+├── 📁 docs/architecture/                    # Architecture documentation
+│   └── 📄 TESTING_ARCHITECTURE.md          # Unified testing system design
+├── 📁 .claudedirector/config/               # Configuration files
+│   └── 📄 test_registry.yaml               # Single source of truth for tests
+├── 📁 .claudedirector/tools/testing/        # Unified testing tools
+│   └── 📄 unified_test_runner.py           # Consistent test execution
+├── 📁 .claudedirector/tests/                # Test suites
+└── 📄 README.md                             # Project overview
 ```
 
 ### **Support & Resources**
