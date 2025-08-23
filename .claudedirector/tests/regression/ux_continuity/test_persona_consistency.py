@@ -653,7 +653,13 @@ class TestPersonaConsistency(unittest.TestCase):
             "provides_actionable_guidance": ["how", "what", "should"],
             "executive_summary_first": ["board", "present", "executive"],
             "strategic_context": ["board", "strategic", "vision"],
-            "competitive_analysis": ["board", "competitive", "market", "investment", "worth"],
+            "competitive_analysis": [
+                "board",
+                "competitive",
+                "market",
+                "investment",
+                "worth",
+            ],
             "user_impact_focus": ["user", "adoption", "improve"],
             "collaborative_approach": ["improve", "adoption", "team"],
             "accessibility_consideration": ["user", "adoption", "tools"],
@@ -690,10 +696,21 @@ class TestPersonaConsistency(unittest.TestCase):
         query_lower = query.lower()
 
         # Business/financial keywords take priority over technical keywords
-        business_financial_keywords = ["roi", "investment", "financial", "business", "cost", "budget"]
+        business_financial_keywords = [
+            "roi",
+            "investment",
+            "financial",
+            "business",
+            "cost",
+            "budget",
+        ]
         if any(keyword in query_lower for keyword in business_financial_keywords):
             # If query contains business/financial terms, only match business expertise areas
-            business_areas = ["business_strategy", "investment_analysis", "competitive_positioning"]
+            business_areas = [
+                "business_strategy",
+                "investment_analysis",
+                "competitive_positioning",
+            ]
             return any(area in expertise_areas for area in business_areas)
 
         expertise_keywords = {
