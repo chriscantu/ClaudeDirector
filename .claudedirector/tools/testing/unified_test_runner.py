@@ -24,6 +24,7 @@ from enum import Enum
 
 class TestStatus(Enum):
     """Test execution status"""
+
     PENDING = "pending"
     RUNNING = "running"
     PASSED = "passed"
@@ -34,6 +35,7 @@ class TestStatus(Enum):
 
 class Environment(Enum):
     """Test execution environment"""
+
     LOCAL = "local"
     GITHUB_CI = "github_ci"
     PRE_PUSH = "pre_push"
@@ -42,6 +44,7 @@ class Environment(Enum):
 @dataclass
 class TestResult:
     """Individual test result"""
+
     name: str
     status: TestStatus
     duration: float
@@ -54,6 +57,7 @@ class TestResult:
 @dataclass
 class SuiteResult:
     """Test suite result"""
+
     name: str
     description: str
     status: TestStatus
@@ -76,14 +80,15 @@ class SuiteResult:
 
 class Colors:
     """ANSI color codes for terminal output"""
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
+
+    HEADER = "\033[95m"
+    OKBLUE = "\033[94m"
+    OKCYAN = "\033[96m"
+    OKGREEN = "\033[92m"
+    WARNING = "\033[93m"
+    FAIL = "\033[91m"
+    ENDC = "\033[0m"
+    BOLD = "\033[1m"
 
 
 class UnifiedTestRunner:
@@ -98,9 +103,16 @@ class UnifiedTestRunner:
     - Comprehensive reporting and logging
     """
 
-    def __init__(self, registry_path: Optional[str] = None, environment: Optional[Environment] = None):
+    def __init__(
+        self,
+        registry_path: Optional[str] = None,
+        environment: Optional[Environment] = None,
+    ):
         self.project_root = Path(__file__).parent.parent.parent.parent
-        self.registry_path = registry_path or self.project_root / ".claudedirector/config/test_registry.yaml"
+        self.registry_path = (
+            registry_path
+            or self.project_root / ".claudedirector/config/test_registry.yaml"
+        )
         self.environment = environment or self._detect_environment()
 
         # Load test registry
@@ -125,7 +137,7 @@ class UnifiedTestRunner:
     def _load_test_registry(self) -> Dict[str, Any]:
         """Load test registry configuration"""
         try:
-            with open(self.registry_path, 'r') as f:
+            with open(self.registry_path, "r") as f:
                 registry = yaml.safe_load(f)
 
             self._log(f"📋 Loaded test registry: {self.registry_path}", "INFO")
@@ -159,7 +171,7 @@ class UnifiedTestRunner:
             "SUCCESS": Colors.OKGREEN,
             "WARNING": Colors.WARNING,
             "ERROR": Colors.FAIL,
-            "HEADER": Colors.HEADER
+            "HEADER": Colors.HEADER,
         }
 
         color = colors.get(level, Colors.OKBLUE)
@@ -188,7 +200,10 @@ class UnifiedTestRunner:
             if suite_result.blocking and suite_result.status == TestStatus.FAILED:
                 overall_success = False
                 if profile.get("fail_fast", True):
-                    self._log(f"🚫 FAIL FAST: Stopping due to blocking failure in {suite_name}", "ERROR")
+                    self._log(
+                        f"🚫 FAIL FAST: Stopping due to blocking failure in {suite_name}",
+                        "ERROR",
+                    )
                     break
 
         # Generate final report
@@ -204,12 +219,20 @@ class UnifiedTestRunner:
 
         # Check if suite is enabled
         if not suite_config.get("enabled", True):
-            self._log(f"⚠️ SUITE DISABLED: {suite_name} - {suite_config.get('description', '')}", "WARNING")
-            return SuiteResult(suite_name, suite_config["description"], TestStatus.SKIPPED, 0.0, [])
+            self._log(
+                f"⚠️ SUITE DISABLED: {suite_name} - {suite_config.get('description', '')}",
+                "WARNING",
+            )
+            return SuiteResult(
+                suite_name, suite_config["description"], TestStatus.SKIPPED, 0.0, []
+            )
 
         self._log(f"\n🧪 RUNNING TEST SUITE: {suite_name.upper()}", "HEADER")
         self._log(f"📝 {suite_config['description']}", "INFO")
-        self._log(f"🚨 Blocking: {'YES' if suite_config.get('blocking', True) else 'NO'}", "INFO")
+        self._log(
+            f"🚨 Blocking: {'YES' if suite_config.get('blocking', True) else 'NO'}",
+            "INFO",
+        )
 
         suite_start = time.time()
         test_results = []
@@ -220,20 +243,31 @@ class UnifiedTestRunner:
             test_results.append(test_result)
 
             # Fail fast if configured and test is critical
-            if (suite_config.get("fail_fast", False) and
-                test_result.critical and
-                test_result.status == TestStatus.FAILED):
-                self._log(f"🚫 FAIL FAST: Stopping suite due to critical test failure", "ERROR")
+            if (
+                suite_config.get("fail_fast", False)
+                and test_result.critical
+                and test_result.status == TestStatus.FAILED
+            ):
+                self._log(
+                    f"🚫 FAIL FAST: Stopping suite due to critical test failure",
+                    "ERROR",
+                )
                 break
 
         suite_duration = time.time() - suite_start
 
         # Determine suite status
-        failed_critical = [t for t in test_results if t.status == TestStatus.FAILED and t.critical]
+        failed_critical = [
+            t for t in test_results if t.status == TestStatus.FAILED and t.critical
+        ]
         if failed_critical:
             suite_status = TestStatus.FAILED
         elif any(t.status == TestStatus.FAILED for t in test_results):
-            suite_status = TestStatus.FAILED if suite_config.get("blocking", True) else TestStatus.PASSED
+            suite_status = (
+                TestStatus.FAILED
+                if suite_config.get("blocking", True)
+                else TestStatus.PASSED
+            )
         else:
             suite_status = TestStatus.PASSED
 
@@ -243,7 +277,7 @@ class UnifiedTestRunner:
             status=suite_status,
             duration=suite_duration,
             tests=test_results,
-            blocking=suite_config.get("blocking", True)
+            blocking=suite_config.get("blocking", True),
         )
 
         # Log suite summary
@@ -257,7 +291,10 @@ class UnifiedTestRunner:
         critical = test_config.get("critical", True)
 
         self._log(f"\n🧪 RUNNING: {test_name}", "INFO")
-        self._log(f"   ⏱️ Timeout: {timeout}s | 🚨 Critical: {'YES' if critical else 'NO'}", "INFO")
+        self._log(
+            f"   ⏱️ Timeout: {timeout}s | 🚨 Critical: {'YES' if critical else 'NO'}",
+            "INFO",
+        )
 
         test_start = time.time()
 
@@ -270,7 +307,7 @@ class UnifiedTestRunner:
                     capture_output=True,
                     text=True,
                     timeout=timeout,
-                    cwd=self.project_root
+                    cwd=self.project_root,
                 )
 
                 success = result.returncode == 0
@@ -288,7 +325,7 @@ class UnifiedTestRunner:
                     capture_output=True,
                     text=True,
                     timeout=timeout,
-                    cwd=self.project_root
+                    cwd=self.project_root,
                 )
 
                 success = result.returncode == 0
@@ -313,7 +350,7 @@ class UnifiedTestRunner:
                 output=output,
                 error=error,
                 timeout=timeout,
-                critical=critical
+                critical=critical,
             )
 
         except subprocess.TimeoutExpired:
@@ -326,7 +363,7 @@ class UnifiedTestRunner:
                 duration=duration,
                 error=f"Test timed out after {timeout}s",
                 timeout=timeout,
-                critical=critical
+                critical=critical,
             )
 
         except Exception as e:
@@ -339,15 +376,19 @@ class UnifiedTestRunner:
                 duration=duration,
                 error=str(e),
                 timeout=timeout,
-                critical=critical
+                critical=critical,
             )
 
     def _log_suite_summary(self, suite_result: SuiteResult):
         """Log test suite summary"""
         self._log(f"\n📊 SUITE SUMMARY: {suite_result.name.upper()}", "HEADER")
-        self._log(f"   Status: {'✅ PASSED' if suite_result.status == TestStatus.PASSED else '❌ FAILED'}")
+        self._log(
+            f"   Status: {'✅ PASSED' if suite_result.status == TestStatus.PASSED else '❌ FAILED'}"
+        )
         self._log(f"   Duration: {suite_result.duration:.2f}s")
-        self._log(f"   Tests: {suite_result.passed_count}/{suite_result.total_count} passed")
+        self._log(
+            f"   Tests: {suite_result.passed_count}/{suite_result.total_count} passed"
+        )
 
         # Log failed tests
         failed_tests = [t for t in suite_result.tests if t.status == TestStatus.FAILED]
@@ -377,9 +418,15 @@ class UnifiedTestRunner:
         # Suite summaries
         self._log("\n📋 SUITE RESULTS:", "INFO")
         for suite in self.results:
-            status_icon = "✅" if suite.status == TestStatus.PASSED else "❌" if suite.status == TestStatus.FAILED else "⚠️"
+            status_icon = (
+                "✅"
+                if suite.status == TestStatus.PASSED
+                else "❌" if suite.status == TestStatus.FAILED else "⚠️"
+            )
             blocking_marker = "🚨" if suite.blocking else "📝"
-            self._log(f"   {status_icon} {blocking_marker} {suite.name}: {suite.passed_count}/{suite.total_count} tests passed ({suite.duration:.2f}s)")
+            self._log(
+                f"   {status_icon} {blocking_marker} {suite.name}: {suite.passed_count}/{suite.total_count} tests passed ({suite.duration:.2f}s)"
+            )
 
         # Critical failures
         critical_failures = []
@@ -411,8 +458,10 @@ class UnifiedTestRunner:
             "timestamp": timestamp,
             "environment": self.environment.value,
             "duration": time.time() - self.start_time,
-            "overall_success": all(s.status != TestStatus.FAILED or not s.blocking for s in self.results),
-            "suites": []
+            "overall_success": all(
+                s.status != TestStatus.FAILED or not s.blocking for s in self.results
+            ),
+            "suites": [],
         }
 
         for suite in self.results:
@@ -428,14 +477,16 @@ class UnifiedTestRunner:
                         "status": test.status.value,
                         "duration": test.duration,
                         "critical": test.critical,
-                        "error": test.error if test.status == TestStatus.FAILED else None
+                        "error": (
+                            test.error if test.status == TestStatus.FAILED else None
+                        ),
                     }
                     for test in suite.tests
-                ]
+                ],
             }
             json_results["suites"].append(suite_data)
 
-        with open(results_file, 'w') as f:
+        with open(results_file, "w") as f:
             json.dump(json_results, f, indent=2)
 
         self._log(f"💾 Results saved: {results_file}", "INFO")
@@ -504,13 +555,25 @@ def main():
     """Main entry point for unified test runner"""
     import argparse
 
-    parser = argparse.ArgumentParser(description="Unified Test Runner - Consistent test execution across all environments")
-    parser.add_argument("profile", help="Execution profile to run",
-                       choices=["ci_full", "pre_push", "local_quick", "regression_only"])
+    parser = argparse.ArgumentParser(
+        description="Unified Test Runner - Consistent test execution across all environments"
+    )
+    parser.add_argument(
+        "profile",
+        help="Execution profile to run",
+        choices=["ci_full", "pre_push", "local_quick", "regression_only"],
+    )
     parser.add_argument("--registry", help="Path to test registry YAML file")
-    parser.add_argument("--validate", action="store_true", help="Run architecture consistency validation")
-    parser.add_argument("--environment", choices=["local", "github_ci", "pre_push"],
-                       help="Override environment detection")
+    parser.add_argument(
+        "--validate",
+        action="store_true",
+        help="Run architecture consistency validation",
+    )
+    parser.add_argument(
+        "--environment",
+        choices=["local", "github_ci", "pre_push"],
+        help="Override environment detection",
+    )
 
     args = parser.parse_args()
 

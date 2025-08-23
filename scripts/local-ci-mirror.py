@@ -347,10 +347,14 @@ except ImportError as e:
         )
 
         self.log("🚀 Using Unified Test Runner for 100% CI/local parity", "INFO")
-        self.log("All tests defined in .claudedirector/config/test_registry.yaml", "INFO")
+        self.log(
+            "All tests defined in .claudedirector/config/test_registry.yaml", "INFO"
+        )
 
         # Install required dependencies
-        if not self.run_command("pip install pyyaml", "Install PyYAML for unified runner"):
+        if not self.run_command(
+            "pip install pyyaml", "Install PyYAML for unified runner"
+        ):
             return False
 
         # Set environment for local execution
@@ -360,7 +364,7 @@ except ImportError as e:
         success = self.run_command(
             "python .claudedirector/tools/testing/unified_test_runner.py pre_push --validate",
             "Unified P0 Test Suite",
-            critical=True
+            critical=True,
         )
 
         if success:
@@ -369,7 +373,9 @@ except ImportError as e:
             return True
         else:
             self.log("❌ P0 tests failed via unified runner", "ERROR")
-            self.log("🔍 Check .claudedirector/test_results/ for detailed results", "ERROR")
+            self.log(
+                "🔍 Check .claudedirector/test_results/ for detailed results", "ERROR"
+            )
             return False
 
     def generate_report(self):
