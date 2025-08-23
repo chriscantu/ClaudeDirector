@@ -43,29 +43,29 @@ class TestSecurity(unittest.TestCase):
                     "platform_stance": "opponent",
                     "influence_level": "high",
                     "decision_patterns": ["cost_focused", "delivery_pressure"],
-                    "confidential_notes": "Skip levels focused on product delivery over platform"
+                    "confidential_notes": "Skip levels focused on product delivery over platform",
                 },
                 "steve_davis": {
                     "role": "VP Product",
                     "platform_stance": "neutral_roi_focused",
                     "influence_level": "high",
                     "decision_patterns": ["roi_driven", "evidence_based"],
-                    "confidential_notes": "Wants ROI understanding before platform investment"
-                }
+                    "confidential_notes": "Wants ROI understanding before platform investment",
+                },
             },
             "strategic_initiatives": {
                 "ngx_gold": {
                     "budget": 2500000,
                     "roi_target": 1.21,
                     "competitive_advantage": "Autodesk Construction Cloud displacement",
-                    "confidential_strategy": "Resource reallocation vs new headcount"
+                    "confidential_strategy": "Resource reallocation vs new headcount",
                 }
             },
             "financial_data": {
                 "platform_investment": 5000000,
                 "expected_savings": 1250000,
-                "competitive_intelligence": "Competitor platform costs 40% more"
-            }
+                "competitive_intelligence": "Competitor platform costs 40% more",
+            },
         }
 
     def tearDown(self):
@@ -90,30 +90,24 @@ class TestSecurity(unittest.TestCase):
         encrypted_data = self._encrypt_data(plaintext_data, encryption_key)
 
         # Write encrypted data
-        with open(sensitive_file, 'wb') as f:
+        with open(sensitive_file, "wb") as f:
             f.write(encrypted_data)
 
         # Verify file is encrypted (not readable as plain JSON)
-        with open(sensitive_file, 'rb') as f:
+        with open(sensitive_file, "rb") as f:
             raw_data = f.read()
 
         # Should not be able to parse as JSON
         with self.assertRaises(Exception):
-            json.loads(raw_data.decode('utf-8'))
+            json.loads(raw_data.decode("utf-8"))
 
         # Test decryption
         decrypted_data = self._decrypt_data(encrypted_data, encryption_key)
         recovered_data = json.loads(decrypted_data)
 
         # Verify data integrity after encryption/decryption
-        self.assertEqual(
-            recovered_data["hemendra_pal"]["platform_stance"],
-            "opponent"
-        )
-        self.assertEqual(
-            recovered_data["steve_davis"]["role"],
-            "VP Product"
-        )
+        self.assertEqual(recovered_data["hemendra_pal"]["platform_stance"], "opponent")
+        self.assertEqual(recovered_data["steve_davis"]["role"], "VP Product")
 
         print("✅ Sensitive data encryption: PASSED")
 
@@ -129,27 +123,31 @@ class TestSecurity(unittest.TestCase):
             "roles": {
                 "executive": {
                     "permissions": ["read_all", "write_strategic", "delete_own"],
-                    "data_access": ["stakeholder_intelligence", "financial_data", "strategic_initiatives"]
+                    "data_access": [
+                        "stakeholder_intelligence",
+                        "financial_data",
+                        "strategic_initiatives",
+                    ],
                 },
                 "director": {
                     "permissions": ["read_strategic", "write_own"],
-                    "data_access": ["strategic_initiatives", "limited_stakeholder"]
+                    "data_access": ["strategic_initiatives", "limited_stakeholder"],
                 },
                 "manager": {
                     "permissions": ["read_own"],
-                    "data_access": ["own_projects"]
+                    "data_access": ["own_projects"],
                 },
                 "guest": {
                     "permissions": ["read_public"],
-                    "data_access": ["public_frameworks"]
-                }
+                    "data_access": ["public_frameworks"],
+                },
             },
             "data_classification": {
                 "stakeholder_intelligence": "confidential",
                 "financial_data": "restricted",
                 "strategic_initiatives": "internal",
-                "public_frameworks": "public"
-            }
+                "public_frameworks": "public",
+            },
         }
 
         # Test access control enforcement
@@ -157,46 +155,44 @@ class TestSecurity(unittest.TestCase):
             {
                 "user_role": "executive",
                 "requested_data": "stakeholder_intelligence",
-                "should_allow": True
+                "should_allow": True,
             },
             {
                 "user_role": "director",
                 "requested_data": "stakeholder_intelligence",
-                "should_allow": False  # Directors can't access full stakeholder intel
+                "should_allow": False,  # Directors can't access full stakeholder intel
             },
             {
                 "user_role": "manager",
                 "requested_data": "financial_data",
-                "should_allow": False  # Managers can't access financial data
+                "should_allow": False,  # Managers can't access financial data
             },
             {
                 "user_role": "guest",
                 "requested_data": "strategic_initiatives",
-                "should_allow": False  # Guests can't access strategic data
+                "should_allow": False,  # Guests can't access strategic data
             },
             {
                 "user_role": "guest",
                 "requested_data": "public_frameworks",
-                "should_allow": True   # Guests can access public data
-            }
+                "should_allow": True,  # Guests can access public data
+            },
         ]
 
         for test_case in test_cases:
             access_granted = self._check_access_permission(
-                test_case["user_role"],
-                test_case["requested_data"],
-                access_control
+                test_case["user_role"], test_case["requested_data"], access_control
             )
 
             if test_case["should_allow"]:
                 self.assertTrue(
                     access_granted,
-                    f"Access should be granted for {test_case['user_role']} to {test_case['requested_data']}"
+                    f"Access should be granted for {test_case['user_role']} to {test_case['requested_data']}",
                 )
             else:
                 self.assertFalse(
                     access_granted,
-                    f"Access should be denied for {test_case['user_role']} to {test_case['requested_data']}"
+                    f"Access should be denied for {test_case['user_role']} to {test_case['requested_data']}",
                 )
 
         print("✅ Access control validation: PASSED")
@@ -217,7 +213,7 @@ class TestSecurity(unittest.TestCase):
             "$2,500,000",
             "roi_target: 1.21",
             "competitive_advantage",
-            "platform_opponent"
+            "platform_opponent",
         ]
 
         # Simulate log entries that might contain sensitive data
@@ -227,7 +223,7 @@ class TestSecurity(unittest.TestCase):
             "Strategic note: steve_davis is platform_opponent according to analysis",
             "Budget allocation: $2,500,000 for competitive_advantage initiative",
             "Error processing data for beth_nelson profile",
-            "Debug: hisham_younis decision_patterns include cost_focused"
+            "Debug: hisham_younis decision_patterns include cost_focused",
         ]
 
         sanitized_entries = []
@@ -242,7 +238,7 @@ class TestSecurity(unittest.TestCase):
                     self.assertNotIn(
                         pattern,
                         sanitized_entry,
-                        f"Sensitive pattern '{pattern}' not sanitized in: {sanitized_entry}"
+                        f"Sensitive pattern '{pattern}' not sanitized in: {sanitized_entry}",
                     )
 
         # Verify sanitized entries still contain useful information
@@ -271,7 +267,7 @@ class TestSecurity(unittest.TestCase):
                 "action": "read",
                 "timestamp": datetime.now(),
                 "ip_address": "192.168.1.100",
-                "success": True
+                "success": True,
             },
             {
                 "event_type": "data_access",
@@ -281,7 +277,7 @@ class TestSecurity(unittest.TestCase):
                 "timestamp": datetime.now(),
                 "ip_address": "192.168.1.200",
                 "success": False,
-                "failure_reason": "insufficient_permissions"
+                "failure_reason": "insufficient_permissions",
             },
             {
                 "event_type": "configuration_change",
@@ -291,7 +287,7 @@ class TestSecurity(unittest.TestCase):
                 "timestamp": datetime.now(),
                 "ip_address": "192.168.1.50",
                 "success": True,
-                "details": "Updated role permissions for director role"
+                "details": "Updated role permissions for director role",
             },
             {
                 "event_type": "authentication",
@@ -301,8 +297,8 @@ class TestSecurity(unittest.TestCase):
                 "timestamp": datetime.now(),
                 "ip_address": "10.0.0.100",
                 "success": False,
-                "failure_reason": "invalid_credentials"
-            }
+                "failure_reason": "invalid_credentials",
+            },
         ]
 
         # Add events to audit log with integrity protection
@@ -317,11 +313,17 @@ class TestSecurity(unittest.TestCase):
             self.assertEqual(
                 entry["integrity_hash"],
                 calculated_hash,
-                f"Audit entry {i} integrity hash mismatch"
+                f"Audit entry {i} integrity hash mismatch",
             )
 
             # Verify required fields present
-            required_fields = ["event_id", "timestamp", "event_type", "user", "integrity_hash"]
+            required_fields = [
+                "event_id",
+                "timestamp",
+                "event_type",
+                "user",
+                "integrity_hash",
+            ]
             for field in required_fields:
                 self.assertIn(field, entry, f"Required audit field '{field}' missing")
 
@@ -333,9 +335,7 @@ class TestSecurity(unittest.TestCase):
         original_hash = tampered_entry["integrity_hash"]
         recalculated_hash = self._calculate_audit_hash(tampered_entry)
         self.assertNotEqual(
-            original_hash,
-            recalculated_hash,
-            "Audit tampering should be detected"
+            original_hash, recalculated_hash, "Audit tampering should be detected"
         )
 
         print("✅ Audit trail integrity: PASSED")
@@ -354,26 +354,26 @@ class TestSecurity(unittest.TestCase):
                 "require_mfa": True,
                 "session_timeout_minutes": 30,
                 "max_failed_attempts": 3,
-                "account_lockout_minutes": 15
+                "account_lockout_minutes": 15,
             },
             "encryption": {
                 "data_at_rest": "AES-256",
                 "data_in_transit": "TLS-1.3",
                 "key_rotation_days": 90,
-                "require_encryption": True
+                "require_encryption": True,
             },
             "access_control": {
                 "default_deny": True,
                 "principle_of_least_privilege": True,
                 "role_based_access": True,
-                "regular_access_review": True
+                "regular_access_review": True,
             },
             "monitoring": {
                 "log_all_access": True,
                 "alert_on_failures": True,
                 "monitor_privileged_actions": True,
-                "retention_days": 365
-            }
+                "retention_days": 365,
+            },
         }
 
         # Test configuration validation
@@ -383,29 +383,29 @@ class TestSecurity(unittest.TestCase):
                 "setting": "password_min_length",
                 "value": security_config["authentication"]["password_min_length"],
                 "min_required": 8,
-                "test_type": "minimum"
+                "test_type": "minimum",
             },
             {
                 "category": "authentication",
                 "setting": "session_timeout_minutes",
                 "value": security_config["authentication"]["session_timeout_minutes"],
                 "max_allowed": 60,
-                "test_type": "maximum"
+                "test_type": "maximum",
             },
             {
                 "category": "encryption",
                 "setting": "require_encryption",
                 "value": security_config["encryption"]["require_encryption"],
                 "required_value": True,
-                "test_type": "boolean"
+                "test_type": "boolean",
             },
             {
                 "category": "access_control",
                 "setting": "default_deny",
                 "value": security_config["access_control"]["default_deny"],
                 "required_value": True,
-                "test_type": "boolean"
-            }
+                "test_type": "boolean",
+            },
         ]
 
         for test in config_tests:
@@ -413,24 +413,24 @@ class TestSecurity(unittest.TestCase):
                 self.assertGreaterEqual(
                     test["value"],
                     test["min_required"],
-                    f"{test['category']}.{test['setting']} below minimum requirement"
+                    f"{test['category']}.{test['setting']} below minimum requirement",
                 )
             elif test["test_type"] == "maximum":
                 self.assertLessEqual(
                     test["value"],
                     test["max_allowed"],
-                    f"{test['category']}.{test['setting']} exceeds maximum allowed"
+                    f"{test['category']}.{test['setting']} exceeds maximum allowed",
                 )
             elif test["test_type"] == "boolean":
                 self.assertEqual(
                     test["value"],
                     test["required_value"],
-                    f"{test['category']}.{test['setting']} not set to required value"
+                    f"{test['category']}.{test['setting']} not set to required value",
                 )
 
         # Test configuration file protection
         config_file = self.secure_data_dir / "security_config.json"
-        with open(config_file, 'w') as f:
+        with open(config_file, "w") as f:
             json.dump(security_config, f, indent=2)
 
         # Verify file permissions (simulate restricted access)
@@ -449,10 +449,22 @@ class TestSecurity(unittest.TestCase):
         """
         # Create test data with different retention requirements
         retention_policies = {
-            "audit_logs": {"retention_days": 2555, "disposal_method": "secure_delete"},  # 7 years
-            "stakeholder_intelligence": {"retention_days": 1095, "disposal_method": "secure_delete"},  # 3 years
-            "session_data": {"retention_days": 30, "disposal_method": "standard_delete"},
-            "temporary_analysis": {"retention_days": 7, "disposal_method": "standard_delete"}
+            "audit_logs": {
+                "retention_days": 2555,
+                "disposal_method": "secure_delete",
+            },  # 7 years
+            "stakeholder_intelligence": {
+                "retention_days": 1095,
+                "disposal_method": "secure_delete",
+            },  # 3 years
+            "session_data": {
+                "retention_days": 30,
+                "disposal_method": "standard_delete",
+            },
+            "temporary_analysis": {
+                "retention_days": 7,
+                "disposal_method": "standard_delete",
+            },
         }
 
         # Create test files with different ages
@@ -464,7 +476,7 @@ class TestSecurity(unittest.TestCase):
             ages_to_test = [
                 policy["retention_days"] - 10,  # Still valid
                 policy["retention_days"] + 10,  # Should be deleted
-                policy["retention_days"] + 100  # Definitely should be deleted
+                policy["retention_days"] + 100,  # Definitely should be deleted
             ]
 
             for age_days in ages_to_test:
@@ -476,31 +488,36 @@ class TestSecurity(unittest.TestCase):
                     "data_type": data_type,
                     "created_date": file_date.isoformat(),
                     "age_days": age_days,
-                    "content": f"Test data for {data_type}"
+                    "content": f"Test data for {data_type}",
                 }
 
-                with open(file_path, 'w') as f:
+                with open(file_path, "w") as f:
                     json.dump(test_data, f)
 
                 # Set file modification time to simulate age
                 timestamp = file_date.timestamp()
                 os.utime(file_path, (timestamp, timestamp))
 
-                test_files.append({
-                    "path": file_path,
-                    "data_type": data_type,
-                    "age_days": age_days,
-                    "should_exist": age_days < policy["retention_days"],
-                    "disposal_method": policy["disposal_method"]
-                })
+                test_files.append(
+                    {
+                        "path": file_path,
+                        "data_type": data_type,
+                        "age_days": age_days,
+                        "should_exist": age_days < policy["retention_days"],
+                        "disposal_method": policy["disposal_method"],
+                    }
+                )
 
         # Run data retention cleanup
         for file_info in test_files:
-            file_age_days = (datetime.now() - datetime.fromtimestamp(
-                file_info["path"].stat().st_mtime
-            )).days
+            file_age_days = (
+                datetime.now()
+                - datetime.fromtimestamp(file_info["path"].stat().st_mtime)
+            ).days
 
-            retention_days = retention_policies[file_info["data_type"]]["retention_days"]
+            retention_days = retention_policies[file_info["data_type"]][
+                "retention_days"
+            ]
 
             if file_age_days > retention_days:
                 # Simulate secure deletion
@@ -514,12 +531,12 @@ class TestSecurity(unittest.TestCase):
             if file_info["should_exist"]:
                 self.assertTrue(
                     file_info["path"].exists(),
-                    f"File {file_info['path'].name} should still exist (age: {file_info['age_days']} days)"
+                    f"File {file_info['path'].name} should still exist (age: {file_info['age_days']} days)",
                 )
             else:
                 self.assertFalse(
                     file_info["path"].exists(),
-                    f"File {file_info['path'].name} should be deleted (age: {file_info['age_days']} days)"
+                    f"File {file_info['path'].name} should be deleted (age: {file_info['age_days']} days)",
                 )
 
         print("✅ Data retention and disposal: PASSED")
@@ -531,8 +548,8 @@ class TestSecurity(unittest.TestCase):
     def _encrypt_data(self, data, key):
         """Simple encryption simulation (use proper encryption in production)"""
         # This is a simple XOR encryption for testing - use proper encryption in production
-        data_bytes = data.encode('utf-8')
-        key_bytes = key[:len(data_bytes)]  # Truncate key to data length
+        data_bytes = data.encode("utf-8")
+        key_bytes = key[: len(data_bytes)]  # Truncate key to data length
 
         encrypted = bytearray()
         for i in range(len(data_bytes)):
@@ -548,7 +565,7 @@ class TestSecurity(unittest.TestCase):
         for i in range(len(encrypted_bytes)):
             decrypted.append(encrypted_bytes[i] ^ key[i % len(key)])
 
-        return decrypted.decode('utf-8')
+        return decrypted.decode("utf-8")
 
     def _check_access_permission(self, user_role, requested_data, access_control):
         """Check if user role has permission to access requested data"""
@@ -592,7 +609,7 @@ class TestSecurity(unittest.TestCase):
             "resource": event["resource"],
             "action": event["action"],
             "ip_address": event["ip_address"],
-            "success": event["success"]
+            "success": event["success"],
         }
 
         # Add optional fields
@@ -622,8 +639,8 @@ class TestSecurity(unittest.TestCase):
         if file_path.exists():
             # Overwrite file with random data (simplified simulation)
             file_size = file_path.stat().st_size
-            with open(file_path, 'wb') as f:
-                f.write(b'0' * file_size)  # Overwrite with zeros
+            with open(file_path, "wb") as f:
+                f.write(b"0" * file_size)  # Overwrite with zeros
 
             # Delete file
             file_path.unlink()
@@ -634,7 +651,9 @@ def run_business_critical_security_tests():
     print("🔥 BUSINESS-CRITICAL REGRESSION TEST: Security")
     print("=" * 70)
     print("OWNER: Alvaro | IMPACT: Data Protection & Compliance")
-    print("FAILURE COST: Data breaches, regulatory fines, competitive intelligence loss")
+    print(
+        "FAILURE COST: Data breaches, regulatory fines, competitive intelligence loss"
+    )
     print("=" * 70)
 
     # Create test suite

@@ -35,44 +35,96 @@ class TestPersonaConsistency(unittest.TestCase):
         self.persona_profiles = {
             "diego": {
                 "communication_style": "direct_challenging",
-                "expertise_areas": ["team_leadership", "platform_strategy", "cross_functional_coordination"],
+                "expertise_areas": [
+                    "team_leadership",
+                    "platform_strategy",
+                    "cross_functional_coordination",
+                ],
                 "framework_preferences": ["Team Topologies", "SOLID Principles"],
-                "response_patterns": ["asks_clarifying_questions", "challenges_assumptions", "provides_actionable_guidance"],
+                "response_patterns": [
+                    "asks_clarifying_questions",
+                    "challenges_assumptions",
+                    "provides_actionable_guidance",
+                ],
                 "tone": "professional_direct",
-                "decision_approach": "evidence_based_with_pushback"
+                "decision_approach": "evidence_based_with_pushback",
             },
             "camille": {
                 "communication_style": "executive_strategic",
-                "expertise_areas": ["organizational_scaling", "board_communication", "technology_vision"],
-                "framework_preferences": ["Good Strategy Bad Strategy", "Scaling Up Excellence"],
-                "response_patterns": ["executive_summary_first", "strategic_context", "competitive_analysis"],
+                "expertise_areas": [
+                    "organizational_scaling",
+                    "board_communication",
+                    "technology_vision",
+                ],
+                "framework_preferences": [
+                    "Good Strategy Bad Strategy",
+                    "Scaling Up Excellence",
+                ],
+                "response_patterns": [
+                    "executive_summary_first",
+                    "strategic_context",
+                    "competitive_analysis",
+                ],
                 "tone": "executive_polished",
-                "decision_approach": "strategic_with_business_impact"
+                "decision_approach": "strategic_with_business_impact",
             },
             "rachel": {
                 "communication_style": "user_centered_collaborative",
-                "expertise_areas": ["design_systems", "user_experience", "stakeholder_alignment"],
-                "framework_preferences": ["Design System Maturity Model", "User-Centered Design"],
-                "response_patterns": ["user_impact_focus", "collaborative_approach", "accessibility_consideration"],
+                "expertise_areas": [
+                    "design_systems",
+                    "user_experience",
+                    "stakeholder_alignment",
+                ],
+                "framework_preferences": [
+                    "Design System Maturity Model",
+                    "User-Centered Design",
+                ],
+                "response_patterns": [
+                    "user_impact_focus",
+                    "collaborative_approach",
+                    "accessibility_consideration",
+                ],
                 "tone": "empathetic_professional",
-                "decision_approach": "user_value_driven"
+                "decision_approach": "user_value_driven",
             },
             "alvaro": {
                 "communication_style": "roi_focused_analytical",
-                "expertise_areas": ["business_strategy", "investment_analysis", "competitive_positioning"],
-                "framework_preferences": ["Capital Allocation Framework", "Business Model Canvas"],
-                "response_patterns": ["roi_calculation", "business_justification", "competitive_analysis"],
+                "expertise_areas": [
+                    "business_strategy",
+                    "investment_analysis",
+                    "competitive_positioning",
+                ],
+                "framework_preferences": [
+                    "Capital Allocation Framework",
+                    "Business Model Canvas",
+                ],
+                "response_patterns": [
+                    "roi_calculation",
+                    "business_justification",
+                    "competitive_analysis",
+                ],
                 "tone": "analytical_business_focused",
-                "decision_approach": "financial_impact_driven"
+                "decision_approach": "financial_impact_driven",
             },
             "martin": {
                 "communication_style": "technical_systematic",
-                "expertise_areas": ["platform_architecture", "system_design", "technical_strategy"],
-                "framework_preferences": ["SOLID Principles", "Evolutionary Architecture"],
-                "response_patterns": ["technical_depth", "systematic_analysis", "architecture_focus"],
+                "expertise_areas": [
+                    "platform_architecture",
+                    "system_design",
+                    "technical_strategy",
+                ],
+                "framework_preferences": [
+                    "SOLID Principles",
+                    "Evolutionary Architecture",
+                ],
+                "response_patterns": [
+                    "technical_depth",
+                    "systematic_analysis",
+                    "architecture_focus",
+                ],
                 "tone": "technical_precise",
-                "decision_approach": "engineering_excellence_focused"
-            }
+                "decision_approach": "engineering_excellence_focused",
+            },
         }
 
     def tearDown(self):
@@ -91,23 +143,23 @@ class TestPersonaConsistency(unittest.TestCase):
             {
                 "query": "How should we structure our engineering teams?",
                 "expected_personas": ["diego", "camille"],
-                "interaction_type": "initial_strategic_question"
+                "interaction_type": "initial_strategic_question",
             },
             {
                 "query": "What's the ROI of this platform investment?",
                 "expected_personas": ["alvaro"],
-                "interaction_type": "follow_up_financial"
+                "interaction_type": "follow_up_financial",
             },
             {
                 "query": "How do we improve our design system adoption?",
                 "expected_personas": ["rachel"],
-                "interaction_type": "design_systems_query"
+                "interaction_type": "design_systems_query",
             },
             {
                 "query": "What's the technical architecture for this platform?",
                 "expected_personas": ["martin"],
-                "interaction_type": "technical_deep_dive"
-            }
+                "interaction_type": "technical_deep_dive",
+            },
         ]
 
         persona_responses = {}
@@ -116,9 +168,7 @@ class TestPersonaConsistency(unittest.TestCase):
             for persona_id in scenario["expected_personas"]:
                 # Simulate persona response generation
                 response = self._simulate_persona_response(
-                    persona_id,
-                    scenario["query"],
-                    scenario["interaction_type"]
+                    persona_id, scenario["query"], scenario["interaction_type"]
                 )
 
                 if persona_id not in persona_responses:
@@ -134,21 +184,21 @@ class TestPersonaConsistency(unittest.TestCase):
                 self.assertEqual(
                     response["communication_style"],
                     expected_profile["communication_style"],
-                    f"Communication style inconsistent for {persona_id}"
+                    f"Communication style inconsistent for {persona_id}",
                 )
 
                 # Verify tone consistency
                 self.assertEqual(
                     response["tone"],
                     expected_profile["tone"],
-                    f"Tone inconsistent for {persona_id}"
+                    f"Tone inconsistent for {persona_id}",
                 )
 
                 # Verify decision approach consistency
                 self.assertEqual(
                     response["decision_approach"],
                     expected_profile["decision_approach"],
-                    f"Decision approach inconsistent for {persona_id}"
+                    f"Decision approach inconsistent for {persona_id}",
                 )
 
                 # Verify expertise areas are maintained
@@ -156,7 +206,7 @@ class TestPersonaConsistency(unittest.TestCase):
                 expected_expertise = set(expected_profile["expertise_areas"])
                 self.assertTrue(
                     response_expertise.intersection(expected_expertise),
-                    f"Expertise areas not demonstrated for {persona_id}"
+                    f"Expertise areas not demonstrated for {persona_id}",
                 )
 
         print("✅ Persona communication style consistency: PASSED")
@@ -175,34 +225,34 @@ class TestPersonaConsistency(unittest.TestCase):
                 "context": "Engineering team scaling challenges",
                 "expected_frameworks": {
                     "diego": ["Team Topologies", "SOLID Principles"],
-                    "camille": ["Good Strategy Bad Strategy", "Scaling Up Excellence"]
-                }
+                    "camille": ["Good Strategy Bad Strategy", "Scaling Up Excellence"],
+                },
             },
             {
                 "scenario": "platform_investment",
                 "context": "Platform vs feature investment decision",
                 "expected_frameworks": {
                     "alvaro": ["Capital Allocation Framework", "Business Model Canvas"],
-                    "martin": ["SOLID Principles", "Evolutionary Architecture"]
-                }
+                    "martin": ["SOLID Principles", "Evolutionary Architecture"],
+                },
             },
             {
                 "scenario": "design_system_adoption",
                 "context": "Cross-team design system implementation",
                 "expected_frameworks": {
                     "rachel": ["Design System Maturity Model", "User-Centered Design"],
-                    "diego": ["Team Topologies"]
-                }
-            }
+                    "diego": ["Team Topologies"],
+                },
+            },
         ]
 
         for scenario in strategic_scenarios:
-            for persona_id, expected_frameworks in scenario["expected_frameworks"].items():
+            for persona_id, expected_frameworks in scenario[
+                "expected_frameworks"
+            ].items():
                 # Simulate framework application
                 framework_response = self._simulate_framework_application(
-                    persona_id,
-                    scenario["scenario"],
-                    scenario["context"]
+                    persona_id, scenario["scenario"], scenario["context"]
                 )
 
                 # Verify expected frameworks are applied
@@ -212,7 +262,7 @@ class TestPersonaConsistency(unittest.TestCase):
                     self.assertIn(
                         expected_framework,
                         applied_frameworks,
-                        f"Expected framework '{expected_framework}' not applied by {persona_id}"
+                        f"Expected framework '{expected_framework}' not applied by {persona_id}",
                     )
 
                 # Verify framework application is appropriate to persona expertise
@@ -221,7 +271,7 @@ class TestPersonaConsistency(unittest.TestCase):
                     self.assertIn(
                         framework,
                         persona_profile["framework_preferences"],
-                        f"Unexpected framework '{framework}' applied by {persona_id}"
+                        f"Unexpected framework '{framework}' applied by {persona_id}",
                     )
 
         print("✅ Framework preference consistency: PASSED")
@@ -238,35 +288,54 @@ class TestPersonaConsistency(unittest.TestCase):
             {
                 "persona": "diego",
                 "query": "Should we adopt microservices architecture?",
-                "expected_patterns": ["asks_clarifying_questions", "challenges_assumptions", "provides_actionable_guidance"]
+                "expected_patterns": [
+                    "asks_clarifying_questions",
+                    "challenges_assumptions",
+                    "provides_actionable_guidance",
+                ],
             },
             {
                 "persona": "camille",
                 "query": "How do we present this to the board?",
-                "expected_patterns": ["executive_summary_first", "strategic_context", "competitive_analysis"]
+                "expected_patterns": [
+                    "executive_summary_first",
+                    "strategic_context",
+                    "competitive_analysis",
+                ],
             },
             {
                 "persona": "rachel",
                 "query": "How do we improve user adoption of our tools?",
-                "expected_patterns": ["user_impact_focus", "collaborative_approach", "accessibility_consideration"]
+                "expected_patterns": [
+                    "user_impact_focus",
+                    "collaborative_approach",
+                    "accessibility_consideration",
+                ],
             },
             {
                 "persona": "alvaro",
                 "query": "Is this investment worth pursuing?",
-                "expected_patterns": ["roi_calculation", "business_justification", "competitive_analysis"]
+                "expected_patterns": [
+                    "roi_calculation",
+                    "business_justification",
+                    "competitive_analysis",
+                ],
             },
             {
                 "persona": "martin",
                 "query": "What's the best technical approach here?",
-                "expected_patterns": ["technical_depth", "systematic_analysis", "architecture_focus"]
-            }
+                "expected_patterns": [
+                    "technical_depth",
+                    "systematic_analysis",
+                    "architecture_focus",
+                ],
+            },
         ]
 
         for test in interaction_tests:
             # Simulate persona response
             response = self._simulate_persona_interaction(
-                test["persona"],
-                test["query"]
+                test["persona"], test["query"]
             )
 
             # Verify expected response patterns are present
@@ -276,7 +345,7 @@ class TestPersonaConsistency(unittest.TestCase):
                 self.assertIn(
                     expected_pattern,
                     response_patterns,
-                    f"Expected pattern '{expected_pattern}' missing from {test['persona']} response"
+                    f"Expected pattern '{expected_pattern}' missing from {test['persona']} response",
                 )
 
             # Verify response structure is consistent with persona
@@ -289,7 +358,7 @@ class TestPersonaConsistency(unittest.TestCase):
             self.assertGreaterEqual(
                 len(overlap),
                 len(expected_response_patterns) // 2,  # At least 50% overlap
-                f"Insufficient pattern overlap for {test['persona']}"
+                f"Insufficient pattern overlap for {test['persona']}",
             )
 
         print("✅ Response pattern consistency: PASSED")
@@ -309,13 +378,17 @@ class TestPersonaConsistency(unittest.TestCase):
                 "interactions": [
                     {
                         "query": "We're scaling from 50 to 200 engineers",
-                        "context_established": ["team_size_50_to_200", "scaling_challenge", "engineering_focus"]
+                        "context_established": [
+                            "team_size_50_to_200",
+                            "scaling_challenge",
+                            "engineering_focus",
+                        ],
                     },
                     {
                         "query": "What team structure should we use?",
-                        "should_remember": ["team_size_50_to_200", "scaling_challenge"]
-                    }
-                ]
+                        "should_remember": ["team_size_50_to_200", "scaling_challenge"],
+                    },
+                ],
             },
             {
                 "session_id": "session_002",
@@ -323,14 +396,18 @@ class TestPersonaConsistency(unittest.TestCase):
                 "interactions": [
                     {
                         "query": "Platform investment budget is $2M",
-                        "context_established": ["platform_investment", "budget_2M", "investment_decision"]
+                        "context_established": [
+                            "platform_investment",
+                            "budget_2M",
+                            "investment_decision",
+                        ],
                     },
                     {
                         "query": "What's the expected ROI?",
-                        "should_remember": ["platform_investment", "budget_2M"]
-                    }
-                ]
-            }
+                        "should_remember": ["platform_investment", "budget_2M"],
+                    },
+                ],
+            },
         ]
 
         persona_memory = {}
@@ -345,9 +422,7 @@ class TestPersonaConsistency(unittest.TestCase):
             for i, interaction in enumerate(scenario["interactions"]):
                 # Simulate persona interaction with memory
                 response = self._simulate_persona_with_memory(
-                    persona_id,
-                    interaction["query"],
-                    persona_memory.get(persona_id, {})
+                    persona_id, interaction["query"], persona_memory.get(persona_id, {})
                 )
 
                 # Update persona memory
@@ -357,7 +432,7 @@ class TestPersonaConsistency(unittest.TestCase):
                             "value": context_item,
                             "session": session_id,
                             "interaction": i,
-                            "timestamp": datetime.now().isoformat()
+                            "timestamp": datetime.now().isoformat(),
                         }
 
                 # Verify memory recall for follow-up interactions
@@ -368,14 +443,14 @@ class TestPersonaConsistency(unittest.TestCase):
                         self.assertIn(
                             expected_memory,
                             remembered_context,
-                            f"Persona {persona_id} failed to remember context: {expected_memory}"
+                            f"Persona {persona_id} failed to remember context: {expected_memory}",
                         )
 
                 # Verify context is used appropriately in response
                 if response["context_recalled"]:
                     self.assertTrue(
                         response["context_utilized"],
-                        f"Persona {persona_id} recalled context but didn't utilize it"
+                        f"Persona {persona_id} recalled context but didn't utilize it",
                     )
 
         print("✅ Cross-session persona memory: PASSED")
@@ -393,56 +468,55 @@ class TestPersonaConsistency(unittest.TestCase):
                 "persona": "rachel",
                 "query": "What's the best database architecture for analytics?",
                 "should_defer_to": ["martin", "delbert"],
-                "expertise_match": False
+                "expertise_match": False,
             },
             {
                 "persona": "diego",
                 "query": "How do we improve our design system adoption?",
                 "should_defer_to": ["rachel"],
-                "expertise_match": False
+                "expertise_match": False,
             },
             {
                 "persona": "alvaro",
                 "query": "What's the technical implementation approach?",
                 "should_defer_to": ["martin"],
-                "expertise_match": False
+                "expertise_match": False,
             },
             {
                 "persona": "martin",
                 "query": "What's the ROI of this technical investment?",
                 "should_defer_to": ["alvaro"],
-                "expertise_match": False
+                "expertise_match": False,
             },
             {
                 "persona": "diego",
                 "query": "How should we structure our engineering teams?",
                 "should_defer_to": [],
-                "expertise_match": True
-            }
+                "expertise_match": True,
+            },
         ]
 
         for test in boundary_tests:
             # Simulate persona response to out-of-expertise query
             response = self._simulate_expertise_boundary_check(
-                test["persona"],
-                test["query"]
+                test["persona"], test["query"]
             )
 
             if test["expertise_match"]:
                 # Should provide direct guidance within expertise
                 self.assertTrue(
                     response["provides_direct_guidance"],
-                    f"Persona {test['persona']} should provide direct guidance for expertise area"
+                    f"Persona {test['persona']} should provide direct guidance for expertise area",
                 )
                 self.assertFalse(
                     response["defers_to_others"],
-                    f"Persona {test['persona']} shouldn't defer for expertise area"
+                    f"Persona {test['persona']} shouldn't defer for expertise area",
                 )
             else:
                 # Should defer to appropriate personas
                 self.assertTrue(
                     response["defers_to_others"],
-                    f"Persona {test['persona']} should defer for out-of-expertise query"
+                    f"Persona {test['persona']} should defer for out-of-expertise query",
                 )
 
                 # Verify defers to correct personas
@@ -452,7 +526,7 @@ class TestPersonaConsistency(unittest.TestCase):
 
                 self.assertTrue(
                     expected_deferrals.intersection(actual_deferrals),
-                    f"Persona {test['persona']} didn't defer to expected personas: {test['should_defer_to']}"
+                    f"Persona {test['persona']} didn't defer to expected personas: {test['should_defer_to']}",
                 )
 
         print("✅ Persona expertise boundaries: PASSED")
@@ -468,8 +542,10 @@ class TestPersonaConsistency(unittest.TestCase):
             "communication_style": profile["communication_style"],
             "tone": profile["tone"],
             "decision_approach": profile["decision_approach"],
-            "expertise_demonstrated": profile["expertise_areas"][:2],  # Show first 2 areas
-            "timestamp": datetime.now().isoformat()
+            "expertise_demonstrated": profile["expertise_areas"][
+                :2
+            ],  # Show first 2 areas
+            "timestamp": datetime.now().isoformat(),
         }
 
     def _simulate_framework_application(self, persona_id, scenario, context):
@@ -487,7 +563,7 @@ class TestPersonaConsistency(unittest.TestCase):
             "scenario": scenario,
             "context": context,
             "frameworks_applied": applicable_frameworks,
-            "application_rationale": f"Applied {len(applicable_frameworks)} frameworks based on {persona_id} expertise"
+            "application_rationale": f"Applied {len(applicable_frameworks)} frameworks based on {persona_id} expertise",
         }
 
     def _simulate_persona_interaction(self, persona_id, query):
@@ -504,7 +580,7 @@ class TestPersonaConsistency(unittest.TestCase):
             "persona_id": persona_id,
             "query": query,
             "patterns_demonstrated": demonstrated_patterns,
-            "response_quality": "high" if len(demonstrated_patterns) >= 2 else "medium"
+            "response_quality": "high" if len(demonstrated_patterns) >= 2 else "medium",
         }
 
     def _simulate_persona_with_memory(self, persona_id, query, existing_memory):
@@ -523,7 +599,7 @@ class TestPersonaConsistency(unittest.TestCase):
             "query": query,
             "context_recalled": recalled_context,
             "context_utilized": context_utilized,
-            "memory_quality": "high" if context_utilized else "low"
+            "memory_quality": "high" if context_utilized else "low",
         }
 
     def _simulate_expertise_boundary_check(self, persona_id, query):
@@ -531,14 +607,16 @@ class TestPersonaConsistency(unittest.TestCase):
         profile = self.persona_profiles[persona_id]
 
         # Check if query matches persona expertise
-        expertise_match = self._query_matches_expertise(query, profile["expertise_areas"])
+        expertise_match = self._query_matches_expertise(
+            query, profile["expertise_areas"]
+        )
 
         if expertise_match:
             return {
                 "persona_id": persona_id,
                 "provides_direct_guidance": True,
                 "defers_to_others": False,
-                "deferred_personas": []
+                "deferred_personas": [],
             }
         else:
             # Determine which personas to defer to
@@ -548,7 +626,7 @@ class TestPersonaConsistency(unittest.TestCase):
                 "persona_id": persona_id,
                 "provides_direct_guidance": False,
                 "defers_to_others": True,
-                "deferred_personas": deferred_personas
+                "deferred_personas": deferred_personas,
             }
 
     def _is_framework_applicable(self, framework, scenario):
@@ -562,7 +640,7 @@ class TestPersonaConsistency(unittest.TestCase):
             "Business Model Canvas": ["platform_investment"],
             "Design System Maturity Model": ["design_system_adoption"],
             "User-Centered Design": ["design_system_adoption"],
-            "Evolutionary Architecture": ["platform_investment"]
+            "Evolutionary Architecture": ["platform_investment"],
         }
 
         return scenario in framework_scenarios.get(framework, [])
@@ -583,7 +661,7 @@ class TestPersonaConsistency(unittest.TestCase):
             "business_justification": ["investment", "worth", "business"],
             "technical_depth": ["technical", "architecture", "approach"],
             "systematic_analysis": ["technical", "best", "approach"],
-            "architecture_focus": ["technical", "architecture", "system"]
+            "architecture_focus": ["technical", "architecture", "system"],
         }
 
         query_lower = query.lower()
@@ -599,7 +677,7 @@ class TestPersonaConsistency(unittest.TestCase):
             "engineering_focus": ["engineering", "team", "technical"],
             "platform_investment": ["platform", "investment", "roi"],
             "budget_2M": ["budget", "cost", "investment", "roi"],
-            "investment_decision": ["investment", "decision", "roi"]
+            "investment_decision": ["investment", "decision", "roi"],
         }
 
         query_lower = query.lower()
@@ -614,7 +692,11 @@ class TestPersonaConsistency(unittest.TestCase):
         expertise_keywords = {
             "team_leadership": ["team", "leadership", "management", "people"],
             "platform_strategy": ["platform", "strategy", "architecture"],
-            "cross_functional_coordination": ["coordination", "alignment", "stakeholder"],
+            "cross_functional_coordination": [
+                "coordination",
+                "alignment",
+                "stakeholder",
+            ],
             "organizational_scaling": ["scaling", "organization", "growth"],
             "board_communication": ["board", "executive", "communication"],
             "technology_vision": ["technology", "vision", "strategy"],
@@ -624,9 +706,14 @@ class TestPersonaConsistency(unittest.TestCase):
             "business_strategy": ["business", "strategy", "roi", "investment"],
             "investment_analysis": ["investment", "roi", "analysis", "financial"],
             "competitive_positioning": ["competitive", "market", "positioning"],
-            "platform_architecture": ["architecture", "platform", "system", "technical"],
+            "platform_architecture": [
+                "architecture",
+                "platform",
+                "system",
+                "technical",
+            ],
             "system_design": ["system", "design", "architecture", "technical"],
-            "technical_strategy": ["technical", "strategy", "architecture"]
+            "technical_strategy": ["technical", "strategy", "architecture"],
         }
 
         for expertise_area in expertise_areas:
@@ -641,13 +728,21 @@ class TestPersonaConsistency(unittest.TestCase):
         query_lower = query.lower()
 
         # Map query types to appropriate personas
-        if any(word in query_lower for word in ["database", "analytics", "technical", "architecture"]):
+        if any(
+            word in query_lower
+            for word in ["database", "analytics", "technical", "architecture"]
+        ):
             return ["martin", "delbert"]
         elif any(word in query_lower for word in ["design", "user", "ux", "adoption"]):
             return ["rachel"]
-        elif any(word in query_lower for word in ["roi", "investment", "business", "financial"]):
+        elif any(
+            word in query_lower
+            for word in ["roi", "investment", "business", "financial"]
+        ):
             return ["alvaro"]
-        elif any(word in query_lower for word in ["team", "leadership", "organization"]):
+        elif any(
+            word in query_lower for word in ["team", "leadership", "organization"]
+        ):
             return ["diego"]
         elif any(word in query_lower for word in ["strategy", "executive", "board"]):
             return ["camille"]
@@ -677,7 +772,9 @@ def run_ux_continuity_persona_tests():
         print("📊 Strategic Value: User trust and engagement preserved")
         return True
     else:
-        print(f"\n❌ PERSONA CONSISTENCY FAILURES: {len(result.failures + result.errors)}")
+        print(
+            f"\n❌ PERSONA CONSISTENCY FAILURES: {len(result.failures + result.errors)}"
+        )
         print("💥 UX Impact: Persona behavior inconsistent, user trust compromised")
         print("🚨 Action Required: Fix persona consistency immediately")
         return False

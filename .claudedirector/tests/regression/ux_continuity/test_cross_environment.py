@@ -37,24 +37,61 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
             "cursor_ide": {
                 "platform": "desktop",
                 "interaction_mode": "integrated_chat",
-                "features": ["real_time_transparency", "context_persistence", "file_integration", "git_integration"],
-                "user_expectations": ["seamless_workflow", "zero_setup", "persistent_sessions"],
-                "primary_use_cases": ["strategic_planning", "architecture_decisions", "team_coordination"]
+                "features": [
+                    "real_time_transparency",
+                    "context_persistence",
+                    "file_integration",
+                    "git_integration",
+                ],
+                "user_expectations": [
+                    "seamless_workflow",
+                    "zero_setup",
+                    "persistent_sessions",
+                ],
+                "primary_use_cases": [
+                    "strategic_planning",
+                    "architecture_decisions",
+                    "team_coordination",
+                ],
             },
             "claude_chat": {
                 "platform": "web",
                 "interaction_mode": "standalone_chat",
-                "features": ["conversation_history", "context_sharing", "export_capabilities"],
-                "user_expectations": ["accessible_anywhere", "conversation_continuity", "easy_sharing"],
-                "primary_use_cases": ["executive_briefings", "strategic_discussions", "decision_support"]
+                "features": [
+                    "conversation_history",
+                    "context_sharing",
+                    "export_capabilities",
+                ],
+                "user_expectations": [
+                    "accessible_anywhere",
+                    "conversation_continuity",
+                    "easy_sharing",
+                ],
+                "primary_use_cases": [
+                    "executive_briefings",
+                    "strategic_discussions",
+                    "decision_support",
+                ],
             },
             "cli_interface": {
                 "platform": "terminal",
                 "interaction_mode": "command_line",
-                "features": ["automation_support", "script_integration", "batch_processing"],
-                "user_expectations": ["scriptable_workflows", "consistent_output", "reliable_automation"],
-                "primary_use_cases": ["automated_reporting", "batch_analysis", "integration_workflows"]
-            }
+                "features": [
+                    "automation_support",
+                    "script_integration",
+                    "batch_processing",
+                ],
+                "user_expectations": [
+                    "scriptable_workflows",
+                    "consistent_output",
+                    "reliable_automation",
+                ],
+                "primary_use_cases": [
+                    "automated_reporting",
+                    "batch_analysis",
+                    "integration_workflows",
+                ],
+            },
         }
 
         # Define cross-environment consistency requirements
@@ -63,7 +100,7 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
             "strategic_guidance": "consistent_quality_and_content",
             "framework_detection": "same_frameworks_same_contexts",
             "transparency_disclosure": "complete_in_all_environments",
-            "context_preservation": "seamless_environment_switching"
+            "context_preservation": "seamless_environment_switching",
         }
 
     def tearDown(self):
@@ -85,8 +122,8 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
                 "expected_characteristics": {
                     "communication_style": "direct_challenging",
                     "framework_preference": "Team Topologies",
-                    "response_pattern": "asks_clarifying_questions"
-                }
+                    "response_pattern": "asks_clarifying_questions",
+                },
             },
             {
                 "persona": "alvaro",
@@ -94,8 +131,8 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
                 "expected_characteristics": {
                     "communication_style": "roi_focused_analytical",
                     "framework_preference": "Capital Allocation Framework",
-                    "response_pattern": "business_justification"
-                }
+                    "response_pattern": "business_justification",
+                },
             },
             {
                 "persona": "rachel",
@@ -103,9 +140,9 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
                 "expected_characteristics": {
                     "communication_style": "user_centered_collaborative",
                     "framework_preference": "Design System Maturity Model",
-                    "response_pattern": "user_impact_focus"
-                }
-            }
+                    "response_pattern": "user_impact_focus",
+                },
+            },
         ]
 
         for test in persona_consistency_tests:
@@ -114,15 +151,14 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
             # Test persona behavior in each environment
             for env_name, env_config in self.environments.items():
                 response = self._simulate_persona_response_in_environment(
-                    test["persona"],
-                    test["strategic_query"],
-                    env_name,
-                    env_config
+                    test["persona"], test["strategic_query"], env_name, env_config
                 )
                 environment_responses[env_name] = response
 
             # Verify consistency across environments
-            reference_response = environment_responses["cursor_ide"]  # Use Cursor as reference
+            reference_response = environment_responses[
+                "cursor_ide"
+            ]  # Use Cursor as reference
 
             for env_name, response in environment_responses.items():
                 if env_name == "cursor_ide":
@@ -132,28 +168,29 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
                 self.assertEqual(
                     response["communication_style"],
                     reference_response["communication_style"],
-                    f"Communication style inconsistent for {test['persona']} in {env_name}"
+                    f"Communication style inconsistent for {test['persona']} in {env_name}",
                 )
 
                 # Verify framework preference consistency
                 self.assertEqual(
                     response["framework_applied"],
                     reference_response["framework_applied"],
-                    f"Framework preference inconsistent for {test['persona']} in {env_name}"
+                    f"Framework preference inconsistent for {test['persona']} in {env_name}",
                 )
 
                 # Verify response pattern consistency
                 self.assertEqual(
                     response["response_pattern"],
                     reference_response["response_pattern"],
-                    f"Response pattern inconsistent for {test['persona']} in {env_name}"
+                    f"Response pattern inconsistent for {test['persona']} in {env_name}",
                 )
 
                 # Verify strategic guidance quality
                 self.assertGreaterEqual(
                     response["guidance_quality_score"],
-                    reference_response["guidance_quality_score"] * 0.9,  # Allow 10% variance
-                    f"Guidance quality significantly lower for {test['persona']} in {env_name}"
+                    reference_response["guidance_quality_score"]
+                    * 0.9,  # Allow 10% variance
+                    f"Guidance quality significantly lower for {test['persona']} in {env_name}",
                 )
 
         print("✅ Persona consistency across environments: PASSED")
@@ -170,27 +207,38 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
             {
                 "feature": "strategic_framework_detection",
                 "test_scenario": "complex_organizational_decision",
-                "expected_frameworks": ["Team Topologies", "Good Strategy Bad Strategy"],
-                "minimum_accuracy": 0.85
+                "expected_frameworks": [
+                    "Team Topologies",
+                    "Good Strategy Bad Strategy",
+                ],
+                "minimum_accuracy": 0.85,
             },
             {
                 "feature": "multi_persona_coordination",
                 "test_scenario": "cross_functional_strategic_question",
                 "expected_personas": ["diego", "rachel", "alvaro"],
-                "coordination_quality_threshold": 0.8
+                "coordination_quality_threshold": 0.8,
             },
             {
                 "feature": "context_preservation",
                 "test_scenario": "multi_turn_strategic_conversation",
-                "context_elements": ["stakeholder_relationships", "previous_decisions", "strategic_constraints"],
-                "preservation_rate_threshold": 0.9
+                "context_elements": [
+                    "stakeholder_relationships",
+                    "previous_decisions",
+                    "strategic_constraints",
+                ],
+                "preservation_rate_threshold": 0.9,
             },
             {
                 "feature": "transparency_disclosure",
                 "test_scenario": "ai_enhanced_strategic_analysis",
-                "disclosure_elements": ["mcp_server_usage", "framework_attribution", "persona_coordination"],
-                "completeness_threshold": 1.0
-            }
+                "disclosure_elements": [
+                    "mcp_server_usage",
+                    "framework_attribution",
+                    "persona_coordination",
+                ],
+                "completeness_threshold": 1.0,
+            },
         ]
 
         for feature in core_features:
@@ -203,10 +251,7 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
                     continue
 
                 result = self._test_feature_in_environment(
-                    feature["feature"],
-                    feature["test_scenario"],
-                    env_name,
-                    env_config
+                    feature["feature"], feature["test_scenario"], env_name, env_config
                 )
                 environment_results[env_name] = result
 
@@ -224,26 +269,27 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
                 # Verify feature functionality
                 self.assertTrue(
                     result["feature_functional"],
-                    f"Feature '{feature['feature']}' not functional in {env_name}"
+                    f"Feature '{feature['feature']}' not functional in {env_name}",
                 )
 
                 # Verify performance consistency
-                performance_ratio = result["performance_score"] / reference_result["performance_score"]
+                performance_ratio = (
+                    result["performance_score"] / reference_result["performance_score"]
+                )
                 self.assertGreaterEqual(
                     performance_ratio,
                     0.8,  # Allow 20% performance variance
-                    f"Feature '{feature['feature']}' performance significantly lower in {env_name}"
+                    f"Feature '{feature['feature']}' performance significantly lower in {env_name}",
                 )
 
                 # Verify output consistency
                 output_similarity = self._calculate_output_similarity(
-                    reference_result["output"],
-                    result["output"]
+                    reference_result["output"], result["output"]
                 )
                 self.assertGreaterEqual(
                     output_similarity,
                     0.85,  # 85% output similarity
-                    f"Feature '{feature['feature']}' output inconsistent in {env_name}"
+                    f"Feature '{feature['feature']}' output inconsistent in {env_name}",
                 )
 
         print("✅ Feature parity across platforms: PASSED")
@@ -265,11 +311,14 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
                 "context_data": {
                     "active_persona": "diego",
                     "strategic_topic": "engineering_team_scaling",
-                    "decisions_made": ["adopt_team_topologies", "hire_senior_engineers"],
+                    "decisions_made": [
+                        "adopt_team_topologies",
+                        "hire_senior_engineers",
+                    ],
                     "stakeholder_context": ["hemendra_concerns", "budget_constraints"],
-                    "next_steps": ["create_hiring_plan", "present_to_leadership"]
+                    "next_steps": ["create_hiring_plan", "present_to_leadership"],
                 },
-                "transfer_method": "context_export_import"
+                "transfer_method": "context_export_import",
             },
             {
                 "scenario": "claude_chat_to_cli_automation",
@@ -279,12 +328,18 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
                 "context_data": {
                     "active_persona": "alvaro",
                     "strategic_topic": "platform_investment_roi",
-                    "analysis_parameters": {"investment_amount": 2000000, "timeline": "3_years"},
+                    "analysis_parameters": {
+                        "investment_amount": 2000000,
+                        "timeline": "3_years",
+                    },
                     "business_context": ["competitive_positioning", "market_timing"],
-                    "output_requirements": ["executive_summary", "detailed_calculations"]
+                    "output_requirements": [
+                        "executive_summary",
+                        "detailed_calculations",
+                    ],
                 },
-                "transfer_method": "structured_data_export"
-            }
+                "transfer_method": "structured_data_export",
+            },
         ]
 
         for scenario in context_transfer_scenarios:
@@ -292,26 +347,24 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
             source_session = self._establish_context_in_environment(
                 scenario["source_environment"],
                 scenario["context_type"],
-                scenario["context_data"]
+                scenario["context_data"],
             )
 
             # Export context from source
             exported_context = self._export_context_from_environment(
-                source_session,
-                scenario["transfer_method"]
+                source_session, scenario["transfer_method"]
             )
 
             # Import context to target environment
             target_session = self._import_context_to_environment(
                 scenario["target_environment"],
                 exported_context,
-                scenario["transfer_method"]
+                scenario["transfer_method"],
             )
 
             # Verify context transfer quality
             transfer_quality = self._assess_context_transfer_quality(
-                scenario["context_data"],
-                target_session["restored_context"]
+                scenario["context_data"], target_session["restored_context"]
             )
 
             # Verify critical context elements preserved
@@ -320,20 +373,20 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
                     self.assertEqual(
                         target_session["restored_context"][key_element],
                         scenario["context_data"][key_element],
-                        f"Key context element '{key_element}' not preserved in {scenario['scenario']}"
+                        f"Key context element '{key_element}' not preserved in {scenario['scenario']}",
                     )
 
             # Verify overall transfer quality
             self.assertGreaterEqual(
                 transfer_quality["preservation_score"],
                 0.85,  # 85% context preservation
-                f"Context transfer quality too low in {scenario['scenario']}"
+                f"Context transfer quality too low in {scenario['scenario']}",
             )
 
             # Verify functional continuity
             self.assertTrue(
                 transfer_quality["functional_continuity"],
-                f"Functional continuity lost in {scenario['scenario']}"
+                f"Functional continuity lost in {scenario['scenario']}",
             )
 
         print("✅ Context transfer between environments: PASSED")
@@ -351,27 +404,48 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
                 "ui_element": "persona_identification",
                 "consistency_requirement": "same_visual_format",
                 "test_scenarios": [
-                    {"persona": "diego", "expected_format": "🎯 Diego | Engineering Leadership"},
-                    {"persona": "alvaro", "expected_format": "💼 Alvaro | Platform Investment Strategy"},
-                    {"persona": "rachel", "expected_format": "🎨 Rachel | Design Systems Strategy"}
-                ]
+                    {
+                        "persona": "diego",
+                        "expected_format": "🎯 Diego | Engineering Leadership",
+                    },
+                    {
+                        "persona": "alvaro",
+                        "expected_format": "💼 Alvaro | Platform Investment Strategy",
+                    },
+                    {
+                        "persona": "rachel",
+                        "expected_format": "🎨 Rachel | Design Systems Strategy",
+                    },
+                ],
             },
             {
                 "ui_element": "framework_attribution",
                 "consistency_requirement": "same_disclosure_format",
                 "test_scenarios": [
-                    {"framework": "Team Topologies", "expected_format": "📚 Strategic Framework: Team Topologies detected"},
-                    {"framework": "Capital Allocation", "expected_format": "📚 Strategic Framework: Capital Allocation Framework detected"}
-                ]
+                    {
+                        "framework": "Team Topologies",
+                        "expected_format": "📚 Strategic Framework: Team Topologies detected",
+                    },
+                    {
+                        "framework": "Capital Allocation",
+                        "expected_format": "📚 Strategic Framework: Capital Allocation Framework detected",
+                    },
+                ],
             },
             {
                 "ui_element": "transparency_disclosure",
                 "consistency_requirement": "same_enhancement_format",
                 "test_scenarios": [
-                    {"enhancement": "mcp_server", "expected_format": "🔧 Accessing MCP Server: [server_name] ([capability])"},
-                    {"enhancement": "multi_persona", "expected_format": "🤝 **Cross-Functional Analysis**"}
-                ]
-            }
+                    {
+                        "enhancement": "mcp_server",
+                        "expected_format": "🔧 Accessing MCP Server: [server_name] ([capability])",
+                    },
+                    {
+                        "enhancement": "multi_persona",
+                        "expected_format": "🤝 **Cross-Functional Analysis**",
+                    },
+                ],
+            },
         ]
 
         for ui_test in ui_consistency_tests:
@@ -383,40 +457,41 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
 
                 for scenario in ui_test["test_scenarios"]:
                     ui_output = self._generate_ui_element_in_environment(
-                        ui_test["ui_element"],
-                        scenario,
-                        env_name,
-                        env_config
+                        ui_test["ui_element"], scenario, env_name, env_config
                     )
                     env_formats.append(ui_output)
 
                 environment_formats[env_name] = env_formats
 
             # Verify UI consistency across environments
-            reference_formats = environment_formats["cursor_ide"]  # Use Cursor as reference
+            reference_formats = environment_formats[
+                "cursor_ide"
+            ]  # Use Cursor as reference
 
             for env_name, env_formats in environment_formats.items():
                 if env_name == "cursor_ide":
                     continue
 
-                for i, (reference_format, env_format) in enumerate(zip(reference_formats, env_formats)):
+                for i, (reference_format, env_format) in enumerate(
+                    zip(reference_formats, env_formats)
+                ):
                     # Verify format consistency
                     format_similarity = self._calculate_format_similarity(
                         reference_format["formatted_output"],
-                        env_format["formatted_output"]
+                        env_format["formatted_output"],
                     )
 
                     self.assertGreaterEqual(
                         format_similarity,
                         0.9,  # 90% format similarity
-                        f"UI format inconsistent for {ui_test['ui_element']} in {env_name}, scenario {i}"
+                        f"UI format inconsistent for {ui_test['ui_element']} in {env_name}, scenario {i}",
                     )
 
                     # Verify visual elements preserved
                     self.assertEqual(
                         reference_format["visual_elements"],
                         env_format["visual_elements"],
-                        f"Visual elements inconsistent for {ui_test['ui_element']} in {env_name}, scenario {i}"
+                        f"Visual elements inconsistent for {ui_test['ui_element']} in {env_name}, scenario {i}",
                     )
 
         print("✅ User interface consistency: PASSED")
@@ -435,22 +510,22 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
                 "test_query": "How should we prioritize our platform investments?",
                 "expected_personas": ["alvaro", "diego"],
                 "max_response_time": 5.0,  # seconds
-                "quality_threshold": 0.8
+                "quality_threshold": 0.8,
             },
             {
                 "operation": "framework_detection_and_attribution",
                 "test_scenario": "complex_organizational_decision",
                 "expected_frameworks": 3,  # minimum frameworks detected
                 "max_processing_time": 2.0,
-                "accuracy_threshold": 0.85
+                "accuracy_threshold": 0.85,
             },
             {
                 "operation": "context_preservation_and_recall",
                 "test_scenario": "multi_turn_conversation",
                 "context_elements": 10,  # number of context elements
                 "max_recall_time": 1.0,
-                "preservation_rate": 0.9
-            }
+                "preservation_rate": 0.9,
+            },
         ]
 
         for benchmark in performance_benchmarks:
@@ -459,34 +534,39 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
             # Test performance in each environment
             for env_name, env_config in self.environments.items():
                 performance_result = self._measure_performance_in_environment(
-                    benchmark["operation"],
-                    benchmark,
-                    env_name,
-                    env_config
+                    benchmark["operation"], benchmark, env_name, env_config
                 )
                 environment_performance[env_name] = performance_result
 
             # Verify performance consistency
-            reference_performance = environment_performance["cursor_ide"]  # Use Cursor as reference
+            reference_performance = environment_performance[
+                "cursor_ide"
+            ]  # Use Cursor as reference
 
             for env_name, performance in environment_performance.items():
                 if env_name == "cursor_ide":
                     continue
 
                 # Verify response time consistency
-                time_ratio = performance["response_time"] / reference_performance["response_time"]
+                time_ratio = (
+                    performance["response_time"]
+                    / reference_performance["response_time"]
+                )
                 self.assertLessEqual(
                     time_ratio,
                     2.0,  # Allow 2x slower maximum
-                    f"Performance significantly slower for {benchmark['operation']} in {env_name}"
+                    f"Performance significantly slower for {benchmark['operation']} in {env_name}",
                 )
 
                 # Verify quality consistency
-                quality_ratio = performance["quality_score"] / reference_performance["quality_score"]
+                quality_ratio = (
+                    performance["quality_score"]
+                    / reference_performance["quality_score"]
+                )
                 self.assertGreaterEqual(
                     quality_ratio,
                     0.9,  # Allow 10% quality variance
-                    f"Quality significantly lower for {benchmark['operation']} in {env_name}"
+                    f"Quality significantly lower for {benchmark['operation']} in {env_name}",
                 )
 
                 # Verify absolute performance thresholds
@@ -494,26 +574,24 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
                     self.assertLessEqual(
                         performance["response_time"],
                         benchmark["max_response_time"],
-                        f"Response time exceeds threshold for {benchmark['operation']} in {env_name}"
+                        f"Response time exceeds threshold for {benchmark['operation']} in {env_name}",
                     )
 
                 if "quality_threshold" in benchmark:
                     self.assertGreaterEqual(
                         performance["quality_score"],
                         benchmark["quality_threshold"],
-                        f"Quality below threshold for {benchmark['operation']} in {env_name}"
+                        f"Quality below threshold for {benchmark['operation']} in {env_name}",
                     )
 
         print("✅ Performance consistency across environments: PASSED")
 
-    def _simulate_persona_response_in_environment(self, persona, query, env_name, env_config):
+    def _simulate_persona_response_in_environment(
+        self, persona, query, env_name, env_config
+    ):
         """Simulate persona response in specific environment"""
         # Simulate environment-specific response characteristics
-        base_response = {
-            "persona": persona,
-            "query": query,
-            "environment": env_name
-        }
+        base_response = {"persona": persona, "query": query, "environment": env_name}
 
         # Add persona-specific characteristics
         persona_characteristics = {
@@ -521,20 +599,20 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
                 "communication_style": "direct_challenging",
                 "framework_applied": "Team Topologies",
                 "response_pattern": "asks_clarifying_questions",
-                "guidance_quality_score": 0.9
+                "guidance_quality_score": 0.9,
             },
             "alvaro": {
                 "communication_style": "roi_focused_analytical",
                 "framework_applied": "Capital Allocation Framework",
                 "response_pattern": "business_justification",
-                "guidance_quality_score": 0.88
+                "guidance_quality_score": 0.88,
             },
             "rachel": {
                 "communication_style": "user_centered_collaborative",
                 "framework_applied": "Design System Maturity Model",
                 "response_pattern": "user_impact_focus",
-                "guidance_quality_score": 0.92
-            }
+                "guidance_quality_score": 0.92,
+            },
         }
 
         base_response.update(persona_characteristics.get(persona, {}))
@@ -549,7 +627,9 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
         """Get list of supported features for environment"""
         return env_config.get("features", [])
 
-    def _test_feature_in_environment(self, feature, test_scenario, env_name, env_config):
+    def _test_feature_in_environment(
+        self, feature, test_scenario, env_name, env_config
+    ):
         """Test specific feature in environment"""
         # Simulate feature testing
         base_performance = 0.9
@@ -558,7 +638,7 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
         performance_modifiers = {
             "cursor_ide": 1.0,
             "claude_chat": 0.95,
-            "cli_interface": 0.85
+            "cli_interface": 0.85,
         }
 
         performance_score = base_performance * performance_modifiers.get(env_name, 0.9)
@@ -567,7 +647,7 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
             "feature_functional": True,
             "performance_score": performance_score,
             "output": f"Feature {feature} output in {env_name}",
-            "environment": env_name
+            "environment": env_name,
         }
 
     def _calculate_output_similarity(self, output1, output2):
@@ -597,7 +677,7 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
             "context_type": context_type,
             "context_data": context_data,
             "session_id": f"session_{env_name}_{datetime.now().timestamp()}",
-            "established_at": datetime.now().isoformat()
+            "established_at": datetime.now().isoformat(),
         }
 
     def _export_context_from_environment(self, session, transfer_method):
@@ -606,17 +686,19 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
             "source_session": session["session_id"],
             "context_data": session["context_data"],
             "transfer_method": transfer_method,
-            "exported_at": datetime.now().isoformat()
+            "exported_at": datetime.now().isoformat(),
         }
 
-    def _import_context_to_environment(self, env_name, exported_context, transfer_method):
+    def _import_context_to_environment(
+        self, env_name, exported_context, transfer_method
+    ):
         """Import context to target environment"""
         return {
             "environment": env_name,
             "restored_context": exported_context["context_data"],
             "transfer_method": transfer_method,
             "import_success": True,
-            "imported_at": datetime.now().isoformat()
+            "imported_at": datetime.now().isoformat(),
         }
 
     def _assess_context_transfer_quality(self, original_context, restored_context):
@@ -626,38 +708,70 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
         restored_keys = set(restored_context.keys())
 
         preserved_keys = original_keys.intersection(restored_keys)
-        preservation_score = len(preserved_keys) / len(original_keys) if original_keys else 1.0
+        preservation_score = (
+            len(preserved_keys) / len(original_keys) if original_keys else 1.0
+        )
 
         return {
             "preservation_score": preservation_score,
             "functional_continuity": preservation_score >= 0.8,
             "preserved_elements": list(preserved_keys),
-            "missing_elements": list(original_keys - restored_keys)
+            "missing_elements": list(original_keys - restored_keys),
         }
 
-    def _generate_ui_element_in_environment(self, ui_element, scenario, env_name, env_config):
+    def _generate_ui_element_in_environment(
+        self, ui_element, scenario, env_name, env_config
+    ):
         """Generate UI element in specific environment"""
         # Simulate UI element generation
         ui_formats = {
             "persona_identification": {
-                "diego": {"formatted_output": "🎯 Diego | Engineering Leadership", "visual_elements": ["emoji", "name", "role"]},
-                "alvaro": {"formatted_output": "💼 Alvaro | Platform Investment Strategy", "visual_elements": ["emoji", "name", "role"]},
-                "rachel": {"formatted_output": "🎨 Rachel | Design Systems Strategy", "visual_elements": ["emoji", "name", "role"]}
+                "diego": {
+                    "formatted_output": "🎯 Diego | Engineering Leadership",
+                    "visual_elements": ["emoji", "name", "role"],
+                },
+                "alvaro": {
+                    "formatted_output": "💼 Alvaro | Platform Investment Strategy",
+                    "visual_elements": ["emoji", "name", "role"],
+                },
+                "rachel": {
+                    "formatted_output": "🎨 Rachel | Design Systems Strategy",
+                    "visual_elements": ["emoji", "name", "role"],
+                },
             },
             "framework_attribution": {
-                "Team Topologies": {"formatted_output": "📚 Strategic Framework: Team Topologies detected", "visual_elements": ["emoji", "label", "framework_name"]},
-                "Capital Allocation": {"formatted_output": "📚 Strategic Framework: Capital Allocation Framework detected", "visual_elements": ["emoji", "label", "framework_name"]}
+                "Team Topologies": {
+                    "formatted_output": "📚 Strategic Framework: Team Topologies detected",
+                    "visual_elements": ["emoji", "label", "framework_name"],
+                },
+                "Capital Allocation": {
+                    "formatted_output": "📚 Strategic Framework: Capital Allocation Framework detected",
+                    "visual_elements": ["emoji", "label", "framework_name"],
+                },
             },
             "transparency_disclosure": {
-                "mcp_server": {"formatted_output": "🔧 Accessing MCP Server: [server_name] ([capability])", "visual_elements": ["emoji", "action", "details"]},
-                "multi_persona": {"formatted_output": "🤝 **Cross-Functional Analysis**", "visual_elements": ["emoji", "label", "emphasis"]}
-            }
+                "mcp_server": {
+                    "formatted_output": "🔧 Accessing MCP Server: [server_name] ([capability])",
+                    "visual_elements": ["emoji", "action", "details"],
+                },
+                "multi_persona": {
+                    "formatted_output": "🤝 **Cross-Functional Analysis**",
+                    "visual_elements": ["emoji", "label", "emphasis"],
+                },
+            },
         }
 
         element_formats = ui_formats.get(ui_element, {})
-        scenario_key = scenario.get("persona") or scenario.get("framework") or scenario.get("enhancement")
+        scenario_key = (
+            scenario.get("persona")
+            or scenario.get("framework")
+            or scenario.get("enhancement")
+        )
 
-        return element_formats.get(scenario_key, {"formatted_output": "Default format", "visual_elements": ["default"]})
+        return element_formats.get(
+            scenario_key,
+            {"formatted_output": "Default format", "visual_elements": ["default"]},
+        )
 
     def _calculate_format_similarity(self, format1, format2):
         """Calculate similarity between UI formats"""
@@ -666,26 +780,30 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
             return 1.0
 
         # Check structural similarity
-        structure_similarity = 0.8 if len(format1.split()) == len(format2.split()) else 0.6
+        structure_similarity = (
+            0.8 if len(format1.split()) == len(format2.split()) else 0.6
+        )
 
         # Check content similarity
         content_similarity = self._calculate_output_similarity(format1, format2)
 
         return (structure_similarity + content_similarity) / 2
 
-    def _measure_performance_in_environment(self, operation, benchmark, env_name, env_config):
+    def _measure_performance_in_environment(
+        self, operation, benchmark, env_name, env_config
+    ):
         """Measure performance of operation in environment"""
         # Simulate performance measurement
         base_times = {
             "strategic_query_response": 2.5,
             "framework_detection_and_attribution": 1.2,
-            "context_preservation_and_recall": 0.5
+            "context_preservation_and_recall": 0.5,
         }
 
         environment_multipliers = {
             "cursor_ide": 1.0,
             "claude_chat": 1.1,
-            "cli_interface": 0.9
+            "cli_interface": 0.9,
         }
 
         base_time = base_times.get(operation, 2.0)
@@ -696,7 +814,7 @@ class TestCrossEnvironmentConsistency(unittest.TestCase):
             "environment": env_name,
             "response_time": base_time * multiplier,
             "quality_score": 0.85,  # Base quality score
-            "benchmark_met": True
+            "benchmark_met": True,
         }
 
 
@@ -722,7 +840,9 @@ def run_ux_continuity_cross_environment_tests():
         print("📊 Strategic Value: Platform adoption and user efficiency preserved")
         return True
     else:
-        print(f"\n❌ CROSS-ENVIRONMENT CONSISTENCY FAILURES: {len(result.failures + result.errors)}")
+        print(
+            f"\n❌ CROSS-ENVIRONMENT CONSISTENCY FAILURES: {len(result.failures + result.errors)}"
+        )
         print("💥 UX Impact: Inconsistent platform experience, user confusion")
         print("🚨 Action Required: Fix cross-environment consistency immediately")
         return False

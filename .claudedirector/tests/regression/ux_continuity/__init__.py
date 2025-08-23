@@ -27,5 +27,5 @@ __all__ = [
     "TestPersonaConsistency",
     "TestContextSwitching",
     "TestErrorRecovery",
-    "TestCrossEnvironmentConsistency"
+    "TestCrossEnvironmentConsistency",
 ]

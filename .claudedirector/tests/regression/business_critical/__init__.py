@@ -27,5 +27,5 @@ __all__ = [
     "TestConfigurationPersistence",
     "TestROITracking",
     "TestPerformance",
-    "TestSecurity"
+    "TestSecurity",
 ]

@@ -35,15 +35,15 @@ class TestPerformance(unittest.TestCase):
         self.test_dir = tempfile.mkdtemp()
         self.performance_data = []
         self.max_response_time = 5.0  # 5 seconds max for strategic queries
-        self.max_memory_mb = 1024     # 1GB max memory usage
-        self.min_throughput = 10      # 10 requests per second minimum
+        self.max_memory_mb = 1024  # 1GB max memory usage
+        self.min_throughput = 10  # 10 requests per second minimum
 
     def tearDown(self):
         """Clean up performance test environment"""
         # Save performance data for analysis
         if self.performance_data:
             perf_file = Path(self.test_dir) / "performance_results.json"
-            with open(perf_file, 'w') as f:
+            with open(perf_file, "w") as f:
                 json.dump(self.performance_data, f, indent=2)
 
     def test_strategic_query_response_time(self):
@@ -59,26 +59,26 @@ class TestPerformance(unittest.TestCase):
                 "query": "How should we restructure engineering teams for platform scaling?",
                 "expected_personas": ["diego", "camille"],
                 "complexity": "high",
-                "max_time": 4.0
+                "max_time": 4.0,
             },
             {
                 "query": "What's the ROI analysis for our platform investment?",
                 "expected_personas": ["alvaro"],
                 "complexity": "medium",
-                "max_time": 3.0
+                "max_time": 3.0,
             },
             {
                 "query": "Design system strategy for cross-team adoption?",
                 "expected_personas": ["rachel"],
                 "complexity": "medium",
-                "max_time": 3.0
+                "max_time": 3.0,
             },
             {
                 "query": "Quick status update on current initiatives",
                 "expected_personas": ["diego"],
                 "complexity": "low",
-                "max_time": 2.0
-            }
+                "max_time": 2.0,
+            },
         ]
 
         performance_results = []
@@ -90,7 +90,7 @@ class TestPerformance(unittest.TestCase):
             result = self._simulate_strategic_query(
                 query_test["query"],
                 query_test["expected_personas"],
-                query_test["complexity"]
+                query_test["complexity"],
             )
 
             end_time = time.time()
@@ -103,7 +103,7 @@ class TestPerformance(unittest.TestCase):
                 "response_time": response_time,
                 "max_allowed": query_test["max_time"],
                 "passed": response_time <= query_test["max_time"],
-                "timestamp": datetime.now().isoformat()
+                "timestamp": datetime.now().isoformat(),
             }
             performance_results.append(perf_data)
 
@@ -112,15 +112,19 @@ class TestPerformance(unittest.TestCase):
                 response_time,
                 query_test["max_time"],
                 f"Query '{query_test['query'][:30]}...' took {response_time:.2f}s, "
-                f"max allowed: {query_test['max_time']}s"
+                f"max allowed: {query_test['max_time']}s",
             )
 
         # Calculate average response time
-        avg_response_time = sum(r["response_time"] for r in performance_results) / len(performance_results)
+        avg_response_time = sum(r["response_time"] for r in performance_results) / len(
+            performance_results
+        )
         self.assertLessEqual(avg_response_time, self.max_response_time)
 
         self.performance_data.extend(performance_results)
-        print(f"✅ Strategic query response time: PASSED (avg: {avg_response_time:.2f}s)")
+        print(
+            f"✅ Strategic query response time: PASSED (avg: {avg_response_time:.2f}s)"
+        )
 
     def test_concurrent_user_load(self):
         """
@@ -145,26 +149,28 @@ class TestPerformance(unittest.TestCase):
                     "roi_calculation",
                     "framework_application",
                     "stakeholder_analysis",
-                    "decision_support"
+                    "decision_support",
                 ]
 
                 query_type = query_types[query_num % len(query_types)]
                 result = self._simulate_strategic_query(
                     f"User {user_id} query {query_num}: {query_type}",
                     ["diego", "alvaro"],
-                    "medium"
+                    "medium",
                 )
 
                 end_time = time.time()
                 response_time = end_time - start_time
 
-                user_performance.append({
-                    "user_id": user_id,
-                    "query_num": query_num,
-                    "query_type": query_type,
-                    "response_time": response_time,
-                    "timestamp": datetime.now().isoformat()
-                })
+                user_performance.append(
+                    {
+                        "user_id": user_id,
+                        "query_num": query_num,
+                        "query_type": query_type,
+                        "response_time": response_time,
+                        "timestamp": datetime.now().isoformat(),
+                    }
+                )
 
                 # Small delay between queries
                 time.sleep(0.1)
@@ -174,7 +180,9 @@ class TestPerformance(unittest.TestCase):
         # Run concurrent user sessions
         start_time = time.time()
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=concurrent_users) as executor:
+        with concurrent.futures.ThreadPoolExecutor(
+            max_workers=concurrent_users
+        ) as executor:
             futures = [
                 executor.submit(simulate_user_session, user_id)
                 for user_id in range(concurrent_users)
@@ -195,18 +203,29 @@ class TestPerformance(unittest.TestCase):
         throughput = total_queries / total_duration
 
         # Performance assertions
-        self.assertLessEqual(avg_response_time, self.max_response_time,
-                           f"Average response time {avg_response_time:.2f}s exceeds limit")
-        self.assertGreaterEqual(throughput, self.min_throughput,
-                              f"Throughput {throughput:.2f} req/s below minimum")
+        self.assertLessEqual(
+            avg_response_time,
+            self.max_response_time,
+            f"Average response time {avg_response_time:.2f}s exceeds limit",
+        )
+        self.assertGreaterEqual(
+            throughput,
+            self.min_throughput,
+            f"Throughput {throughput:.2f} req/s below minimum",
+        )
 
         # Check for performance degradation under load
         max_response_time = max(r["response_time"] for r in all_results)
-        self.assertLessEqual(max_response_time, self.max_response_time * 2,
-                           "Maximum response time under load exceeds acceptable threshold")
+        self.assertLessEqual(
+            max_response_time,
+            self.max_response_time * 2,
+            "Maximum response time under load exceeds acceptable threshold",
+        )
 
         self.performance_data.extend(all_results)
-        print(f"✅ Concurrent user load: PASSED ({concurrent_users} users, {throughput:.1f} req/s)")
+        print(
+            f"✅ Concurrent user load: PASSED ({concurrent_users} users, {throughput:.1f} req/s)"
+        )
 
     def test_memory_usage_under_load(self):
         """
@@ -230,23 +249,25 @@ class TestPerformance(unittest.TestCase):
                 "stakeholder_analysis": self._generate_mock_stakeholder_data(1000),
                 "framework_patterns": self._generate_mock_framework_data(500),
                 "roi_calculations": self._generate_mock_roi_data(200),
-                "organizational_metrics": self._generate_mock_org_data(300)
+                "organizational_metrics": self._generate_mock_org_data(300),
             }
             large_datasets.append(strategic_data)
 
             # Measure memory after each iteration
             current_memory = process.memory_info().rss / 1024 / 1024  # MB
-            memory_measurements.append({
-                "phase": f"iteration_{iteration}",
-                "memory_mb": current_memory,
-                "memory_increase": current_memory - baseline_memory
-            })
+            memory_measurements.append(
+                {
+                    "phase": f"iteration_{iteration}",
+                    "memory_mb": current_memory,
+                    "memory_increase": current_memory - baseline_memory,
+                }
+            )
 
             # Assert memory doesn't exceed limits
             self.assertLessEqual(
                 current_memory,
                 self.max_memory_mb,
-                f"Memory usage {current_memory:.1f}MB exceeds limit {self.max_memory_mb}MB"
+                f"Memory usage {current_memory:.1f}MB exceeds limit {self.max_memory_mb}MB",
             )
 
             # Brief processing simulation
@@ -257,29 +278,36 @@ class TestPerformance(unittest.TestCase):
 
         # Force garbage collection simulation
         import gc
+
         gc.collect()
         time.sleep(0.5)
 
         # Measure memory after cleanup
         final_memory = process.memory_info().rss / 1024 / 1024  # MB
-        memory_measurements.append({
-            "phase": "after_cleanup",
-            "memory_mb": final_memory,
-            "memory_recovered": memory_measurements[-1]["memory_mb"] - final_memory
-        })
+        memory_measurements.append(
+            {
+                "phase": "after_cleanup",
+                "memory_mb": final_memory,
+                "memory_recovered": memory_measurements[-1]["memory_mb"] - final_memory,
+            }
+        )
 
         # Verify memory was recovered (within 50% of peak usage)
         peak_memory = max(m["memory_mb"] for m in memory_measurements)
-        memory_recovery_ratio = (peak_memory - final_memory) / (peak_memory - baseline_memory)
+        memory_recovery_ratio = (peak_memory - final_memory) / (
+            peak_memory - baseline_memory
+        )
 
         self.assertGreaterEqual(
             memory_recovery_ratio,
             0.3,  # At least 30% recovery
-            f"Insufficient memory recovery: {memory_recovery_ratio:.2f}"
+            f"Insufficient memory recovery: {memory_recovery_ratio:.2f}",
         )
 
         self.performance_data.extend(memory_measurements)
-        print(f"✅ Memory usage under load: PASSED (peak: {peak_memory:.1f}MB, recovery: {memory_recovery_ratio:.1%})")
+        print(
+            f"✅ Memory usage under load: PASSED (peak: {peak_memory:.1f}MB, recovery: {memory_recovery_ratio:.1%})"
+        )
 
     def test_database_query_performance(self):
         """
@@ -294,26 +322,26 @@ class TestPerformance(unittest.TestCase):
                 "operation": "stakeholder_lookup",
                 "complexity": "simple",
                 "max_time": 0.5,
-                "records": 100
+                "records": 100,
             },
             {
                 "operation": "framework_search",
                 "complexity": "medium",
                 "max_time": 1.0,
-                "records": 500
+                "records": 500,
             },
             {
                 "operation": "roi_analysis_query",
                 "complexity": "complex",
                 "max_time": 2.0,
-                "records": 1000
+                "records": 1000,
             },
             {
                 "operation": "organizational_metrics",
                 "complexity": "complex",
                 "max_time": 1.5,
-                "records": 2000
-            }
+                "records": 2000,
+            },
         ]
 
         db_performance = []
@@ -323,9 +351,7 @@ class TestPerformance(unittest.TestCase):
 
             # Simulate database query
             result = self._simulate_database_query(
-                operation["operation"],
-                operation["records"],
-                operation["complexity"]
+                operation["operation"], operation["records"], operation["complexity"]
             )
 
             end_time = time.time()
@@ -339,7 +365,7 @@ class TestPerformance(unittest.TestCase):
                 "query_time": query_time,
                 "max_allowed": operation["max_time"],
                 "passed": query_time <= operation["max_time"],
-                "timestamp": datetime.now().isoformat()
+                "timestamp": datetime.now().isoformat(),
             }
             db_performance.append(perf_data)
 
@@ -348,7 +374,7 @@ class TestPerformance(unittest.TestCase):
                 query_time,
                 operation["max_time"],
                 f"Database operation '{operation['operation']}' took {query_time:.2f}s, "
-                f"max allowed: {operation['max_time']}s"
+                f"max allowed: {operation['max_time']}s",
             )
 
         # Test batch operations performance
@@ -366,7 +392,9 @@ class TestPerformance(unittest.TestCase):
         self.assertLessEqual(avg_batch_time, 0.1, "Batch operations too slow")
 
         self.performance_data.extend(db_performance)
-        print(f"✅ Database query performance: PASSED (avg batch: {avg_batch_time:.3f}s)")
+        print(
+            f"✅ Database query performance: PASSED (avg batch: {avg_batch_time:.3f}s)"
+        )
 
     def test_system_resource_efficiency(self):
         """
@@ -382,12 +410,14 @@ class TestPerformance(unittest.TestCase):
         baseline_cpu = psutil.cpu_percent(interval=1)
         baseline_memory = psutil.virtual_memory().percent
 
-        resource_measurements.append({
-            "phase": "baseline",
-            "cpu_percent": baseline_cpu,
-            "memory_percent": baseline_memory,
-            "timestamp": datetime.now().isoformat()
-        })
+        resource_measurements.append(
+            {
+                "phase": "baseline",
+                "cpu_percent": baseline_cpu,
+                "memory_percent": baseline_memory,
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
 
         # Simulate intensive strategic analysis
         for phase in ["light_load", "medium_load", "heavy_load"]:
@@ -408,17 +438,25 @@ class TestPerformance(unittest.TestCase):
             cpu_percent = psutil.cpu_percent(interval=0.5)
             memory_percent = psutil.virtual_memory().percent
 
-            resource_measurements.append({
-                "phase": phase,
-                "cpu_percent": cpu_percent,
-                "memory_percent": memory_percent,
-                "workload_iterations": workload_iterations,
-                "timestamp": datetime.now().isoformat()
-            })
+            resource_measurements.append(
+                {
+                    "phase": phase,
+                    "cpu_percent": cpu_percent,
+                    "memory_percent": memory_percent,
+                    "workload_iterations": workload_iterations,
+                    "timestamp": datetime.now().isoformat(),
+                }
+            )
 
             # Assert resource usage stays reasonable
-            self.assertLessEqual(cpu_percent, 80.0, f"CPU usage too high in {phase}: {cpu_percent}%")
-            self.assertLessEqual(memory_percent, 85.0, f"Memory usage too high in {phase}: {memory_percent}%")
+            self.assertLessEqual(
+                cpu_percent, 80.0, f"CPU usage too high in {phase}: {cpu_percent}%"
+            )
+            self.assertLessEqual(
+                memory_percent,
+                85.0,
+                f"Memory usage too high in {phase}: {memory_percent}%",
+            )
 
         # Test resource recovery after load
         time.sleep(2)  # Allow system to settle
@@ -426,32 +464,35 @@ class TestPerformance(unittest.TestCase):
         final_cpu = psutil.cpu_percent(interval=1)
         final_memory = psutil.virtual_memory().percent
 
-        resource_measurements.append({
-            "phase": "recovery",
-            "cpu_percent": final_cpu,
-            "memory_percent": final_memory,
-            "timestamp": datetime.now().isoformat()
-        })
+        resource_measurements.append(
+            {
+                "phase": "recovery",
+                "cpu_percent": final_cpu,
+                "memory_percent": final_memory,
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
 
         # Verify system recovers to reasonable levels
-        self.assertLessEqual(final_cpu, baseline_cpu + 10, "CPU usage didn't recover properly")
+        self.assertLessEqual(
+            final_cpu, baseline_cpu + 10, "CPU usage didn't recover properly"
+        )
 
         self.performance_data.extend(resource_measurements)
-        print(f"✅ System resource efficiency: PASSED (final CPU: {final_cpu:.1f}%, Memory: {final_memory:.1f}%)")
+        print(
+            f"✅ System resource efficiency: PASSED (final CPU: {final_cpu:.1f}%, Memory: {final_memory:.1f}%)"
+        )
 
     def _simulate_strategic_query(self, query, personas, complexity):
         """Simulate processing a strategic query"""
         # Simulate different processing times based on complexity
-        processing_times = {
-            "low": 0.2,
-            "medium": 0.8,
-            "high": 1.5
-        }
+        processing_times = {"low": 0.2, "medium": 0.8, "high": 1.5}
 
         base_time = processing_times.get(complexity, 0.5)
 
         # Add some variability
         import random
+
         actual_time = base_time * (0.8 + random.random() * 0.4)
 
         # Simulate processing work
@@ -462,17 +503,13 @@ class TestPerformance(unittest.TestCase):
             "personas": personas,
             "complexity": complexity,
             "processing_time": actual_time,
-            "result": f"Strategic analysis for: {query[:30]}..."
+            "result": f"Strategic analysis for: {query[:30]}...",
         }
 
     def _simulate_database_query(self, operation, records, complexity):
         """Simulate database query operations"""
         # Simulate query processing time based on complexity and record count
-        base_time_per_record = {
-            "simple": 0.0001,
-            "medium": 0.0005,
-            "complex": 0.001
-        }
+        base_time_per_record = {"simple": 0.0001, "medium": 0.0005, "complex": 0.001}
 
         processing_time = base_time_per_record[complexity] * records
 
@@ -485,7 +522,7 @@ class TestPerformance(unittest.TestCase):
         return {
             "operation": operation,
             "records_processed": records,
-            "processing_time": total_time
+            "processing_time": total_time,
         }
 
     def _simulate_strategic_analysis_work(self):
@@ -504,7 +541,7 @@ class TestPerformance(unittest.TestCase):
                 "name": f"Executive {i}",
                 "role": f"VP {i % 5}",
                 "influence": i % 10,
-                "relationships": [f"rel_{j}" for j in range(i % 10)]
+                "relationships": [f"rel_{j}" for j in range(i % 10)],
             }
             for i in range(count)
         ]
@@ -516,7 +553,7 @@ class TestPerformance(unittest.TestCase):
                 "id": f"framework_{i}",
                 "name": f"Framework {i}",
                 "patterns": [f"pattern_{j}" for j in range(i % 20)],
-                "applications": [f"app_{j}" for j in range(i % 15)]
+                "applications": [f"app_{j}" for j in range(i % 15)],
             }
             for i in range(count)
         ]
@@ -528,7 +565,7 @@ class TestPerformance(unittest.TestCase):
                 "investment_id": f"inv_{i}",
                 "amount": i * 1000,
                 "roi": i * 0.01,
-                "timeline": [f"milestone_{j}" for j in range(i % 8)]
+                "timeline": [f"milestone_{j}" for j in range(i % 8)],
             }
             for i in range(count)
         ]
@@ -540,7 +577,7 @@ class TestPerformance(unittest.TestCase):
                 "metric_id": f"metric_{i}",
                 "value": i * 0.1,
                 "trend": [i + j for j in range(i % 12)],
-                "metadata": {"category": f"cat_{i % 5}", "priority": i % 3}
+                "metadata": {"category": f"cat_{i % 5}", "priority": i % 3},
             }
             for i in range(count)
         ]

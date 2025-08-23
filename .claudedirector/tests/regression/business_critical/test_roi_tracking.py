@@ -43,7 +43,7 @@ class TestROITracking(unittest.TestCase):
                 "roi_target": Decimal("1.30"),  # 30% ROI
                 "category": "platform_infrastructure",
                 "business_sponsor": "VP Engineering",
-                "status": "approved"
+                "status": "approved",
             },
             "developer_tools": {
                 "proposal_id": "INV-2024-002",
@@ -54,8 +54,8 @@ class TestROITracking(unittest.TestCase):
                 "roi_target": Decimal("1.20"),  # 20% ROI
                 "category": "developer_tools",
                 "business_sponsor": "Engineering Director",
-                "status": "in_progress"
-            }
+                "status": "in_progress",
+            },
         }
 
     def tearDown(self):
@@ -82,7 +82,7 @@ class TestROITracking(unittest.TestCase):
 
         # Verify calculations
         expected_benefits = Decimal("450000")  # 150k * 3 years
-        expected_roi_ratio = Decimal("0.9")    # 450k / 500k = 0.9
+        expected_roi_ratio = Decimal("0.9")  # 450k / 500k = 0.9
         expected_roi_percentage = Decimal("-10.0")  # (0.9 - 1) * 100 = -10%
 
         self.assertEqual(three_year_benefits, expected_benefits)
@@ -110,7 +110,7 @@ class TestROITracking(unittest.TestCase):
             "investments": [],
             "total_portfolio_value": Decimal("0"),
             "expected_portfolio_roi": Decimal("0"),
-            "risk_score": Decimal("0")
+            "risk_score": Decimal("0"),
         }
 
         # Add investments to portfolio
@@ -122,7 +122,7 @@ class TestROITracking(unittest.TestCase):
                 "expected_roi": investment["roi_target"],
                 "risk_category": self._calculate_risk_category(investment),
                 "strategic_alignment": self._calculate_strategic_alignment(investment),
-                "added_date": datetime.now().isoformat()
+                "added_date": datetime.now().isoformat(),
             }
             portfolio["investments"].append(portfolio_investment)
             portfolio["total_portfolio_value"] += investment["total_investment"]
@@ -144,11 +144,15 @@ class TestROITracking(unittest.TestCase):
         portfolio["expected_portfolio_roi"] = weighted_roi
 
         # Verify weighted ROI (500k/700k * 1.30 + 200k/700k * 1.20)
-        expected_weighted_roi = (Decimal("500000") / Decimal("700000") * Decimal("1.30") +
-                               Decimal("200000") / Decimal("700000") * Decimal("1.20"))
+        expected_weighted_roi = Decimal("500000") / Decimal("700000") * Decimal(
+            "1.30"
+        ) + Decimal("200000") / Decimal("700000") * Decimal("1.20")
 
-        self.assertAlmostEqual(float(portfolio["expected_portfolio_roi"]),
-                              float(expected_weighted_roi), places=3)
+        self.assertAlmostEqual(
+            float(portfolio["expected_portfolio_roi"]),
+            float(expected_weighted_roi),
+            places=3,
+        )
 
         print("✅ Investment portfolio tracking: PASSED")
 
@@ -166,26 +170,33 @@ class TestROITracking(unittest.TestCase):
             "proposal_id": investment["proposal_id"],
             "measurement_period": "2024-Q1",
             "actual_investment": Decimal("210000"),  # 5% over budget
-            "actual_savings_q1": Decimal("22000"),   # Quarterly savings
-            "projected_savings_q1": Decimal("20000"), # Expected quarterly
-            "timeline_adherence": Decimal("0.95"),   # 95% on time
-            "budget_adherence": Decimal("0.95"),     # 95% on budget
-            "user_adoption_rate": Decimal("0.87"),   # 87% adoption
-            "productivity_improvement": Decimal("0.23") # 23% improvement
+            "actual_savings_q1": Decimal("22000"),  # Quarterly savings
+            "projected_savings_q1": Decimal("20000"),  # Expected quarterly
+            "timeline_adherence": Decimal("0.95"),  # 95% on time
+            "budget_adherence": Decimal("0.95"),  # 95% on budget
+            "user_adoption_rate": Decimal("0.87"),  # 87% adoption
+            "productivity_improvement": Decimal("0.23"),  # 23% improvement
         }
 
         # Calculate performance metrics
-        savings_variance = actual_performance["actual_savings_q1"] - actual_performance["projected_savings_q1"]
-        savings_variance_pct = (savings_variance / actual_performance["projected_savings_q1"]) * 100
+        savings_variance = (
+            actual_performance["actual_savings_q1"]
+            - actual_performance["projected_savings_q1"]
+        )
+        savings_variance_pct = (
+            savings_variance / actual_performance["projected_savings_q1"]
+        ) * 100
 
-        budget_variance = actual_performance["actual_investment"] - investment["total_investment"]
+        budget_variance = (
+            actual_performance["actual_investment"] - investment["total_investment"]
+        )
         budget_variance_pct = (budget_variance / investment["total_investment"]) * 100
 
         # Verify performance calculations
         expected_savings_variance = Decimal("2000")  # 22k - 20k
         expected_savings_variance_pct = Decimal("10.0")  # (2k / 20k) * 100
         expected_budget_variance = Decimal("10000")  # 210k - 200k
-        expected_budget_variance_pct = Decimal("5.0")   # (10k / 200k) * 100
+        expected_budget_variance_pct = Decimal("5.0")  # (10k / 200k) * 100
 
         self.assertEqual(savings_variance, expected_savings_variance)
         self.assertEqual(savings_variance_pct, expected_savings_variance_pct)
@@ -194,18 +205,22 @@ class TestROITracking(unittest.TestCase):
 
         # Test performance scoring
         performance_score = (
-            actual_performance["timeline_adherence"] * Decimal("0.3") +
-            actual_performance["budget_adherence"] * Decimal("0.3") +
-            actual_performance["user_adoption_rate"] * Decimal("0.2") +
-            actual_performance["productivity_improvement"] * Decimal("0.2")
+            actual_performance["timeline_adherence"] * Decimal("0.3")
+            + actual_performance["budget_adherence"] * Decimal("0.3")
+            + actual_performance["user_adoption_rate"] * Decimal("0.2")
+            + actual_performance["productivity_improvement"] * Decimal("0.2")
         )
 
-        expected_score = (Decimal("0.95") * Decimal("0.3") +  # Timeline: 0.285
-                         Decimal("0.95") * Decimal("0.3") +   # Budget: 0.285
-                         Decimal("0.87") * Decimal("0.2") +   # Adoption: 0.174
-                         Decimal("0.23") * Decimal("0.2"))    # Productivity: 0.046
+        expected_score = (
+            Decimal("0.95") * Decimal("0.3")  # Timeline: 0.285
+            + Decimal("0.95") * Decimal("0.3")  # Budget: 0.285
+            + Decimal("0.87") * Decimal("0.2")  # Adoption: 0.174
+            + Decimal("0.23") * Decimal("0.2")
+        )  # Productivity: 0.046
 
-        self.assertAlmostEqual(float(performance_score), float(expected_score), places=3)
+        self.assertAlmostEqual(
+            float(performance_score), float(expected_score), places=3
+        )
 
         print("✅ Performance measurement accuracy: PASSED")
 
@@ -220,12 +235,12 @@ class TestROITracking(unittest.TestCase):
 
         # Calculate comprehensive business value
         business_value = {
-            "direct_cost_savings": Decimal("150000"),     # Annual operational savings
-            "productivity_gains": Decimal("200000"),      # Developer productivity value
-            "risk_mitigation": Decimal("75000"),          # Reduced downtime/security risks
-            "strategic_enablement": Decimal("100000"),    # Future capability value
-            "competitive_advantage": Decimal("50000"),    # Market positioning value
-            "compliance_value": Decimal("25000")          # Regulatory compliance value
+            "direct_cost_savings": Decimal("150000"),  # Annual operational savings
+            "productivity_gains": Decimal("200000"),  # Developer productivity value
+            "risk_mitigation": Decimal("75000"),  # Reduced downtime/security risks
+            "strategic_enablement": Decimal("100000"),  # Future capability value
+            "competitive_advantage": Decimal("50000"),  # Market positioning value
+            "compliance_value": Decimal("25000"),  # Regulatory compliance value
         }
 
         # Total annual business value
@@ -247,9 +262,15 @@ class TestROITracking(unittest.TestCase):
         }
 
         # Verify largest value streams
-        self.assertEqual(value_percentages["productivity_gains"], Decimal("33.33"))  # 200k/600k
-        self.assertEqual(value_percentages["direct_cost_savings"], Decimal("25.0"))  # 150k/600k
-        self.assertEqual(value_percentages["strategic_enablement"], Decimal("16.67")) # 100k/600k
+        self.assertEqual(
+            value_percentages["productivity_gains"], Decimal("33.33")
+        )  # 200k/600k
+        self.assertEqual(
+            value_percentages["direct_cost_savings"], Decimal("25.0")
+        )  # 150k/600k
+        self.assertEqual(
+            value_percentages["strategic_enablement"], Decimal("16.67")
+        )  # 100k/600k
 
         print("✅ Business value calculation: PASSED")
 
@@ -266,7 +287,7 @@ class TestROITracking(unittest.TestCase):
             "created_at": datetime.now().isoformat(),
             "investments": {},
             "portfolio_history": [],
-            "performance_trends": {}
+            "performance_trends": {},
         }
 
         # Add investment tracking data
@@ -278,14 +299,14 @@ class TestROITracking(unittest.TestCase):
                         "date": datetime.now().isoformat(),
                         "event": "proposal_created",
                         "amount": investment["total_investment"],
-                        "status": "proposed"
+                        "status": "proposed",
                     },
                     {
                         "date": (datetime.now() + timedelta(days=30)).isoformat(),
                         "event": "proposal_approved",
                         "amount": investment["total_investment"],
-                        "status": "approved"
-                    }
+                        "status": "approved",
+                    },
                 ],
                 "performance_measurements": [
                     {
@@ -293,15 +314,15 @@ class TestROITracking(unittest.TestCase):
                         "period": "baseline",
                         "actual_roi": Decimal("0"),
                         "projected_roi": investment["roi_target"],
-                        "confidence": Decimal("0.8")
+                        "confidence": Decimal("0.8"),
                     }
-                ]
+                ],
             }
             roi_database["investments"][investment["proposal_id"]] = tracking_data
 
         # Save to file
         roi_file = self.roi_data_dir / "roi_tracking.json"
-        with open(roi_file, 'w') as f:
+        with open(roi_file, "w") as f:
             # Convert Decimal to string for JSON serialization
             serializable_db = self._convert_decimals_to_strings(roi_database)
             json.dump(serializable_db, f, indent=2)
@@ -310,7 +331,7 @@ class TestROITracking(unittest.TestCase):
         self.assertTrue(roi_file.exists(), "ROI tracking file must be created")
 
         # Load and verify data
-        with open(roi_file, 'r') as f:
+        with open(roi_file, "r") as f:
             loaded_db = json.load(f)
 
         # Verify investment data persisted
@@ -340,14 +361,17 @@ class TestROITracking(unittest.TestCase):
             "platform_infrastructure": Decimal("0.9"),
             "developer_tools": Decimal("0.8"),
             "analytics_capabilities": Decimal("0.85"),
-            "security_improvements": Decimal("0.95")
+            "security_improvements": Decimal("0.95"),
         }
         return alignment_scores.get(investment["category"], Decimal("0.7"))
 
     def _convert_decimals_to_strings(self, obj):
         """Convert Decimal objects to strings for JSON serialization"""
         if isinstance(obj, dict):
-            return {key: self._convert_decimals_to_strings(value) for key, value in obj.items()}
+            return {
+                key: self._convert_decimals_to_strings(value)
+                for key, value in obj.items()
+            }
         elif isinstance(obj, list):
             return [self._convert_decimals_to_strings(item) for item in obj]
         elif isinstance(obj, Decimal):
@@ -361,7 +385,9 @@ def run_business_critical_roi_tests():
     print("🔥 BUSINESS-CRITICAL REGRESSION TEST: ROI Tracking")
     print("=" * 70)
     print("OWNER: Alvaro | IMPACT: Investment Decision Quality")
-    print("FAILURE COST: Poor investment decisions, budget misallocation, no ROI visibility")
+    print(
+        "FAILURE COST: Poor investment decisions, budget misallocation, no ROI visibility"
+    )
     print("=" * 70)
 
     # Create test suite

@@ -39,36 +39,36 @@ class TestErrorRecovery(unittest.TestCase):
                 "severity": "medium",
                 "expected_recovery": "graceful_degradation_with_retry",
                 "user_impact": "temporary_delay",
-                "recovery_time_max": 5.0  # seconds
+                "recovery_time_max": 5.0,  # seconds
             },
             "ai_model_failure": {
                 "error_type": "ai_processing",
                 "severity": "high",
                 "expected_recovery": "fallback_to_basic_mode",
                 "user_impact": "reduced_functionality",
-                "recovery_time_max": 2.0
+                "recovery_time_max": 2.0,
             },
             "memory_corruption": {
                 "error_type": "data_integrity",
                 "severity": "critical",
                 "expected_recovery": "restore_from_backup",
                 "user_impact": "context_restoration",
-                "recovery_time_max": 10.0
+                "recovery_time_max": 10.0,
             },
             "persona_initialization_failure": {
                 "error_type": "persona_system",
                 "severity": "high",
                 "expected_recovery": "default_persona_with_notification",
                 "user_impact": "limited_personalization",
-                "recovery_time_max": 3.0
+                "recovery_time_max": 3.0,
             },
             "framework_detection_error": {
                 "error_type": "framework_analysis",
                 "severity": "medium",
                 "expected_recovery": "manual_framework_selection",
                 "user_impact": "reduced_automation",
-                "recovery_time_max": 1.0
-            }
+                "recovery_time_max": 1.0,
+            },
         }
 
     def tearDown(self):
@@ -88,20 +88,40 @@ class TestErrorRecovery(unittest.TestCase):
                 "technical_error": "ConnectionTimeoutException: Failed to connect to MCP server after 30s",
                 "expected_user_message": "I'm having trouble connecting to enhance my strategic analysis. I can still provide guidance using my core capabilities while I work to restore the connection.",
                 "should_include": ["explanation", "impact", "next_steps"],
-                "should_avoid": ["technical_jargon", "stack_traces", "internal_details"]
+                "should_avoid": [
+                    "technical_jargon",
+                    "stack_traces",
+                    "internal_details",
+                ],
             },
             {
                 "technical_error": "ModelInferenceError: AI model returned confidence below threshold (0.45 < 0.60)",
                 "expected_user_message": "I'm not confident enough in my analysis for this complex question. Let me break it down into smaller parts or connect you with a specialist who can provide better guidance.",
-                "should_include": ["honesty", "alternative_approach", "value_preservation"],
-                "should_avoid": ["confidence_scores", "technical_thresholds", "model_details"]
+                "should_include": [
+                    "honesty",
+                    "alternative_approach",
+                    "value_preservation",
+                ],
+                "should_avoid": [
+                    "confidence_scores",
+                    "technical_thresholds",
+                    "model_details",
+                ],
             },
             {
                 "technical_error": "MemoryCorruptionError: Strategic context checksum mismatch detected",
                 "expected_user_message": "I've detected an issue with our conversation history. I'm restoring from my last reliable backup to ensure we don't lose your strategic context.",
-                "should_include": ["problem_acknowledgment", "recovery_action", "data_protection"],
-                "should_avoid": ["corruption_details", "checksum_information", "technical_recovery"]
-            }
+                "should_include": [
+                    "problem_acknowledgment",
+                    "recovery_action",
+                    "data_protection",
+                ],
+                "should_avoid": [
+                    "corruption_details",
+                    "checksum_information",
+                    "technical_recovery",
+                ],
+            },
         ]
 
         for test in error_communication_tests:
@@ -114,14 +134,14 @@ class TestErrorRecovery(unittest.TestCase):
             for required_element in test["should_include"]:
                 self.assertTrue(
                     self._message_contains_element(user_message, required_element),
-                    f"Error message missing required element: {required_element}"
+                    f"Error message missing required element: {required_element}",
                 )
 
             # Verify message avoids technical details
             for avoided_element in test["should_avoid"]:
                 self.assertFalse(
                     self._message_contains_element(user_message, avoided_element),
-                    f"Error message contains avoided element: {avoided_element}"
+                    f"Error message contains avoided element: {avoided_element}",
                 )
 
             # Verify message tone is appropriate
@@ -129,7 +149,7 @@ class TestErrorRecovery(unittest.TestCase):
             self.assertIn(
                 message_tone,
                 ["helpful", "reassuring", "professional"],
-                f"Error message tone inappropriate: {message_tone}"
+                f"Error message tone inappropriate: {message_tone}",
             )
 
         print("✅ Graceful error communication: PASSED")
@@ -149,12 +169,19 @@ class TestErrorRecovery(unittest.TestCase):
                     "conversation_id": "conv_001",
                     "active_persona": "diego",
                     "strategic_topic": "team_scaling_strategy",
-                    "discussion_points": ["current_team_size", "target_growth", "skill_gaps"],
-                    "decisions_made": ["adopt_team_topologies", "hire_senior_engineers"],
-                    "next_steps": ["create_hiring_plan", "design_team_structure"]
+                    "discussion_points": [
+                        "current_team_size",
+                        "target_growth",
+                        "skill_gaps",
+                    ],
+                    "decisions_made": [
+                        "adopt_team_topologies",
+                        "hire_senior_engineers",
+                    ],
+                    "next_steps": ["create_hiring_plan", "design_team_structure"],
                 },
                 "error_trigger": "network_timeout",
-                "recovery_expectation": "full_context_restoration"
+                "recovery_expectation": "full_context_restoration",
             },
             {
                 "scenario": "ai_model_failure_during_roi_analysis",
@@ -162,31 +189,37 @@ class TestErrorRecovery(unittest.TestCase):
                     "conversation_id": "conv_002",
                     "active_persona": "alvaro",
                     "strategic_topic": "platform_investment_roi",
-                    "discussion_points": ["investment_amount", "expected_benefits", "risk_factors"],
-                    "decisions_made": ["approve_platform_investment", "allocate_2M_budget"],
-                    "next_steps": ["detailed_roi_calculation", "implementation_timeline"]
+                    "discussion_points": [
+                        "investment_amount",
+                        "expected_benefits",
+                        "risk_factors",
+                    ],
+                    "decisions_made": [
+                        "approve_platform_investment",
+                        "allocate_2M_budget",
+                    ],
+                    "next_steps": [
+                        "detailed_roi_calculation",
+                        "implementation_timeline",
+                    ],
                 },
                 "error_trigger": "ai_model_failure",
-                "recovery_expectation": "context_with_reduced_ai_features"
-            }
+                "recovery_expectation": "context_with_reduced_ai_features",
+            },
         ]
 
         for test in context_preservation_tests:
             # Establish initial context
-            context_session = self._establish_strategic_context(
-                test["initial_context"]
-            )
+            context_session = self._establish_strategic_context(test["initial_context"])
 
             # Simulate error occurrence
             error_response = self._simulate_error_occurrence(
-                context_session,
-                test["error_trigger"]
+                context_session, test["error_trigger"]
             )
 
             # Perform error recovery
             recovery_response = self._simulate_error_recovery(
-                error_response,
-                test["recovery_expectation"]
+                error_response, test["recovery_expectation"]
             )
 
             # Verify context preservation
@@ -197,19 +230,19 @@ class TestErrorRecovery(unittest.TestCase):
             self.assertEqual(
                 recovered_context["conversation_id"],
                 original_context["conversation_id"],
-                f"Conversation ID not preserved in {test['scenario']}"
+                f"Conversation ID not preserved in {test['scenario']}",
             )
 
             self.assertEqual(
                 recovered_context["active_persona"],
                 original_context["active_persona"],
-                f"Active persona not preserved in {test['scenario']}"
+                f"Active persona not preserved in {test['scenario']}",
             )
 
             self.assertEqual(
                 recovered_context["strategic_topic"],
                 original_context["strategic_topic"],
-                f"Strategic topic not preserved in {test['scenario']}"
+                f"Strategic topic not preserved in {test['scenario']}",
             )
 
             # Verify decisions made are preserved
@@ -217,14 +250,14 @@ class TestErrorRecovery(unittest.TestCase):
                 self.assertIn(
                     decision,
                     recovered_context["decisions_made"],
-                    f"Decision '{decision}' not preserved in {test['scenario']}"
+                    f"Decision '{decision}' not preserved in {test['scenario']}",
                 )
 
             # Verify recovery quality
             self.assertGreaterEqual(
                 recovery_response["context_preservation_score"],
                 0.8,  # 80% context preservation minimum
-                f"Context preservation score too low in {test['scenario']}"
+                f"Context preservation score too low in {test['scenario']}",
             )
 
         print("✅ Context preservation during errors: PASSED")
@@ -243,29 +276,29 @@ class TestErrorRecovery(unittest.TestCase):
                 "recovery_mechanism": "exponential_backoff_retry",
                 "max_retry_attempts": 3,
                 "expected_success_rate": 0.9,
-                "recovery_time_limit": 15.0  # seconds
+                "recovery_time_limit": 15.0,  # seconds
             },
             {
                 "error_type": "ai_model_timeout",
                 "recovery_mechanism": "fallback_to_cached_response",
                 "max_retry_attempts": 1,
                 "expected_success_rate": 0.95,
-                "recovery_time_limit": 5.0
+                "recovery_time_limit": 5.0,
             },
             {
                 "error_type": "memory_access_error",
                 "recovery_mechanism": "restore_from_backup",
                 "max_retry_attempts": 2,
                 "expected_success_rate": 0.85,
-                "recovery_time_limit": 10.0
+                "recovery_time_limit": 10.0,
             },
             {
                 "error_type": "persona_loading_failure",
                 "recovery_mechanism": "default_persona_activation",
                 "max_retry_attempts": 1,
                 "expected_success_rate": 1.0,
-                "recovery_time_limit": 3.0
-            }
+                "recovery_time_limit": 3.0,
+            },
         ]
 
         for scenario in auto_recovery_scenarios:
@@ -276,42 +309,46 @@ class TestErrorRecovery(unittest.TestCase):
                 start_time = time.time()
 
                 recovery_result = self._simulate_automatic_recovery(
-                    scenario["error_type"],
-                    scenario["recovery_mechanism"],
-                    attempt
+                    scenario["error_type"], scenario["recovery_mechanism"], attempt
                 )
 
                 end_time = time.time()
                 recovery_time = end_time - start_time
 
-                recovery_attempts.append({
-                    "attempt": attempt,
-                    "success": recovery_result["success"],
-                    "recovery_time": recovery_time,
-                    "mechanism_used": recovery_result["mechanism_used"]
-                })
+                recovery_attempts.append(
+                    {
+                        "attempt": attempt,
+                        "success": recovery_result["success"],
+                        "recovery_time": recovery_time,
+                        "mechanism_used": recovery_result["mechanism_used"],
+                    }
+                )
 
                 # Break if recovery successful
                 if recovery_result["success"]:
                     break
 
             # Verify recovery success rate
-            successful_attempts = sum(1 for attempt in recovery_attempts if attempt["success"])
+            successful_attempts = sum(
+                1 for attempt in recovery_attempts if attempt["success"]
+            )
             success_rate = successful_attempts / len(recovery_attempts)
 
             self.assertGreaterEqual(
                 success_rate,
                 scenario["expected_success_rate"],
-                f"Recovery success rate too low for {scenario['error_type']}: {success_rate}"
+                f"Recovery success rate too low for {scenario['error_type']}: {success_rate}",
             )
 
             # Verify recovery time within limits
             if successful_attempts > 0:
-                successful_recovery = next(attempt for attempt in recovery_attempts if attempt["success"])
+                successful_recovery = next(
+                    attempt for attempt in recovery_attempts if attempt["success"]
+                )
                 self.assertLessEqual(
                     successful_recovery["recovery_time"],
                     scenario["recovery_time_limit"],
-                    f"Recovery time too long for {scenario['error_type']}: {successful_recovery['recovery_time']}s"
+                    f"Recovery time too long for {scenario['error_type']}: {successful_recovery['recovery_time']}s",
                 )
 
         print("✅ Automatic error recovery mechanisms: PASSED")
@@ -328,21 +365,45 @@ class TestErrorRecovery(unittest.TestCase):
             {
                 "error_scenario": "strategic_analysis_timeout",
                 "notification_stages": [
-                    {"stage": "error_detected", "message_type": "informative", "urgency": "low"},
-                    {"stage": "recovery_initiated", "message_type": "progress", "urgency": "low"},
-                    {"stage": "recovery_completed", "message_type": "success", "urgency": "low"}
+                    {
+                        "stage": "error_detected",
+                        "message_type": "informative",
+                        "urgency": "low",
+                    },
+                    {
+                        "stage": "recovery_initiated",
+                        "message_type": "progress",
+                        "urgency": "low",
+                    },
+                    {
+                        "stage": "recovery_completed",
+                        "message_type": "success",
+                        "urgency": "low",
+                    },
                 ],
-                "expected_user_actions": ["continue_conversation", "provide_feedback"]
+                "expected_user_actions": ["continue_conversation", "provide_feedback"],
             },
             {
                 "error_scenario": "critical_data_corruption",
                 "notification_stages": [
-                    {"stage": "error_detected", "message_type": "warning", "urgency": "high"},
-                    {"stage": "backup_restoration", "message_type": "progress", "urgency": "medium"},
-                    {"stage": "data_integrity_verified", "message_type": "success", "urgency": "low"}
+                    {
+                        "stage": "error_detected",
+                        "message_type": "warning",
+                        "urgency": "high",
+                    },
+                    {
+                        "stage": "backup_restoration",
+                        "message_type": "progress",
+                        "urgency": "medium",
+                    },
+                    {
+                        "stage": "data_integrity_verified",
+                        "message_type": "success",
+                        "urgency": "low",
+                    },
                 ],
-                "expected_user_actions": ["acknowledge_notification", "verify_context"]
-            }
+                "expected_user_actions": ["acknowledge_notification", "verify_context"],
+            },
         ]
 
         for scenario in notification_scenarios:
@@ -354,7 +415,7 @@ class TestErrorRecovery(unittest.TestCase):
                     scenario["error_scenario"],
                     stage["stage"],
                     stage["message_type"],
-                    stage["urgency"]
+                    stage["urgency"],
                 )
 
                 notification_sequence.append(notification)
@@ -362,29 +423,31 @@ class TestErrorRecovery(unittest.TestCase):
                 # Verify notification quality
                 self.assertTrue(
                     notification["user_friendly"],
-                    f"Notification not user-friendly at stage: {stage['stage']}"
+                    f"Notification not user-friendly at stage: {stage['stage']}",
                 )
 
                 self.assertEqual(
                     notification["urgency_level"],
                     stage["urgency"],
-                    f"Notification urgency mismatch at stage: {stage['stage']}"
+                    f"Notification urgency mismatch at stage: {stage['stage']}",
                 )
 
                 self.assertTrue(
                     notification["actionable"],
-                    f"Notification not actionable at stage: {stage['stage']}"
+                    f"Notification not actionable at stage: {stage['stage']}",
                 )
 
             # Verify notification sequence completeness
             stages_covered = [notif["stage"] for notif in notification_sequence]
-            expected_stages = [stage["stage"] for stage in scenario["notification_stages"]]
+            expected_stages = [
+                stage["stage"] for stage in scenario["notification_stages"]
+            ]
 
             for expected_stage in expected_stages:
                 self.assertIn(
                     expected_stage,
                     stages_covered,
-                    f"Missing notification stage: {expected_stage}"
+                    f"Missing notification stage: {expected_stage}",
                 )
 
             # Verify user action guidance
@@ -393,7 +456,7 @@ class TestErrorRecovery(unittest.TestCase):
                 self.assertIn(
                     expected_action,
                     final_notification["suggested_actions"],
-                    f"Missing suggested user action: {expected_action}"
+                    f"Missing suggested user action: {expected_action}",
                 )
 
         print("✅ User notification and feedback: PASSED")
@@ -410,79 +473,100 @@ class TestErrorRecovery(unittest.TestCase):
             {
                 "error_pattern": "repeated_network_timeouts",
                 "occurrences": [
-                    {"timestamp": "2024-01-01T10:00:00", "context": "strategic_analysis", "recovery_time": 5.2},
-                    {"timestamp": "2024-01-01T14:30:00", "context": "strategic_analysis", "recovery_time": 4.8},
-                    {"timestamp": "2024-01-02T09:15:00", "context": "strategic_analysis", "recovery_time": 3.1}
+                    {
+                        "timestamp": "2024-01-01T10:00:00",
+                        "context": "strategic_analysis",
+                        "recovery_time": 5.2,
+                    },
+                    {
+                        "timestamp": "2024-01-01T14:30:00",
+                        "context": "strategic_analysis",
+                        "recovery_time": 4.8,
+                    },
+                    {
+                        "timestamp": "2024-01-02T09:15:00",
+                        "context": "strategic_analysis",
+                        "recovery_time": 3.1,
+                    },
                 ],
                 "expected_learning": "timeout_prediction_and_preemption",
-                "prevention_mechanism": "proactive_connection_management"
+                "prevention_mechanism": "proactive_connection_management",
             },
             {
                 "error_pattern": "ai_model_confidence_failures",
                 "occurrences": [
-                    {"timestamp": "2024-01-01T11:00:00", "context": "complex_roi_analysis", "confidence": 0.45},
-                    {"timestamp": "2024-01-01T16:00:00", "context": "complex_roi_analysis", "confidence": 0.42},
-                    {"timestamp": "2024-01-02T10:30:00", "context": "complex_roi_analysis", "confidence": 0.38}
+                    {
+                        "timestamp": "2024-01-01T11:00:00",
+                        "context": "complex_roi_analysis",
+                        "confidence": 0.45,
+                    },
+                    {
+                        "timestamp": "2024-01-01T16:00:00",
+                        "context": "complex_roi_analysis",
+                        "confidence": 0.42,
+                    },
+                    {
+                        "timestamp": "2024-01-02T10:30:00",
+                        "context": "complex_roi_analysis",
+                        "confidence": 0.38,
+                    },
                 ],
                 "expected_learning": "complexity_detection_and_routing",
-                "prevention_mechanism": "automatic_expert_escalation"
-            }
+                "prevention_mechanism": "automatic_expert_escalation",
+            },
         ]
 
         for scenario in error_learning_scenarios:
             # Simulate error pattern analysis
             pattern_analysis = self._analyze_error_pattern(
-                scenario["error_pattern"],
-                scenario["occurrences"]
+                scenario["error_pattern"], scenario["occurrences"]
             )
 
             # Verify pattern recognition
             self.assertTrue(
                 pattern_analysis["pattern_detected"],
-                f"Error pattern not detected: {scenario['error_pattern']}"
+                f"Error pattern not detected: {scenario['error_pattern']}",
             )
 
             self.assertGreaterEqual(
                 pattern_analysis["confidence_score"],
                 0.8,  # 80% confidence in pattern detection
-                f"Pattern detection confidence too low: {scenario['error_pattern']}"
+                f"Pattern detection confidence too low: {scenario['error_pattern']}",
             )
 
             # Simulate learning mechanism activation
             learning_response = self._simulate_error_learning(
-                pattern_analysis,
-                scenario["expected_learning"]
+                pattern_analysis, scenario["expected_learning"]
             )
 
             # Verify learning implementation
             self.assertTrue(
                 learning_response["learning_applied"],
-                f"Learning not applied for pattern: {scenario['error_pattern']}"
+                f"Learning not applied for pattern: {scenario['error_pattern']}",
             )
 
             self.assertEqual(
                 learning_response["prevention_mechanism"],
                 scenario["prevention_mechanism"],
-                f"Wrong prevention mechanism for pattern: {scenario['error_pattern']}"
+                f"Wrong prevention mechanism for pattern: {scenario['error_pattern']}",
             )
 
             # Simulate prevention effectiveness
             prevention_test = self._test_prevention_effectiveness(
-                scenario["error_pattern"],
-                learning_response["prevention_mechanism"]
+                scenario["error_pattern"], learning_response["prevention_mechanism"]
             )
 
             # Verify prevention reduces error occurrence
             self.assertLess(
                 prevention_test["error_rate_after"],
                 prevention_test["error_rate_before"],
-                f"Prevention not effective for pattern: {scenario['error_pattern']}"
+                f"Prevention not effective for pattern: {scenario['error_pattern']}",
             )
 
             self.assertGreaterEqual(
                 prevention_test["improvement_percentage"],
                 0.3,  # 30% improvement minimum
-                f"Insufficient improvement for pattern: {scenario['error_pattern']}"
+                f"Insufficient improvement for pattern: {scenario['error_pattern']}",
             )
 
         print("✅ Error learning and prevention: PASSED")
@@ -493,7 +577,7 @@ class TestErrorRecovery(unittest.TestCase):
         error_mappings = {
             "ConnectionTimeoutException": "I'm having trouble connecting to enhance my strategic analysis. I can still provide guidance using my core capabilities while I work to restore the connection.",
             "ModelInferenceError": "I'm not confident enough in my analysis for this complex question. Let me break it down into smaller parts or connect you with a specialist who can provide better guidance.",
-            "MemoryCorruptionError": "I've detected an issue with our conversation history. I'm restoring from my last reliable backup to ensure we don't lose your strategic context."
+            "MemoryCorruptionError": "I've detected an issue with our conversation history. I'm restoring from my last reliable backup to ensure we don't lose your strategic context.",
         }
 
         for error_type, user_message in error_mappings.items():
@@ -509,7 +593,11 @@ class TestErrorRecovery(unittest.TestCase):
             "impact": ["I can still", "while I work", "to ensure"],
             "next_steps": ["Let me", "I'm working", "I'm restoring"],
             "honesty": ["not confident", "I'm not sure", "uncertain"],
-            "alternative_approach": ["break it down", "smaller parts", "different approach"],
+            "alternative_approach": [
+                "break it down",
+                "smaller parts",
+                "different approach",
+            ],
             "value_preservation": ["maintain", "preserve", "ensure we don't lose"],
             "problem_acknowledgment": ["issue", "problem", "detected"],
             "recovery_action": ["restoring", "working to", "resolving"],
@@ -522,7 +610,11 @@ class TestErrorRecovery(unittest.TestCase):
             "model_details": ["ModelInferenceError", "AI model", "inference"],
             "corruption_details": ["checksum mismatch", "corruption", "integrity"],
             "checksum_information": ["checksum", "hash", "verification"],
-            "technical_recovery": ["backup restoration", "recovery process", "system recovery"]
+            "technical_recovery": [
+                "backup restoration",
+                "recovery process",
+                "system recovery",
+            ],
         }
 
         indicators = element_indicators.get(element, [element])
@@ -532,7 +624,11 @@ class TestErrorRecovery(unittest.TestCase):
         """Analyze the tone of an error message"""
         helpful_indicators = ["I can", "Let me", "I'm working"]
         reassuring_indicators = ["ensure", "maintain", "restore"]
-        professional_indicators = ["I've detected", "I encountered", "working to resolve"]
+        professional_indicators = [
+            "I've detected",
+            "I encountered",
+            "working to resolve",
+        ]
 
         if any(indicator in message for indicator in helpful_indicators):
             return "helpful"
@@ -549,7 +645,7 @@ class TestErrorRecovery(unittest.TestCase):
             "session_id": f"session_{context_data['conversation_id']}",
             "context": context_data,
             "established_at": datetime.now().isoformat(),
-            "status": "active"
+            "status": "active",
         }
 
     def _simulate_error_occurrence(self, context_session, error_trigger):
@@ -558,7 +654,7 @@ class TestErrorRecovery(unittest.TestCase):
             "session_id": context_session["session_id"],
             "error_trigger": error_trigger,
             "error_time": datetime.now().isoformat(),
-            "context_at_error": context_session["context"]
+            "context_at_error": context_session["context"],
         }
 
     def _simulate_error_recovery(self, error_response, recovery_expectation):
@@ -579,7 +675,7 @@ class TestErrorRecovery(unittest.TestCase):
             "recovery_successful": True,
             "recovered_context": recovered_context,
             "context_preservation_score": preservation_score,
-            "recovery_time": 2.5  # seconds
+            "recovery_time": 2.5,  # seconds
         }
 
     def _simulate_automatic_recovery(self, error_type, recovery_mechanism, attempt):
@@ -589,7 +685,7 @@ class TestErrorRecovery(unittest.TestCase):
             "temporary_network_failure": [0.3, 0.7, 0.9],  # Success rate by attempt
             "ai_model_timeout": [0.95],
             "memory_access_error": [0.5, 0.85],
-            "persona_loading_failure": [1.0]
+            "persona_loading_failure": [1.0],
         }
 
         rates = success_rates.get(error_type, [0.8])
@@ -598,7 +694,7 @@ class TestErrorRecovery(unittest.TestCase):
         return {
             "success": success_rate > 0.5,  # Simplified success determination
             "mechanism_used": recovery_mechanism,
-            "attempt_number": attempt
+            "attempt_number": attempt,
         }
 
     def _generate_user_notification(self, error_scenario, stage, message_type, urgency):
@@ -610,17 +706,24 @@ class TestErrorRecovery(unittest.TestCase):
             "urgency_level": urgency,
             "user_friendly": True,
             "actionable": True,
-            "suggested_actions": ["continue_conversation", "provide_feedback", "acknowledge_notification", "verify_context"],
-            "timestamp": datetime.now().isoformat()
+            "suggested_actions": [
+                "continue_conversation",
+                "provide_feedback",
+                "acknowledge_notification",
+                "verify_context",
+            ],
+            "timestamp": datetime.now().isoformat(),
         }
 
     def _analyze_error_pattern(self, error_pattern, occurrences):
         """Analyze error pattern from occurrence data"""
         return {
             "pattern_detected": len(occurrences) >= 2,  # Need at least 2 occurrences
-            "confidence_score": min(0.9, len(occurrences) * 0.3),  # Confidence increases with occurrences
+            "confidence_score": min(
+                0.9, len(occurrences) * 0.3
+            ),  # Confidence increases with occurrences
             "pattern_type": error_pattern,
-            "frequency": len(occurrences)
+            "frequency": len(occurrences),
         }
 
     def _simulate_error_learning(self, pattern_analysis, expected_learning):
@@ -628,14 +731,14 @@ class TestErrorRecovery(unittest.TestCase):
         return {
             "learning_applied": pattern_analysis["pattern_detected"],
             "learning_type": expected_learning,
-            "prevention_mechanism": self._map_learning_to_prevention(expected_learning)
+            "prevention_mechanism": self._map_learning_to_prevention(expected_learning),
         }
 
     def _map_learning_to_prevention(self, learning_type):
         """Map learning type to prevention mechanism"""
         learning_prevention_map = {
             "timeout_prediction_and_preemption": "proactive_connection_management",
-            "complexity_detection_and_routing": "automatic_expert_escalation"
+            "complexity_detection_and_routing": "automatic_expert_escalation",
         }
         return learning_prevention_map.get(learning_type, "generic_prevention")
 
@@ -644,12 +747,12 @@ class TestErrorRecovery(unittest.TestCase):
         # Simulate before/after error rates
         baseline_rates = {
             "repeated_network_timeouts": 0.15,  # 15% error rate
-            "ai_model_confidence_failures": 0.08  # 8% error rate
+            "ai_model_confidence_failures": 0.08,  # 8% error rate
         }
 
         improvement_rates = {
             "proactive_connection_management": 0.5,  # 50% improvement
-            "automatic_expert_escalation": 0.6  # 60% improvement
+            "automatic_expert_escalation": 0.6,  # 60% improvement
         }
 
         baseline_rate = baseline_rates.get(error_pattern, 0.1)
@@ -658,7 +761,7 @@ class TestErrorRecovery(unittest.TestCase):
         return {
             "error_rate_before": baseline_rate,
             "error_rate_after": baseline_rate * (1 - improvement),
-            "improvement_percentage": improvement
+            "improvement_percentage": improvement,
         }
 
 
