@@ -258,7 +258,31 @@ timeout 120 python .claudedirector/tests/persona/test_persona_personalities.py >
     exit 1
 )
 
-echo '✅ ALL P0 TESTS COMPLETED - CI P0 coverage now 7/7 (100%)'
+echo '🧪 RUNNING BLOCKING P0 TEST: Configuration Persistence P0'
+timeout 120 python .claudedirector/tests/regression/business_critical/test_configuration_persistence.py > /dev/null 2>&1 || (
+    echo '❌ BLOCKING FAILURE: Configuration Persistence P0 failed'
+    exit 1
+)
+
+echo '🧪 RUNNING BLOCKING P0 TEST: ROI Tracking P0'
+timeout 180 python .claudedirector/tests/regression/business_critical/test_roi_tracking.py > /dev/null 2>&1 || (
+    echo '❌ BLOCKING FAILURE: ROI Tracking P0 failed'
+    exit 1
+)
+
+echo '🧪 RUNNING BLOCKING P0 TEST: Security P0'
+timeout 240 python .claudedirector/tests/regression/business_critical/test_security.py > /dev/null 2>&1 || (
+    echo '❌ BLOCKING FAILURE: Security P0 failed'
+    exit 1
+)
+
+echo '🧪 RUNNING BLOCKING P0 TEST: Error Recovery P0'
+timeout 150 python .claudedirector/tests/regression/ux_continuity/test_error_recovery.py > /dev/null 2>&1 || (
+    echo '❌ BLOCKING FAILURE: Error Recovery P0 failed'
+    exit 1
+)
+
+echo '✅ ALL P0 TESTS COMPLETED - CI P0 coverage now 11/18 (61%)'
 "
 
 # 8. P0 CI Coverage Validation
