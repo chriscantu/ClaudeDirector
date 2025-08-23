@@ -19,6 +19,13 @@ ClaudeDirector is the industry's first completely transparent AI strategic leade
 - **AI Tool Enhancement**: Framework that enhances existing AI tools (Cursor, Claude) rather than replacing them
 - **Zero Server Dependencies**: No web service infrastructure required
 
+### Distribution Strategy
+- **Git-based Installation**: Direct installation from GitHub repository
+- **Package Management**: Python package with pip/conda compatibility
+- **IDE Integration**: Primary integration with Cursor IDE for seamless workflow
+- **Cross-Platform**: Support for macOS, Windows, and Linux development environments
+- **Lightweight Footprint**: <1GB memory usage, minimal system requirements
+
 ## Priority Framework
 
 | Priority | Definition | Investment | Failure Cost |
@@ -149,14 +156,24 @@ ClaudeDirector is the industry's first completely transparent AI strategic leade
 - **Market Share**: #1 in AI strategic leadership tools
 - **User Satisfaction**: >9.0/10 NPS score
 
-## Investment Summary
+## Investment Summary (Local Single-User Framework)
 
-| Feature Category | P0 Investment | P1 Investment | Total ROI Target |
-|------------------|---------------|---------------|------------------|
-| **Core Platform** | $2.5M (60%) | $800K (30%) | 4.2x over 3 years |
-| **AI Intelligence** | $500K (P0 part) | $1.2M (P1 part) | 3.8x over 2 years |
-| **Enterprise Integration** | - | $800K (focused) | 2.5x over 18 months |
-| **Total Investment** | **$3.0M** | **$2.8M** | **$5.8M total** |
+| Feature Category | P0 Investment | P1 Investment | Single-User ROI Target |
+|------------------|---------------|---------------|------------------------|
+| **Core Platform** | $1.2M (60%) | $400K (30%) | 5.2x over 2 years |
+| **AI Intelligence** | $300K (P0 part) | $600K (P1 part) | 4.8x over 18 months |
+| **Local Integration** | - | $400K (focused) | 3.5x over 12 months |
+| **Total Investment** | **$1.5M** | **$1.4M** | **$2.9M total** |
+
+### ROI Calculation Basis (Single-User)
+- **Individual Productivity Gains**: 15-20 minutes saved per strategic session
+- **Strategic Decision Quality**: 85%+ Next Action Clarity Rate
+- **Context Preservation**: Eliminates 10-15 minutes of re-explanation per session
+- **Framework Application**: Reduces strategic analysis time by 40%
+- **Target User Value**: $150K+ annual salary engineering leaders
+- **Break-even**: 6-8 months per user through productivity gains
+
+*Complete ROI analysis available in [Single-User ROI Analysis](../business/SINGLE_USER_ROI_ANALYSIS.md)*
 
 ---
 

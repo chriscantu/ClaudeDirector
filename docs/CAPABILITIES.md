@@ -172,6 +172,20 @@ When multiple personas collaborate:
 
 ---
 
+## Deployment & Installation
+
+### Local Framework Installation
+- **Git Installation**: `git clone https://github.com/chriscantu/ClaudeDirector.git`
+- **Python Package**: Compatible with pip/conda package managers
+- **System Requirements**: Python 3.11+, <1GB memory, cross-platform support
+- **IDE Integration**: Seamless integration with Cursor IDE
+
+### Single-User Benefits
+- **Privacy-First**: All strategic data remains on your local machine
+- **No Server Dependencies**: Works completely offline after installation
+- **Individual Optimization**: Tuned for personal strategic leadership workflows
+- **Cost-Effective**: One-time setup, no recurring subscription fees
+
 ## Get Started
 
 [Start with Getting Started Guide](GETTING_STARTED.md) to see automatic role customization in action.
