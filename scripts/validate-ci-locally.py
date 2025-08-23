@@ -1,19 +1,24 @@
 #!/usr/bin/env python3
 """
-Local CI Validation Script
+Local CI Validation Script - Enhanced with Complete CI Mirror
 
-Runs the same checks locally that run in the GitHub Actions CI pipeline,
-eliminating push-and-wait iteration cycles.
+Runs the EXACT same checks locally that run in the GitHub Actions CI pipeline,
+providing 100% parity between local and CI environments.
+
+This script now delegates to the comprehensive local-ci-mirror.py for complete
+GitHub CI simulation.
 
 Usage:
     python3 scripts/validate-ci-locally.py
     python3 scripts/validate-ci-locally.py --fix  # Auto-fix formatting issues
+    python3 scripts/validate-ci-locally.py --full # Run complete CI mirror
 """
 
 import subprocess
 import sys
 import os
 import re
+from pathlib import Path
 from typing import List, Tuple
 
 
@@ -270,17 +275,44 @@ def check_prerequisites() -> bool:
 
 
 def main():
-    """Main execution"""
-    print("🚀 ClaudeDirector Local CI Validation")
+    """Main execution with enhanced CI mirror support"""
+    # Check command line arguments
+    auto_fix = "--fix" in sys.argv
+    full_mirror = "--full" in sys.argv
+
+    if full_mirror:
+        print("🚀 Running COMPLETE GitHub CI Mirror")
+        print("=====================================")
+        print("This provides 100% parity with GitHub Actions environment")
+        print()
+
+        # Delegate to the comprehensive CI mirror
+        script_dir = Path(__file__).parent
+        mirror_script = script_dir / "local-ci-mirror.py"
+
+        try:
+            result = subprocess.run(
+                [sys.executable, str(mirror_script)],
+                cwd=script_dir.parent,  # Run from repo root
+            )
+            sys.exit(result.returncode)
+        except Exception as e:
+            print_error(f"Failed to run CI mirror: {str(e)}")
+            sys.exit(1)
+
+    # Original validation (faster, less comprehensive)
+    print("🚀 ClaudeDirector Local CI Validation (Quick Mode)")
     print("=====================================")
-    print("Running the same checks as GitHub Actions CI pipeline locally...")
+    print("Running basic checks. Use --full for complete GitHub CI simulation")
+    print("💡 Tip: Use 'python scripts/validate-ci-locally.py --full' for 100% CI parity")
+    print()
 
     # Check prerequisites
     if not check_prerequisites():
         print_error("Prerequisites check failed")
         sys.exit(1)
 
-        # Track results
+    # Track results
     checks_passed = 0
     checks_failed = 0
 
@@ -323,9 +355,11 @@ def main():
 
     if checks_failed == 0:
         print_success("ALL CHECKS PASSED - Ready for CI/CD Pipeline!")
+        print("💡 For 100% CI parity, use: python scripts/validate-ci-locally.py --full")
         sys.exit(0)
     else:
         print_error(f"VALIDATION FAILED - {checks_failed} check(s) need attention")
+        print("💡 Try: python scripts/validate-ci-locally.py --full")
         sys.exit(1)
 
 
