@@ -178,7 +178,7 @@ class TestDocumentationLinks(unittest.TestCase):
                     continue
 
                 # Strip anchors from link path for file validation
-                file_path = link_path.split('#')[0] if '#' in link_path else link_path
+                file_path = link_path.split("#")[0] if "#" in link_path else link_path
 
                 # Skip placeholder links for future documentation
                 future_docs = [
