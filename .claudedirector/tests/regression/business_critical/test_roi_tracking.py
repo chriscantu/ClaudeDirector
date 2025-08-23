@@ -257,7 +257,7 @@ class TestROITracking(unittest.TestCase):
 
         # Test value stream breakdown percentages
         value_percentages = {
-            stream: (value / total_annual_value) * 100
+            stream: round((value / total_annual_value) * 100, 2)
             for stream, value in business_value.items()
         }
 
