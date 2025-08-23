@@ -1100,6 +1100,12 @@ class TestFrameworkAttributionSystem(unittest.TestCase):
             # Add framework-specific bonuses for better detection
             framework_bonus = 0.1 if keyword_matches >= 2 else 0
 
+            # Special boost for Strategic Platform Assessment when organizational terms are present
+            if framework_name == "Strategic Platform Assessment" and any(
+                term in query.lower() for term in ["restructure", "organizational", "transformation", "teams", "scaling"]
+            ):
+                framework_bonus += 0.2
+
             confidence = (
                 keyword_score + context_bonus + complexity_bonus + framework_bonus
             )

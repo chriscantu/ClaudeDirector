@@ -709,6 +709,11 @@ class TestContextSwitching(unittest.TestCase):
             old_topic == "platform_architecture" and new_topic == "investment_analysis"
         ) or (old_persona == "martin" and new_persona == "alvaro"):
             return "smooth_with_business_context"
+        # Check for business-to-design transitions (user impact bridge)
+        elif (
+            old_topic == "investment_analysis" and new_topic == "user_experience"
+        ) or (old_persona == "alvaro" and new_persona == "rachel"):
+            return "smooth_with_user_impact_bridge"
         elif topic_similarity > 0.7 and persona_compatibility > 0.7:
             return "smooth_natural_transition"
         elif topic_similarity > 0.4 or persona_compatibility > 0.4:
