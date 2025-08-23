@@ -341,7 +341,9 @@ class TestErrorRecovery(unittest.TestCase):
             # In a real implementation, we would track actual recovery times
             # For this test, we assume recovery time is within limits if success rate is met
             if success_rate >= scenario["expected_success_rate"]:
-                print(f"✅ Recovery time validation passed for {scenario['error_type']}")
+                print(
+                    f"✅ Recovery time validation passed for {scenario['error_type']}"
+                )
 
         print("✅ Automatic error recovery mechanisms: PASSED")
 
@@ -687,7 +689,8 @@ class TestErrorRecovery(unittest.TestCase):
         # Use the final attempt success rate for overall success determination
         final_success_rate = rates[-1] if rates else 0.8
         return {
-            "success": success_rate >= final_success_rate * 0.9,  # Allow 10% tolerance for test stability
+            "success": success_rate
+            >= final_success_rate * 0.9,  # Allow 10% tolerance for test stability
             "mechanism_used": recovery_mechanism,
             "attempt_number": attempt,
         }
