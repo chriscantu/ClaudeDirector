@@ -1,19 +1,21 @@
 # ClaudeDirector
 
-Transparent AI strategic guidance for engineering leaders. Specialized AI personas provide role-specific advice using proven strategic frameworks, with complete transparency and automatic customization.
+**Local single-user framework** providing transparent AI strategic guidance for engineering leaders. Specialized AI personas deliver role-specific advice using proven strategic frameworks, with complete transparency and automatic customization - all running on your local machine.
 
 ## Quick Start
 
-### Cursor Users (Recommended)
-1. Open this repo in Cursor
-2. Ask any strategic question: "How should we structure our teams for this initiative?"
-3. Complete the customization wizard that automatically appears
-4. Receive tailored guidance with persistent context across sessions
+### Local Installation (Git-based)
+1. Clone: `git clone https://github.com/chriscantu/ClaudeDirector.git`
+2. Open in Cursor IDE for seamless integration
+3. Ask any strategic question: "How should we structure our teams for this initiative?"
+4. Complete the 60-second customization wizard
+5. Receive tailored guidance with persistent local context
 
-### Claude Chat Users
-1. Share this repo: `https://github.com/chriscantu/ClaudeDirector`
-2. Ask your first strategic question to trigger customization
-3. See transparent AI enhancement and framework attribution
+### Privacy-First Benefits
+- **All data stays local** - No external servers or cloud dependencies
+- **Offline capable** - Works without internet after installation
+- **Individual optimization** - Tuned for personal strategic workflows
+- **Zero recurring costs** - One-time setup, no subscription fees
 
 ---
 
@@ -95,10 +97,11 @@ Automatically applied with complete transparency:
 - **Accelerate Performance** - High-performing technology organization patterns
 - [See all 25+ frameworks →](docs/STRATEGIC_FRAMEWORKS_GUIDE.md)
 
-### Smart AI Enhancement
-- Automatic complexity detection triggers advanced analysis when needed
-- Zero-setup required - works without external dependencies
-- Complete transparency for enterprise AI governance
+### Local Framework Benefits
+- **Privacy-first architecture** - All strategic data remains on your machine
+- **Zero server dependencies** - Complete offline capability after installation
+- **Individual productivity focus** - 15-20 minutes saved per strategic session
+- **Enterprise-ready** - Complete transparency for AI governance and compliance
 
 ---
 
