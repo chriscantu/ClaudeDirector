@@ -25,7 +25,7 @@ class InvestmentProposalService:
     def __init__(self, business_calculator):
         self.business_calculator = business_calculator
         self.logger = structlog.get_logger(__name__)
-        
+
         # ROI calculation parameters
         self._roi_parameters = {
             "discount_rate": Decimal("0.08"),  # 8% discount rate for NPV
@@ -108,13 +108,13 @@ class InvestmentProposalService:
         try:
             # Calculate financial metrics
             financial_analysis = self._analyze_financial_metrics(proposal)
-            
+
             # Assess risks
             risk_assessment = self._assess_proposal_risks(proposal)
-            
+
             # Calculate strategic alignment
             strategic_score = self._calculate_strategic_alignment_score(proposal)
-            
+
             # Generate recommendation
             recommendation = self._generate_investment_recommendation(
                 proposal, financial_analysis, risk_assessment, strategic_score
@@ -143,28 +143,28 @@ class InvestmentProposalService:
             total_investment = Decimal(str(proposal_data["total_investment"]))
             roi_method = ROICalculationMethod(proposal_data["roi_method"])
             category = InvestmentCategory(proposal_data["category"])
-            
+
             # Base benefit calculations
             base_annual_benefit = total_investment * Decimal("0.25")  # 25% base return
-            
+
             # Apply risk adjustment
             risk_factor = self._roi_parameters["risk_adjustment_factors"][category]
             adjusted_benefit = base_annual_benefit * risk_factor
-            
+
             # Calculate 3-year projection with growth
             year_1 = adjusted_benefit
             year_2 = adjusted_benefit * Decimal("1.1")  # 10% growth
             year_3 = adjusted_benefit * Decimal("1.2")  # 20% growth
-            
+
             total_roi = (year_1 + year_2 + year_3) / total_investment
-            
+
             return {
                 "year_1": year_1,
-                "year_2": year_2, 
+                "year_2": year_2,
                 "year_3": year_3,
                 "total_roi": total_roi,
             }
-            
+
         except Exception as e:
             self.logger.error("ROI projection calculation failed", error=str(e))
             raise
@@ -174,7 +174,7 @@ class InvestmentProposalService:
         total_benefits = proposal.year_1_benefits + proposal.year_2_benefits + proposal.year_3_benefits
         roi_ratio = total_benefits / proposal.total_investment
         payback_period = proposal.total_investment / proposal.year_1_benefits
-        
+
         return {
             "total_3yr_benefits": total_benefits,
             "roi_ratio": roi_ratio,
@@ -186,7 +186,7 @@ class InvestmentProposalService:
         """Assess risks for investment proposal"""
         risk_score = len(proposal.risk_factors) * 0.1  # Simple risk scoring
         risk_level = "LOW" if risk_score < 0.3 else "MEDIUM" if risk_score < 0.6 else "HIGH"
-        
+
         return {
             "risk_factors_count": len(proposal.risk_factors),
             "risk_score": risk_score,
@@ -213,15 +213,15 @@ class InvestmentProposalService:
     ) -> Dict[str, Any]:
         """Generate investment recommendation"""
         # Simple decision logic
-        if (financial["meets_minimum_roi"] and 
-            risk["risk_level"] != "HIGH" and 
+        if (financial["meets_minimum_roi"] and
+            risk["risk_level"] != "HIGH" and
             strategic >= Decimal("0.7")):
             decision = "APPROVE"
         elif financial["meets_minimum_roi"] and strategic >= Decimal("0.8"):
             decision = "APPROVE_WITH_CONDITIONS"
         else:
             decision = "REJECT"
-            
+
         return {
             "decision": decision,
             "confidence": "HIGH" if decision == "APPROVE" else "MEDIUM",

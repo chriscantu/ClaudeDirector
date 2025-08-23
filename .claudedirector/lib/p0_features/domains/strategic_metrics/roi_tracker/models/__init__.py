@@ -11,7 +11,7 @@ from .roi_models import (
 
 __all__ = [
     "InvestmentCategory",
-    "InvestmentStatus", 
+    "InvestmentStatus",
     "ROICalculationMethod",
     "InvestmentProposal",
     "ROITracking",

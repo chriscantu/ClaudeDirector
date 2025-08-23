@@ -33,16 +33,16 @@ logger = structlog.get_logger(__name__)
 class ROIInvestmentTracker(InvestmentTrackerInterface):
     """
     Alvaro's ROI Investment Tracker - SOLID Facade
-    
+
     SOLID Refactoring: 1,353 lines → 150 lines (89% reduction)
-    
+
     Capabilities:
     1. Investment proposal creation and evaluation (via InvestmentProposalService)
     2. ROI calculation and tracking (simplified for critical fix)
     3. Portfolio performance monitoring (simplified for critical fix)
     4. Investment justification reports (simplified for critical fix)
     5. Budget planning and optimization (simplified for critical fix)
-    
+
     Architecture: Service-oriented with clear separation of concerns
     """
 
@@ -53,7 +53,7 @@ class ROIInvestmentTracker(InvestmentTrackerInterface):
 
         # Initialize SOLID services
         self.proposal_service = InvestmentProposalService(business_calculator)
-        
+
         # Investment tracking data (would be persisted in database)
         self._investment_proposals: Dict[str, InvestmentProposal] = {}
         self._roi_tracking: Dict[str, List[ROITracking]] = {}
@@ -61,32 +61,32 @@ class ROIInvestmentTracker(InvestmentTrackerInterface):
     def create_investment_proposal(self, proposal_data: Dict[str, Any]) -> InvestmentProposal:
         """
         Create new investment proposal with business justification
-        
+
         Delegates to InvestmentProposalService for SOLID compliance.
         """
         proposal = self.proposal_service.create_investment_proposal(proposal_data)
-        
+
         # Store in tracker (facade responsibility)
         self._investment_proposals[proposal.proposal_id] = proposal
-        
+
         return proposal
 
     def evaluate_investment_proposal(self, proposal_id: str) -> Dict[str, Any]:
         """
         Evaluate an investment proposal for approval
-        
+
         Delegates to InvestmentProposalService for SOLID compliance.
         """
         if proposal_id not in self._investment_proposals:
             return {"error": f"Investment proposal {proposal_id} not found"}
-            
+
         proposal = self._investment_proposals[proposal_id]
         return self.proposal_service.evaluate_investment_proposal(proposal)
 
     def track_investment_performance(self, investment_id: str, period: str) -> ROITracking:
         """
         Track actual ROI performance of approved investments
-        
+
         Simplified implementation for critical file size fix.
         Full implementation would delegate to PerformanceTrackingService.
         """
@@ -94,7 +94,7 @@ class ROIInvestmentTracker(InvestmentTrackerInterface):
             raise ValueError(f"Investment {investment_id} not found")
 
         proposal = self._investment_proposals[investment_id]
-        
+
         # Simplified tracking (would be extracted to service)
         roi_tracking = ROITracking(
             investment_id=investment_id,
@@ -118,28 +118,28 @@ class ROIInvestmentTracker(InvestmentTrackerInterface):
             measured_at=datetime.now(),
             measured_by="system",
         )
-        
+
         # Store tracking data
         if investment_id not in self._roi_tracking:
             self._roi_tracking[investment_id] = []
         self._roi_tracking[investment_id].append(roi_tracking)
-        
+
         return roi_tracking
 
     def generate_portfolio_summary(self, reporting_period: str) -> InvestmentPortfolioSummary:
         """
         Generate comprehensive portfolio performance summary
-        
+
         Simplified implementation for critical file size fix.
         Full implementation would delegate to PortfolioAnalysisService.
         """
-        active_investments = [p for p in self._investment_proposals.values() 
+        active_investments = [p for p in self._investment_proposals.values()
                             if p.status in [InvestmentStatus.APPROVED, InvestmentStatus.IN_PROGRESS]]
-        
+
         total_value = sum(p.total_investment for p in active_investments)
-        total_expected_roi = sum(p.year_1_benefits + p.year_2_benefits + p.year_3_benefits 
+        total_expected_roi = sum(p.year_1_benefits + p.year_2_benefits + p.year_3_benefits
                                for p in active_investments)
-        
+
         return InvestmentPortfolioSummary(
             reporting_period=reporting_period,
             total_active_investments=len(active_investments),
@@ -164,16 +164,16 @@ class ROIInvestmentTracker(InvestmentTrackerInterface):
     def generate_investment_justification_report(self, proposal_id: str) -> Dict[str, Any]:
         """
         Generate detailed investment justification report
-        
+
         Simplified implementation for critical file size fix.
         Full implementation would delegate to ReportGenerationService.
         """
         if proposal_id not in self._investment_proposals:
             return {"error": f"Investment proposal {proposal_id} not found"}
-            
+
         proposal = self._investment_proposals[proposal_id]
         evaluation = self.evaluate_investment_proposal(proposal_id)
-        
+
         return {
             "proposal_id": proposal_id,
             "title": proposal.title,
@@ -200,7 +200,7 @@ class ROIInvestmentTracker(InvestmentTrackerInterface):
 __all__ = [
     "ROIInvestmentTracker",
     "InvestmentCategory",
-    "InvestmentStatus", 
+    "InvestmentStatus",
     "ROICalculationMethod",
     "InvestmentProposal",
     "ROITracking",

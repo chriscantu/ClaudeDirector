@@ -15,7 +15,7 @@ from .interfaces import InvestmentTrackerInterface
 
 __all__ = [
     "InvestmentCategory",
-    "InvestmentStatus", 
+    "InvestmentStatus",
     "ROICalculationMethod",
     "InvestmentProposal",
     "ROITracking",

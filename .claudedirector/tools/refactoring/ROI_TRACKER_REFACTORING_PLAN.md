@@ -10,7 +10,7 @@
 
 ### Data Models (Keep as-is)
 - `InvestmentCategory` (Enum)
-- `InvestmentStatus` (Enum) 
+- `InvestmentStatus` (Enum)
 - `ROICalculationMethod` (Enum)
 - `InvestmentProposal` (Dataclass)
 - `ROITracking` (Dataclass)
@@ -22,7 +22,7 @@
 ```python
 # Methods: 4 methods, ~200 lines
 - create_investment_proposal()
-- evaluate_investment_proposal() 
+- evaluate_investment_proposal()
 - _calculate_roi_projections()
 - _analyze_financial_metrics()
 ```
@@ -94,16 +94,16 @@ from abc import ABC, abstractmethod
 class InvestmentTrackerInterface(ABC):
     @abstractmethod
     def create_investment_proposal(...) -> InvestmentProposal: pass
-    
+
     @abstractmethod
     def evaluate_investment_proposal(...) -> Dict[str, Any]: pass
-    
+
     @abstractmethod
     def track_investment_performance(...) -> ROITracking: pass
-    
+
     @abstractmethod
     def generate_portfolio_summary(...) -> InvestmentPortfolioSummary: pass
-    
+
     @abstractmethod
     def generate_investment_justification_report(...) -> Dict[str, Any]: pass
 ```
