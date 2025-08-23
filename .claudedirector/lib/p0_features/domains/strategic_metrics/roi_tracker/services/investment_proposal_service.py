@@ -47,7 +47,9 @@ class InvestmentProposalService:
             },
         }
 
-    def create_investment_proposal(self, proposal_data: Dict[str, Any]) -> InvestmentProposal:
+    def create_investment_proposal(
+        self, proposal_data: Dict[str, Any]
+    ) -> InvestmentProposal:
         """Create new investment proposal with business justification"""
         try:
             proposal_id = str(uuid.uuid4())
@@ -103,7 +105,9 @@ class InvestmentProposalService:
             self.logger.error("Investment proposal creation failed", error=str(e))
             raise
 
-    def evaluate_investment_proposal(self, proposal: InvestmentProposal) -> Dict[str, Any]:
+    def evaluate_investment_proposal(
+        self, proposal: InvestmentProposal
+    ) -> Dict[str, Any]:
         """Evaluate investment proposal for approval decision"""
         try:
             # Calculate financial metrics
@@ -133,11 +137,13 @@ class InvestmentProposalService:
             self.logger.error(
                 "Investment proposal evaluation failed",
                 proposal_id=proposal.proposal_id,
-                error=str(e)
+                error=str(e),
             )
             return {"error": str(e)}
 
-    def _calculate_roi_projections(self, proposal_data: Dict[str, Any]) -> Dict[str, Decimal]:
+    def _calculate_roi_projections(
+        self, proposal_data: Dict[str, Any]
+    ) -> Dict[str, Decimal]:
         """Calculate ROI projections for investment proposal"""
         try:
             total_investment = Decimal(str(proposal_data["total_investment"]))
@@ -169,9 +175,15 @@ class InvestmentProposalService:
             self.logger.error("ROI projection calculation failed", error=str(e))
             raise
 
-    def _analyze_financial_metrics(self, proposal: InvestmentProposal) -> Dict[str, Any]:
+    def _analyze_financial_metrics(
+        self, proposal: InvestmentProposal
+    ) -> Dict[str, Any]:
         """Analyze financial metrics for proposal"""
-        total_benefits = proposal.year_1_benefits + proposal.year_2_benefits + proposal.year_3_benefits
+        total_benefits = (
+            proposal.year_1_benefits
+            + proposal.year_2_benefits
+            + proposal.year_3_benefits
+        )
         roi_ratio = total_benefits / proposal.total_investment
         payback_period = proposal.total_investment / proposal.year_1_benefits
 
@@ -179,13 +191,16 @@ class InvestmentProposalService:
             "total_3yr_benefits": total_benefits,
             "roi_ratio": roi_ratio,
             "payback_period_years": payback_period,
-            "meets_minimum_roi": roi_ratio >= self._roi_parameters["minimum_acceptable_roi"],
+            "meets_minimum_roi": roi_ratio
+            >= self._roi_parameters["minimum_acceptable_roi"],
         }
 
     def _assess_proposal_risks(self, proposal: InvestmentProposal) -> Dict[str, Any]:
         """Assess risks for investment proposal"""
         risk_score = len(proposal.risk_factors) * 0.1  # Simple risk scoring
-        risk_level = "LOW" if risk_score < 0.3 else "MEDIUM" if risk_score < 0.6 else "HIGH"
+        risk_level = (
+            "LOW" if risk_score < 0.3 else "MEDIUM" if risk_score < 0.6 else "HIGH"
+        )
 
         return {
             "risk_factors_count": len(proposal.risk_factors),
@@ -194,7 +209,9 @@ class InvestmentProposalService:
             "mitigation_required": risk_level == "HIGH",
         }
 
-    def _calculate_strategic_alignment_score(self, proposal: InvestmentProposal) -> Decimal:
+    def _calculate_strategic_alignment_score(
+        self, proposal: InvestmentProposal
+    ) -> Decimal:
         """Calculate strategic alignment score"""
         # Simple scoring based on category strategic value
         category_scores = {
@@ -209,13 +226,19 @@ class InvestmentProposalService:
         return category_scores.get(proposal.category, Decimal("0.5"))
 
     def _generate_investment_recommendation(
-        self, proposal: InvestmentProposal, financial: Dict, risk: Dict, strategic: Decimal
+        self,
+        proposal: InvestmentProposal,
+        financial: Dict,
+        risk: Dict,
+        strategic: Decimal,
     ) -> Dict[str, Any]:
         """Generate investment recommendation"""
         # Simple decision logic
-        if (financial["meets_minimum_roi"] and
-            risk["risk_level"] != "HIGH" and
-            strategic >= Decimal("0.7")):
+        if (
+            financial["meets_minimum_roi"]
+            and risk["risk_level"] != "HIGH"
+            and strategic >= Decimal("0.7")
+        ):
             decision = "APPROVE"
         elif financial["meets_minimum_roi"] and strategic >= Decimal("0.8"):
             decision = "APPROVE_WITH_CONDITIONS"

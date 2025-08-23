@@ -58,7 +58,9 @@ class ROIInvestmentTracker(InvestmentTrackerInterface):
         self._investment_proposals: Dict[str, InvestmentProposal] = {}
         self._roi_tracking: Dict[str, List[ROITracking]] = {}
 
-    def create_investment_proposal(self, proposal_data: Dict[str, Any]) -> InvestmentProposal:
+    def create_investment_proposal(
+        self, proposal_data: Dict[str, Any]
+    ) -> InvestmentProposal:
         """
         Create new investment proposal with business justification
 
@@ -83,7 +85,9 @@ class ROIInvestmentTracker(InvestmentTrackerInterface):
         proposal = self._investment_proposals[proposal_id]
         return self.proposal_service.evaluate_investment_proposal(proposal)
 
-    def track_investment_performance(self, investment_id: str, period: str) -> ROITracking:
+    def track_investment_performance(
+        self, investment_id: str, period: str
+    ) -> ROITracking:
         """
         Track actual ROI performance of approved investments
 
@@ -100,7 +104,8 @@ class ROIInvestmentTracker(InvestmentTrackerInterface):
             investment_id=investment_id,
             measurement_period=period,
             planned_benefits=proposal.year_1_benefits,
-            actual_benefits=proposal.year_1_benefits * Decimal("0.9"),  # 90% realization
+            actual_benefits=proposal.year_1_benefits
+            * Decimal("0.9"),  # 90% realization
             variance_amount=proposal.year_1_benefits * Decimal("-0.1"),
             variance_percentage=Decimal("-10.0"),
             direct_savings=proposal.year_1_benefits * Decimal("0.6"),
@@ -126,33 +131,45 @@ class ROIInvestmentTracker(InvestmentTrackerInterface):
 
         return roi_tracking
 
-    def generate_portfolio_summary(self, reporting_period: str) -> InvestmentPortfolioSummary:
+    def generate_portfolio_summary(
+        self, reporting_period: str
+    ) -> InvestmentPortfolioSummary:
         """
         Generate comprehensive portfolio performance summary
 
         Simplified implementation for critical file size fix.
         Full implementation would delegate to PortfolioAnalysisService.
         """
-        active_investments = [p for p in self._investment_proposals.values()
-                            if p.status in [InvestmentStatus.APPROVED, InvestmentStatus.IN_PROGRESS]]
+        active_investments = [
+            p
+            for p in self._investment_proposals.values()
+            if p.status in [InvestmentStatus.APPROVED, InvestmentStatus.IN_PROGRESS]
+        ]
 
         total_value = sum(p.total_investment for p in active_investments)
-        total_expected_roi = sum(p.year_1_benefits + p.year_2_benefits + p.year_3_benefits
-                               for p in active_investments)
+        total_expected_roi = sum(
+            p.year_1_benefits + p.year_2_benefits + p.year_3_benefits
+            for p in active_investments
+        )
 
         return InvestmentPortfolioSummary(
             reporting_period=reporting_period,
             total_active_investments=len(active_investments),
             total_portfolio_value=total_value,
-            total_expected_annual_roi=total_expected_roi / 3 if active_investments else Decimal("0"),
+            total_expected_annual_roi=(
+                total_expected_roi / 3 if active_investments else Decimal("0")
+            ),
             investments_exceeding_roi=len(active_investments) // 2,  # Simplified
             investments_meeting_timeline=len(active_investments) // 2,  # Simplified
             investments_on_budget=len(active_investments) // 2,  # Simplified
-            total_benefits_realized=total_expected_roi * Decimal("0.8"),  # 80% realization
+            total_benefits_realized=total_expected_roi
+            * Decimal("0.8"),  # 80% realization
             total_investment_spent=total_value * Decimal("0.9"),  # 90% spent
             portfolio_roi_actual=Decimal("1.2"),  # 20% ROI
             portfolio_roi_projected=Decimal("1.3"),  # 30% projected
-            investment_by_category={cat.value: Decimal("100000") for cat in InvestmentCategory},
+            investment_by_category={
+                cat.value: Decimal("100000") for cat in InvestmentCategory
+            },
             roi_by_category={cat.value: Decimal("1.2") for cat in InvestmentCategory},
             high_risk_investments=1,
             investments_requiring_attention=["investment-1", "investment-2"],
@@ -161,7 +178,9 @@ class ROIInvestmentTracker(InvestmentTrackerInterface):
             generated_at=datetime.now(),
         )
 
-    def generate_investment_justification_report(self, proposal_id: str) -> Dict[str, Any]:
+    def generate_investment_justification_report(
+        self, proposal_id: str
+    ) -> Dict[str, Any]:
         """
         Generate detailed investment justification report
 
@@ -189,7 +208,12 @@ class ROIInvestmentTracker(InvestmentTrackerInterface):
             "implementation_roadmap": {
                 "start_date": proposal.proposed_start_date,
                 "duration": f"{proposal.estimated_duration_months} months",
-                "key_milestones": ["Planning", "Implementation", "Testing", "Deployment"],
+                "key_milestones": [
+                    "Planning",
+                    "Implementation",
+                    "Testing",
+                    "Deployment",
+                ],
             },
             "success_metrics": proposal.success_metrics,
             "generated_at": datetime.now(),

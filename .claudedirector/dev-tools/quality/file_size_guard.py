@@ -22,29 +22,21 @@ class FileSizeGuard:
         # File size limits (lines)
         self.limits = {
             "python": {
-                "warning": 300,    # Warn at 300 lines
-                "error": 500,      # Block at 500 lines
-                "critical": 1000   # Critical violation at 1000+ lines
+                "warning": 300,  # Warn at 300 lines
+                "error": 500,  # Block at 500 lines
+                "critical": 1000,  # Critical violation at 1000+ lines
             },
-            "typescript": {
-                "warning": 400,
-                "error": 600,
-                "critical": 1200
-            },
-            "javascript": {
-                "warning": 400,
-                "error": 600,
-                "critical": 1200
-            }
+            "typescript": {"warning": 400, "error": 600, "critical": 1200},
+            "javascript": {"warning": 400, "error": 600, "critical": 1200},
         }
 
         # Exceptions for specific files that are allowed to be larger
         self.exceptions = {
-            "test_": 800,      # Test files can be larger
+            "test_": 800,  # Test files can be larger
             "_test.py": 800,
             "migration": 1000,  # Database migrations
-            "schema": 600,     # Schema definitions
-            "config": 400      # Configuration files
+            "schema": 600,  # Schema definitions
+            "config": 400,  # Configuration files
         }
 
         # Directories to check
@@ -52,7 +44,7 @@ class FileSizeGuard:
             ".claudedirector/lib/",
             ".claudedirector/tools/",
             "src/",
-            "lib/"
+            "lib/",
         ]
 
     def get_file_type(self, filepath: Path) -> str:
@@ -63,7 +55,7 @@ class FileSizeGuard:
             ".ts": "typescript",
             ".tsx": "typescript",
             ".js": "javascript",
-            ".jsx": "javascript"
+            ".jsx": "javascript",
         }
         return type_mapping.get(suffix, "unknown")
 
@@ -80,14 +72,18 @@ class FileSizeGuard:
     def count_lines(self, filepath: Path) -> int:
         """Count lines in file, excluding empty lines and comments"""
         try:
-            with open(filepath, 'r', encoding='utf-8') as f:
+            with open(filepath, "r", encoding="utf-8") as f:
                 lines = f.readlines()
 
             # Count non-empty, non-comment lines for more accurate measurement
             significant_lines = 0
             for line in lines:
                 stripped = line.strip()
-                if stripped and not stripped.startswith('#') and not stripped.startswith('//'):
+                if (
+                    stripped
+                    and not stripped.startswith("#")
+                    and not stripped.startswith("//")
+                ):
                     significant_lines += 1
 
             return significant_lines
@@ -111,7 +107,7 @@ class FileSizeGuard:
             limits = {
                 "warning": exception_limit,
                 "error": exception_limit + 200,
-                "critical": exception_limit + 500
+                "critical": exception_limit + 500,
             }
 
         # Determine violation level
@@ -129,7 +125,7 @@ class FileSizeGuard:
             "line_count": line_count,
             "limits": limits,
             "violation_level": violation_level,
-            "exception_applied": exception_limit is not None
+            "exception_applied": exception_limit is not None,
         }
 
     def scan_directory(self, directory: Path) -> List[Dict]:
@@ -197,11 +193,17 @@ class FileSizeGuard:
                     exception = " (exception applied)" if v["exception_applied"] else ""
 
                     report.append(f"  • {filepath}")
-                    report.append(f"    Lines: {line_count} (limit: {limits[level]}){exception}")
+                    report.append(
+                        f"    Lines: {line_count} (limit: {limits[level]}){exception}"
+                    )
 
                     if level == "critical":
-                        report.append(f"    💡 REFACTOR: This file violates Single Responsibility Principle")
-                        report.append(f"    🔧 ACTION: Break into smaller, focused modules")
+                        report.append(
+                            f"    💡 REFACTOR: This file violates Single Responsibility Principle"
+                        )
+                        report.append(
+                            f"    🔧 ACTION: Break into smaller, focused modules"
+                        )
 
         # Add summary
         report.append(f"\n📊 SUMMARY:")
@@ -215,10 +217,18 @@ class FileSizeGuard:
 
 def main():
     """Main entry point"""
-    parser = argparse.ArgumentParser(description="File Size Guard - Prevent Monolithic Files")
-    parser.add_argument("paths", nargs="*", help="Paths to check (default: standard directories)")
-    parser.add_argument("--strict", action="store_true", help="Treat warnings as errors")
-    parser.add_argument("--report-only", action="store_true", help="Report only, don't exit with error")
+    parser = argparse.ArgumentParser(
+        description="File Size Guard - Prevent Monolithic Files"
+    )
+    parser.add_argument(
+        "paths", nargs="*", help="Paths to check (default: standard directories)"
+    )
+    parser.add_argument(
+        "--strict", action="store_true", help="Treat warnings as errors"
+    )
+    parser.add_argument(
+        "--report-only", action="store_true", help="Report only, don't exit with error"
+    )
 
     args = parser.parse_args()
 
