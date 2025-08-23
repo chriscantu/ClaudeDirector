@@ -48,6 +48,14 @@ repos:
         pass_filenames: false
         stages: [pre-commit]
         always_run: true
+      - id: file-size-guard
+        name: 🚨 FILE SIZE GUARD - PREVENT MONOLITHIC FILES
+        entry: python3 .claudedirector/dev-tools/quality/file_size_guard.py
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+        always_run: true
+        verbose: true
       - id: p0-ci-coverage-guard
         name: 🛡️ P0 CI COVERAGE GUARD
         entry: python3 .claudedirector/tools/hooks/p0-ci-coverage-guard.py
