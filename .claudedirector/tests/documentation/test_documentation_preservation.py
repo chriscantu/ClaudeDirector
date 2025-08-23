@@ -177,6 +177,9 @@ class TestDocumentationLinks(unittest.TestCase):
                 if link_path.startswith("http"):
                     continue
 
+                # Strip anchors from link path for file validation
+                file_path = link_path.split('#')[0] if '#' in link_path else link_path
+
                 # Skip placeholder links for future documentation
                 future_docs = [
                     "reference/CONFIGURATION.md",
@@ -200,18 +203,18 @@ class TestDocumentationLinks(unittest.TestCase):
                     "CONTRIBUTING.md",
                     "STRATEGIC_FRAMEWORKS_GUIDE.md",
                 ]
-                if link_path in future_docs:
+                if file_path in future_docs:
                     continue  # Skip validation for future documentation
 
                 # Resolve relative paths
-                if not link_path.startswith("/"):
-                    full_path = PROJECT_ROOT / "docs" / link_path
+                if not file_path.startswith("/"):
+                    full_path = PROJECT_ROOT / "docs" / file_path
                 else:
-                    full_path = PROJECT_ROOT / link_path.lstrip("/")
+                    full_path = PROJECT_ROOT / file_path.lstrip("/")
 
                 self.assertTrue(
                     full_path.exists(),
-                    f"Linked file '{link_path}' from implementation index must exist",
+                    f"Linked file '{file_path}' from implementation index must exist",
                 )
 
     def test_framework_index_links_valid(self):
