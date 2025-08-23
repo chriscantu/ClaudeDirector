@@ -106,6 +106,26 @@ class TestFrameworkAttributionSystem(unittest.TestCase):
                 ],
                 "personas": ["alvaro", "diego", "camille"],
             },
+            "Strategic Platform Assessment": {
+                "category": "platform_strategy",
+                "keywords": [
+                    "platform",
+                    "assessment",
+                    "restructure",
+                    "engineering",
+                    "teams",
+                    "scaling",
+                    "organizational",
+                    "transformation",
+                ],
+                "confidence_threshold": 0.5,
+                "application_context": [
+                    "team_scaling",
+                    "platform_investment",
+                    "organizational_transformation",
+                ],
+                "personas": ["diego", "martin", "camille"],
+            },
             "Crucial Conversations": {
                 "category": "communication",
                 "keywords": [
