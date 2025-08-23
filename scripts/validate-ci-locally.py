@@ -304,7 +304,9 @@ def main():
     print("🚀 ClaudeDirector Local CI Validation (Quick Mode)")
     print("=====================================")
     print("Running basic checks. Use --full for complete GitHub CI simulation")
-    print("💡 Tip: Use 'python scripts/validate-ci-locally.py --full' for 100% CI parity")
+    print(
+        "💡 Tip: Use 'python scripts/validate-ci-locally.py --full' for 100% CI parity"
+    )
     print()
 
     # Check prerequisites
@@ -355,7 +357,9 @@ def main():
 
     if checks_failed == 0:
         print_success("ALL CHECKS PASSED - Ready for CI/CD Pipeline!")
-        print("💡 For 100% CI parity, use: python scripts/validate-ci-locally.py --full")
+        print(
+            "💡 For 100% CI parity, use: python scripts/validate-ci-locally.py --full"
+        )
         sys.exit(0)
     else:
         print_error(f"VALIDATION FAILED - {checks_failed} check(s) need attention")
