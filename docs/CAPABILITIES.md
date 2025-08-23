@@ -1,6 +1,16 @@
 # ClaudeDirector Capabilities
 
-Complete overview of personas, frameworks, and AI capabilities.
+**Local AI Strategic Leadership Framework** - Complete overview of personas, frameworks, and AI capabilities.
+
+## Architecture Overview
+
+ClaudeDirector is designed as a **local single-user framework** that enhances AI tools like Cursor and Claude:
+
+- **Local Installation**: Runs entirely on your local machine
+- **Single-User Focus**: Optimized for individual strategic leadership workflows
+- **AI Tool Enhancement**: Framework that enhances existing AI tools rather than replacing them
+- **Zero Server Dependencies**: No web service infrastructure required
+- **Privacy-First**: All strategic data stays on your local machine
 
 ## Strategic AI Personas
 
@@ -161,6 +171,20 @@ When multiple personas collaborate:
 - **Graceful degradation** - Full functionality maintained without external dependencies
 
 ---
+
+## Deployment & Installation
+
+### Local Framework Installation
+- **Git Installation**: `git clone https://github.com/chriscantu/ClaudeDirector.git`
+- **Python Package**: Compatible with pip/conda package managers
+- **System Requirements**: Python 3.11+, <1GB memory, cross-platform support
+- **IDE Integration**: Seamless integration with Cursor IDE
+
+### Single-User Benefits
+- **Privacy-First**: All strategic data remains on your local machine
+- **No Server Dependencies**: Works completely offline after installation
+- **Individual Optimization**: Tuned for personal strategic leadership workflows
+- **Cost-Effective**: One-time setup, no recurring subscription fees
 
 ## Get Started
 
