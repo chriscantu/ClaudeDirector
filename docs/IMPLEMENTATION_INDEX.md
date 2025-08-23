@@ -4,6 +4,13 @@
 
 ---
 
+## 🎯 **Product Requirements & Strategy**
+
+### **Single Source of Truth**
+- **[Product Requirements Document (PRD)](requirements/PRODUCT_REQUIREMENTS_DOCUMENT.md)** - Complete feature prioritization and business justification
+- **[Feature Status Matrix](requirements/FEATURE_STATUS_MATRIX.md)** - Real-time implementation status vs. requirements
+- **[Investment ROI Tracking](requirements/FEATURE_STATUS_MATRIX.md#-investment-and-roi-tracking)** - Business value and financial performance
+
 ## 🚀 **Getting Started**
 
 ### **Quick Setup**

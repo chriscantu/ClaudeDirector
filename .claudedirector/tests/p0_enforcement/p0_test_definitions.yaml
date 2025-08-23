@@ -112,6 +112,88 @@ p0_features:
     owner: "rachel"
     modules: ["test_framework_detection.py", "test_framework_attribution.py", "test_framework_coordination.py", "test_framework_recommendations.py"]
 
+  # ALVARO'S BUSINESS-CRITICAL TESTS
+  - name: "Configuration Persistence P0"
+    test_module: ".claudedirector/tests/regression/business_critical/test_configuration_persistence.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 120
+    description: "User configuration and customization data must persist across sessions"
+    failure_impact: "User settings lost, re-onboarding required, personalization destroyed"
+    business_impact: "User frustration, productivity loss, tool abandonment"
+    introduced_version: "v2.3.0"
+    owner: "alvaro"
+
+  - name: "ROI Tracking P0"
+    test_module: ".claudedirector/tests/regression/business_critical/test_roi_tracking.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 180
+    description: "ROI calculation and investment tracking must work for strategic decisions"
+    failure_impact: "Investment decisions compromised, ROI visibility lost, budget misallocation"
+    business_impact: "Poor investment decisions, inability to demonstrate platform value"
+    introduced_version: "v2.3.0"
+    owner: "alvaro"
+
+  - name: "Performance P0"
+    test_module: ".claudedirector/tests/regression/business_critical/test_performance.py"
+    critical_level: "HIGH"
+    timeout_seconds: 300
+    description: "System performance must meet executive requirements under realistic load"
+    failure_impact: "Poor user experience, executive frustration, system abandonment"
+    business_impact: "Reduced usage, poor executive experience, strategic tool abandonment"
+    introduced_version: "v2.3.0"
+    owner: "alvaro"
+
+  - name: "Security P0"
+    test_module: ".claudedirector/tests/regression/business_critical/test_security.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 240
+    description: "Security controls must protect sensitive strategic data and stakeholder intelligence"
+    failure_impact: "Data breaches, unauthorized access, competitive intelligence loss"
+    business_impact: "Regulatory fines, competitive disadvantage, trust loss, compliance violations"
+    introduced_version: "v2.3.0"
+    owner: "alvaro"
+
+  # RACHEL'S UX CONTINUITY TESTS
+  - name: "Persona Consistency P0"
+    test_module: ".claudedirector/tests/regression/ux_continuity/test_persona_consistency.py"
+    critical_level: "HIGH"
+    timeout_seconds: 180
+    description: "Persona behavior and communication must remain consistent across all interactions"
+    failure_impact: "User confusion, reduced trust, unpredictable persona behavior"
+    business_impact: "User abandonment, reduced engagement, persona switching abandonment"
+    introduced_version: "v2.3.0"
+    owner: "rachel"
+
+  - name: "Context Switching P0"
+    test_module: ".claudedirector/tests/regression/ux_continuity/test_context_switching.py"
+    critical_level: "HIGH"
+    timeout_seconds: 200
+    description: "Context transitions must be smooth and maintain conversation continuity"
+    failure_impact: "Jarring transitions, lost context, conversation abandonment"
+    business_impact: "Cognitive overload, reduced productivity, poor user experience"
+    introduced_version: "v2.3.0"
+    owner: "rachel"
+
+  - name: "Error Recovery P0"
+    test_module: ".claudedirector/tests/regression/ux_continuity/test_error_recovery.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 150
+    description: "Error handling must be graceful and preserve user trust and context"
+    failure_impact: "Poor error experience, lost user trust, context destruction"
+    business_impact: "User frustration, system abandonment, support overhead"
+    introduced_version: "v2.3.0"
+    owner: "rachel"
+
+  - name: "Cross-Environment Consistency P0"
+    test_module: ".claudedirector/tests/regression/ux_continuity/test_cross_environment.py"
+    critical_level: "HIGH"
+    timeout_seconds: 220
+    description: "Experience must be consistent across Cursor, Claude Chat, and CLI environments"
+    failure_impact: "Fragmented experience, platform confusion, reduced adoption"
+    business_impact: "Platform preference bias, training overhead, user inefficiency"
+    introduced_version: "v2.3.0"
+    owner: "rachel"
+
 
 
 # Enforcement settings
