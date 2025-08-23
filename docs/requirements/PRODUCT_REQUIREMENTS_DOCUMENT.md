@@ -6,11 +6,18 @@
 
 ## Executive Summary
 
-ClaudeDirector is the industry's first completely transparent AI strategic leadership system with role-based customization for engineering leaders.
+ClaudeDirector is the industry's first completely transparent AI strategic leadership framework designed as a **local single-user system** that enhances AI tools like Cursor and Claude with role-based strategic intelligence.
 
+**Architecture**: Local single-user framework (not a web service)
 **Primary Value**: Transparent AI strategic intelligence driving leaders from analysis to clear, actionable next steps
-**Target Market**: VP/CTO/Director/Manager/Staff/Product Engineering Leaders
+**Target Market**: VP/CTO/Director/Manager/Staff/Product Engineering Leaders (individual users)
 **Competitive Advantage**: Complete transparency + role-based customization + Next Action Clarity Rate >85%
+
+### Deployment Model
+- **Local Installation**: Runs entirely on user's local machine
+- **Single-User Focus**: Optimized for individual strategic leadership workflows
+- **AI Tool Enhancement**: Framework that enhances existing AI tools (Cursor, Claude) rather than replacing them
+- **Zero Server Dependencies**: No web service infrastructure required
 
 ## Priority Framework
 
@@ -54,15 +61,15 @@ ClaudeDirector is the industry's first completely transparent AI strategic leade
 - Memory usage <1GB for strategic context storage
 
 ### 4. Performance and Reliability ✅ IMPLEMENTED
-**Business Justification**: Executive users have zero tolerance for poor performance
-**Success Metrics**: Strategic query response <5s, System uptime >99.5%, Concurrent users (8+), Memory <1GB
+**Business Justification**: Executive users have zero tolerance for poor performance on their local machine
+**Success Metrics**: Strategic query response <5s, Local system stability >99.5%, Single-user optimization, Memory <1GB
 
-**Technical Requirements**:
-- Strategic query response time <5s (P0 SLA)
-- Concurrent user support for 8+ executives
-- Memory usage monitoring with <1GB limit
-- Database query optimization with indexing strategy
-- Performance regression testing with CI/CD integration
+**Technical Requirements** (Local Single-User Context):
+- Strategic query response time <5s on local machine (P0 SLA)
+- Single-user optimization (no concurrent user scaling needed)
+- Memory usage monitoring with <1GB limit for local installation
+- Local database optimization (SQLite/DuckDB) with indexing strategy
+- Performance regression testing for local execution environment
 
 ### 5. Security and Compliance ✅ IMPLEMENTED
 **Business Justification**: Handles sensitive stakeholder intelligence - security breach = business death
