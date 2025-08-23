@@ -14,33 +14,11 @@ from dataclasses import dataclass
 from typing import Dict, List, Optional, Any
 import structlog
 
-# Import the new SOLID-compliant architecture
-from .refactored_framework_engine import RefactoredFrameworkEngine
+# Import shared types to avoid circular imports
+from .framework_types import FrameworkAnalysis, SystematicResponse
 
 # Configure logging
 logger = structlog.get_logger(__name__)
-
-
-@dataclass
-class FrameworkAnalysis:
-    """Result of embedded framework analysis - BACKWARD COMPATIBILITY"""
-
-    framework_name: str
-    structured_insights: Dict[str, Any]
-    recommendations: List[str]
-    implementation_steps: List[str]
-    key_considerations: List[str]
-    analysis_confidence: float
-
-
-@dataclass
-class SystematicResponse:
-    """Complete systematic analysis response - BACKWARD COMPATIBILITY"""
-
-    analysis: FrameworkAnalysis
-    persona_integrated_response: str
-    processing_time_ms: int
-    framework_applied: str
 
 
 class EmbeddedFrameworkEngine:
@@ -64,8 +42,8 @@ class EmbeddedFrameworkEngine:
         """Initialize with SOLID-compliant service architecture"""
         self.config = config or {}
 
-        # Initialize the new SOLID-compliant engine
-        self._refactored_engine = RefactoredFrameworkEngine(config=self.config)
+        # Lazy initialization to avoid circular imports
+        self._refactored_engine = None
 
         # Extract framework definitions for backward compatibility
         self.strategic_frameworks = self._extract_framework_definitions()
@@ -76,11 +54,22 @@ class EmbeddedFrameworkEngine:
             frameworks_available=len(self.strategic_frameworks),
         )
 
+    def _get_refactored_engine(self):
+        """Get the refactored engine, initializing if needed"""
+        if self._refactored_engine is None:
+            # Import here to avoid circular imports
+            from .refactored_framework_engine import RefactoredFrameworkEngine
+
+            self._refactored_engine = RefactoredFrameworkEngine(config=self.config)
+        return self._refactored_engine
+
     def analyze_systematically(
         self,
         user_input: str,
         persona_context: Optional[Dict] = None,
         session_id: str = "default",
+        domain_focus: Optional[List[str]] = None,
+        **kwargs,
     ) -> SystematicResponse:
         """
         Perform systematic analysis using SOLID-compliant service architecture.
@@ -89,11 +78,19 @@ class EmbeddedFrameworkEngine:
         implementing all logic in a monolithic class.
         """
         try:
+            # Normalize persona_context for backward compatibility
+            if isinstance(persona_context, str):
+                persona_context = {"persona_name": persona_context}
+            elif persona_context is None:
+                persona_context = {}
+
             # Use the new SOLID-compliant engine
-            result = self._refactored_engine.analyze_systematically(
+            result = self._get_refactored_engine().analyze_systematically(
                 user_input=user_input,
                 persona_context=persona_context,
                 session_id=session_id,
+                domain_focus=domain_focus,
+                **kwargs,
             )
 
             # Convert to backward-compatible format
@@ -109,31 +106,24 @@ class EmbeddedFrameworkEngine:
         self, user_input: str, persona_context: Optional[Dict] = None
     ) -> Optional[str]:
         """Select framework using SOLID framework selection service"""
-        return self._refactored_engine._select_framework(user_input, persona_context)
+        return self._get_refactored_engine()._select_framework(
+            user_input, persona_context
+        )
 
     def _apply_framework(
         self, framework_name: str, user_input: str
     ) -> FrameworkAnalysis:
         """Apply framework using SOLID framework analysis service"""
-        return self._refactored_engine._apply_framework(framework_name, user_input)
+        return self._get_refactored_engine()._apply_framework(
+            framework_name, user_input
+        )
 
     def _extract_framework_definitions(self) -> Dict[str, Any]:
         """Extract framework definitions for backward compatibility"""
-        provider = self._refactored_engine.framework_provider
-        available_frameworks = provider.get_available_frameworks()
+        # Use static framework definitions to avoid circular dependency
+        from .framework_definitions import get_strategic_frameworks
 
-        definitions = {}
-        for framework_name in available_frameworks:
-            framework_def = provider.get_framework_definition(framework_name)
-            if framework_def:
-                definitions[framework_name] = {
-                    "name": framework_def.name,
-                    "domains": [d.value for d in framework_def.domains],
-                    "keywords": framework_def.keywords,
-                    "analysis_components": framework_def.analysis_components,
-                }
-
-        return definitions
+        return get_strategic_frameworks()
 
     def _convert_to_legacy_format(self, result) -> SystematicResponse:
         """Convert new SOLID result format to legacy SystematicResponse format"""
@@ -225,7 +215,7 @@ class EmbeddedPersonaIntegrator:
         """Create systematic response using the refactored engine"""
         persona_context = {"persona_name": persona_name}
 
-        return self.framework_engine.analyze_systematically(
+        return self._get_refactored_engine().analyze_systematically(
             user_input=user_input,
             persona_context=persona_context,
             session_id=session_id,

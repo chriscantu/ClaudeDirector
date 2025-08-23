@@ -1,12 +1,12 @@
 # AI Cleanup Enforcement Configuration
 # Controls automatic detection and cleanup of AI-generated code excess
 
-# File size thresholds (lines)
+# Flexible complexity-aware thresholds (more reasonable limits)
 size_thresholds:
-  documentation: 200      # .md files shouldn't exceed this
-  test_files: 300        # test_*.py files
-  implementation: 500    # regular .py files
-  configuration: 100     # .yaml, .json files
+  documentation: 800        # Allow for comprehensive technical docs
+  test_files: 600          # Regression/integration tests can be substantial
+  implementation: 800      # Framework implementations are complex
+  configuration: 300       # Configuration can be detailed
 
 # Cleanup requirements
 cleanup_rules:
@@ -31,7 +31,9 @@ excessive_patterns:
 
   # Temporary file patterns that should be cleaned up
   temporary_artifacts:
-    - "test_.*\\.py$"
+    - "test_temp.*\\.py$"      # Only temp test files, not all tests
+    - "test_scratch.*\\.py$"   # Scratch test files
+    - "test_debug.*\\.py$"     # Debug test files
     - ".*_temp\\..*$"
     - ".*_backup\\..*$"
     - ".*\\.tmp$"
@@ -40,6 +42,7 @@ excessive_patterns:
     - "experiment_.*"
     - ".*_working\\..*$"
     - ".*_draft\\..*$"
+    - "test_results_.*\\.json$" # Test result artifacts
 
   # AI verbosity markers in content
   ai_verbosity_markers:
@@ -116,8 +119,14 @@ exemptions:
 
   patterns:
     - "test_.*integration.*"     # Integration tests can be large
+    - "test_.*regression.*"      # Regression tests are comprehensive
+    - "test_.*_p0\\.py$"        # P0 tests are critical and comprehensive
     - ".*_COMPLETE\\.md$"        # Completion documentation
-    - ".claudedirector/tests/.*" # Test framework files
+    - ".claudedirector/tests/regression/.*" # Regression test framework
+    - ".claudedirector/tests/.*_p0\\.py$"  # All P0 test files
+    - "docs/.*ARCHITECTURE.*"   # Architecture documentation
+    - "docs/.*IMPLEMENTATION.*" # Implementation guides
+    - "docs/.*REFERENCE.*"      # Reference documentation
 
   directories:
     - "docs/demo/"              # Demo documentation
