@@ -1,6 +1,16 @@
 # ClaudeDirector Capabilities
 
-Complete overview of personas, frameworks, and AI capabilities.
+**Local AI Strategic Leadership Framework** - Complete overview of personas, frameworks, and AI capabilities.
+
+## Architecture Overview
+
+ClaudeDirector is designed as a **local single-user framework** that enhances AI tools like Cursor and Claude:
+
+- **Local Installation**: Runs entirely on your local machine
+- **Single-User Focus**: Optimized for individual strategic leadership workflows
+- **AI Tool Enhancement**: Framework that enhances existing AI tools rather than replacing them
+- **Zero Server Dependencies**: No web service infrastructure required
+- **Privacy-First**: All strategic data stays on your local machine
 
 ## Strategic AI Personas
 
