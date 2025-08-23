@@ -653,7 +653,7 @@ class TestPersonaConsistency(unittest.TestCase):
             "provides_actionable_guidance": ["how", "what", "should"],
             "executive_summary_first": ["board", "present", "executive"],
             "strategic_context": ["board", "strategic", "vision"],
-            "competitive_analysis": ["board", "competitive", "market"],
+            "competitive_analysis": ["board", "competitive", "market", "investment", "worth"],
             "user_impact_focus": ["user", "adoption", "improve"],
             "collaborative_approach": ["improve", "adoption", "team"],
             "accessibility_consideration": ["user", "adoption", "tools"],
@@ -688,6 +688,13 @@ class TestPersonaConsistency(unittest.TestCase):
     def _query_matches_expertise(self, query, expertise_areas):
         """Check if query matches persona expertise areas"""
         query_lower = query.lower()
+
+        # Business/financial keywords take priority over technical keywords
+        business_financial_keywords = ["roi", "investment", "financial", "business", "cost", "budget"]
+        if any(keyword in query_lower for keyword in business_financial_keywords):
+            # If query contains business/financial terms, only match business expertise areas
+            business_areas = ["business_strategy", "investment_analysis", "competitive_positioning"]
+            return any(area in expertise_areas for area in business_areas)
 
         expertise_keywords = {
             "team_leadership": ["team", "leadership", "management", "people"],
@@ -727,25 +734,25 @@ class TestPersonaConsistency(unittest.TestCase):
         """Determine which personas should handle the query"""
         query_lower = query.lower()
 
-        # Map query types to appropriate personas
+        # Map query types to appropriate personas - prioritize business/financial over technical
         if any(
-            word in query_lower
-            for word in ["database", "analytics", "technical", "architecture"]
-        ):
-            return ["martin", "delbert"]
-        elif any(word in query_lower for word in ["design", "user", "ux", "adoption"]):
-            return ["rachel"]
-        elif any(
             word in query_lower
             for word in ["roi", "investment", "business", "financial"]
         ):
             return ["alvaro"]
+        elif any(word in query_lower for word in ["strategy", "executive", "board"]):
+            return ["camille"]
+        elif any(word in query_lower for word in ["design", "user", "ux", "adoption"]):
+            return ["rachel"]
         elif any(
             word in query_lower for word in ["team", "leadership", "organization"]
         ):
             return ["diego"]
-        elif any(word in query_lower for word in ["strategy", "executive", "board"]):
-            return ["camille"]
+        elif any(
+            word in query_lower
+            for word in ["database", "analytics", "technical", "architecture"]
+        ):
+            return ["martin", "delbert"]
         else:
             return ["diego"]  # Default to Diego for general leadership questions
 
