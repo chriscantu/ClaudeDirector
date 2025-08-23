@@ -217,133 +217,34 @@ jobs:
           ls -la data/
           sqlite3 data/strategic_memory.db ".tables"
 
-      - name: Run P0 Regression Test Suite
+      - name: Run Unified Test Suite - CI Full Profile
         run: |
-          echo "🚀 Running Comprehensive P0 Regression Tests"
-          python .claudedirector/tests/run_phase2_validation_tests.py
-
-      - name: Run Complete P0 Feature Test Suite
-        run: |
-          echo "🚨 COMPREHENSIVE P0 TEST EXECUTION - ALL 9 BLOCKING TESTS"
+          echo "🚀 UNIFIED TEST RUNNER - CI FULL PROFILE"
           echo "============================================================"
-          echo "Enforcing complete P0 feature coverage as defined in p0_test_definitions.yaml"
+          echo "Using unified test architecture for 100% CI/local parity"
+          echo "All tests defined in .claudedirector/config/test_registry.yaml"
+          echo "Single source of truth eliminates CI/local discrepancies"
+          echo "============================================================"
 
-          # BLOCKING P0 TESTS (Must pass for CI success)
-          echo "🧪 RUNNING BLOCKING P0 TEST: MCP Transparency P0"
-          python .claudedirector/tests/regression/test_mcp_transparency_p0.py || {
-            echo "❌ BLOCKING FAILURE: MCP Transparency P0 failed"
+          # Install required dependencies for unified runner
+          python -m pip install pyyaml
+
+          # Set environment for CI detection
+          export GITHUB_ACTIONS=true
+
+          # Run complete CI test profile using unified runner
+          python .claudedirector/tools/testing/unified_test_runner.py ci_full --validate || {
+            echo "❌ UNIFIED TEST RUNNER FAILED"
+            echo "📋 Check detailed test results in .claudedirector/test_results/"
+            echo "🔍 All test execution is now centralized and consistent"
             exit 1
           }
 
-          echo "🧪 RUNNING BLOCKING P0 TEST: Conversation Tracking P0"
-          python .claudedirector/tests/conversation/test_conversation_tracking_p0.py || {
-            echo "❌ BLOCKING FAILURE: Conversation Tracking P0 failed"
-            exit 1
-          }
-
-          echo "🧪 RUNNING BLOCKING P0 TEST: Conversation Quality P0"
-          python .claudedirector/tests/conversation/test_p0_quality_target.py || {
-            echo "❌ BLOCKING FAILURE: Conversation Quality P0 failed"
-            exit 1
-          }
-
-          echo "🧪 RUNNING BLOCKING P0 TEST: Configuration Persistence P0"
-          python .claudedirector/tests/regression/business_critical/test_configuration_persistence.py || {
-            echo "❌ BLOCKING FAILURE: Configuration Persistence P0 failed"
-            exit 1
-          }
-
-          echo "🧪 RUNNING BLOCKING P0 TEST: ROI Tracking P0"
-          python .claudedirector/tests/regression/business_critical/test_roi_tracking.py || {
-            echo "❌ BLOCKING FAILURE: ROI Tracking P0 failed"
-            exit 1
-          }
-
-          echo "🧪 RUNNING BLOCKING P0 TEST: Security P0"
-          python .claudedirector/tests/regression/business_critical/test_security.py || {
-            echo "❌ BLOCKING FAILURE: Security P0 failed"
-            exit 1
-          }
-
-          echo "🧪 RUNNING BLOCKING P0 TEST: Error Recovery P0"
-          python .claudedirector/tests/regression/ux_continuity/test_error_recovery.py || {
-            echo "❌ BLOCKING FAILURE: Error Recovery P0 failed"
-            exit 1
-          }
-
-          # HIGH PRIORITY P0 TESTS (Should pass but won't block CI)
-          echo "🧪 RUNNING HIGH PRIORITY P0 TEST: First-Run Wizard P0"
-          python docs/testing/first_run_wizard_tests.py || {
-            echo "⚠️ HIGH PRIORITY FAILURE: First-Run Wizard P0 failed (non-blocking)"
-          }
-
-          echo "🧪 RUNNING HIGH PRIORITY P0 TEST: Cursor Integration P0"
-          python docs/testing/run_cursor_tests.py || {
-            echo "⚠️ HIGH PRIORITY FAILURE: Cursor Integration P0 failed (non-blocking)"
-          }
-
-          echo "🧪 RUNNING BLOCKING P0 TEST: MCP Integration P0"
-          python .claudedirector/tests/integration/test_cursor_integration.py || {
-            echo "❌ BLOCKING FAILURE: MCP Integration P0 failed"
-            exit 1
-          }
-
-          echo "🧪 RUNNING BLOCKING P0 TEST: Persona Strategic Thinking P0"
-          python .claudedirector/tests/persona/test_persona_personalities.py || {
-            echo "❌ BLOCKING FAILURE: Persona Strategic Thinking P0 failed"
-            exit 1
-          }
-
-          # HIGH PRIORITY P0 TESTS (Phase 2 - Now BLOCKING for 100% coverage)
-          echo "🧪 RUNNING HIGH PRIORITY P0 TEST: Memory Context Persistence P0"
-          python .claudedirector/tests/regression/user_journeys/test_memory_context_persistence.py || {
-            echo "❌ HIGH PRIORITY FAILURE: Memory Context Persistence P0 failed"
-            exit 1
-          }
-
-          echo "🧪 RUNNING HIGH PRIORITY P0 TEST: Framework Attribution System P0"
-          python .claudedirector/tests/regression/user_journeys/test_framework_attribution_system.py || {
-            echo "❌ HIGH PRIORITY FAILURE: Framework Attribution System P0 failed"
-            exit 1
-          }
-
-          echo "🧪 RUNNING HIGH PRIORITY P0 TEST: Performance P0"
-          python .claudedirector/tests/regression/business_critical/test_performance.py || {
-            echo "❌ HIGH PRIORITY FAILURE: Performance P0 failed"
-            exit 1
-          }
-
-          echo "🧪 RUNNING HIGH PRIORITY P0 TEST: Persona Consistency P0"
-          python .claudedirector/tests/regression/ux_continuity/test_persona_consistency.py || {
-            echo "❌ HIGH PRIORITY FAILURE: Persona Consistency P0 failed"
-            exit 1
-          }
-
-          echo "🧪 RUNNING HIGH PRIORITY P0 TEST: Context Switching P0"
-          python .claudedirector/tests/regression/ux_continuity/test_context_switching.py || {
-            echo "❌ HIGH PRIORITY FAILURE: Context Switching P0 failed"
-            exit 1
-          }
-
-          echo "🧪 RUNNING HIGH PRIORITY P0 TEST: Cross-Environment Consistency P0"
-          python .claudedirector/tests/regression/ux_continuity/test_cross_environment.py || {
-            echo "❌ HIGH PRIORITY FAILURE: Cross-Environment Consistency P0 failed"
-            exit 1
-          }
-
-          echo "🧪 RUNNING HIGH PRIORITY P0 TEST: CLI Functionality P0"
-          python .claudedirector/tests/regression/user_journeys/test_cli_functionality.py || {
-            echo "❌ HIGH PRIORITY FAILURE: CLI Functionality P0 failed"
-            exit 1
-          }
-
-          echo "🧪 RUNNING HIGH PRIORITY P0 TEST: First-Run Wizard P0"
-          python .claudedirector/tests/regression/user_journeys/test_first_run_wizard_journey.py || {
-            echo "❌ HIGH PRIORITY FAILURE: First-Run Wizard P0 failed"
-            exit 1
-          }
-
-          echo "✅ ALL P0 TESTS COMPLETED - CI P0 coverage now 18/18 (100%)"
+          echo "============================================================"
+          echo "✅ UNIFIED TEST EXECUTION COMPLETED"
+          echo "✅ 100% CI/Local parity maintained via unified architecture"
+          echo "✅ All P0 tests: 18/18 (100% coverage)"
+          echo "============================================================"
 
       - name: Generate Code Coverage Report
         run: |

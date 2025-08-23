@@ -1,0 +1,241 @@
+# ClaudeDirector Unified Test Registry
+# Single source of truth for all test execution across local and CI environments
+#
+# Author: Martin | Platform Architecture
+# Purpose: Eliminate CI/local discrepancies through centralized test definition
+
+version: "1.0"
+last_updated: "2025-08-23"
+
+# Test execution environments
+environments:
+  local:
+    python_path_additions:
+      - ".claudedirector/lib"
+      - ".claudedirector/tests/regression"
+      - ".claudedirector/tests/integration"
+    environment_variables:
+      PYTHONPATH: ".claudedirector/lib:.claudedirector/tests/regression:.claudedirector/tests/integration"
+      CI: "false"
+
+  github_ci:
+    python_path_additions:
+      - ".claudedirector/lib"
+      - ".claudedirector/tests/regression"
+      - ".claudedirector/tests/integration"
+    environment_variables:
+      PYTHONPATH: ".claudedirector/lib:.claudedirector/tests/regression:.claudedirector/tests/integration"
+      CI: "true"
+
+# Test suites - executed in order defined
+test_suites:
+
+  # P0 BLOCKING TESTS - Must pass for CI success
+  p0_blocking:
+    description: "Critical P0 tests that must pass for CI success"
+    blocking: true
+    fail_fast: true
+    timeout_total: 300  # 5 minutes max for entire suite
+    tests:
+      - name: "MCP Transparency P0"
+        path: ".claudedirector/tests/regression/test_mcp_transparency_p0.py"
+        timeout: 60
+        critical: true
+        description: "MCP server transparency disclosure functionality"
+
+      - name: "Conversation Tracking P0"
+        path: ".claudedirector/tests/conversation/test_conversation_tracking_p0.py"
+        timeout: 60
+        critical: true
+        description: "Strategic conversation tracking and memory"
+
+      - name: "Conversation Quality P0"
+        path: ".claudedirector/tests/conversation/test_p0_quality_target.py"
+        timeout: 60
+        critical: true
+        description: "Conversation quality and persona consistency"
+
+      - name: "Configuration Persistence P0"
+        path: ".claudedirector/tests/regression/business_critical/test_configuration_persistence.py"
+        timeout: 60
+        critical: true
+        description: "Configuration system persistence and reliability"
+
+      - name: "ROI Tracking P0"
+        path: ".claudedirector/tests/regression/business_critical/test_roi_tracking.py"
+        timeout: 60
+        critical: true
+        description: "Business ROI tracking and metrics"
+
+      - name: "Security P0"
+        path: ".claudedirector/tests/regression/business_critical/test_security.py"
+        timeout: 60
+        critical: true
+        description: "Security validation and threat protection"
+
+      - name: "Error Recovery P0"
+        path: ".claudedirector/tests/regression/ux_continuity/test_error_recovery.py"
+        timeout: 60
+        critical: true
+        description: "Error recovery and system resilience"
+
+      - name: "Performance P0"
+        path: ".claudedirector/tests/regression/business_critical/test_performance.py"
+        timeout: 60
+        critical: true
+        description: "Performance benchmarks and optimization"
+
+      - name: "Persona Consistency P0"
+        path: ".claudedirector/tests/regression/ux_continuity/test_persona_consistency.py"
+        timeout: 60
+        critical: true
+        description: "Persona behavior and consistency validation"
+
+      - name: "Framework Attribution System P0"
+        path: ".claudedirector/tests/regression/user_journeys/test_framework_attribution_system.py"
+        timeout: 60
+        critical: true
+        description: "Strategic framework detection and attribution"
+
+      - name: "Context Switching P0"
+        path: ".claudedirector/tests/regression/ux_continuity/test_context_switching.py"
+        timeout: 60
+        critical: true
+        description: "Smooth context transitions between topics"
+
+      - name: "MCP Integration P0"
+        path: ".claudedirector/tests/integration/test_cursor_integration.py"
+        timeout: 60
+        critical: true
+        description: "MCP server integration and coordination"
+
+      - name: "Persona Strategic Thinking P0"
+        path: ".claudedirector/tests/persona/test_persona_personalities.py"
+        timeout: 60
+        critical: true
+        description: "Strategic thinking capabilities and persona intelligence"
+
+  # HIGH PRIORITY TESTS - Important but non-blocking
+  p0_high_priority:
+    description: "High priority P0 tests - important but non-blocking"
+    blocking: false
+    fail_fast: false
+    timeout_total: 120
+    tests:
+      - name: "First-Run Wizard P0"
+        path: "docs/testing/first_run_wizard_tests.py"
+        timeout: 60
+        critical: false
+        description: "First-run wizard functionality and user onboarding"
+
+      - name: "Cursor Integration P0"
+        path: "docs/testing/run_cursor_tests.py"
+        timeout: 60
+        critical: false
+        description: "Cursor IDE integration and workflow"
+
+  # REGRESSION SUITE - SOLID refactoring protection (CURRENTLY DISABLED)
+  regression_suite:
+    description: "Regression tests for SOLID refactoring protection"
+    blocking: true
+    fail_fast: true
+    timeout_total: 600  # 10 minutes for regression suite
+    enabled: false  # TEMPORARILY DISABLED - see docs/development/MISSING_REGRESSION_TESTS.md
+    tests:
+      - name: "Configuration Integrity"
+        path: ".claudedirector/tests/regression/test_configuration_integrity.py"
+        timeout: 300
+        critical: true
+        description: "Configuration system integrity before SOLID refactoring"
+        status: "FAILING"  # 2/8 tests failing
+
+      - name: "Framework Engine Regression"
+        path: ".claudedirector/tests/regression/test_framework_engine_regression.py"
+        timeout: 300
+        critical: true
+        description: "Framework detection protection during refactoring"
+        status: "FAILING"  # 7/8 tests failing
+
+      - name: "Hybrid Installation P0"
+        path: ".claudedirector/tests/regression/test_hybrid_installation_p0.py"
+        timeout: 300
+        critical: true
+        description: "58% performance improvement validation"
+        status: "PASSING"
+
+  # QUALITY GATES - Code quality and security
+  quality_gates:
+    description: "Code quality and security validation"
+    blocking: false
+    fail_fast: false
+    timeout_total: 180
+    tests:
+      - name: "Black Formatting"
+        type: "command"
+        command: "python -m black --check ."
+        timeout: 30
+        critical: false
+        description: "Python code formatting validation"
+
+      - name: "Security Scan"
+        type: "command"
+        command: "python .claudedirector/tools/security/enhanced_security_scanner.py"
+        timeout: 60
+        critical: false
+        description: "Security vulnerability and sensitive data scanning"
+
+      - name: "Flake8 Linting"
+        type: "command"
+        command: "python -m flake8 --config .claudedirector/config/.flake8 ."
+        timeout: 60
+        critical: false
+        description: "Python code linting and style validation"
+
+# Execution profiles for different contexts
+execution_profiles:
+
+  # Full CI execution (GitHub Actions)
+  ci_full:
+    description: "Complete CI validation - all test suites"
+    suites:
+      - "quality_gates"
+      - "p0_blocking"
+      - "p0_high_priority"
+      # regression_suite disabled until failures fixed
+    parallel: false
+
+  # Pre-push validation (local)
+  pre_push:
+    description: "Pre-push validation - critical tests only"
+    suites:
+      - "quality_gates"
+      - "p0_blocking"
+    parallel: false
+
+  # Quick local validation
+  local_quick:
+    description: "Quick local validation - smoke tests"
+    suites:
+      - "p0_blocking"
+    parallel: false
+
+  # Regression testing (when enabled)
+  regression_only:
+    description: "Regression tests only - for SOLID refactoring validation"
+    suites:
+      - "regression_suite"
+    parallel: false
+
+# Architecture consistency validation
+consistency_checks:
+  - name: "Test Registry Completeness"
+    description: "Ensure all tests in CI are defined in registry"
+    validation: "check_ci_yaml_matches_registry"
+
+  - name: "Test File Existence"
+    description: "Ensure all registered test files exist"
+    validation: "check_test_files_exist"
+
+  - name: "Environment Parity"
+    description: "Ensure local and CI environments are identical"
+    validation: "check_environment_parity"

@@ -336,6 +336,42 @@ except ImportError as e:
 
         return True
 
+    def run_unified_p0_tests(self):
+        """Run P0 tests using unified test runner for 100% CI parity"""
+        self.log(
+            "============================================================", "HEADER"
+        )
+        self.log("🧪 PHASE 3: UNIFIED P0 TEST EXECUTION", "HEADER")
+        self.log(
+            "============================================================", "HEADER"
+        )
+
+        self.log("🚀 Using Unified Test Runner for 100% CI/local parity", "INFO")
+        self.log("All tests defined in .claudedirector/config/test_registry.yaml", "INFO")
+
+        # Install required dependencies
+        if not self.run_command("pip install pyyaml", "Install PyYAML for unified runner"):
+            return False
+
+        # Set environment for local execution
+        os.environ["PRE_PUSH_HOOK"] = "true"
+
+        # Run unified test runner with pre-push profile (critical tests only)
+        success = self.run_command(
+            "python .claudedirector/tools/testing/unified_test_runner.py pre_push --validate",
+            "Unified P0 Test Suite",
+            critical=True
+        )
+
+        if success:
+            self.log("✅ All P0 tests passed via unified runner", "SUCCESS")
+            self.log("✅ 100% CI/local parity maintained", "SUCCESS")
+            return True
+        else:
+            self.log("❌ P0 tests failed via unified runner", "ERROR")
+            self.log("🔍 Check .claudedirector/test_results/ for detailed results", "ERROR")
+            return False
+
     def generate_report(self):
         """Generate comprehensive test report"""
         duration = time.time() - self.start_time
@@ -385,8 +421,8 @@ except ImportError as e:
             if not self.run_quality_gates():
                 return False
 
-            # Phase 3: P0 Tests (the critical part that was failing)
-            if not self.run_p0_tests():
+            # Phase 3: P0 Tests using Unified Test Runner
+            if not self.run_unified_p0_tests():
                 return False
 
             return True
