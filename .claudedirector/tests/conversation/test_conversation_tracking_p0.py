@@ -86,9 +86,9 @@ class TestConversationTrackingP0(unittest.TestCase):
                 test_session_id = "test_session_ci_validation"
                 cursor.execute(
                     """
-                    INSERT OR REPLACE INTO session_context 
-                    (session_id, session_type, conversation_thread, last_backup_timestamp, context_quality_score)
-                    VALUES (?, 'test', '[]', datetime('now'), 0.5)
+                    INSERT OR REPLACE INTO session_context
+                    (session_id, session_type, conversation_thread, last_backup_timestamp, session_start_timestamp, context_quality_score)
+                    VALUES (?, 'test', '[]', datetime('now'), datetime('now'), 0.5)
                     """,
                     (test_session_id,),
                 )
@@ -309,9 +309,9 @@ class TestConversationTrackingFunctionality(unittest.TestCase):
                 for session_id, conversation_data in test_sessions:
                     cursor.execute(
                         """
-                        INSERT OR REPLACE INTO session_context 
-                        (session_id, session_type, conversation_thread, last_backup_timestamp, context_quality_score)
-                        VALUES (?, 'test', ?, datetime('now'), 0.5)
+                        INSERT OR REPLACE INTO session_context
+                        (session_id, session_type, conversation_thread, last_backup_timestamp, session_start_timestamp, context_quality_score)
+                        VALUES (?, 'test', ?, datetime('now'), datetime('now'), 0.5)
                         """,
                         (session_id, conversation_data),
                     )
@@ -379,11 +379,11 @@ class TestConversationTrackingFunctionality(unittest.TestCase):
                 test_strategic_session = "test_strategic_session"
                 cursor.execute(
                     """
-                    INSERT OR REPLACE INTO session_context 
-                    (session_id, session_type, conversation_thread, last_backup_timestamp, 
+                    INSERT OR REPLACE INTO session_context
+                    (session_id, session_type, conversation_thread, last_backup_timestamp, session_start_timestamp,
                      context_quality_score, stakeholder_context, strategic_initiatives_context)
-                    VALUES (?, 'strategic', '[]', datetime('now'), 0.7, 
-                            '{"key_stakeholders": ["test_stakeholder"]}', 
+                    VALUES (?, 'strategic', '[]', datetime('now'), datetime('now'), 0.7,
+                            '{"key_stakeholders": ["test_stakeholder"]}',
                             '{"active_initiatives": ["test_initiative"]}')
                     """,
                     (test_strategic_session,),
@@ -462,9 +462,9 @@ class TestConversationTrackingFunctionality(unittest.TestCase):
                 for session_id, quality_score in test_quality_sessions:
                     cursor.execute(
                         """
-                        INSERT OR REPLACE INTO session_context 
-                        (session_id, session_type, conversation_thread, last_backup_timestamp, context_quality_score)
-                        VALUES (?, 'test', '[]', datetime('now'), ?)
+                        INSERT OR REPLACE INTO session_context
+                        (session_id, session_type, conversation_thread, last_backup_timestamp, session_start_timestamp, context_quality_score)
+                        VALUES (?, 'test', '[]', datetime('now'), datetime('now'), ?)
                         """,
                         (session_id, quality_score),
                     )
