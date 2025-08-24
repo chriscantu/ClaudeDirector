@@ -22,11 +22,11 @@ def setup_test_environment() -> Path:
     """
     # Find claudedirector root by walking up from current file
     current = Path(__file__).resolve()
-    while current.name != '.claudedirector' and current.parent != current:
+    while current.name != ".claudedirector" and current.parent != current:
         current = current.parent
 
-    if current.name == '.claudedirector':
-        lib_path = current / 'lib'
+    if current.name == ".claudedirector":
+        lib_path = current / "lib"
         if str(lib_path) not in sys.path:
             sys.path.insert(0, str(lib_path))
         return lib_path
@@ -48,40 +48,40 @@ def get_standard_imports():
     imports = {}
 
     try:
-        module = importlib.import_module('core.enhanced_persona_manager')
-        imports['EnhancedPersonaManager'] = getattr(module, 'EnhancedPersonaManager')
+        module = importlib.import_module("core.enhanced_persona_manager")
+        imports["EnhancedPersonaManager"] = getattr(module, "EnhancedPersonaManager")
     except (ImportError, AttributeError) as e:
-        imports['EnhancedPersonaManager'] = None
+        imports["EnhancedPersonaManager"] = None
 
     try:
-        module = importlib.import_module('integrations.mcp_use_client')
-        imports['MCPClient'] = getattr(module, 'MCPUseClient')
+        module = importlib.import_module("integrations.mcp_use_client")
+        imports["MCPClient"] = getattr(module, "MCPUseClient")
     except (ImportError, AttributeError):
-        imports['MCPClient'] = None
+        imports["MCPClient"] = None
 
     try:
-        module = importlib.import_module('transparency.framework_detection')
-        imports['FrameworkDetector'] = getattr(module, 'FrameworkDetectionMiddleware')
+        module = importlib.import_module("transparency.framework_detection")
+        imports["FrameworkDetector"] = getattr(module, "FrameworkDetectionMiddleware")
     except (ImportError, AttributeError):
-        imports['FrameworkDetector'] = None
+        imports["FrameworkDetector"] = None
 
     try:
-        module = importlib.import_module('core.complexity_analyzer')
-        imports['ComplexityAnalyzer'] = getattr(module, 'AnalysisComplexityDetector')
+        module = importlib.import_module("core.complexity_analyzer")
+        imports["ComplexityAnalyzer"] = getattr(module, "AnalysisComplexityDetector")
     except (ImportError, AttributeError):
-        imports['ComplexityAnalyzer'] = None
+        imports["ComplexityAnalyzer"] = None
 
     try:
-        module = importlib.import_module('transparency.integrated_transparency')
-        imports['TransparencyEngine'] = getattr(module, 'IntegratedTransparencySystem')
+        module = importlib.import_module("transparency.integrated_transparency")
+        imports["TransparencyEngine"] = getattr(module, "IntegratedTransparencySystem")
     except (ImportError, AttributeError):
-        imports['TransparencyEngine'] = None
+        imports["TransparencyEngine"] = None
 
     try:
-        module = importlib.import_module('core.config')
-        imports['Config'] = getattr(module, 'ClaudeDirectorConfig')
+        module = importlib.import_module("core.config")
+        imports["Config"] = getattr(module, "ClaudeDirectorConfig")
     except (ImportError, AttributeError):
-        imports['Config'] = None
+        imports["Config"] = None
 
     return imports
 
@@ -94,28 +94,28 @@ def validate_test_environment() -> dict:
         dict: Validation results with status and available modules
     """
     results = {
-        'environment_setup': False,
-        'lib_path': None,
-        'available_modules': {},
-        'missing_modules': [],
-        'errors': []
+        "environment_setup": False,
+        "lib_path": None,
+        "available_modules": {},
+        "missing_modules": [],
+        "errors": [],
     }
 
     try:
         lib_path = setup_test_environment()
-        results['environment_setup'] = True
-        results['lib_path'] = str(lib_path)
+        results["environment_setup"] = True
+        results["lib_path"] = str(lib_path)
     except ImportError as e:
-        results['errors'].append(f"Environment setup failed: {e}")
+        results["errors"].append(f"Environment setup failed: {e}")
         return results
 
     # Test standard imports
     imports = get_standard_imports()
     for name, module in imports.items():
         if module is not None:
-            results['available_modules'][name] = str(type(module))
+            results["available_modules"][name] = str(type(module))
         else:
-            results['missing_modules'].append(name)
+            results["missing_modules"].append(name)
 
     return results
 
@@ -147,16 +147,20 @@ def safe_import(module_path: str, class_name: Optional[str] = None):
 # Convenience functions for common test patterns
 def require_test_environment():
     """Decorator to ensure test environment is set up before test execution"""
+
     def decorator(test_func):
         def wrapper(*args, **kwargs):
             setup_test_environment()
             return test_func(*args, **kwargs)
+
         return wrapper
+
     return decorator
 
 
 def skip_if_missing(*required_modules):
     """Decorator to skip test if required modules are not available"""
+
     def decorator(test_func):
         def wrapper(*args, **kwargs):
             imports = get_standard_imports()
@@ -165,7 +169,9 @@ def skip_if_missing(*required_modules):
                 print(f"⏭️ Skipping test: Missing modules {missing}")
                 return
             return test_func(*args, **kwargs)
+
         return wrapper
+
     return decorator
 
 
@@ -178,15 +184,17 @@ if __name__ == "__main__":
     print(f"Environment setup: {'✅' if results['environment_setup'] else '❌'}")
     print(f"Lib path: {results['lib_path']}")
 
-    if results['available_modules']:
+    if results["available_modules"]:
         print("\n✅ Available modules:")
-        for name, type_info in results['available_modules'].items():
+        for name, type_info in results["available_modules"].items():
             print(f"  • {name}: {type_info}")
 
-    if results['missing_modules']:
+    if results["missing_modules"]:
         print(f"\n⚠️ Missing modules: {', '.join(results['missing_modules'])}")
 
-    if results['errors']:
+    if results["errors"]:
         print(f"\n❌ Errors: {', '.join(results['errors'])}")
 
-    print(f"\n🎯 Test environment {'ready' if results['environment_setup'] else 'needs setup'}")
+    print(
+        f"\n🎯 Test environment {'ready' if results['environment_setup'] else 'needs setup'}"
+    )

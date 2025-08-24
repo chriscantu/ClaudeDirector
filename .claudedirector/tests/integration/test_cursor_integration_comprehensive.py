@@ -13,7 +13,11 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "lib"))
 
 # Import standardized test utilities
-from test_utils.imports import setup_test_environment, get_standard_imports, validate_test_environment
+from test_utils.imports import (
+    setup_test_environment,
+    get_standard_imports,
+    validate_test_environment,
+)
 
 
 def print_header(title: str):
@@ -138,7 +142,7 @@ How should we approach this systematically?""",
         imports = get_standard_imports()
 
         # Check that required modules are available
-        required = ['MCPClient', 'FrameworkDetector', 'ComplexityAnalyzer']
+        required = ["MCPClient", "FrameworkDetector", "ComplexityAnalyzer"]
         missing = [mod for mod in required if imports.get(mod) is None]
 
         if missing:
@@ -148,9 +152,9 @@ How should we approach this systematically?""",
 
         # Test basic initialization
         try:
-            imports['MCPClient']()
-            imports['FrameworkDetector']()
-            imports['ComplexityAnalyzer']()
+            imports["MCPClient"]()
+            imports["FrameworkDetector"]()
+            imports["ComplexityAnalyzer"]()
             print("  ✓ All components initialize successfully")
         except Exception as e:
             raise Exception(f"Failed to initialize components: {e}")
@@ -161,12 +165,12 @@ How should we approach this systematically?""",
         """Test framework detection functionality"""
         imports = get_standard_imports()
 
-        if imports.get('FrameworkDetector') is None:
+        if imports.get("FrameworkDetector") is None:
             print("  ⚠ Framework detection not available (optional)")
             return
 
         try:
-            detector = imports['FrameworkDetector']()
+            detector = imports["FrameworkDetector"]()
 
             # Test basic detection
             test_cases = [
@@ -202,11 +206,11 @@ How should we approach this systematically?""",
         """Test complexity analysis functionality"""
         imports = get_standard_imports()
 
-        if imports.get('ComplexityAnalyzer') is None:
+        if imports.get("ComplexityAnalyzer") is None:
             raise Exception("Complexity analyzer not available")
 
         try:
-            analyzer = imports['ComplexityAnalyzer']()
+            analyzer = imports["ComplexityAnalyzer"]()
 
             # Import AnalysisComplexity from the module
             from core.complexity_analyzer import AnalysisComplexity
@@ -245,12 +249,12 @@ How should we approach this systematically?""",
         """Test transparency engine functionality"""
         imports = get_standard_imports()
 
-        if imports.get('TransparencyEngine') is None:
+        if imports.get("TransparencyEngine") is None:
             print("  ⚠ Transparency engine not available (optional)")
             return
 
         try:
-            engine = imports['TransparencyEngine']()
+            engine = imports["TransparencyEngine"]()
 
             # Test persona disclosure
             persona_disclosure = engine.generate_persona_disclosure(
