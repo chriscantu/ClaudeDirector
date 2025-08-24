@@ -406,7 +406,9 @@ class TestHybridInstallationIntegration(unittest.TestCase):
 
         except ImportError as e:
             # P0 TEST: Hybrid installation manager must be available
-            self.fail(f"P0 TEST FAILURE: Hybrid installation manager must be available: {e}")
+            self.fail(
+                f"P0 TEST FAILURE: Hybrid installation manager must be available: {e}"
+            )
 
 
 def run_hybrid_installation_p0_tests():
