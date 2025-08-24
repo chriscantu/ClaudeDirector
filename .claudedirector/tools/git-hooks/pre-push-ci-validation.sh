@@ -213,76 +213,17 @@ echo '✅ ALL REGRESSION TESTS PASSED - COMMIT APPROVED'
 
 # 8. P0 Feature Test Suite
 run_step "P0 Feature Test Suite" "
-echo '🚨 COMPREHENSIVE P0 TEST EXECUTION - ALL 7 P0 TESTS'
-echo 'Enforcing complete P0 feature coverage as defined in p0_test_definitions.yaml'
+echo '🚨 UNIFIED P0 TEST EXECUTION - ALL 18 P0 TESTS'
+echo 'Using unified test runner with YAML configuration for complete P0 coverage'
 
-# BLOCKING P0 TESTS (Must pass for CI success)
-echo '🧪 RUNNING BLOCKING P0 TEST: MCP Transparency P0'
-timeout 120 python .claudedirector/tests/regression/test_mcp_transparency_p0.py > /dev/null 2>&1 || (
-    echo '❌ BLOCKING FAILURE: MCP Transparency P0 failed'
+# Use the unified P0 test runner (single source of truth)
+timeout 300 python .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py || (
+    echo '❌ UNIFIED P0 TEST RUNNER FAILED'
+    echo '🛠️ Run manually: python .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py'
     exit 1
 )
 
-echo '🧪 RUNNING BLOCKING P0 TEST: Conversation Tracking P0'
-timeout 120 python .claudedirector/tests/conversation/test_conversation_tracking_p0.py > /dev/null 2>&1 || (
-    echo '❌ BLOCKING FAILURE: Conversation Tracking P0 failed'
-    exit 1
-)
-
-echo '🧪 RUNNING BLOCKING P0 TEST: Conversation Quality P0'
-timeout 120 python .claudedirector/tests/conversation/test_p0_quality_target.py > /dev/null 2>&1 || (
-    echo '❌ BLOCKING FAILURE: Conversation Quality P0 failed'
-    exit 1
-)
-
-# HIGH PRIORITY P0 TESTS (Should pass but won't block CI)
-echo '🧪 RUNNING HIGH PRIORITY P0 TEST: First-Run Wizard P0'
-timeout 60 python docs/testing/first_run_wizard_tests.py > /dev/null 2>&1 || (
-    echo '⚠️ HIGH PRIORITY FAILURE: First-Run Wizard P0 failed (non-blocking)'
-)
-
-echo '🧪 RUNNING HIGH PRIORITY P0 TEST: Cursor Integration P0'
-timeout 60 python docs/testing/run_cursor_tests.py > /dev/null 2>&1 || (
-    echo '⚠️ HIGH PRIORITY FAILURE: Cursor Integration P0 failed (non-blocking)'
-)
-
-echo '🧪 RUNNING BLOCKING P0 TEST: MCP Integration P0'
-timeout 120 python .claudedirector/tests/integration/test_cursor_integration.py > /dev/null 2>&1 || (
-    echo '❌ BLOCKING FAILURE: MCP Integration P0 failed'
-    exit 1
-)
-
-echo '🧪 RUNNING BLOCKING P0 TEST: Persona Strategic Thinking P0'
-timeout 120 python .claudedirector/tests/persona/test_persona_personalities.py > /dev/null 2>&1 || (
-    echo '❌ BLOCKING FAILURE: Persona Strategic Thinking P0 failed'
-    exit 1
-)
-
-echo '🧪 RUNNING BLOCKING P0 TEST: Configuration Persistence P0'
-timeout 120 python .claudedirector/tests/regression/business_critical/test_configuration_persistence.py > /dev/null 2>&1 || (
-    echo '❌ BLOCKING FAILURE: Configuration Persistence P0 failed'
-    exit 1
-)
-
-echo '🧪 RUNNING BLOCKING P0 TEST: ROI Tracking P0'
-timeout 180 python .claudedirector/tests/regression/business_critical/test_roi_tracking.py > /dev/null 2>&1 || (
-    echo '❌ BLOCKING FAILURE: ROI Tracking P0 failed'
-    exit 1
-)
-
-echo '🧪 RUNNING BLOCKING P0 TEST: Security P0'
-timeout 240 python .claudedirector/tests/regression/business_critical/test_security.py > /dev/null 2>&1 || (
-    echo '❌ BLOCKING FAILURE: Security P0 failed'
-    exit 1
-)
-
-echo '🧪 RUNNING BLOCKING P0 TEST: Error Recovery P0'
-timeout 150 python .claudedirector/tests/regression/ux_continuity/test_error_recovery.py > /dev/null 2>&1 || (
-    echo '❌ BLOCKING FAILURE: Error Recovery P0 failed'
-    exit 1
-)
-
-echo '✅ ALL P0 TESTS COMPLETED - CI P0 coverage now 11/18 (61%)'
+echo '✅ ALL P0 TESTS COMPLETED - Unified test runner validation passed (18/18 tests)'
 "
 
 # 8. P0 CI Coverage Validation
