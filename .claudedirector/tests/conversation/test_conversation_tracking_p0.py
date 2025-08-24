@@ -204,8 +204,8 @@ class TestConversationTrackingP0(unittest.TestCase):
             # Check if there's a fallback or alternative implementation
             self.fail(f"Conversation manager must be importable: {e}")
         except Exception as e:
-            # Allow initialization failures but warn
-            self.skipTest(f"Conversation manager not fully available: {e}")
+            # P0 TEST: Conversation manager must initialize successfully
+            self.fail(f"Conversation manager must initialize successfully: {e}")
 
     def test_p0_session_lifecycle_support(self):
         """P0 TEST: Session lifecycle operations must be supported"""
@@ -270,8 +270,10 @@ class TestConversationTrackingFunctionality(unittest.TestCase):
                             f"Conversation data must be preserved for session {session_id[:12]}",
                         )
             else:
-                self.skipTest(
-                    "Need at least 2 sessions with conversation data to test persistence"
+                # P0 TEST: Must have sufficient test data for persistence validation
+                self.fail(
+                    "P0 TEST FAILURE: Need at least 2 sessions with conversation data to test persistence. "
+                    "Test environment must be properly initialized with required data."
                 )
 
     def test_strategic_context_preservation(self):
@@ -307,8 +309,10 @@ class TestConversationTrackingFunctionality(unittest.TestCase):
                                 f"⚠️ Warning: No strategic context found for session {session_id[:12]}"
                             )
             else:
-                self.skipTest(
-                    "No strategic sessions found to test context preservation"
+                # P0 TEST: Must have strategic sessions for context preservation testing
+                self.fail(
+                    "P0 TEST FAILURE: No strategic sessions found to test context preservation. "
+                    "Test environment must contain strategic conversation data."
                 )
 
     def test_conversation_quality_improvement(self):
@@ -346,7 +350,11 @@ class TestConversationTrackingFunctionality(unittest.TestCase):
                 print(f"   Range: {min_quality:.2f} - {max_quality:.2f}")
                 print(f"   Total Sessions: {total_sessions}")
             else:
-                self.skipTest("No sessions with quality scores to analyze")
+                # P0 TEST: Must have quality data for conversation improvement testing
+                self.fail(
+                    "P0 TEST FAILURE: No sessions with quality scores to analyze. "
+                    "Test environment must contain conversation quality data."
+                )
 
 
 def run_conversation_tracking_tests():

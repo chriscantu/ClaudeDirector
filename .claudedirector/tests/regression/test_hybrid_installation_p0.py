@@ -365,7 +365,8 @@ class TestHybridInstallationIntegration(unittest.TestCase):
                     print("✅ Configuration system integration verified")
 
         except ImportError as e:
-            self.skipTest(f"Configuration system not available: {e}")
+            # P0 TEST: Configuration system must be available
+            self.fail(f"P0 TEST FAILURE: Configuration system must be available: {e}")
 
     def test_real_performance_characteristics(self):
         """Test real performance characteristics (when npx available)"""
@@ -404,7 +405,8 @@ class TestHybridInstallationIntegration(unittest.TestCase):
                         print("⚠️ npx not available - skipping real performance test")
 
         except ImportError as e:
-            self.skipTest(f"Hybrid installation manager not available: {e}")
+            # P0 TEST: Hybrid installation manager must be available
+            self.fail(f"P0 TEST FAILURE: Hybrid installation manager must be available: {e}")
 
 
 def run_hybrid_installation_p0_tests():
