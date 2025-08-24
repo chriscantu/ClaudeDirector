@@ -10,9 +10,8 @@ import ast
 import sys
 import re
 from pathlib import Path
-from typing import List, Dict, Any, Set
+from typing import List, Set
 from dataclasses import dataclass
-from collections import defaultdict
 
 
 @dataclass

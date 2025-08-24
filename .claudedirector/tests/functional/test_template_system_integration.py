@@ -11,7 +11,6 @@ import os
 import yaml
 from pathlib import Path
 import subprocess
-import json
 
 import sys
 

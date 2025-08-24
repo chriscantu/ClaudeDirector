@@ -7,10 +7,8 @@ Ensures backwards compatibility and validates AI enhancements.
 
 import pytest
 import tempfile
-import shutil
 from pathlib import Path
-from typing import Dict, List, Any
-from unittest.mock import MagicMock, patch
+from typing import Dict, Any
 
 # Import existing ClaudeDirector components to ensure compatibility
 import sys
@@ -20,11 +18,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from memory.optimized_db_manager import get_db_manager
 from lib.claudedirector.p0_features.shared.ai_pipeline.ai_base import (
     AIModelConfig,
-    AIEngineBase,
-)
-from lib.claudedirector.p0_features.shared.database_manager.db_base import (
-    DatabaseConfig,
-    QueryContext,
 )
 
 

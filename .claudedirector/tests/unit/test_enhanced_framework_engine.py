@@ -6,16 +6,13 @@ Ensures backwards compatibility and zero-setup principles.
 """
 
 import unittest
-from unittest.mock import Mock, patch, MagicMock
-import time
-from typing import Dict, List, Any
+from unittest.mock import Mock, patch
 
 # Import the enhanced framework engine
 from claudedirector.core.enhanced_framework_engine import (
     EnhancedFrameworkEngine,
     ConversationMemoryEngine,
     MultiFrameworkIntegrationEngine,
-    ConversationContext,
     MultiFrameworkAnalysis,
     EnhancedSystematicResponse,
 )
@@ -461,7 +458,7 @@ class TestBackwardsCompatibility(unittest.TestCase):
         # Create a mock enhanced response
         from unittest.mock import Mock
 
-        enhanced_response = Mock()
+        Mock()
 
         for attr in enhanced_response_attributes:
             self.assertTrue(hasattr(EnhancedSystematicResponse, "__annotations__"))
@@ -508,8 +505,6 @@ class TestZeroSetupPrinciple(unittest.TestCase):
 
         # Should not require file system operations for basic functionality
         # (workspace file generation is optional enhancement)
-        user_input = "Test strategic analysis"
-        session_id = "zero_setup_test"
 
         # This should work without any file system setup
         try:

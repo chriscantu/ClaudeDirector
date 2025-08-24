@@ -288,7 +288,7 @@ class DecisionIntelligenceEngine(AIEngineBase):
         self, decision: Dict[str, Any], text: str
     ) -> Dict[str, Any]:
         """Track decision through lifecycle stages"""
-        decision_text = decision["decision_text"].lower()
+        decision["decision_text"].lower()
         context = decision["full_context"].lower()
 
         # Determine decision stage

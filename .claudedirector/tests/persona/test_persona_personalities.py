@@ -6,7 +6,6 @@ Validates that persona personalities, challenge patterns, and strategic pushback
 
 import unittest
 import sys
-import os
 from pathlib import Path
 
 # Add project root to path

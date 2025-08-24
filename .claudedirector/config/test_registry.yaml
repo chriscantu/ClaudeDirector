@@ -27,6 +27,15 @@ environments:
       PYTHONPATH: ".claudedirector/lib:.claudedirector/tests/regression:.claudedirector/tests/integration"
       CI: "true"
 
+  pre_push:
+    python_path_additions:
+      - ".claudedirector/lib"
+      - ".claudedirector/tests/regression"
+      - ".claudedirector/tests/integration"
+    environment_variables:
+      PYTHONPATH: ".claudedirector/lib:.claudedirector/tests/regression:.claudedirector/tests/integration"
+      CI: "false"
+
 # Test suites - executed in order defined
 test_suites:
 
@@ -123,13 +132,13 @@ test_suites:
     timeout_total: 120
     tests:
       - name: "First-Run Wizard P0"
-        path: "docs/testing/first_run_wizard_tests.py"
+        path: ".claudedirector/tests/integration/test_first_run_wizard_comprehensive.py"
         timeout: 60
         critical: false
         description: "First-run wizard functionality and user onboarding"
 
       - name: "Cursor Integration P0"
-        path: "docs/testing/run_cursor_tests.py"
+        path: ".claudedirector/tests/integration/test_cursor_integration_comprehensive.py"
         timeout: 60
         critical: false
         description: "Cursor IDE integration and workflow"

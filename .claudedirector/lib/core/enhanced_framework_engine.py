@@ -1077,7 +1077,7 @@ class EnhancedFrameworkEngine:
 
         # Integrate persona characteristics if provided
         if persona_context:
-            persona_name = persona_context.get("name", "Strategic Advisor")
+            persona_context.get("name", "Strategic Advisor")
             persona_style = persona_context.get("communication_style", "professional")
 
             if persona_style == "collaborative":

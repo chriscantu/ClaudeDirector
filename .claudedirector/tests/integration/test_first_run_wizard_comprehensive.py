@@ -6,7 +6,6 @@ Validates wizard functionality, Cursor integration, and user experience.
 
 import sys
 import tempfile
-import json
 from pathlib import Path
 
 # Add lib directory to path
@@ -19,11 +18,9 @@ try:
         OrganizationType,
         ChallengeFocus,
         RolePersonaMapper,
-        create_first_run_wizard,
     )
     from claudedirector.core.cursor_wizard_integration import (
         CursorWizardIntegration,
-        initialize_cursor_integration,
         process_cursor_input,
     )
 

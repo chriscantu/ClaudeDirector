@@ -6,7 +6,6 @@ import os
 import tempfile
 from pathlib import Path
 
-import pytest
 from claudedirector.core.config import ClaudeDirectorConfig
 
 

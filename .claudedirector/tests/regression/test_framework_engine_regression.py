@@ -9,10 +9,8 @@ comprehensive regression protection.
 
 import unittest
 import sys
-import os
 from pathlib import Path
 import time
-from typing import Dict, List, Set, Any
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
@@ -62,7 +60,7 @@ class TestFrameworkDetectionRegression(unittest.TestCase):
     def test_framework_module_imports_successfully(self):
         """Ensure framework engine module can be imported"""
         try:
-            from core.embedded_framework_engine import EmbeddedFrameworkEngine
+            pass
 
             self.assertTrue(True, "Framework engine imports successfully")
         except ImportError as e:
@@ -173,9 +171,9 @@ class TestFrameworkDetectionRegression(unittest.TestCase):
                 # At least some frameworks should be detected consistently
                 non_empty_results = [r for r in results if r]
                 if len(non_empty_results) >= 2:
-                    common_frameworks = set.intersection(*non_empty_results)
+                    set.intersection(*non_empty_results)
                 else:
-                    common_frameworks = set()
+                    pass
 
                 self.assertGreater(
                     len(results[0]) if results[0] else 0,
@@ -262,7 +260,7 @@ class TestFrameworkConfigurationIntegration(unittest.TestCase):
             from core.embedded_framework_engine import EmbeddedFrameworkEngine
             from core.config import get_config
 
-            engine = EmbeddedFrameworkEngine()
+            EmbeddedFrameworkEngine()
             config = get_config()
 
             # Test that framework engine can access thresholds

@@ -7,8 +7,6 @@ Validates session context preservation and recovery functionality
 import os
 import sys
 import tempfile
-import json
-from datetime import datetime
 
 # Add lib directory to Python path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -195,7 +193,7 @@ def test_session_recovery_simulation():
             print(f"✅ Context validation: {len(gaps)} gaps detected")
 
             if gaps:
-                prompt = manager2.get_context_recovery_prompt()
+                manager2.get_context_recovery_prompt()
                 print("✅ Recovery prompt generated successfully")
             else:
                 print("✅ Complete context preservation achieved")

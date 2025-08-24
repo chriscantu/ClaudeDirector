@@ -9,7 +9,6 @@ Integration with pre-push hook ensures these tests cannot be circumvented.
 """
 
 import sys
-import os
 import time
 from pathlib import Path
 import subprocess

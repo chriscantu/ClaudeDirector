@@ -23,10 +23,8 @@ import os
 import unittest
 import tempfile
 import subprocess
-import json
 import shutil
 from pathlib import Path
-from unittest.mock import patch, MagicMock
 
 # Add the ClaudeDirector lib to path for testing
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../lib"))
@@ -519,7 +517,7 @@ class TestCLIErrorHandling(unittest.TestCase):
                 result.returncode, "CLI should handle missing dependencies gracefully"
             )
 
-        except Exception as e:
+        except Exception:
             # If test fails, that's OK - it means we found an edge case
             pass
 
@@ -552,7 +550,7 @@ class TestCLIErrorHandling(unittest.TestCase):
             # Clean up
             shutil.rmtree(test_dir, ignore_errors=True)
 
-        except Exception as e:
+        except Exception:
             # If test fails, that's OK - it means we found an edge case
             pass
 
@@ -584,7 +582,7 @@ class TestCLIErrorHandling(unittest.TestCase):
                 process.returncode, "CLI should handle interruption gracefully"
             )
 
-        except Exception as e:
+        except Exception:
             # If test fails, that's OK - means CLI is robust or we found an edge case
             pass
 

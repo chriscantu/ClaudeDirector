@@ -4,9 +4,7 @@ Strategic Scenario Demo: Real Director Workflow
 Demonstrates ClaudeDirector value through realistic usage patterns
 """
 
-import os
 import subprocess
-import tempfile
 import time
 from pathlib import Path
 
@@ -395,7 +393,7 @@ def main():
     demo.setup_demo_environment()
 
     # Run strategic scenario
-    results = demo.run_strategic_scenario()
+    demo.run_strategic_scenario()
 
     print(f"\n📁 Demo meeting content created in workspace/meeting-prep/")
     print(

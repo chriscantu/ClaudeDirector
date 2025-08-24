@@ -20,8 +20,6 @@ import sys
 import os
 import unittest
 import tempfile
-import time
-from pathlib import Path
 from datetime import datetime, timedelta
 
 # Add the ClaudeDirector lib to path for testing
@@ -209,7 +207,7 @@ class TestFrameworkRecommendations(unittest.TestCase):
 
             # Generate usage data from recommendation scenarios
             for i, scenario in enumerate(self.recommendation_scenarios * 3):  # 3 rounds
-                query = f"Strategic question {i} related to {scenario['user_context']['recent_topics'][0]}"
+                f"Strategic question {i} related to {scenario['user_context']['recent_topics'][0]}"
 
                 # Simulate detected frameworks based on context
                 detected_frameworks = self._simulate_framework_detection(

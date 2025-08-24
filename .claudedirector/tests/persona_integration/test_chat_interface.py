@@ -5,7 +5,7 @@ Tests for the persona chat interface and P2.1 integration.
 """
 
 import unittest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 from lib.claudedirector.persona_integration.chat_interface import (
     PersonaChatInterface,
     ChatRequest,

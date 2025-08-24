@@ -5,16 +5,12 @@ Tests real-world director workflows to ensure ClaudeDirector meets executive nee
 """
 
 import json
-import os
-import sqlite3
 import subprocess
 import tempfile
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
-
-import pytest
 
 
 class StrategicUsageValidator:

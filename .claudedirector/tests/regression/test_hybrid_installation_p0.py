@@ -9,7 +9,6 @@ never breaks the core zero setup functionality.
 
 import unittest
 import sys
-import os
 import tempfile
 import json
 import time

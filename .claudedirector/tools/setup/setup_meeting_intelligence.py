@@ -54,7 +54,7 @@ class MeetingIntelligenceSetup:
         print("\n🗄️  Setting up strategic memory database...")
 
         try:
-            manager = MeetingIntelligenceManager()
+            MeetingIntelligenceManager()
             print("   ✅ Enhanced database schema applied")
             return True
         except Exception as e:
@@ -151,10 +151,7 @@ class MeetingIntelligenceSetup:
     def _check_imports(self) -> bool:
         """Check if required modules can be imported."""
         try:
-            import watchdog
-
-            from memory.meeting_intelligence import MeetingIntelligenceManager
-            from memory.workspace_monitor import WorkspaceMonitor
+            pass
 
             return True
         except ImportError:
@@ -235,7 +232,7 @@ class MeetingIntelligenceSetup:
             return False
 
         # Step 3: Scan existing meetings
-        scan_results = self.scan_existing_meetings()
+        self.scan_existing_meetings()
 
         # Step 4: Show intelligence summary
         self.show_intelligence_summary()

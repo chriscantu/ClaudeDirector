@@ -14,7 +14,7 @@ import time
 import yaml
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Any, Tuple
+from typing import Dict, Any
 
 import sys
 import os
@@ -198,7 +198,6 @@ class ChatInterfaceSimulator:
 
         director_changes = 0
         directors_used = set()
-        total_processing_time = 0
 
         last_director = None
         for entry in self.conversation_history:

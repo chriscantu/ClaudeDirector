@@ -5,7 +5,6 @@ Validates that .cursorrules integration works in live Cursor conversations
 """
 
 import sys
-import os
 import unittest
 from pathlib import Path
 
@@ -171,7 +170,7 @@ This approach balances technical excellence with organizational dynamics."""
         response = "Strategic framework development requires systematic analysis..."
 
         start_time = time.time()
-        enhanced = ensure_transparency_compliance(response, user_input)
+        ensure_transparency_compliance(response, user_input)
         summary = get_transparency_summary(response, user_input)
         end_time = time.time()
 
@@ -193,7 +192,7 @@ This approach balances technical excellence with organizational dynamics."""
         """Validate that implementation exactly matches .cursorrules specification"""
 
         # Read complexity indicators from bridge
-        bridge = CursorTransparencyBridge()
+        CursorTransparencyBridge()
 
         # Test a complex strategic question
         user_input = "How should we develop a strategic organizational framework for complex multi-team platform architecture assessment with executive presentation?"

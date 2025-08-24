@@ -203,7 +203,7 @@ def test_performance():
     times = []
     for i in range(10):
         start_time = time.time()
-        enhanced = ensure_transparency_compliance(response, user_input)
+        ensure_transparency_compliance(response, user_input)
         end_time = time.time()
         times.append(end_time - start_time)
 

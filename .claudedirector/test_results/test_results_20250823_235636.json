@@ -1,0 +1,138 @@
+{
+  "timestamp": "20250823_235636",
+  "environment": "pre_push",
+  "duration": 24.881598949432373,
+  "overall_success": true,
+  "suites": [
+    {
+      "name": "quality_gates",
+      "description": "Code quality and security validation",
+      "status": "passed",
+      "duration": 1.3543741703033447,
+      "blocking": false,
+      "tests": [
+        {
+          "name": "Black Formatting",
+          "status": "passed",
+          "duration": 0.3040299415588379,
+          "critical": false,
+          "error": null
+        },
+        {
+          "name": "Security Scan",
+          "status": "passed",
+          "duration": 0.05433511734008789,
+          "critical": false,
+          "error": null
+        },
+        {
+          "name": "Flake8 Linting",
+          "status": "passed",
+          "duration": 0.9958171844482422,
+          "critical": false,
+          "error": null
+        }
+      ]
+    },
+    {
+      "name": "p0_blocking",
+      "description": "Critical P0 tests that must pass for CI success",
+      "status": "passed",
+      "duration": 23.526835203170776,
+      "blocking": true,
+      "tests": [
+        {
+          "name": "MCP Transparency P0",
+          "status": "passed",
+          "duration": 0.04884505271911621,
+          "critical": true,
+          "error": null
+        },
+        {
+          "name": "Conversation Tracking P0",
+          "status": "passed",
+          "duration": 0.14243507385253906,
+          "critical": true,
+          "error": null
+        },
+        {
+          "name": "Conversation Quality P0",
+          "status": "passed",
+          "duration": 0.12210297584533691,
+          "critical": true,
+          "error": null
+        },
+        {
+          "name": "Configuration Persistence P0",
+          "status": "passed",
+          "duration": 0.048409223556518555,
+          "critical": true,
+          "error": null
+        },
+        {
+          "name": "ROI Tracking P0",
+          "status": "passed",
+          "duration": 0.043231964111328125,
+          "critical": true,
+          "error": null
+        },
+        {
+          "name": "Security P0",
+          "status": "passed",
+          "duration": 0.052488088607788086,
+          "critical": true,
+          "error": null
+        },
+        {
+          "name": "Error Recovery P0",
+          "status": "passed",
+          "duration": 0.04054689407348633,
+          "critical": true,
+          "error": null
+        },
+        {
+          "name": "Performance P0",
+          "status": "passed",
+          "duration": 22.781041860580444,
+          "critical": true,
+          "error": null
+        },
+        {
+          "name": "Persona Consistency P0",
+          "status": "passed",
+          "duration": 0.06134605407714844,
+          "critical": true,
+          "error": null
+        },
+        {
+          "name": "Framework Attribution System P0",
+          "status": "passed",
+          "duration": 0.05335116386413574,
+          "critical": true,
+          "error": null
+        },
+        {
+          "name": "Context Switching P0",
+          "status": "passed",
+          "duration": 0.04993891716003418,
+          "critical": true,
+          "error": null
+        },
+        {
+          "name": "MCP Integration P0",
+          "status": "passed",
+          "duration": 0.041497230529785156,
+          "critical": true,
+          "error": null
+        },
+        {
+          "name": "Persona Strategic Thinking P0",
+          "status": "passed",
+          "duration": 0.04031801223754883,
+          "critical": true,
+          "error": null
+        }
+      ]
+    }
+  ]
+}

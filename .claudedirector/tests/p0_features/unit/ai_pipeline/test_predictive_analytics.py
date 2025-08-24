@@ -8,14 +8,11 @@ Berny's comprehensive testing framework ensuring:
 - Edge case handling and data validation
 """
 
-import pytest
 import time
-from unittest.mock import patch, MagicMock
 
 from lib.claudedirector.p0_features.shared.ai_pipeline.predictive_analytics import (
     StrategicHealthPredictor,
 )
-from lib.claudedirector.p0_features.shared.ai_pipeline.ai_base import AIModelConfig
 
 
 class TestStrategicHealthPredictor:
@@ -449,7 +446,7 @@ class TestStrategicHealthPredictor:
         # Clear any existing metrics
         predictor._performance_metrics.clear()
 
-        result = predictor.predict(sample_initiative_data["healthy_initiative"])
+        predictor.predict(sample_initiative_data["healthy_initiative"])
 
         # Verify performance metrics were recorded
         assert len(predictor._performance_metrics) > 0

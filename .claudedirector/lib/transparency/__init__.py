@@ -24,7 +24,6 @@ from .mcp_transparency import MCPTransparencyMiddleware, MCPContext, MCPCall
 from .framework_detection import (
     FrameworkDetectionMiddleware,
     FrameworkUsage,
-    FrameworkPatterns,
 )
 
 # Version information
@@ -51,7 +50,6 @@ __all__ = [
     # Framework detection
     "FrameworkDetectionMiddleware",
     "FrameworkUsage",
-    "FrameworkPatterns",
     # Decorators and utilities
     "PersonaTransparencyDecorator",
     "transparent_persona_response",

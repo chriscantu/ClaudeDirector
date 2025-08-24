@@ -202,9 +202,9 @@ class MCPCallTracker:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        processing_time = time.time() - self.start_time
-        success = exc_type is None
-        error_message = str(exc_val) if exc_val else None
+        time.time() - self.start_time
+        exc_type is None
+        str(exc_val) if exc_val else None
 
         # This would be called with actual server details in implementation
         # self.transparency_middleware.track_mcp_call(

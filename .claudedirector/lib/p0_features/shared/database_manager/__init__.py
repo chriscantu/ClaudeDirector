@@ -5,18 +5,13 @@ Architecture designed for Delbert (Data Engineer) implementation.
 Provides interfaces for hybrid database management with intelligent routing.
 """
 
-from .hybrid_manager import HybridDatabaseManager
-from .query_router import IntelligentQueryRouter
-from .analytics_engine import AnalyticsEngine
-from .semantic_search import SemanticSearchEngine
-from .db_base import DatabaseEngineBase, QueryContext, DatabaseConfig
+# Import only the files we successfully updated for Phase 1C
+from .analytics_pipeline import AnalyticsPipeline
+from .semantic_search_engine import SemanticSearchEngine
+from .migration_strategy import DatabaseMigrationStrategy
 
 __all__ = [
-    "HybridDatabaseManager",
-    "IntelligentQueryRouter",
-    "AnalyticsEngine",
+    "AnalyticsPipeline",
     "SemanticSearchEngine",
-    "DatabaseEngineBase",
-    "QueryContext",
-    "DatabaseConfig",
+    "DatabaseMigrationStrategy",
 ]

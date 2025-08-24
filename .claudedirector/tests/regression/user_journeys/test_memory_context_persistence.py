@@ -30,7 +30,6 @@ import json
 import time
 import shutil
 from pathlib import Path
-from unittest.mock import patch, MagicMock
 from datetime import datetime, timedelta
 
 # Add the ClaudeDirector lib to path for testing

@@ -8,21 +8,17 @@ insights, extracted from the monolithic EmbeddedFrameworkEngine.
 Author: Martin (SOLID Refactoring Implementation)
 """
 
-import re
-from typing import Dict, List, Optional, Any, Set
+from typing import Dict, List, Optional
 import structlog
 from dataclasses import dataclass
 
 from ..interfaces.framework_provider_interface import (
     IFrameworkProvider,
-    IFrameworkAnalyzer,
     IInsightGenerator,
     FrameworkContext,
-    FrameworkDefinition,
     AnalysisInsight,
     FrameworkRecommendation,
     ImplementationStep,
-    AnalysisComplexity,
 )
 from ..config import ClaudeDirectorConfig, get_config
 
@@ -135,11 +131,18 @@ class FrameworkAnalysisService:
                 logger.error("Framework definition not found", framework=framework_name)
                 return []
 
+            # Handle both enum and property-based complexity levels
+            complexity_str = (
+                context.complexity_level.value
+                if hasattr(context.complexity_level, "value")
+                else str(context.complexity_level)
+            )
+
             logger.info(
                 "Starting framework analysis",
                 framework=framework_name,
                 input_length=len(context.user_input),
-                complexity=context.complexity_level.value,
+                complexity=complexity_str,
             )
 
             # Generate base insights using framework components

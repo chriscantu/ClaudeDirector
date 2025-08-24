@@ -7,7 +7,6 @@ Comprehensive CLI tool for strategic stakeholder relationship management
 import json
 import sys
 from datetime import datetime
-from pathlib import Path
 
 from memory.stakeholder_engagement_engine import StakeholderEngagementEngine
 

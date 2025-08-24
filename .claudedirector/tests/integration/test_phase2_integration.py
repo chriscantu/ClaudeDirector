@@ -5,9 +5,8 @@ Tests the full integration of Phase 1 + Phase 2 file management
 
 import pytest
 import tempfile
-from datetime import datetime
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 from claudedirector.core.workspace_file_handler import WorkspaceFileHandler
 from claudedirector.core.persona_file_integration import PersonaFileIntegration

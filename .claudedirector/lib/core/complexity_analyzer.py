@@ -19,7 +19,7 @@ class AnalysisComplexity(Enum):
     """Complexity levels for user input analysis"""
 
     SIMPLE = "simple"  # Basic questions, standard persona response sufficient
-    MEDIUM = "medium"  # Some complexity, might benefit from light enhancement
+    MEDIUM = "medium"  # Some complexity, might benefit from light enhancement - configured via ClaudeDirectorConfig
     COMPLEX = "complex"  # High complexity, systematic analysis recommended
     SYSTEMATIC = "systematic"  # Explicitly requesting systematic approach
 

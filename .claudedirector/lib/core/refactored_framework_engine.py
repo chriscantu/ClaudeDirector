@@ -39,7 +39,7 @@ from .services.insight_generation_service import InsightGenerationService
 from .services.confidence_calculation_service import ConfidenceCalculationService
 
 # Import shared types to avoid circular imports
-from .framework_types import FrameworkAnalysis, SystematicResponse
+from .framework_types import FrameworkAnalysis
 
 logger = structlog.get_logger(__name__)
 
@@ -318,7 +318,11 @@ class RefactoredFrameworkEngine:
                 overall_confidence=overall_confidence,
                 analysis_metadata={
                     "framework_relevance": framework_relevance,
-                    "context_complexity": context.complexity_level.value,
+                    "context_complexity": (
+                        context.complexity_level.value
+                        if hasattr(context.complexity_level, "value")
+                        else str(context.complexity_level)
+                    ),
                     "insights_count": len(insights),
                     "recommendations_count": len(recommendations),
                 },

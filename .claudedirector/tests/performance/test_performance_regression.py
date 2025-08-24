@@ -53,7 +53,7 @@ class TestPerformanceRegression:
         """Test configuration creation performance"""
         # Measure config creation time
         start_time = time.time()
-        config = ClaudeDirectorConfig()
+        ClaudeDirectorConfig()
         config_time = time.time() - start_time
 
         # Should be very fast (under 10ms)

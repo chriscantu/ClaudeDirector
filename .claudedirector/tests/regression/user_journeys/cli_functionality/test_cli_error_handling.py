@@ -22,10 +22,8 @@ import os
 import unittest
 import tempfile
 import subprocess
-import json
 import shutil
 from pathlib import Path
-from unittest.mock import patch, MagicMock
 
 # Add the ClaudeDirector lib to path for testing
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../lib"))
@@ -240,7 +238,7 @@ class TestCLIErrorHandling(unittest.TestCase):
                 # Empty environment test is optional - some systems require PATH
                 pass
 
-        except Exception as e:
+        except Exception:
             # If test fails, that's OK - it means we found an edge case
             pass
 
@@ -299,7 +297,7 @@ class TestCLIErrorHandling(unittest.TestCase):
             # Clean up
             shutil.rmtree(test_dir, ignore_errors=True)
 
-        except Exception as e:
+        except Exception:
             # If test fails, that's OK - it means we found an edge case
             pass
 
@@ -331,7 +329,7 @@ class TestCLIErrorHandling(unittest.TestCase):
                 process.returncode, "CLI should handle interruption gracefully"
             )
 
-        except Exception as e:
+        except Exception:
             # If test fails, that's OK - means CLI is robust or we found an edge case
             pass
 
@@ -372,7 +370,7 @@ class TestCLIErrorHandling(unittest.TestCase):
             # Clean up
             shutil.rmtree(test_dir, ignore_errors=True)
 
-        except Exception as e:
+        except Exception:
             # If test fails, that's OK - permission handling varies by system
             pass
 
@@ -436,7 +434,7 @@ class TestCLIErrorHandling(unittest.TestCase):
                 # Timeout is acceptable - means CLI is working but slow
                 pass
 
-        except Exception as e:
+        except Exception:
             # Resource constraint tests are optional
             pass
 
@@ -444,10 +442,8 @@ class TestCLIErrorHandling(unittest.TestCase):
         """REGRESSION TEST: CLI behavior with concurrent executions"""
         try:
             import threading
-            import time
 
             # Start multiple CLI processes concurrently
-            processes = []
             results = []
 
             def run_cli_command(command_args, result_list):
@@ -508,7 +504,7 @@ class TestCLIErrorHandling(unittest.TestCase):
                 "At least 50% of concurrent CLI executions should succeed",
             )
 
-        except Exception as e:
+        except Exception:
             # Concurrent execution test is optional
             pass
 

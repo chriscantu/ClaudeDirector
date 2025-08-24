@@ -41,7 +41,7 @@ def setup(profile_type: str, role_title: str, primary_focus: str):
     click.echo(f"🔍 Primary focus: {primary_focus}")
 
     # Initialize profile manager
-    manager = DirectorProfileManager()
+    DirectorProfileManager()
 
     if profile_type == "custom":
         # Interactive custom setup

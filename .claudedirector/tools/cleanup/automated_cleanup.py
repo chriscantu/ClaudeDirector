@@ -4,11 +4,10 @@ Automated Cleanup Script for ClaudeDirector
 Removes AI-generated bloat and maintains clean codebase
 """
 
-import os
 import re
 import sys
 from pathlib import Path
-from typing import List, Dict, Tuple
+from typing import Dict
 
 
 class CodebaseCleanup:
