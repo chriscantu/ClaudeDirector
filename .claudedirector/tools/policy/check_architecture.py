@@ -180,6 +180,12 @@ def main():
         print("- Fix circular imports and layer violations")
         print("- Follow import patterns in existing compliant code")
         print("- See docs/DEVELOPMENT_POLICY.md for complete guidelines")
+        print(
+            "- Reference docs/development/guides/CORE_ARCHITECTURE.md for architectural principles"
+        )
+        print(
+            "- Follow docs/development/guides/DEVELOPMENT_WORKFLOW.md for import standards"
+        )
         print()
         print("🛡️ COMMIT BLOCKED: Fix violations before proceeding")
         sys.exit(1)
