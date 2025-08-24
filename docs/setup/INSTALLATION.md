@@ -280,7 +280,7 @@ find .claudedirector -name "*.py" -exec chmod +x {} \;
 rm -rf .claudedirector/cache/conversations/*
 
 # Optimize database
-sqlite3 data/strategic_memory.db "VACUUM;"
+sqlite3 data/strategic/strategic_memory.db "VACUUM;"
 ```
 
 #### **Response Time Tuning**

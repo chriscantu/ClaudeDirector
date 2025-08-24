@@ -115,7 +115,7 @@ def main():
     """Initialize database for CI environment"""
 
     # Default path that tests expect
-    db_path = "data/strategic_memory.db"
+    db_path = "data/strategic/strategic_memory.db"
 
     if len(sys.argv) > 1:
         db_path = sys.argv[1]

@@ -28,7 +28,7 @@ print(f"Capture enabled: {status['enabled']}")
 - ✅ Cross-session context for resumption
 
 **Database Location:**
-- **Canonical Database**: `data/strategic_memory.db`
+- **Canonical Database**: `data/strategic/strategic_memory.db`
 - **Automatic Backups**: Every 5 minutes during active sessions
 - **Session Recovery**: Automatic detection and restoration
 
