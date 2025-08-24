@@ -12,6 +12,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Any, Protocol
 from enum import Enum
+from ..config import ClaudeDirectorConfig, get_config
 
 
 class FrameworkDomain(Enum):
@@ -24,12 +25,22 @@ class FrameworkDomain(Enum):
     FINANCIAL = "financial"
 
 
-class AnalysisComplexity(Enum):
+class AnalysisComplexity:
     """Analysis complexity levels"""
+    def __init__(self, config: Optional[ClaudeDirectorConfig] = None):
+        self.config = config or get_config()
 
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
+    @property
+    def LOW(self) -> str:
+        return self.config.get_enum_values('priority_levels')[3]  # "low"
+
+    @property
+    def MEDIUM(self) -> str:
+        return self.config.get_enum_values('priority_levels')[2]  # "medium"
+
+    @property
+    def HIGH(self) -> str:
+        return self.config.get_enum_values('priority_levels')[1]  # "high"
 
 
 @dataclass
@@ -73,9 +84,9 @@ class FrameworkRecommendation:
 
     title: str
     description: str
-    priority: str  # "high", "medium", "low"
-    implementation_effort: str  # "low", "medium", "high"
-    expected_impact: str  # "low", "medium", "high"
+    priority: str  # Configured via ClaudeDirectorConfig.get_enum_values('priority_levels')
+    implementation_effort: str  # Configured via ClaudeDirectorConfig.get_enum_values('priority_levels')
+    expected_impact: str  # Configured via ClaudeDirectorConfig.get_enum_values('priority_levels')
     dependencies: List[str]
     timeline: Optional[str] = None
 

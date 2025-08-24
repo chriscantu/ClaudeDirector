@@ -20,6 +20,7 @@ from ..interfaces.framework_provider_interface import (
     FrameworkRecommendation,
     AnalysisComplexity,
 )
+from ..config import ClaudeDirectorConfig, get_config
 
 logger = structlog.get_logger(__name__)
 
@@ -45,7 +46,9 @@ class ConfidenceCalculationService:
     multiple factors for accurate confidence assessment.
     """
 
-    def __init__(self):
+    def __init__(self, config: Optional[ClaudeDirectorConfig] = None):
+        self.config = config or get_config()
+
         # Confidence calculation weights
         self.evidence_weight = 0.25
         self.pattern_weight = 0.20
@@ -561,11 +564,11 @@ class ConfidenceCalculationService:
     def _get_confidence_level(self, confidence: float) -> str:
         """Get human-readable confidence level"""
         if confidence >= self.high_confidence_threshold:
-            return "high"
+            return self.config.get_enum_values('priority_levels')[1]  # "high"
         elif confidence >= self.medium_confidence_threshold:
-            return "medium"
+            return self.config.get_enum_values('priority_levels')[2]  # "medium"
         else:
-            return "low"
+            return self.config.get_enum_values('priority_levels')[3]  # "low"
 
     def _assess_evidence_quality(self, evidence: List[str]) -> str:
         """Assess overall quality of evidence list"""
@@ -578,11 +581,11 @@ class ConfidenceCalculationService:
         avg_quality = sum(quality_scores) / len(quality_scores)
 
         if avg_quality >= 0.8:
-            return "high"
+            return self.config.get_enum_values('priority_levels')[1]  # "high"
         elif avg_quality >= 0.6:
-            return "medium"
+            return self.config.get_enum_values('priority_levels')[2]  # "medium"
         else:
-            return "low"
+            return self.config.get_enum_values('priority_levels')[3]  # "low"
 
     def _assess_evidence_diversity(self, evidence: List[str]) -> str:
         """Assess diversity of evidence types"""
@@ -598,8 +601,8 @@ class ConfidenceCalculationService:
         diversity_ratio = len(all_words) / len(evidence) if evidence else 0
 
         if diversity_ratio >= 3:
-            return "high"
+            return self.config.get_enum_values('priority_levels')[1]  # "high"
         elif diversity_ratio >= 2:
-            return "medium"
+            return self.config.get_enum_values('priority_levels')[2]  # "medium"
         else:
-            return "low"
+            return self.config.get_enum_values('priority_levels')[3]  # "low"

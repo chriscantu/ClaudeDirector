@@ -6,6 +6,7 @@ Quality-first implementation ensuring system stability under memory pressure
 import gc
 from pathlib import Path
 from typing import Any, Dict, Generator, Iterator, List, Optional
+from ..core.config import ClaudeDirectorConfig, get_config
 
 try:
     import psutil

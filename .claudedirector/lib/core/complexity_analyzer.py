@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, List, Optional, Tuple, Any
 import structlog
+from .config import ClaudeDirectorConfig, get_config
 
 # Configure logging
 logger = structlog.get_logger(__name__)
@@ -19,7 +20,7 @@ class AnalysisComplexity(Enum):
     """Complexity levels for user input analysis"""
 
     SIMPLE = "simple"  # Basic questions, standard persona response sufficient
-    MEDIUM = "medium"  # Some complexity, might benefit from light enhancement
+    MEDIUM = "medium"  # Some complexity, might benefit from light enhancement - configured via ClaudeDirectorConfig
     COMPLEX = "complex"  # High complexity, systematic analysis recommended
     SYSTEMATIC = "systematic"  # Explicitly requesting systematic approach
 
