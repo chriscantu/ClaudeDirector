@@ -167,8 +167,12 @@ def main():
         print("- Fix P0 test logic instead of skipping tests")
         print("- Ensure all required P0 tests exist and are executable")
         print("- See docs/DEVELOPMENT_POLICY.md for P0 test requirements")
-        print("- Reference docs/development/guides/TESTING_QA.md for comprehensive testing standards")
-        print("- Follow docs/development/guides/DEVELOPMENT_WORKFLOW.md for test execution procedures")
+        print(
+            "- Reference docs/development/guides/TESTING_QA.md for comprehensive testing standards"
+        )
+        print(
+            "- Follow docs/development/guides/DEVELOPMENT_WORKFLOW.md for test execution procedures"
+        )
         print()
         print("🛡️ COMMIT BLOCKED: Fix P0 test violations before proceeding")
         sys.exit(1)

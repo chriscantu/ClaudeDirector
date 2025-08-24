@@ -93,7 +93,9 @@ def main():
             "- Follow examples in docs/architecture/patterns/ and docs/development/guides/"
         )
         print("- See docs/DEVELOPMENT_POLICY.md for complete guidelines")
-        print("- Reference docs/development/guides/DEVELOPMENT_WORKFLOW.md for file organization standards")
+        print(
+            "- Reference docs/development/guides/DEVELOPMENT_WORKFLOW.md for file organization standards"
+        )
         print()
         print("🛡️ COMMIT BLOCKED: Fix violations before proceeding")
         sys.exit(1)
