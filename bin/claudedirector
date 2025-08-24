@@ -584,7 +584,7 @@ Examples:
         issues = []
 
         # Check database
-        db_path = self.project_root / "memory" / "strategic_memory.db"
+        db_path = self.project_root / "data" / "strategic" / "strategic_memory.db"
         if not db_path.exists():
             issues.append("Database not found")
 

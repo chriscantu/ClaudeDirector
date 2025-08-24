@@ -32,9 +32,9 @@ class EnhancedSecurityScanner:
             r"(?i)\b(real[_\s-]?executive[_\s-]?name)\b",
             r"(?i)\b(actual[_\s-]?stakeholder[_\s-]?identity)\b",
             r"(?i)\b(confidential[_\s-]?leadership[_\s-]?data)\b",
-            # Pattern-based detection for strategic roles (generic patterns only)
-            r"(?i)\b(director|vp|cpo|cto)\s+[a-z]+\s*[a-z]+\b",  # Generic title + name pattern
-            r"(?i)\b(senior|principal|distinguished)\s+(engineer|architect)\s+[a-z]+\s*[a-z]+\b",
+            # Pattern-based detection for strategic roles (specific patterns only)
+            r"(?i)\b(director|vp|cpo|cto)\s+[A-Z][a-z]+\s+[A-Z][a-z]+\b",  # Actual names (capitalized)
+            r"(?i)\b(senior|principal|distinguished)\s+(engineer|architect)\s+[A-Z][a-z]+\s+[A-Z][a-z]+\b",
             # Strategic context markers
             r"(?i)(real[_\s-]?stakeholder[_\s-]?name)",
             r"(?i)(actual[_\s-]?procore[_\s-]?stakeholder)",
