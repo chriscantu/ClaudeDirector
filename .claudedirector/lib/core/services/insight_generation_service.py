@@ -9,16 +9,14 @@ Author: Martin (SOLID Refactoring Implementation)
 """
 
 import re
-from typing import Dict, List, Optional, Any, Set, Tuple
+from typing import Dict, List, Optional, Any
 import structlog
 from dataclasses import dataclass
 
 from ..interfaces.framework_provider_interface import (
-    IInsightGenerator,
     FrameworkDefinition,
     FrameworkContext,
     AnalysisInsight,
-    AnalysisComplexity,
 )
 
 logger = structlog.get_logger(__name__)

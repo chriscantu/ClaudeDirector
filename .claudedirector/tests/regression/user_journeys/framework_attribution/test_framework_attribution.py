@@ -20,8 +20,6 @@ import sys
 import os
 import unittest
 import tempfile
-import re
-from pathlib import Path
 
 # Add the ClaudeDirector lib to path for testing
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../lib"))

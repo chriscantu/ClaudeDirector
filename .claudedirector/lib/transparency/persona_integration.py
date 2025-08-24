@@ -160,7 +160,7 @@ class TransparentPersonaManager:
         self, persona: str, query: str, kwargs: Dict[str, Any]
     ) -> str:
         """Default persona handler for unregistered personas"""
-        transparency_context = kwargs.get("transparency_context")
+        kwargs.get("transparency_context")
 
         # Basic persona-style response
         response = f"As {persona}, I understand your query: {query}. "

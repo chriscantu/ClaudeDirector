@@ -5,7 +5,7 @@ Tests the complete MCP integration workflow with persona enhancement.
 
 import pytest
 import asyncio
-from unittest.mock import Mock, patch, AsyncMock
+from unittest.mock import patch
 import tempfile
 import yaml
 

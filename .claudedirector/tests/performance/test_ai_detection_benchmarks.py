@@ -17,8 +17,6 @@ sys.path.insert(0, str(lib_path))
 
 try:
     from claudedirector.intelligence.stakeholder import StakeholderIntelligence
-    from claudedirector.intelligence.task import TaskIntelligence
-    from claudedirector.intelligence.meeting import MeetingIntelligenceManager
     from claudedirector.core.config import ClaudeDirectorConfig
 
     IMPORTS_AVAILABLE = True

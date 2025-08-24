@@ -7,9 +7,8 @@ content sizes and complexity levels.
 """
 
 import time
-import unittest
 from unittest.mock import Mock, patch
-from typing import Callable, Dict, Any, List
+from typing import Callable, Dict, Any
 
 try:
     from claudedirector.intelligence.task import TaskIntelligence
@@ -43,7 +42,7 @@ class PerformanceBenchmarkTask:
         for _ in range(iterations):
             start_time = time.perf_counter()
             try:
-                result = func()
+                func()
                 end_time = time.perf_counter()
                 times.append(end_time - start_time)
             except Exception as e:

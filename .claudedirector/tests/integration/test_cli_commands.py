@@ -4,7 +4,6 @@ Integration tests for CLI command functionality
 
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 import pytest

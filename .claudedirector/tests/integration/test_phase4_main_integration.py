@@ -6,9 +6,8 @@ Validates zero-setup, chat-only, backwards compatibility principles.
 """
 
 import unittest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch
 import time
-from typing import Dict, List, Any
 
 # Import Phase 4.1 main interface
 from claudedirector.phase4_conversation_intelligence import (

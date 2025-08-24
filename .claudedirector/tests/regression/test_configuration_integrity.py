@@ -9,11 +9,9 @@ changes don't break existing functionality.
 
 import unittest
 import sys
-import os
 from pathlib import Path
 import re
-import ast
-from typing import Dict, List, Set, Any
+from typing import Dict, List, Any
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
@@ -113,7 +111,7 @@ class TestConfigurationIntegrity(unittest.TestCase):
 
             critical_modules = [
                 "config",
-                "complexity_analyzer",
+                "core.complexity_analyzer",
                 "core.embedded_framework_engine",
                 "core.integrated_conversation_manager",
             ]

@@ -9,8 +9,7 @@ import os
 import sys
 import subprocess
 import re
-from pathlib import Path
-from typing import List, Set, Dict
+from typing import List, Dict
 
 
 class SensitiveDataScanner:

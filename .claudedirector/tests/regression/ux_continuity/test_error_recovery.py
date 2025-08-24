@@ -12,7 +12,6 @@ and creates frustrating experiences that lead to system abandonment.
 import unittest
 import tempfile
 import shutil
-import json
 from pathlib import Path
 from datetime import datetime
 import sys
@@ -318,7 +317,7 @@ class TestErrorRecovery(unittest.TestCase):
                     )
 
                     end_time = time.time()
-                    recovery_time = end_time - start_time
+                    end_time - start_time
 
                     # Break if recovery successful
                     if recovery_result["success"]:

@@ -6,9 +6,7 @@ Tests rich terminal output, color formatting, and layout rendering.
 """
 
 import unittest
-from unittest.mock import Mock, patch
-from datetime import datetime
-from typing import Dict, Any
+from unittest.mock import patch
 
 import sys
 import os

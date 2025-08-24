@@ -13,8 +13,6 @@ Usage:
 import subprocess
 import sys
 import os
-import re
-from typing import List, Tuple
 
 
 def print_step(message: str) -> None:

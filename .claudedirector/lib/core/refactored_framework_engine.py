@@ -39,7 +39,7 @@ from .services.insight_generation_service import InsightGenerationService
 from .services.confidence_calculation_service import ConfidenceCalculationService
 
 # Import shared types to avoid circular imports
-from .framework_types import FrameworkAnalysis, SystematicResponse
+from .framework_types import FrameworkAnalysis
 
 logger = structlog.get_logger(__name__)
 

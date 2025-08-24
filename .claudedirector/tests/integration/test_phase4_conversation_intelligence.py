@@ -6,21 +6,13 @@ Ensures zero-setup, chat-only, backwards compatibility principles.
 """
 
 import unittest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch
 import time
-from typing import Dict, List, Any
 
 # Import Phase 4.1 components
 from claudedirector.core.persona_enhanced_integration import (
     ConversationIntelligenceEngine,
     PersonaFrameworkOrchestrator,
-    EnhancedPersonaResponse,
-)
-
-from claudedirector.core.enhanced_framework_engine import (
-    EnhancedFrameworkEngine,
-    ConversationContext,
-    EnhancedSystematicResponse,
 )
 
 
@@ -204,7 +196,7 @@ class TestConversationIntelligenceIntegration(unittest.TestCase):
         # Verify increasing context awareness (if enabled)
         if self.intelligence_engine.context_retention:
             # Last result should have more context than first
-            first_result = session_results[0]
+            session_results[0]
             last_result = session_results[-1]
 
             # Context continuity should be present in later conversations

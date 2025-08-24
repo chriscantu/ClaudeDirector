@@ -10,7 +10,6 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, List, Optional, Tuple, Any
 import structlog
-from .config import ClaudeDirectorConfig, get_config
 
 # Configure logging
 logger = structlog.get_logger(__name__)

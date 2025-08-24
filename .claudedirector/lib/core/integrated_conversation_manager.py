@@ -599,7 +599,7 @@ def main():
     print("=" * 50)
 
     # Test session lifecycle
-    session_id = manager.start_conversation_session("test")
+    manager.start_conversation_session("test")
 
     # Simulate conversation
     manager.capture_conversation_turn(

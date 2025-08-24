@@ -11,13 +11,10 @@ Author: Martin (SOLID Refactoring Implementation)
 from typing import Dict, List, Optional, Any
 import structlog
 from dataclasses import dataclass
-import math
 
 from ..interfaces.framework_provider_interface import (
-    IConfidenceCalculator,
     AnalysisInsight,
     FrameworkContext,
-    FrameworkRecommendation,
     AnalysisComplexity,
 )
 from ..config import ClaudeDirectorConfig, get_config
@@ -148,8 +145,8 @@ class ConfidenceCalculationService:
             # Calculate base confidence metrics
             avg_confidence = sum(insight_confidences) / len(insight_confidences)
             min_confidence = min(insight_confidences)
-            max_confidence = max(insight_confidences)
-            confidence_variance = self._calculate_variance(insight_confidences)
+            max(insight_confidences)
+            self._calculate_variance(insight_confidences)
 
             # Calculate consistency bonus/penalty
             consistency_factor = self._calculate_consistency_factor(insight_confidences)

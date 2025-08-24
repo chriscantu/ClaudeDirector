@@ -3,11 +3,9 @@ Comprehensive unit tests for core AI detection logic.
 Focus on testing the fundamental AI detection algorithms and decision-making processes.
 """
 
-import pytest
 import unittest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock
 import sys
-import os
 from pathlib import Path
 
 # Add the lib directory to Python path for imports

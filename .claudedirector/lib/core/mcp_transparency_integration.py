@@ -207,7 +207,7 @@ class MCPTransparencyMiddleware:
     def _auto_detect_mcp_usage(self, response: str, user_input: str):
         """Auto-detect likely MCP usage based on response characteristics"""
         response_lower = response.lower()
-        input_lower = user_input.lower()
+        user_input.lower()
 
         # Strategic analysis indicators
         if any(

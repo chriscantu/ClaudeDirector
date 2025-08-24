@@ -488,7 +488,7 @@ class BusinessImpactReporter:
             business_impact = (
                 self.business_calculator.calculate_comprehensive_business_impact(days)
             )
-            portfolio_summary = self.roi_tracker.generate_portfolio_summary(time_period)
+            self.roi_tracker.generate_portfolio_summary(time_period)
 
             # Create stakeholder-focused content
             executive_summary = self._generate_stakeholder_executive_summary(

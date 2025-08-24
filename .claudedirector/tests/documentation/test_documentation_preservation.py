@@ -6,7 +6,6 @@ Validates that all documentation functionality is preserved during AI verbosity 
 
 import unittest
 import sys
-import os
 import re
 from pathlib import Path
 

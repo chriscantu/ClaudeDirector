@@ -4,10 +4,9 @@ Daily Task Alerts System
 Proactive reminder system for strategic task management and accountability
 """
 
-import json
 import sqlite3
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 

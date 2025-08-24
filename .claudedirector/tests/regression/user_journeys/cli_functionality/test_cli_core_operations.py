@@ -22,10 +22,8 @@ import os
 import unittest
 import tempfile
 import subprocess
-import json
 import shutil
 from pathlib import Path
-from unittest.mock import patch, MagicMock
 
 # Add the ClaudeDirector lib to path for testing
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../lib"))

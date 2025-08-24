@@ -17,9 +17,7 @@ Usage:
 import subprocess
 import sys
 import os
-import re
 from pathlib import Path
-from typing import List, Tuple
 
 
 def print_step(message: str) -> None:
@@ -57,7 +55,13 @@ def run_command(command: str, check: bool = True) -> subprocess.CompletedProcess
             print(f"Exit code: {e.returncode}")
             print(f"Stdout: {e.stdout}")
             print(f"Stderr: {e.stderr}")
-        return e
+        # Return a CompletedProcess-like object for type consistency
+        return subprocess.CompletedProcess(
+            args=command.split(),
+            returncode=e.returncode,
+            stdout=e.stdout,
+            stderr=e.stderr,
+        )
 
 
 def security_scan() -> bool:
@@ -173,10 +177,10 @@ def flake8_linting() -> bool:
             print_error("Flake8 not available - install with: pipx install flake8")
             return False
 
-    # Run critical error checks (exact CI command)
+    # Run critical error checks with lenient config
     print("Running critical error checks...")
     result = run_command(
-        "flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=venv,.venv,__pycache__,.mypy_cache",
+        "flake8 . --config=.claudedirector/config/.flake8 --count --show-source --statistics",
         check=False,
     )
     if result.returncode != 0:
@@ -185,10 +189,10 @@ def flake8_linting() -> bool:
         print(result.stdout)
         return False
 
-    # Run full linting with lenient settings (exact CI command)
+    # Run full linting with lenient settings using our config
     print("Running full linting analysis...")
     run_command(
-        "flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics --exclude=venv,.venv,__pycache__,.mypy_cache",
+        "flake8 . --config=.claudedirector/config/.flake8 --count --exit-zero --statistics",
         check=False,
     )
 
@@ -277,7 +281,7 @@ def check_prerequisites() -> bool:
 def main():
     """Main execution with enhanced CI mirror support"""
     # Check command line arguments
-    auto_fix = "--fix" in sys.argv
+    "--fix" in sys.argv
     full_mirror = "--full" in sys.argv
 
     if full_mirror:

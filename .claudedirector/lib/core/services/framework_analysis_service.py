@@ -8,21 +8,17 @@ insights, extracted from the monolithic EmbeddedFrameworkEngine.
 Author: Martin (SOLID Refactoring Implementation)
 """
 
-import re
-from typing import Dict, List, Optional, Any, Set
+from typing import Dict, List, Optional
 import structlog
 from dataclasses import dataclass
 
 from ..interfaces.framework_provider_interface import (
     IFrameworkProvider,
-    IFrameworkAnalyzer,
     IInsightGenerator,
     FrameworkContext,
-    FrameworkDefinition,
     AnalysisInsight,
     FrameworkRecommendation,
     ImplementationStep,
-    AnalysisComplexity,
 )
 from ..config import ClaudeDirectorConfig, get_config
 

@@ -5,11 +5,9 @@ Tracks conversation patterns and identifies clarity indicators.
 """
 
 import re
-from typing import List, Dict, Optional, Tuple
-from datetime import datetime
+from typing import List, Dict, Optional
 from .models import (
     Conversation,
-    ConversationMessage,
     ClarityMetrics,
     ClarityIndicator,
     StuckPattern,

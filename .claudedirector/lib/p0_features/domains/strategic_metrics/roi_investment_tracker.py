@@ -7,7 +7,7 @@ Refactored from 1,353-line monolith into SOLID-compliant service architecture.
 This facade maintains backward compatibility while delegating to specialized services.
 """
 
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Dict, List, Any
 from decimal import Decimal
 from datetime import datetime
 import structlog

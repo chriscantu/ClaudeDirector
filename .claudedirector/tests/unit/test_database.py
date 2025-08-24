@@ -3,8 +3,6 @@ Unit tests for database management
 """
 
 import sqlite3
-import tempfile
-from pathlib import Path
 
 import pytest
 from claudedirector.core.database import DatabaseManager

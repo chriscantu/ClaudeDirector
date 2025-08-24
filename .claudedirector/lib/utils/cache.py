@@ -396,7 +396,7 @@ class CacheManager:
 
         try:
             # Memory cache cleanup
-            current_time = time.time()
+            time.time()
             expired_keys = [
                 key
                 for key, entry in self.memory_cache.items()

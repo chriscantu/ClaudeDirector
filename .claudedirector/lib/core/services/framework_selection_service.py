@@ -8,14 +8,12 @@ for a given context, extracted from the monolithic EmbeddedFrameworkEngine.
 Author: Martin (SOLID Refactoring Implementation)
 """
 
-import re
-from typing import Dict, List, Optional, Set, Tuple
+from typing import List, Optional
 import structlog
 from dataclasses import dataclass
 
 from ..interfaces.framework_provider_interface import (
     IFrameworkProvider,
-    IFrameworkSelector,
     FrameworkContext,
     FrameworkDomain,
     AnalysisComplexity,

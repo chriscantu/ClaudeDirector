@@ -6,8 +6,7 @@ Tests stakeholder-specific content, data handling, and output formatting.
 """
 
 import unittest
-from unittest.mock import Mock, patch
-from datetime import datetime
+from unittest.mock import patch
 from typing import Dict, Any
 
 import sys
@@ -297,7 +296,7 @@ class TestExecutiveSummaryGenerator(unittest.TestCase):
         with patch.object(self.data_source, "get_data") as mock_get_data:
             mock_get_data.return_value = self.mock_data
 
-            report = self.generator.generate_report(context)
+            self.generator.generate_report(context)
 
             # Verify custom metrics were requested
             mock_get_data.assert_called_once_with(

@@ -306,7 +306,7 @@ class DatabaseMigrationStrategy:
                 return switch_result
 
             # Phase 6: Cleanup
-            cleanup_result = self._cleanup_migration(migration_plan)
+            self._cleanup_migration(migration_plan)
 
             migration_duration = (time.time() - migration_start) / 60  # minutes
 

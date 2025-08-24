@@ -5,7 +5,6 @@ Testing P1 Organizational Intelligence CLI interface
 """
 
 import pytest
-import tempfile
 import yaml
 from pathlib import Path
 from click.testing import CliRunner

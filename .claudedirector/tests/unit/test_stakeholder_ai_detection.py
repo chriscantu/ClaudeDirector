@@ -5,7 +5,7 @@ Tests the actual StakeholderIntelligence class and its AI detection capabilities
 
 import pytest
 import unittest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 import sys
 from pathlib import Path
 
@@ -16,7 +16,7 @@ sys.path.insert(0, str(lib_path))
 try:
     from claudedirector.intelligence.stakeholder import StakeholderIntelligence
     from claudedirector.core.config import ClaudeDirectorConfig
-    from claudedirector.core.exceptions import AIDetectionError, DatabaseError
+    from claudedirector.core.exceptions import AIDetectionError
 
     IMPORTS_AVAILABLE = True
 except ImportError as e:
