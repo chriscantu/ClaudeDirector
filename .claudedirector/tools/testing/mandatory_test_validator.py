@@ -101,17 +101,11 @@ def run_critical_tests_comprehensive():
 
     print("✅ ALL P0 FEATURES VALIDATED - Proceeding with other critical tests")
 
-    tests_passed = 1  # P0 tests passed
+    tests_passed = 1  # P0 tests passed (via unified runner)
     tests_total = 1
 
-    # Test 1: MCP Transparency P0 Tests
-    tests_total += 1
-    mcp_test_cmd = "python3 .claudedirector/tests/run_mcp_transparency_tests.py"
-    if run_command(mcp_test_cmd, "🔧 MCP Transparency P0 Regression Tests"):
-        tests_passed += 1
-        print("  ✅ MCP transparency tests: PASSED")
-    else:
-        print("  ❌ MCP transparency tests: FAILED")
+    # All P0 tests are now handled by the unified runner above
+    # No individual P0 test calls needed - single source of truth achieved
 
     # Test 2: First-Run Wizard Tests
     tests_total += 1

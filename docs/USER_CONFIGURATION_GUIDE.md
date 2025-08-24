@@ -2,7 +2,7 @@
 
 ## 🎯 **Overview**
 
-ClaudeDirector now supports personalized system messages and documentation through a centralized user configuration system. Instead of hardcoded names, all system messages will use your configured identity.
+ClaudeDirector supports personalized system messages through user configuration. System messages use your configured identity instead of hardcoded names.
 
 ## 👤 **Quick Setup**
 
@@ -41,7 +41,7 @@ user:
   organization: "Your Organization"
 ```
 
-**Note**: The actual `user_identity.yaml` file is in `.gitignore` to protect personal information. Copy from the template to create your personal configuration.
+**Note**: The `user_identity.yaml` file is in `.gitignore` to protect personal information. Copy from the template to create your configuration.
 
 ## 🎯 **Name Usage Contexts**
 
@@ -153,21 +153,21 @@ user:
   name: "Jordan"
   work_name: "Jordan"
   full_name: "Jordan Chen"
-  role: "VP Engineering"
+  role: "Engineering Executive"
   organization: "Engineering Division"
 ```
 
 ## 🚀 **Benefits**
 
 ### **Personalization**
-- System messages feel natural and personal
-- Proper attribution in all documentation
+- Natural, personal system messages
+- Proper attribution in documentation
 - Professional identity in organizational contexts
 
 ### **Team Adoption**
-- Each team member has personalized experience
-- Clear accountability through proper attribution
-- Reduces confusion about who set requirements
+- Personalized experience per team member
+- Clear accountability through attribution
+- Reduces confusion about requirements
 
 ### **Organizational Scale**
 - Works for individual contributors through executives

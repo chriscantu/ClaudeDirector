@@ -45,7 +45,10 @@ class TestMCPTransparencyP0(unittest.TestCase):
     def setUp(self):
         """Set up test cases that MUST trigger MCP transparency"""
         if not BRIDGE_AVAILABLE:
-            self.skipTest("Transparency bridge not available")
+            # P0 TEST: Transparency bridge must be available for P0 testing
+            self.fail(
+                "P0 TEST FAILURE: Transparency bridge must be available for P0 testing"
+            )
 
         self.bridge = CursorTransparencyBridge()
 
@@ -365,7 +368,10 @@ class TestMCPTransparencyRegression(unittest.TestCase):
     def test_regression_cursorrules_compliance(self):
         """Ensure implementation matches .cursorrules specification"""
         if not BRIDGE_AVAILABLE:
-            self.skipTest("Bridge not available")
+            # P0 TEST: Bridge must be available for cursorrules compliance testing
+            self.fail(
+                "P0 TEST FAILURE: Bridge must be available for cursorrules compliance testing"
+            )
 
         bridge = CursorTransparencyBridge()
 

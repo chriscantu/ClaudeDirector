@@ -232,11 +232,11 @@ jobs:
           # Set environment for CI detection
           export GITHUB_ACTIONS=true
 
-          # Run complete CI test profile using unified runner
-          python .claudedirector/tools/testing/unified_test_runner.py ci_full --validate || {
-            echo "❌ UNIFIED TEST RUNNER FAILED"
-            echo "📋 Check detailed test results in .claudedirector/test_results/"
-            echo "🔍 All test execution is now centralized and consistent"
+          # Run complete P0 test suite using YAML-driven unified runner
+          python .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py || {
+            echo "❌ UNIFIED P0 TEST RUNNER FAILED"
+            echo "📋 Check detailed test results in .claudedirector/tests/p0_enforcement/results/"
+            echo "🔍 All P0 test execution is now centralized via YAML configuration"
             exit 1
           }
 
