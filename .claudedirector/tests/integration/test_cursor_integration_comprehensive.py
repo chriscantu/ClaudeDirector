@@ -12,6 +12,9 @@ from pathlib import Path
 # Add the lib directory to the path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "lib"))
 
+# Import standardized test utilities
+from test_utils.imports import setup_test_environment, get_standard_imports, validate_test_environment
+
 
 def print_header(title: str):
     """Print formatted section header"""
@@ -130,21 +133,24 @@ How should we approach this systematically?""",
 
     def test_configuration_loading(self):
         """Test basic configuration and imports"""
-        # Test imports
-        try:
-            from claudedirector.core.mcp_client import MCPClient
-            from claudedirector.frameworks.framework_detector import FrameworkDetector
-            from claudedirector.core.complexity_analyzer import ComplexityAnalyzer
+        # Use standardized import utility
+        setup_test_environment()
+        imports = get_standard_imports()
 
-            print("  ✓ All core modules imported successfully")
-        except ImportError as e:
-            raise Exception(f"Failed to import core modules: {e}")
+        # Check that required modules are available
+        required = ['MCPClient', 'FrameworkDetector', 'ComplexityAnalyzer']
+        missing = [mod for mod in required if imports.get(mod) is None]
+
+        if missing:
+            raise Exception(f"Failed to import core modules: {missing}")
+
+        print("  ✓ All core modules imported successfully")
 
         # Test basic initialization
         try:
-            MCPClient()
-            FrameworkDetector()
-            ComplexityAnalyzer()
+            imports['MCPClient']()
+            imports['FrameworkDetector']()
+            imports['ComplexityAnalyzer']()
             print("  ✓ All components initialize successfully")
         except Exception as e:
             raise Exception(f"Failed to initialize components: {e}")
@@ -153,10 +159,14 @@ How should we approach this systematically?""",
 
     def test_framework_detection(self):
         """Test framework detection functionality"""
-        try:
-            from claudedirector.frameworks.framework_detector import FrameworkDetector
+        imports = get_standard_imports()
 
-            detector = FrameworkDetector()
+        if imports.get('FrameworkDetector') is None:
+            print("  ⚠ Framework detection not available (optional)")
+            return
+
+        try:
+            detector = imports['FrameworkDetector']()
 
             # Test basic detection
             test_cases = [
@@ -170,7 +180,7 @@ How should we approach this systematically?""",
 
             successful_detections = 0
             for test_content, expected_framework in test_cases:
-                results = detector.detect_frameworks(test_content, {"persona": "diego"})
+                results = detector.detect_frameworks_used(test_content)
                 detected_names = [r.framework.name for r in results]
 
                 if expected_framework in detected_names:
@@ -190,27 +200,30 @@ How should we approach this systematically?""",
 
     def test_complexity_analysis(self):
         """Test complexity analysis functionality"""
-        try:
-            from claudedirector.core.complexity_analyzer import (
-                ComplexityAnalyzer,
-                ComplexityLevel,
-            )
+        imports = get_standard_imports()
 
-            analyzer = ComplexityAnalyzer()
+        if imports.get('ComplexityAnalyzer') is None:
+            raise Exception("Complexity analyzer not available")
+
+        try:
+            analyzer = imports['ComplexityAnalyzer']()
+
+            # Import AnalysisComplexity from the module
+            from core.complexity_analyzer import AnalysisComplexity
 
             # Test complexity scoring
             test_cases = [
-                ("What is Team Topologies?", ComplexityLevel.LOW),
-                ("How should we improve our design system?", ComplexityLevel.MEDIUM),
+                ("What is Team Topologies?", AnalysisComplexity.SIMPLE),
+                ("How should we improve our design system?", AnalysisComplexity.MEDIUM),
                 (
                     "How should we restructure our engineering teams for scalability while maintaining design system consistency across multiple international product teams?",
-                    ComplexityLevel.HIGH,
+                    AnalysisComplexity.COMPLEX,
                 ),
             ]
 
             correct_classifications = 0
             for test_input, expected_level in test_cases:
-                result = analyzer.analyze_complexity(test_input)
+                result = analyzer.analyze_input_complexity(test_input, {})
                 if result.complexity_level == expected_level:
                     correct_classifications += 1
                     print(f"  ✓ Correctly classified as {expected_level.value}")
@@ -230,12 +243,14 @@ How should we approach this systematically?""",
 
     def test_transparency_engine(self):
         """Test transparency engine functionality"""
-        try:
-            from claudedirector.transparency.transparency_engine import (
-                TransparencyEngine,
-            )
+        imports = get_standard_imports()
 
-            engine = TransparencyEngine()
+        if imports.get('TransparencyEngine') is None:
+            print("  ⚠ Transparency engine not available (optional)")
+            return
+
+        try:
+            engine = imports['TransparencyEngine']()
 
             # Test persona disclosure
             persona_disclosure = engine.generate_persona_disclosure(

@@ -13,10 +13,10 @@ lib_path = Path(__file__).parent.parent.parent / "lib"
 sys.path.insert(0, str(lib_path))
 
 try:
-    from claudedirector.transparency.integrated_transparency import (
+    from lib.transparency.integrated_transparency import (
         IntegratedTransparencySystem,
     )
-    from claudedirector.transparency.framework_detection import (
+    from lib.transparency.framework_detection import (
         FrameworkDetectionMiddleware,
     )
 
@@ -269,7 +269,7 @@ class TestFrameworkDetection:
     def test_framework_attribution_generation(self):
         """Test framework attribution text generation"""
         # Create mock framework usage
-        from claudedirector.transparency.framework_detection import FrameworkUsage
+        from lib.transparency.framework_detection import FrameworkUsage
 
         frameworks = [
             FrameworkUsage(

@@ -5,8 +5,8 @@ Unit tests for database management
 import sqlite3
 
 import pytest
-from claudedirector.core.database import DatabaseManager
-from claudedirector.core.exceptions import DatabaseError
+from lib.core.database import DatabaseManager
+from lib.core.exceptions import DatabaseError
 
 
 class TestDatabaseManager:

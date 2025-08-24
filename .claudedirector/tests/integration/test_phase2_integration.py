@@ -8,8 +8,8 @@ import tempfile
 from pathlib import Path
 from unittest.mock import Mock
 
-from claudedirector.core.workspace_file_handler import WorkspaceFileHandler
-from claudedirector.core.persona_file_integration import PersonaFileIntegration
+from lib.core.workspace_file_handler import WorkspaceFileHandler
+from lib.core.persona_file_integration import PersonaFileIntegration
 
 
 class TestPhase2Integration:

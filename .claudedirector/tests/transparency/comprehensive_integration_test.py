@@ -14,9 +14,9 @@ sys.path.insert(0, str(lib_path))
 sys.path.insert(0, str(integration_path))
 
 # Import all transparency components
-from claudedirector.core.enhanced_transparency_engine import EnhancedTransparencyEngine
-from claudedirector.core.mcp_transparency_integration import MCPTransparencyMiddleware
-from claudedirector.core.response_middleware import ResponseTransparencyMiddleware
+from lib.core.enhanced_transparency_engine import EnhancedTransparencyEngine
+from lib.core.mcp_transparency_integration import MCPTransparencyMiddleware
+from lib.core.response_middleware import ResponseTransparencyMiddleware
 from cursor_transparency_bridge import CursorTransparencyBridge
 
 

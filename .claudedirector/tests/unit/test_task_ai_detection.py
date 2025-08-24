@@ -14,9 +14,9 @@ lib_path = Path(__file__).parent.parent.parent / "lib"
 sys.path.insert(0, str(lib_path))
 
 try:
-    from claudedirector.intelligence.task import TaskIntelligence
-    from claudedirector.core.config import ClaudeDirectorConfig
-    from claudedirector.core.exceptions import AIDetectionError
+    from lib.intelligence.task import TaskIntelligence
+    from lib.core.config import ClaudeDirectorConfig
+    from lib.core.exceptions import AIDetectionError
 
     IMPORTS_AVAILABLE = True
 except ImportError as e:

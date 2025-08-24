@@ -10,7 +10,7 @@ from unittest.mock import patch
 import time
 
 # Import Phase 4.1 components
-from claudedirector.core.persona_enhanced_integration import (
+from lib.core.persona_enhanced_integration import (
     ConversationIntelligenceEngine,
     PersonaFrameworkOrchestrator,
 )
@@ -50,7 +50,7 @@ class TestConversationIntelligenceIntegration(unittest.TestCase):
     def test_enhanced_conversation_processing(self, mock_analyze):
         """Test enhanced conversation processing with mock framework"""
         # Setup mock framework response
-        from claudedirector.core.embedded_framework_engine import (
+        from lib.core.embedded_framework_engine import (
             FrameworkAnalysis,
             SystematicResponse,
         )
@@ -125,7 +125,7 @@ class TestConversationIntelligenceIntegration(unittest.TestCase):
     )
     def test_context_aware_conversation_flow(self, mock_analyze):
         """Test that conversation intelligence maintains context across interactions"""
-        from claudedirector.core.embedded_framework_engine import (
+        from lib.core.embedded_framework_engine import (
             FrameworkAnalysis,
             SystematicResponse,
         )

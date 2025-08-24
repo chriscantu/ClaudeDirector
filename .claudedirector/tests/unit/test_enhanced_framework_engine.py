@@ -9,7 +9,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 # Import the enhanced framework engine
-from claudedirector.core.enhanced_framework_engine import (
+from lib.core.enhanced_framework_engine import (
     EnhancedFrameworkEngine,
     ConversationMemoryEngine,
     MultiFrameworkIntegrationEngine,
@@ -18,7 +18,7 @@ from claudedirector.core.enhanced_framework_engine import (
 )
 
 # Import base classes for backwards compatibility testing
-from claudedirector.core.embedded_framework_engine import (
+from lib.core.embedded_framework_engine import (
     EmbeddedFrameworkEngine,
     FrameworkAnalysis,
     SystematicResponse,

@@ -10,7 +10,7 @@ from unittest.mock import patch
 import time
 
 # Import Phase 4.1 main interface
-from claudedirector.phase4_conversation_intelligence import (
+from lib.phase4_conversation_intelligence import (
     ClaudeDirectorPhase4,
     ConversationIntelligenceResponse,
     respond_intelligently,
@@ -56,7 +56,7 @@ class TestClaudeDirectorPhase4Main(unittest.TestCase):
     def test_enhanced_conversation_response(self, mock_analyze):
         """Test enhanced conversation response with full intelligence"""
         # Setup mock framework response
-        from claudedirector.core.embedded_framework_engine import (
+        from lib.core.embedded_framework_engine import (
             FrameworkAnalysis,
             SystematicResponse,
         )

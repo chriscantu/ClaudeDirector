@@ -6,7 +6,7 @@ import os
 import tempfile
 from pathlib import Path
 
-from claudedirector.core.config import ClaudeDirectorConfig
+from lib.core.config import ClaudeDirectorConfig
 
 
 class TestClaudeDirectorConfig:

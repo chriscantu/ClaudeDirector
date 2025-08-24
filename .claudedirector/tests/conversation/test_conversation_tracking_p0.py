@@ -185,7 +185,7 @@ class TestConversationTrackingP0(unittest.TestCase):
 
                 # Try importing as installed package first (CI environment)
                 try:
-                    from claudedirector.core.integrated_conversation_manager import (
+                    from lib.core.integrated_conversation_manager import (
                         IntegratedConversationManager,
                     )
                 except ImportError:
