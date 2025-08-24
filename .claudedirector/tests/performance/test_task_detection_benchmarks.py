@@ -11,8 +11,8 @@ from unittest.mock import Mock, patch
 from typing import Callable, Dict, Any
 
 try:
-    from claudedirector.intelligence.task import TaskIntelligence
-    from claudedirector.core.config import ClaudeDirectorConfig
+    from lib.intelligence.task import TaskIntelligence
+    from lib.core.config import ClaudeDirectorConfig
 
     IMPORTS_AVAILABLE = True
 except ImportError:

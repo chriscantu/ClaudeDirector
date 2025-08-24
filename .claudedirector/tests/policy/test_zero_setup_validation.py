@@ -74,7 +74,7 @@ class TestZeroSetupValidation:
         with patch("builtins.__import__", side_effect=self._mock_import_error):
             # Should handle missing mcp-use gracefully
             try:
-                from claudedirector.integrations.mcp_use_client import MCPUseClient
+                from lib.integrations.mcp_use_client import MCPUseClient
 
                 client = MCPUseClient()
                 assert client.is_available is False

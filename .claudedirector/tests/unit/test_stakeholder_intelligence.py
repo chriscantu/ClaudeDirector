@@ -5,8 +5,8 @@ Unit tests for stakeholder intelligence functionality
 from unittest.mock import Mock, patch
 
 import pytest
-from claudedirector.core.exceptions import AIDetectionError
-from claudedirector.intelligence.stakeholder import StakeholderIntelligence
+from lib.core.exceptions import AIDetectionError
+from lib.intelligence.stakeholder import StakeholderIntelligence
 
 
 class TestStakeholderIntelligence:

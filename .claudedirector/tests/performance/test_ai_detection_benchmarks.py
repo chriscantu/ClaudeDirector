@@ -16,8 +16,8 @@ lib_path = Path(__file__).parent.parent.parent / "lib"
 sys.path.insert(0, str(lib_path))
 
 try:
-    from claudedirector.intelligence.stakeholder import StakeholderIntelligence
-    from claudedirector.core.config import ClaudeDirectorConfig
+    from lib.intelligence.stakeholder import StakeholderIntelligence
+    from lib.core.config import ClaudeDirectorConfig
 
     IMPORTS_AVAILABLE = True
 except ImportError as e:

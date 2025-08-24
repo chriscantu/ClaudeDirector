@@ -5,8 +5,8 @@ Unit tests for task intelligence functionality
 from unittest.mock import Mock, patch
 
 import pytest
-from claudedirector.core.exceptions import AIDetectionError
-from claudedirector.intelligence.task import TaskIntelligence
+from lib.core.exceptions import AIDetectionError
+from lib.intelligence.task import TaskIntelligence
 
 
 class TestTaskIntelligence:

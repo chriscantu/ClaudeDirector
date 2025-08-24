@@ -11,7 +11,7 @@ import os
 # Add the lib directory to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../lib"))
 
-from claudedirector.core.embedded_framework_engine import (
+from lib.core.embedded_framework_engine import (
     EmbeddedFrameworkEngine,
     EmbeddedPersonaIntegrator,
 )

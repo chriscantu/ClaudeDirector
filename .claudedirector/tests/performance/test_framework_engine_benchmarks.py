@@ -9,7 +9,7 @@ import time
 from typing import Callable, Dict, Any
 
 try:
-    from claudedirector.frameworks.embedded_framework_engine import (
+    from lib.frameworks.embedded_framework_engine import (
         EmbeddedFrameworkEngine,
     )
 

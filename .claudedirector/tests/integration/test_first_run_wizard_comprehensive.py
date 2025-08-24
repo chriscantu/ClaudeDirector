@@ -12,14 +12,14 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "lib"))
 
 try:
-    from claudedirector.core.first_run_wizard import (
+    from lib.core.first_run_wizard import (
         FirstRunWizard,
         UserRole,
         OrganizationType,
         ChallengeFocus,
         RolePersonaMapper,
     )
-    from claudedirector.core.cursor_wizard_integration import (
+    from lib.core.cursor_wizard_integration import (
         CursorWizardIntegration,
         process_cursor_input,
     )
