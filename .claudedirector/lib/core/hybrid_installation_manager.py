@@ -49,7 +49,9 @@ class InstallationResult:
         self.performance_benefit = performance_benefit
 
         # Store backwards compatibility values
-        self._command_available = command_available if command_available is not None else success
+        self._command_available = (
+            command_available if command_available is not None else success
+        )
 
     # Backwards compatibility properties
     @property
@@ -107,7 +109,9 @@ class HybridInstallationManager:
 
     def __init__(self, config_path: Optional[Path] = None):
         if config_path is None:
-            config_path = Path(__file__).parent.parent.parent / "config" / "mcp_servers.yaml"
+            config_path = (
+                Path(__file__).parent.parent.parent / "config" / "mcp_servers.yaml"
+            )
 
         self.config_path = config_path
         self.config = self._load_config()
@@ -166,7 +170,9 @@ class HybridInstallationManager:
 
     def _load_usage_stats(self) -> Dict[str, UsageStats]:
         """Load usage statistics for performance tracking"""
-        stats_file = Path(__file__).parent.parent.parent / "data" / "mcp_usage_stats.json"
+        stats_file = (
+            Path(__file__).parent.parent.parent / "data" / "mcp_usage_stats.json"
+        )
         stats = {}
 
         try:
@@ -194,7 +200,9 @@ class HybridInstallationManager:
 
     def _save_usage_stats(self):
         """Save usage statistics to disk"""
-        stats_file = Path(__file__).parent.parent.parent / "data" / "mcp_usage_stats.json"
+        stats_file = (
+            Path(__file__).parent.parent.parent / "data" / "mcp_usage_stats.json"
+        )
         stats_file.parent.mkdir(exist_ok=True)
 
         data = {}
@@ -225,7 +233,9 @@ class HybridInstallationManager:
                 return result.returncode == 0
 
             # For other commands, try which first
-            result = subprocess.run(["which", command], capture_output=True, text=True, timeout=3)
+            result = subprocess.run(
+                ["which", command], capture_output=True, text=True, timeout=3
+            )
             if result.returncode == 0:
                 return True
 
@@ -249,7 +259,9 @@ class HybridInstallationManager:
 
         try:
             # For permanent commands, first check if they're available
-            if cmd.type == "permanent" and not self.check_command_availability(cmd.command):
+            if cmd.type == "permanent" and not self.check_command_availability(
+                cmd.command
+            ):
                 return InstallationResult(
                     success=False,
                     installation_type="permanent",
@@ -259,8 +271,12 @@ class HybridInstallationManager:
                 )
 
             # Try to execute the command
-            full_command = [cmd.command] + cmd.args + ["--version"]  # Just test availability
-            result = subprocess.run(full_command, capture_output=True, text=True, timeout=timeout)
+            full_command = (
+                [cmd.command] + cmd.args + ["--version"]
+            )  # Just test availability
+            result = subprocess.run(
+                full_command, capture_output=True, text=True, timeout=timeout
+            )
 
             startup_time = time.time() - start_time
 
@@ -321,7 +337,9 @@ class HybridInstallationManager:
                 InstallationCommand(
                     type="temporary",
                     command=server_config.get("command", "npx"),
-                    args=server_config.get("args", ["-y", f"@{server_name}/mcp-server"]),
+                    args=server_config.get(
+                        "args", ["-y", f"@{server_name}/mcp-server"]
+                    ),
                     fallback_message=f"Installing MCP enhancement: {server_name}",
                 )
             ]
@@ -339,7 +357,9 @@ class HybridInstallationManager:
 
             if result.success:
                 # Track usage statistics
-                self._track_usage(server_name, result.installation_type, result.startup_time)
+                self._track_usage(
+                    server_name, result.installation_type, result.startup_time
+                )
 
                 # Show appropriate message
                 self._show_installation_message(server_name, result)
@@ -358,7 +378,9 @@ class HybridInstallationManager:
             error_message="Installation failed - no installation method succeeded",
         )
 
-    def _track_usage(self, server_name: str, installation_type: str, startup_time: float):
+    def _track_usage(
+        self, server_name: str, installation_type: str, startup_time: float
+    ):
         """Track usage statistics for performance optimization hints"""
         if not self.config.get("hybrid_installation", {}).get(
             "track_installation_performance", True
@@ -403,13 +425,18 @@ class HybridInstallationManager:
         if not stats:
             return
 
-        threshold = self.config.get("hybrid_installation", {}).get("performance_hint_threshold", 3)
+        threshold = self.config.get("hybrid_installation", {}).get(
+            "performance_hint_threshold", 3
+        )
 
         # Show hint after threshold temporary uses
         if (
             stats.temporary_uses >= threshold
             and stats.permanent_uses == 0
-            and (not stats.last_hint_shown or (datetime.now() - stats.last_hint_shown).days >= 7)
+            and (
+                not stats.last_hint_shown
+                or (datetime.now() - stats.last_hint_shown).days >= 7
+            )
         ):  # Don't spam hints
 
             self._show_performance_hint(server_name, stats)
@@ -439,7 +466,9 @@ class HybridInstallationManager:
         print(
             f"   You've used {server_name} {stats.temporary_uses} times - permanent installation saves ~{stats.total_startup_time_saved:.1f}s total"
         )
-        print("   Zero setup is maintained - this optimization is completely optional\n")
+        print(
+            "   Zero setup is maintained - this optimization is completely optional\n"
+        )
 
     def get_server_status(self, server_name: str) -> Dict[str, Any]:
         """Get comprehensive status for a server"""
@@ -448,9 +477,13 @@ class HybridInstallationManager:
 
         permanent_available = False
         if commands:
-            permanent_cmd = next((cmd for cmd in commands if cmd.type == "permanent"), None)
+            permanent_cmd = next(
+                (cmd for cmd in commands if cmd.type == "permanent"), None
+            )
             if permanent_cmd:
-                permanent_available = self.check_command_availability(permanent_cmd.command)
+                permanent_available = self.check_command_availability(
+                    permanent_cmd.command
+                )
 
         return {
             "server_name": server_name,
@@ -516,7 +549,9 @@ class HybridInstallationManager:
         if default_server not in self._usage_stats:
             return False
         stats = self._usage_stats[default_server]
-        threshold = self.config.get("hybrid_installation", {}).get("performance_hint_threshold", 3)
+        threshold = self.config.get("hybrid_installation", {}).get(
+            "performance_hint_threshold", 3
+        )
         return stats.temporary_uses >= threshold
 
     def get_installation_strategy(self, package_name: str) -> str:
