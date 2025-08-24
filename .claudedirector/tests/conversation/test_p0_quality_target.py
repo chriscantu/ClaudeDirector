@@ -140,7 +140,7 @@ Excellent strategic question. Let me analyze our competitive landscape...
                     "strategic_depth": conv.get("strategic_depth", 0.7),
                     "conversation_quality": conv.get("strategic_depth", 0.7),
                 }
-                
+
                 manager.capture_conversation_turn(
                     user_input=conv["user_input"],
                     assistant_response=conv["assistant_response"],
@@ -153,7 +153,7 @@ Excellent strategic question. Let me analyze our competitive landscape...
             target_quality = 0.25  # Realistic threshold for current quality calculation
             print(f"\n📊 Testing quality calculation (target: {target_quality})...")
 
-                        # Create test context for quality calculation (matching expected format)
+            # Create test context for quality calculation (matching expected format)
             test_context = {
                 "conversation_thread": [
                     {
@@ -169,7 +169,7 @@ Excellent strategic question. Let me analyze our competitive landscape...
                 "executive_context": True,
                 "decisions_made": [
                     "platform investment strategy",
-                    "design system integration", 
+                    "design system integration",
                     "technical architecture",
                 ],
                 "action_items": [
