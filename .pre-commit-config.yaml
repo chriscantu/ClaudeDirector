@@ -115,9 +115,11 @@ repos:
       - id: solid-principle-validator
         name: 🏗️ SOLID Principle Validation
         entry: python .claudedirector/tools/architecture/solid_validator.py
-        language: python
+        language: system
         files: ^\.claudedirector/lib/.*\.py$
         pass_filenames: true
+        always_run: false
+        verbose: true
 
       # P1 Feature Testing
       - id: p1-unit-tests
