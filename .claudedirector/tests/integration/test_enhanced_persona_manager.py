@@ -9,14 +9,14 @@ from unittest.mock import patch
 import tempfile
 import yaml
 
-from claudedirector.integrations.enhanced_persona_manager import (
+from claudedirector.core.enhanced_persona_manager import (
     EnhancedPersonaManager,
     EnhancedResponse,
     EnhancementStatus,
     TransparencyManager,
 )
 from claudedirector.integrations.mcp_use_client import MCPResponse, ConnectionStatus
-from claudedirector.integrations.complexity_analyzer import (
+from claudedirector.core.complexity_analyzer import (
     ComplexityAnalysis,
     ComplexityLevel,
 )
