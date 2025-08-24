@@ -1,6 +1,6 @@
 # ClaudeDirector Capabilities
 
-**Local AI Strategic Leadership Framework** - Complete overview of personas, frameworks, and AI capabilities.
+**Local AI Strategic Leadership Framework** - Overview of personas, frameworks, and AI capabilities.
 
 ## Architecture Overview
 
@@ -34,11 +34,11 @@ Specialized AI leaders that adapt to your role and challenges:
 - **📊 Delbert** (Data Engineering) - Hybrid database architecture, analytics pipeline specialist
 - **🔒 Security** (Platform Security) - Security architecture, threat modeling, risk assessment
 
-All personas automatically detect complexity and apply proven frameworks transparently.
+All personas automatically detect complexity and apply frameworks transparently.
 
 ## AI Transparency
 
-ClaudeDirector shows you exactly how AI insights are enhanced with complete transparency.
+ClaudeDirector shows how AI insights are enhanced with transparency.
 
 ### Multi-Persona Analysis Example
 ```
