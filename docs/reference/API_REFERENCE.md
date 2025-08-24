@@ -1,6 +1,6 @@
-# ClaudeDirector API Reference
+# API Reference
 
-**Complete API documentation for ClaudeDirector's strategic AI architecture.**
+**API documentation for ClaudeDirector.**
 
 ---
 
@@ -9,36 +9,36 @@
 ### **Core System APIs**
 
 #### **🔍 [Transparency System API](api/TRANSPARENCY_API.md)**
-Real-time AI enhancement disclosure and framework attribution system.
+AI enhancement disclosure and framework attribution.
 - MCP Transparency Middleware
 - Framework Attribution Engine
 
 #### **🎭 [Persona System API](api/PERSONA_SYSTEM_API.md)**
-Strategic persona selection, management, and multi-persona coordination.
+Persona selection, management, and coordination.
 - Persona Manager
 - Base Persona Class
 
 #### **🔧 [MCP Integration API](api/MCP_INTEGRATION_API.md)**
-Model Context Protocol server management and capability invocation.
+MCP server management and capability invocation.
 - MCP Client Manager
 - MCP Client Implementation
 
 ### **Intelligence & Analysis APIs**
 
 #### **📚 [Framework Detection API](api/FRAMEWORK_DETECTION_API.md)**
-Automatic detection and attribution of strategic frameworks in AI responses.
+Detection and attribution of strategic frameworks.
 - Framework Detector
 - Pattern Recognition Engine
 
 #### **🔄 [Conversation Management API](api/CONVERSATION_API.md)**
-Strategic conversation context management and persistence.
+Conversation context management and persistence.
 - Conversation Manager
 - Context Persistence
 
 ### **System Management APIs**
 
 #### **📊 [Performance Monitoring API](api/PERFORMANCE_API.md)**
-Real-time performance tracking and optimization metrics.
+Performance tracking and metrics.
 - Performance Monitor
 - Metrics Collection
 

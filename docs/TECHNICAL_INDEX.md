@@ -1,13 +1,13 @@
-# ClaudeDirector Technical Documentation Index
+# Technical Documentation Index
 
-**Complete technical reference for ClaudeDirector's transparent AI architecture.**
+**Technical reference for ClaudeDirector's AI architecture.**
 
 ---
 
 ## 🏗️ **Core Architecture**
 
 ### **System Design**
-- **[Architecture Overview](architecture/OVERVIEW.md)** - Complete system architecture with diagrams
+- **[Architecture Overview](architecture/OVERVIEW.md)** - System architecture with diagrams
 - **[Transparency System](architecture/COMPONENTS.md#transparency-system-architecture)** - Real-time AI capability disclosure
 - **[Multi-Persona Coordination](architecture/PATTERNS.md#multi-persona-collaboration-patterns)** - Cross-functional collaboration patterns
 - **[Performance Architecture](architecture/OVERVIEW.md#performance-requirements)** - Optimization and scaling strategies

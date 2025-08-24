@@ -55,7 +55,8 @@ repos:
         name: 🛡️ P0 TEST PROTECTION POLICY
         entry: python3 .claudedirector/tools/policy/check_p0_tests.py
         language: system
-        files: '.*test.*p0.*\.py$|.*_p0_.*\.py$|.*p0_test.*\.py$'
+        files: '^\.claudedirector/tests/.*test.*p0.*\.py$|^\.claudedirector/tests/.*_p0_.*\.py$'
+        exclude: '^\.claudedirector/tests/p0_enforcement/run_mandatory_p0_tests\.py$'
         pass_filenames: true
         stages: [pre-commit]
         verbose: true

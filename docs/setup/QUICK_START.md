@@ -1,6 +1,6 @@
-# ClaudeDirector Quick Start Guide
+# Quick Start Guide
 
-**Get started with ClaudeDirector strategic AI leadership in 5 minutes.**
+**Get started with ClaudeDirector in 5 minutes.**
 
 ---
 
@@ -8,7 +8,7 @@
 
 ### **Automatic Conversation Capture (Active by Default)**
 
-ClaudeDirector automatically captures and preserves strategic conversations:
+ClaudeDirector automatically captures strategic conversations:
 
 ```python
 # Automatic conversation capture is enabled by default
@@ -20,12 +20,12 @@ status = get_capture_status()
 print(f"Capture enabled: {status['enabled']}")
 ```
 
-**What's Captured Automatically:**
-- ✅ Strategic conversations with personas (🎯 Diego, 📊 Camille, etc.)
+**What's Captured:**
+- ✅ Conversations with personas (🎯 Diego, 📊 Camille, etc.)
 - ✅ Framework applications and attributions
 - ✅ Executive discussions and stakeholder analysis
 - ✅ Platform investment and ROI conversations
-- ✅ Cross-session context for conversation resumption
+- ✅ Cross-session context for resumption
 
 **Database Location:**
 - **Canonical Database**: `data/strategic_memory.db`

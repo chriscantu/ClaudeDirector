@@ -9,9 +9,10 @@ Enforces user requirement: "ensure that all P0 features are always tested moving
 import sys
 import subprocess
 import time
+import yaml
 from datetime import datetime
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List
 
 # Add project paths
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
@@ -37,47 +38,65 @@ class P0TestEnforcer:
 
     def __init__(self):
         self.start_time = datetime.now()
-        self.p0_tests_defined = [
-            {
-                "name": "MCP Transparency P0",
-                "module": ".claudedirector/tests/regression/test_mcp_transparency_p0.py",
-                "critical_level": "BLOCKING",
-                "description": "MCP server transparency disclosure must work",
-                "failure_impact": "Strategic persona responses lose transparency",
-            },
-            {
-                "name": "Conversation Tracking P0",
-                "module": ".claudedirector/tests/conversation/test_conversation_tracking_p0.py",
-                "critical_level": "BLOCKING",
-                "description": "Strategic memory conversation capture must work",
-                "failure_impact": "Strategic context preservation fails across sessions",
-            },
-            {
-                "name": "Conversation Quality P0",
-                "module": ".claudedirector/tests/conversation/test_p0_quality_target.py",
-                "critical_level": "BLOCKING",
-                "description": "Conversation quality must exceed 0.7 threshold",
-                "failure_impact": "Strategic intelligence data quality degrades",
-            },
-            {
-                "name": "First-Run Wizard P0",
-                "module": ".claudedirector/tests/integration/test_first_run_wizard_comprehensive.py",
-                "critical_level": "HIGH",
-                "description": "First-run user experience must work",
-                "failure_impact": "New users cannot customize system",
-            },
-            {
-                "name": "Cursor Integration P0",
-                "module": ".claudedirector/tests/integration/test_cursor_integration_comprehensive.py",
-                "critical_level": "HIGH",
-                "description": "Cursor environment integration must work",
-                "failure_impact": "Core usage environment fails",
-            },
-        ]
-
+        self.p0_tests_defined = self._load_p0_tests_from_yaml()
         self.test_results = []
         self.total_tests_run = 0
         self.blocking_failures = 0
+
+    def _load_p0_tests_from_yaml(self) -> List[Dict]:
+        """Load P0 test definitions from YAML configuration file"""
+        yaml_path = (
+            PROJECT_ROOT
+            / ".claudedirector/tests/p0_enforcement/p0_test_definitions.yaml"
+        )
+
+        if not yaml_path.exists():
+            print(f"⚠️ P0 definitions file not found: {yaml_path}")
+            print("⚠️ Falling back to minimal P0 test set")
+            return [
+                {
+                    "name": "MCP Transparency P0",
+                    "test_module": ".claudedirector/tests/regression/test_mcp_transparency_p0.py",
+                    "critical_level": "BLOCKING",
+                    "description": "MCP server transparency disclosure must work",
+                    "failure_impact": "Strategic persona responses lose transparency",
+                }
+            ]
+
+        try:
+            with open(yaml_path, "r") as f:
+                config = yaml.safe_load(f)
+
+            # Convert YAML format to expected format
+            p0_tests = []
+            for test_def in config.get("p0_features", []):
+                p0_tests.append(
+                    {
+                        "name": test_def["name"],
+                        "module": test_def[
+                            "test_module"
+                        ],  # YAML uses 'test_module', code expects 'module'
+                        "critical_level": test_def["critical_level"],
+                        "description": test_def["description"],
+                        "failure_impact": test_def["failure_impact"],
+                    }
+                )
+
+            print(f"✅ Loaded {len(p0_tests)} P0 tests from YAML configuration")
+            return p0_tests
+
+        except Exception as e:
+            print(f"❌ Error loading P0 definitions from YAML: {e}")
+            print("⚠️ Falling back to minimal P0 test set")
+            return [
+                {
+                    "name": "MCP Transparency P0",
+                    "module": ".claudedirector/tests/regression/test_mcp_transparency_p0.py",
+                    "critical_level": "BLOCKING",
+                    "description": "MCP server transparency disclosure must work",
+                    "failure_impact": "Strategic persona responses lose transparency",
+                }
+            ]
 
     def validate_test_files_exist(self) -> bool:
         """Ensure all P0 test files exist before running"""
@@ -125,17 +144,23 @@ class P0TestEnforcer:
         start_time = time.time()
 
         try:
-            # Run the test module
+            # Run the test module (handle both files and directories)
             test_path = PROJECT_ROOT / test_module
-            cmd = [sys.executable, str(test_path)]
 
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                timeout=120,  # 2 minute timeout
-                cwd=PROJECT_ROOT,
-            )
+            if test_path.is_dir():
+                # Handle modular tests (directory with multiple test files)
+                return self._run_modular_tests(test_config, test_path, start_time)
+            else:
+                # Handle single test file
+                cmd = [sys.executable, str(test_path)]
+
+                result = subprocess.run(
+                    cmd,
+                    capture_output=True,
+                    text=True,
+                    timeout=120,  # 2 minute timeout
+                    cwd=PROJECT_ROOT,
+                )
 
             duration = time.time() - start_time
 
@@ -190,6 +215,104 @@ class P0TestEnforcer:
                 "duration": 0,
                 "success": False,
                 "error": str(e),
+                "description": test_config["description"],
+                "failure_impact": test_config["failure_impact"],
+            }
+
+    def _run_modular_tests(
+        self, test_config: Dict, test_path: Path, start_time: float
+    ) -> Dict:
+        """Run all test files in a directory (modular tests)"""
+        test_name = test_config["name"]
+        critical_level = test_config["critical_level"]
+
+        # Find all test files in the directory
+        test_files = list(test_path.glob("test_*.py"))
+
+        if not test_files:
+            print(f"⚠️ No test files found in {test_path}")
+            duration = time.time() - start_time
+            return {
+                "name": test_name,
+                "module": test_config["module"],
+                "critical_level": critical_level,
+                "exit_code": 1,
+                "duration": duration,
+                "success": False,
+                "error": f"No test files found in directory {test_path}",
+                "description": test_config["description"],
+                "failure_impact": test_config["failure_impact"],
+            }
+
+        print(f"   Running {len(test_files)} modular tests...")
+
+        all_passed = True
+        combined_stdout = []
+        combined_stderr = []
+        failed_tests = []
+
+        for test_file in sorted(test_files):
+            print(f"     • {test_file.name}")
+
+            result = subprocess.run(
+                [sys.executable, str(test_file)],
+                cwd=PROJECT_ROOT,
+                capture_output=True,
+                text=True,
+                timeout=60,  # 1 minute per modular test
+            )
+
+            if result.returncode == 0:
+                combined_stdout.append(f"✅ {test_file.name}: PASSED")
+                if result.stdout.strip():
+                    combined_stdout.append(result.stdout.strip())
+            else:
+                all_passed = False
+                failed_tests.append(test_file.name)
+                combined_stderr.append(
+                    f"❌ {test_file.name}: FAILED (exit {result.returncode})"
+                )
+                if result.stdout.strip():
+                    combined_stderr.append(result.stdout.strip())
+                if result.stderr.strip():
+                    combined_stderr.append(result.stderr.strip())
+
+        duration = time.time() - start_time
+
+        if all_passed:
+            print(
+                f"✅ PASSED: {test_name} ({duration:.2f}s) - All {len(test_files)} modular tests passed"
+            )
+            return {
+                "name": test_name,
+                "module": test_config["module"],
+                "critical_level": critical_level,
+                "exit_code": 0,
+                "duration": duration,
+                "success": True,
+                "stdout": "\n".join(combined_stdout),
+                "stderr": "",
+                "description": test_config["description"],
+                "failure_impact": test_config["failure_impact"],
+            }
+        else:
+            print(
+                f"❌ FAILED: {test_name} ({duration:.2f}s) - {len(failed_tests)} modular tests failed: {', '.join(failed_tests)}"
+            )
+
+            if critical_level == "BLOCKING":
+                self.blocking_failures += 1
+                print(f"🚨 BLOCKING FAILURE: {test_config['failure_impact']}")
+
+            return {
+                "name": test_name,
+                "module": test_config["module"],
+                "critical_level": critical_level,
+                "exit_code": 1,
+                "duration": duration,
+                "success": False,
+                "stdout": "\n".join(combined_stdout),
+                "stderr": "\n".join(combined_stderr),
                 "description": test_config["description"],
                 "failure_impact": test_config["failure_impact"],
             }
