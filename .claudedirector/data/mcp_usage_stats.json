@@ -1,14 +1,8 @@
 {
-  "test-package": {
-    "temporary_uses": 8,
-    "permanent_uses": 0,
-    "last_hint_shown": "2025-08-24T07:51:20.636035",
-    "total_startup_time_saved": 0.0
-  },
   "sequential": {
-    "temporary_uses": 8,
+    "temporary_uses": 1,
     "permanent_uses": 0,
-    "last_hint_shown": "2025-08-24T07:51:20.649357",
+    "last_hint_shown": null,
     "total_startup_time_saved": 0.0
   }
 }
