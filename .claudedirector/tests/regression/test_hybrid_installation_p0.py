@@ -27,7 +27,7 @@ class TestHybridInstallationP0(unittest.TestCase):
     def setUp(self):
         """Set up test environment"""
         # Import after path setup
-        from claudedirector.core.hybrid_installation_manager import (
+        from core.hybrid_installation_manager import (
             HybridInstallationManager,
             InstallationResult,
         )
@@ -314,7 +314,7 @@ class TestHybridInstallationP0(unittest.TestCase):
         """P0 TEST: Backwards compatibility MUST be maintained"""
         with patch.object(Path, "home", return_value=Path(self.temp_dir)):
             # Test singleton access
-            from claudedirector.core.hybrid_installation_manager import (
+            from core.hybrid_installation_manager import (
                 get_hybrid_manager,
                 install_mcp_package,
             )
