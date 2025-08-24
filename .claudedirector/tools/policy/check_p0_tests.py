@@ -10,32 +10,33 @@ import re
 from pathlib import Path
 from typing import List, Tuple
 
+
 class P0TestProtector:
     """Protects P0 tests from being disabled or removed."""
 
     def __init__(self):
         self.p0_test_patterns = [
-            r'test.*p0.*\.py$',
-            r'.*_p0_.*\.py$',
-            r'.*p0_test.*\.py$',
+            r"test.*p0.*\.py$",
+            r".*_p0_.*\.py$",
+            r".*p0_test.*\.py$",
         ]
 
         self.dangerous_patterns = [
-            (r'@pytest\.mark\.skip', 'P0 test marked as skipped'),
-            (r'@unittest\.skip', 'P0 test marked as skipped'),
-            (r'pytest\.skip\(', 'P0 test contains skip call'),
-            (r'self\.skipTest\(', 'P0 test contains skipTest call'),
-            (r'return\s*#.*skip', 'P0 test returns early (potential skip)'),
-            (r'pass\s*#.*skip', 'P0 test contains pass statement (potential skip)'),
-            (r'# TODO.*skip', 'P0 test has skip TODO'),
-            (r'# FIXME.*skip', 'P0 test has skip FIXME'),
+            (r"@pytest\.mark\.skip", "P0 test marked as skipped"),
+            (r"@unittest\.skip", "P0 test marked as skipped"),
+            (r"pytest\.skip\(", "P0 test contains skip call"),
+            (r"self\.skipTest\(", "P0 test contains skipTest call"),
+            (r"return\s*#.*skip", "P0 test returns early (potential skip)"),
+            (r"pass\s*#.*skip", "P0 test contains pass statement (potential skip)"),
+            (r"# TODO.*skip", "P0 test has skip TODO"),
+            (r"# FIXME.*skip", "P0 test has skip FIXME"),
         ]
 
         self.required_p0_tests = [
-            'test_hybrid_installation_p0.py',
-            'test_mcp_transparency_p0.py',
-            'test_conversation_tracking_p0.py',
-            'test_p0_quality_target.py',
+            "test_hybrid_installation_p0.py",
+            "test_mcp_transparency_p0.py",
+            "test_conversation_tracking_p0.py",
+            "test_p0_quality_target.py",
         ]
 
     def is_p0_test_file(self, file_path: Path) -> bool:
@@ -53,24 +54,31 @@ class P0TestProtector:
         violations = []
 
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
             # Check for dangerous patterns
             for pattern, description in self.dangerous_patterns:
                 matches = re.finditer(pattern, content, re.IGNORECASE | re.MULTILINE)
                 for match in matches:
-                    line_num = content[:match.start()].count('\n') + 1
+                    line_num = content[: match.start()].count("\n") + 1
                     violations.append(f"Line {line_num}: {description}")
 
             # Check for test method presence
-            test_methods = re.findall(r'def (test_\w+)', content)
+            test_methods = re.findall(r"def (test_\w+)", content)
             if not test_methods:
                 violations.append("No test methods found in P0 test file")
 
             # Check for assertions
-            assertion_patterns = [r'assert\s+', r'self\.assert', r'self\.assertEqual', r'self\.assertTrue']
-            has_assertions = any(re.search(pattern, content) for pattern in assertion_patterns)
+            assertion_patterns = [
+                r"assert\s+",
+                r"self\.assert",
+                r"self\.assertEqual",
+                r"self\.assertTrue",
+            ]
+            has_assertions = any(
+                re.search(pattern, content) for pattern in assertion_patterns
+            )
             if not has_assertions:
                 violations.append("No assertions found in P0 test file")
 
@@ -88,10 +96,10 @@ class P0TestProtector:
 
             # Search in common test directories
             search_paths = [
-                Path('.claudedirector/tests'),
-                Path('tests'),
-                Path('.claudedirector/tests/regression'),
-                Path('.claudedirector/tests/integration'),
+                Path(".claudedirector/tests"),
+                Path("tests"),
+                Path(".claudedirector/tests/regression"),
+                Path(".claudedirector/tests/integration"),
             ]
 
             for search_path in search_paths:
@@ -104,6 +112,7 @@ class P0TestProtector:
                 missing_tests.append(f"Required P0 test not found: {required_test}")
 
         return missing_tests
+
 
 def main():
     """Main policy enforcement function."""
@@ -119,7 +128,7 @@ def main():
     for file_arg in sys.argv[1:]:
         file_path = Path(file_arg)
 
-        if not file_path.exists() or not file_path.suffix == '.py':
+        if not file_path.exists() or not file_path.suffix == ".py":
             continue
 
         if protector.is_p0_test_file(file_path):
@@ -163,10 +172,13 @@ def main():
         sys.exit(1)
     else:
         if total_files > 0:
-            print(f"✅ P0 Test Protection: All {total_files} P0 test files are properly protected")
+            print(
+                f"✅ P0 Test Protection: All {total_files} P0 test files are properly protected"
+            )
         else:
             print("✅ P0 Test Protection: No P0 test files in this commit")
         sys.exit(0)
+
 
 if __name__ == "__main__":
     main()

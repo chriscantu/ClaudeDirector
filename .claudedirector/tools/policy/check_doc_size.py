@@ -18,6 +18,7 @@ EXEMPT_FILES = {
     "CLAUDEDIRECTOR_CLEANUP_ANALYSIS.md",  # Temporary analysis files
 }
 
+
 def check_file_size(file_path: Path) -> Tuple[bool, int]:
     """
     Check if a documentation file exceeds the size limit.
@@ -26,7 +27,7 @@ def check_file_size(file_path: Path) -> Tuple[bool, int]:
         Tuple of (is_compliant, line_count)
     """
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             lines = f.readlines()
             line_count = len(lines)
 
@@ -41,6 +42,7 @@ def check_file_size(file_path: Path) -> Tuple[bool, int]:
     except Exception as e:
         print(f"❌ Error reading {file_path}: {e}")
         return False, 0
+
 
 def main():
     """Main policy enforcement function."""
@@ -57,7 +59,7 @@ def main():
         if not file_path.exists():
             continue
 
-        if not file_path.suffix == '.md':
+        if not file_path.suffix == ".md":
             continue
 
         total_files += 1
@@ -70,28 +72,37 @@ def main():
     if violations:
         print("🚨 DOCUMENTATION POLICY VIOLATIONS DETECTED")
         print("=" * 60)
-        print(f"Policy: Documentation files must be ≤{MAX_DOC_SIZE} lines (aligned with code standards)")
+        print(
+            f"Policy: Documentation files must be ≤{MAX_DOC_SIZE} lines (aligned with code standards)"
+        )
         print()
 
         for file_path, line_count in violations:
             excess_lines = line_count - MAX_DOC_SIZE
             print(f"❌ {file_path}")
             print(f"   Current: {line_count} lines (+{excess_lines} over limit)")
-            print(f"   Required: Split into focused files ≤{MAX_DOC_SIZE} lines each (same as Python files)")
+            print(
+                f"   Required: Split into focused files ≤{MAX_DOC_SIZE} lines each (same as Python files)"
+            )
             print()
 
         print("💡 REMEDIATION REQUIRED:")
         print("- Split large files into focused, single-responsibility documents")
         print("- Create index files that link to focused sub-documents")
-        print("- Follow examples in docs/architecture/patterns/ and docs/development/guides/")
+        print(
+            "- Follow examples in docs/architecture/patterns/ and docs/development/guides/"
+        )
         print("- See docs/DEVELOPMENT_POLICY.md for complete guidelines")
         print()
         print("🛡️ COMMIT BLOCKED: Fix violations before proceeding")
         sys.exit(1)
     else:
         if total_files > 0:
-            print(f"✅ Documentation Policy: All {total_files} files comply with size limits")
+            print(
+                f"✅ Documentation Policy: All {total_files} files comply with size limits"
+            )
         sys.exit(0)
+
 
 if __name__ == "__main__":
     main()

@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 from typing import List, Dict, Set, Tuple
 
+
 class ArchitectureChecker:
     """Validates architectural compliance for Python code."""
 
@@ -17,11 +18,11 @@ class ArchitectureChecker:
         self.violations = []
         self.allowed_imports = {
             # Core module import patterns
-            'lib.core': ['lib.integrations', 'lib.transparency', 'lib.frameworks'],
-            'lib.integrations': ['lib.core'],
-            'lib.transparency': ['lib.core', 'lib.integrations'],
-            'lib.frameworks': ['lib.core'],
-            'lib.mcp': ['lib.core', 'lib.integrations'],
+            "lib.core": ["lib.integrations", "lib.transparency", "lib.frameworks"],
+            "lib.integrations": ["lib.core"],
+            "lib.transparency": ["lib.core", "lib.integrations"],
+            "lib.frameworks": ["lib.core"],
+            "lib.mcp": ["lib.core", "lib.integrations"],
         }
 
     def check_import_compliance(self, file_path: Path, tree: ast.AST) -> List[str]:
@@ -39,7 +40,9 @@ class ArchitectureChecker:
 
                     # Check for layer violations
                     if self._is_layer_violation(file_path, module_name):
-                        violations.append(f"Layer violation: {module_name} not allowed from {file_path}")
+                        violations.append(
+                            f"Layer violation: {module_name} not allowed from {file_path}"
+                        )
 
         return violations
 
@@ -50,12 +53,20 @@ class ArchitectureChecker:
 
         if file_module and module_name:
             # Check if importing from same module family
-            if file_module.startswith('lib.') and module_name.startswith('lib.'):
-                file_base = file_module.split('.')[1] if len(file_module.split('.')) > 1 else ''
-                import_base = module_name.split('.')[1] if len(module_name.split('.')) > 1 else ''
+            if file_module.startswith("lib.") and module_name.startswith("lib."):
+                file_base = (
+                    file_module.split(".")[1] if len(file_module.split(".")) > 1 else ""
+                )
+                import_base = (
+                    module_name.split(".")[1] if len(module_name.split(".")) > 1 else ""
+                )
 
                 # Prevent core from importing from itself through other modules
-                if file_base == 'core' and import_base == 'core' and file_module != module_name:
+                if (
+                    file_base == "core"
+                    and import_base == "core"
+                    and file_module != module_name
+                ):
                     return True
 
         return False
@@ -64,12 +75,12 @@ class ArchitectureChecker:
         """Check if import violates architectural layers."""
         file_module = self._get_module_from_path(file_path)
 
-        if not file_module or not module_name.startswith('lib.'):
+        if not file_module or not module_name.startswith("lib."):
             return False
 
         # Get base module (e.g., 'lib.core' from 'lib.core.persona_manager')
-        file_base = '.'.join(file_module.split('.')[:2])
-        import_base = '.'.join(module_name.split('.')[:2])
+        file_base = ".".join(file_module.split(".")[:2])
+        import_base = ".".join(module_name.split(".")[:2])
 
         if file_base in self.allowed_imports:
             allowed = self.allowed_imports[file_base]
@@ -85,26 +96,29 @@ class ArchitectureChecker:
             parts = file_path.parts
 
             # Find .claudedirector in path
-            if '.claudedirector' in parts:
-                claudedirector_idx = parts.index('.claudedirector')
-                if claudedirector_idx + 1 < len(parts) and parts[claudedirector_idx + 1] == 'lib':
+            if ".claudedirector" in parts:
+                claudedirector_idx = parts.index(".claudedirector")
+                if (
+                    claudedirector_idx + 1 < len(parts)
+                    and parts[claudedirector_idx + 1] == "lib"
+                ):
                     # Extract module path after lib/
-                    module_parts = parts[claudedirector_idx + 2:]
+                    module_parts = parts[claudedirector_idx + 2 :]
                     if module_parts:
                         # Remove .py extension
-                        if module_parts[-1].endswith('.py'):
+                        if module_parts[-1].endswith(".py"):
                             module_parts = module_parts[:-1] + (module_parts[-1][:-3],)
-                        return 'lib.' + '.'.join(module_parts)
+                        return "lib." + ".".join(module_parts)
 
         except Exception:
             pass
 
-        return ''
+        return ""
 
     def check_file(self, file_path: Path) -> List[str]:
         """Check a single Python file for architectural compliance."""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
             tree = ast.parse(content)
@@ -121,6 +135,7 @@ class ArchitectureChecker:
         except Exception as e:
             return [f"Error analyzing file: {e}"]
 
+
 def main():
     """Main policy enforcement function."""
     if len(sys.argv) < 2:
@@ -134,11 +149,11 @@ def main():
     for file_arg in sys.argv[1:]:
         file_path = Path(file_arg)
 
-        if not file_path.exists() or not file_path.suffix == '.py':
+        if not file_path.exists() or not file_path.suffix == ".py":
             continue
 
         # Skip test files and __init__.py for now
-        if 'test' in str(file_path) or file_path.name == '__init__.py':
+        if "test" in str(file_path) or file_path.name == "__init__.py":
             continue
 
         total_files += 1
@@ -170,8 +185,11 @@ def main():
         sys.exit(1)
     else:
         if total_files > 0:
-            print(f"✅ Architecture Policy: All {total_files} files comply with architectural principles")
+            print(
+                f"✅ Architecture Policy: All {total_files} files comply with architectural principles"
+            )
         sys.exit(0)
+
 
 if __name__ == "__main__":
     main()

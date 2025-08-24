@@ -9,20 +9,22 @@ import shutil
 from pathlib import Path
 import yaml
 
+
 def backup_existing_config():
     """Backup existing pre-commit configuration."""
-    config_path = Path('.pre-commit-config.yaml')
+    config_path = Path(".pre-commit-config.yaml")
     if config_path.exists():
-        backup_path = Path('.pre-commit-config.yaml.backup')
+        backup_path = Path(".pre-commit-config.yaml.backup")
         shutil.copy2(config_path, backup_path)
         print(f"✅ Backed up existing configuration to {backup_path}")
         return True
     return False
 
+
 def add_policy_hooks_to_existing():
     """Add policy enforcement hooks to existing configuration."""
-    config_path = Path('.pre-commit-config.yaml')
-    new_config_path = Path('.pre-commit-config-new.yaml')
+    config_path = Path(".pre-commit-config.yaml")
+    new_config_path = Path(".pre-commit-config-new.yaml")
 
     if not config_path.exists():
         print("❌ No existing .pre-commit-config.yaml found")
@@ -34,33 +36,35 @@ def add_policy_hooks_to_existing():
 
     try:
         # Read existing configuration
-        with open(config_path, 'r') as f:
+        with open(config_path, "r") as f:
             existing_config = yaml.safe_load(f)
 
         # Read new policy hooks
-        with open(new_config_path, 'r') as f:
+        with open(new_config_path, "r") as f:
             new_config = yaml.safe_load(f)
 
         # Find the policy enforcement section in new config
         policy_hooks = None
-        for repo in new_config['repos']:
-            if repo.get('repo') == 'local':
-                for hook in repo['hooks']:
-                    if 'policy' in hook.get('name', '').lower():
+        for repo in new_config["repos"]:
+            if repo.get("repo") == "local":
+                for hook in repo["hooks"]:
+                    if "policy" in hook.get("name", "").lower():
                         # Add policy hooks to existing local repo
-                        for existing_repo in existing_config['repos']:
-                            if existing_repo.get('repo') == 'local':
+                        for existing_repo in existing_config["repos"]:
+                            if existing_repo.get("repo") == "local":
                                 # Check if hook already exists
-                                existing_ids = [h['id'] for h in existing_repo['hooks']]
-                                if hook['id'] not in existing_ids:
-                                    existing_repo['hooks'].append(hook)
+                                existing_ids = [h["id"] for h in existing_repo["hooks"]]
+                                if hook["id"] not in existing_ids:
+                                    existing_repo["hooks"].append(hook)
                                     print(f"✅ Added policy hook: {hook['name']}")
                                 else:
-                                    print(f"⚠️ Policy hook already exists: {hook['name']}")
+                                    print(
+                                        f"⚠️ Policy hook already exists: {hook['name']}"
+                                    )
                         break
 
         # Write updated configuration
-        with open(config_path, 'w') as f:
+        with open(config_path, "w") as f:
             yaml.dump(existing_config, f, default_flow_style=False, sort_keys=False)
 
         print("✅ Successfully integrated policy enforcement hooks")
@@ -70,12 +74,13 @@ def add_policy_hooks_to_existing():
         print(f"❌ Error integrating policy hooks: {e}")
         return False
 
+
 def validate_integration():
     """Validate that policy tools are executable."""
     policy_tools = [
-        '.claudedirector/tools/policy/check_doc_size.py',
-        '.claudedirector/tools/policy/check_architecture.py',
-        '.claudedirector/tools/policy/check_p0_tests.py',
+        ".claudedirector/tools/policy/check_doc_size.py",
+        ".claudedirector/tools/policy/check_architecture.py",
+        ".claudedirector/tools/policy/check_p0_tests.py",
     ]
 
     all_valid = True
@@ -90,6 +95,7 @@ def validate_integration():
             all_valid = False
 
     return all_valid
+
 
 def main():
     """Main integration function."""
@@ -140,6 +146,7 @@ def main():
     print("  • Automated architecture compliance checking")
     print("  • P0 test protection against accidental disabling")
     print("  • No disruption to existing workflow")
+
 
 if __name__ == "__main__":
     main()
