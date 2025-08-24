@@ -30,6 +30,36 @@ repos:
         always_run: true
         verbose: true
 
+  # DEVELOPMENT POLICY ENFORCEMENT
+  - repo: local
+    hooks:
+      - id: documentation-size-policy
+        name: 📋 DOCUMENTATION SIZE POLICY (500 lines max - aligned with code)
+        entry: python3 .claudedirector/tools/policy/check_doc_size.py
+        language: system
+        files: '\.md$'
+        pass_filenames: true
+        stages: [pre-commit]
+        verbose: true
+
+      - id: architecture-compliance-policy
+        name: 🏗️ ARCHITECTURE COMPLIANCE POLICY
+        entry: python3 .claudedirector/tools/policy/check_architecture.py
+        language: system
+        files: '^\.claudedirector/lib/.*\.py$'
+        pass_filenames: true
+        stages: [pre-commit]
+        verbose: true
+
+      - id: p0-test-protection-policy
+        name: 🛡️ P0 TEST PROTECTION POLICY
+        entry: python3 .claudedirector/tools/policy/check_p0_tests.py
+        language: system
+        files: '.*test.*p0.*\.py$|.*_p0_.*\.py$|.*p0_test.*\.py$'
+        pass_filenames: true
+        stages: [pre-commit]
+        verbose: true
+
   # CRITICAL SECURITY ENFORCEMENT
   - repo: local
     hooks:
