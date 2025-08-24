@@ -331,7 +331,9 @@ def main():
         # HYBRID APPROACH: Allow existing AI Intelligence violations but track them
         ai_intelligence_files = [f for f in sys.argv[1:] if "ai_intelligence" in f]
         if ai_intelligence_files:
-            print("🚧 AI Intelligence files detected - using lenient mode for existing code")
+            print(
+                "🚧 AI Intelligence files detected - using lenient mode for existing code"
+            )
             print("⚠️ Violations logged for future refactoring task")
             print("✅ COMMIT ALLOWED - violations tracked for cleanup")
         else:

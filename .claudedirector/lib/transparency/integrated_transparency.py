@@ -14,6 +14,7 @@ from .framework_detection import FrameworkDetectionMiddleware, FrameworkUsage
 @dataclass
 class MCPDisclosure:
     """MCP enhancement disclosure object"""
+
     server_name: str
     capability: str
     persona: str
@@ -637,7 +638,7 @@ class IntegratedTransparencySystem:
             server_name=server_name,
             capability=capability,
             persona=persona,
-            processing_message=processing_message
+            processing_message=processing_message,
         )
 
     def _update_performance_stats(
