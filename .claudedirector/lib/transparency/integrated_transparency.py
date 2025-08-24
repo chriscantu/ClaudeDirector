@@ -12,6 +12,20 @@ from .framework_detection import FrameworkDetectionMiddleware, FrameworkUsage
 
 
 @dataclass
+class MCPDisclosure:
+    """MCP enhancement disclosure object"""
+
+    server_name: str
+    capability: str
+    persona: str
+    processing_message: str
+
+    def get_start_disclosure(self) -> str:
+        """Get the start disclosure message"""
+        return f"🔧 Accessing MCP Server: {self.server_name} ({self.capability})\n*{self.processing_message}...*"
+
+
+@dataclass
 class TransparencyContext:
     """Complete transparency context for a persona response"""
 
@@ -610,6 +624,21 @@ class IntegratedTransparencySystem:
         # Apply complete transparency treatment
         return self.apply_multi_persona_transparency(
             multi_context, integration_response
+        )
+
+    def generate_persona_disclosure(self, persona: str, domain: str) -> str:
+        """Generate persona disclosure header for transparency"""
+        return self.multi_persona_formatter._get_persona_header(persona)
+
+    def create_mcp_enhancement_disclosure(
+        self, server_name: str, capability: str, persona: str, processing_message: str
+    ) -> MCPDisclosure:
+        """Create MCP enhancement disclosure object"""
+        return MCPDisclosure(
+            server_name=server_name,
+            capability=capability,
+            persona=persona,
+            processing_message=processing_message,
         )
 
     def _update_performance_stats(
