@@ -14,17 +14,17 @@
 ### **String Literals Found**
 | File | Pattern | Config Replacement | Count | Status |
 |------|---------|-------------------|-------|---------|
+| `core/services/framework_analysis_service.py` | `"high"` | `config.get_enum_values('priority_levels')[1]` | 6 | ✅ **COMPLETED** |
+| `core/services/framework_analysis_service.py` | `"medium"` | `config.get_enum_values('priority_levels')[2]` | 4 | ✅ **COMPLETED** |
 | Multiple files | `"urgent"` | `config.get_enum_values('priority_levels')[0]` | ~15 | 🔄 Pending |
-| Multiple files | `"high"` | `config.get_enum_values('priority_levels')[1]` | ~12 | 🔄 Pending |
-| Multiple files | `"medium"` | `config.get_enum_values('priority_levels')[2]` | ~8 | 🔄 Pending |
 | Multiple files | `"low"` | `config.get_enum_values('priority_levels')[3]` | ~6 | 🔄 Pending |
 
 ## 📊 **Migration Progress**
 
 - **Total Files to Update**: 23
 - **Threshold Replacements**: 5/5 ✅ **COMPLETE**
-- **Enum Replacements**: 0/41 🔄
-- **Overall Progress**: 11% (5/46 replacements)
+- **Enum Replacements**: 10/41 🔄 **IN PROGRESS**
+- **Overall Progress**: 33% (15/46 replacements)
 
 ## 🔧 **Next Actions**
 1. Start with `core/refactored_framework_engine.py` (highest concentration)
