@@ -53,7 +53,7 @@ def temp_workspace():
 @pytest.fixture
 def mock_config():
     """Mock configuration for testing"""
-    from claudedirector.core.config import ClaudeDirectorConfig
+    from lib.core.config import ClaudeDirectorConfig
 
     with tempfile.TemporaryDirectory() as temp_dir:
         config = ClaudeDirectorConfig(
@@ -136,7 +136,7 @@ def mock_jira_response():
 def reset_singletons():
     """Reset singleton instances between tests"""
     # Reset any singleton patterns used in the codebase
-    from claudedirector.core.database import DatabaseManager
+    from lib.core.database import DatabaseManager
 
     if hasattr(DatabaseManager, "_instance"):
         DatabaseManager._instance = None

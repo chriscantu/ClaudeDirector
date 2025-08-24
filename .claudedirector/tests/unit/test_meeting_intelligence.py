@@ -6,8 +6,8 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
-from claudedirector.core.exceptions import AIDetectionError
-from claudedirector.intelligence.meeting import MeetingIntelligence
+from lib.core.exceptions import AIDetectionError
+from lib.intelligence.meeting import MeetingIntelligence
 
 
 class TestMeetingIntelligence:

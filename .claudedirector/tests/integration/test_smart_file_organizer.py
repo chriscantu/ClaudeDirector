@@ -8,18 +8,18 @@ import tempfile
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from claudedirector.core.file_lifecycle_manager import (
+from lib.core.file_lifecycle_manager import (
     FileLifecycleManager,
     FileMetadata,
     FileRetentionStatus,
     GenerationMode,
 )
-from claudedirector.core.smart_file_organizer import (
+from lib.core.smart_file_organizer import (
     SmartFileOrganizer,
     ConsolidationOpportunity,
 )
-from claudedirector.core.advanced_archiving import AdvancedArchivingSystem
-from claudedirector.core.pattern_recognition import PatternRecognitionEngine
+from lib.core.advanced_archiving import AdvancedArchivingSystem
+from lib.core.pattern_recognition import PatternRecognitionEngine
 
 
 class TestSmartFileOrganizer:
@@ -471,7 +471,7 @@ class TestPatternRecognitionEngine:
     def test_template_recommendation_generation(self, pattern_engine):
         """Test template recommendation generation"""
 
-        from claudedirector.core.pattern_recognition import WorkflowPattern
+        from lib.core.pattern_recognition import WorkflowPattern
 
         # Create test pattern
         test_pattern = WorkflowPattern(
@@ -498,7 +498,7 @@ class TestPatternRecognitionEngine:
     def test_workflow_optimization_suggestions(self, pattern_engine):
         """Test workflow optimization suggestions"""
 
-        from claudedirector.core.pattern_recognition import WorkflowPattern
+        from lib.core.pattern_recognition import WorkflowPattern
 
         # Create high-confidence pattern
         high_confidence_pattern = WorkflowPattern(

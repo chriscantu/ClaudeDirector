@@ -13,8 +13,8 @@ lib_path = Path(__file__).parent.parent.parent / "lib"
 sys.path.insert(0, str(lib_path))
 
 try:
-    from claudedirector.core.config import ClaudeDirectorConfig
-    from claudedirector.core.exceptions import AIDetectionError, ConfigurationError
+    from lib.core.config import ClaudeDirectorConfig
+    from lib.core.exceptions import AIDetectionError, ConfigurationError
 except ImportError as e:
     print(f"Warning: Could not import core modules: {e}")
     ClaudeDirectorConfig = None

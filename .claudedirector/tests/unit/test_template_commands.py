@@ -14,11 +14,11 @@ import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../lib"))
 
-from claudedirector.p1_features.template_commands import (
+from lib.p1_features.template_commands import (
     TemplateCommands,
     DEFAULT_CONFIDENCE_THRESHOLD,
 )
-from claudedirector.core.template_engine import (
+from lib.core.template_engine import (
     TemplateDiscoveryEngine,
     DirectorTemplate,
     TemplatePersonaConfig,

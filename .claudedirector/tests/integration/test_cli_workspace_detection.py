@@ -161,7 +161,7 @@ class TestCLIWorkspaceDetection:
 
         sys.path.insert(0, ".claudedirector/lib")
 
-        from claudedirector.core.workspace_file_handler import WorkspaceFileHandler
+        from lib.core.workspace_file_handler import WorkspaceFileHandler
 
         # Test workspace detection
         handler = WorkspaceFileHandler()

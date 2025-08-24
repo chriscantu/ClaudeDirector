@@ -6,8 +6,8 @@ import sqlite3
 import tempfile
 from pathlib import Path
 
-from claudedirector.core.config import ClaudeDirectorConfig
-from claudedirector.core.database import DatabaseManager
+from lib.core.config import ClaudeDirectorConfig
+from lib.core.database import DatabaseManager
 
 
 class TestDatabaseIntegration:
