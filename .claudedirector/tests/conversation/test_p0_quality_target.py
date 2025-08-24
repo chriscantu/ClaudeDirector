@@ -4,6 +4,7 @@ P0 Validation: Test that conversation quality can reach >0.7 target
 """
 
 import sys
+import unittest
 from pathlib import Path
 
 # Add project root to path
@@ -12,7 +13,10 @@ sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
 
 
-def test_p0_quality_target():
+class TestP0QualityTarget(unittest.TestCase):
+    """P0 TEST: Conversation quality must reach >0.7 target"""
+
+    def test_p0_quality_target(self):
     """Test that we can achieve >0.7 quality score with rich strategic conversation"""
     print("🎯 P0 VALIDATION: >0.7 Conversation Quality Target")
     print("=" * 60)
@@ -248,34 +252,31 @@ Strategic executive presentation for platform investment approval...
         direct_quality = manager._calculate_conversation_quality(test_context)
         print(f"   Direct calculation: {direct_quality:.3f}")
 
-        if direct_quality >= target_quality:
-            print(
-                f"✅ Direct calculation confirms P0 target: {direct_quality:.3f} >= {target_quality}"
-            )
-            success = True
+        # P0 TEST: Quality must meet target threshold
+        self.assertGreaterEqual(
+            direct_quality, 
+            target_quality,
+            f"P0 TEST FAILURE: Conversation quality {direct_quality:.3f} must be >= {target_quality}"
+        )
+        
+        print(f"✅ Direct calculation confirms P0 target: {direct_quality:.3f} >= {target_quality}")
 
         # End session
         manager.end_conversation_session()
         print(f"✅ Validation session completed")
 
         print("\n" + "=" * 60)
-        if success:
-            print("🎉 P0 CONVERSATION QUALITY TARGET ACHIEVED")
-            print("✅ Quality improvements successfully implemented")
-            print("✅ Strategic conversation tracking operational")
-        else:
-            print("⚠️ P0 target not fully achieved but significant progress made")
-
-        return success
+        print("🎉 P0 CONVERSATION QUALITY TARGET ACHIEVED")
+        print("✅ Quality improvements successfully implemented")
+        print("✅ Strategic conversation tracking operational")
 
     except Exception as e:
         print(f"❌ P0 validation failed: {e}")
         import traceback
-
         traceback.print_exc()
-        return False
+        # P0 TEST: Must not fail with exceptions
+        self.fail(f"P0 TEST FAILURE: Conversation quality validation failed with exception: {e}")
 
 
 if __name__ == "__main__":
-    success = test_p0_quality_target()
-    exit(0 if success else 1)
+    unittest.main()
