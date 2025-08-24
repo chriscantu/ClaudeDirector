@@ -24,6 +24,7 @@ from ..interfaces.framework_provider_interface import (
     ImplementationStep,
     AnalysisComplexity,
 )
+from ..config import ClaudeDirectorConfig, get_config
 
 logger = structlog.get_logger(__name__)
 
@@ -51,8 +52,10 @@ class FrameworkAnalysisService:
         self,
         framework_provider: IFrameworkProvider,
         insight_generator: IInsightGenerator,
+        config: Optional[ClaudeDirectorConfig] = None,
     ):
         self.framework_provider = framework_provider
+        self.config = config or get_config()
         self.insight_generator = insight_generator
 
         # Analysis configuration
@@ -210,7 +213,12 @@ class FrameworkAnalysisService:
                 "Recommendations generated",
                 total_recommendations=len(prioritized_recommendations),
                 high_priority=len(
-                    [r for r in prioritized_recommendations if r.priority == "high"]
+                    [
+                        r
+                        for r in prioritized_recommendations
+                        if r.priority
+                        == self.config.get_enum_values("priority_levels")[1]
+                    ]
                 ),
             )
 
@@ -329,23 +337,37 @@ class FrameworkAnalysisService:
             "current_state": {
                 "title": "Current State Assessment",
                 "description_template": "Based on analysis of {category}, we recommend conducting a comprehensive assessment of {focus_areas}.",
-                "priority": "high" if avg_confidence > 0.7 else "medium",
-                "implementation_effort": "medium",
-                "expected_impact": "high" if avg_confidence > 0.7 else "medium",
+                "priority": (
+                    self.config.get_enum_values("priority_levels")[1]
+                    if avg_confidence > 0.7
+                    else self.config.get_enum_values("priority_levels")[2]
+                ),
+                "implementation_effort": self.config.get_enum_values("priority_levels")[
+                    2
+                ],
+                "expected_impact": (
+                    self.config.get_enum_values("priority_levels")[1]
+                    if avg_confidence > 0.7
+                    else self.config.get_enum_values("priority_levels")[2]
+                ),
             },
             "stakeholder_mapping": {
                 "title": "Stakeholder Alignment Strategy",
                 "description_template": "Implement stakeholder alignment initiatives focusing on {focus_areas} to address identified concerns.",
-                "priority": "high",
-                "implementation_effort": "high",
-                "expected_impact": "high",
+                "priority": self.config.get_enum_values("priority_levels")[1],
+                "implementation_effort": self.config.get_enum_values("priority_levels")[
+                    1
+                ],
+                "expected_impact": self.config.get_enum_values("priority_levels")[1],
             },
             "success_metrics": {
                 "title": "Success Metrics Framework",
                 "description_template": "Establish comprehensive metrics framework for {focus_areas} with clear measurement criteria.",
-                "priority": "medium",
-                "implementation_effort": "medium",
-                "expected_impact": "medium",
+                "priority": self.config.get_enum_values("priority_levels")[2],
+                "implementation_effort": self.config.get_enum_values("priority_levels")[
+                    2
+                ],
+                "expected_impact": self.config.get_enum_values("priority_levels")[2],
             },
             "implementation_roadmap": {
                 "title": "Implementation Roadmap",
