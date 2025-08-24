@@ -17,6 +17,7 @@ Author: Martin (SOLID Refactoring Implementation)
 import time
 from typing import Dict, List, Optional, Any
 import structlog
+from .config import ClaudeDirectorConfig, get_config
 
 from .interfaces.framework_provider_interface import (
     IFrameworkProvider,
@@ -142,7 +143,7 @@ class DefaultFrameworkProvider:
                     "domains": domains,
                     "keywords": list(set(keywords))[:20],  # Limit to 20 keywords
                     "analysis_components": analysis_components,
-                    "confidence_threshold": 0.6,
+                    "confidence_threshold": self.config.get_threshold('stakeholder_profiling_threshold'),
                 },
             )()
 
@@ -169,7 +170,7 @@ class RefactoredFrameworkEngine:
         insight_generator: Optional[IInsightGenerator] = None,
         confidence_calculator: Optional[IConfidenceCalculator] = None,
         persona_integrator: Optional[IPersonaIntegrator] = None,
-        config: Optional[Dict] = None,
+        config: Optional[ClaudeDirectorConfig] = None,
     ):
         """
         Initialize with dependency injection of all services.
@@ -177,7 +178,7 @@ class RefactoredFrameworkEngine:
         This constructor demonstrates Dependency Inversion Principle (DIP)
         by accepting abstractions rather than concrete implementations.
         """
-        self.config = config or {}
+        self.config = config or get_config()
 
         # Initialize services with dependency injection
         self.framework_provider = framework_provider or DefaultFrameworkProvider()
@@ -287,7 +288,7 @@ class RefactoredFrameworkEngine:
             )
 
             # Step 7: Calculate confidence scores
-            overall_confidence = 0.7  # Default
+            overall_confidence = self.config.get_threshold('quality_threshold')  # Default
             if self.enable_confidence_calculation and insights:
                 # Update individual insight confidences
                 for insight in insights:
@@ -413,7 +414,7 @@ class RefactoredFrameworkEngine:
                 i.insight for i in insights if i.category == "risk_mitigation"
             ],
             analysis_confidence=(
-                sum(i.confidence for i in insights) / len(insights) if insights else 0.5
+                sum(i.confidence for i in insights) / len(insights) if insights else self.config.get_threshold('performance_degradation_limit') * 10
             ),
         )
 
@@ -621,9 +622,9 @@ class RefactoredFrameworkEngine:
 
         response += "for your consideration. "
 
-        if analysis_result.overall_confidence > 0.7:
+        if analysis_result.overall_confidence > self.config.get_threshold('quality_threshold'):
             response += "I have high confidence in this analysis based on the strategic patterns I've identified."
-        elif analysis_result.overall_confidence > 0.5:
+        elif analysis_result.overall_confidence > self.config.get_threshold('performance_degradation_limit') * 10:
             response += "This analysis provides a solid foundation, though some areas may benefit from additional context."
         else:
             response += "While this provides initial insights, I'd recommend gathering additional context for a more comprehensive analysis."
