@@ -89,6 +89,17 @@ share/python-wheels/
 *.egg
 MANIFEST
 
+# === CLAUDEDIRECTOR BUILD ARTIFACTS ===
+# ClaudeDirector specific build artifacts and cache files
+.claudedirector/**/*.egg-info/
+.claudedirector/**/__pycache__/
+.claudedirector/**/*.pyc
+.claudedirector/**/*.pyo
+
+# Test artifacts
+.claudedirector/test_results/
+.claudedirector/**/test_results_*.json
+
 # PyInstaller
 *.manifest
 *.spec

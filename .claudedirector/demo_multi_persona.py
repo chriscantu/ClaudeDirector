@@ -12,7 +12,7 @@ from pathlib import Path
 # Add the lib directory to Python path
 sys.path.append(str(Path(__file__).parent / "lib"))
 
-from claudedirector.integrations.enhanced_persona_manager import (
+from claudedirector.core.enhanced_persona_manager import (
     EnhancedPersonaManager,
     EnhancementStatus,
 )
