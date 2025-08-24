@@ -62,14 +62,14 @@ class P0TestEnforcer:
             },
             {
                 "name": "First-Run Wizard P0",
-                "module": "docs/testing/first_run_wizard_tests.py",
+                "module": ".claudedirector/tests/integration/test_first_run_wizard_comprehensive.py",
                 "critical_level": "HIGH",
                 "description": "First-run user experience must work",
                 "failure_impact": "New users cannot customize system",
             },
             {
                 "name": "Cursor Integration P0",
-                "module": "docs/testing/run_cursor_tests.py",
+                "module": ".claudedirector/tests/integration/test_cursor_integration_comprehensive.py",
                 "critical_level": "HIGH",
                 "description": "Cursor environment integration must work",
                 "failure_impact": "Core usage environment fails",

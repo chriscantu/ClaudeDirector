@@ -116,7 +116,13 @@ def run_critical_tests_comprehensive():
 
     # Test 2: First-Run Wizard Tests
     tests_total += 1
-    wizard_tests = PROJECT_ROOT / "docs" / "testing" / "first_run_wizard_tests.py"
+    wizard_tests = (
+        PROJECT_ROOT
+        / ".claudedirector"
+        / "tests"
+        / "integration"
+        / "test_first_run_wizard_comprehensive.py"
+    )
     if wizard_tests.exists():
         test_cmd = f"python3 {wizard_tests}"
         if run_command(test_cmd, "🧪 First-Run Wizard Tests"):
@@ -129,7 +135,13 @@ def run_critical_tests_comprehensive():
 
     # Test 3: Cursor Integration Tests
     tests_total += 1
-    cursor_tests = PROJECT_ROOT / "docs" / "testing" / "run_cursor_tests.py"
+    cursor_tests = (
+        PROJECT_ROOT
+        / ".claudedirector"
+        / "tests"
+        / "integration"
+        / "test_cursor_integration_comprehensive.py"
+    )
     if cursor_tests.exists():
         test_cmd = f"python3 {cursor_tests}"
         if run_command(test_cmd, "🔄 Cursor Integration Tests"):
@@ -168,7 +180,13 @@ def run_critical_tests_legacy():
     venv_python = PROJECT_ROOT / "venv" / "bin" / "python"
 
     # Test 1: First-Run Wizard Tests (Core functionality)
-    wizard_tests = PROJECT_ROOT / "docs" / "testing" / "first_run_wizard_tests.py"
+    wizard_tests = (
+        PROJECT_ROOT
+        / ".claudedirector"
+        / "tests"
+        / "integration"
+        / "test_first_run_wizard_comprehensive.py"
+    )
     if wizard_tests.exists():
         test_cmd = f"{venv_python} {wizard_tests}"
         if not run_command(test_cmd, "First-Run Wizard Comprehensive Tests"):
