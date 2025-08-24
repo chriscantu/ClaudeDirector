@@ -7,12 +7,11 @@ Enforces user requirement: "ensure that all P0 features are always tested moving
 """
 
 import sys
-import os
 import subprocess
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import List, Dict, Tuple, Optional
+from typing import Dict
 
 # Add project paths
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
@@ -62,14 +61,14 @@ class P0TestEnforcer:
             },
             {
                 "name": "First-Run Wizard P0",
-                "module": "docs/testing/first_run_wizard_tests.py",
+                "module": ".claudedirector/tests/integration/test_first_run_wizard_comprehensive.py",
                 "critical_level": "HIGH",
                 "description": "First-run user experience must work",
                 "failure_impact": "New users cannot customize system",
             },
             {
                 "name": "Cursor Integration P0",
-                "module": "docs/testing/run_cursor_tests.py",
+                "module": ".claudedirector/tests/integration/test_cursor_integration_comprehensive.py",
                 "critical_level": "HIGH",
                 "description": "Cursor environment integration must work",
                 "failure_impact": "Core usage environment fails",

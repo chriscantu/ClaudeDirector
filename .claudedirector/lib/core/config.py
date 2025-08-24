@@ -12,10 +12,9 @@ Requirements from regression tests:
 - Must maintain backwards compatibility
 """
 
-import os
 import yaml
 from pathlib import Path
-from typing import Dict, Any, List, Union, Optional
+from typing import Dict, Any, List, Optional
 from dataclasses import dataclass, field
 import logging
 

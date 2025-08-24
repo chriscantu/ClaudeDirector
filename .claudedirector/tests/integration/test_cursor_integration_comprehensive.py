@@ -7,7 +7,6 @@ Consolidated test execution combining manual verification and programmatic valid
 import asyncio
 import time
 import sys
-import os
 from pathlib import Path
 
 # Add the lib directory to the path for imports
@@ -133,7 +132,7 @@ How should we approach this systematically?""",
         """Test basic configuration and imports"""
         # Test imports
         try:
-            from claudedirector.core.mcp_client import MCPClient, MCPServerType
+            from claudedirector.core.mcp_client import MCPClient
             from claudedirector.frameworks.framework_detector import FrameworkDetector
             from claudedirector.core.complexity_analyzer import ComplexityAnalyzer
 
@@ -143,9 +142,9 @@ How should we approach this systematically?""",
 
         # Test basic initialization
         try:
-            client = MCPClient()
-            detector = FrameworkDetector()
-            analyzer = ComplexityAnalyzer()
+            MCPClient()
+            FrameworkDetector()
+            ComplexityAnalyzer()
             print("  ✓ All components initialize successfully")
         except Exception as e:
             raise Exception(f"Failed to initialize components: {e}")

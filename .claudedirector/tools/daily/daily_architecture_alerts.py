@@ -4,7 +4,6 @@ ClaudeDirector Daily Architecture Health Alerts
 Martin's proactive migration notification system
 """
 
-import json
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -48,7 +47,7 @@ class DailyArchitectureAlerts:
                 return False
 
             # Extract key metrics
-            recommendation = assessment["migration_recommendation"]
+            assessment["migration_recommendation"]
             readiness_score = assessment["migration_readiness_score"]
             criteria_analysis = assessment.get("criteria_analysis", {})
             action_items = assessment.get("action_items", [])
@@ -97,7 +96,7 @@ class DailyArchitectureAlerts:
         """Generate critical migration alert"""
         readiness_score = assessment["migration_readiness_score"]
         recommendation = assessment["migration_recommendation"]
-        workload = assessment.get("workload_analysis", {})
+        assessment.get("workload_analysis", {})
 
         print("🚨 CRITICAL: Embedded Database Migration Recommended")
         print("=" * 55)

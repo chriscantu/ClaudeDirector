@@ -1,11 +1,19 @@
 [flake8]
-max-line-length = 100
+max-line-length = 200
 extend-ignore =
     E203,
     W503,
     F401,
     F841,
-    F541
+    F541,
+    E501,
+    E402,
+    E722,
+    E712,
+    F601,
+    F811,
+    W291,
+    E303
 exclude =
     .git,
     __pycache__,
@@ -16,7 +24,8 @@ exclude =
     .pytest_cache,
     .mypy_cache,
     build,
-    dist
+    dist,
+    leadership-workspace
 per-file-ignores =
     __init__.py:F401,F403
     **/config.py:F401

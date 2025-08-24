@@ -8,7 +8,6 @@ Ensures 100% coverage of defined P0 features in CI pipeline
 import yaml
 import os
 import sys
-from pathlib import Path
 from typing import Dict, List, Any
 
 
@@ -35,8 +34,8 @@ class P0TestGenerator:
     def generate_ci_step(self) -> str:
         """Generate complete CI step for GitHub Actions"""
         p0_features = self.definitions.get("p0_features", [])
-        enforcement = self.definitions.get("enforcement", {})
-        quality_gates = self.definitions.get("quality_gates", {})
+        self.definitions.get("enforcement", {})
+        self.definitions.get("quality_gates", {})
 
         # Group tests by critical level
         blocking_tests = [
@@ -145,7 +144,7 @@ class P0TestGenerator:
 
     def generate_validation_script(self) -> str:
         """Generate validation script to check CI coverage"""
-        p0_features = self.definitions.get("p0_features", [])
+        self.definitions.get("p0_features", [])
 
         script = '''#!/usr/bin/env python3
 """

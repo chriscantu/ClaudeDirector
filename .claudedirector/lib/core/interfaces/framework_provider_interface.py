@@ -8,10 +8,11 @@ that high-level modules can depend on instead of concrete implementations.
 Author: Martin (SOLID Refactoring Implementation)
 """
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Any, Protocol
 from enum import Enum
+from ..config import ClaudeDirectorConfig, get_config
 
 
 class FrameworkDomain(Enum):
@@ -24,12 +25,23 @@ class FrameworkDomain(Enum):
     FINANCIAL = "financial"
 
 
-class AnalysisComplexity(Enum):
+class AnalysisComplexity:
     """Analysis complexity levels"""
 
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
+    def __init__(self, config: Optional[ClaudeDirectorConfig] = None):
+        self.config = config or get_config()
+
+    @property
+    def LOW(self) -> str:
+        return self.config.get_enum_values("priority_levels")[3]  # "low"
+
+    @property
+    def MEDIUM(self) -> str:
+        return self.config.get_enum_values("priority_levels")[2]  # "medium"
+
+    @property
+    def HIGH(self) -> str:
+        return self.config.get_enum_values("priority_levels")[1]  # "high"
 
 
 @dataclass
@@ -73,9 +85,15 @@ class FrameworkRecommendation:
 
     title: str
     description: str
-    priority: str  # "high", "medium", "low"
-    implementation_effort: str  # "low", "medium", "high"
-    expected_impact: str  # "low", "medium", "high"
+    priority: (
+        str  # Configured via ClaudeDirectorConfig.get_enum_values('priority_levels')
+    )
+    implementation_effort: (
+        str  # Configured via ClaudeDirectorConfig.get_enum_values('priority_levels')
+    )
+    expected_impact: (
+        str  # Configured via ClaudeDirectorConfig.get_enum_values('priority_levels')
+    )
     dependencies: List[str]
     timeline: Optional[str] = None
 
@@ -107,22 +125,18 @@ class IFrameworkProvider(Protocol):
         self, framework_name: str
     ) -> Optional[FrameworkDefinition]:
         """Get definition for a specific framework"""
-        pass
 
     @abstractmethod
     def get_available_frameworks(self) -> List[str]:
         """Get list of all available framework names"""
-        pass
 
     @abstractmethod
     def get_frameworks_for_domain(self, domain: FrameworkDomain) -> List[str]:
         """Get frameworks applicable to a specific domain"""
-        pass
 
     @abstractmethod
     def get_frameworks_by_keywords(self, keywords: List[str]) -> List[str]:
         """Get frameworks matching specific keywords"""
-        pass
 
 
 class IFrameworkSelector(Protocol):
@@ -138,14 +152,12 @@ class IFrameworkSelector(Protocol):
         self, context: FrameworkContext, available_frameworks: List[str]
     ) -> Optional[str]:
         """Select the most appropriate framework for the given context"""
-        pass
 
     @abstractmethod
     def calculate_framework_relevance(
         self, framework_name: str, context: FrameworkContext
     ) -> float:
         """Calculate relevance score (0.0-1.0) for a framework given context"""
-        pass
 
 
 class IFrameworkAnalyzer(Protocol):
@@ -161,21 +173,18 @@ class IFrameworkAnalyzer(Protocol):
         self, framework_name: str, context: FrameworkContext
     ) -> List[AnalysisInsight]:
         """Analyze context using the specified framework"""
-        pass
 
     @abstractmethod
     def generate_recommendations(
         self, insights: List[AnalysisInsight], context: FrameworkContext
     ) -> List[FrameworkRecommendation]:
         """Generate strategic recommendations from analysis insights"""
-        pass
 
     @abstractmethod
     def create_implementation_plan(
         self, recommendations: List[FrameworkRecommendation], context: FrameworkContext
     ) -> List[ImplementationStep]:
         """Create concrete implementation steps from recommendations"""
-        pass
 
 
 class IInsightGenerator(Protocol):
@@ -191,14 +200,12 @@ class IInsightGenerator(Protocol):
         self, framework_definition: FrameworkDefinition, context: FrameworkContext
     ) -> List[AnalysisInsight]:
         """Generate insights using framework components"""
-        pass
 
     @abstractmethod
     def enrich_insights_with_patterns(
         self, insights: List[AnalysisInsight], context: FrameworkContext
     ) -> List[AnalysisInsight]:
         """Enrich insights with pattern matching and additional context"""
-        pass
 
 
 class IConfidenceCalculator(Protocol):
@@ -214,14 +221,12 @@ class IConfidenceCalculator(Protocol):
         self, insight: AnalysisInsight, context: FrameworkContext
     ) -> float:
         """Calculate confidence score for an individual insight"""
-        pass
 
     @abstractmethod
     def calculate_overall_confidence(
         self, insights: List[AnalysisInsight], framework_relevance: float
     ) -> float:
         """Calculate overall confidence for the complete analysis"""
-        pass
 
 
 class IPersonaIntegrator(Protocol):
@@ -241,12 +246,10 @@ class IPersonaIntegrator(Protocol):
         context: FrameworkContext,
     ) -> str:
         """Integrate analysis results with persona personality"""
-        pass
 
     @abstractmethod
     def get_persona_voice_characteristics(self, persona_name: str) -> Dict[str, Any]:
         """Get voice characteristics for a specific persona"""
-        pass
 
 
 # Result classes for the refactored architecture

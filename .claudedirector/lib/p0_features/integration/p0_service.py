@@ -316,7 +316,6 @@ class P0StrategicIntelligenceService:
             )
 
             # Parallel execution of both analyses
-            tasks = []
 
             # Decision intelligence analysis
             decision_request = StrategicIntelligenceRequest(

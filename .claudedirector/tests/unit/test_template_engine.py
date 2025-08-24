@@ -6,11 +6,8 @@ validation, discovery by context, and template management operations.
 """
 
 import unittest
-from unittest.mock import Mock, patch, mock_open
-from pathlib import Path
-import tempfile
+from unittest.mock import patch, mock_open
 import yaml
-from typing import Dict, Any
 
 import sys
 import os
@@ -24,7 +21,6 @@ from claudedirector.core.template_engine import (
     TemplateActivationKeywords,
     IndustryModifier,
     TeamSizeContext,
-    TemplateDomain,
     TemplateValidationError,
 )
 

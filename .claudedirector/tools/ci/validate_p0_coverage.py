@@ -5,7 +5,6 @@ Ensures all P0 tests from definitions are included in CI
 """
 
 import yaml
-import re
 import sys
 
 

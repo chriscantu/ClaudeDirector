@@ -11,7 +11,6 @@ executive frustration, and abandonment of strategic intelligence tools.
 
 import unittest
 import time
-import threading
 import concurrent.futures
 import psutil
 import tempfile
@@ -19,8 +18,6 @@ import json
 from pathlib import Path
 from datetime import datetime
 import sys
-import subprocess
-import os
 
 # Add project root to path for imports
 project_root = Path(__file__).parent.parent.parent.parent

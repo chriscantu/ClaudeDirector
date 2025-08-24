@@ -5,7 +5,7 @@ Expands test coverage for task intelligence and detection algorithms.
 
 import pytest
 import unittest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 import sys
 from pathlib import Path
 
@@ -16,7 +16,7 @@ sys.path.insert(0, str(lib_path))
 try:
     from claudedirector.intelligence.task import TaskIntelligence
     from claudedirector.core.config import ClaudeDirectorConfig
-    from claudedirector.core.exceptions import AIDetectionError, DatabaseError
+    from claudedirector.core.exceptions import AIDetectionError
 
     IMPORTS_AVAILABLE = True
 except ImportError as e:

@@ -14,7 +14,7 @@ import sys
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
 
-from config.user_config import UserConfigManager, UserIdentity, get_user_identity
+from config.user_config import UserConfigManager, UserIdentity
 
 
 class TestUserConfiguration(unittest.TestCase):

@@ -6,9 +6,7 @@ engine that powers ClaudeDirector's strategic thinking capabilities.
 """
 
 import time
-import unittest
-from unittest.mock import Mock, patch
-from typing import Callable, Dict, Any, List
+from typing import Callable, Dict, Any
 
 try:
     from claudedirector.frameworks.embedded_framework_engine import (
@@ -43,7 +41,7 @@ class PerformanceBenchmarkFramework:
         for _ in range(iterations):
             start_time = time.perf_counter()
             try:
-                result = func()
+                func()
                 end_time = time.perf_counter()
                 times.append(end_time - start_time)
             except Exception as e:

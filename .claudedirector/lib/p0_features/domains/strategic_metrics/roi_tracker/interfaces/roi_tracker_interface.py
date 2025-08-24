@@ -6,7 +6,7 @@ Enables Dependency Inversion Principle for SOLID architecture.
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Dict, List, Any
 from decimal import Decimal
 from datetime import datetime
 
@@ -45,30 +45,25 @@ class InvestmentTrackerInterface(ABC):
         affected_stakeholders: List[str],
     ) -> InvestmentProposal:
         """Create a new investment proposal"""
-        pass
 
     @abstractmethod
     def evaluate_investment_proposal(self, proposal_id: str) -> Dict[str, Any]:
         """Evaluate an investment proposal for approval"""
-        pass
 
     @abstractmethod
     def track_investment_performance(
         self, investment_id: str, period: str
     ) -> ROITracking:
         """Track actual ROI performance of approved investments"""
-        pass
 
     @abstractmethod
     def generate_portfolio_summary(
         self, reporting_period: str
     ) -> InvestmentPortfolioSummary:
         """Generate comprehensive portfolio performance summary"""
-        pass
 
     @abstractmethod
     def generate_investment_justification_report(
         self, proposal_id: str
     ) -> Dict[str, Any]:
         """Generate detailed investment justification report"""
-        pass

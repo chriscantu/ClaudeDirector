@@ -6,7 +6,6 @@ Helps migrate from old workspace structure to new clean separation
 
 import os
 import shutil
-import sys
 from pathlib import Path
 
 

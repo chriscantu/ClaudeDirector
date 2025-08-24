@@ -6,7 +6,6 @@ Verifies trust rebuilding architecture
 
 import unittest
 import tempfile
-import os
 import sys
 from pathlib import Path
 

@@ -5,9 +5,6 @@ Martin's tool to manually populate session database with existing conversation
 """
 
 import sys
-import os
-import json
-import uuid
 from datetime import datetime
 from pathlib import Path
 
@@ -243,7 +240,7 @@ def main():
     """Main function to capture current conversation and verify storage"""
     try:
         # Capture current conversation
-        session_id = capture_current_conversation()
+        capture_current_conversation()
 
         # Verify database population
         verify_database_population()

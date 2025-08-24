@@ -8,7 +8,6 @@ automatically show MCP server usage when complexity thresholds are met.
 """
 
 import sys
-import os
 import unittest
 from pathlib import Path
 

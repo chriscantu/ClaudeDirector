@@ -6,7 +6,7 @@ Tracks and reports Next Action Clarity Rate metrics.
 
 import json
 import sqlite3
-from typing import List, Dict, Optional, Tuple
+from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from pathlib import Path
 from .models import (

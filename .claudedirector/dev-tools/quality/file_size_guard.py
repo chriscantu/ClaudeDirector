@@ -8,7 +8,6 @@ This tool enforces file size limits to maintain SOLID architecture.
 Author: Martin (SOLID Architecture Enforcement)
 """
 
-import os
 import sys
 from pathlib import Path
 from typing import List, Tuple, Dict

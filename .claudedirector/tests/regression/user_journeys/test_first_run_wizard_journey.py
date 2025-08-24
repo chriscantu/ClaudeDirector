@@ -17,8 +17,7 @@ import tempfile
 import os
 import sys
 from pathlib import Path
-from unittest.mock import patch, MagicMock
-import json
+from unittest.mock import patch
 
 # Add project paths for imports
 project_root = Path(__file__).parent.parent.parent.parent

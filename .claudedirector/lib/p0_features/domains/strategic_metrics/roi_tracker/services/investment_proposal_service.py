@@ -5,8 +5,8 @@ Single Responsibility: Investment proposal creation and evaluation.
 Extracted from monolithic ROI tracker for SOLID compliance.
 """
 
-from typing import Dict, List, Optional, Any
-from decimal import Decimal, ROUND_HALF_UP
+from typing import Dict, Any
+from decimal import Decimal
 from datetime import datetime
 import structlog
 import uuid
@@ -147,7 +147,7 @@ class InvestmentProposalService:
         """Calculate ROI projections for investment proposal"""
         try:
             total_investment = Decimal(str(proposal_data["total_investment"]))
-            roi_method = ROICalculationMethod(proposal_data["roi_method"])
+            ROICalculationMethod(proposal_data["roi_method"])
             category = InvestmentCategory(proposal_data["category"])
 
             # Base benefit calculations

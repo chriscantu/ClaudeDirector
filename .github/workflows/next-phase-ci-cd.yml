@@ -143,11 +143,11 @@ jobs:
           # Install flake8 if not available
           python -m pip install flake8>=6.0.0
 
-          # Run linting with reasonable settings for existing codebase (exclude third-party)
-          python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=venv,.venv,__pycache__,.mypy_cache
+          # Run linting with lenient configuration file
+          python -m flake8 . --config=.claudedirector/config/.flake8 --count --show-source --statistics
 
-          # Run full linting with lenient settings for gradual improvement (exclude third-party)
-          python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics --exclude=venv,.venv,__pycache__,.mypy_cache
+          # Run full linting analysis (non-blocking)
+          python -m flake8 . --config=.claudedirector/config/.flake8 --count --exit-zero --statistics
 
           echo "✅ Flake8 linting completed"
 

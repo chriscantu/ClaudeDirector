@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 from ..interfaces.report_interface import IAlertSystem, StakeholderType
+from ...core.config import ClaudeDirectorConfig, get_config
 
 
 class AlertSeverity(Enum):
@@ -77,7 +78,8 @@ class IntelligentAlertSystem(IAlertSystem):
     - CLI integration with rich formatting
     """
 
-    def __init__(self, data_source):
+    def __init__(self, data_source, config: Optional[ClaudeDirectorConfig] = None):
+        self.config = config or get_config()
         self.data_source = data_source
         self.alert_rules = self._initialize_alert_rules()
         self.alert_history = []

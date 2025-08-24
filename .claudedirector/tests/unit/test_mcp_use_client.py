@@ -6,7 +6,6 @@ Tests the basic MCP integration functionality with mocking.
 import pytest
 import asyncio
 from unittest.mock import Mock, patch, AsyncMock
-from pathlib import Path
 import tempfile
 import yaml
 

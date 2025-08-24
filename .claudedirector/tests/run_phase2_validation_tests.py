@@ -101,7 +101,7 @@ def main():
     # Test 5: First-Run Wizard Tests (MANDATORY)
     tests_total += 1
     if run_command(
-        "python3 docs/testing/first_run_wizard_tests.py",
+        "python3 .claudedirector/tests/integration/test_first_run_wizard_comprehensive.py",
         "🧪 First-Run Wizard Tests (MANDATORY)",
     ):
         tests_passed += 1

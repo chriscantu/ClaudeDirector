@@ -10,6 +10,7 @@ from enum import Enum
 from datetime import datetime
 
 from ..p2_communication.interfaces.report_interface import GeneratedReport
+from ..core.config import ClaudeDirectorConfig, get_config
 
 
 class ConversationTone(Enum):
@@ -28,8 +29,9 @@ class ConversationFormatter:
     Adapts tone, detail level, and focus based on persona and context.
     """
 
-    def __init__(self):
+    def __init__(self, config: Optional[ClaudeDirectorConfig] = None):
         """Initialize conversation formatter."""
+        self.config = config or get_config()
         self.tone_templates = self._initialize_tone_templates()
         self.persona_tone_mapping = self._initialize_persona_tones()
 
@@ -87,9 +89,21 @@ class ConversationFormatter:
         response_parts.append("")
 
         # Categorize alerts by severity
-        critical_alerts = [a for a in alerts if a.severity.value == "critical"]
-        high_alerts = [a for a in alerts if a.severity.value == "high"]
-        medium_alerts = [a for a in alerts if a.severity.value == "medium"]
+        critical_alerts = [
+            a
+            for a in alerts
+            if a.severity.value == self.config.get_enum_values("priority_levels")[0]
+        ]
+        high_alerts = [
+            a
+            for a in alerts
+            if a.severity.value == self.config.get_enum_values("priority_levels")[1]
+        ]
+        medium_alerts = [
+            a
+            for a in alerts
+            if a.severity.value == self.config.get_enum_values("priority_levels")[2]
+        ]
 
         # Format critical alerts with urgency
         if critical_alerts:
@@ -235,7 +249,9 @@ class ConversationFormatter:
                             {
                                 "type": "highlight",
                                 "content": line[1:].strip(),
-                                "priority": "high",
+                                "priority": self.config.get_enum_values(
+                                    "priority_levels"
+                                )[1],
                             }
                         )
 
@@ -248,7 +264,9 @@ class ConversationFormatter:
                                 {
                                     "type": "risk",
                                     "content": line[2:].strip(),
-                                    "priority": "high",
+                                    "priority": self.config.get_enum_values(
+                                        "priority_levels"
+                                    )[1],
                                 }
                             )
                         elif line.startswith("✅"):
@@ -256,7 +274,9 @@ class ConversationFormatter:
                                 {
                                     "type": "opportunity",
                                     "content": line[2:].strip(),
-                                    "priority": "medium",
+                                    "priority": self.config.get_enum_values(
+                                        "priority_levels"
+                                    )[2],
                                 }
                             )
 
@@ -398,7 +418,13 @@ class ConversationFormatter:
         self, alerts: List, persona_name: str, tone: ConversationTone
     ) -> str:
         """Format recommendations based on alerts and persona."""
-        critical_count = len([a for a in alerts if a.severity.value == "critical"])
+        critical_count = len(
+            [
+                a
+                for a in alerts
+                if a.severity.value == self.config.get_enum_values("priority_levels")[0]
+            ]
+        )
 
         if critical_count > 0:
             recommendations = {

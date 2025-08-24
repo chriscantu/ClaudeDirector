@@ -9,7 +9,6 @@ This script addresses the GitHub CI coverage issues by:
 4. Validating CI integration
 """
 
-import os
 import subprocess
 import sys
 from pathlib import Path

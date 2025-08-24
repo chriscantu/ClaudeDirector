@@ -16,7 +16,7 @@ import sys
 import time
 import argparse
 from datetime import datetime
-from typing import Dict, List, Any
+from typing import Dict, Any
 import json
 
 # Import all test suites

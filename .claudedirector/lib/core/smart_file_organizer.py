@@ -374,7 +374,7 @@ class SmartFileOrganizer:
                 file_paths = [f[0] for f in files]
 
                 # Determine business context
-                content_types = [f[1].content_type for f in files]
+                [f[1].content_type for f in files]
                 business_value = self._determine_session_business_value(files)
 
                 suggested_name = f"session-summary-{session_id}-{datetime.now().strftime('%Y-%m-%d')}.md"

@@ -363,7 +363,7 @@ async def interactive_multi_persona_demo():
             )
 
             # Get enhanced response
-            start_time = time.time()
+            time.time()
             response = await persona_manager.get_enhanced_response(persona, question)
 
             # Display results

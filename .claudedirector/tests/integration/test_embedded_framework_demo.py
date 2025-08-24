@@ -14,7 +14,6 @@ Author: Martin (Principal Platform Architect)
 import sys
 import os
 import time
-from pathlib import Path
 
 # Add the lib directory to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../lib"))
@@ -323,7 +322,7 @@ def run_complete_demo():
 
     try:
         # Demo 1: Complete workflow
-        result = demo_diego_systematic_analysis()
+        demo_diego_systematic_analysis()
 
         # Demo 2: Complexity analysis
         demo_complexity_analysis()

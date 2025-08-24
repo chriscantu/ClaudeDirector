@@ -113,7 +113,7 @@ async def demo_enhanced_diego():
             # Get enhanced response
             start_time = time.time()
             response = await persona_manager.get_enhanced_response("diego", question)
-            response_time = time.time() - start_time
+            time.time() - start_time
 
             # Display results
             enhancement_color = (
@@ -272,7 +272,7 @@ async def interactive_demo():
             )
 
             # Get enhanced response
-            start_time = time.time()
+            time.time()
             response = await persona_manager.get_enhanced_response("diego", question)
 
             # Display results

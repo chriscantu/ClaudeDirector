@@ -19,7 +19,6 @@ import base64
 from pathlib import Path
 from datetime import datetime, timedelta
 import sys
-import subprocess
 
 # Add project root to path for imports
 project_root = Path(__file__).parent.parent.parent.parent
@@ -434,7 +433,7 @@ class TestSecurity(unittest.TestCase):
             json.dump(security_config, f, indent=2)
 
         # Verify file permissions (simulate restricted access)
-        file_stat = config_file.stat()
+        config_file.stat()
         # In a real implementation, would check actual file permissions
         self.assertTrue(config_file.exists(), "Security config file should exist")
 
