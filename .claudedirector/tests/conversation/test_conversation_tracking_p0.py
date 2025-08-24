@@ -90,10 +90,10 @@ class TestConversationTrackingP0(unittest.TestCase):
                     (session_id, session_type, conversation_thread, last_backup_timestamp, context_quality_score)
                     VALUES (?, 'test', '[]', datetime('now'), 0.5)
                     """,
-                    (test_session_id,)
+                    (test_session_id,),
                 )
                 conn.commit()
-                
+
                 # Re-fetch after creating test data
                 cursor.execute(
                     """
@@ -101,7 +101,7 @@ class TestConversationTrackingP0(unittest.TestCase):
                     FROM session_context
                     WHERE session_id = ?
                     """,
-                    (test_session_id,)
+                    (test_session_id,),
                 )
                 all_sessions = cursor.fetchall()
 
@@ -296,10 +296,16 @@ class TestConversationTrackingFunctionality(unittest.TestCase):
             else:
                 # CI-friendly: Create test sessions if needed
                 test_sessions = [
-                    ("test_session_1", '["user: test message 1", "assistant: test response 1"]'),
-                    ("test_session_2", '["user: test message 2", "assistant: test response 2"]')
+                    (
+                        "test_session_1",
+                        '["user: test message 1", "assistant: test response 1"]',
+                    ),
+                    (
+                        "test_session_2",
+                        '["user: test message 2", "assistant: test response 2"]',
+                    ),
                 ]
-                
+
                 for session_id, conversation_data in test_sessions:
                     cursor.execute(
                         """
@@ -307,11 +313,11 @@ class TestConversationTrackingFunctionality(unittest.TestCase):
                         (session_id, session_type, conversation_thread, last_backup_timestamp, context_quality_score)
                         VALUES (?, 'test', ?, datetime('now'), 0.5)
                         """,
-                        (session_id, conversation_data)
+                        (session_id, conversation_data),
                     )
-                
+
                 conn.commit()
-                
+
                 # Verify test sessions were created successfully
                 cursor.execute(
                     """
@@ -320,14 +326,14 @@ class TestConversationTrackingFunctionality(unittest.TestCase):
                     WHERE session_id IN ('test_session_1', 'test_session_2')
                     """
                 )
-                
+
                 created_sessions = cursor.fetchall()
                 self.assertEqual(
-                    len(created_sessions), 
-                    2, 
-                    "Test sessions must be created successfully for persistence validation"
+                    len(created_sessions),
+                    2,
+                    "Test sessions must be created successfully for persistence validation",
                 )
-                
+
                 # Verify conversations are preserved
                 for session_id, conversation_thread in created_sessions:
                     with self.subTest(session=session_id[:12]):
@@ -380,10 +386,10 @@ class TestConversationTrackingFunctionality(unittest.TestCase):
                             '{"key_stakeholders": ["test_stakeholder"]}', 
                             '{"active_initiatives": ["test_initiative"]}')
                     """,
-                    (test_strategic_session,)
+                    (test_strategic_session,),
                 )
                 conn.commit()
-                
+
                 # Verify strategic session was created
                 cursor.execute(
                     """
@@ -391,24 +397,24 @@ class TestConversationTrackingFunctionality(unittest.TestCase):
                     FROM session_context
                     WHERE session_id = ? AND session_type = 'strategic'
                     """,
-                    (test_strategic_session,)
+                    (test_strategic_session,),
                 )
-                
+
                 created_session = cursor.fetchone()
                 self.assertIsNotNone(
                     created_session,
-                    "Test strategic session must be created successfully"
+                    "Test strategic session must be created successfully",
                 )
-                
+
                 # Verify strategic context is preserved
                 session_id, stakeholder_context, strategic_context = created_session
                 self.assertIsNotNone(
                     stakeholder_context,
-                    f"Stakeholder context must be preserved for strategic session {session_id[:12]}"
+                    f"Stakeholder context must be preserved for strategic session {session_id[:12]}",
                 )
                 self.assertIsNotNone(
                     strategic_context,
-                    f"Strategic initiatives context must be preserved for session {session_id[:12]}"
+                    f"Strategic initiatives context must be preserved for session {session_id[:12]}",
                 )
 
     def test_conversation_quality_improvement(self):
@@ -450,9 +456,9 @@ class TestConversationTrackingFunctionality(unittest.TestCase):
                 test_quality_sessions = [
                     ("test_quality_low", 0.2),
                     ("test_quality_medium", 0.5),
-                    ("test_quality_high", 0.8)
+                    ("test_quality_high", 0.8),
                 ]
-                
+
                 for session_id, quality_score in test_quality_sessions:
                     cursor.execute(
                         """
@@ -460,11 +466,11 @@ class TestConversationTrackingFunctionality(unittest.TestCase):
                         (session_id, session_type, conversation_thread, last_backup_timestamp, context_quality_score)
                         VALUES (?, 'test', '[]', datetime('now'), ?)
                         """,
-                        (session_id, quality_score)
+                        (session_id, quality_score),
                     )
-                
+
                 conn.commit()
-                
+
                 # Re-run quality analysis on test data
                 cursor.execute(
                     """
@@ -476,16 +482,17 @@ class TestConversationTrackingFunctionality(unittest.TestCase):
                     WHERE context_quality_score IS NOT NULL
                 """
                 )
-                
+
                 result = cursor.fetchone()
                 avg_quality, min_quality, max_quality, total_sessions = result
-                
+
                 # Verify test quality data was created
                 self.assertGreater(
-                    total_sessions, 0, 
-                    "Test quality sessions must be created successfully"
+                    total_sessions,
+                    0,
+                    "Test quality sessions must be created successfully",
                 )
-                
+
                 # Quality scores should be in valid range
                 self.assertGreaterEqual(
                     min_quality, 0.0, "Quality scores must be non-negative"
