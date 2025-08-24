@@ -143,7 +143,9 @@ class DefaultFrameworkProvider:
                     "domains": domains,
                     "keywords": list(set(keywords))[:20],  # Limit to 20 keywords
                     "analysis_components": analysis_components,
-                    "confidence_threshold": self.config.get_threshold('stakeholder_profiling_threshold'),
+                    "confidence_threshold": self.config.get_threshold(
+                        "stakeholder_profiling_threshold"
+                    ),
                 },
             )()
 
@@ -288,7 +290,9 @@ class RefactoredFrameworkEngine:
             )
 
             # Step 7: Calculate confidence scores
-            overall_confidence = self.config.get_threshold('quality_threshold')  # Default
+            overall_confidence = self.config.get_threshold(
+                "quality_threshold"
+            )  # Default
             if self.enable_confidence_calculation and insights:
                 # Update individual insight confidences
                 for insight in insights:
@@ -414,7 +418,9 @@ class RefactoredFrameworkEngine:
                 i.insight for i in insights if i.category == "risk_mitigation"
             ],
             analysis_confidence=(
-                sum(i.confidence for i in insights) / len(insights) if insights else self.config.get_threshold('performance_degradation_limit') * 10
+                sum(i.confidence for i in insights) / len(insights)
+                if insights
+                else self.config.get_threshold("performance_degradation_limit") * 10
             ),
         )
 
@@ -622,9 +628,14 @@ class RefactoredFrameworkEngine:
 
         response += "for your consideration. "
 
-        if analysis_result.overall_confidence > self.config.get_threshold('quality_threshold'):
+        if analysis_result.overall_confidence > self.config.get_threshold(
+            "quality_threshold"
+        ):
             response += "I have high confidence in this analysis based on the strategic patterns I've identified."
-        elif analysis_result.overall_confidence > self.config.get_threshold('performance_degradation_limit') * 10:
+        elif (
+            analysis_result.overall_confidence
+            > self.config.get_threshold("performance_degradation_limit") * 10
+        ):
             response += "This analysis provides a solid foundation, though some areas may benefit from additional context."
         else:
             response += "While this provides initial insights, I'd recommend gathering additional context for a more comprehensive analysis."

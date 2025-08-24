@@ -128,7 +128,9 @@ class FrameworkAnalysisService:
             List of analysis insights generated from framework application
         """
         try:
-            framework_def = self.framework_provider.get_framework_definition(framework_name)
+            framework_def = self.framework_provider.get_framework_definition(
+                framework_name
+            )
             if not framework_def:
                 logger.error("Framework definition not found", framework=framework_name)
                 return []
@@ -141,7 +143,9 @@ class FrameworkAnalysisService:
             )
 
             # Generate base insights using framework components
-            base_insights = self.insight_generator.generate_insights(framework_def, context)
+            base_insights = self.insight_generator.generate_insights(
+                framework_def, context
+            )
 
             # Enrich insights with pattern matching and context
             enriched_insights = self.insight_generator.enrich_insights_with_patterns(
@@ -149,14 +153,17 @@ class FrameworkAnalysisService:
             )
 
             # Filter and validate insights
-            validated_insights = self._validate_and_filter_insights(enriched_insights, context)
+            validated_insights = self._validate_and_filter_insights(
+                enriched_insights, context
+            )
 
             logger.info(
                 "Framework analysis completed",
                 framework=framework_name,
                 insights_generated=len(validated_insights),
                 avg_confidence=(
-                    sum(i.confidence for i in validated_insights) / len(validated_insights)
+                    sum(i.confidence for i in validated_insights)
+                    / len(validated_insights)
                     if validated_insights
                     else 0
                 ),
@@ -165,7 +172,9 @@ class FrameworkAnalysisService:
             return validated_insights
 
         except Exception as e:
-            logger.error("Framework analysis failed", framework=framework_name, error=str(e))
+            logger.error(
+                "Framework analysis failed", framework=framework_name, error=str(e)
+            )
             return []
 
     def generate_recommendations(
@@ -196,7 +205,9 @@ class FrameworkAnalysisService:
                 recommendations.extend(category_recommendations)
 
             # Prioritize and filter recommendations
-            prioritized_recommendations = self._prioritize_recommendations(recommendations, context)
+            prioritized_recommendations = self._prioritize_recommendations(
+                recommendations, context
+            )
 
             logger.info(
                 "Recommendations generated",
@@ -205,7 +216,8 @@ class FrameworkAnalysisService:
                     [
                         r
                         for r in prioritized_recommendations
-                        if r.priority == self.config.get_enum_values("priority_levels")[1]
+                        if r.priority
+                        == self.config.get_enum_values("priority_levels")[1]
                     ]
                 ),
             )
@@ -234,13 +246,17 @@ class FrameworkAnalysisService:
                 return []
 
             # Sort recommendations by priority and impact
-            sorted_recommendations = self._sort_recommendations_for_implementation(recommendations)
+            sorted_recommendations = self._sort_recommendations_for_implementation(
+                recommendations
+            )
 
             implementation_steps = []
             step_number = 1
 
             for recommendation in sorted_recommendations:
-                steps = self._create_steps_for_recommendation(recommendation, step_number, context)
+                steps = self._create_steps_for_recommendation(
+                    recommendation, step_number, context
+                )
                 implementation_steps.extend(steps)
                 step_number += len(steps)
 
@@ -326,7 +342,9 @@ class FrameworkAnalysisService:
                     if avg_confidence > 0.7
                     else self.config.get_enum_values("priority_levels")[2]
                 ),
-                "implementation_effort": self.config.get_enum_values("priority_levels")[2],
+                "implementation_effort": self.config.get_enum_values("priority_levels")[
+                    2
+                ],
                 "expected_impact": (
                     self.config.get_enum_values("priority_levels")[1]
                     if avg_confidence > 0.7
@@ -337,14 +355,18 @@ class FrameworkAnalysisService:
                 "title": "Stakeholder Alignment Strategy",
                 "description_template": "Implement stakeholder alignment initiatives focusing on {focus_areas} to address identified concerns.",
                 "priority": self.config.get_enum_values("priority_levels")[1],
-                "implementation_effort": self.config.get_enum_values("priority_levels")[1],
+                "implementation_effort": self.config.get_enum_values("priority_levels")[
+                    1
+                ],
                 "expected_impact": self.config.get_enum_values("priority_levels")[1],
             },
             "success_metrics": {
                 "title": "Success Metrics Framework",
                 "description_template": "Establish comprehensive metrics framework for {focus_areas} with clear measurement criteria.",
                 "priority": self.config.get_enum_values("priority_levels")[2],
-                "implementation_effort": self.config.get_enum_values("priority_levels")[2],
+                "implementation_effort": self.config.get_enum_values("priority_levels")[
+                    2
+                ],
                 "expected_impact": self.config.get_enum_values("priority_levels")[2],
             },
             "implementation_roadmap": {
@@ -379,7 +401,9 @@ class FrameworkAnalysisService:
             set(
                 evidence_item
                 for insight in insights
-                for evidence_item in insight.evidence[:2]  # Limit to top 2 evidence items
+                for evidence_item in insight.evidence[
+                    :2
+                ]  # Limit to top 2 evidence items
             )
         )[
             :3
@@ -423,7 +447,9 @@ class FrameworkAnalysisService:
             return (priority_score * 0.4) + (impact_score * 0.4) + (effort_score * 0.2)
 
         # Sort by priority score
-        prioritized = sorted(recommendations, key=calculate_priority_score, reverse=True)
+        prioritized = sorted(
+            recommendations, key=calculate_priority_score, reverse=True
+        )
 
         # Limit to reasonable number of recommendations
         max_recommendations = 8
@@ -488,7 +514,9 @@ class FrameworkAnalysisService:
 
         return steps
 
-    def _add_step_dependencies(self, steps: List[ImplementationStep]) -> List[ImplementationStep]:
+    def _add_step_dependencies(
+        self, steps: List[ImplementationStep]
+    ) -> List[ImplementationStep]:
         """Add logical dependencies between implementation steps"""
         # Simple dependency logic: each step depends on the previous step
         for i, step in enumerate(steps):
@@ -506,7 +534,9 @@ class FrameworkAnalysisService:
         }
         return timeline_mapping.get(effort, "4-8 weeks")
 
-    def _estimate_step_timeline(self, effort: str, step_index: int, total_steps: int) -> str:
+    def _estimate_step_timeline(
+        self, effort: str, step_index: int, total_steps: int
+    ) -> str:
         """Estimate timeline for individual implementation step"""
         base_timelines = {
             "low": ["3-5 days", "5-7 days"],
