@@ -45,8 +45,11 @@ class P0TestEnforcer:
 
     def _load_p0_tests_from_yaml(self) -> List[Dict]:
         """Load P0 test definitions from YAML configuration file"""
-        yaml_path = PROJECT_ROOT / ".claudedirector/tests/p0_enforcement/p0_test_definitions.yaml"
-        
+        yaml_path = (
+            PROJECT_ROOT
+            / ".claudedirector/tests/p0_enforcement/p0_test_definitions.yaml"
+        )
+
         if not yaml_path.exists():
             print(f"⚠️ P0 definitions file not found: {yaml_path}")
             print("⚠️ Falling back to minimal P0 test set")
@@ -59,25 +62,29 @@ class P0TestEnforcer:
                     "failure_impact": "Strategic persona responses lose transparency",
                 }
             ]
-        
+
         try:
-            with open(yaml_path, 'r') as f:
+            with open(yaml_path, "r") as f:
                 config = yaml.safe_load(f)
-            
+
             # Convert YAML format to expected format
             p0_tests = []
-            for test_def in config.get('p0_features', []):
-                p0_tests.append({
-                    "name": test_def['name'],
-                    "module": test_def['test_module'],  # YAML uses 'test_module', code expects 'module'
-                    "critical_level": test_def['critical_level'],
-                    "description": test_def['description'],
-                    "failure_impact": test_def['failure_impact'],
-                })
-            
+            for test_def in config.get("p0_features", []):
+                p0_tests.append(
+                    {
+                        "name": test_def["name"],
+                        "module": test_def[
+                            "test_module"
+                        ],  # YAML uses 'test_module', code expects 'module'
+                        "critical_level": test_def["critical_level"],
+                        "description": test_def["description"],
+                        "failure_impact": test_def["failure_impact"],
+                    }
+                )
+
             print(f"✅ Loaded {len(p0_tests)} P0 tests from YAML configuration")
             return p0_tests
-            
+
         except Exception as e:
             print(f"❌ Error loading P0 definitions from YAML: {e}")
             print("⚠️ Falling back to minimal P0 test set")
@@ -139,7 +146,7 @@ class P0TestEnforcer:
         try:
             # Run the test module (handle both files and directories)
             test_path = PROJECT_ROOT / test_module
-            
+
             if test_path.is_dir():
                 # Handle modular tests (directory with multiple test files)
                 return self._run_modular_tests(test_config, test_path, start_time)
@@ -212,14 +219,16 @@ class P0TestEnforcer:
                 "failure_impact": test_config["failure_impact"],
             }
 
-    def _run_modular_tests(self, test_config: Dict, test_path: Path, start_time: float) -> Dict:
+    def _run_modular_tests(
+        self, test_config: Dict, test_path: Path, start_time: float
+    ) -> Dict:
         """Run all test files in a directory (modular tests)"""
         test_name = test_config["name"]
         critical_level = test_config["critical_level"]
-        
+
         # Find all test files in the directory
         test_files = list(test_path.glob("test_*.py"))
-        
+
         if not test_files:
             print(f"⚠️ No test files found in {test_path}")
             duration = time.time() - start_time
@@ -234,17 +243,17 @@ class P0TestEnforcer:
                 "description": test_config["description"],
                 "failure_impact": test_config["failure_impact"],
             }
-        
+
         print(f"   Running {len(test_files)} modular tests...")
-        
+
         all_passed = True
         combined_stdout = []
         combined_stderr = []
         failed_tests = []
-        
+
         for test_file in sorted(test_files):
             print(f"     • {test_file.name}")
-            
+
             result = subprocess.run(
                 [sys.executable, str(test_file)],
                 cwd=PROJECT_ROOT,
@@ -252,7 +261,7 @@ class P0TestEnforcer:
                 text=True,
                 timeout=60,  # 1 minute per modular test
             )
-            
+
             if result.returncode == 0:
                 combined_stdout.append(f"✅ {test_file.name}: PASSED")
                 if result.stdout.strip():
@@ -260,16 +269,20 @@ class P0TestEnforcer:
             else:
                 all_passed = False
                 failed_tests.append(test_file.name)
-                combined_stderr.append(f"❌ {test_file.name}: FAILED (exit {result.returncode})")
+                combined_stderr.append(
+                    f"❌ {test_file.name}: FAILED (exit {result.returncode})"
+                )
                 if result.stdout.strip():
                     combined_stderr.append(result.stdout.strip())
                 if result.stderr.strip():
                     combined_stderr.append(result.stderr.strip())
-        
+
         duration = time.time() - start_time
-        
+
         if all_passed:
-            print(f"✅ PASSED: {test_name} ({duration:.2f}s) - All {len(test_files)} modular tests passed")
+            print(
+                f"✅ PASSED: {test_name} ({duration:.2f}s) - All {len(test_files)} modular tests passed"
+            )
             return {
                 "name": test_name,
                 "module": test_config["module"],
@@ -283,12 +296,14 @@ class P0TestEnforcer:
                 "failure_impact": test_config["failure_impact"],
             }
         else:
-            print(f"❌ FAILED: {test_name} ({duration:.2f}s) - {len(failed_tests)} modular tests failed: {', '.join(failed_tests)}")
-            
+            print(
+                f"❌ FAILED: {test_name} ({duration:.2f}s) - {len(failed_tests)} modular tests failed: {', '.join(failed_tests)}"
+            )
+
             if critical_level == "BLOCKING":
                 self.blocking_failures += 1
                 print(f"🚨 BLOCKING FAILURE: {test_config['failure_impact']}")
-            
+
             return {
                 "name": test_name,
                 "module": test_config["module"],
