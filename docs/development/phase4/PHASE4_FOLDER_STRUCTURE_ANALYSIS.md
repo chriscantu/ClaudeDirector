@@ -60,15 +60,17 @@
 ai-leadership/
 ├── bin/                    # Executables (claudedirector)
 ├── data/                   # Consolidated data storage
+│   ├── strategic/          # Strategic databases and memory
+│   ├── workspace/          # User workspace data
+│   ├── framework/          # Framework internal data
+│   ├── test/               # Test databases
+│   └── schemas/            # Database schemas
 ├── docs/                   # All documentation
-├── lib/                    # Core ClaudeDirector library
-├── tests/                  # All test files
-├── tools/                  # Development and admin tools
-├── workspace/              # User workspace (renamed from leadership-workspace)
-├── .claudedirector/        # Framework internals only
+├── leadership-workspace/   # User workspace (preserved)
+├── .claudedirector/        # Framework internals
 ├── README.md
 ├── requirements.txt
-└── pyproject.toml
+└── venv/                   # Development environment
 ```
 
 ## 🎯 **Success Metrics**
