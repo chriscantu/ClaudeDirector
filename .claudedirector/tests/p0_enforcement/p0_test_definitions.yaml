@@ -194,6 +194,17 @@ p0_features:
     introduced_version: "v2.3.0"
     owner: "rachel"
 
+  # PHASE 1 AI INTELLIGENCE - CRITICAL BUSINESS FEATURE
+  - name: "AI Intelligence P0"
+    test_module: ".claudedirector/tests/regression/business_critical/test_ai_intelligence_p0.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 300
+    description: "Advanced AI Intelligence system must provide 90%+ decision detection accuracy and <500ms latency"
+    failure_impact: "Strategic decision intelligence fails, MCP coordination broken, framework detection degraded"
+    business_impact: "Strategic guidance becomes unreliable, executive decision support compromised, competitive disadvantage"
+    introduced_version: "v3.0.0"
+    owner: "martin"
+
 
 
 # Enforcement settings
