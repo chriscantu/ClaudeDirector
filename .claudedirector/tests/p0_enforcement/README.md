@@ -192,3 +192,4 @@ nano .claudedirector/config/user_identity.yaml
 - `CLAUDEDIRECTOR_USER_NAME`: Primary name
 - `CLAUDEDIRECTOR_WORK_NAME`: Professional name
 - `CLAUDEDIRECTOR_FULL_NAME`: Full formal name
+# Test unified test runner
