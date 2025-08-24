@@ -27,6 +27,15 @@ environments:
       PYTHONPATH: ".claudedirector/lib:.claudedirector/tests/regression:.claudedirector/tests/integration"
       CI: "true"
 
+  pre_push:
+    python_path_additions:
+      - ".claudedirector/lib"
+      - ".claudedirector/tests/regression"
+      - ".claudedirector/tests/integration"
+    environment_variables:
+      PYTHONPATH: ".claudedirector/lib:.claudedirector/tests/regression:.claudedirector/tests/integration"
+      CI: "false"
+
 # Test suites - executed in order defined
 test_suites:
 
