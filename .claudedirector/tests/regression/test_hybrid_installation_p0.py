@@ -344,7 +344,9 @@ class TestHybridInstallationIntegration(unittest.TestCase):
     def test_integration_with_configuration_system(self):
         """Test integration with ClaudeDirector configuration system"""
         try:
-            from claudedirector.core.hybrid_installation_manager import HybridInstallationManager
+            from claudedirector.core.hybrid_installation_manager import (
+                HybridInstallationManager,
+            )
             from core.config import get_config
 
             with tempfile.TemporaryDirectory() as temp_dir:
@@ -368,7 +370,9 @@ class TestHybridInstallationIntegration(unittest.TestCase):
     def test_real_performance_characteristics(self):
         """Test real performance characteristics (when npx available)"""
         try:
-            from claudedirector.core.hybrid_installation_manager import HybridInstallationManager
+            from claudedirector.core.hybrid_installation_manager import (
+                HybridInstallationManager,
+            )
 
             with tempfile.TemporaryDirectory() as temp_dir:
                 with patch.object(Path, "home", return_value=Path(temp_dir)):

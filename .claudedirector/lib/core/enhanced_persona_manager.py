@@ -11,7 +11,10 @@ from dataclasses import dataclass
 from enum import Enum
 
 from ..integrations.mcp_use_client import MCPUseClient
-from .complexity_analyzer import AnalysisComplexityDetector as ComplexityAnalyzer, ComplexityAnalysis
+from .complexity_analyzer import (
+    AnalysisComplexityDetector as ComplexityAnalyzer,
+    ComplexityAnalysis,
+)
 
 logger = logging.getLogger(__name__)
 
