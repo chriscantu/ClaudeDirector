@@ -16,8 +16,8 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../lib"))
 
-from claudedirector.core.template_engine import TemplateDiscoveryEngine
-from claudedirector.p1_features.template_commands import TemplateCommands
+from lib.core.template_engine import TemplateDiscoveryEngine
+from lib.p1_features.template_commands import TemplateCommands
 
 
 class TestTemplateSystemIntegration(unittest.TestCase):

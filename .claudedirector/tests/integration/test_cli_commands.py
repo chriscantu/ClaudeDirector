@@ -190,7 +190,7 @@ print("CONFIG_SUCCESS")
         """Test importing intelligence modules"""
         test_script = """
 try:
-    from claudedirector.intelligence import StakeholderIntelligence, TaskIntelligence, MeetingIntelligence
+    from lib.intelligence import StakeholderIntelligence, TaskIntelligence, MeetingIntelligence
     print("INTELLIGENCE_IMPORT_SUCCESS")
 except ImportError as e:
     print(f"IMPORT_ERROR: {e}")
@@ -210,7 +210,7 @@ except ImportError as e:
         """Test importing database manager"""
         test_script = """
 try:
-    from claudedirector.core.database import DatabaseManager
+    from lib.core.database import DatabaseManager
     print("DATABASE_IMPORT_SUCCESS")
 except ImportError as e:
     print(f"IMPORT_ERROR: {e}")
@@ -230,7 +230,7 @@ except ImportError as e:
         """Test importing exception classes"""
         test_script = """
 try:
-    from claudedirector.core.exceptions import ClaudeDirectorError, DatabaseError, AIDetectionError
+    from lib.core.exceptions import ClaudeDirectorError, DatabaseError, AIDetectionError
     print("EXCEPTIONS_IMPORT_SUCCESS")
 except ImportError as e:
     print(f"IMPORT_ERROR: {e}")

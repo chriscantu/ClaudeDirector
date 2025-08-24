@@ -7,8 +7,8 @@ import time
 from pathlib import Path
 
 import pytest
-from claudedirector.core.config import ClaudeDirectorConfig
-from claudedirector.core.database import DatabaseManager
+from lib.core.config import ClaudeDirectorConfig
+from lib.core.database import DatabaseManager
 
 
 class TestPerformanceRegression:

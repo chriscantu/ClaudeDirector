@@ -14,7 +14,7 @@ import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../lib"))
 
-from claudedirector.core.persona_activation_engine import (
+from lib.core.persona_activation_engine import (
     ContextAnalysisEngine,
     PersonaSelectionEngine,
     ConversationStateEngine,
@@ -23,7 +23,7 @@ from claudedirector.core.persona_activation_engine import (
     ConfidenceLevel,
 )
 
-from claudedirector.core.template_engine import (
+from lib.core.template_engine import (
     TemplateDiscoveryEngine,
     DirectorTemplate,
     TemplatePersonaConfig,

@@ -18,10 +18,10 @@ import time
 # Add the lib directory to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../lib"))
 
-from claudedirector.core.enhanced_persona_manager import EnhancedPersonaManager
-from claudedirector.core.template_engine import TemplateDiscoveryEngine
-from claudedirector.core.complexity_analyzer import AnalysisComplexityDetector
-from claudedirector.core.persona_enhancement_engine import PersonaEnhancementEngine
+from lib.core.enhanced_persona_manager import EnhancedPersonaManager
+from lib.core.template_engine import TemplateDiscoveryEngine
+from lib.core.complexity_analyzer import AnalysisComplexityDetector
+from lib.core.persona_enhancement_engine import PersonaEnhancementEngine
 
 
 def create_demo_enhanced_manager() -> EnhancedPersonaManager:

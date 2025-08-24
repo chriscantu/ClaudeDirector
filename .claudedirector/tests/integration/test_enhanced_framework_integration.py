@@ -15,8 +15,8 @@ if lib_dir not in sys.path:
     sys.path.insert(0, lib_dir)
 
 try:
-    from claudedirector.memory.session_context_manager import SessionContextManager
-    from claudedirector.core.enhanced_framework_manager import EnhancedFrameworkManager
+    from lib.memory.session_context_manager import SessionContextManager
+    from lib.core.enhanced_framework_manager import EnhancedFrameworkManager
 
     print("✅ Successfully imported ClaudeDirector enhanced framework modules")
 except ImportError as e:

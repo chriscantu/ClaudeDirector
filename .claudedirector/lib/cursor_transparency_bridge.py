@@ -8,13 +8,13 @@ from datetime import datetime
 
 # Import transparency system
 try:
-    from claudedirector.transparency.integrated_transparency import (
+    from lib.transparency.integrated_transparency import (
         IntegratedTransparencySystem,
     )
-    from claudedirector.transparency.framework_detection import (
+    from lib.transparency.framework_detection import (
         FrameworkDetectionMiddleware,
     )
-    from claudedirector.transparency.mcp_transparency import (
+    from lib.transparency.mcp_transparency import (
         MCPTransparencyMiddleware,
         MCPContext,
         MCPCall,

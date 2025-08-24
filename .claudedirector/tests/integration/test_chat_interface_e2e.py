@@ -21,7 +21,7 @@ import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../lib"))
 
-from claudedirector.core.persona_activation_engine import (
+from lib.core.persona_activation_engine import (
     ContextAnalysisEngine,
     PersonaSelectionEngine,
     ConversationStateEngine,
@@ -29,7 +29,7 @@ from claudedirector.core.persona_activation_engine import (
     PersonaSelection,
     ConfidenceLevel,
 )
-from claudedirector.core.template_engine import TemplateDiscoveryEngine
+from lib.core.template_engine import TemplateDiscoveryEngine
 
 
 class ChatInterfaceSimulator:

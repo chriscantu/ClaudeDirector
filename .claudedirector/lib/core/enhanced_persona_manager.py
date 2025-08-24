@@ -186,8 +186,8 @@ class EnhancedPersonaManager:
             await self.initialize()
 
         # Analyze complexity to determine if enhancement is needed
-        complexity_analysis = self.complexity_analyzer.analyze_complexity(
-            user_input, persona
+        complexity_analysis = self.complexity_analyzer.analyze_input_complexity(
+            user_input, {"current_persona": persona}
         )
 
         # Check if enhancement should be attempted

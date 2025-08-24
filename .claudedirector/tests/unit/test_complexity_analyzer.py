@@ -4,7 +4,7 @@ Tests the complexity analysis and enhancement decision logic.
 """
 
 import pytest
-from claudedirector.core.complexity_analyzer import (
+from lib.core.complexity_analyzer import (
     ComplexityAnalyzer,
     ComplexityLevel,
     ComplexityAnalysis,

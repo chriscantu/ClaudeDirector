@@ -9,7 +9,7 @@ from unittest.mock import Mock, patch, AsyncMock
 import tempfile
 import yaml
 
-from claudedirector.integrations.mcp_use_client import (
+from lib.integrations.mcp_use_client import (
     MCPUseClient,
     MCPResponse,
     ConnectionStatus,
