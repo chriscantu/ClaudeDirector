@@ -14,6 +14,8 @@ import structlog
 import threading
 from datetime import datetime, timedelta
 
+from ....core.config import ClaudeDirectorConfig, get_config
+
 
 logger = structlog.get_logger(__name__)
 
@@ -77,9 +79,10 @@ class DatabaseMigrationStrategy:
     5. Embedded database selection based on workload analysis
     """
 
-    def __init__(self, config):
+    def __init__(self, config, director_config: Optional[ClaudeDirectorConfig] = None):
         super().__init__()
         self.config = config
+        self.director_config = director_config or get_config()
         self.logger = logger.bind(component="migration_strategy")
 
         # Migration criteria
@@ -523,7 +526,7 @@ class DatabaseMigrationStrategy:
             target_database=TargetDatabase.DUCKDB,
             estimated_duration_minutes=45,
             data_size_mb=workload_analysis["data_size_mb"],
-            risk_level="medium",
+            risk_level=self.director_config.get_enum_values("priority_levels")[2],
             rollback_strategy="Dual-write rollback with SQLite fallback",
             validation_tests=[
                 "analytics_performance",
@@ -542,7 +545,7 @@ class DatabaseMigrationStrategy:
             target_database=TargetDatabase.FAISS,
             estimated_duration_minutes=30,
             data_size_mb=workload_analysis["data_size_mb"] * 0.3,  # Only semantic data
-            risk_level="low",
+            risk_level=self.director_config.get_enum_values("priority_levels")[3],
             rollback_strategy="Semantic search fallback to text-based search",
             validation_tests=[
                 "semantic_accuracy",
@@ -561,7 +564,7 @@ class DatabaseMigrationStrategy:
             target_database=TargetDatabase.HYBRID,
             estimated_duration_minutes=90,
             data_size_mb=workload_analysis["data_size_mb"],
-            risk_level="high",
+            risk_level=self.director_config.get_enum_values("priority_levels")[1],
             rollback_strategy="Phase-by-phase rollback with intelligent routing",
             validation_tests=[
                 "routing_accuracy",
@@ -582,7 +585,7 @@ class DatabaseMigrationStrategy:
             target_database=TargetDatabase.KUZU,
             estimated_duration_minutes=60,
             data_size_mb=workload_analysis["data_size_mb"] * 0.4,  # Relationship data
-            risk_level="medium",
+            risk_level=self.director_config.get_enum_values("priority_levels")[2],
             rollback_strategy="Graph query fallback to SQL joins",
             validation_tests=[
                 "relationship_accuracy",
@@ -608,9 +611,11 @@ class DatabaseMigrationStrategy:
         }.get(plan.target_database, 0.5)
 
         # Adjust for risk and complexity
-        risk_penalty = {"low": 0, "medium": -0.1, "high": -0.2}.get(
-            plan.risk_level, -0.1
-        )
+        risk_penalty = {
+            self.director_config.get_enum_values("priority_levels")[3]: 0,  # low
+            self.director_config.get_enum_values("priority_levels")[2]: -0.1,  # medium
+            self.director_config.get_enum_values("priority_levels")[1]: -0.2,  # high
+        }.get(plan.risk_level, -0.1)
         duration_penalty = min(-0.2, -plan.estimated_duration_minutes / 500)
 
         return base_value + risk_penalty + duration_penalty

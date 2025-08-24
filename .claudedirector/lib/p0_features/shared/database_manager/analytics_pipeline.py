@@ -16,6 +16,7 @@ import structlog
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from .db_base import DatabaseEngineBase
+from ....core.config import ClaudeDirectorConfig, get_config
 
 logger = structlog.get_logger(__name__)
 
@@ -68,8 +69,9 @@ class AnalyticsPipeline(DatabaseEngineBase):
     5. Multi-dimensional analytics for AI training
     """
 
-    def __init__(self, config):
+    def __init__(self, config, director_config: Optional[ClaudeDirectorConfig] = None):
         super().__init__(config)
+        self.director_config = director_config or get_config()
         self.logger = logger.bind(component="analytics_pipeline")
 
         # Analytics-specific connection pool
@@ -836,7 +838,7 @@ class AnalyticsPipeline(DatabaseEngineBase):
         """Generate summary of health trends"""
         return {
             "components_analyzed": len(analytics_components),
-            "data_quality": "high",
+            "data_quality": self.director_config.get_enum_values("priority_levels")[1],
             "trend_confidence": 0.85,
             "recommendation": "Continue monitoring with current metrics",
         }

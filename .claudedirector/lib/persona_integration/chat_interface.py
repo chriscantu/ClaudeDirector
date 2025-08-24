@@ -20,6 +20,7 @@ from ..p2_communication.interfaces.report_interface import (
     ReportContext,
     ReportFormat,
 )
+from ..core.config import ClaudeDirectorConfig, get_config
 
 
 class PersonaType(Enum):
@@ -69,8 +70,9 @@ class PersonaChatInterface:
     and conversational response formatting.
     """
 
-    def __init__(self):
+    def __init__(self, config: Optional[ClaudeDirectorConfig] = None):
         """Initialize chat interface with P2.1 components."""
+        self.config = config or get_config()
         # Initialize data source (using demo for now)
         self.data_source = DemoDataSource()
 
@@ -418,9 +420,21 @@ class PersonaChatInterface:
         lines.append("")
 
         # Group by severity
-        critical_alerts = [a for a in alerts if a.severity.value == "critical"]
-        high_alerts = [a for a in alerts if a.severity.value == "high"]
-        medium_alerts = [a for a in alerts if a.severity.value == "medium"]
+        critical_alerts = [
+            a
+            for a in alerts
+            if a.severity.value == self.config.get_enum_values("priority_levels")[0]
+        ]
+        high_alerts = [
+            a
+            for a in alerts
+            if a.severity.value == self.config.get_enum_values("priority_levels")[1]
+        ]
+        medium_alerts = [
+            a
+            for a in alerts
+            if a.severity.value == self.config.get_enum_values("priority_levels")[2]
+        ]
 
         if critical_alerts:
             lines.append("**🔴 Critical Issues:**")

@@ -41,7 +41,7 @@ p0_features:
 
   # HIGH PRIORITY: Should pass but won't block commit
   - name: "First-Run Wizard P0"
-    test_module: ".claudedirector/tests/regression/user_journeys/test_first_run_wizard_journey.py"
+    test_module: ".claudedirector/tests/integration/test_first_run_wizard_comprehensive.py"
     critical_level: "HIGH"
     timeout_seconds: 60
     description: "Complete first-run wizard user journey must work end-to-end"
@@ -51,7 +51,7 @@ p0_features:
     owner: "martin"
 
   - name: "Cursor Integration P0"
-    test_module: "docs/testing/run_cursor_tests.py"
+    test_module: ".claudedirector/tests/integration/test_cursor_integration_comprehensive.py"
     critical_level: "HIGH"
     timeout_seconds: 60
     description: "Cursor environment integration must work"

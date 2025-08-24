@@ -17,6 +17,7 @@ import threading
 import math
 
 from .db_base import DatabaseEngineBase
+from ....core.config import ClaudeDirectorConfig, get_config
 
 logger = structlog.get_logger(__name__)
 
@@ -68,8 +69,9 @@ class SemanticSearchEngine(DatabaseEngineBase):
     5. Real-time embedding generation and caching
     """
 
-    def __init__(self, config):
+    def __init__(self, config, director_config: Optional[ClaudeDirectorConfig] = None):
         super().__init__(config)
+        self.director_config = director_config or get_config()
         self.logger = logger.bind(component="semantic_search_engine")
 
         # Search engine configuration
@@ -890,7 +892,10 @@ class SemanticSearchEngine(DatabaseEngineBase):
                 importance += 0.2
 
         elif result["source_table"] == "strategic_initiatives":
-            if metadata.get("priority") in ["critical", "high"]:
+            if metadata.get("priority") in [
+                self.director_config.get_enum_values("priority_levels")[0],
+                self.director_config.get_enum_values("priority_levels")[1],
+            ]:
                 importance += 0.3
             if metadata.get("risk_level") == "red":
                 importance += 0.2

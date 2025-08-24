@@ -27,20 +27,21 @@ class FrameworkDomain(Enum):
 
 class AnalysisComplexity:
     """Analysis complexity levels"""
+
     def __init__(self, config: Optional[ClaudeDirectorConfig] = None):
         self.config = config or get_config()
 
     @property
     def LOW(self) -> str:
-        return self.config.get_enum_values('priority_levels')[3]  # "low"
+        return self.config.get_enum_values("priority_levels")[3]  # "low"
 
     @property
     def MEDIUM(self) -> str:
-        return self.config.get_enum_values('priority_levels')[2]  # "medium"
+        return self.config.get_enum_values("priority_levels")[2]  # "medium"
 
     @property
     def HIGH(self) -> str:
-        return self.config.get_enum_values('priority_levels')[1]  # "high"
+        return self.config.get_enum_values("priority_levels")[1]  # "high"
 
 
 @dataclass
@@ -84,9 +85,15 @@ class FrameworkRecommendation:
 
     title: str
     description: str
-    priority: str  # Configured via ClaudeDirectorConfig.get_enum_values('priority_levels')
-    implementation_effort: str  # Configured via ClaudeDirectorConfig.get_enum_values('priority_levels')
-    expected_impact: str  # Configured via ClaudeDirectorConfig.get_enum_values('priority_levels')
+    priority: (
+        str  # Configured via ClaudeDirectorConfig.get_enum_values('priority_levels')
+    )
+    implementation_effort: (
+        str  # Configured via ClaudeDirectorConfig.get_enum_values('priority_levels')
+    )
+    expected_impact: (
+        str  # Configured via ClaudeDirectorConfig.get_enum_values('priority_levels')
+    )
     dependencies: List[str]
     timeline: Optional[str] = None
 
