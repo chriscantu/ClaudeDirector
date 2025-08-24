@@ -131,11 +131,18 @@ class FrameworkAnalysisService:
                 logger.error("Framework definition not found", framework=framework_name)
                 return []
 
+            # Handle both enum and property-based complexity levels
+            complexity_str = (
+                context.complexity_level.value
+                if hasattr(context.complexity_level, "value")
+                else str(context.complexity_level)
+            )
+
             logger.info(
                 "Starting framework analysis",
                 framework=framework_name,
                 input_length=len(context.user_input),
-                complexity=context.complexity_level.value,
+                complexity=complexity_str,
             )
 
             # Generate base insights using framework components

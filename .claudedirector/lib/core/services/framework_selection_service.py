@@ -191,7 +191,10 @@ class FrameworkSelectionService:
                 framework=best_match.framework_name,
                 relevance_score=best_match.relevance_score,
                 keyword_matches=best_match.keyword_matches,
-                domain_matches=[d.value for d in best_match.domain_matches],
+                domain_matches=[
+                    d.value if hasattr(d, "value") else str(d)
+                    for d in best_match.domain_matches
+                ],
             )
 
             return best_match.framework_name

@@ -318,7 +318,11 @@ class RefactoredFrameworkEngine:
                 overall_confidence=overall_confidence,
                 analysis_metadata={
                     "framework_relevance": framework_relevance,
-                    "context_complexity": context.complexity_level.value,
+                    "context_complexity": (
+                        context.complexity_level.value
+                        if hasattr(context.complexity_level, "value")
+                        else str(context.complexity_level)
+                    ),
                     "insights_count": len(insights),
                     "recommendations_count": len(recommendations),
                 },
