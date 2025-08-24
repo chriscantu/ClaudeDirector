@@ -1,467 +1,676 @@
 """
-Enhanced Persona Manager with Embedded Framework Integration
-Integrates embedded framework capabilities with the existing persona activation system.
-
-This manager coordinates between:
-- Dynamic Persona Activation Engine (existing)
-- Embedded Framework Engine (new)
-- Persona Enhancement Engine (new)
-
-Author: Martin (Principal Platform Architect)
+Enhanced Persona Manager
+Integrates MCP capabilities with existing persona system for enhanced strategic analysis.
 """
 
 import asyncio
+import logging
 import time
-from typing import Dict, List, Optional, Any
-import structlog
+from typing import Dict, Any, Optional
+from dataclasses import dataclass
+from enum import Enum
 
-from .persona_activation_engine import (
-    ContextAnalysisEngine,
-    PersonaSelectionEngine,
-    ConversationStateEngine,
-    ContextResult,
-    PersonaSelection,
-)
-from .complexity_analyzer import AnalysisComplexityDetector
-from .persona_enhancement_engine import PersonaEnhancementEngine, EnhancementResult
-from .template_engine import TemplateDiscoveryEngine
+from ..integrations.mcp_use_client import MCPUseClient
+from .complexity_analyzer import AnalysisComplexityDetector as ComplexityAnalyzer, ComplexityAnalysis
 
-# Configure logging
-logger = structlog.get_logger(__name__)
+logger = logging.getLogger(__name__)
+
+
+class EnhancementStatus(Enum):
+    """Status of enhancement attempt"""
+
+    SUCCESS = "success"
+    FALLBACK = "fallback"
+    UNAVAILABLE = "unavailable"
+    TIMEOUT = "timeout"
+    ERROR = "error"
+
+
+@dataclass
+class EnhancedResponse:
+    """Response from enhanced persona system"""
+
+    content: str
+    persona: str
+    enhancement_status: EnhancementStatus
+    processing_time: float
+    mcp_server_used: Optional[str] = None
+    complexity_score: float = 0.0
+    transparency_message: Optional[str] = None
+    fallback_reason: Optional[str] = None
+
+
+class TransparencyManager:
+    """Manages transparent communication about external system access"""
+
+    def __init__(self):
+        self.messages = {
+            "accessing_framework": "I'm accessing our strategic analysis framework to provide you with enhanced guidance...",
+            "framework_enhanced": "I've enhanced this analysis using our strategic framework methodologies.",
+            "framework_unavailable": "The strategic analysis framework is temporarily unavailable, so I'll provide guidance based on my core knowledge.",
+            "framework_timeout": "The analysis is taking longer than expected. Let me provide you with immediate guidance while the enhanced framework loads.",
+            "framework_error": "External strategic frameworks are temporarily unavailable. I'll help you with standard analysis methods.",
+            "performance_note": "This enhanced analysis may take a moment as I access specialized frameworks.",
+        }
+
+    def get_access_message(self, persona: str, server: str) -> str:
+        """Get message for accessing external framework"""
+        return self.messages["accessing_framework"]
+
+    def get_enhanced_message(
+        self, persona: str, server: str, processing_time: float
+    ) -> str:
+        """Get message indicating enhanced response"""
+        return self.messages["framework_enhanced"]
+
+    def get_fallback_message(self, reason: str) -> str:
+        """Get message for fallback scenario"""
+        if "timeout" in reason.lower():
+            return self.messages["framework_timeout"]
+        elif "unavailable" in reason.lower():
+            return self.messages["framework_unavailable"]
+        else:
+            return self.messages["framework_error"]
+
+    def get_performance_note(self) -> str:
+        """Get performance expectation message"""
+        return self.messages["performance_note"]
 
 
 class EnhancedPersonaManager:
     """
-    Enhanced Persona Manager with Embedded Framework Integration
-
-    Coordinates the complete persona activation and enhancement workflow:
-    1. Context Analysis (existing)
-    2. Persona Selection (existing)
-    3. Embedded Framework Enhancement (new)
-    4. Response Integration (new)
-    5. State Management (existing)
+    Enhanced persona manager that integrates MCP capabilities with existing personas
     """
 
-    def __init__(
-        self,
-        template_discovery: TemplateDiscoveryEngine,
-        enhancement_config: Optional[Dict] = None,
-    ):
+    def __init__(self, config_path: Optional[str] = None):
         """
         Initialize enhanced persona manager
 
         Args:
-            template_discovery: Template discovery engine
-            enhancement_config: Enhancement configuration overrides
+            config_path: Path to MCP server configuration
         """
-        self.template_discovery = template_discovery
+        self.mcp_client = MCPUseClient(config_path)
+        self.complexity_analyzer = ComplexityAnalyzer(self.mcp_client.config)
+        self.transparency_manager = TransparencyManager()
+        self.is_initialized = False
 
-        # Initialize existing persona system
-        self.context_engine = ContextAnalysisEngine(template_discovery)
-        self.persona_engine = PersonaSelectionEngine(template_discovery)
-        self.state_engine = ConversationStateEngine()
-
-        # Initialize embedded framework enhancement system
-        self.complexity_detector = AnalysisComplexityDetector(enhancement_config or {})
-        self.enhancement_engine = PersonaEnhancementEngine(
-            self.complexity_detector, enhancement_config or {}
-        )
-
-        # Configuration
-        self.enhancement_config = enhancement_config or {}
-        self.enhancement_enabled = True  # Always enabled with embedded frameworks
-        self.fallback_to_standard = True
-
-        # Performance tracking
-        self.enhancement_stats = {
-            "total_requests": 0,
-            "enhanced_requests": 0,
-            "fallback_requests": 0,
-            "average_enhancement_time": 0.0,
+        # Persona-specific settings
+        self.persona_configs = {
+            "diego": {
+                "primary_server": "sequential",
+                "capabilities": ["systematic_analysis", "organizational_scaling"],
+                "enhancement_threshold": 0.7,
+                "timeout": 8,
+            },
+            "martin": {
+                "primary_server": "context7",
+                "capabilities": ["architecture_patterns", "technical_frameworks"],
+                "enhancement_threshold": 0.6,
+                "timeout": 8,
+            },
+            "rachel": {
+                "primary_server": "context7",
+                "capabilities": [
+                    "design_system_methodology",
+                    "cross_team_coordination",
+                ],
+                "enhancement_threshold": 0.6,
+                "timeout": 8,
+            },
+            "alvaro": {
+                "primary_server": "sequential",
+                "capabilities": ["business_strategy", "competitive_analysis"],
+                "enhancement_threshold": 0.7,
+                "timeout": 8,
+            },
+            "camille": {
+                "primary_server": "sequential",
+                "capabilities": ["technology_leadership", "organizational_scaling"],
+                "enhancement_threshold": 0.7,
+                "timeout": 8,
+            },
         }
 
-        logger.info(
-            "embedded_framework_system_initialized",
-            enabled=True,
-            enhancement_config=bool(enhancement_config),
-        )
-
-    def process_user_input(
-        self, user_input: str, conversation_context: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    async def initialize(self) -> bool:
         """
-        Process user input through complete enhanced persona workflow
-
-        Args:
-            user_input: User's message or query
-            conversation_context: Optional conversation history/context
+        Initialize MCP connections
 
         Returns:
-            Complete response with persona activation and enhancement info
+            True if initialization successful, False if graceful degradation
+        """
+        try:
+            if not self.mcp_client.is_available:
+                logger.info("MCP client unavailable - operating in standard mode")
+                self.is_initialized = True
+                return True
+
+            connection_status = await self.mcp_client.initialize_connections()
+
+            if connection_status.success_rate > 0:
+                logger.info(
+                    f"Enhanced persona manager initialized: {connection_status.available_servers} servers available"
+                )
+                self.is_initialized = True
+                return True
+            else:
+                logger.warning("No MCP servers available - operating in standard mode")
+                self.is_initialized = True
+                return True
+
+        except Exception as e:
+            logger.error(f"Error initializing enhanced persona manager: {e}")
+            self.is_initialized = True  # Graceful degradation
+            return True
+
+    async def get_enhanced_response(
+        self, persona: str, user_input: str, context: Optional[Dict[str, Any]] = None
+    ) -> EnhancedResponse:
+        """
+        Get enhanced response for specified persona
+
+        Args:
+            persona: Persona name (diego, martin, rachel, alvaro, camille)
+            user_input: User's input/question
+            context: Optional conversation context
+
+        Returns:
+            EnhancedResponse with content and metadata
         """
         start_time = time.time()
 
-        try:
-            # Step 1: Analyze context (existing system)
-            context_result = self.context_engine.analyze_context(user_input)
+        # Ensure initialized
+        if not self.is_initialized:
+            await self.initialize()
 
-            # Step 2: Select persona (existing system)
-            persona_selection = self.persona_engine.select_persona(context_result)
-
-            # Step 3: Update conversation state (existing system)
-            self.state_engine.update_state(
-                persona_selection, context_result, user_input
-            )
-
-            # Step 4: Generate base persona response (simulated for now)
-            base_response = self._generate_base_persona_response(
-                persona_selection, user_input, conversation_context
-            )
-
-            # Step 5: Apply embedded framework enhancement if enabled
-            enhancement_result = self._apply_embedded_enhancement(
-                persona_selection.primary,
-                user_input,
-                base_response,
-                conversation_context,
-            )
-
-            # Step 6: Track statistics
-            self._update_statistics(enhancement_result, start_time)
-
-            # Step 7: Prepare final response
-            final_response = self._prepare_final_response(
-                context_result,
-                persona_selection,
-                base_response,
-                enhancement_result,
-                start_time,
-            )
-
-            logger.info(
-                "persona_workflow_completed",
-                persona=persona_selection.primary,
-                enhanced=enhancement_result.enhancement_applied,
-                total_time_ms=int((time.time() - start_time) * 1000),
-            )
-
-            return final_response
-
-        except Exception as e:
-            logger.error(
-                "persona_workflow_failed",
-                error=str(e),
-                user_input=user_input[:100],  # Truncate for logging
-            )
-
-            # Return fallback response
-            return self._create_fallback_response(user_input, str(e))
-
-    def _generate_base_persona_response(
-        self,
-        persona_selection: PersonaSelection,
-        user_input: str,
-        conversation_context: Optional[Dict[str, Any]],
-    ) -> str:
-        """
-        Generate base persona response (simulated for integration)
-
-        In a real implementation, this would call the actual persona
-        response generation system (e.g., Claude with persona context).
-        """
-
-        # Simulate different persona response styles
-        persona_responses = {
-            "diego": f"Great question! Let me work through this from a strategic platform perspective. {self._get_diego_response_style()}",
-            "martin": f"Let me think about this architecturally. {self._get_martin_response_style()}",
-            "rachel": f"From a user experience standpoint, {self._get_rachel_response_style()}",
-            "alvaro": f"Looking at this from a product strategy perspective, {self._get_alvaro_response_style()}",
-            "camille": f"As we think about organizational strategy, {self._get_camille_response_style()}",
-        }
-
-        base_template = persona_responses.get(
-            persona_selection.primary, "Let me help you think through this challenge..."
+        # Analyze complexity to determine if enhancement is needed
+        complexity_analysis = self.complexity_analyzer.analyze_complexity(
+            user_input, persona
         )
 
-        # Add context-specific elements
-        if "mobile" in user_input.lower() or "ios" in user_input.lower():
-            base_template += " Given the mobile platform context, we need to consider native performance, app store considerations, and cross-platform strategy."
-        elif "product" in user_input.lower() or "feature" in user_input.lower():
-            base_template += " From a product perspective, we should focus on user value, business impact, and strategic alignment."
-        elif "architecture" in user_input.lower() or "technical" in user_input.lower():
-            base_template += " From an architectural standpoint, we need to consider scalability, maintainability, and evolutionary design principles."
+        # Check if enhancement should be attempted
+        if not self._should_enhance(persona, complexity_analysis):
+            # Return standard response
+            standard_response = await self._get_standard_response(
+                persona, user_input, context
+            )
+            processing_time = time.time() - start_time
 
-        return base_template
-
-    def _get_diego_response_style(self) -> str:
-        """Get Diego's characteristic response style"""
-        return "I'm excited to explore this challenge with you. Let's break this down systematically while keeping the human element front and center."
-
-    def _get_martin_response_style(self) -> str:
-        """Get Martin's characteristic response style"""
-        return "There are some interesting patterns here that remind me of similar challenges I've seen. Let's consider the trade-offs carefully."
-
-    def _get_rachel_response_style(self) -> str:
-        """Get Rachel's characteristic response style"""
-        return "I love how this impacts the user experience. Let's think about this holistically - both for end users and the teams building it."
-
-    def _get_alvaro_response_style(self) -> str:
-        """Get Alvaro's characteristic response style"""
-        return "let's get real about the business impact here. What's the ROI story we're telling stakeholders?"
-
-    def _get_camille_response_style(self) -> str:
-        """Get Camille's characteristic response style"""
-        return "let's be honest about what we're dealing with here. The people problem is usually harder than the technical problem."
-
-    def _apply_embedded_enhancement(
-        self,
-        persona_name: str,
-        user_input: str,
-        base_response: str,
-        conversation_context: Optional[Dict[str, Any]],
-    ) -> EnhancementResult:
-        """Apply embedded framework enhancement if appropriate"""
-
-        if not self.enhancement_enabled or not self.enhancement_engine:
-            return EnhancementResult(
-                enhanced_response=base_response,
-                enhancement_applied=False,
-                framework_used=None,
-                analysis_data=None,
-                processing_time_ms=0,
-                fallback_reason="Enhancement system not available",
+            return EnhancedResponse(
+                content=standard_response,
+                persona=persona,
+                enhancement_status=EnhancementStatus.FALLBACK,
+                processing_time=processing_time,
+                complexity_score=complexity_analysis.confidence,
+                fallback_reason="Complexity below enhancement threshold",
             )
 
-        try:
-            # Apply embedded framework enhancement
-            enhancement_result = self.enhancement_engine.enhance_response(
-                persona_name, user_input, base_response, conversation_context
-            )
+        # Attempt enhanced response
+        return await self._get_enhanced_response(
+            persona, user_input, complexity_analysis, context, start_time
+        )
 
-            return enhancement_result
+    def _should_enhance(
+        self, persona: str, complexity_analysis: ComplexityAnalysis
+    ) -> bool:
+        """
+        Determine if enhancement should be attempted
 
-        except Exception as e:
-            logger.error(
-                "embedded_framework_enhancement_error",
-                persona=persona_name,
-                error=str(e),
-            )
+        Args:
+            persona: Persona name
+            complexity_analysis: Complexity analysis result
 
-            # Return fallback with base response
-            return EnhancementResult(
-                enhanced_response=base_response,
-                enhancement_applied=False,
-                framework_used=None,
-                analysis_data=None,
-                processing_time_ms=0,
-                fallback_reason=f"Enhancement error: {str(e)}",
-            )
+        Returns:
+            True if enhancement should be attempted
+        """
+        if not self.mcp_client.is_available:
+            return False
 
-    def _update_statistics(
-        self, enhancement_result: EnhancementResult, start_time: float
-    ) -> None:
-        """Update performance and usage statistics"""
+        persona_config = self.persona_configs.get(persona, {})
+        threshold = persona_config.get("enhancement_threshold", 0.6)
 
-        self.enhancement_stats["total_requests"] += 1
+        # Check if complexity meets threshold
+        if complexity_analysis.confidence < threshold:
+            return False
 
-        if enhancement_result.enhancement_applied:
-            self.enhancement_stats["enhanced_requests"] += 1
-        else:
-            self.enhancement_stats["fallback_requests"] += 1
+        # Check if recommended enhancement matches persona capabilities
+        if complexity_analysis.recommended_enhancement:
+            capabilities = persona_config.get("capabilities", [])
+            enhancement_type = complexity_analysis.recommended_enhancement
 
-        # Update average enhancement time
-        total_time = (time.time() - start_time) * 1000
-        current_avg = self.enhancement_stats["average_enhancement_time"]
-        total_requests = self.enhancement_stats["total_requests"]
-
-        self.enhancement_stats["average_enhancement_time"] = (
-            current_avg * (total_requests - 1) + total_time
-        ) / total_requests
-
-    def _prepare_final_response(
-        self,
-        context_result: ContextResult,
-        persona_selection: PersonaSelection,
-        base_response: str,
-        enhancement_result: EnhancementResult,
-        start_time: float,
-    ) -> Dict[str, Any]:
-        """Prepare the final response with all metadata"""
-
-        total_processing_time = int((time.time() - start_time) * 1000)
-
-        return {
-            # Core response
-            "response": enhancement_result.enhanced_response,
-            "persona": persona_selection.primary,
-            "template_id": persona_selection.template_id,
-            # Context analysis
-            "context": context_result.to_dict(),
-            # Persona selection
-            "persona_selection": persona_selection.to_dict(),
-            # Enhancement information
-            "enhancement": {
-                "applied": enhancement_result.enhancement_applied,
-                "framework_used": enhancement_result.framework_used,
-                "analysis_data": enhancement_result.analysis_data,
-                "processing_time_ms": enhancement_result.processing_time_ms,
-                "fallback_reason": enhancement_result.fallback_reason,
-            },
-            # Performance metrics
-            "performance": {
-                "total_processing_time_ms": total_processing_time,
-                "context_analysis_time_ms": context_result.analysis_time_ms,
-                "persona_selection_time_ms": persona_selection.selection_time_ms,
-                "enhancement_time_ms": enhancement_result.processing_time_ms,
-            },
-            # System state
-            "conversation_state": self.state_engine.get_current_state(),
-            # System capabilities
-            "capabilities": {
-                "enhancement_enabled": self.enhancement_enabled,
-                "enhanced_personas": (
-                    ["diego", "martin", "rachel", "camille", "alvaro"]
-                    if self.enhancement_enabled
-                    else []
-                ),
-                "available_templates": [
-                    t.template_id for t in self.template_discovery.list_templates()
+            # Map enhancement types to capabilities
+            enhancement_mapping = {
+                "systematic_analysis": [
+                    "systematic_analysis",
+                    "organizational_scaling",
                 ],
-            },
-        }
+                "architecture_patterns": [
+                    "architecture_patterns",
+                    "technical_frameworks",
+                ],
+                "design_system_methodology": [
+                    "design_system_methodology",
+                    "cross_team_coordination",
+                ],
+                "business_strategy": ["business_strategy", "competitive_analysis"],
+                "technology_leadership": [
+                    "technology_leadership",
+                    "organizational_scaling",
+                ],
+            }
 
-    def _create_fallback_response(
-        self, user_input: str, error_message: str
-    ) -> Dict[str, Any]:
-        """Create fallback response when main workflow fails"""
+            required_capabilities = enhancement_mapping.get(enhancement_type, [])
+            if any(cap in capabilities for cap in required_capabilities):
+                return True
 
-        return {
-            "response": "I understand you're looking for strategic guidance. Let me help you think through this challenge. While I'm experiencing some technical difficulties with my enhanced analysis capabilities, I can still provide thoughtful strategic advice.",
-            "persona": "camille",  # Global fallback
-            "template_id": "fallback",
-            "context": {"confidence": 0.0, "fallback": True},
-            "persona_selection": {"method": "emergency_fallback"},
-            "enhancement": {
-                "applied": False,
-                "fallback_reason": f"System error: {error_message}",
-            },
-            "performance": {"total_processing_time_ms": 0},
-            "conversation_state": self.state_engine.get_current_state(),
-            "capabilities": {"enhancement_enabled": False, "error": error_message},
-        }
+        return False
 
-    # Public interface methods
+    async def _get_enhanced_response(
+        self,
+        persona: str,
+        user_input: str,
+        complexity_analysis: ComplexityAnalysis,
+        context: Optional[Dict[str, Any]],
+        start_time: float,
+    ) -> EnhancedResponse:
+        """
+        Get enhanced response using MCP integration
 
-    def get_current_state(self) -> Dict[str, Any]:
-        """Get current conversation state"""
-        return self.state_engine.get_current_state()
+        Args:
+            persona: Persona name
+            user_input: User input
+            complexity_analysis: Complexity analysis
+            context: Conversation context
+            start_time: Start time for processing measurement
 
-    def get_activation_history(self, limit: int = 10) -> List[Dict[str, Any]]:
-        """Get recent persona activation history"""
-        return self.state_engine.get_activation_history(limit)
-
-    def get_enhancement_statistics(self) -> Dict[str, Any]:
-        """Get MCP enhancement usage statistics"""
-        return {
-            **self.enhancement_stats,
-            "enhancement_rate": (
-                self.enhancement_stats["enhanced_requests"]
-                / max(self.enhancement_stats["total_requests"], 1)
-            ),
-            "enhancement_enabled": self.enhancement_enabled,
-        }
-
-    async def get_mcp_server_status(self) -> Dict[str, Any]:
-        """Get status of MCP servers"""
-        if not self.mcp_client:
-            return {"available": False, "reason": "MCP client not initialized"}
+        Returns:
+            EnhancedResponse with enhanced content
+        """
+        persona_config = self.persona_configs.get(persona, {})
+        primary_server = persona_config.get("primary_server", "sequential")
+        timeout = persona_config.get("timeout", 8)
 
         try:
-            return await self.mcp_client.get_connection_status()
+            # Check if server is available
+            if not self.mcp_client.is_server_available(primary_server):
+                return await self._handle_fallback(
+                    persona,
+                    user_input,
+                    context,
+                    start_time,
+                    f"Server {primary_server} not available",
+                )
+
+            # Prepare analysis query
+            analysis_query = self._prepare_analysis_query(
+                persona, user_input, complexity_analysis, context
+            )
+
+            # Execute MCP analysis
+            mcp_response = await self.mcp_client.execute_analysis(
+                primary_server, analysis_query, timeout
+            )
+
+            if not mcp_response.success:
+                return await self._handle_fallback(
+                    persona,
+                    user_input,
+                    context,
+                    start_time,
+                    mcp_response.error_message or "MCP analysis failed",
+                )
+
+            # Blend MCP response with persona characteristics
+            enhanced_content = await self._blend_response(
+                persona, user_input, mcp_response.content, context
+            )
+
+            processing_time = time.time() - start_time
+
+            # Generate transparency message
+            transparency_message = self.transparency_manager.get_enhanced_message(
+                persona, primary_server, processing_time
+            )
+
+            return EnhancedResponse(
+                content=enhanced_content,
+                persona=persona,
+                enhancement_status=EnhancementStatus.SUCCESS,
+                processing_time=processing_time,
+                mcp_server_used=primary_server,
+                complexity_score=complexity_analysis.confidence,
+                transparency_message=transparency_message,
+            )
+
+        except asyncio.TimeoutError:
+            return await self._handle_fallback(
+                persona,
+                user_input,
+                context,
+                start_time,
+                f"Timeout after {timeout} seconds",
+            )
         except Exception as e:
-            return {"available": False, "error": str(e)}
+            logger.error(f"Error in enhanced response for {persona}: {e}")
+            return await self._handle_fallback(
+                persona, user_input, context, start_time, str(e)
+            )
 
-    def reset_conversation(self) -> None:
-        """Reset conversation state for new session"""
-        self.state_engine.reset_session()
+    async def _handle_fallback(
+        self,
+        persona: str,
+        user_input: str,
+        context: Optional[Dict[str, Any]],
+        start_time: float,
+        reason: str,
+    ) -> EnhancedResponse:
+        """
+        Handle fallback to standard response
 
-        # Reset enhancement statistics
-        self.enhancement_stats = {
-            "total_requests": 0,
-            "enhanced_requests": 0,
-            "fallback_requests": 0,
-            "average_enhancement_time": 0.0,
+        Args:
+            persona: Persona name
+            user_input: User input
+            context: Conversation context
+            start_time: Start time
+            reason: Reason for fallback
+
+        Returns:
+            EnhancedResponse with standard content and fallback status
+        """
+        standard_response = await self._get_standard_response(
+            persona, user_input, context
+        )
+        processing_time = time.time() - start_time
+
+        fallback_message = self.transparency_manager.get_fallback_message(reason)
+
+        return EnhancedResponse(
+            content=standard_response,
+            persona=persona,
+            enhancement_status=EnhancementStatus.FALLBACK,
+            processing_time=processing_time,
+            complexity_score=0.0,
+            transparency_message=fallback_message,
+            fallback_reason=reason,
+        )
+
+    def _prepare_analysis_query(
+        self,
+        persona: str,
+        user_input: str,
+        complexity_analysis: ComplexityAnalysis,
+        context: Optional[Dict[str, Any]],
+    ) -> str:
+        """
+        Prepare analysis query for MCP server
+
+        Args:
+            persona: Persona name
+            user_input: User input
+            complexity_analysis: Complexity analysis
+            context: Conversation context
+
+        Returns:
+            Formatted query for MCP server
+        """
+        # Persona-specific query preparation with enhanced context
+        if persona == "diego":
+            query_prefix = "Analyze this organizational strategy challenge using systematic frameworks:"
+        elif persona == "martin":
+            if (
+                "architecture" in user_input.lower()
+                or "technical" in user_input.lower()
+            ):
+                query_prefix = (
+                    "Find relevant architectural patterns and technical frameworks for:"
+                )
+            else:
+                query_prefix = "Analyze this technical challenge using proven architectural patterns:"
+        elif persona == "rachel":
+            if "design" in user_input.lower() or "system" in user_input.lower():
+                query_prefix = "Find design system methodologies and cross-team coordination patterns for:"
+            else:
+                query_prefix = (
+                    "Analyze this design challenge using scaling methodologies:"
+                )
+        elif persona == "alvaro":
+            if "business" in user_input.lower() or "strategy" in user_input.lower():
+                query_prefix = "Analyze this business strategy challenge using competitive analysis frameworks:"
+            elif "financial" in user_input.lower() or "roi" in user_input.lower():
+                query_prefix = (
+                    "Apply financial modeling and ROI analysis frameworks to:"
+                )
+            else:
+                query_prefix = (
+                    "Analyze this business challenge using strategic frameworks:"
+                )
+        elif persona == "camille":
+            if (
+                "technology" in user_input.lower()
+                and "leadership" in user_input.lower()
+            ):
+                query_prefix = "Analyze this technology leadership challenge using organizational scaling frameworks:"
+            else:
+                query_prefix = "Analyze this organizational challenge using executive decision frameworks:"
+        else:
+            query_prefix = "Analyze this strategic challenge:"
+
+        # Include complexity triggers for context
+        triggers_context = ""
+        if complexity_analysis.triggers:
+            triggers_context = f" [Context: {', '.join(complexity_analysis.triggers)}]"
+
+        # Add persona-specific context hints
+        persona_context = ""
+        if persona == "martin":
+            persona_context = (
+                " [Focus: Technical architecture, scalability patterns, system design]"
+            )
+        elif persona == "rachel":
+            persona_context = (
+                " [Focus: Design systems, cross-team coordination, UX methodology]"
+            )
+        elif persona == "alvaro":
+            persona_context = (
+                " [Focus: Business strategy, competitive analysis, financial modeling]"
+            )
+
+        return f"{query_prefix} {user_input}{triggers_context}{persona_context}"
+
+    async def _blend_response(
+        self,
+        persona: str,
+        user_input: str,
+        mcp_content: str,
+        context: Optional[Dict[str, Any]],
+    ) -> str:
+        """
+        Blend MCP response with persona characteristics
+
+        Args:
+            persona: Persona name
+            user_input: Original user input
+            mcp_content: Content from MCP server
+            context: Conversation context
+
+        Returns:
+            Blended response maintaining persona authenticity
+        """
+        # Persona-specific response blending with enhanced MCP context
+        persona_styles = {
+            "diego": {
+                "intro": "Looking at this systematically,",
+                "framework_intro": "Based on proven organizational frameworks,",
+                "pattern_intro": "Using systematic analysis methodologies,",
+                "style": "collaborative and systematic",
+            },
+            "martin": {
+                "intro": "From an architectural perspective,",
+                "framework_intro": "Drawing on established technical patterns,",
+                "pattern_intro": "Based on proven architectural patterns,",
+                "style": "analytical and practical",
+            },
+            "rachel": {
+                "intro": "Considering the design system approach,",
+                "framework_intro": "Using collaborative design methodologies,",
+                "pattern_intro": "Drawing on design system scaling patterns,",
+                "style": "inclusive and facilitative",
+            },
+            "alvaro": {
+                "intro": "From a business strategy standpoint,",
+                "framework_intro": "Applying competitive analysis frameworks,",
+                "pattern_intro": "Using business strategy methodologies,",
+                "style": "strategic and business-focused",
+            },
+            "camille": {
+                "intro": "Taking a technology leadership view,",
+                "framework_intro": "Using organizational scaling methodologies,",
+                "pattern_intro": "Based on executive decision frameworks,",
+                "style": "executive and strategic",
+            },
         }
 
-        logger.info("conversation_reset", enhancement_enabled=self.enhancement_enabled)
+        persona_style = persona_styles.get(persona, persona_styles["diego"])
 
-    async def close(self) -> None:
-        """Clean up resources"""
+        # Enhanced response blending based on content type and persona
+        if mcp_content and mcp_content.strip():
+            # Determine the type of enhancement based on content patterns
+            content_lower = mcp_content.lower()
+
+            if any(
+                pattern in content_lower
+                for pattern in ["pattern", "architecture", "design"]
+            ):
+                intro = persona_style["pattern_intro"]
+            elif any(
+                framework in content_lower
+                for framework in ["framework", "methodology", "approach"]
+            ):
+                intro = persona_style["framework_intro"]
+            else:
+                intro = persona_style["framework_intro"]
+
+            # Clean and format the MCP content
+            clean_content = mcp_content.strip()
+
+            # Ensure proper sentence structure
+            if not clean_content.endswith("."):
+                clean_content += "."
+
+            blended_response = f"{intro} {clean_content}"
+
+            # Add persona-specific contextual closure if needed
+            if persona == "martin" and len(clean_content) > 100:
+                blended_response += (
+                    " This approach provides a solid technical foundation."
+                )
+            elif persona == "rachel" and len(clean_content) > 100:
+                blended_response += (
+                    " This ensures we can scale effectively across teams."
+                )
+            elif persona == "alvaro" and len(clean_content) > 100:
+                blended_response += " This positions us strategically in the market."
+        else:
+            # Fallback if MCP content is empty - persona-specific responses
+            if persona == "martin":
+                blended_response = f"{persona_style['intro']} let me analyze the technical architecture implications."
+            elif persona == "rachel":
+                blended_response = f"{persona_style['intro']} let's collaborate on this design challenge."
+            elif persona == "alvaro":
+                blended_response = f"{persona_style['intro']} let me provide strategic business analysis."
+            else:
+                blended_response = f"{persona_style['intro']} let me help you work through this challenge."
+
+        return blended_response
+
+    async def _get_standard_response(
+        self, persona: str, user_input: str, context: Optional[Dict[str, Any]]
+    ) -> str:
+        """
+        Get standard response without MCP enhancement
+
+        Args:
+            persona: Persona name
+            user_input: User input
+            context: Conversation context
+
+        Returns:
+            Standard persona response
+        """
+        # Enhanced standard responses with persona-specific context awareness
+        input_preview = user_input[:50] + "..." if len(user_input) > 50 else user_input
+
+        if persona == "diego":
+            if any(
+                keyword in user_input.lower()
+                for keyword in ["team", "organization", "scaling", "structure"]
+            ):
+                return f"I'll help you approach this organizational challenge systematically. For '{input_preview}', let's break this down into coordinated steps that consider team dynamics and scaling principles."
+            else:
+                return f"I'll help you approach this systematically. For '{input_preview}', let's break this down into coordinated steps."
+
+        elif persona == "martin":
+            if any(
+                keyword in user_input.lower()
+                for keyword in ["architecture", "technical", "system", "design"]
+            ):
+                return f"Let me analyze the technical architecture aspects. For '{input_preview}', I'll examine the patterns and scalability considerations."
+            else:
+                return f"Let me analyze this technically. For '{input_preview}', here's my architectural perspective."
+
+        elif persona == "rachel":
+            if any(
+                keyword in user_input.lower()
+                for keyword in ["design", "system", "user", "experience", "team"]
+            ):
+                return f"Let's collaborate on this design system challenge. For '{input_preview}', I'll facilitate an approach that considers cross-team coordination and user experience."
+            else:
+                return f"Let's collaborate on this design challenge. For '{input_preview}', I'll facilitate our approach."
+
+        elif persona == "alvaro":
+            if any(
+                keyword in user_input.lower()
+                for keyword in ["business", "strategy", "market", "competitive"]
+            ):
+                return f"From a business strategy perspective, '{input_preview}' requires strategic analysis of market positioning and competitive advantages."
+            elif any(
+                keyword in user_input.lower()
+                for keyword in ["roi", "financial", "cost", "investment"]
+            ):
+                return f"Looking at the financial implications, '{input_preview}' needs ROI analysis and investment strategy consideration."
+            else:
+                return f"From a business strategy perspective, '{input_preview}' requires strategic analysis."
+
+        elif persona == "camille":
+            if any(
+                keyword in user_input.lower()
+                for keyword in ["technology", "leadership", "organizational"]
+            ):
+                return f"Taking a technology leadership view of '{input_preview}', let's consider the organizational scaling and executive decision implications."
+            else:
+                return f"Taking a technology leadership view of '{input_preview}', let's consider the organizational implications."
+
+        else:
+            return f"Let me help you with '{input_preview}'"
+
+    async def cleanup(self) -> None:
+        """Cleanup MCP connections"""
         if self.mcp_client:
-            await self.mcp_client.close()
+            await self.mcp_client.cleanup_connections()
 
-        logger.info("enhanced_persona_manager_closed")
+    def get_server_status(self) -> Dict[str, Any]:
+        """Get current server status for monitoring"""
+        if not self.mcp_client.is_available:
+            return {"status": "unavailable", "reason": "mcp-use library not available"}
 
+        available_servers = self.mcp_client.get_available_servers()
 
-# Utility functions for easy integration
-
-
-async def create_enhanced_persona_manager(
-    template_config_path: str,
-    mcp_config_path: Optional[str] = None,
-    enhancement_config: Optional[Dict] = None,
-) -> EnhancedPersonaManager:
-    """
-    Create enhanced persona manager with all components
-
-    Args:
-        template_config_path: Path to director templates configuration
-        mcp_config_path: Optional path to MCP server configuration
-        enhancement_config: Optional enhancement configuration overrides
-
-    Returns:
-        Fully initialized EnhancedPersonaManager
-    """
-
-    # Create template discovery engine
-    template_discovery = TemplateDiscoveryEngine(template_config_path)
-
-    # Create enhanced persona manager
-    manager = EnhancedPersonaManager(
-        template_discovery, mcp_config_path, enhancement_config
-    )
-
-    # Wait for MCP initialization if config provided
-    if mcp_config_path:
-        # Give MCP system time to initialize
-        await asyncio.sleep(0.1)
-
-    return manager
-
-
-def create_demo_enhanced_manager(enable_mcp: bool = True) -> EnhancedPersonaManager:
-    """
-    Create enhanced persona manager for demos/testing
-
-    Args:
-        enable_mcp: Whether to enable MCP enhancement (mock for demos)
-
-    Returns:
-        EnhancedPersonaManager configured for demonstration
-    """
-
-    # Create mock template discovery for demo
-    from .template_engine import TemplateDiscoveryEngine
-
-    template_discovery = TemplateDiscoveryEngine(
-        ".claudedirector/config/director_templates.yaml"
-    )
-
-    # Create manager without MCP for now (would need mock servers for full demo)
-    manager = EnhancedPersonaManager(template_discovery)
-
-    if enable_mcp:
-        # In a real demo, this would initialize with mock MCP servers
-        logger.info("demo_manager_created", mcp_mock_enabled=enable_mcp)
-
-    return manager
+        return {
+            "status": "available" if available_servers else "no_servers",
+            "available_servers": available_servers,
+            "total_personas": len(self.persona_configs),
+            "enhanced_personas": [
+                p
+                for p in self.persona_configs.keys()
+                if self.persona_configs[p]["primary_server"] in available_servers
+            ],
+        }

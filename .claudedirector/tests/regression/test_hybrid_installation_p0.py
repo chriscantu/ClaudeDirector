@@ -27,7 +27,7 @@ class TestHybridInstallationP0(unittest.TestCase):
     def setUp(self):
         """Set up test environment"""
         # Import after path setup
-        from core.hybrid_installation_manager import (
+        from claudedirector.core.hybrid_installation_manager import (
             HybridInstallationManager,
             InstallationResult,
         )
@@ -314,7 +314,7 @@ class TestHybridInstallationP0(unittest.TestCase):
         """P0 TEST: Backwards compatibility MUST be maintained"""
         with patch.object(Path, "home", return_value=Path(self.temp_dir)):
             # Test singleton access
-            from core.hybrid_installation_manager import (
+            from claudedirector.core.hybrid_installation_manager import (
                 get_hybrid_manager,
                 install_mcp_package,
             )
@@ -344,7 +344,7 @@ class TestHybridInstallationIntegration(unittest.TestCase):
     def test_integration_with_configuration_system(self):
         """Test integration with ClaudeDirector configuration system"""
         try:
-            from core.hybrid_installation_manager import HybridInstallationManager
+            from claudedirector.core.hybrid_installation_manager import HybridInstallationManager
             from core.config import get_config
 
             with tempfile.TemporaryDirectory() as temp_dir:
@@ -368,7 +368,7 @@ class TestHybridInstallationIntegration(unittest.TestCase):
     def test_real_performance_characteristics(self):
         """Test real performance characteristics (when npx available)"""
         try:
-            from core.hybrid_installation_manager import HybridInstallationManager
+            from claudedirector.core.hybrid_installation_manager import HybridInstallationManager
 
             with tempfile.TemporaryDirectory() as temp_dir:
                 with patch.object(Path, "home", return_value=Path(temp_dir)):
