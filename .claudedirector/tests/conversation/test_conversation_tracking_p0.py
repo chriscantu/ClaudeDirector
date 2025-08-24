@@ -24,7 +24,7 @@ class TestConversationTrackingP0(unittest.TestCase):
         """Set up test environment"""
         self.test_db_dir = tempfile.mkdtemp()
         self.test_db_path = Path(self.test_db_dir) / "test_strategic_memory.db"
-        self.main_db_path = PROJECT_ROOT / "data" / "strategic_memory.db"
+        self.main_db_path = PROJECT_ROOT / "data" / "strategic" / "strategic_memory.db"
 
     def tearDown(self):
         """Clean up test environment"""
@@ -265,7 +265,7 @@ class TestConversationTrackingFunctionality(unittest.TestCase):
 
     def setUp(self):
         """Set up test environment"""
-        self.main_db_path = PROJECT_ROOT / "data" / "strategic_memory.db"
+        self.main_db_path = PROJECT_ROOT / "data" / "strategic" / "strategic_memory.db"
 
     def test_conversation_persistence_across_sessions(self):
         """Test that conversation context persists across sessions"""

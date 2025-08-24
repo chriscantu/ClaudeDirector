@@ -95,7 +95,7 @@ class SuperClaudeMemoryManager:
             # Default to SuperClaude memory directory
             memory_dir = Path.home() / ".superclaude" / "memory"
             memory_dir.mkdir(parents=True, exist_ok=True)
-            db_path = memory_dir / "strategic_memory.db"
+            db_path = Path("data/strategic/strategic_memory.db")
 
         self.db_path = str(db_path)
         self.conn = None

@@ -116,7 +116,7 @@ class MessageConfig:
 class PathConfig:
     """File path configuration"""
 
-    strategic_memory_db: str = ".claudedirector/data/strategic_memory.db"
+    strategic_memory_db: str = "data/strategic/strategic_memory.db"
     user_config_path: str = ".claudedirector/config/user_identity.yaml"
     p0_test_definitions: str = (
         ".claudedirector/tests/p0_enforcement/p0_test_definitions.yaml"
