@@ -156,10 +156,14 @@ jobs:
 ## 📚 **Reference Documentation**
 
 ### **Development Guides** (MANDATORY READING)
-- **[Core Architecture](development/guides/CORE_ARCHITECTURE.md)**: System architecture principles
-- **[Development Workflow](development/guides/DEVELOPMENT_WORKFLOW.md)**: Git workflow and processes
-- **[Testing & QA](development/guides/TESTING_QA.md)**: Testing standards and requirements
-- **[Performance Optimization](development/guides/PERFORMANCE_OPTIMIZATION.md)**: Performance requirements
+- **[Core Architecture](development/guides/CORE_ARCHITECTURE.md)**: System architecture principles and foundational components
+- **[Development Workflow](development/guides/DEVELOPMENT_WORKFLOW.md)**: Git workflow, branching, and commit standards
+- **[Testing & QA](development/guides/TESTING_QA.md)**: Comprehensive testing strategies and quality assurance
+- **[MCP Integration](development/guides/MCP_INTEGRATION.md)**: Developing and integrating MCP servers
+- **[Custom Personas](development/guides/CUSTOM_PERSONAS.md)**: Creating strategic leadership personas
+- **[Framework Integration](development/guides/FRAMEWORK_INTEGRATION.md)**: Integrating strategic frameworks
+- **[Performance Optimization](development/guides/PERFORMANCE_OPTIMIZATION.md)**: Performance tuning and optimization
+- **[Deployment & Production](development/guides/DEPLOYMENT_PRODUCTION.md)**: Production deployment considerations
 
 ### **Architecture Documentation** (MANDATORY COMPLIANCE)
 - **[System Overview](architecture/OVERVIEW.md)**: High-level architecture
