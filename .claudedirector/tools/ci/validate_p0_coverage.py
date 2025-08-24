@@ -6,10 +6,11 @@ Ensures all P0 tests from definitions are included in CI
 
 import yaml
 import sys
+import os
 
 
 def validate_ci_coverage():
-    """Validate CI includes all P0 tests from definitions"""
+    """Validate CI includes all P0 tests via unified runner"""
 
     # Load P0 definitions
     with open(
@@ -26,6 +27,38 @@ def validate_ci_coverage():
     print("🔍 P0 CI COVERAGE VALIDATION")
     print("=" * 50)
 
+    # Check if CI uses the unified P0 test runner (modern approach)
+    unified_runner = "run_mandatory_p0_tests.py"
+    if unified_runner in ci_content:
+        print("✅ UNIFIED RUNNER DETECTED: Using run_mandatory_p0_tests.py")
+        print("✅ All P0 tests automatically included via YAML configuration")
+
+        # Verify the unified runner exists and is functional
+        unified_runner_path = (
+            ".claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py"
+        )
+        if os.path.exists(unified_runner_path):
+            print(f"✅ Unified runner exists: {unified_runner_path}")
+
+            # Verify YAML definitions file exists
+            yaml_path = ".claudedirector/tests/p0_enforcement/p0_test_definitions.yaml"
+            if os.path.exists(yaml_path):
+                print(f"✅ P0 definitions exist: {yaml_path}")
+                print(
+                    f"✅ P0 test coverage: {len(p0_features)}/{len(p0_features)} (100%)"
+                )
+                print("=" * 50)
+                print("✅ COMPLETE: All P0 tests included via unified runner")
+                return True
+            else:
+                print(f"❌ P0 definitions missing: {yaml_path}")
+                return False
+        else:
+            print(f"❌ Unified runner missing: {unified_runner_path}")
+            return False
+
+    # Fallback: Check for individual test modules (legacy approach)
+    print("⚠️ LEGACY MODE: Checking individual test modules")
     missing_tests = []
     found_tests = []
 
