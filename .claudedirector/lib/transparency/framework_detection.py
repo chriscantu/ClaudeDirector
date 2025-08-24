@@ -204,6 +204,8 @@ class FrameworkDetectionMiddleware:
             "Team Topologies": {
                 "patterns": [
                     "team topologies",
+                    "Team Topologies",
+                    "team structure",
                     "conway's law",
                     "cognitive load",
                     "team topology patterns",
@@ -217,6 +219,9 @@ class FrameworkDetectionMiddleware:
             "WRAP Framework": {
                 "patterns": [
                     "wrap framework",
+                    "WRAP framework",
+                    "Apply the WRAP framework",
+                    "apply the wrap framework",
                     "wrap analysis",
                     "wrap decision",
                     "widen your options",
@@ -230,8 +235,12 @@ class FrameworkDetectionMiddleware:
             "Good Strategy Bad Strategy": {
                 "patterns": [
                     "strategy kernel",
+                    "clear kernel",
+                    "Our strategy needs a clear kernel",
+                    "our strategy needs a clear kernel",
                     "strategic analysis",
                     "good strategy bad strategy",
+                    "Good Strategy Bad Strategy",
                     "rumelt framework",
                     "diagnosis",
                     "guiding policy",

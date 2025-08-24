@@ -185,7 +185,7 @@ How should we approach this systematically?""",
             successful_detections = 0
             for test_content, expected_framework in test_cases:
                 results = detector.detect_frameworks_used(test_content)
-                detected_names = [r.framework.name for r in results]
+                detected_names = [r.framework_name for r in results]
 
                 if expected_framework in detected_names:
                     successful_detections += 1
@@ -228,12 +228,12 @@ How should we approach this systematically?""",
             correct_classifications = 0
             for test_input, expected_level in test_cases:
                 result = analyzer.analyze_input_complexity(test_input, {})
-                if result.complexity_level == expected_level:
+                if result.complexity == expected_level:
                     correct_classifications += 1
                     print(f"  ✓ Correctly classified as {expected_level.value}")
                 else:
                     print(
-                        f"  ⚠ Misclassified: expected {expected_level.value}, got {result.complexity_level.value}"
+                        f"  ⚠ Misclassified: expected {expected_level.value}, got {result.complexity.value}"
                     )
 
             accuracy = correct_classifications / len(test_cases)
