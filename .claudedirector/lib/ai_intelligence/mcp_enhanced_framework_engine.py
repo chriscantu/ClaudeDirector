@@ -28,7 +28,10 @@ from dataclasses import dataclass
 from enum import Enum
 import structlog
 
-from ..transparency.framework_detection import FrameworkDetectionMiddleware, FrameworkUsage
+from ..transparency.framework_detection import (
+    FrameworkDetectionMiddleware,
+    FrameworkUsage,
+)
 from ..transparency.real_mcp_integration import RealMCPIntegrationHelper
 from ..transparency.integrated_transparency import TransparencyContext, MCPDisclosure
 from ..integrations.mcp_use_client import MCPUseClient, MCPResponse
@@ -39,9 +42,9 @@ logger = structlog.get_logger(__name__)
 class FrameworkConfidenceLevel(Enum):
     """Framework detection confidence levels for MCP routing"""
 
-    LOW = "low"          # <70% confidence - needs MCP enhancement
-    MEDIUM = "medium"    # 70-90% confidence - optional MCP validation
-    HIGH = "high"        # >90% confidence - baseline detection sufficient
+    LOW = "low"  # <70% confidence - needs MCP enhancement
+    MEDIUM = "medium"  # 70-90% confidence - optional MCP validation
+    HIGH = "high"  # >90% confidence - baseline detection sufficient
 
 
 @dataclass
@@ -135,19 +138,19 @@ class MCPEnhancedFrameworkEngine:
     def _initialize_confidence_thresholds(self) -> Dict[str, float]:
         """Initialize confidence thresholds for MCP enhancement routing"""
         return {
-            "low_confidence": 0.7,      # Below this: mandatory MCP enhancement
-            "medium_confidence": 0.9,   # Above this: optional MCP validation
-            "high_confidence": 0.95,    # Above this: baseline sufficient
+            "low_confidence": 0.7,  # Below this: mandatory MCP enhancement
+            "medium_confidence": 0.9,  # Above this: optional MCP validation
+            "high_confidence": 0.95,  # Above this: baseline sufficient
         }
 
     def _initialize_mcp_server_mapping(self) -> Dict[str, List[str]]:
         """Initialize MCP server mapping for framework types"""
         return {
-            "strategic": ["sequential", "context7"],    # Business strategy frameworks
-            "organizational": ["context7", "sequential"], # Team/org frameworks
-            "technical": ["context7", "magic"],         # Architecture frameworks
-            "innovation": ["context7", "magic"],        # Design/innovation frameworks
-            "decision": ["sequential", "context7"],     # Decision-making frameworks
+            "strategic": ["sequential", "context7"],  # Business strategy frameworks
+            "organizational": ["context7", "sequential"],  # Team/org frameworks
+            "technical": ["context7", "magic"],  # Architecture frameworks
+            "innovation": ["context7", "magic"],  # Design/innovation frameworks
+            "decision": ["sequential", "context7"],  # Decision-making frameworks
         }
 
     def _initialize_enhancement_strategies(self) -> Dict[str, Dict[str, Any]]:
@@ -199,7 +202,9 @@ class MCPEnhancedFrameworkEngine:
 
         try:
             # Step 1: Baseline Detection (87.5% accuracy)
-            baseline_frameworks = self.baseline_detector.detect_frameworks_used(response_content)
+            baseline_frameworks = self.baseline_detector.detect_frameworks_used(
+                response_content
+            )
             baseline_accuracy = self._calculate_baseline_accuracy(baseline_frameworks)
 
             logger.info(
@@ -232,7 +237,9 @@ class MCPEnhancedFrameworkEngine:
             enhanced_accuracy = self._calculate_enhanced_accuracy(final_frameworks)
 
             processing_time_ms = int((time.time() - start_time) * 1000)
-            improvement_percentage = ((enhanced_accuracy - baseline_accuracy) / baseline_accuracy) * 100
+            improvement_percentage = (
+                (enhanced_accuracy - baseline_accuracy) / baseline_accuracy
+            ) * 100
 
             # Step 5: Update Performance Metrics
             self._update_engine_metrics(processing_time_ms, improvement_percentage)
@@ -269,7 +276,10 @@ class MCPEnhancedFrameworkEngine:
             baseline_accuracy = self._calculate_baseline_accuracy(baseline_frameworks)
 
             return FrameworkDetectionResult(
-                detected_frameworks=[self._convert_to_enhanced_framework(fw) for fw in baseline_frameworks],
+                detected_frameworks=[
+                    self._convert_to_enhanced_framework(fw)
+                    for fw in baseline_frameworks
+                ],
                 detection_confidence=baseline_accuracy,
                 processing_time_ms=processing_time_ms,
                 mcp_servers_used=[],
@@ -305,7 +315,10 @@ class MCPEnhancedFrameworkEngine:
         # Apply MCP enhancement based on confidence level
         if confidence_level == FrameworkConfidenceLevel.LOW:
             enhanced_framework = await self._apply_mcp_enhancement(
-                enhanced_framework, content, ["context7", "sequential"], context_metadata
+                enhanced_framework,
+                content,
+                ["context7", "sequential"],
+                context_metadata,
             )
         elif confidence_level == FrameworkConfidenceLevel.MEDIUM:
             enhanced_framework = await self._apply_mcp_enhancement(
@@ -358,16 +371,18 @@ class MCPEnhancedFrameworkEngine:
                 # Calculate MCP enhancement confidence
                 mcp_confidence_scores = []
                 for server, result in mcp_results:
-                    if result and hasattr(result, 'confidence'):
+                    if result and hasattr(result, "confidence"):
                         mcp_confidence_scores.append(result.confidence)
 
                 if mcp_confidence_scores:
-                    framework.mcp_enhancement_confidence = sum(mcp_confidence_scores) / len(mcp_confidence_scores)
+                    framework.mcp_enhancement_confidence = sum(
+                        mcp_confidence_scores
+                    ) / len(mcp_confidence_scores)
 
                     # Combine baseline + MCP confidence (weighted average)
                     framework.confidence_score = (
-                        framework.confidence_score * 0.6 +  # Baseline weight
-                        framework.mcp_enhancement_confidence * 0.4  # MCP weight
+                        framework.confidence_score * 0.6  # Baseline weight
+                        + framework.mcp_enhancement_confidence * 0.4  # MCP weight
                     )
 
                 # Add context relevance scoring
@@ -412,7 +427,9 @@ class MCPEnhancedFrameworkEngine:
                 exclude_frameworks=existing_names,
             )
 
-            if sequential_result and hasattr(sequential_result, 'recommended_frameworks'):
+            if sequential_result and hasattr(
+                sequential_result, "recommended_frameworks"
+            ):
                 for fw_recommendation in sequential_result.recommended_frameworks:
                     if fw_recommendation.name not in existing_names:
                         discovered_framework = EnhancedFrameworkUsage(
@@ -434,7 +451,9 @@ class MCPEnhancedFrameworkEngine:
 
         return discovered_frameworks
 
-    def _determine_confidence_level(self, confidence_score: float) -> FrameworkConfidenceLevel:
+    def _determine_confidence_level(
+        self, confidence_score: float
+    ) -> FrameworkConfidenceLevel:
         """Determine confidence level for MCP enhancement routing"""
         if confidence_score < self.confidence_thresholds["low_confidence"]:
             return FrameworkConfidenceLevel.LOW
@@ -473,7 +492,9 @@ class MCPEnhancedFrameworkEngine:
         # Use existing 87.5% baseline accuracy as reference
         return 0.875
 
-    def _calculate_enhanced_accuracy(self, frameworks: List[EnhancedFrameworkUsage]) -> float:
+    def _calculate_enhanced_accuracy(
+        self, frameworks: List[EnhancedFrameworkUsage]
+    ) -> float:
         """Calculate enhanced detection accuracy"""
         if not frameworks:
             return 0.0
@@ -484,7 +505,9 @@ class MCPEnhancedFrameworkEngine:
 
         # Enhanced accuracy formula: baseline + MCP improvement
         baseline_accuracy = 0.875
-        mcp_improvement = (mcp_enhanced_count / len(frameworks)) * 0.075  # Up to 7.5% improvement
+        mcp_improvement = (
+            mcp_enhanced_count / len(frameworks)
+        ) * 0.075  # Up to 7.5% improvement
 
         return min(baseline_accuracy + mcp_improvement, 0.98)  # Cap at 98%
 
@@ -502,7 +525,9 @@ class MCPEnhancedFrameworkEngine:
 
         return min(pattern_density + mcp_validation_bonus, 1.0)
 
-    def _convert_to_enhanced_framework(self, framework: FrameworkUsage) -> EnhancedFrameworkUsage:
+    def _convert_to_enhanced_framework(
+        self, framework: FrameworkUsage
+    ) -> EnhancedFrameworkUsage:
         """Convert baseline framework to enhanced framework"""
         return EnhancedFrameworkUsage(
             framework_name=framework.framework_name,
@@ -511,7 +536,9 @@ class MCPEnhancedFrameworkEngine:
             framework_type=framework.framework_type,
         )
 
-    def _update_engine_metrics(self, processing_time_ms: int, improvement_percentage: float):
+    def _update_engine_metrics(
+        self, processing_time_ms: int, improvement_percentage: float
+    ):
         """Update engine performance metrics"""
         self.engine_metrics["detections_processed"] += 1
 
@@ -521,12 +548,12 @@ class MCPEnhancedFrameworkEngine:
         count = self.engine_metrics["detections_processed"]
 
         self.engine_metrics["avg_processing_time_ms"] = (
-            (current_avg_time * (count - 1) + processing_time_ms) / count
-        )
+            current_avg_time * (count - 1) + processing_time_ms
+        ) / count
 
         self.engine_metrics["avg_accuracy_improvement"] = (
-            (current_avg_improvement * (count - 1) + improvement_percentage) / count
-        )
+            current_avg_improvement * (count - 1) + improvement_percentage
+        ) / count
 
         if improvement_percentage > 0:
             self.engine_metrics["mcp_enhancements_applied"] += 1
@@ -557,7 +584,9 @@ def create_mcp_enhanced_framework_engine(
 
     transparency_system = IntegratedTransparencySystem()
     persona_manager = TransparentPersonaManager(transparency_system)
-    mcp_helper = RealMCPIntegrationHelper(transparency_context, persona_manager, mcp_client)
+    mcp_helper = RealMCPIntegrationHelper(
+        transparency_context, persona_manager, mcp_client
+    )
 
     # Create enhanced framework engine
     engine = MCPEnhancedFrameworkEngine(

@@ -37,7 +37,9 @@ try:
         FrameworkDetectionMiddleware,
         FrameworkUsage,
     )
-    from claudedirector.lib.transparency.integrated_transparency import TransparencyContext
+    from claudedirector.lib.transparency.integrated_transparency import (
+        TransparencyContext,
+    )
 except ImportError:
     sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
     from lib.ai_intelligence.mcp_enhanced_framework_engine import (
@@ -97,16 +99,33 @@ class TestMCPEnhancedFrameworkEngine:
         """Test confidence level determination for MCP routing"""
 
         # Test low confidence
-        assert self.engine._determine_confidence_level(0.5) == FrameworkConfidenceLevel.LOW
-        assert self.engine._determine_confidence_level(0.69) == FrameworkConfidenceLevel.LOW
+        assert (
+            self.engine._determine_confidence_level(0.5) == FrameworkConfidenceLevel.LOW
+        )
+        assert (
+            self.engine._determine_confidence_level(0.69)
+            == FrameworkConfidenceLevel.LOW
+        )
 
         # Test medium confidence
-        assert self.engine._determine_confidence_level(0.7) == FrameworkConfidenceLevel.MEDIUM
-        assert self.engine._determine_confidence_level(0.85) == FrameworkConfidenceLevel.MEDIUM
+        assert (
+            self.engine._determine_confidence_level(0.7)
+            == FrameworkConfidenceLevel.MEDIUM
+        )
+        assert (
+            self.engine._determine_confidence_level(0.85)
+            == FrameworkConfidenceLevel.MEDIUM
+        )
 
         # Test high confidence
-        assert self.engine._determine_confidence_level(0.9) == FrameworkConfidenceLevel.HIGH
-        assert self.engine._determine_confidence_level(0.95) == FrameworkConfidenceLevel.HIGH
+        assert (
+            self.engine._determine_confidence_level(0.9)
+            == FrameworkConfidenceLevel.HIGH
+        )
+        assert (
+            self.engine._determine_confidence_level(0.95)
+            == FrameworkConfidenceLevel.HIGH
+        )
 
     @pytest.mark.asyncio
     async def test_baseline_detection_integration(self):
@@ -127,7 +146,9 @@ class TestMCPEnhancedFrameworkEngine:
                 framework_type="decision",
             ),
         ]
-        self.mock_baseline_detector.detect_frameworks_used.return_value = baseline_frameworks
+        self.mock_baseline_detector.detect_frameworks_used.return_value = (
+            baseline_frameworks
+        )
 
         # Setup MCP enhancement mocks
         self.mock_mcp_helper.call_mcp_server.return_value = Mock(confidence=0.9)
@@ -137,7 +158,9 @@ class TestMCPEnhancedFrameworkEngine:
         result = await self.engine.detect_frameworks_enhanced(content)
 
         # Verify baseline detector was called
-        self.mock_baseline_detector.detect_frameworks_used.assert_called_once_with(content)
+        self.mock_baseline_detector.detect_frameworks_used.assert_called_once_with(
+            content
+        )
 
         # Verify result structure
         assert isinstance(result, FrameworkDetectionResult)
@@ -279,7 +302,7 @@ class TestMCPEnhancedFrameworkEngine:
         discovered = await self.engine._discover_additional_frameworks(
             "content about organizational structure and deployment practices",
             existing_frameworks,
-            {"context": "technical"}
+            {"context": "technical"},
         )
 
         # Verify MCP server was called for discovery
@@ -330,7 +353,9 @@ class TestMCPEnhancedFrameworkEngine:
 
         # Verify deduplication and sorting
         assert len(synthesized) == 2  # Duplicates removed
-        assert synthesized[0].framework_name == "Team Topologies"  # Higher confidence first
+        assert (
+            synthesized[0].framework_name == "Team Topologies"
+        )  # Higher confidence first
         assert synthesized[0].confidence_score == 0.95  # Higher confidence version kept
         assert synthesized[1].framework_name == "WRAP Framework"
 
@@ -355,7 +380,9 @@ class TestMCPEnhancedFrameworkEngine:
 
         # Verify performance requirement
         actual_time_ms = (end_time - start_time) * 1000
-        assert actual_time_ms < 200, f"Performance requirement failed: {actual_time_ms:.1f}ms > 200ms"
+        assert (
+            actual_time_ms < 200
+        ), f"Performance requirement failed: {actual_time_ms:.1f}ms > 200ms"
         assert result.processing_time_ms < 200
 
     @pytest.mark.asyncio
@@ -371,7 +398,9 @@ class TestMCPEnhancedFrameworkEngine:
                 framework_type="strategic",
             )
         ]
-        self.mock_baseline_detector.detect_frameworks_used.return_value = baseline_frameworks
+        self.mock_baseline_detector.detect_frameworks_used.return_value = (
+            baseline_frameworks
+        )
 
         # Setup MCP enhancement
         self.mock_mcp_helper.call_mcp_server.return_value = Mock(confidence=0.9)
@@ -401,10 +430,14 @@ class TestMCPEnhancedFrameworkEngine:
                 framework_type="test",
             )
         ]
-        self.mock_baseline_detector.detect_frameworks_used.return_value = baseline_frameworks
+        self.mock_baseline_detector.detect_frameworks_used.return_value = (
+            baseline_frameworks
+        )
 
         # Setup MCP failure
-        self.mock_mcp_helper.call_mcp_server.side_effect = Exception("MCP server unavailable")
+        self.mock_mcp_helper.call_mcp_server.side_effect = Exception(
+            "MCP server unavailable"
+        )
 
         # Test fallback behavior
         result = await self.engine.detect_frameworks_enhanced("test content")
@@ -413,7 +446,9 @@ class TestMCPEnhancedFrameworkEngine:
         assert len(result.detected_frameworks) == 1
         assert result.detected_frameworks[0].framework_name == "Test Framework"
         assert result.detected_frameworks[0].mcp_validated == False
-        assert result.baseline_accuracy == result.enhanced_accuracy  # No improvement due to failure
+        assert (
+            result.baseline_accuracy == result.enhanced_accuracy
+        )  # No improvement due to failure
         assert len(result.mcp_servers_used) == 0
 
     @pytest.mark.asyncio
@@ -422,11 +457,19 @@ class TestMCPEnhancedFrameworkEngine:
 
         # Setup comprehensive baseline detection
         baseline_frameworks = [
-            FrameworkUsage("Team Topologies", 0.6, ["team structure"], "organizational"),  # Low - MCP
-            FrameworkUsage("Design Thinking", 0.8, ["design thinking"], "innovation"),     # Medium - MCP
-            FrameworkUsage("Porter's Five Forces", 0.95, ["porter's"], "strategic"),       # High - no MCP
+            FrameworkUsage(
+                "Team Topologies", 0.6, ["team structure"], "organizational"
+            ),  # Low - MCP
+            FrameworkUsage(
+                "Design Thinking", 0.8, ["design thinking"], "innovation"
+            ),  # Medium - MCP
+            FrameworkUsage(
+                "Porter's Five Forces", 0.95, ["porter's"], "strategic"
+            ),  # High - no MCP
         ]
-        self.mock_baseline_detector.detect_frameworks_used.return_value = baseline_frameworks
+        self.mock_baseline_detector.detect_frameworks_used.return_value = (
+            baseline_frameworks
+        )
 
         # Setup MCP enhancement responses
         self.mock_mcp_helper.call_mcp_server.return_value = Mock(confidence=0.9)
@@ -434,14 +477,19 @@ class TestMCPEnhancedFrameworkEngine:
         # Setup MCP discovery
         discovery_result = Mock()
         discovery_result.recommended_frameworks = [
-            Mock(name="WRAP Framework", confidence=0.85, patterns=["wrap"], type="decision")
+            Mock(
+                name="WRAP Framework",
+                confidence=0.85,
+                patterns=["wrap"],
+                type="decision",
+            )
         ]
         # First calls for enhancement, last call for discovery
         self.mock_mcp_helper.call_mcp_server.side_effect = [
             Mock(confidence=0.9),  # Context7 for Team Topologies
-            Mock(confidence=0.85), # Sequential for Team Topologies
+            Mock(confidence=0.85),  # Sequential for Team Topologies
             Mock(confidence=0.9),  # Context7 for Design Thinking
-            discovery_result,      # Sequential for discovery
+            discovery_result,  # Sequential for discovery
         ]
 
         # Test complete pipeline
@@ -452,8 +500,7 @@ class TestMCPEnhancedFrameworkEngine:
         """
 
         result = await self.engine.detect_frameworks_enhanced(
-            content,
-            {"domain": "organizational", "complexity": "high"}
+            content, {"domain": "organizational", "complexity": "high"}
         )
 
         # Verify comprehensive results
@@ -470,7 +517,9 @@ class TestMCPEnhancedFrameworkEngine:
         assert "WRAP Framework" in framework_names
 
         # Verify MCP enhancements
-        enhanced_frameworks = [fw for fw in result.detected_frameworks if fw.mcp_validated]
+        enhanced_frameworks = [
+            fw for fw in result.detected_frameworks if fw.mcp_validated
+        ]
         assert len(enhanced_frameworks) >= 2  # Low and medium confidence + discovered
 
     def test_factory_function(self):
@@ -481,12 +530,14 @@ class TestMCPEnhancedFrameworkEngine:
         mock_transparency_context = Mock(spec=TransparencyContext)
 
         # Test factory function
-        with patch('lib.ai_intelligence.mcp_enhanced_framework_engine.FrameworkDetectionMiddleware') as mock_detector, \
-             patch('lib.ai_intelligence.mcp_enhanced_framework_engine.RealMCPIntegrationHelper') as mock_helper:
+        with patch(
+            "lib.ai_intelligence.mcp_enhanced_framework_engine.FrameworkDetectionMiddleware"
+        ) as mock_detector, patch(
+            "lib.ai_intelligence.mcp_enhanced_framework_engine.RealMCPIntegrationHelper"
+        ) as mock_helper:
 
             engine = create_mcp_enhanced_framework_engine(
-                mock_mcp_client,
-                mock_transparency_context
+                mock_mcp_client, mock_transparency_context
             )
 
             # Verify engine creation
