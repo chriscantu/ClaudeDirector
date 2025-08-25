@@ -65,6 +65,9 @@ class TestFrameworkDetection(unittest.TestCase):
                     "positioning",
                     "board",
                     "strategic",
+                    "develop",
+                    "market",
+                    "enterprise",
                 ],
                 "confidence_threshold": 0.5,
                 "application_context": [
@@ -81,10 +84,11 @@ class TestFrameworkDetection(unittest.TestCase):
                     "allocation",
                     "roi",
                     "platform",
-                    "feature",
                     "resource",
                     "board",
                     "metrics",
+                    "strategy",
+                    "present",
                 ],
                 "confidence_threshold": 0.5,
                 "application_context": [
