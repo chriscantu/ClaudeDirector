@@ -50,11 +50,12 @@ class ContextOrchestrator:
         self.layer_weights = self.config.get(
             "layer_weights",
             {
-                "conversation": 0.25,
+                "conversation": 0.20,
                 "strategic": 0.25,
-                "stakeholder": 0.20,
+                "stakeholder": 0.15,
                 "learning": 0.15,
                 "organizational": 0.15,
+                "workspace": 0.10,  # Phase 2.1: Workspace context weight
             },
         )
 
@@ -71,6 +72,7 @@ class ContextOrchestrator:
         stakeholder_context: Dict[str, Any],
         learning_context: Dict[str, Any],
         organizational_context: Dict[str, Any],
+        workspace_context: Optional[Dict[str, Any]] = None,
         max_size_bytes: int = None,
     ) -> Dict[str, Any]:
         """
@@ -83,6 +85,7 @@ class ContextOrchestrator:
             stakeholder_context: Context from stakeholder layer
             learning_context: Context from learning layer
             organizational_context: Context from organizational layer
+            workspace_context: Context from workspace files (Phase 2.1)
             max_size_bytes: Maximum context size limit
 
         Returns:
@@ -93,16 +96,19 @@ class ContextOrchestrator:
 
         try:
             # Calculate context priorities
-            priorities = self._calculate_context_priorities(
-                query,
-                {
-                    "conversation": conversation_context,
-                    "strategic": strategic_context,
-                    "stakeholder": stakeholder_context,
-                    "learning": learning_context,
-                    "organizational": organizational_context,
-                },
-            )
+            context_layers = {
+                "conversation": conversation_context,
+                "strategic": strategic_context,
+                "stakeholder": stakeholder_context,
+                "learning": learning_context,
+                "organizational": organizational_context,
+            }
+
+            # Phase 2.1: Add workspace context if available
+            if workspace_context:
+                context_layers["workspace"] = workspace_context
+
+            priorities = self._calculate_context_priorities(query, context_layers)
 
             # Assemble context with size constraints
             assembled_context = self._assemble_with_constraints(

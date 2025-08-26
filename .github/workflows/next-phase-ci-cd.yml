@@ -167,12 +167,13 @@ jobs:
           echo "🏗️ ARCHITECTURE - SOLID Principles Validation"
           # Run SOLID principles validation using existing validator
           if [ -f ".claudedirector/tools/architecture/solid_validator.py" ]; then
-            python .claudedirector/tools/architecture/solid_validator.py || echo "SOLID violations detected (expected for existing codebase)"
+            echo "🔧 Running SOLID validation on all Python files..."
+            find .claudedirector/lib -name "*.py" -exec python .claudedirector/tools/architecture/solid_validator.py {} \;
+            echo "✅ SOLID principles validation completed"
           else
-            echo "⚠️ SOLID validator not found - skipping validation"
+            echo "❌ SOLID validator not found - CI should fail"
+            exit 1
           fi
-
-          echo "✅ SOLID principles validation completed"
 
   # Phase 2: Comprehensive P0 Regression Testing
   regression-tests:

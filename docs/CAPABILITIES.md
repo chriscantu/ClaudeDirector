@@ -12,6 +12,15 @@ ClaudeDirector is designed as a **local single-user framework** that enhances AI
 - **Zero Server Dependencies**: No web service infrastructure required
 - **Privacy-First**: All strategic data stays on your local machine
 
+### Context Engineering (Phase 2.1)
+Advanced multi-layered strategic memory with workspace integration:
+
+- **6-Layer Context System**: Conversation, Strategic, Stakeholder, Learning, Organizational, Workspace
+- **Intelligent Workspace Monitoring**: Automatic detection of strategic documents
+- **Cross-Session Persistence**: Zero context loss across Cursor restarts
+- **Strategic Document Analysis**: Automatic initiative and stakeholder extraction
+- **Performance Optimized**: <3s context retrieval, <200ms orchestration
+
 ## Strategic AI Personas
 
 Specialized AI leaders that adapt to your role and challenges:

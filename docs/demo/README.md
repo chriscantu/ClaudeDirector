@@ -82,6 +82,17 @@
 
 **Value:** Users see Martin accessing industry-validated patterns vs. theoretical advice
 
+### **Scenario 4: Context Engineering Workspace Integration** (Full Transparency Demo)
+**Input:** *"Based on my current strategic initiatives, how should we prioritize our Q1 platform roadmap?"*
+**Live Transparency Shows:**
+- `🔧 Workspace Integration: Analyzing strategic documents in leadership-workspace/`
+- `📁 Found 3 active initiatives: Platform Strategy, Team Scaling, Infrastructure Optimization`
+- `👥 Stakeholder context: Chris Cantu, Martin Rodriguez, Rachel Chen (from recent meeting prep)`
+- `📚 Strategic Framework: WRAP Decision Framework detected`
+- **Workspace Context**: *"Based on your current-initiatives/ and recent meeting-prep/ documents, I can see the Platform Strategy initiative is marked high priority..."*
+
+**Value:** Users see ClaudeDirector automatically incorporating their actual workspace strategic documents vs. generic advice
+
 ---
 
 ## 💼 **Industry Customization Examples**

@@ -161,22 +161,26 @@ class TestCLIWorkspaceDetection:
 
         sys.path.insert(0, ".claudedirector/lib")
 
-        from lib.core.workspace_file_handler import WorkspaceFileHandler
+        # Legacy workspace file handler - now using Context Engineering workspace integration
+        from claudedirector.lib.context_engineering.workspace_integration import (
+            WorkspaceMonitor as WorkspaceFileHandler,
+        )
 
-        # Test workspace detection
-        handler = WorkspaceFileHandler()
+        # Test workspace detection with leadership-workspace directory
+        with tempfile.TemporaryDirectory() as temp_dir:
+            leadership_workspace = Path(temp_dir) / "leadership-workspace"
+            leadership_workspace.mkdir()
 
-        # Should detect a workspace path
-        assert handler.workspace_path is not None
-        assert Path(handler.workspace_path).exists()
+            # Test workspace detection
+            handler = WorkspaceFileHandler(str(leadership_workspace))
 
-        # Should have integrated lifecycle manager
-        assert hasattr(handler, "lifecycle_manager")
-        assert handler.lifecycle_manager is not None
+            # Should detect a workspace path
+            assert handler.workspace_path is not None
+            assert Path(handler.workspace_path).exists()
 
-        # Should have integrated smart organizer
-        assert hasattr(handler, "smart_organizer")
-        assert handler.smart_organizer is not None
+            # Should have Context Engineering workspace integration
+            assert hasattr(handler, "strategic_files")
+            assert isinstance(handler.strategic_files, dict)
 
 
 if __name__ == "__main__":
