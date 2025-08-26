@@ -1,0 +1,51 @@
+"""
+Context Engineering Module
+
+Multi-layered strategic memory architecture for ClaudeDirector.
+Provides persistent strategic intelligence across sessions.
+
+Priority 1 Implementation - Q1 2025
+Investment: $380K for 3.2x ROI
+"""
+
+from .advanced_context_engine import AdvancedContextEngine
+from .conversation_layer import ConversationLayerMemory
+from .strategic_layer import StrategicLayerMemory
+from .stakeholder_layer import StakeholderLayerMemory
+from .learning_layer import LearningLayerMemory
+from .organizational_layer import OrganizationalLayerMemory
+from .context_orchestrator import ContextOrchestrator
+
+from .strategic_layer import InitiativeStatus
+from .stakeholder_layer import StakeholderRole, CommunicationStyle
+from .learning_layer import FrameworkUsage, DecisionPattern
+from .organizational_layer import (
+    TeamStructure,
+    OrganizationalChange,
+    OrganizationSize,
+    CulturalDimension,
+)
+from .context_orchestrator import ContextPriority
+
+__all__ = [
+    "AdvancedContextEngine",
+    "ConversationLayerMemory",
+    "StrategicLayerMemory",
+    "StakeholderLayerMemory",
+    "LearningLayerMemory",
+    "OrganizationalLayerMemory",
+    "ContextOrchestrator",
+    "InitiativeStatus",
+    "StakeholderRole",
+    "CommunicationStyle",
+    "FrameworkUsage",
+    "DecisionPattern",
+    "TeamStructure",
+    "OrganizationalChange",
+    "OrganizationSize",
+    "CulturalDimension",
+    "ContextPriority",
+]
+
+__version__ = "1.0.0"
+__priority__ = "P1-BLOCKING"
