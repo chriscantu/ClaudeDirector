@@ -118,7 +118,7 @@ repos:
         language: system
         files: ^\.claudedirector/lib/.*\.py$
         pass_filenames: true
-        always_run: false
+        always_run: true
         verbose: true
 
       # P1 Feature Testing

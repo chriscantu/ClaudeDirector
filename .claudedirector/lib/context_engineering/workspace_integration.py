@@ -26,6 +26,20 @@ from watchdog.events import FileSystemEventHandler, FileModifiedEvent, FileCreat
 logger = logging.getLogger(__name__)
 
 
+# Configuration constants (SOLID: DRY principle)
+PRIORITY_LEVELS = {"HIGH": "high", "MEDIUM": "medium", "LOW": "low"}
+
+FILE_TYPES = {
+    "INITIATIVE": "initiative",
+    "MEETING_PREP": "meeting_prep",
+    "STRATEGY": "strategy",
+    "ANALYSIS": "analysis",
+    "BUDGET": "budget",
+    "REPORT": "report",
+    "GENERAL": "general",
+}
+
+
 @dataclass
 class StrategyFile:
     """Represents a strategic document in the workspace"""
@@ -298,19 +312,19 @@ class WorkspaceMonitor:
         path_lower = file_path.lower()
 
         if "current-initiatives" in path_lower or "initiative" in path_lower:
-            return "initiative"
+            return FILE_TYPES["INITIATIVE"]
         elif "meeting-prep" in path_lower or "meeting" in path_lower:
-            return "meeting_prep"
+            return FILE_TYPES["MEETING_PREP"]
         elif "strategy" in path_lower:
-            return "strategy"
+            return FILE_TYPES["STRATEGY"]
         elif "analysis" in path_lower:
-            return "analysis"
+            return FILE_TYPES["ANALYSIS"]
         elif "budget" in path_lower:
-            return "budget"
+            return FILE_TYPES["BUDGET"]
         elif "report" in path_lower:
-            return "report"
+            return FILE_TYPES["REPORT"]
         else:
-            return "general"
+            return FILE_TYPES["GENERAL"]
 
     def _extract_strategic_topics(self, content: str) -> List[str]:
         """Extract strategic topics from content"""
@@ -431,11 +445,11 @@ class WorkspaceMonitor:
             medium_count += 1
 
         if high_count >= 2:
-            return "high"
+            return PRIORITY_LEVELS["HIGH"]
         elif medium_count >= 2 or high_count >= 1:
-            return "medium"
+            return PRIORITY_LEVELS["MEDIUM"]
         else:
-            return "low"
+            return PRIORITY_LEVELS["LOW"]
 
     def _save_strategic_file(self, strategy_file: StrategyFile):
         """Save strategic file to database"""
@@ -506,7 +520,7 @@ class WorkspaceMonitor:
                 strategic_themes.extend(strategy_file.strategic_topics)
 
                 # Collect priority files
-                if strategy_file.priority_level == "high":
+                if strategy_file.priority_level == PRIORITY_LEVELS["HIGH"]:
                     priority_files.append(file_path)
 
             # Deduplicate and limit
@@ -569,8 +583,10 @@ class WorkspaceMonitor:
         """Get strategic files of a specific type"""
         return [sf for sf in self.strategic_files.values() if sf.file_type == file_type]
 
-    def get_priority_files(self, priority: str = "high") -> List[StrategyFile]:
+    def get_priority_files(self, priority: str = None) -> List[StrategyFile]:
         """Get files by priority level"""
+        if priority is None:
+            priority = PRIORITY_LEVELS["HIGH"]
         return [
             sf for sf in self.strategic_files.values() if sf.priority_level == priority
         ]
