@@ -41,7 +41,9 @@ class TestSetupP0(unittest.TestCase):
                 break
 
         if not project_root:
-            raise RuntimeError("Cannot find project root - bin/claudedirector not found")
+            raise RuntimeError(
+                "Cannot find project root - bin/claudedirector not found"
+            )
 
         cls.project_root = project_root
         cls.claudedirector_path = project_root / "bin" / "claudedirector"
@@ -54,12 +56,12 @@ class TestSetupP0(unittest.TestCase):
         """P0: claudedirector executable must exist and be executable"""
         self.assertTrue(
             self.claudedirector_path.exists(),
-            f"CRITICAL: claudedirector executable not found at {self.claudedirector_path}"
+            f"CRITICAL: claudedirector executable not found at {self.claudedirector_path}",
         )
 
         self.assertTrue(
             os.access(self.claudedirector_path, os.X_OK),
-            f"CRITICAL: claudedirector not executable at {self.claudedirector_path}"
+            f"CRITICAL: claudedirector not executable at {self.claudedirector_path}",
         )
 
     def test_p0_setup_command_help_works(self):
@@ -70,13 +72,14 @@ class TestSetupP0(unittest.TestCase):
                 capture_output=True,
                 text=True,
                 timeout=30,
-                cwd=str(self.project_root)
+                cwd=str(self.project_root),
             )
 
             self.assertEqual(
-                result.returncode, 0,
+                result.returncode,
+                0,
                 f"CRITICAL: setup --help failed with exit code {result.returncode}\n"
-                f"STDOUT: {result.stdout}\nSTDERR: {result.stderr}"
+                f"STDOUT: {result.stdout}\nSTDERR: {result.stderr}",
             )
 
             # Must contain key help information
@@ -86,7 +89,7 @@ class TestSetupP0(unittest.TestCase):
             # Verify essential setup functionality is present
             self.assertTrue(
                 "component" in help_text or "verify" in help_text,
-                "Help must show setup functionality (component or verify options)"
+                "Help must show setup functionality (component or verify options)",
             )
 
         except subprocess.TimeoutExpired:
@@ -115,20 +118,22 @@ class TestSetupP0(unittest.TestCase):
                         capture_output=True,
                         text=True,
                         timeout=15,
-                        cwd=str(test_dir)
+                        cwd=str(test_dir),
                     )
 
                     # Should not fail due to import errors
                     self.assertNotIn(
-                        "ModuleNotFoundError", result.stderr,
+                        "ModuleNotFoundError",
+                        result.stderr,
                         f"CRITICAL: Import error from {test_dir}\n"
-                        f"STDERR: {result.stderr}"
+                        f"STDERR: {result.stderr}",
                     )
 
                     self.assertNotIn(
-                        "ImportError", result.stderr,
+                        "ImportError",
+                        result.stderr,
                         f"CRITICAL: Import error from {test_dir}\n"
-                        f"STDERR: {result.stderr}"
+                        f"STDERR: {result.stderr}",
                     )
 
                 except subprocess.TimeoutExpired:
@@ -137,10 +142,26 @@ class TestSetupP0(unittest.TestCase):
     def test_p0_setup_modules_importable(self):
         """P0: All setup modules must be importable without errors"""
         setup_module_paths = [
-            self.project_root / ".claudedirector" / "tools" / "setup" / "setup_meeting_intelligence.py",
-            self.project_root / ".claudedirector" / "tools" / "setup" / "setup_smart_git.py",
-            self.project_root / ".claudedirector" / "tools" / "setup" / "setup_stakeholder_management.py",
-            self.project_root / ".claudedirector" / "tools" / "setup" / "setup_task_tracking.py"
+            self.project_root
+            / ".claudedirector"
+            / "tools"
+            / "setup"
+            / "setup_meeting_intelligence.py",
+            self.project_root
+            / ".claudedirector"
+            / "tools"
+            / "setup"
+            / "setup_smart_git.py",
+            self.project_root
+            / ".claudedirector"
+            / "tools"
+            / "setup"
+            / "setup_stakeholder_management.py",
+            self.project_root
+            / ".claudedirector"
+            / "tools"
+            / "setup"
+            / "setup_task_tracking.py",
         ]
 
         for module_path in setup_module_paths:
@@ -152,24 +173,26 @@ class TestSetupP0(unittest.TestCase):
                         capture_output=True,
                         text=True,
                         timeout=10,
-                        cwd=str(self.project_root)
+                        cwd=str(self.project_root),
                     )
 
                     # Module should execute without import errors
                     self.assertNotIn(
-                        "ModuleNotFoundError", result.stderr,
-                        f"CRITICAL: {module_path.name} has import errors:\n{result.stderr}"
+                        "ModuleNotFoundError",
+                        result.stderr,
+                        f"CRITICAL: {module_path.name} has import errors:\n{result.stderr}",
                     )
 
                     self.assertNotIn(
-                        "ImportError", result.stderr,
-                        f"CRITICAL: {module_path.name} has import errors:\n{result.stderr}"
+                        "ImportError",
+                        result.stderr,
+                        f"CRITICAL: {module_path.name} has import errors:\n{result.stderr}",
                     )
 
                     # Should show help or setup information
                     self.assertTrue(
                         result.returncode in [0, 1, 2],  # Allow various help exit codes
-                        f"CRITICAL: {module_path.name} failed to execute basic functionality"
+                        f"CRITICAL: {module_path.name} failed to execute basic functionality",
                     )
 
                 except subprocess.TimeoutExpired:
@@ -185,21 +208,30 @@ class TestSetupP0(unittest.TestCase):
                 capture_output=True,
                 text=True,
                 timeout=15,
-                cwd=str(self.project_root)
+                cwd=str(self.project_root),
             )
 
             # Status command should complete successfully
             self.assertEqual(
-                result.returncode, 0,
+                result.returncode,
+                0,
                 f"CRITICAL: status command failed with exit code {result.returncode}\n"
-                f"STDOUT: {result.stdout}\nSTDERR: {result.stderr}"
+                f"STDOUT: {result.stdout}\nSTDERR: {result.stderr}",
             )
 
             # Must show system status information
             status_output = result.stdout.lower()
-            self.assertIn("database", status_output, "Status must report database status")
-            self.assertIn("meeting", status_output, "Status must report meeting intelligence")
-            self.assertIn("stakeholder", status_output, "Status must report stakeholder management")
+            self.assertIn(
+                "database", status_output, "Status must report database status"
+            )
+            self.assertIn(
+                "meeting", status_output, "Status must report meeting intelligence"
+            )
+            self.assertIn(
+                "stakeholder",
+                status_output,
+                "Status must report stakeholder management",
+            )
 
         except subprocess.TimeoutExpired:
             self.fail("CRITICAL: status command timed out after 15 seconds")
@@ -219,40 +251,50 @@ class TestSetupP0(unittest.TestCase):
             with self.subTest(path=str(required_path)):
                 self.assertTrue(
                     required_path.exists(),
-                    f"CRITICAL: Required setup directory missing: {required_path}"
+                    f"CRITICAL: Required setup directory missing: {required_path}",
                 )
 
     def test_p0_setup_file_permissions(self):
         """P0: Setup scripts must have correct permissions"""
         setup_scripts = [
-            self.project_root / ".claudedirector" / "tools" / "setup" / "setup_meeting_intelligence.py",
-            self.project_root / ".claudedirector" / "tools" / "setup" / "setup_smart_git.py",
-            self.project_root / ".claudedirector" / "tools" / "setup" / "setup_stakeholder_management.py",
-            self.project_root / ".claudedirector" / "tools" / "setup" / "setup_task_tracking.py",
+            self.project_root
+            / ".claudedirector"
+            / "tools"
+            / "setup"
+            / "setup_meeting_intelligence.py",
+            self.project_root
+            / ".claudedirector"
+            / "tools"
+            / "setup"
+            / "setup_smart_git.py",
+            self.project_root
+            / ".claudedirector"
+            / "tools"
+            / "setup"
+            / "setup_stakeholder_management.py",
+            self.project_root
+            / ".claudedirector"
+            / "tools"
+            / "setup"
+            / "setup_task_tracking.py",
         ]
 
         for script_path in setup_scripts:
             with self.subTest(script=script_path.name):
                 self.assertTrue(
                     script_path.exists(),
-                    f"CRITICAL: Setup script missing: {script_path}"
+                    f"CRITICAL: Setup script missing: {script_path}",
                 )
 
                 # Check readable
                 self.assertTrue(
                     os.access(script_path, os.R_OK),
-                    f"CRITICAL: Setup script not readable: {script_path}"
+                    f"CRITICAL: Setup script not readable: {script_path}",
                 )
 
     def test_p0_setup_commands_available(self):
         """P0: All critical setup commands must be available"""
-        critical_commands = [
-            "setup",
-            "status",
-            "meetings",
-            "stakeholders",
-            "tasks"
-        ]
+        critical_commands = ["setup", "status", "meetings", "stakeholders", "tasks"]
 
         for command in critical_commands:
             with self.subTest(command=command):
@@ -262,13 +304,14 @@ class TestSetupP0(unittest.TestCase):
                         capture_output=True,
                         text=True,
                         timeout=10,
-                        cwd=str(self.project_root)
+                        cwd=str(self.project_root),
                     )
 
                     self.assertEqual(
-                        result.returncode, 0,
+                        result.returncode,
+                        0,
                         f"CRITICAL: {command} --help failed with exit code {result.returncode}\n"
-                        f"STDERR: {result.stderr}"
+                        f"STDERR: {result.stderr}",
                     )
 
                 except subprocess.TimeoutExpired:
@@ -292,14 +335,15 @@ class TestSetupP0(unittest.TestCase):
                     capture_output=True,
                     text=True,
                     timeout=10,
-                    cwd=str(test_workspace)
+                    cwd=str(test_workspace),
                 )
 
                 # Should not crash, even with missing components
                 # Exit code may be non-zero, but should not crash
                 self.assertNotIn(
-                    "Traceback", result.stderr,
-                    f"CRITICAL: Setup crashed with traceback:\n{result.stderr}"
+                    "Traceback",
+                    result.stderr,
+                    f"CRITICAL: Setup crashed with traceback:\n{result.stderr}",
                 )
 
             except subprocess.TimeoutExpired:
@@ -318,15 +362,16 @@ class TestSetupP0(unittest.TestCase):
                 capture_output=True,
                 text=True,
                 timeout=10,
-                cwd=str(self.project_root)
+                cwd=str(self.project_root),
             )
 
             execution_time = time.time() - start_time
 
             self.assertLess(
-                execution_time, 5.0,
+                execution_time,
+                5.0,
                 f"CRITICAL: Status command too slow ({execution_time:.2f}s > 5.0s limit)\n"
-                f"User experience requirement: <5s for status checks"
+                f"User experience requirement: <5s for status checks",
             )
 
         except subprocess.TimeoutExpired:
@@ -341,18 +386,20 @@ class TestSetupP0(unittest.TestCase):
                 capture_output=True,
                 text=True,
                 timeout=10,
-                cwd=str(self.project_root)
+                cwd=str(self.project_root),
             )
 
             # Should work with current Python interpreter
             self.assertNotIn(
-                "SyntaxError", result.stderr,
-                f"CRITICAL: Python syntax compatibility issue:\n{result.stderr}"
+                "SyntaxError",
+                result.stderr,
+                f"CRITICAL: Python syntax compatibility issue:\n{result.stderr}",
             )
 
             self.assertNotIn(
-                "version", result.stderr.lower(),
-                f"CRITICAL: Python version compatibility issue:\n{result.stderr}"
+                "version",
+                result.stderr.lower(),
+                f"CRITICAL: Python version compatibility issue:\n{result.stderr}",
             )
 
         except subprocess.TimeoutExpired:
@@ -373,7 +420,7 @@ class TestSetupP0RegressionProtection(unittest.TestCase):
         claudedirector_script = Path(__file__).parents[3] / "bin" / "claudedirector"
         if claudedirector_script.exists():
             # Read the script and verify project_root calculation
-            with open(claudedirector_script, 'r') as f:
+            with open(claudedirector_script, "r") as f:
                 script_content = f.read()
 
             # Verify the fix is in place
@@ -381,14 +428,14 @@ class TestSetupP0RegressionProtection(unittest.TestCase):
                 "parent.parent",
                 script_content,
                 "CRITICAL REGRESSION: Project root calculation reverted to broken state!\n"
-                "The bug fix for project_root = Path(__file__).parent.parent must be maintained"
+                "The bug fix for project_root = Path(__file__).parent.parent must be maintained",
             )
 
             # Verify old broken pattern is not present
             self.assertNotIn(
                 "Path(__file__).parent\n",  # Single parent (the bug)
                 script_content,
-                "CRITICAL REGRESSION: Broken single parent path calculation detected!"
+                "CRITICAL REGRESSION: Broken single parent path calculation detected!",
             )
 
     def test_p0_setup_regression_import_path_resolution(self):
@@ -396,16 +443,32 @@ class TestSetupP0RegressionProtection(unittest.TestCase):
         # Test that the sys.path.insert fix is maintained in setup modules
 
         setup_module_paths = [
-            Path(__file__).parents[3] / ".claudedirector" / "tools" / "setup" / "setup_meeting_intelligence.py",
-            Path(__file__).parents[3] / ".claudedirector" / "tools" / "setup" / "setup_smart_git.py",
-            Path(__file__).parents[3] / ".claudedirector" / "tools" / "setup" / "setup_stakeholder_management.py",
-            Path(__file__).parents[3] / ".claudedirector" / "tools" / "setup" / "setup_task_tracking.py",
+            Path(__file__).parents[3]
+            / ".claudedirector"
+            / "tools"
+            / "setup"
+            / "setup_meeting_intelligence.py",
+            Path(__file__).parents[3]
+            / ".claudedirector"
+            / "tools"
+            / "setup"
+            / "setup_smart_git.py",
+            Path(__file__).parents[3]
+            / ".claudedirector"
+            / "tools"
+            / "setup"
+            / "setup_stakeholder_management.py",
+            Path(__file__).parents[3]
+            / ".claudedirector"
+            / "tools"
+            / "setup"
+            / "setup_task_tracking.py",
         ]
 
         for module_path in setup_module_paths:
             if module_path.exists():
                 with self.subTest(module=module_path.name):
-                    with open(module_path, 'r') as f:
+                    with open(module_path, "r") as f:
                         module_content = f.read()
 
                     # Verify correct path calculation pattern exists
@@ -413,14 +476,14 @@ class TestSetupP0RegressionProtection(unittest.TestCase):
                         "parent.parent.parent.parent",
                         module_content,
                         f"CRITICAL REGRESSION: {module_path.name} missing correct path calculation!\n"
-                        f"Must have: project_root = Path(__file__).parent.parent.parent.parent"
+                        f"Must have: project_root = Path(__file__).parent.parent.parent.parent",
                     )
 
                     # Verify sys.path.insert for imports
                     self.assertIn(
                         "sys.path.insert(0, str(lib_path))",
                         module_content,
-                        f"CRITICAL REGRESSION: {module_path.name} missing import path fix!"
+                        f"CRITICAL REGRESSION: {module_path.name} missing import path fix!",
                     )
 
 
