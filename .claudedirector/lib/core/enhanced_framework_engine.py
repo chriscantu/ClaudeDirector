@@ -118,6 +118,30 @@ class ConversationMemoryEngine:
 
         return context
 
+    def get_recent_interactions(
+        self, session_id: str = "default", limit: int = 5
+    ) -> List[Dict[str, Any]]:
+        """Get recent conversation interactions for context analysis"""
+        context = self.get_or_create_context(session_id)
+
+        # Return recent conversation history, limited to specified number
+        recent_history = (
+            context.conversation_history[-limit:]
+            if context.conversation_history
+            else []
+        )
+
+        # Transform to expected format for Enhanced Framework Detection
+        return [
+            {
+                "content": interaction.get("input", ""),
+                "timestamp": interaction.get("timestamp", 0),
+                "topics": interaction.get("topics", []),
+                "frameworks": interaction.get("frameworks", []),
+            }
+            for interaction in recent_history
+        ]
+
     def get_context_insights(self, session_id: str) -> Dict[str, Any]:
         """Generate insights from conversation context"""
         context = self.get_or_create_context(session_id)
