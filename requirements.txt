@@ -1,5 +1,6 @@
 # ClaudeDirector Core Dependencies
 # Essential packages for strategic leadership AI framework
+# REQUIRES: Python >=3.11 (due to mcp-use dependency)
 
 # Configuration and data handling
 PyYAML>=6.0.0
