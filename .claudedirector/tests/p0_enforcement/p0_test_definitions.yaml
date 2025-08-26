@@ -247,6 +247,16 @@ p0_features:
     introduced_version: "v2.4.0"
     owner: "martin"
 
+  - name: "Organizational Learning P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_organizational_learning_p0.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 120
+    description: "Context Engineering Phase 3.1 Organizational Learning Engine must provide organizational intelligence with <3s response time and 80%+ change prediction accuracy"
+    failure_impact: "Organizational context lost, change prediction broken, cultural analysis unavailable"
+    business_impact: "Organizational transformation guidance compromised, change management intelligence lost, cultural adaptation intelligence unavailable"
+    introduced_version: "v3.0.0"
+    owner: "martin"
+
 
 
 
