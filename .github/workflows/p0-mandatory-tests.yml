@@ -39,17 +39,12 @@ jobs:
 
     - name: Run P0 Setup Feature Tests
       run: |
-        python .claudedirector/tests/regression/business_critical/test_setup_p0.py
+        python .claudedirector/tests/regression/p0_blocking/test_setup_feature.py
       timeout-minutes: 5
-
-    - name: Run P0 Setup Regression Protection Tests
-      run: |
-        python -m unittest .claudedirector.tests.regression.business_critical.test_setup_p0.TestSetupP0RegressionProtection -v
-      timeout-minutes: 3
 
     - name: Verify P0 test integration
       run: |
-        python .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py | grep -E "(Setup Feature P0|Setup Regression Protection P0)"
+        python .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py | grep -E "Setup Feature P0"
       timeout-minutes: 5
 
   p0-enforcement-validation:
