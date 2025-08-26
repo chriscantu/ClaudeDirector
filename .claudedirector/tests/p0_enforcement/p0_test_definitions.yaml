@@ -227,6 +227,16 @@ p0_features:
     introduced_version: "v1.0.0"
     owner: "martin"
 
+  - name: "Workspace Integration P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_workspace_integration.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 120
+    description: "Context Engineering Phase 2.1 workspace integration must work reliably for strategic document monitoring and context persistence"
+    failure_impact: "Strategic workspace context unavailable, cross-session persistence broken, document monitoring fails"
+    business_impact: "Strategic intelligence loses workspace awareness, context persistence broken across Cursor sessions"
+    introduced_version: "v2.3.0"
+    owner: "martin"
+
 
 
 

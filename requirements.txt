@@ -34,6 +34,7 @@ rich>=13.0.0
 # Development and debugging support
 colorama>=0.4.6  # Cross-platform colored terminal text
 psutil>=5.9.0    # System and process monitoring for performance tests
+watchdog>=3.0.0  # File system monitoring for workspace integration
 
 # MCP Integration Dependencies
 mcp-use>=1.3.9,<2.0.0

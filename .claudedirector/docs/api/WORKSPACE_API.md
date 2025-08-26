@@ -10,7 +10,7 @@ ClaudeDirector provides intelligent workspace management for engineering leaders
 **Purpose**: Central workspace file management and organization.
 
 ```python
-from claudedirector.core.workspace_file_handler import WorkspaceFileHandler
+from claudedirector.lib.context_engineering.workspace_integration import WorkspaceMonitor
 
 # Initialize workspace handler
 workspace = WorkspaceFileHandler()

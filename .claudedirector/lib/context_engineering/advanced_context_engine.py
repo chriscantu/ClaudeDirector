@@ -22,6 +22,7 @@ from .stakeholder_layer import StakeholderLayerMemory
 from .learning_layer import LearningLayerMemory
 from .organizational_layer import OrganizationalLayerMemory
 from .context_orchestrator import ContextOrchestrator
+from .workspace_integration import WorkspaceMonitor, WorkspaceContext
 
 
 @dataclass
@@ -69,10 +70,27 @@ class AdvancedContextEngine:
             self.config.get("orchestrator", {})
         )
 
+        # Workspace integration (Phase 2.1)
+        workspace_config = self.config.get("workspace", {})
+        self.workspace_monitor: Optional[WorkspaceMonitor] = None
+        self.workspace_enabled = workspace_config.get("enabled", True)
+
+        if self.workspace_enabled:
+            workspace_path = workspace_config.get("path", "leadership-workspace")
+            try:
+                self.workspace_monitor = WorkspaceMonitor(workspace_path)
+                self.workspace_monitor.start_monitoring()
+                self.logger.info(f"Workspace monitoring enabled for {workspace_path}")
+            except Exception as e:
+                self.logger.warning(f"Failed to start workspace monitoring: {e}")
+                self.workspace_enabled = False
+
         # Performance tracking
         self.performance_metrics: List[ContextRetrievalMetrics] = []
 
-        self.logger.info("AdvancedContextEngine initialized with 5-layer architecture")
+        self.logger.info(
+            "AdvancedContextEngine initialized with 5-layer architecture + workspace integration"
+        )
 
     def get_contextual_intelligence(
         self,
@@ -111,6 +129,11 @@ class AdvancedContextEngine:
             organizational_context = self._get_organizational_context(query, session_id)
             layers_accessed.append("organizational")
 
+            # Phase 2.1: Gather workspace context
+            workspace_context = self._get_workspace_context(query, session_id)
+            if workspace_context:
+                layers_accessed.append("workspace")
+
             # Orchestrate intelligent context assembly
             assembled_context = self.context_orchestrator.assemble_strategic_context(
                 query=query,
@@ -119,6 +142,7 @@ class AdvancedContextEngine:
                 stakeholder_context=stakeholder_context,
                 learning_context=learning_context,
                 organizational_context=organizational_context,
+                workspace_context=workspace_context,
                 max_size_bytes=max_context_size,
             )
 
@@ -259,6 +283,59 @@ class AdvancedContextEngine:
         """Get relevant organizational context"""
         return self.organizational_layer.get_structure_context()
 
+    def _get_workspace_context(
+        self, query: str, session_id: str
+    ) -> Optional[Dict[str, Any]]:
+        """Get relevant workspace context from strategic documents"""
+        if not self.workspace_enabled or not self.workspace_monitor:
+            return None
+
+        try:
+            workspace_context = self.workspace_monitor.get_workspace_context()
+            if not workspace_context:
+                return None
+
+            # Convert workspace context to strategic context format
+            return {
+                "active_initiatives": workspace_context.active_initiatives,
+                "priority_files": workspace_context.priority_files,
+                "recent_meetings": workspace_context.recent_meetings,
+                "strategic_themes": workspace_context.strategic_themes,
+                "stakeholder_activity": workspace_context.stakeholder_activity,
+                "last_updated": workspace_context.last_updated.isoformat(),
+                "context_type": "workspace",
+                "relevance_indicators": self._calculate_workspace_relevance(
+                    query, workspace_context
+                ),
+            }
+        except Exception as e:
+            self.logger.error(f"Error retrieving workspace context: {e}")
+            return None
+
+    def _calculate_workspace_relevance(
+        self, query: str, workspace_context: WorkspaceContext
+    ) -> List[str]:
+        """Calculate relevance indicators for workspace context"""
+        indicators = []
+        query_lower = query.lower()
+
+        # Check for initiative mentions
+        for initiative in workspace_context.active_initiatives:
+            if any(word in query_lower for word in initiative.lower().split()):
+                indicators.append(f"initiative:{initiative}")
+
+        # Check for strategic theme alignment
+        for theme in workspace_context.strategic_themes:
+            if any(word in query_lower for word in theme.lower().split()):
+                indicators.append(f"theme:{theme}")
+
+        # Check for stakeholder mentions
+        for stakeholder in workspace_context.stakeholder_activity.keys():
+            if stakeholder.lower() in query_lower:
+                indicators.append(f"stakeholder:{stakeholder}")
+
+        return indicators[:5]  # Limit to top 5 indicators
+
     def _calculate_context_size(self, context: Dict[str, Any]) -> int:
         """Calculate approximate context size in bytes"""
         import json
@@ -305,3 +382,100 @@ class AdvancedContextEngine:
             "session_id": session_id,
             "timestamp": time.time(),
         }
+
+    def save_session_context(self, session_id: str, context_quality_score: float = 0.0):
+        """Save current context as a session snapshot for cross-session persistence"""
+        try:
+            if self.workspace_enabled and self.workspace_monitor:
+                self.workspace_monitor.save_session_context(
+                    session_id, context_quality_score
+                )
+
+            # Also save to other layers for comprehensive persistence
+            self.conversation_layer.save_session_context(session_id)
+            self.strategic_layer.save_session_context(session_id)
+
+            self.logger.info(f"Session context saved for {session_id}")
+        except Exception as e:
+            self.logger.error(f"Error saving session context: {e}")
+
+    def restore_session_context(self, session_id: str) -> bool:
+        """Restore context from a previous session"""
+        try:
+            success = False
+
+            # Restore workspace context
+            if self.workspace_enabled and self.workspace_monitor:
+                workspace_context = self.workspace_monitor.load_session_context(
+                    session_id
+                )
+                if workspace_context:
+                    success = True
+
+            # Restore other layer contexts
+            if hasattr(self.conversation_layer, "restore_session_context"):
+                success |= self.conversation_layer.restore_session_context(session_id)
+
+            if hasattr(self.strategic_layer, "restore_session_context"):
+                success |= self.strategic_layer.restore_session_context(session_id)
+
+            if success:
+                self.logger.info(f"Session context restored for {session_id}")
+
+            return success
+        except Exception as e:
+            self.logger.error(f"Error restoring session context: {e}")
+            return False
+
+    def get_workspace_status(self) -> Dict[str, Any]:
+        """Get current workspace integration status"""
+        if not self.workspace_enabled or not self.workspace_monitor:
+            return {
+                "enabled": False,
+                "status": "disabled",
+                "reason": "workspace monitoring not enabled",
+            }
+
+        try:
+            workspace_context = self.workspace_monitor.get_workspace_context()
+            strategic_files = len(self.workspace_monitor.strategic_files)
+
+            return {
+                "enabled": True,
+                "status": "active",
+                "workspace_path": str(self.workspace_monitor.workspace_path),
+                "strategic_files_count": strategic_files,
+                "active_initiatives": (
+                    len(workspace_context.active_initiatives)
+                    if workspace_context
+                    else 0
+                ),
+                "last_updated": (
+                    workspace_context.last_updated.isoformat()
+                    if workspace_context
+                    else None
+                ),
+                "monitoring": self.workspace_monitor.observer.is_alive(),
+            }
+        except Exception as e:
+            return {"enabled": True, "status": "error", "error": str(e)}
+
+    def cleanup(self):
+        """Cleanup resources and stop monitoring"""
+        if self.workspace_monitor:
+            try:
+                self.workspace_monitor.stop_monitoring()
+                self.logger.info("Workspace monitoring stopped")
+            except Exception as e:
+                self.logger.error(f"Error stopping workspace monitoring: {e}")
+
+        # Clear performance metrics to free memory
+        self.performance_metrics.clear()
+
+    def __enter__(self):
+        """Context manager entry"""
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Context manager exit"""
+        self.cleanup()
