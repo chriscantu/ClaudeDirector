@@ -73,6 +73,7 @@ class ContextOrchestrator:
         learning_context: Dict[str, Any],
         organizational_context: Dict[str, Any],
         workspace_context: Optional[Dict[str, Any]] = None,
+        analytics_insights: Optional[Dict[str, Any]] = None,  # Phase 2.2 parameter
         max_size_bytes: int = None,
     ) -> Dict[str, Any]:
         """

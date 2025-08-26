@@ -237,6 +237,16 @@ p0_features:
     introduced_version: "v2.3.0"
     owner: "martin"
 
+  - name: "Analytics Engine P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_analytics_engine.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 180
+    description: "Context Engineering Phase 2.2 Advanced Analytics Engine must provide reliable predictive intelligence with >85% framework accuracy and <2s response time"
+    failure_impact: "Predictive intelligence unavailable, framework recommendations unreliable, initiative health scoring broken"
+    business_impact: "Strategic decision support degraded, proactive risk detection lost, analytics-driven insights unavailable"
+    introduced_version: "v2.4.0"
+    owner: "martin"
+
 
 
 

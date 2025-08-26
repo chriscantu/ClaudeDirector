@@ -23,6 +23,7 @@ from .learning_layer import LearningLayerMemory
 from .organizational_layer import OrganizationalLayerMemory
 from .context_orchestrator import ContextOrchestrator
 from .workspace_integration import WorkspaceMonitor, WorkspaceContext
+from .analytics_engine import AnalyticsEngine  # Phase 2.2 Analytics Integration
 
 
 @dataclass
@@ -69,6 +70,19 @@ class AdvancedContextEngine:
         self.context_orchestrator = ContextOrchestrator(
             self.config.get("orchestrator", {})
         )
+
+        # Phase 2.2: Advanced Analytics Engine integration
+        analytics_config = self.config.get("analytics", {})
+        self.analytics_enabled = analytics_config.get("enabled", True)
+        self.analytics_engine = None
+
+        if self.analytics_enabled:
+            try:
+                self.analytics_engine = AnalyticsEngine(analytics_config)
+                self.logger.info("Advanced Analytics Engine integrated successfully")
+            except Exception as e:
+                self.logger.warning(f"Failed to initialize Analytics Engine: {e}")
+                self.analytics_enabled = False
 
         # Workspace integration (Phase 2.1)
         workspace_config = self.config.get("workspace", {})
@@ -134,6 +148,29 @@ class AdvancedContextEngine:
             if workspace_context:
                 layers_accessed.append("workspace")
 
+            # Phase 2.2: Generate analytics insights if enabled
+            analytics_insights = None
+            if self.analytics_enabled and self.analytics_engine:
+                try:
+                    # Extract stakeholder and initiative data for analytics
+                    stakeholder_list = self._extract_stakeholders_from_context(
+                        stakeholder_context, workspace_context
+                    )
+                    initiative_list = self._extract_initiatives_from_context(
+                        strategic_context, workspace_context
+                    )
+
+                    analytics_insights = (
+                        self.analytics_engine.get_strategic_recommendations(
+                            context=query,
+                            stakeholders=stakeholder_list,
+                            initiatives=initiative_list,
+                        )
+                    )
+                    layers_accessed.append("analytics")
+                except Exception as e:
+                    self.logger.warning(f"Analytics insights generation failed: {e}")
+
             # Orchestrate intelligent context assembly
             assembled_context = self.context_orchestrator.assemble_strategic_context(
                 query=query,
@@ -143,6 +180,7 @@ class AdvancedContextEngine:
                 learning_context=learning_context,
                 organizational_context=organizational_context,
                 workspace_context=workspace_context,
+                analytics_insights=analytics_insights,  # New parameter
                 max_size_bytes=max_context_size,
             )
 
@@ -335,6 +373,54 @@ class AdvancedContextEngine:
                 indicators.append(f"stakeholder:{stakeholder}")
 
         return indicators[:5]  # Limit to top 5 indicators
+
+    def _extract_stakeholders_from_context(
+        self,
+        stakeholder_context: Dict[str, Any],
+        workspace_context: Optional[Dict[str, Any]],
+    ) -> List[str]:
+        """Extract stakeholder list for analytics from context data"""
+        stakeholders = []
+
+        # Extract from stakeholder context
+        if stakeholder_context and "relationships" in stakeholder_context:
+            stakeholders.extend(stakeholder_context["relationships"].keys())
+
+        # Extract from workspace context
+        if workspace_context and "stakeholder_activity" in workspace_context:
+            stakeholders.extend(workspace_context["stakeholder_activity"].keys())
+
+        # Remove duplicates and return
+        return list(set(stakeholders))
+
+    def _extract_initiatives_from_context(
+        self,
+        strategic_context: Dict[str, Any],
+        workspace_context: Optional[Dict[str, Any]],
+    ) -> List[Dict[str, Any]]:
+        """Extract initiative list for analytics from context data"""
+        initiatives = []
+
+        # Extract from strategic context
+        if strategic_context and "initiatives" in strategic_context:
+            for initiative_id, initiative_data in strategic_context[
+                "initiatives"
+            ].items():
+                initiatives.append({"id": initiative_id, **initiative_data})
+
+        # Extract from workspace context
+        if workspace_context and "active_initiatives" in workspace_context:
+            for initiative_name in workspace_context["active_initiatives"]:
+                # Create basic initiative data structure
+                initiatives.append(
+                    {
+                        "id": initiative_name,
+                        "name": initiative_name,
+                        "source": "workspace",
+                    }
+                )
+
+        return initiatives
 
     def _calculate_context_size(self, context: Dict[str, Any]) -> int:
         """Calculate approximate context size in bytes"""
