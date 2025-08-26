@@ -9,6 +9,13 @@ import subprocess
 import sys
 from pathlib import Path
 
+# Add the lib directory to Python path for proper imports
+project_root = Path(
+    __file__
+).parent.parent.parent.parent  # Go up from tools/setup to project root
+lib_path = project_root / ".claudedirector" / "lib"
+sys.path.insert(0, str(lib_path))
+
 
 class SmartGitSetup:
     """Setup and configuration for intelligent git commit optimization."""
