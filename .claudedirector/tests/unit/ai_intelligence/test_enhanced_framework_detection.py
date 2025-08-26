@@ -115,12 +115,14 @@ class TestEnhancedFrameworkDetection:
             transparency_system=self.mock_transparency_system,
         )
 
-        # Test context
+        # Test context - using correct ConversationContext parameters
         self.test_context = ConversationContext(
             session_id="test_session",
-            recent_interactions=[],
-            conversation_themes=set(),
-            complexity_progression=[],
+            previous_topics=["team structure", "organizational design"],
+            strategic_themes={"team topologies", "organizational transformation"},
+            stakeholder_mentions={"engineering team", "leadership"},
+            domain_focus="organizational",
+            complexity_level="high",
         )
 
     def test_enhanced_detection_initialization(self):
