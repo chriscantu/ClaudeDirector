@@ -56,6 +56,10 @@
 - **Pre-Push Validation**: `python .claudedirector/tools/testing/unified_test_runner.py pre_push`
 - **CI Full Suite**: `python .claudedirector/tools/testing/unified_test_runner.py ci_full`
 
+### **System Administration**
+- **Database Setup**: `python .claudedirector/tools/setup/setup_database.py`
+- **Note**: Legacy CLI (`bin/claudedirector`) has been deprecated in favor of Cursor integration
+
 ### **Quality Assurance**
 - **[Quality Standards](reference/QUALITY_STANDARDS.md)** - Code quality and standards
 - **[AI Cleanup Guidelines](reference/AI_CLEANUP.md)** - AI cleanup enforcement guide
