@@ -21,6 +21,8 @@ ClaudeDirector is the industry's first completely transparent AI strategic leade
 
 ### **System Components**
 
+**Architecture Note**: ClaudeDirector has migrated to Context Engineering as the primary memory and intelligence system, with the Unified Bridge pattern eliminating 70%+ code duplication from legacy bridge implementations.
+
 ```mermaid
 graph TB
     subgraph "User Interface Layer"
@@ -42,11 +44,20 @@ graph TB
         J[✨ MCP Magic Server]
     end
 
-    subgraph "Storage & Memory"
-        K[📊 Strategic Memory DB]
-        L[🧠 Conversation Context]
-        M[⚙️ Configuration Store]
-        N[🔒 User Config Template]
+    subgraph "Context Engineering (Primary)"
+        K[🧠 Advanced Context Engine]
+        L[💬 Conversation Layer]
+        M[🎯 Strategic Layer]
+        N[👥 Stakeholder Layer]
+        O[📚 Learning Layer]
+        P[🏢 Organizational Layer]
+    end
+
+    subgraph "Integration Layer"
+        Q[🔄 Unified Bridge]
+        R[📊 Strategic Memory DB]
+        S[⚙️ Configuration Store]
+        T[🔒 User Config Template]
     end
 
     subgraph "Quality & Enforcement"

@@ -907,7 +907,17 @@ class EnhancedFrameworkEngine:
 
         # Initialize base components
         self.base_engine = EmbeddedFrameworkEngine(config)
-        self.memory_engine = ConversationMemoryEngine()
+
+        # Use Unified Bridge for enhanced memory capabilities
+        try:
+            from ..integration.unified_bridge import create_conversation_bridge
+
+            self.memory_engine = create_conversation_bridge()
+            logger.info("Enhanced Framework Engine using Unified Bridge backend")
+        except ImportError as e:
+            logger.warning(f"Unified Bridge not available, using legacy memory: {e}")
+            self.memory_engine = ConversationMemoryEngine()
+
         self.integration_engine = MultiFrameworkIntegrationEngine(self.base_engine)
 
         # Enhanced capabilities
