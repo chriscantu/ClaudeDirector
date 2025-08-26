@@ -161,7 +161,10 @@ class TestCLIWorkspaceDetection:
 
         sys.path.insert(0, ".claudedirector/lib")
 
-        from lib.core.workspace_file_handler import WorkspaceFileHandler
+        # Legacy workspace file handler - now using Context Engineering workspace integration
+        from claudedirector.lib.context_engineering.workspace_integration import (
+            WorkspaceMonitor as WorkspaceFileHandler,
+        )
 
         # Test workspace detection
         handler = WorkspaceFileHandler()
