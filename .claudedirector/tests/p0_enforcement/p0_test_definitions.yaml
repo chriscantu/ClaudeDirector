@@ -10,7 +10,7 @@ blocking_failures_allowed: 0
 p0_features:
   # BLOCKING LEVEL: Must pass or commit is blocked
   - name: "MCP Transparency P0"
-    test_module: ".claudedirector/tests/regression/test_mcp_transparency_p0.py"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_mcp_transparency.py"
     critical_level: "BLOCKING"
     timeout_seconds: 120
     description: "MCP server transparency disclosure must work reliably"
@@ -20,7 +20,7 @@ p0_features:
     owner: "martin"
 
   - name: "Conversation Tracking P0"
-    test_module: ".claudedirector/tests/conversation/test_conversation_tracking_p0.py"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_conversation_tracking.py"
     critical_level: "BLOCKING"
     timeout_seconds: 120
     description: "Strategic memory conversation capture must work"
@@ -30,7 +30,7 @@ p0_features:
     owner: "martin"
 
   - name: "Conversation Quality P0"
-    test_module: ".claudedirector/tests/conversation/test_p0_quality_target.py"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_conversation_quality.py"
     critical_level: "BLOCKING"
     timeout_seconds: 120
     description: "Conversation quality must exceed 0.7 threshold"
@@ -41,7 +41,7 @@ p0_features:
 
   # HIGH PRIORITY: Should pass but won't block commit
   - name: "First-Run Wizard P0"
-    test_module: ".claudedirector/tests/integration/test_first_run_wizard_comprehensive.py"
+    test_module: ".claudedirector/tests/regression/p0_high_priority/test_first_run_wizard.py"
     critical_level: "HIGH"
     timeout_seconds: 60
     description: "Complete first-run wizard user journey must work end-to-end"
@@ -51,7 +51,7 @@ p0_features:
     owner: "martin"
 
   - name: "Cursor Integration P0"
-    test_module: ".claudedirector/tests/integration/test_cursor_integration_comprehensive.py"
+    test_module: ".claudedirector/tests/regression/p0_high_priority/test_cursor_integration.py"
     critical_level: "HIGH"
     timeout_seconds: 60
     description: "Cursor environment integration must work"
@@ -81,7 +81,7 @@ p0_features:
     owner: "rachel"
 
   - name: "CLI Functionality P0"
-    test_module: ".claudedirector/tests/regression/user_journeys/test_cli_functionality.py"
+    test_module: ".claudedirector/tests/regression/p0_high_priority/test_cli_functionality.py"
     critical_level: "HIGH"
     timeout_seconds: 90
     description: "Command-line interface functionality must work for daily user workflows"
@@ -91,7 +91,7 @@ p0_features:
     owner: "martin"
 
   - name: "Memory Context Persistence P0"
-    test_module: ".claudedirector/tests/regression/user_journeys/memory_context/"
+    test_module: ".claudedirector/tests/regression/p0_blocking/memory_context_modules/"
     critical_level: "BLOCKING"
     timeout_seconds: 120
     description: "Memory and context persistence must work for strategic continuity (modular tests)"
@@ -114,7 +114,7 @@ p0_features:
 
   # ALVARO'S BUSINESS-CRITICAL TESTS
   - name: "Configuration Persistence P0"
-    test_module: ".claudedirector/tests/regression/business_critical/test_configuration_persistence.py"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_configuration_persistence.py"
     critical_level: "BLOCKING"
     timeout_seconds: 120
     description: "User configuration and customization data must persist across sessions"
@@ -124,7 +124,7 @@ p0_features:
     owner: "alvaro"
 
   - name: "ROI Tracking P0"
-    test_module: ".claudedirector/tests/regression/business_critical/test_roi_tracking.py"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_roi_tracking.py"
     critical_level: "BLOCKING"
     timeout_seconds: 180
     description: "ROI calculation and investment tracking must work for strategic decisions"
@@ -144,7 +144,7 @@ p0_features:
     owner: "alvaro"
 
   - name: "Security P0"
-    test_module: ".claudedirector/tests/regression/business_critical/test_security.py"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_security.py"
     critical_level: "BLOCKING"
     timeout_seconds: 240
     description: "Security controls must protect sensitive strategic data and stakeholder intelligence"
@@ -196,7 +196,7 @@ p0_features:
 
   # PHASE 1 AI INTELLIGENCE - CRITICAL BUSINESS FEATURE
   - name: "AI Intelligence P0"
-    test_module: ".claudedirector/tests/regression/business_critical/test_ai_intelligence_p0.py"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_ai_intelligence.py"
     critical_level: "BLOCKING"
     timeout_seconds: 300
     description: "Advanced AI Intelligence system must provide 90%+ decision detection accuracy and <500ms latency"
@@ -215,6 +215,18 @@ p0_features:
     business_impact: "Strategic framework recommendations become reactive, reduced strategic guidance quality, missed optimization opportunities"
     introduced_version: "v3.1.0"
     owner: "martin"
+
+  # MARTIN'S PLATFORM ARCHITECTURE - SETUP FEATURE P0
+  - name: "Setup Feature P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_setup_feature.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 120
+    description: "Setup feature must work reliably for new user onboarding and system initialization (includes regression protection)"
+    failure_impact: "New users cannot install or configure ClaudeDirector, setup process fails"
+    business_impact: "User abandonment, failed onboarding, system unusable for new users"
+    introduced_version: "v1.0.0"
+    owner: "martin"
+
 
 
 

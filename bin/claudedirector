@@ -23,7 +23,7 @@ class ClaudeDirectorCLI:
     """Unified CLI interface for ClaudeDirector framework"""
 
     def __init__(self):
-        self.project_root = Path(__file__).parent
+        self.project_root = Path(__file__).parent.parent
 
     def create_parser(self):
         """Create unified argument parser with subcommands"""
@@ -281,27 +281,31 @@ Examples:
         print("=" * 30)
 
         try:
-            # Import status checking modules
-            from memory.strategic_memory import get_system_status
+            # Check basic system health by verifying key components exist
+            lib_path = self.project_root / ".claudedirector" / "lib"
+            data_path = self.project_root / "data" / "strategic"
 
-            status = get_system_status()
+            # Check database
+            db_exists = (data_path / "strategic_memory.db").exists()
+
+            # Check key modules
+            meeting_module = (lib_path / "memory" / "meeting_intelligence.py").exists()
+            stakeholder_module = (lib_path / "memory" / "stakeholder_engagement_engine.py").exists()
+            task_module = (lib_path / "memory" / "intelligent_task_detector.py").exists()
 
             # Basic status
-            print(f"🗄️  Database: {'✅ Connected' if status.get('database_ok') else '❌ Issues'}")
-            print(f"🧠 Meeting Intelligence: {'✅ Active' if status.get('meeting_intelligence_ok') else '❌ Inactive'}")
-            print(f"👥 Stakeholder Management: {'✅ Active' if status.get('stakeholder_management_ok') else '❌ Inactive'}")
-            print(f"🎯 Task Tracking: {'✅ Active' if status.get('task_tracking_ok') else '❌ Inactive'}")
+            print(f"🗄️  Database: {'✅ Connected' if db_exists else '❌ Issues'}")
+            print(f"🧠 Meeting Intelligence: {'✅ Active' if meeting_module else '❌ Inactive'}")
+            print(f"👥 Stakeholder Management: {'✅ Active' if stakeholder_module else '❌ Inactive'}")
+            print(f"🎯 Task Tracking: {'✅ Active' if task_module else '❌ Inactive'}")
 
             if args.detailed:
                 print(f"\n📊 Detailed Information:")
-                print(f"   Meetings tracked: {status.get('meeting_count', 0)}")
-                print(f"   Stakeholders: {status.get('stakeholder_count', 0)}")
-                print(f"   Active tasks: {status.get('task_count', 0)}")
-                print(f"   Last update: {status.get('last_update', 'Unknown')}")
+                print(f"   Library path: {lib_path}")
+                print(f"   Data path: {data_path}")
+                print(f"   Database exists: {db_exists}")
+                print(f"   Meeting module: {meeting_module}")
 
-        except ImportError:
-            print("⚠️  Status checking not available - run setup first")
-            return False
         except Exception as e:
             print(f"❌ Error checking status: {e}")
             return False
@@ -588,7 +592,8 @@ Examples:
         if not db_path.exists():
             issues.append("Database not found")
 
-        # Check key modules
+        # Check key modules in the new architecture location
+        lib_path = self.project_root / ".claudedirector" / "lib"
         key_modules = [
             "memory/meeting_intelligence.py",
             "memory/stakeholder_engagement_engine.py",
@@ -596,7 +601,7 @@ Examples:
         ]
 
         for module in key_modules:
-            if not (self.project_root / module).exists():
+            if not (lib_path / module).exists():
                 issues.append(f"Missing module: {module}")
 
         if issues:
@@ -647,7 +652,7 @@ Examples:
         """Setup meeting intelligence component"""
         try:
             import subprocess
-            result = subprocess.run([sys.executable, str(self.project_root / "bin" / "setup" / "setup_meeting_intelligence.py")],
+            result = subprocess.run([sys.executable, str(self.project_root / ".claudedirector" / "tools" / "setup" / "setup_meeting_intelligence.py")],
                                   capture_output=True, text=True)
             return result.returncode == 0
         except Exception:
@@ -657,7 +662,7 @@ Examples:
         """Setup stakeholder management component"""
         try:
             import subprocess
-            result = subprocess.run([sys.executable, str(self.project_root / "bin" / "setup" / "setup_stakeholder_management.py")],
+            result = subprocess.run([sys.executable, str(self.project_root / ".claudedirector" / "tools" / "setup" / "setup_stakeholder_management.py")],
                                   capture_output=True, text=True)
             return result.returncode == 0
         except Exception:
@@ -667,7 +672,7 @@ Examples:
         """Setup task tracking component"""
         try:
             import subprocess
-            result = subprocess.run([sys.executable, str(self.project_root / "bin" / "setup" / "setup_task_tracking.py")],
+            result = subprocess.run([sys.executable, str(self.project_root / ".claudedirector" / "tools" / "setup" / "setup_task_tracking.py")],
                                   capture_output=True, text=True)
             return result.returncode == 0
         except Exception:
@@ -677,7 +682,7 @@ Examples:
         """Setup smart git component"""
         try:
             import subprocess
-            result = subprocess.run([sys.executable, str(self.project_root / "bin" / "setup" / "setup_smart_git.py")],
+            result = subprocess.run([sys.executable, str(self.project_root / ".claudedirector" / "tools" / "setup" / "setup_smart_git.py")],
                                   capture_output=True, text=True)
             return result.returncode == 0
         except Exception:

@@ -14,7 +14,9 @@ from pathlib import Path
 # Add the lib path for testing - robust CI and local support
 # Try multiple path strategies for different environments
 test_file_dir = Path(__file__).parent
-repo_root = test_file_dir.parent.parent.parent  # Should be /path/to/ai-leadership
+repo_root = (
+    test_file_dir.parent.parent.parent.parent
+)  # Should be /path/to/ai-leadership
 claudedirector_lib = repo_root / ".claudedirector" / "lib"
 
 # Add both possible paths

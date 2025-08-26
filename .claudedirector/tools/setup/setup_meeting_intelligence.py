@@ -8,6 +8,13 @@ import subprocess
 import sys
 from pathlib import Path
 
+# Add the lib directory to Python path for proper imports
+project_root = Path(
+    __file__
+).parent.parent.parent.parent  # Go up from tools/setup to project root
+lib_path = project_root / ".claudedirector" / "lib"
+sys.path.insert(0, str(lib_path))
+
 from memory.meeting_intelligence import MeetingIntelligenceManager
 
 
@@ -28,24 +35,30 @@ class MeetingIntelligenceSetup:
 
     def install_dependencies(self) -> bool:
         """Install required Python dependencies."""
-        print("📦 Installing Python dependencies...")
+        print("📦 Checking Python dependencies...")
 
         dependencies = ["watchdog"]
 
         for dep in dependencies:
             try:
-                print(f"   Installing {dep}...")
-                result = subprocess.run(
-                    [sys.executable, "-m", "pip", "install", dep],
-                    capture_output=True,
-                    text=True,
-                    check=True,
-                )
-                print(f"   ✅ {dep} installed successfully")
-            except subprocess.CalledProcessError as e:
-                print(f"   ❌ Failed to install {dep}: {e}")
-                print(f"      Error output: {e.stderr}")
-                return False
+                # Try to import the dependency first
+                __import__(dep)
+                print(f"   ✅ {dep} already available")
+            except ImportError:
+                try:
+                    print(f"   Installing {dep}...")
+                    result = subprocess.run(
+                        [sys.executable, "-m", "pip", "install", dep],
+                        capture_output=True,
+                        text=True,
+                        check=True,
+                    )
+                    print(f"   ✅ {dep} installed successfully")
+                except subprocess.CalledProcessError as e:
+                    print(f"   ❌ Failed to install {dep}: {e}")
+                    print(f"      Error output: {e.stderr}")
+                    print(f"   💡 Dependency may be available in project venv")
+                    return False
 
         return True
 
