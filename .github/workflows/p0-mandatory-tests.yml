@@ -37,6 +37,10 @@ jobs:
       run: |
         python .github/scripts/validate_environment.py
 
+    - name: Initialize Strategic Database
+      run: |
+        python .claudedirector/tools/ci/init-database.py
+
     - name: Make claudedirector executable
       run: |
         chmod +x bin/claudedirector
@@ -70,6 +74,10 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip install pytest structlog
+
+    - name: Initialize Strategic Database
+      run: |
+        python .claudedirector/tools/ci/init-database.py
 
     - name: Make claudedirector executable
       run: |
