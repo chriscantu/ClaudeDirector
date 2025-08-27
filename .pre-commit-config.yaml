@@ -21,6 +21,14 @@ repos:
   # CRITICAL FILE PROTECTION (MUST RUN FIRST)
   - repo: local
     hooks:
+      - id: readme-pre-stash-protection
+        name: 🛡️ README.md PRE-STASH PROTECTION
+        entry: .claudedirector/tools/git-hooks/readme-pre-stash-protection.sh
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+        always_run: true
+        verbose: true
       - id: readme-protection
         name: 🛡️ README.md PROTECTION SYSTEM
         entry: .claudedirector/tools/git-hooks/readme-protection.sh
