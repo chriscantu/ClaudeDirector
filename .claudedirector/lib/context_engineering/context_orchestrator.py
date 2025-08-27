@@ -75,6 +75,7 @@ class ContextOrchestrator:
         workspace_context: Optional[Dict[str, Any]] = None,
         analytics_insights: Optional[Dict[str, Any]] = None,  # Phase 2.2 parameter
         org_learning_insights: Optional[Dict[str, Any]] = None,  # Phase 3.1 parameter
+        team_dynamics_insights: Optional[Dict[str, Any]] = None,  # Phase 3.2 parameter
         max_size_bytes: int = None,
     ) -> Dict[str, Any]:
         """
@@ -117,6 +118,10 @@ class ContextOrchestrator:
             # Phase 3.1: Add organizational learning insights if available
             if org_learning_insights:
                 context_layers["organizational_learning"] = org_learning_insights
+
+            # Phase 3.2: Add team dynamics insights if available
+            if team_dynamics_insights:
+                context_layers["team_dynamics"] = team_dynamics_insights
 
             priorities = self._calculate_context_priorities(query, context_layers)
 
