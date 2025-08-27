@@ -287,6 +287,16 @@ p0_features:
     introduced_version: "v2.11.0"
     owner: "martin"
 
+  - name: "CollaborationScorer P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_collaboration_scorer_p0.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 300
+    description: "Context Engineering Phase 3.2B Epic 2 Completion - CollaborationScorer with ensemble ML models must provide 85%+ accuracy and <5s response time"
+    failure_impact: "Ensemble ML collaboration scoring fails, advanced risk assessment broken, production-ready predictions unavailable"
+    business_impact: "Strategic team management predictions become unreliable, risk assessment guidance lost, 1-week advance warning capability compromised"
+    introduced_version: "v2.12.0"
+    owner: "martin"
+
 
 
 
