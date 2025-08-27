@@ -1,10 +1,10 @@
-name: P0 Mandatory Tests
+name: P0 Mandatory Tests (DEPRECATED - Use unified-ci.yml)
+
+# ⚠️ DEPRECATED: This workflow is replaced by unified-ci.yml
+# Keeping for reference until migration is verified
 
 on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main, develop ]
+  # Disabled - all triggers moved to unified-ci.yml
   workflow_dispatch:
 
 jobs:

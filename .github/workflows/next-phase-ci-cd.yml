@@ -1,10 +1,12 @@
-name: Next Phase Features - Enhanced CI/CD Pipeline
+name: Next Phase Features - Enhanced CI/CD Pipeline (DEPRECATED - Use unified-ci.yml)
+
+# ⚠️ DEPRECATED: This workflow is replaced by unified-ci.yml
+# The fragmented multi-workflow approach caused CI/local discrepancies
+# All validation now consolidated into single unified workflow
 
 on:
-  push:
-    branches: [ main, 'feature/next-strategic-enhancements' ]
-  pull_request:
-    branches: [ main ]
+  # Disabled - all triggers moved to unified-ci.yml
+  workflow_dispatch:
 
 env:
   PYTHON_VERSION: '3.11'
