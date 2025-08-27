@@ -24,6 +24,9 @@ from .organizational_layer import OrganizationalLayerMemory
 from .context_orchestrator import ContextOrchestrator
 from .workspace_integration import WorkspaceMonitor, WorkspaceContext
 from .analytics_engine import AnalyticsEngine  # Phase 2.2 Analytics Integration
+from .organizational_learning_engine import (
+    OrganizationalLearningEngine,
+)  # Phase 3.1 Organizational Learning
 
 
 @dataclass
@@ -99,6 +102,32 @@ class AdvancedContextEngine:
                 self.logger.warning(f"Failed to start workspace monitoring: {e}")
                 self.workspace_enabled = False
 
+        # Phase 3.1: Organizational Learning Engine integration
+        org_learning_config = self.config.get("organizational_learning", {})
+        self.org_learning_enabled = org_learning_config.get("enabled", True)
+        self.org_learning_engine = None
+
+        if self.org_learning_enabled:
+            try:
+                self.org_learning_engine = OrganizationalLearningEngine(
+                    org_learning_config
+                )
+
+                # Integrate with Analytics Engine if available
+                if self.analytics_enabled and self.analytics_engine:
+                    self.org_learning_engine.set_analytics_integration(
+                        self.analytics_engine
+                    )
+
+                self.logger.info(
+                    "Organizational Learning Engine integrated successfully"
+                )
+            except Exception as e:
+                self.logger.warning(
+                    f"Failed to initialize Organizational Learning Engine: {e}"
+                )
+                self.org_learning_enabled = False
+
         # Performance tracking
         self.performance_metrics: List[ContextRetrievalMetrics] = []
 
@@ -171,6 +200,36 @@ class AdvancedContextEngine:
                 except Exception as e:
                     self.logger.warning(f"Analytics insights generation failed: {e}")
 
+            # Phase 3.1: Generate organizational learning insights if enabled
+            org_learning_insights = None
+            if self.org_learning_enabled and self.org_learning_engine:
+                try:
+                    # Prepare stakeholder data for organizational analysis
+                    stakeholder_data = {
+                        "stakeholders": self._extract_stakeholders_from_context(
+                            stakeholder_context, workspace_context
+                        ),
+                        "communication_patterns": stakeholder_context.get(
+                            "communication_patterns", {}
+                        ),
+                        "decision_style": stakeholder_context.get(
+                            "decision_style", "unknown"
+                        ),
+                    }
+
+                    org_learning_insights = (
+                        self.org_learning_engine.analyze_organizational_context(
+                            context=query,
+                            stakeholder_data=stakeholder_data,
+                            strategic_context=strategic_context,
+                        )
+                    )
+                    layers_accessed.append("organizational_learning")
+                except Exception as e:
+                    self.logger.warning(
+                        f"Organizational learning insights generation failed: {e}"
+                    )
+
             # Orchestrate intelligent context assembly
             assembled_context = self.context_orchestrator.assemble_strategic_context(
                 query=query,
@@ -180,7 +239,8 @@ class AdvancedContextEngine:
                 learning_context=learning_context,
                 organizational_context=organizational_context,
                 workspace_context=workspace_context,
-                analytics_insights=analytics_insights,  # New parameter
+                analytics_insights=analytics_insights,  # Phase 2.2 parameter
+                org_learning_insights=org_learning_insights,  # Phase 3.1 parameter
                 max_size_bytes=max_context_size,
             )
 

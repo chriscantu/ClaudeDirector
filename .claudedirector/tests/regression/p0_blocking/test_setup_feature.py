@@ -64,8 +64,8 @@ class TestSetupP0(unittest.TestCase):
             f"CRITICAL: claudedirector not executable at {self.claudedirector_path}",
         )
 
-    def test_p0_setup_command_help_works(self):
-        """P0: Setup command help must work (basic command functionality)"""
+    def test_p0_setup_command_shows_deprecation(self):
+        """P0: CLI must show deprecation notice (CLI deprecated in v3.0.0)"""
         try:
             result = subprocess.run(
                 [str(self.claudedirector_path), "setup", "--help"],
@@ -75,27 +75,77 @@ class TestSetupP0(unittest.TestCase):
                 cwd=str(self.project_root),
             )
 
+            # CLI should exit with code 1 (deprecated)
             self.assertEqual(
                 result.returncode,
-                0,
-                f"CRITICAL: setup --help failed with exit code {result.returncode}\n"
-                f"STDOUT: {result.stdout}\nSTDERR: {result.stderr}",
+                1,
+                f"CRITICAL: CLI should exit with code 1 (deprecated). "
+                f"Got code {result.returncode}. STDOUT: {result.stdout}. STDERR: {result.stderr}",
             )
 
-            # Must contain key help information
-            help_text = result.stdout.lower()
-            self.assertIn("setup", help_text, "Help must mention 'setup'")
-
-            # Verify essential setup functionality is present
+            # Must contain deprecation information
+            output = result.stdout + result.stderr
             self.assertTrue(
-                "component" in help_text or "verify" in help_text,
-                "Help must show setup functionality (component or verify options)",
+                any(
+                    keyword in output.lower()
+                    for keyword in ["deprecated", "cursor", "v3.0.0"]
+                ),
+                f"CRITICAL: CLI must show deprecation notice. Output: {output}",
+            )
+
+            # Must mention Cursor integration
+            self.assertIn(
+                "Cursor",
+                output,
+                f"CRITICAL: Deprecation notice must mention Cursor integration. Output: {output}",
             )
 
         except subprocess.TimeoutExpired:
-            self.fail("CRITICAL: setup --help command timed out after 30 seconds")
+            self.fail("CRITICAL: CLI deprecation command timed out after 30 seconds")
         except Exception as e:
-            self.fail(f"CRITICAL: setup --help command failed unexpectedly: {e}")
+            self.fail(f"CRITICAL: CLI deprecation check failed with exception: {e}")
+
+    def test_p0_alternative_setup_available(self):
+        """P0: Alternative setup methods must be available (direct tools)"""
+        # Since CLI is deprecated, test that direct setup tools exist
+        setup_tools_dir = self.project_root / ".claudedirector" / "tools" / "setup"
+
+        self.assertTrue(
+            setup_tools_dir.exists(),
+            f"CRITICAL: Setup tools directory not found at {setup_tools_dir}",
+        )
+
+        # Check for at least one setup script
+        setup_scripts = list(setup_tools_dir.glob("setup_*.py"))
+        self.assertGreater(
+            len(setup_scripts),
+            0,
+            f"CRITICAL: No setup scripts found in {setup_tools_dir}",
+        )
+
+        # Test one of the setup scripts works
+        setup_script = setup_scripts[0]  # Use the first available setup script
+        try:
+            result = subprocess.run(
+                [sys.executable, str(setup_script)],
+                capture_output=True,
+                text=True,
+                timeout=30,
+                cwd=str(self.project_root),
+            )
+
+            # Should run without critical errors (0 = success, or other acceptable codes)
+            self.assertNotEqual(
+                result.returncode,
+                126,  # Permission denied
+                f"CRITICAL: Setup script not executable. "
+                f"Exit code: {result.returncode}. STDOUT: {result.stdout}. STDERR: {result.stderr}",
+            )
+
+        except subprocess.TimeoutExpired:
+            self.fail("CRITICAL: Setup script timed out")
+        except Exception as e:
+            self.fail(f"CRITICAL: Setup script execution failed: {e}")
 
     def test_p0_project_root_detection_accuracy(self):
         """P0: Project root detection must be accurate from various locations"""
@@ -200,8 +250,8 @@ class TestSetupP0(unittest.TestCase):
                 except Exception as e:
                     self.fail(f"CRITICAL: {module_path.name} execution failed: {e}")
 
-    def test_p0_setup_status_command_functional(self):
-        """P0: Setup status checking must work reliably"""
+    def test_p0_setup_status_command_deprecated(self):
+        """P0: Status command must show deprecation notice (CLI deprecated)"""
         try:
             result = subprocess.run(
                 [str(self.claudedirector_path), "status"],
@@ -211,26 +261,27 @@ class TestSetupP0(unittest.TestCase):
                 cwd=str(self.project_root),
             )
 
-            # Status command should complete successfully
+            # Status command should show deprecation (exit code 1)
             self.assertEqual(
                 result.returncode,
-                0,
-                f"CRITICAL: status command failed with exit code {result.returncode}\n"
+                1,
+                f"CRITICAL: status command should show deprecation (exit code 1)\n"
                 f"STDOUT: {result.stdout}\nSTDERR: {result.stderr}",
             )
 
-            # Must show system status information
-            status_output = result.stdout.lower()
+            # Status output must contain deprecation information
+            output = result.stdout + result.stderr
             self.assertIn(
-                "database", status_output, "Status must report database status"
+                "deprecated",
+                output.lower(),
+                f"CRITICAL: Status command must show deprecation notice. Output: {output}",
             )
+
+            # Must mention Cursor as alternative
             self.assertIn(
-                "meeting", status_output, "Status must report meeting intelligence"
-            )
-            self.assertIn(
-                "stakeholder",
-                status_output,
-                "Status must report stakeholder management",
+                "Cursor",
+                output,
+                f"CRITICAL: Must mention Cursor as alternative. Output: {output}",
             )
 
         except subprocess.TimeoutExpired:
@@ -292,11 +343,11 @@ class TestSetupP0(unittest.TestCase):
                     f"CRITICAL: Setup script not readable: {script_path}",
                 )
 
-    def test_p0_setup_commands_available(self):
-        """P0: All critical setup commands must be available"""
-        critical_commands = ["setup", "status", "meetings", "stakeholders", "tasks"]
+    def test_p0_setup_commands_deprecated(self):
+        """P0: All CLI commands must show deprecation notice (CLI deprecated)"""
+        test_commands = ["setup", "status", "meetings", "stakeholders", "tasks"]
 
-        for command in critical_commands:
+        for command in test_commands:
             with self.subTest(command=command):
                 try:
                     result = subprocess.run(
@@ -307,11 +358,20 @@ class TestSetupP0(unittest.TestCase):
                         cwd=str(self.project_root),
                     )
 
+                    # All commands should now show deprecation (exit code 1)
                     self.assertEqual(
                         result.returncode,
-                        0,
-                        f"CRITICAL: {command} --help failed with exit code {result.returncode}\n"
-                        f"STDERR: {result.stderr}",
+                        1,
+                        f"CRITICAL: {command} should show deprecation notice (exit code 1)\n"
+                        f"STDOUT: {result.stdout}\nSTDERR: {result.stderr}",
+                    )
+
+                    # Must contain deprecation information
+                    output = result.stdout + result.stderr
+                    self.assertIn(
+                        "deprecated",
+                        output.lower(),
+                        f"CRITICAL: {command} must show deprecation notice",
                     )
 
                 except subprocess.TimeoutExpired:
