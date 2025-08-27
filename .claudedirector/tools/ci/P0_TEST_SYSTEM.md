@@ -43,7 +43,7 @@ This system ensures that **ALL P0 features defined in YAML are automatically inc
 ```yaml
 p0_features:
   - name: "MCP Transparency P0"
-    test_module: ".claudedirector/tests/regression/test_mcp_transparency_p0.py"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_mcp_transparency.py"
     critical_level: "BLOCKING"
     timeout_seconds: 120
     business_impact: "Users cannot see AI enhancement usage"

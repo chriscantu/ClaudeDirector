@@ -18,8 +18,8 @@ def validate_ci_coverage():
     ) as f:
         definitions = yaml.safe_load(f)
 
-    # Load CI workflow
-    with open(".github/workflows/next-phase-ci-cd.yml", "r") as f:
+    # Load ACTIVE CI workflow (unified-ci.yml)
+    with open(".github/workflows/unified-ci.yml", "r") as f:
         ci_content = f.read()
 
     p0_features = definitions.get("p0_features", [])

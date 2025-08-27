@@ -9,12 +9,18 @@ if [ ! -f "README.md" ]; then
     echo "🚨 CRITICAL: README.md is missing!"
     echo "🔧 Attempting automatic restoration..."
 
-    # Try to restore from git history
-    if git checkout HEAD~1 -- README.md 2>/dev/null; then
+    # Try to restore from pre-stash backup first (faster and more reliable)
+    if [ -f ".claudedirector/README.md.prestash.backup" ]; then
+        echo "🔧 Restoring from pre-stash backup..."
+        cp ".claudedirector/README.md.prestash.backup" "README.md"
+        git add README.md
+        echo "✅ README.md restored from pre-stash backup"
+    # Fallback to git history restoration
+    elif git checkout HEAD~1 -- README.md 2>/dev/null; then
         echo "✅ README.md restored from git history"
         git add README.md
     else
-        echo "❌ Failed to restore README.md from git history"
+        echo "❌ Failed to restore README.md from all sources"
         echo "⚠️  Manual intervention required"
         exit 1
     fi

@@ -27,7 +27,7 @@ This system enforces the **user's critical requirement**:
 
 | Feature | Test Module | Owner | Business Impact |
 |---------|-------------|-------|-----------------|
-| **MCP Transparency** | `test_mcp_transparency_p0.py` | martin | Users lose AI enhancement visibility |
+| **MCP Transparency** | `test_mcp_transparency.py` | martin | Users lose AI enhancement visibility |
 | **Conversation Tracking** | `test_conversation_tracking_p0.py` | martin | Strategic context preservation fails |
 | **Conversation Quality** | `test_p0_quality_target.py` | martin | Executive guidance becomes unreliable |
 

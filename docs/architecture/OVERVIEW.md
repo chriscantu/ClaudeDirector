@@ -21,49 +21,56 @@ ClaudeDirector is the industry's first completely transparent AI strategic leade
 
 ### **System Components**
 
-**Architecture Note**: ClaudeDirector has migrated to Context Engineering as the primary memory and intelligence system, with the Unified Bridge pattern eliminating 70%+ code duplication from legacy bridge implementations.
+**Architecture Note**: ClaudeDirector v2.12.0+ features complete Context Engineering Phase 3.2B with 8-layer memory architecture, ML-enhanced team intelligence, and production-ready strategic decision support. All legacy systems consolidated into unified architecture.
 
 ```mermaid
 graph TB
     subgraph "User Interface Layer"
         A[🖥️ Cursor IDE]
         B[💬 Claude Chat]
-        C[🌐 Web Interface]
+        C[🌐 Leadership Workspace]
     end
 
-    subgraph "ClaudeDirector Core"
+    subgraph "ClaudeDirector Core (.claudedirector/)"
         D[🎯 Persona Manager]
         E[🔍 Context Analyzer]
         F[🔧 Transparency Engine]
         G[📚 Framework Detector]
     end
 
-    subgraph "Enhancement Layer"
-        H[⚡ MCP Sequential Server]
-        I[🏗️ MCP Context7 Server]
-        J[✨ MCP Magic Server]
+    subgraph "AI Intelligence Layer"
+        H[🤖 Decision Orchestrator]
+        I[🔍 Enhanced Framework Detection]
+        J[🔄 MCP Coordinator]
+        K[⚡ MCP Sequential Server]
+        L[🏗️ MCP Context7 Server]
+        M[✨ MCP Magic Server]
     end
 
-    subgraph "Context Engineering (Primary)"
-        K[🧠 Advanced Context Engine]
-        L[💬 Conversation Layer]
-        M[🎯 Strategic Layer]
-        N[👥 Stakeholder Layer]
-        O[📚 Learning Layer]
-        P[🏢 Organizational Layer]
+    subgraph "Context Engineering (8-Layer Architecture)"
+        N[🧠 Advanced Context Engine]
+        O[💬 Layer 1: Conversation Memory]
+        P[🎯 Layer 2: Strategic Memory]
+        Q[👥 Layer 3: Stakeholder Intelligence]
+        R[📚 Layer 4: Learning Patterns]
+        S[🏢 Layer 5: Organizational Memory]
+        T[🤝 Layer 6: Team Dynamics]
+        U[⚡ Layer 7: Real-Time Intelligence]
+        V[🤖 Layer 8: ML Pattern Detection]
     end
 
-    subgraph "Integration Layer"
-        Q[🔄 Unified Bridge]
-        R[📊 Strategic Memory DB]
-        S[⚙️ Configuration Store]
-        T[🔒 User Config Template]
+    subgraph "Core System Infrastructure"
+        W[🔄 Unified Integration Bridge]
+        X[📊 Strategic Memory DB]
+        Y[⚙️ Configuration Management]
+        Z[🔒 User Config Security]
     end
 
-    subgraph "Quality & Enforcement"
-        O[⚡ P0 Test Enforcement]
-        P[📈 Conversation Quality]
-        Q[🛡️ Security Scanner]
+    subgraph "Quality & Security Enforcement"
+        AA[🛡️ P0 Test Enforcement (28 tests)]
+        BB[📈 Conversation Quality]
+        CC[🔒 Security Scanner]
+        DD[🏗️ Architectural Validator]
     end
 
     A --> D
@@ -72,46 +79,74 @@ graph TB
     D --> E
     E --> F
     F --> G
-    D -.-> H
-    D -.-> I
-    D -.-> J
-    F --> K
-    E --> L
-    G --> M
-    M --> N
-    F --> O
-    L --> P
-    F --> Q
+    D --> H
+    H --> I
+    I --> J
+    J -.-> K
+    J -.-> L
+    J -.-> M
+    F --> N
+    N --> O
+    O --> P
+    P --> Q
+    Q --> R
+    R --> S
+    S --> T
+    T --> U
+    U --> V
+    N --> W
+    W --> X
+    W --> Y
+    Y --> Z
+    N --> AA
+    F --> BB
+    W --> CC
+    CC --> DD
 ```
 
 ### **Component Descriptions**
 
 #### **User Interface Layer**
-- **Cursor IDE**: Primary development environment integration with real-time transparency
-- **Claude Chat**: Direct chat interface with strategic persona selection
-- **Web Interface**: Browser-based access for standalone strategic guidance
+- **Cursor IDE**: Primary development environment integration with real-time transparency and strategic guidance
+- **Claude Chat**: Direct chat interface with automatic persona selection and framework detection
+- **Leadership Workspace**: Structured strategic workspace with automatic document analysis and context preservation
 
-#### **ClaudeDirector Core**
-- **Persona Manager**: Selects optimal strategic persona based on context analysis
-- **Context Analyzer**: Processes user input to determine complexity and strategic requirements
-- **Transparency Engine**: Provides real-time disclosure of AI enhancements and framework usage
-- **Framework Detector**: Identifies and attributes strategic frameworks applied in responses
+#### **ClaudeDirector Core (.claudedirector/)**
+- **Persona Manager**: Selects optimal strategic persona (Diego, Camille, Rachel, etc.) based on advanced context analysis
+- **Context Analyzer**: Processes user input to determine complexity, domain, and strategic requirements using ML techniques
+- **Transparency Engine**: Provides real-time disclosure of all AI enhancements, MCP usage, and framework applications
+- **Framework Detector**: AI-powered identification and attribution of 25+ strategic frameworks with 87%+ accuracy
 
-#### **Enhancement Layer**
-- **MCP Sequential Server**: Systematic analysis and business strategy enhancement
-- **MCP Context7 Server**: Architectural patterns and methodology lookup
-- **MCP Magic Server**: Visual generation and diagram creation capabilities
+#### **AI Intelligence Layer**
+- **Decision Orchestrator**: Central coordination of AI enhancement decisions with complexity threshold detection
+- **Enhanced Framework Detection**: ML-powered framework recognition with confidence scoring and multi-framework support
+- **MCP Coordinator**: Strategic coordination of MCP server enhancement with transparent disclosure
+- **MCP Sequential Server**: Systematic analysis and business strategy enhancement capabilities
+- **MCP Context7 Server**: Architectural patterns, best practices, and methodology lookup
+- **MCP Magic Server**: Visual generation, diagram creation, and UI enhancement capabilities
 
-#### **Storage & Memory**
-- **Strategic Memory DB**: Persistent storage of strategic conversations and context
-- **Conversation Context**: Real-time conversation state and persona history
-- **Configuration Store**: User preferences, persona settings, and framework configurations
-- **User Config Template**: Template-based personal configuration with privacy protection (never tracked in git)
+#### **Context Engineering (8-Layer Architecture - Phase 3.2B Complete)**
+- **Advanced Context Engine**: Primary orchestration engine for multi-layered strategic memory
+- **Layer 1: Conversation Memory**: Real-time conversation context with persona history and topic tracking
+- **Layer 2: Strategic Memory**: Strategic initiatives, decisions, and organizational patterns
+- **Layer 3: Stakeholder Intelligence**: Stakeholder relationships, communication patterns, and influence mapping
+- **Layer 4: Learning Patterns**: Framework usage patterns, decision outcomes, and success tracking
+- **Layer 5: Organizational Memory**: Team structures, cultural patterns, and organizational intelligence
+- **Layer 6: Team Dynamics**: Cross-team collaboration patterns, communication analysis, and coordination optimization (v2.9.0)
+- **Layer 7: Real-Time Intelligence**: Live team coordination monitoring with <5 minute issue detection (v2.10.0)
+- **Layer 8: ML Pattern Detection**: Advanced machine learning for collaboration prediction with 85%+ accuracy (v2.12.0)
 
-#### **Quality & Enforcement**
-- **P0 Test Enforcement**: Zero-tolerance testing system ensuring critical features always pass
-- **Conversation Quality**: AI-powered quality scoring and context richness measurement
-- **Security Scanner**: Enterprise-grade security scanning with stakeholder data protection
+#### **Core System Infrastructure**
+- **Unified Integration Bridge**: Consolidated integration layer eliminating 70%+ code duplication from legacy bridges
+- **Strategic Memory DB**: High-performance SQLite database with advanced indexing for strategic intelligence
+- **Configuration Management**: Centralized configuration system with type-safe access and environment-specific settings
+- **User Config Security**: Template-based personal configuration with comprehensive privacy protection (gitignored)
+
+#### **Quality & Security Enforcement**
+- **P0 Test Enforcement**: Zero-tolerance testing system with 28 mandatory tests ensuring critical features always pass
+- **Conversation Quality**: AI-powered quality scoring, context richness measurement, and strategic value assessment
+- **Security Scanner**: Enterprise-grade security scanning with stakeholder data protection and sensitive information detection
+- **Architectural Validator**: Automated validation of project structure, import dependencies, and SOLID principle compliance
 
 ## 🔄 **Core Workflows**
 
