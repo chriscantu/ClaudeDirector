@@ -56,14 +56,17 @@ def check_environment():
     """Verify test environment is set up correctly."""
     print("\n🔧 Checking test environment...")
 
-    # Check virtual environment
+    # Check for Python interpreter (venv or system)
     venv_python = PROJECT_ROOT / "venv" / "bin" / "python"
-    if not venv_python.exists():
-        print("❌ Virtual environment not found at venv/bin/python")
-        return False
+    if venv_python.exists():
+        python_cmd = str(venv_python)
+        print("✅ Using virtual environment python")
+    else:
+        python_cmd = "python3"
+        print("✅ Using system python (GitHub CI mode)")
 
     # Check ClaudeDirector availability (using correct import path)
-    check_cmd = f'{venv_python} -c "import sys; sys.path.insert(0, \\".claudedirector/lib\\"); from core.integrated_conversation_manager import IntegratedConversationManager; print(\\"ClaudeDirector core modules: OK\\")"'
+    check_cmd = f'{python_cmd} -c "import sys; sys.path.insert(0, \\".claudedirector/lib\\"); from core.integrated_conversation_manager import IntegratedConversationManager; print(\\"ClaudeDirector core modules: OK\\")"'
     if not run_command(check_cmd, "ClaudeDirector Import Check"):
         print("❌ ClaudeDirector not properly available")
         return False
@@ -272,7 +275,7 @@ def main():
         print("🚫 COMMIT BLOCKED - Fix failing tests before committing")
         print("\nTo debug:")
         print(
-            "1. Run tests manually: ./venv/bin/python -m pytest .claudedirector/tests/integration/test_rumelt_wrap_frameworks.py -v"
+            "1. Run tests manually: python3 -m pytest .claudedirector/tests/integration/test_rumelt_wrap_frameworks.py -v"
         )
         print("2. Fix any failing tests")
         print("3. Re-run this validator")
