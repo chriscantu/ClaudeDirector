@@ -47,7 +47,7 @@ test_suites:
     timeout_total: 300  # 5 minutes max for entire suite
     tests:
       - name: "MCP Transparency P0"
-        path: ".claudedirector/tests/regression/test_mcp_transparency_p0.py"
+        path: ".claudedirector/tests/regression/p0_blocking/test_mcp_transparency.py"
         timeout: 60
         critical: true
         description: "MCP server transparency disclosure functionality"

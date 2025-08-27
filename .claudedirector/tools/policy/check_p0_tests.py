@@ -34,7 +34,7 @@ class P0TestProtector:
 
         self.required_p0_tests = [
             "test_hybrid_installation_p0.py",
-            "test_mcp_transparency_p0.py",
+            "test_mcp_transparency.py",
             "test_conversation_tracking_p0.py",
             "test_p0_quality_target.py",
         ]

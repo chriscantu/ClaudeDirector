@@ -297,6 +297,16 @@ p0_features:
     introduced_version: "v2.12.0"
     owner: "martin"
 
+  - name: "Complete New Setup P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_complete_new_setup_p0_optimized.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 120
+    description: "Complete new user setup journey from fresh git clone to working ClaudeDirector must be reliable and performant (optimized for CI)"
+    failure_impact: "New users cannot successfully install ClaudeDirector, first touchpoint fails, setup abandonment"
+    business_impact: "Zero new user acquisition, setup friction eliminates adoption, product discovery fails at first step"
+    introduced_version: "v2.13.0"
+    owner: "martin"
+
 
 
 

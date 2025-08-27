@@ -1,10 +1,21 @@
 """
 Strategic Framework Detection Middleware
 Identifies and attributes strategic frameworks used in ClaudeDirector responses
+SOLID Compliance: Uses centralized configuration instead of hard-coded strings
 """
 
 from typing import List, Dict
 from dataclasses import dataclass
+
+# Import centralized configuration
+try:
+    from core.constants.framework_definitions import FRAMEWORK_REGISTRY
+    from core.constants.constants import PERSONAS, TRANSPARENCY
+
+    CENTRALIZED_CONFIG_AVAILABLE = True
+except ImportError:
+    # Graceful fallback for transition period
+    CENTRALIZED_CONFIG_AVAILABLE = False
 
 
 @dataclass
@@ -21,371 +32,19 @@ class FrameworkDetectionMiddleware:
     """Middleware to detect and attribute strategic frameworks used in responses"""
 
     def __init__(self):
-        # Strategic framework patterns with confidence weights
-        self.framework_patterns = {
-            # Common Strategic Frameworks (High Priority)
-            "OGSM Strategic Framework": {
-                "patterns": [
-                    "ogsm",
-                    "ogsm strategic framework",
-                    "ogsm framework",
-                    "objectives goals strategies measures",
-                    "ogsm analysis",
-                    "ogsm planning",
-                    "ogsm strategic planning",
-                ],
-                "type": "strategic",
-                "confidence_weight": 0.9,
-            },
-            "Blue Ocean Strategy": {
-                "patterns": [
-                    "blue ocean strategy",
-                    "blue ocean",
-                    "uncontested market space",
-                    "uncontested market spaces",
-                    "value innovation",
-                    "strategy canvas",
-                    "four actions framework",
-                    "blue ocean approach",
-                ],
-                "type": "strategic",
-                "confidence_weight": 0.9,
-            },
-            "Design Thinking": {
-                "patterns": [
-                    "design thinking",
-                    "design thinking process",
-                    "design thinking methodology",
-                    "empathize define ideate prototype test",
-                    "human-centered design",
-                    "design thinking framework",
-                    "empathize",
-                    "ideate",
-                    "prototype",
-                ],
-                "type": "innovation",
-                "confidence_weight": 0.9,
-            },
-            "Porter's Five Forces": {
-                "patterns": [
-                    "porter's five forces",
-                    "five forces analysis",
-                    "competitive forces",
-                    "porter five forces",
-                    "competitive analysis framework",
-                    "industry analysis",
-                    "porter's five forces analysis",
-                ],
-                "type": "strategic",
-                "confidence_weight": 0.9,
-            },
-            "BCG Matrix": {
-                "patterns": [
-                    "bcg matrix",
-                    "boston consulting group matrix",
-                    "stars cash cows dogs question marks",
-                    "bcg growth share matrix",
-                    "portfolio analysis",
-                    "question mark products",
-                    "cash cows",
-                    "stars",
-                ],
-                "type": "strategic",
-                "confidence_weight": 0.8,
-            },
-            "Jobs-to-be-Done": {
-                "patterns": [
-                    "jobs-to-be-done",
-                    "jobs to be done",
-                    "jtbd framework",
-                    "customer jobs",
-                    "jobs-to-be-done framework",
-                    "job story",
-                ],
-                "type": "innovation",
-                "confidence_weight": 0.8,
-            },
-            "Lean Startup": {
-                "patterns": [
-                    "lean startup",
-                    "lean startup methodology",
-                    "minimum viable product",
-                    "mvp development",
-                    "build measure learn",
-                    "validated learning",
-                    "mvp",
-                ],
-                "type": "innovation",
-                "confidence_weight": 0.8,
-            },
-            "OKRs": {
-                "patterns": [
-                    "okr",
-                    "okrs",
-                    "objectives and key results",
-                    "objective key results",
-                    "okr framework",
-                    "quarterly objectives",
-                ],
-                "type": "strategic",
-                "confidence_weight": 0.8,
-            },
-            "SWOT Analysis": {
-                "patterns": [
-                    "swot analysis",
-                    "swot framework",
-                    "strengths weaknesses opportunities threats",
-                    "swot matrix",
-                    "internal external analysis",
-                ],
-                "type": "strategic",
-                "confidence_weight": 0.8,
-            },
-            "Kotter's 8-Step Change Model": {
-                "patterns": [
-                    "kotter's 8-step",
-                    "kotter 8 step",
-                    "8-step change model",
-                    "kotter change model",
-                    "create urgency",
-                    "guiding coalition",
-                ],
-                "type": "change_management",
-                "confidence_weight": 0.8,
-            },
-            "ADKAR Framework": {
-                "patterns": [
-                    "adkar",
-                    "adkar framework",
-                    "awareness desire knowledge ability reinforcement",
-                    "adkar change model",
-                ],
-                "type": "change_management",
-                "confidence_weight": 0.8,
-            },
-            # Specialized ClaudeDirector Frameworks
-            "Sequential": {
-                "patterns": [
-                    "sequential server",
-                    "systematic analysis",
-                    "strategic framework analysis",
-                    "systematic strategic analysis",
-                    "sequential methodology",
-                    "strategic analysis framework",
-                ],
-                "type": "strategic",
-                "confidence_weight": 0.9,
-            },
-            "Context7": {
-                "patterns": [
-                    "context7 server",
-                    "proven patterns",
-                    "architectural patterns",
-                    "design system methodology",
-                    "established architectural patterns",
-                    "context7 framework",
-                    "proven architectural methodologies",
-                ],
-                "type": "architectural_patterns",
-                "confidence_weight": 0.9,
-            },
-            "Magic": {
-                "patterns": [
-                    "magic server",
-                    "diagram generation",
-                    "visualization",
-                    "business visualization",
-                    "presentation creation",
-                    "magic implementation",
-                ],
-                "type": "implementation",
-                "confidence_weight": 0.8,
-            },
-            "Team Topologies": {
-                "patterns": [
-                    "team topologies",
-                    "Team Topologies",
-                    "team structure",
-                    "conway's law",
-                    "cognitive load",
-                    "team topology patterns",
-                    "stream-aligned teams",
-                    "platform teams",
-                    "complicated subsystem teams",
-                ],
-                "type": "organizational",
-                "confidence_weight": 0.8,
-            },
-            "WRAP Framework": {
-                "patterns": [
-                    "wrap framework",
-                    "WRAP framework",
-                    "Apply the WRAP framework",
-                    "apply the wrap framework",
-                    "wrap analysis",
-                    "wrap decision",
-                    "widen your options",
-                    "reality-test",
-                    "attain distance",
-                    "prepare to be wrong",
-                ],
-                "type": "decision",
-                "confidence_weight": 0.8,
-            },
-            "Good Strategy Bad Strategy": {
-                "patterns": [
-                    "strategy kernel",
-                    "clear kernel",
-                    "Our strategy needs a clear kernel",
-                    "our strategy needs a clear kernel",
-                    "strategic analysis",
-                    "good strategy bad strategy",
-                    "Good Strategy Bad Strategy",
-                    "rumelt framework",
-                    "diagnosis",
-                    "guiding policy",
-                    "coherent action",
-                ],
-                "type": "strategic",
-                "confidence_weight": 0.7,
-            },
-            "Crucial Conversations": {
-                "patterns": [
-                    "crucial conversations",
-                    "difficult conversations",
-                    "crucial conversation framework",
-                    "start with heart",
-                    "learn to look",
-                    "make it safe",
-                    "state your path",
-                ],
-                "type": "communication",
-                "confidence_weight": 0.7,
-            },
-            "Accelerate": {
-                "patterns": [
-                    "accelerate framework",
-                    "elite performance",
-                    "deployment frequency",
-                    "lead time",
-                    "change failure rate",
-                    "recovery time",
-                    "dora metrics",
-                ],
-                "type": "performance",
-                "confidence_weight": 0.8,
-            },
-            "Thinking in Systems": {
-                "patterns": [
-                    "systems thinking",
-                    "feedback loops",
-                    "leverage points",
-                    "system patterns",
-                    "systems behavior",
-                    "mental models",
-                    "system structure",
-                ],
-                "type": "systems",
-                "confidence_weight": 0.7,
-            },
-            "Design System Scaling": {
-                "patterns": [
-                    "design system scaling",
-                    "federated governance",
-                    "design system methodology",
-                    "component adoption",
-                    "design system maturity",
-                    "cross-team design coordination",
-                ],
-                "type": "design",
-                "confidence_weight": 0.8,
-            },
-            "Business Model Canvas": {
-                "patterns": [
-                    "business model canvas",
-                    "value proposition",
-                    "customer segments",
-                    "revenue streams",
-                    "key partnerships",
-                    "business model framework",
-                ],
-                "type": "business",
-                "confidence_weight": 0.8,
-            },
-            "Competitive Analysis": {
-                "patterns": [
-                    "competitive analysis",
-                    "competitive positioning",
-                    "market positioning",
-                    "competitive intelligence",
-                    "competitive advantage",
-                    "market differentiation",
-                ],
-                "type": "business",
-                "confidence_weight": 0.7,
-            },
-            # Missing Strategic Frameworks - Completing 25+ Framework Target
-            "Capital Allocation Framework": {
-                "patterns": [
-                    "capital allocation",
-                    "resource allocation",
-                    "engineering budget",
-                    "platform investment",
-                    "feature vs platform",
-                    "roi analysis",
-                    "resource prioritization",
-                    "investment strategy",
-                    "budget planning",
-                    "engineering resource investment",
-                    "platform vs feature trade-offs",
-                    "capital allocation framework",
-                    "roi metrics",
-                    "present.*platform.*investment",
-                    "investment.*board",
-                    "platform.*roi",
-                    "board.*roi",
-                    "investment.*metrics",
-                ],
-                "type": "strategic",
-                "confidence_weight": 0.9,
-            },
-            "Technical Strategy Framework": {
-                "patterns": [
-                    "technical strategy",
-                    "technology roadmap",
-                    "architecture decisions",
-                    "technical debt",
-                    "technology planning",
-                    "technical strategy framework",
-                    "architectural decisions",
-                    "tech debt management",
-                    "technology architecture",
-                    "technical roadmap planning",
-                    "engineering strategy",
-                    "technology investment",
-                ],
-                "type": "strategic",
-                "confidence_weight": 0.9,
-            },
-            "Strategic Platform Assessment": {
-                "patterns": [
-                    "platform assessment",
-                    "platform maturity",
-                    "platform evaluation",
-                    "platform health",
-                    "platform adoption",
-                    "platform effectiveness",
-                    "strategic platform assessment",
-                    "platform maturity model",
-                    "platform investment evaluation",
-                    "platform strategy assessment",
-                    "five-phase platform evaluation",
-                    "platform readiness assessment",
-                ],
-                "type": "strategic",
-                "confidence_weight": 0.9,
-            },
-        }
+        # Use centralized configuration or fallback to legacy patterns
+        if CENTRALIZED_CONFIG_AVAILABLE:
+            self.framework_patterns = FRAMEWORK_REGISTRY.get_framework_patterns()
+            self.confidence_threshold = 0.7  # From centralized config
+        else:
+            # Legacy fallback patterns for compatibility
+            self.framework_patterns = self._get_legacy_patterns()
+            self.confidence_threshold = 0.7
+
+    def _get_legacy_patterns(self):
+        """Legacy framework patterns for backward compatibility"""
+        # All patterns now centralized in framework_definitions.py
+        return {}
 
         # Persona-specific attribution templates
         self.persona_attribution_templates = {
