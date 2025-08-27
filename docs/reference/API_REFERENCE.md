@@ -18,6 +18,18 @@ Persona selection, management, and coordination.
 - Persona Manager
 - Base Persona Class
 
+#### **📚 [Framework Engine API](api/FRAMEWORK_ENGINE_API.md)**
+Strategic framework analysis and recommendation system.
+- EmbeddedFrameworkEngine
+- FrameworkPatternAnalyzer
+- Cultural Context Integration
+
+#### **📁 [Workspace Management API](api/WORKSPACE_API.md)**
+Intelligent workspace management and Context Engineering integration.
+- WorkspaceMonitor
+- Strategic Document Analysis
+- Real-time Context Updates
+
 #### **🔧 [MCP Integration API](api/MCP_INTEGRATION_API.md)**
 MCP server management and capability invocation.
 - MCP Client Manager

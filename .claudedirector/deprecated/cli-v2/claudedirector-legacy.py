@@ -1,0 +1,1555 @@
+#!/usr/bin/env python3
+"""
+ClaudeDirector - Unified Strategic Leadership AI Framework
+Single entry point for all strategic AI and task management capabilities
+"""
+
+import os
+import sys
+from pathlib import Path
+
+# Add project root and .claudedirector/lib to Python path for imports
+project_root = Path(__file__).parent
+claudedirector_lib = project_root / ".claudedirector" / "lib"
+sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(claudedirector_lib))
+
+import argparse
+import json
+from datetime import datetime
+
+
+class ClaudeDirectorCLI:
+    """Unified CLI interface for ClaudeDirector framework"""
+
+    def __init__(self):
+        self.project_root = Path(__file__).parent.parent
+
+    def create_parser(self):
+        """Create unified argument parser with subcommands"""
+
+        parser = argparse.ArgumentParser(
+            prog="claudedirector",
+            description="ClaudeDirector: Strategic Leadership AI Framework",
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+            epilog="""
+🎯 Strategic Leadership Commands:
+  claudedirector setup                    # One-time framework setup
+  claudedirector status                   # System health and overview
+  claudedirector alerts                   # Daily executive alerts
+
+📊 P2.1 Executive Communication:
+  claudedirector reports executive        # AI-generated executive summary
+  claudedirector reports stakeholder      # Stakeholder-specific reports
+  claudedirector reports board            # Board presentation report
+  claudedirector dashboard --rich         # Rich CLI dashboard
+
+🧠 Meeting Intelligence:
+  claudedirector meetings scan            # Process meeting files
+  claudedirector meetings demo            # Demo meeting intelligence
+
+👥 Stakeholder Management:
+  claudedirector stakeholders scan        # AI stakeholder detection
+  claudedirector stakeholders profile     # Complete stakeholder profiling
+  claudedirector stakeholders list        # View all stakeholders
+  claudedirector stakeholders alerts      # Daily stakeholder alerts
+
+🎯 Task Management:
+  claudedirector tasks scan               # AI task detection
+  claudedirector tasks list               # View my tasks
+  claudedirector tasks overdue            # Show overdue tasks
+  claudedirector tasks followups          # Show follow-ups due
+  claudedirector tasks assigned           # Tasks I've assigned
+
+📊 Organizational Intelligence (P1):
+  claudedirector org-intelligence setup   # Configure your director profile
+  claudedirector org-intelligence status  # View current configuration
+  claudedirector org-intelligence customize # Interactive customization
+  claudedirector org-intelligence quick-setup # Template-based setup
+
+
+
+⚡ Smart Git (Development):
+  claudedirector git setup                # Setup intelligent git hooks
+  claudedirector git commit               # Smart commit with optimized hooks
+
+Examples:
+  claudedirector setup                    # First-time setup
+  claudedirector alerts                   # Morning executive dashboard
+  claudedirector stakeholders scan        # Detect new stakeholders
+  claudedirector tasks scan               # Find new tasks in workspace
+            """,
+        )
+
+        subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+        # Setup command
+        setup_parser = subparsers.add_parser(
+            "setup", help="Framework setup and initialization"
+        )
+        setup_parser.add_argument(
+            "--component",
+            choices=["all", "meeting", "stakeholder", "task", "git"],
+            default="all",
+            help="Setup specific component",
+        )
+        setup_parser.add_argument(
+            "--verify", action="store_true", help="Verify installation only"
+        )
+
+        # Status command
+        status_parser = subparsers.add_parser(
+            "status", help="System status and health check"
+        )
+        status_parser.add_argument(
+            "--detailed", action="store_true", help="Detailed system information"
+        )
+
+        # Alerts command
+        alerts_parser = subparsers.add_parser(
+            "alerts", help="Daily executive alerts dashboard"
+        )
+        alerts_parser.add_argument(
+            "--quiet", action="store_true", help="Quiet summary output"
+        )
+        alerts_parser.add_argument(
+            "--type",
+            choices=["all", "executive", "stakeholder", "task"],
+            default="all",
+            help="Alert type filter",
+        )
+
+        # Meeting intelligence subcommands
+        meetings_parser = subparsers.add_parser(
+            "meetings", help="Meeting intelligence management"
+        )
+        meetings_sub = meetings_parser.add_subparsers(
+            dest="meetings_action", help="Meeting actions"
+        )
+
+        meetings_sub.add_parser("scan", help="Scan and process meeting files")
+        meetings_sub.add_parser("demo", help="Demo meeting intelligence capabilities")
+
+        # Stakeholder management subcommands
+        stakeholders_parser = subparsers.add_parser(
+            "stakeholders", help="Stakeholder management"
+        )
+        stakeholders_sub = stakeholders_parser.add_subparsers(
+            dest="stakeholders_action", help="Stakeholder actions"
+        )
+
+        stakeholders_sub.add_parser("scan", help="AI-powered stakeholder detection")
+        stakeholders_sub.add_parser("profile", help="Complete stakeholder profiling")
+        stakeholders_sub.add_parser("list", help="List all stakeholders")
+        stakeholders_sub.add_parser("alerts", help="Daily stakeholder alerts")
+
+        # Task management subcommands
+        tasks_parser = subparsers.add_parser("tasks", help="Strategic task management")
+        tasks_sub = tasks_parser.add_subparsers(
+            dest="tasks_action", help="Task actions"
+        )
+
+        tasks_sub.add_parser("scan", help="AI-powered task detection")
+        tasks_sub.add_parser("list", help="List my tasks")
+        tasks_sub.add_parser("overdue", help="Show overdue tasks")
+        tasks_sub.add_parser("followups", help="Show follow-ups due")
+        tasks_sub.add_parser("assigned", help="Show tasks I've assigned")
+        tasks_sub.add_parser("review", help="Review AI-detected tasks")
+
+        # Git management subcommands
+        git_parser = subparsers.add_parser("git", help="Smart git operations")
+        git_sub = git_parser.add_subparsers(dest="git_action", help="Git actions")
+
+        git_sub.add_parser("setup", help="Setup intelligent git hooks")
+        git_commit_parser = git_sub.add_parser(
+            "commit", help="Smart commit with optimized hooks"
+        )
+        git_commit_parser.add_argument(
+            "-m", "--message", required=True, help="Commit message"
+        )
+
+        # Demo commands
+        demo_parser = subparsers.add_parser(
+            "demo", help="Strategic workflow demonstrations"
+        )
+        demo_subparsers = demo_parser.add_subparsers(dest="demo_action")
+
+        # Strategic scenario demo
+        demo_scenario_parser = demo_subparsers.add_parser(
+            "scenario", help="Run strategic scenario demo"
+        )
+
+        # Validation demo
+        demo_validate_parser = demo_subparsers.add_parser(
+            "validate", help="Validate strategic usage patterns"
+        )
+
+        # Database optimization subcommands
+        db_parser = subparsers.add_parser(
+            "db-optimize", help="Database performance optimization"
+        )
+        db_parser.add_argument(
+            "--stats-only", action="store_true", help="Show statistics only"
+        )
+        db_parser.add_argument(
+            "--maintenance-only", action="store_true", help="Run maintenance only"
+        )
+
+        # Architecture health monitoring
+        arch_parser = subparsers.add_parser(
+            "arch-health", help="Architecture health monitoring and migration alerts"
+        )
+        arch_parser.add_argument(
+            "--assess", action="store_true", help="Run architecture health assessment"
+        )
+        arch_parser.add_argument(
+            "--trends", action="store_true", help="Show migration readiness trends"
+        )
+
+        # P2.1 Executive Communication
+        reports_parser = subparsers.add_parser(
+            "reports", help="P2.1 Executive Communication & Reports"
+        )
+        reports_sub = reports_parser.add_subparsers(
+            dest="reports_action", help="Report types"
+        )
+
+        # Executive reports
+        reports_executive_parser = reports_sub.add_parser(
+            "executive", help="AI-generated executive summary"
+        )
+        reports_executive_parser.add_argument(
+            "--stakeholder",
+            choices=["ceo", "vp_engineering", "board", "product_team"],
+            default="vp_engineering",
+            help="Target stakeholder type",
+        )
+        reports_executive_parser.add_argument(
+            "--period", default="current_week", help="Time period for report"
+        )
+        reports_executive_parser.add_argument(
+            "--format",
+            choices=["cli_rich", "cli_plain", "markdown"],
+            default="cli_rich",
+            help="Output format",
+        )
+
+        # Stakeholder-specific reports
+        reports_stakeholder_parser = reports_sub.add_parser(
+            "stakeholder", help="Stakeholder-specific reports"
+        )
+        reports_stakeholder_parser.add_argument(
+            "--type",
+            required=True,
+            choices=["ceo", "vp_engineering", "board", "product_team"],
+            help="Stakeholder type",
+        )
+        reports_stakeholder_parser.add_argument(
+            "--period", default="current_week", help="Time period for report"
+        )
+
+        # Board reports
+        reports_board_parser = reports_sub.add_parser(
+            "board", help="Board presentation report"
+        )
+        reports_board_parser.add_argument(
+            "--quarter", help="Specific quarter (e.g., Q1-2024)"
+        )
+
+        # Weekly reports (Jira integration)
+        reports_weekly_parser = reports_sub.add_parser(
+            "weekly", help="Generate weekly SLT report from Jira"
+        )
+        reports_weekly_parser.add_argument(
+            "--config", help="Config file for Jira integration"
+        )
+        reports_weekly_parser.add_argument(
+            "--dry-run",
+            action="store_true",
+            help="Show what would be done without executing",
+        )
+        reports_weekly_parser.add_argument(
+            "--verbose", action="store_true", help="Show detailed output"
+        )
+        reports_weekly_parser.add_argument(
+            "--query",
+            default="weekly_executive_epics",
+            help="JQL query name from config (default: weekly_executive_epics)",
+        )
+
+        # Director Templates (Phase 1 Feature)
+        templates_parser = subparsers.add_parser(
+            "templates", help="Leadership template management (P1 Feature)"
+        )
+        templates_sub = templates_parser.add_subparsers(
+            dest="templates_action", help="Template management actions"
+        )
+
+        # Template listing
+        list_parser = templates_sub.add_parser(
+            "list", help="List available director templates"
+        )
+        list_parser.add_argument("--domain", help="Filter by template domain")
+        list_parser.add_argument(
+            "--format", choices=["table", "json"], default="table", help="Output format"
+        )
+
+        # Template details
+        show_parser = templates_sub.add_parser(
+            "show", help="Show detailed template information"
+        )
+        show_parser.add_argument("template_id", help="Template ID to show details for")
+        show_parser.add_argument(
+            "--format", choices=["yaml", "json"], default="yaml", help="Output format"
+        )
+
+        # Template discovery
+        discover_parser = templates_sub.add_parser(
+            "discover", help="Discover templates by context"
+        )
+        discover_parser.add_argument(
+            "context", help="Context keywords for template discovery"
+        )
+        discover_parser.add_argument(
+            "--threshold",
+            type=float,
+            default=0.6,
+            help="Confidence threshold (0.0-1.0)",
+        )
+
+        # Template validation
+        validate_parser = templates_sub.add_parser(
+            "validate", help="Validate template selection"
+        )
+        validate_parser.add_argument("template_id", help="Template ID to validate")
+        validate_parser.add_argument("--industry", help="Industry modifier")
+        validate_parser.add_argument("--team-size", help="Team size context")
+
+        # Template summary
+        summary_parser = templates_sub.add_parser(
+            "summary", help="Generate template configuration summary"
+        )
+        summary_parser.add_argument("template_id", help="Template ID for summary")
+        summary_parser.add_argument("--industry", help="Industry modifier")
+        summary_parser.add_argument("--team-size", help="Team size context")
+
+        # Template comparison
+        compare_parser = templates_sub.add_parser(
+            "compare", help="Compare multiple templates"
+        )
+        compare_parser.add_argument(
+            "template_ids", nargs="+", help="Template IDs to compare (2-4 templates)"
+        )
+
+        # Available domains
+        templates_sub.add_parser("domains", help="List available template domains")
+
+        # P1 Organizational Intelligence
+        org_intel_parser = subparsers.add_parser(
+            "org-intelligence", help="Organizational Leverage Intelligence (P1)"
+        )
+        org_intel_sub = org_intel_parser.add_subparsers(
+            dest="org_intel_action", help="Organizational intelligence actions"
+        )
+
+        # Org intelligence setup
+        org_setup_parser = org_intel_sub.add_parser(
+            "setup", help="Configure your director profile"
+        )
+        org_setup_parser.add_argument(
+            "--profile-type",
+            choices=[
+                "platform_director",
+                "backend_director",
+                "product_director",
+                "custom",
+            ],
+            default="platform_director",
+            help="Select leadership profile type",
+        )
+        org_setup_parser.add_argument(
+            "--role-title",
+            default="Engineering Leadership",
+            help="Your specific role title",
+        )
+
+        # Org intelligence status
+        org_intel_sub.add_parser("status", help="Show current configuration status")
+
+        # Org intelligence customization
+        org_intel_sub.add_parser("customize", help="Interactive profile customization")
+
+        # Quick setup with templates
+        org_quick_setup_parser = org_intel_sub.add_parser(
+            "quick-setup", help="Template-based setup"
+        )
+        org_quick_setup_parser.add_argument(
+            "--template",
+            choices=[
+                "design_system",
+                "platform_infrastructure",
+                "backend_services",
+                "product_delivery",
+            ],
+            help="Use predefined template",
+        )
+
+        # Domain configuration
+        org_domain_parser = org_intel_sub.add_parser(
+            "configure-domain", help="Configure specific measurement domains"
+        )
+        org_domain_parser.add_argument("--domain", help="Specific domain to configure")
+
+        return parser
+
+    def handle_setup(self, args):
+        """Handle setup command"""
+        print("🚀 ClaudeDirector Framework Setup")
+        print("=" * 35)
+
+        if args.verify:
+            return self._verify_installation()
+
+        if args.component == "all":
+            return self._setup_all_components()
+        elif args.component == "meeting":
+            return self._setup_meeting_intelligence()
+        elif args.component == "stakeholder":
+            return self._setup_stakeholder_management()
+        elif args.component == "task":
+            return self._setup_task_tracking()
+        elif args.component == "git":
+            return self._setup_smart_git()
+
+    def handle_status(self, args):
+        """Handle status command"""
+        print("📊 ClaudeDirector System Status")
+        print("=" * 30)
+
+        try:
+            # Check basic system health by verifying key components exist
+            lib_path = self.project_root / ".claudedirector" / "lib"
+            data_path = self.project_root / "data" / "strategic"
+
+            # Check database
+            db_exists = (data_path / "strategic_memory.db").exists()
+
+            # Check key modules
+            meeting_module = (lib_path / "memory" / "meeting_intelligence.py").exists()
+            stakeholder_module = (
+                lib_path / "memory" / "stakeholder_engagement_engine.py"
+            ).exists()
+            task_module = (
+                lib_path / "memory" / "intelligent_task_detector.py"
+            ).exists()
+
+            # Basic status
+            print(f"🗄️  Database: {'✅ Connected' if db_exists else '❌ Issues'}")
+            print(
+                f"🧠 Meeting Intelligence: {'✅ Active' if meeting_module else '❌ Inactive'}"
+            )
+            print(
+                f"👥 Stakeholder Management: {'✅ Active' if stakeholder_module else '❌ Inactive'}"
+            )
+            print(f"🎯 Task Tracking: {'✅ Active' if task_module else '❌ Inactive'}")
+
+            if args.detailed:
+                print(f"\n📊 Detailed Information:")
+                print(f"   Library path: {lib_path}")
+                print(f"   Data path: {data_path}")
+                print(f"   Database exists: {db_exists}")
+                print(f"   Meeting module: {meeting_module}")
+
+        except Exception as e:
+            print(f"❌ Error checking status: {e}")
+            return False
+
+        return True
+
+    def handle_alerts(self, args):
+        """Handle alerts command with P2.1 intelligent alerting"""
+        print("🚨 ClaudeDirector Intelligent Alerts")
+        print("=" * 35)
+
+        try:
+            # Try P2.1 intelligent alerts first
+            from claudedirector.p2_communication.integrations.alert_system import (
+                IntelligentAlertSystem,
+            )
+            from claudedirector.p2_communication.integrations.demo_data_source import (
+                DemoDataSource,
+            )
+            from claudedirector.p2_communication.interfaces.report_interface import (
+                StakeholderType,
+            )
+
+            # Initialize alert system with demo data
+            data_source = DemoDataSource()
+            alert_system = IntelligentAlertSystem(data_source)
+
+            # Get current data for analysis
+            current_data = data_source.get_data(
+                "current_status",
+                [
+                    "team_velocity",
+                    "risk_indicators",
+                    "initiative_health",
+                    "team_health",
+                ],
+            )
+
+            if args.type == "executive":
+                # Executive-level alerts for leadership
+                stakeholder_type = StakeholderType.VP_ENGINEERING
+                stakeholder_alerts = alert_system.get_stakeholder_alerts(
+                    stakeholder_type, current_data
+                )
+                formatted_alerts = alert_system.format_alerts_for_cli(
+                    stakeholder_alerts
+                )
+                print(formatted_alerts)
+
+            elif args.type == "stakeholder":
+                # Legacy stakeholder alerts
+                self._handle_legacy_stakeholder_alerts(args)
+
+            elif args.type == "task":
+                # Legacy task alerts
+                self._handle_legacy_task_alerts(args)
+
+            else:  # 'all' or default
+                # Show intelligent alerts for all stakeholders
+                all_alerts = alert_system.generate_alerts(current_data)
+                formatted_alerts = alert_system.format_alerts_for_cli(all_alerts)
+                print(formatted_alerts)
+
+                if not args.quiet:
+                    print("\n💡 P2.1 INTELLIGENT ALERTING")
+                    print("   Enhanced executive-focused alerts with:")
+                    print("   • Smart priority scoring and cooldown management")
+                    print("   • Stakeholder-specific routing and content")
+                    print("   • Actionable recommendations and context")
+                    print("   • CLI integration with rich formatting")
+                    print()
+                    print("   Try: ./claudedirector alerts executive")
+
+        except ImportError as e:
+            print(f"⚠️  P2.1 intelligent alerts not available: {e}")
+            print("💡 Falling back to legacy alert system...")
+            self._handle_legacy_alerts(args)
+        except Exception as e:
+            print(f"❌ Alert system error: {e}")
+            self._handle_legacy_alerts(args)
+
+    def _handle_legacy_stakeholder_alerts(self, args):
+        """Handle legacy stakeholder alerts."""
+        try:
+            sys.path.insert(0, str(self.project_root / "bin" / "daily"))
+            from daily_stakeholder_alerts import DailyStakeholderAlerts
+
+            stakeholder_alerts = DailyStakeholderAlerts()
+            if args.quiet:
+                alerts = stakeholder_alerts.generate_daily_alerts()
+                print(f"Stakeholder alerts: {alerts['summary']['total_alerts']}")
+            else:
+                stakeholder_alerts.display_daily_alerts()
+
+        except ImportError:
+            print("⚠️  Stakeholder alerts not available - run setup first")
+
+    def _handle_legacy_task_alerts(self, args):
+        """Handle legacy task alerts."""
+        try:
+            sys.path.insert(0, str(self.project_root / "bin" / "daily"))
+            from daily_task_alerts import DailyTaskAlerts
+
+            task_alerts = DailyTaskAlerts()
+            if args.quiet:
+                alerts = task_alerts.generate_daily_alerts()
+                print(f"Task alerts: {alerts['summary']['total_alerts']}")
+            else:
+                task_alerts.display_daily_alerts()
+
+        except ImportError:
+            print("⚠️  Task alerts not available - run setup first")
+
+    def _handle_legacy_alerts(self, args):
+        """Handle legacy alert system."""
+        if args.type in ["all", "stakeholder"]:
+            self._handle_legacy_stakeholder_alerts(args)
+        if args.type in ["all", "task"]:
+            self._handle_legacy_task_alerts(args)
+
+    def handle_meetings(self, args):
+        """Handle meeting intelligence commands"""
+        if args.meetings_action == "scan":
+            try:
+                from memory.meeting_intelligence import MeetingIntelligenceManager
+
+                manager = MeetingIntelligenceManager()
+                manager.scan_and_process_meeting_prep()
+                print("✅ Meeting intelligence scan completed")
+
+            except ImportError:
+                print(
+                    "❌ Meeting intelligence not available - run: claudedirector setup --component meeting"
+                )
+
+        elif args.meetings_action == "demo":
+            try:
+                import subprocess
+
+                subprocess.run(
+                    [
+                        sys.executable,
+                        str(
+                            self.project_root
+                            / "bin"
+                            / "demo"
+                            / "demo-meeting-intelligence.py"
+                        ),
+                    ]
+                )
+
+            except Exception as e:
+                print(f"❌ Demo failed: {e}")
+
+    def handle_stakeholders(self, args):
+        """Handle stakeholder management commands"""
+        if args.stakeholders_action == "scan":
+            try:
+                sys.path.insert(0, str(self.project_root / "bin"))
+                from stakeholder_ai_manager import StakeholderAIManager
+
+                manager = StakeholderAIManager()
+                manager.process_workspace_automatically()
+
+            except ImportError:
+                print(
+                    "❌ Stakeholder AI not available - run: claudedirector setup --component stakeholder"
+                )
+
+        elif args.stakeholders_action == "profile":
+            try:
+                sys.path.insert(0, str(self.project_root / "bin"))
+                from stakeholder_ai_manager import StakeholderAIManager
+
+                manager = StakeholderAIManager()
+                manager.handle_profiling_tasks()
+
+            except ImportError:
+                print(
+                    "❌ Stakeholder AI not available - run: claudedirector setup --component stakeholder"
+                )
+
+        elif args.stakeholders_action == "list":
+            try:
+                sys.path.insert(0, str(self.project_root / "bin"))
+                from stakeholder_manager import StakeholderManager
+
+                manager = StakeholderManager()
+                manager.list_stakeholders()
+
+            except ImportError:
+                print(
+                    "❌ Stakeholder management not available - run: claudedirector setup --component stakeholder"
+                )
+
+        elif args.stakeholders_action == "alerts":
+            try:
+                sys.path.insert(0, str(self.project_root / "bin" / "daily"))
+                from daily_stakeholder_alerts import DailyStakeholderAlerts
+
+                alerts = DailyStakeholderAlerts()
+                alerts.display_daily_alerts()
+
+            except ImportError:
+                print(
+                    "❌ Stakeholder alerts not available - run: claudedirector setup --component stakeholder"
+                )
+
+    def handle_tasks(self, args):
+        """Handle task management commands"""
+        if args.tasks_action == "scan":
+            try:
+                sys.path.insert(0, str(self.project_root / "bin"))
+                from strategic_task_manager import StrategicTaskManager
+
+                manager = StrategicTaskManager()
+                manager.scan_workspace_for_tasks()
+
+            except ImportError:
+                print(
+                    "❌ Task management not available - run: claudedirector setup --component task"
+                )
+
+        elif args.tasks_action == "list":
+            try:
+                sys.path.insert(0, str(self.project_root / "bin"))
+                from strategic_task_manager import StrategicTaskManager
+
+                manager = StrategicTaskManager()
+                manager.show_my_tasks()
+
+            except ImportError:
+                print(
+                    "❌ Task management not available - run: claudedirector setup --component task"
+                )
+
+        elif args.tasks_action == "overdue":
+            try:
+                sys.path.insert(0, str(self.project_root / "bin"))
+                from strategic_task_manager import StrategicTaskManager
+
+                manager = StrategicTaskManager()
+                manager.show_overdue_tasks()
+
+            except ImportError:
+                print(
+                    "❌ Task management not available - run: claudedirector setup --component task"
+                )
+
+        elif args.tasks_action == "followups":
+            try:
+                sys.path.insert(0, str(self.project_root / "bin"))
+                from strategic_task_manager import StrategicTaskManager
+
+                manager = StrategicTaskManager()
+                manager.show_follow_ups_due()
+
+            except ImportError:
+                print(
+                    "❌ Task management not available - run: claudedirector setup --component task"
+                )
+
+        elif args.tasks_action == "assigned":
+            try:
+                sys.path.insert(0, str(self.project_root / "bin"))
+                from strategic_task_manager import StrategicTaskManager
+
+                manager = StrategicTaskManager()
+                manager.show_assigned_tasks()
+
+            except ImportError:
+                print(
+                    "❌ Task management not available - run: claudedirector setup --component task"
+                )
+
+        elif args.tasks_action == "review":
+            try:
+                sys.path.insert(0, str(self.project_root / "bin"))
+                from strategic_task_manager import StrategicTaskManager
+
+                manager = StrategicTaskManager()
+                manager.show_review_queue()
+
+            except ImportError:
+                print(
+                    "❌ Task management not available - run: claudedirector setup --component task"
+                )
+
+    def handle_git(self, args):
+        """Handle git management commands"""
+        if args.git_action == "setup":
+            try:
+                import subprocess
+
+                subprocess.run(
+                    [
+                        sys.executable,
+                        str(self.project_root / "bin" / "setup" / "setup_smart_git.py"),
+                    ]
+                )
+
+            except Exception as e:
+                print(f"❌ Git setup failed: {e}")
+
+        elif args.git_action == "commit":
+            try:
+                import subprocess
+
+                subprocess.run(
+                    [
+                        str(self.project_root / "bin" / "git" / "git-commit-smart"),
+                        "-m",
+                        args.message,
+                    ]
+                )
+            except Exception as e:
+                print(f"❌ Smart commit failed: {e}")
+
+    def handle_demo(self, args):
+        """Handle demo commands"""
+        if args.demo_action == "scenario":
+            try:
+                import subprocess
+
+                subprocess.run(
+                    [
+                        sys.executable,
+                        str(self.project_root / "bin" / "demo-strategic-scenario.py"),
+                    ]
+                )
+            except Exception as e:
+                print(f"❌ Strategic scenario demo failed: {e}")
+
+        elif args.demo_action == "validate":
+            try:
+                import subprocess
+
+                subprocess.run(
+                    [
+                        sys.executable,
+                        str(
+                            self.project_root / "bin" / "validate-strategic-patterns.py"
+                        ),
+                    ]
+                )
+            except Exception as e:
+                print(f"❌ Strategic validation failed: {e}")
+
+        else:
+            print("Available demo commands:")
+            print("  scenario  - Run strategic scenario demo")
+            print("  validate  - Validate strategic usage patterns")
+
+    def _verify_installation(self):
+        """Verify ClaudeDirector installation"""
+        print("🔍 Verifying ClaudeDirector installation...")
+
+        issues = []
+
+        # Check database
+        db_path = self.project_root / "data" / "strategic" / "strategic_memory.db"
+        if not db_path.exists():
+            issues.append("Database not found")
+
+        # Check key modules in the new architecture location
+        lib_path = self.project_root / ".claudedirector" / "lib"
+        key_modules = [
+            "memory/meeting_intelligence.py",
+            "memory/stakeholder_engagement_engine.py",
+            "memory/intelligent_task_detector.py",
+        ]
+
+        for module in key_modules:
+            if not (lib_path / module).exists():
+                issues.append(f"Missing module: {module}")
+
+        if issues:
+            print("❌ Installation issues found:")
+            for issue in issues:
+                print(f"   • {issue}")
+            print("\nRun: claudedirector setup")
+            return False
+        else:
+            print("✅ ClaudeDirector installation verified")
+            return True
+
+    def _setup_all_components(self):
+        """Setup all ClaudeDirector components"""
+        print("🎯 Setting up all ClaudeDirector components...")
+
+        success = True
+
+        # Setup in dependency order
+        components = [
+            ("Meeting Intelligence", self._setup_meeting_intelligence),
+            ("Stakeholder Management", self._setup_stakeholder_management),
+            ("Task Tracking", self._setup_task_tracking),
+            ("Smart Git", self._setup_smart_git),
+        ]
+
+        for name, setup_func in components:
+            print(f"\n📦 Setting up {name}...")
+            if not setup_func():
+                print(f"❌ {name} setup failed")
+                success = False
+            else:
+                print(f"✅ {name} setup completed")
+
+        if success:
+            print("\n🎉 ClaudeDirector setup completed successfully!")
+            print("\n💡 Next steps:")
+            print("   claudedirector status                   # Check system health")
+            print("   claudedirector alerts                   # View daily alerts")
+            print("   claudedirector stakeholders scan        # Detect stakeholders")
+            print("   claudedirector tasks scan               # Detect tasks")
+        else:
+            print("\n⚠️  Some components failed to setup - check errors above")
+
+        return success
+
+    def _setup_meeting_intelligence(self):
+        """Setup meeting intelligence component"""
+        try:
+            import subprocess
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(
+                        self.project_root
+                        / ".claudedirector"
+                        / "tools"
+                        / "setup"
+                        / "setup_meeting_intelligence.py"
+                    ),
+                ],
+                capture_output=True,
+                text=True,
+            )
+            return result.returncode == 0
+        except Exception:
+            return False
+
+    def _setup_stakeholder_management(self):
+        """Setup stakeholder management component"""
+        try:
+            import subprocess
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(
+                        self.project_root
+                        / ".claudedirector"
+                        / "tools"
+                        / "setup"
+                        / "setup_stakeholder_management.py"
+                    ),
+                ],
+                capture_output=True,
+                text=True,
+            )
+            return result.returncode == 0
+        except Exception:
+            return False
+
+    def _setup_task_tracking(self):
+        """Setup task tracking component"""
+        try:
+            import subprocess
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(
+                        self.project_root
+                        / ".claudedirector"
+                        / "tools"
+                        / "setup"
+                        / "setup_task_tracking.py"
+                    ),
+                ],
+                capture_output=True,
+                text=True,
+            )
+            return result.returncode == 0
+        except Exception:
+            return False
+
+    def _setup_smart_git(self):
+        """Setup smart git component"""
+        try:
+            import subprocess
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(
+                        self.project_root
+                        / ".claudedirector"
+                        / "tools"
+                        / "setup"
+                        / "setup_smart_git.py"
+                    ),
+                ],
+                capture_output=True,
+                text=True,
+            )
+            return result.returncode == 0
+        except Exception:
+            return False
+
+    def run(self):
+        """Main CLI entry point"""
+        parser = self.create_parser()
+
+        if len(sys.argv) == 1:
+            # No arguments - show help and status
+            parser.print_help()
+            print("\n" + "=" * 50)
+            self.handle_status(argparse.Namespace(detailed=False))
+            return
+
+        args = parser.parse_args()
+
+        if args.command == "setup":
+            self.handle_setup(args)
+        elif args.command == "status":
+            self.handle_status(args)
+        elif args.command == "alerts":
+            self.handle_alerts(args)
+        elif args.command == "meetings":
+            self.handle_meetings(args)
+        elif args.command == "stakeholders":
+            self.handle_stakeholders(args)
+        elif args.command == "tasks":
+            self.handle_tasks(args)
+        elif args.command == "git":
+            self.handle_git(args)
+        elif args.command == "demo":
+            self.handle_demo(args)
+
+        elif args.command == "db-optimize":
+            self.handle_db_optimize(args)
+
+        elif args.command == "arch-health":
+            self.handle_arch_health(args)
+
+        elif args.command == "templates":
+            self.handle_templates(args)
+
+        elif args.command == "org-intelligence":
+            self.handle_org_intelligence(args)
+
+        elif args.command == "reports":
+            self.handle_reports(args)
+
+        else:
+            parser.print_help()
+
+    def handle_db_optimize(self, args):
+        """Handle database optimization commands"""
+        try:
+            import subprocess
+
+            if args.stats_only:
+                # Show database statistics
+                result = subprocess.run(
+                    [
+                        sys.executable,
+                        str(self.project_root / "bin" / "optimize-database.py"),
+                        "--stats",
+                    ]
+                )
+            elif args.maintenance_only:
+                # Run maintenance only
+                result = subprocess.run(
+                    [
+                        sys.executable,
+                        str(self.project_root / "bin" / "optimize-database.py"),
+                        "--maintenance",
+                    ]
+                )
+            else:
+                # Full optimization
+                result = subprocess.run(
+                    [
+                        sys.executable,
+                        str(self.project_root / "bin" / "optimize-database.py"),
+                        "--optimize",
+                    ]
+                )
+
+            if result.returncode != 0:
+                print("❌ Database optimization failed")
+
+        except Exception as e:
+            print(f"❌ Database optimization command failed: {e}")
+
+    def handle_arch_health(self, args):
+        """Handle architecture health monitoring commands"""
+        try:
+            import subprocess
+
+            # Set PYTHONPATH for subprocess calls
+            env = os.environ.copy()
+            env["PYTHONPATH"] = str(self.project_root)
+
+            if args.assess:
+                # Run architecture health assessment
+                result = subprocess.run(
+                    [
+                        sys.executable,
+                        str(
+                            self.project_root
+                            / "memory"
+                            / "architecture_health_monitor.py"
+                        ),
+                        "--assess",
+                    ],
+                    env=env,
+                )
+            elif args.trends:
+                # Show migration readiness trends
+                result = subprocess.run(
+                    [
+                        sys.executable,
+                        str(
+                            self.project_root
+                            / "memory"
+                            / "architecture_health_monitor.py"
+                        ),
+                        "--trends",
+                    ],
+                    env=env,
+                )
+            elif args.criteria:
+                # Show migration criteria
+                result = subprocess.run(
+                    [
+                        sys.executable,
+                        str(
+                            self.project_root
+                            / "memory"
+                            / "architecture_health_monitor.py"
+                        ),
+                        "--criteria",
+                    ],
+                    env=env,
+                )
+            else:
+                # Run daily architecture alerts
+                result = subprocess.run(
+                    [
+                        sys.executable,
+                        str(
+                            self.project_root
+                            / "bin"
+                            / "daily"
+                            / "daily_architecture_alerts.py"
+                        ),
+                    ],
+                    env=env,
+                )
+
+            if result.returncode != 0:
+                print("❌ Architecture health command failed")
+
+        except Exception as e:
+            print(f"❌ Architecture health command failed: {e}")
+
+    def handle_templates(self, args):
+        """Handle leadership template management commands"""
+        print("🎭 Leadership Template Management")
+        print("=" * 35)
+
+        try:
+            from claudedirector.p1_features.template_commands import TemplateCommands
+
+            template_commands = TemplateCommands()
+
+            if args.templates_action == "list":
+                result = template_commands.list_templates(
+                    domain=getattr(args, "domain", None),
+                    format_type=getattr(args, "format", "table"),
+                )
+                print(result)
+
+            elif args.templates_action == "show":
+                result = template_commands.get_template_details(
+                    template_id=args.template_id,
+                    format_type=getattr(args, "format", "yaml"),
+                )
+                print(result)
+
+            elif args.templates_action == "discover":
+                result = template_commands.discover_by_context(
+                    context=args.context, threshold=getattr(args, "threshold", 0.6)
+                )
+                print(result)
+
+            elif args.templates_action == "validate":
+                result = template_commands.validate_selection(
+                    template_id=args.template_id,
+                    industry=getattr(args, "industry", None),
+                    team_size=getattr(args, "team_size", None),
+                )
+                print(result)
+
+            elif args.templates_action == "summary":
+                result = template_commands.generate_summary(
+                    template_id=args.template_id,
+                    industry=getattr(args, "industry", None),
+                    team_size=getattr(args, "team_size", None),
+                )
+                print(result)
+
+            elif args.templates_action == "compare":
+                if len(args.template_ids) < 2:
+                    print("❌ Need at least 2 templates to compare")
+                    return
+                if len(args.template_ids) > 4:
+                    print("❌ Cannot compare more than 4 templates at once")
+                    return
+
+                result = template_commands.compare_templates(args.template_ids)
+                print(result)
+
+            elif args.templates_action == "domains":
+                result = template_commands.list_domains()
+                print(result)
+
+            else:
+                print("❌ Unknown template action. Use --help for available commands.")
+
+        except ImportError as e:
+            print(f"❌ Template system not available: {e}")
+            print("   Run './claudedirector setup' to initialize all components.")
+        except Exception as e:
+            print(f"❌ Template command failed: {e}")
+
+    def handle_org_intelligence(self, args):
+        """Handle organizational intelligence commands"""
+        print("📊 Organizational Leverage Intelligence (P1)")
+        print("=" * 45)
+
+        try:
+            # Import the CLI customization module
+            from claudedirector.p1_features.organizational_intelligence.cli_customization import (
+                org_intelligence,
+            )
+            from claudedirector.p1_features.organizational_intelligence import (
+                DirectorProfileManager,
+            )
+
+            # Handle different subcommands
+            if args.org_intel_action == "setup":
+                # Run setup command
+                from click.testing import CliRunner
+
+                runner = CliRunner()
+
+                setup_args = ["setup"]
+                if hasattr(args, "profile_type"):
+                    setup_args.extend(["--profile-type", args.profile_type])
+                if hasattr(args, "role_title"):
+                    setup_args.extend(["--role-title", args.role_title])
+
+                result = runner.invoke(org_intelligence, setup_args)
+                print(result.output)
+
+            elif args.org_intel_action == "status":
+                # Show current status
+                from click.testing import CliRunner
+
+                runner = CliRunner()
+                result = runner.invoke(org_intelligence, ["status"])
+                print(result.output)
+
+            elif args.org_intel_action == "customize":
+                # Interactive customization
+                from click.testing import CliRunner
+
+                runner = CliRunner()
+                result = runner.invoke(org_intelligence, ["customize"])
+                print(result.output)
+
+            elif args.org_intel_action == "quick-setup":
+                # Template-based setup
+                from click.testing import CliRunner
+
+                runner = CliRunner()
+
+                quick_args = ["quick-setup"]
+                if hasattr(args, "template") and args.template:
+                    quick_args.extend(["--template", args.template])
+
+                result = runner.invoke(org_intelligence, quick_args)
+                print(result.output)
+
+            elif args.org_intel_action == "configure-domain":
+                # Domain configuration
+                from click.testing import CliRunner
+
+                runner = CliRunner()
+
+                domain_args = ["configure-domain"]
+                if hasattr(args, "domain") and args.domain:
+                    domain_args.extend(["--domain", args.domain])
+
+                result = runner.invoke(org_intelligence, domain_args)
+                print(result.output)
+
+            else:
+                # Default: show status
+                manager = DirectorProfileManager()
+                profile = manager.current_profile
+
+                print(f"👤 Current Profile: {profile.role_title}")
+                print(f"🔍 Primary Focus: {profile.primary_focus}")
+                print(f"📊 Enabled Domains: {len(profile.enabled_domains)}")
+                print(f"💰 Investment Categories: {len(profile.investment_categories)}")
+                print("\n💡 Run 'claudedirector org-intelligence setup' to get started")
+                print("🔧 Run 'claudedirector org-intelligence --help' for all options")
+
+        except ImportError as e:
+            print(f"❌ Organizational Intelligence not available: {e}")
+            print("💡 This is a P1 feature - ensure P1 modules are installed")
+        except Exception as e:
+            print(f"❌ Organizational Intelligence command failed: {e}")
+
+    def handle_reports(self, args):
+        """Handle P2.1 Executive Communication reports"""
+        print("📊 P2.1 Executive Communication")
+        print("=" * 35)
+
+        try:
+            # Import P2.1 modules
+            from claudedirector.p2_communication.integrations.jira_client import (
+                create_jira_client_from_env,
+            )
+            from claudedirector.p2_communication.report_generation.executive_summary import (
+                ExecutiveSummaryGenerator,
+            )
+            from claudedirector.p2_communication.report_generation.cli_formatter import (
+                CLIReportFormatter,
+            )
+            from claudedirector.p2_communication.interfaces.report_interface import (
+                ReportContext,
+                StakeholderType,
+                ReportFormat,
+            )
+
+            if not args.reports_action:
+                print("Available report types:")
+                print("  executive    - AI-generated executive summary")
+                print("  stakeholder  - Stakeholder-specific reports")
+                print("  board        - Board presentation report")
+                print("  weekly       - Weekly SLT report from Jira")
+                print()
+                print("💡 Try: ./claudedirector reports weekly --dry-run")
+                print(
+                    "💡 Try: ./claudedirector reports executive --stakeholder vp_engineering"
+                )
+                return
+
+            # Force demo data for now (JIRA integration development)
+            print("⚠️  Using demo data for P2.1 development")
+            from claudedirector.p2_communication.integrations.demo_data_source import (
+                DemoDataSource,
+            )
+
+            jira_client = DemoDataSource()
+
+            # Initialize report generator and formatter
+            report_generator = ExecutiveSummaryGenerator(jira_client)
+            formatter = CLIReportFormatter()
+
+            if args.reports_action == "executive":
+                self._handle_executive_report(args, report_generator, formatter)
+            elif args.reports_action == "stakeholder":
+                self._handle_stakeholder_report(args, report_generator, formatter)
+            elif args.reports_action == "board":
+                self._handle_board_report(args, report_generator, formatter)
+            elif args.reports_action == "weekly":
+                self._handle_weekly_report(args)
+            else:
+                print(f"❌ Unknown report action: {args.reports_action}")
+
+        except ImportError as e:
+            print(f"❌ P2.1 features not available: {e}")
+            print(
+                "💡 This is a P2.1 feature - ensure communication modules are installed"
+            )
+        except Exception as e:
+            print(f"❌ Report generation error: {e}")
+            import traceback
+
+            traceback.print_exc()
+
+    def _handle_executive_report(self, args, report_generator, formatter):
+        """Handle executive report generation"""
+        print(f"🎯 Generating executive summary for {args.stakeholder}...")
+
+        # Import enums for mapping
+        from claudedirector.p2_communication.interfaces.report_interface import (
+            StakeholderType,
+            ReportFormat,
+            ReportContext,
+        )
+
+        # Map CLI args to enum
+        stakeholder_map = {
+            "ceo": StakeholderType.CEO,
+            "vp_engineering": StakeholderType.VP_ENGINEERING,
+            "board": StakeholderType.BOARD,
+            "product_team": StakeholderType.PRODUCT_TEAM,
+        }
+
+        format_map = {
+            "cli_rich": ReportFormat.CLI_RICH,
+            "cli_plain": ReportFormat.CLI_PLAIN,
+            "markdown": ReportFormat.MARKDOWN,
+        }
+
+        # Create report context
+        context = ReportContext(
+            stakeholder_type=stakeholder_map[args.stakeholder],
+            time_period=args.period,
+            include_predictions=True,
+            include_risks=True,
+            format=format_map[args.format],
+        )
+
+        # Generate and format report
+        try:
+            report = report_generator.generate_report(context)
+            formatted_output = formatter.format_report(report)
+
+            print("\n" + "=" * 80)
+            print(formatted_output)
+            print("=" * 80)
+
+            print(f"\n✅ Executive summary generated successfully")
+            print(f"📊 Confidence: {report.confidence_score:.1%}")
+            print(f"📅 Data period: {args.period}")
+
+        except Exception as e:
+            print(f"❌ Failed to generate executive report: {e}")
+
+    def _handle_stakeholder_report(self, args, report_generator, formatter):
+        """Handle stakeholder-specific report generation"""
+        print(f"👥 Generating {args.type} stakeholder report...")
+
+        # Import enums for mapping
+        from claudedirector.p2_communication.interfaces.report_interface import (
+            StakeholderType,
+            ReportFormat,
+            ReportContext,
+        )
+
+        # Similar to executive report but with stakeholder-specific logic
+        stakeholder_map = {
+            "ceo": StakeholderType.CEO,
+            "vp_engineering": StakeholderType.VP_ENGINEERING,
+            "board": StakeholderType.BOARD,
+            "product_team": StakeholderType.PRODUCT_TEAM,
+        }
+
+        context = ReportContext(
+            stakeholder_type=stakeholder_map[args.type],
+            time_period=args.period,
+            include_predictions=True,
+            include_risks=True,
+            format=ReportFormat.CLI_RICH,
+        )
+
+        try:
+            report = report_generator.generate_report(context)
+            formatted_output = formatter.format_report(report)
+
+            print("\n" + "=" * 80)
+            print(formatted_output)
+            print("=" * 80)
+
+            print(f"\n✅ {args.type} report generated successfully")
+
+        except Exception as e:
+            print(f"❌ Failed to generate stakeholder report: {e}")
+
+    def _handle_board_report(self, args, report_generator, formatter):
+        """Handle board presentation report generation"""
+        print("📋 Generating board presentation report...")
+
+        # Import enums for mapping
+        from claudedirector.p2_communication.interfaces.report_interface import (
+            StakeholderType,
+            ReportFormat,
+            ReportContext,
+        )
+
+        period = args.quarter if args.quarter else "current_quarter"
+
+        context = ReportContext(
+            stakeholder_type=StakeholderType.BOARD,
+            time_period=period,
+            include_predictions=False,  # Board reports focus on actual results
+            include_risks=True,
+            format=ReportFormat.CLI_RICH,
+        )
+
+        try:
+            report = report_generator.generate_report(context)
+            formatted_output = formatter.format_report(report)
+
+            print("\n" + "=" * 80)
+            print(formatted_output)
+            print("=" * 80)
+
+            print(f"\n✅ Board report generated successfully")
+            print(f"📊 Period: {period}")
+            print(f"💡 Use --quarter Q1-2024 to specify different quarter")
+
+        except Exception as e:
+            print(f"❌ Failed to generate board report: {e}")
+
+    def _handle_weekly_report(self, args):
+        """Handle weekly SLT report generation with Jira integration"""
+        print("📊 Generating weekly SLT report from Jira...")
+
+        import subprocess
+        import os
+
+        # Build command arguments
+        cmd = ["./.claudedirector/scripts/generate-weekly-report-claude.sh"]
+
+        if args.config:
+            cmd.extend(["--config", args.config])
+        if args.dry_run:
+            cmd.append("--dry-run")
+        if args.verbose:
+            cmd.append("--verbose")
+        if args.query:
+            cmd.extend(["--query", args.query])
+
+        try:
+            # Run the weekly report script
+            result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+
+            # Print the output
+            print(result.stdout)
+
+            if not args.dry_run:
+                print("✅ Weekly report generated successfully!")
+                # Detect actual workspace location for user guidance
+                workspace_path = os.environ.get("CLAUDEDIRECTOR_WORKSPACE")
+                if not workspace_path:
+                    # Check for new default location
+                    if Path.home().joinpath("leadership-workspace").exists():
+                        workspace_path = str(Path.home() / "leadership-workspace")
+                    # Check for legacy location
+                    elif Path.home().joinpath("leadership-workspace").exists():
+                        workspace_path = str(Path.home() / "leadership-workspace")
+                    else:
+                        workspace_path = "leadership-workspace"
+
+                workspace_name = Path(workspace_path).name
+                print(f"📁 Check your workspace: {workspace_name}/reports/")
+
+        except subprocess.CalledProcessError as e:
+            print(f"❌ Failed to generate weekly report: {e}")
+            if e.stdout:
+                print("STDOUT:", e.stdout)
+            if e.stderr:
+                print("STDERR:", e.stderr)
+        except Exception as e:
+            print(f"❌ Unexpected error: {e}")
+
+
+def main():
+    """Main entry point"""
+    try:
+        cli = ClaudeDirectorCLI()
+        cli.run()
+    except KeyboardInterrupt:
+        print("\n\n👋 Goodbye!")
+    except Exception as e:
+        print(f"\n❌ Unexpected error: {e}")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
