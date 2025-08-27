@@ -18,7 +18,7 @@ from pathlib import Path
 import hashlib
 
 # Context Engineering integration
-from .advanced_context_engine import AdvancedContextEngine
+# Removed circular import - AdvancedContextEngine imports this module
 from .analytics_engine import AnalyticsEngine
 
 logger = logging.getLogger(__name__)
