@@ -36,6 +36,12 @@ from .ml_pattern_engine import (
     TeamCollaborationOutcome,
     CollaborationOutcome,
     FeatureType,
+    # CollaborationScorer - Epic 2 Completion Components
+    CollaborationScorer,
+    EnsembleModelConfig,
+    RiskAssessment,
+    RiskAssessmentEngine,
+    AdvancedCollaborationPrediction,
 )
 
 from .strategic_layer import InitiativeStatus
@@ -75,6 +81,12 @@ __all__ = [
     "TeamCollaborationOutcome",
     "CollaborationOutcome",
     "FeatureType",
+    # CollaborationScorer - Epic 2 Completion Components
+    "CollaborationScorer",
+    "EnsembleModelConfig",
+    "RiskAssessment",
+    "RiskAssessmentEngine",
+    "AdvancedCollaborationPrediction",
     "InitiativeStatus",
     "StakeholderRole",
     "CommunicationStyle",
