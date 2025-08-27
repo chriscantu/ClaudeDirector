@@ -9,7 +9,7 @@ ClaudeDirector supports personalized system messages through user configuration.
 ### **Option 1: Interactive Configuration**
 ```bash
 # Run the interactive setup
-python3 .claudedirector/bin/configure-user
+python3 .claudedirector/tools/bin/configure-user
 ```
 
 ### **Option 2: Direct File Editing**
@@ -87,6 +87,10 @@ user:
 
 ### **User Configuration API**
 ```python
+# Add to sys.path if needed
+import sys
+sys.path.insert(0, '.claudedirector/lib')
+
 from config.user_config import get_user_identity, get_user_name, get_user_attribution
 
 # Get full user identity

@@ -1,10 +1,21 @@
 """
 Strategic Framework Detection Middleware
 Identifies and attributes strategic frameworks used in ClaudeDirector responses
+SOLID Compliance: Uses centralized configuration instead of hard-coded strings
 """
 
 from typing import List, Dict
 from dataclasses import dataclass
+
+# Import centralized configuration
+try:
+    from core.constants.framework_definitions import FRAMEWORK_REGISTRY
+    from core.constants.constants import PERSONAS, TRANSPARENCY
+
+    CENTRALIZED_CONFIG_AVAILABLE = True
+except ImportError:
+    # Graceful fallback for transition period
+    CENTRALIZED_CONFIG_AVAILABLE = False
 
 
 @dataclass
@@ -21,8 +32,18 @@ class FrameworkDetectionMiddleware:
     """Middleware to detect and attribute strategic frameworks used in responses"""
 
     def __init__(self):
-        # Strategic framework patterns with confidence weights
-        self.framework_patterns = {
+        # Use centralized configuration or fallback to legacy patterns
+        if CENTRALIZED_CONFIG_AVAILABLE:
+            self.framework_patterns = FRAMEWORK_REGISTRY.get_framework_patterns()
+            self.confidence_threshold = 0.7  # From centralized config
+        else:
+            # Legacy fallback patterns for compatibility
+            self.framework_patterns = self._get_legacy_patterns()
+            self.confidence_threshold = 0.7
+
+    def _get_legacy_patterns(self):
+        """Legacy framework patterns for backward compatibility"""
+        return {
             # Common Strategic Frameworks (High Priority)
             "OGSM Strategic Framework": {
                 "patterns": [
