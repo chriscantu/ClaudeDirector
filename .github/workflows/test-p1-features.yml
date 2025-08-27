@@ -4,15 +4,8 @@ name: P1 Organizational Intelligence Tests (DEPRECATED - Use unified-ci.yml)
 # Keeping for reference until migration is verified
 
 on:
-  # Disabled - all triggers moved to unified-ci.yml
+  # COMPLETELY DISABLED - all triggers moved to unified-ci.yml
   workflow_dispatch:
-      - '.github/workflows/test-p1-features.yml'
-  pull_request:
-    branches: [ main ]
-    paths:
-      - 'lib/claudedirector/p1_features/**'
-      - 'tests/p1_features/**'
-      - 'config/p1_organizational_intelligence.yaml'
       - 'config/p1_visualization_config.yaml'
 
 jobs:

@@ -164,7 +164,7 @@ def validate_ci_coverage():
         definitions = yaml.safe_load(f)
 
     # Load CI workflow
-    with open(".github/workflows/next-phase-ci-cd.yml", 'r') as f:
+    with open(".github/workflows/unified-ci.yml", 'r') as f:
         ci_content = f.read()
 
     p0_features = definitions.get('p0_features', [])
@@ -206,7 +206,7 @@ if __name__ == "__main__":
         return script
 
     def update_ci_workflow(
-        self, workflow_file: str = ".github/workflows/next-phase-ci-cd.yml"
+        self, workflow_file: str = ".github/workflows/unified-ci.yml"
     ):
         """Update CI workflow with generated P0 test step"""
         print("🔧 Updating CI workflow with YAML-driven P0 tests...")
