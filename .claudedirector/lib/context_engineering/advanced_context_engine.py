@@ -27,6 +27,9 @@ from .analytics_engine import AnalyticsEngine  # Phase 2.2 Analytics Integration
 from .organizational_learning_engine import (
     OrganizationalLearningEngine,
 )  # Phase 3.1 Organizational Learning
+from .team_dynamics_engine import (
+    TeamDynamicsEngine,
+)  # Phase 3.2 Team Dynamics
 
 
 @dataclass
@@ -127,6 +130,26 @@ class AdvancedContextEngine:
                     f"Failed to initialize Organizational Learning Engine: {e}"
                 )
                 self.org_learning_enabled = False
+
+        # Phase 3.2: Team Dynamics Engine integration
+        team_dynamics_config = self.config.get("team_dynamics", {})
+        self.team_dynamics_enabled = team_dynamics_config.get("enabled", True)
+        self.team_dynamics_engine = None
+
+        if self.team_dynamics_enabled:
+            try:
+                self.team_dynamics_engine = TeamDynamicsEngine(team_dynamics_config)
+
+                # Integrate with Analytics Engine if available
+                if self.analytics_enabled and self.analytics_engine:
+                    self.team_dynamics_engine.set_analytics_integration(
+                        self.analytics_engine
+                    )
+
+                self.logger.info("Team Dynamics Engine integrated successfully")
+            except Exception as e:
+                self.logger.warning(f"Failed to initialize Team Dynamics Engine: {e}")
+                self.team_dynamics_enabled = False
 
         # Performance tracking
         self.performance_metrics: List[ContextRetrievalMetrics] = []
@@ -230,6 +253,31 @@ class AdvancedContextEngine:
                         f"Organizational learning insights generation failed: {e}"
                     )
 
+            # Phase 3.2: Generate team dynamics insights if enabled
+            team_dynamics_insights = None
+            if self.team_dynamics_enabled and self.team_dynamics_engine:
+                try:
+                    # Extract team information from context
+                    teams = self._extract_teams_from_context(
+                        stakeholder_context, workspace_context, query
+                    )
+
+                    if teams and len(teams) > 1:  # Multi-team scenario
+                        team_dynamics_insights = self.team_dynamics_engine.analyze_team_dynamics(
+                            teams=teams,
+                            context=query,
+                            stakeholder_data={
+                                "stakeholders": self._extract_stakeholders_from_context(
+                                    stakeholder_context, workspace_context
+                                )
+                            },
+                        )
+                        layers_accessed.append("team_dynamics")
+                except Exception as e:
+                    self.logger.warning(
+                        f"Team dynamics insights generation failed: {e}"
+                    )
+
             # Orchestrate intelligent context assembly
             assembled_context = self.context_orchestrator.assemble_strategic_context(
                 query=query,
@@ -241,6 +289,7 @@ class AdvancedContextEngine:
                 workspace_context=workspace_context,
                 analytics_insights=analytics_insights,  # Phase 2.2 parameter
                 org_learning_insights=org_learning_insights,  # Phase 3.1 parameter
+                team_dynamics_insights=team_dynamics_insights,  # Phase 3.2 parameter
                 max_size_bytes=max_context_size,
             )
 
@@ -452,6 +501,63 @@ class AdvancedContextEngine:
 
         # Remove duplicates and return
         return list(set(stakeholders))
+
+    def _extract_teams_from_context(
+        self,
+        stakeholder_context: Dict[str, Any],
+        workspace_context: Optional[Dict[str, Any]],
+        query: str,
+    ) -> List[str]:
+        """Extract team information from context and query for team dynamics analysis."""
+        teams = set()
+
+        # Common team keywords
+        team_keywords = [
+            "frontend",
+            "backend",
+            "platform",
+            "design",
+            "qa",
+            "devops",
+            "security",
+            "mobile",
+            "data",
+            "analytics",
+            "infrastructure",
+            "product",
+            "engineering",
+            "ui",
+            "ux",
+            "api",
+            "database",
+            "testing",
+            "operations",
+        ]
+
+        # Extract from query
+        query_lower = query.lower()
+        for keyword in team_keywords:
+            if keyword in query_lower:
+                teams.add(keyword.title())
+
+        # Extract from stakeholder context
+        if stakeholder_context and "teams" in stakeholder_context:
+            if isinstance(stakeholder_context["teams"], list):
+                teams.update(stakeholder_context["teams"])
+
+        # Extract from workspace context
+        if workspace_context and "teams" in workspace_context:
+            if isinstance(workspace_context["teams"], list):
+                teams.update(workspace_context["teams"])
+
+        # Look for team mentions in stakeholder data
+        if stakeholder_context and "relationships" in stakeholder_context:
+            for stakeholder_info in stakeholder_context["relationships"].values():
+                if isinstance(stakeholder_info, dict) and "teams" in stakeholder_info:
+                    if isinstance(stakeholder_info["teams"], list):
+                        teams.update(stakeholder_info["teams"])
+
+        return list(teams)
 
     def _extract_initiatives_from_context(
         self,

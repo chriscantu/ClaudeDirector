@@ -257,6 +257,16 @@ p0_features:
     introduced_version: "v3.0.0"
     owner: "martin"
 
+  - name: "Team Dynamics P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_team_dynamics_p0.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 120
+    description: "Context Engineering Phase 3.2 Team Dynamics Engine must provide cross-team coordination with 75%+ bottleneck detection accuracy and <3s response time"
+    failure_impact: "Cross-team coordination fails, team collaboration optimization broken, dependency tracking unavailable"
+    business_impact: "Multi-team delivery predictability compromised, coordination overhead increases, platform velocity degraded"
+    introduced_version: "v2.9.0"
+    owner: "martin"
+
 
 
 
