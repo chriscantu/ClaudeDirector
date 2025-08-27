@@ -56,7 +56,7 @@ class P0TestEnforcer:
             return [
                 {
                     "name": "MCP Transparency P0",
-                    "test_module": ".claudedirector/tests/regression/test_mcp_transparency_p0.py",
+                    "test_module": ".claudedirector/tests/regression/p0_blocking/test_mcp_transparency.py",
                     "critical_level": "BLOCKING",
                     "description": "MCP server transparency disclosure must work",
                     "failure_impact": "Strategic persona responses lose transparency",
@@ -91,7 +91,7 @@ class P0TestEnforcer:
             return [
                 {
                     "name": "MCP Transparency P0",
-                    "module": ".claudedirector/tests/regression/test_mcp_transparency_p0.py",
+                    "module": ".claudedirector/tests/regression/p0_blocking/test_mcp_transparency.py",
                     "critical_level": "BLOCKING",
                     "description": "MCP server transparency disclosure must work",
                     "failure_impact": "Strategic persona responses lose transparency",

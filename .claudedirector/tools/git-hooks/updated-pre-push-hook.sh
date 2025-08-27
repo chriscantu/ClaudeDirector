@@ -212,7 +212,7 @@ echo 'Enforcing complete P0 feature coverage as defined in p0_test_definitions.y
 
 # BLOCKING P0 TESTS (Must pass for CI success)
 echo '🧪 RUNNING BLOCKING P0 TEST: MCP Transparency P0'
-timeout 120 python .claudedirector/tests/regression/test_mcp_transparency_p0.py > /dev/null 2>&1 || (
+timeout 120 python .claudedirector/tests/regression/p0_blocking/test_mcp_transparency.py > /dev/null 2>&1 || (
     echo '❌ BLOCKING FAILURE: MCP Transparency P0 failed'
     exit 1
 )
