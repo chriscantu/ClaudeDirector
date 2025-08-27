@@ -277,6 +277,16 @@ p0_features:
     introduced_version: "v2.10.0"
     owner: "martin"
 
+  - name: "ML Pattern Detection P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_ml_pattern_detection_p0.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 300
+    description: "Context Engineering Phase 3.2B ML Pattern Detection must provide 85%+ collaboration success prediction accuracy with <5s response time"
+    failure_impact: "ML-enhanced pattern detection fails, collaboration prediction broken, feature extraction unreliable"
+    business_impact: "Predictive team management capability lost, 1-week advance warning system broken, pattern-based optimization unavailable"
+    introduced_version: "v2.11.0"
+    owner: "martin"
+
 
 
 
