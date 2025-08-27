@@ -26,6 +26,17 @@ from .realtime_monitor import (
     EventType,
     AlertSeverity,
 )
+from .ml_pattern_engine import (
+    MLPatternEngine,
+    TeamFeatureExtractor,
+    CollaborationClassifier,
+    FeatureVector,
+    CollaborationPrediction,
+    SuccessPattern,
+    TeamCollaborationOutcome,
+    CollaborationOutcome,
+    FeatureType,
+)
 
 from .strategic_layer import InitiativeStatus
 from .stakeholder_layer import StakeholderRole, CommunicationStyle
@@ -55,6 +66,15 @@ __all__ = [
     "Alert",
     "EventType",
     "AlertSeverity",
+    "MLPatternEngine",
+    "TeamFeatureExtractor",
+    "CollaborationClassifier",
+    "FeatureVector",
+    "CollaborationPrediction",
+    "SuccessPattern",
+    "TeamCollaborationOutcome",
+    "CollaborationOutcome",
+    "FeatureType",
     "InitiativeStatus",
     "StakeholderRole",
     "CommunicationStyle",
