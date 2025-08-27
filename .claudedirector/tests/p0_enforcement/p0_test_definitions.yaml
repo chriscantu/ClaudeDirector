@@ -267,6 +267,16 @@ p0_features:
     introduced_version: "v2.9.0"
     owner: "martin"
 
+  - name: "Real-Time Monitoring P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_realtime_monitoring_p0.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 300
+    description: "Context Engineering Phase 3.2B Real-Time Monitoring must provide 5-minute detection latency, 90%+ alert accuracy with <5% false positive rate"
+    failure_impact: "Real-time coordination issue detection fails, proactive alert system broken, event processing unreliable"
+    business_impact: "Coordination downtime increases by 60%, team bottlenecks go undetected, reactive instead of proactive management"
+    introduced_version: "v2.10.0"
+    owner: "martin"
+
 
 
 

@@ -15,6 +15,17 @@ from .stakeholder_layer import StakeholderLayerMemory
 from .learning_layer import LearningLayerMemory
 from .organizational_layer import OrganizationalLayerMemory
 from .context_orchestrator import ContextOrchestrator
+from .realtime_monitor import (
+    RealTimeMonitor,
+    EventProcessor,
+    AlertEngine,
+    TeamDataCollector,
+    RealTimeBottleneckDetector,
+    TeamEvent,
+    Alert,
+    EventType,
+    AlertSeverity,
+)
 
 from .strategic_layer import InitiativeStatus
 from .stakeholder_layer import StakeholderRole, CommunicationStyle
@@ -35,6 +46,15 @@ __all__ = [
     "LearningLayerMemory",
     "OrganizationalLayerMemory",
     "ContextOrchestrator",
+    "RealTimeMonitor",
+    "EventProcessor",
+    "AlertEngine",
+    "TeamDataCollector",
+    "RealTimeBottleneckDetector",
+    "TeamEvent",
+    "Alert",
+    "EventType",
+    "AlertSeverity",
     "InitiativeStatus",
     "StakeholderRole",
     "CommunicationStyle",
