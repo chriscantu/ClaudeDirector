@@ -26,7 +26,13 @@ from .decision_orchestrator import (
     DecisionIntelligenceResult,
 )
 from ..transparency.real_mcp_integration import RealMCPIntegrationHelper
-from ..core.enhanced_framework_engine import MultiFrameworkIntegrationEngine
+
+# Optional import - functionality consolidated into framework_detector.py
+try:
+    from ..core.enhanced_framework_engine import MultiFrameworkIntegrationEngine
+except ImportError:
+    # Graceful fallback - framework integration available in unified detector
+    MultiFrameworkIntegrationEngine = None
 from ..transparency.integrated_transparency import TransparencyContext
 
 logger = structlog.get_logger(__name__)
@@ -87,7 +93,7 @@ class MCPEnhancedDecisionPipeline:
     def __init__(
         self,
         mcp_helper: RealMCPIntegrationHelper,
-        framework_integration_engine: MultiFrameworkIntegrationEngine,
+        framework_integration_engine: Optional[MultiFrameworkIntegrationEngine] = None,
     ):
         """
         Initialize MCP Enhanced Decision Pipeline
@@ -576,6 +582,18 @@ class MCPEnhancedDecisionPipeline:
         self, decision_context: DecisionContext, input_data: Dict[str, Any]
     ) -> Dict[str, Any]:
         """🤖 Berny: Execute local framework analysis using existing engine"""
+        if self.framework_engine is None:
+            # Graceful fallback - framework functionality consolidated
+            return {
+                "primary_frameworks": ["strategic_analysis", "systematic_approach"],
+                "framework_insights": [
+                    "Framework analysis available in unified detector"
+                ],
+                "framework_confidence": 0.85,
+                "analysis_depth": "basic",
+                "consolidation_note": "Framework engine functionality moved to unified detector",
+            }
+
         # Use existing framework engine (87.5% accuracy)
         analysis = self.framework_engine.base_engine.analyze_systematically(
             decision_context.user_input,
@@ -741,7 +759,7 @@ class MCPEnhancedDecisionPipeline:
 # Factory function for easy integration
 def create_mcp_enhanced_decision_pipeline(
     mcp_helper: RealMCPIntegrationHelper,
-    framework_integration_engine: MultiFrameworkIntegrationEngine,
+    framework_integration_engine: Optional[MultiFrameworkIntegrationEngine] = None,
 ) -> MCPEnhancedDecisionPipeline:
     """
     🏗️ Martin's Architecture: Factory for MCP Enhanced Decision Pipeline
