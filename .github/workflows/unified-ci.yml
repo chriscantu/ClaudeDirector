@@ -91,12 +91,12 @@ jobs:
           # Install pre-commit
           pip install pre-commit
 
-          # Run pre-commit hooks exactly as local environment
+          # Run pre-commit hooks with proper failure handling
           pre-commit run --all-files || {
-            echo "⚠️ Pre-commit hooks failed - same failures would occur locally"
-            echo "🔧 This matches local pre-commit behavior"
-            # Allow warnings but not errors (matches local behavior)
-            exit 0
+            echo "❌ PRE-COMMIT HOOKS FAILED"
+            echo "🚨 This indicates real quality issues that must be fixed"
+            echo "🔧 Fix these issues locally and re-push"
+            exit 1
           }
 
           echo "✅ Pre-commit validation completed"

@@ -53,13 +53,13 @@ test_suites:
         description: "MCP server transparency disclosure functionality"
 
       - name: "Conversation Tracking P0"
-        path: ".claudedirector/tests/conversation/test_conversation_tracking_p0.py"
+        path: ".claudedirector/tests/regression/p0_blocking/test_conversation_tracking.py"
         timeout: 60
         critical: true
         description: "Strategic conversation tracking and memory"
 
       - name: "Conversation Quality P0"
-        path: ".claudedirector/tests/conversation/test_p0_quality_target.py"
+        path: ".claudedirector/tests/regression/p0_blocking/test_conversation_quality.py"
         timeout: 60
         critical: true
         description: "Conversation quality and persona consistency"

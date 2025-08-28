@@ -123,7 +123,7 @@ All architectural decisions documented in `docs/adrs/p0-features/` with:
 
 ### **Business Success Criteria**
 - $750K annual value demonstrated within 6 months
-- >80% engineering director adoption rate
+- >80% engineering leadership adoption rate
 - 30% improvement in strategic decision velocity
 - 25% increase in platform investment ROI clarity
 

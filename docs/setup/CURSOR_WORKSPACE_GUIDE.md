@@ -48,7 +48,7 @@ Instead of specifying file paths, use natural language:
 ✅ "Help me with budget planning using capital allocation framework"
 
 ❌ "Use the crucial conversations framework from .claudedirector"
-✅ "Prepare for a difficult conversation with the VP about technical debt"
+✅ "Prepare for a difficult conversation with executive leadership about technical debt"
 ```
 
 ## 🎯 **Strategic Context Persistence**
