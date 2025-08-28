@@ -99,7 +99,7 @@ repos:
       #   verbose: true
       - id: p0-ci-coverage-guard
         name: 🛡️ P0 CI COVERAGE GUARD
-        entry: python3 .claudedirector/tools/ci/p0-ci-coverage-guard.py
+        entry: python3 .claudedirector/tools/ci/p0_ci_coverage_guard.py
         language: system
         pass_filenames: false
         stages: [pre-commit]
