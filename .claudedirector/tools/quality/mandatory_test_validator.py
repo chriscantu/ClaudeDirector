@@ -238,20 +238,25 @@ def run_quick_smoke_tests():
     """Run quick smoke tests to catch obvious issues."""
     print("\n🚀 Running quick smoke tests...")
 
+    # Check for Python interpreter (venv or system)
     venv_python = PROJECT_ROOT / "venv" / "bin" / "python"
+    if venv_python.exists():
+        python_cmd = str(venv_python)
+    else:
+        python_cmd = "python3"
 
     # Basic import test for current architecture
-    import_cmd = f'{venv_python} -c "import sys; sys.path.insert(0, \\".claudedirector/lib\\"); print(\\"✅ Core imports working (legacy modules removed)\\")"'
+    import_cmd = f'{python_cmd} -c "import sys; sys.path.insert(0, \\".claudedirector/lib\\"); print(\\"✅ Core imports working (legacy modules removed)\\")"'
     if not run_command(import_cmd, "Core Module Import Test"):
         return False
 
     # First-run wizard functionality test
-    wizard_cmd = f'{venv_python} -c "import sys; sys.path.insert(0, \\".claudedirector/lib\\"); print(\\"✅ First-run wizard working (legacy test disabled)\\")"'
+    wizard_cmd = f'{python_cmd} -c "import sys; sys.path.insert(0, \\".claudedirector/lib\\"); print(\\"✅ First-run wizard working (legacy test disabled)\\")"'
     if not run_command(wizard_cmd, "First-Run Wizard Functionality Test"):
         return False
 
     # Configuration persistence test
-    config_cmd = f'{venv_python} -c "import sys; sys.path.insert(0, \\".claudedirector/lib\\"); print(\\"✅ Cursor integration working (legacy test disabled)\\")"'
+    config_cmd = f'{python_cmd} -c "import sys; sys.path.insert(0, \\".claudedirector/lib\\"); print(\\"✅ Cursor integration working (legacy test disabled)\\")"'
     if not run_command(config_cmd, "Cursor Integration Test"):
         return False
 
