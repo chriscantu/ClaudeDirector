@@ -159,7 +159,9 @@ def run_critical_tests_comprehensive():
         else:
             print("  ❌ AI cleanup enforcement: FAILED")
     else:
-        print("  ⚠️ AI cleanup enforcement: FILE NOT FOUND (skipping - test not required in CI)")
+        print(
+            "  ⚠️ AI cleanup enforcement: FILE NOT FOUND (skipping - test not required in CI)"
+        )
 
     # Results Summary
     print("\n" + "=" * 60)
