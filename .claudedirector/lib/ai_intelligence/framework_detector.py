@@ -50,6 +50,7 @@ from ..transparency.integrated_transparency import (
     IntegratedTransparencySystem,
     TransparencyContext,
 )
+
 # NOTE: MCP functionality consolidated into unified detector
 # from .mcp_enhanced_framework_engine import MCPEnhancedFrameworkEngine
 
@@ -218,9 +219,13 @@ class EnhancedFrameworkDetection:
             transparency_system: Transparency tracking
         """
         self.baseline_detector = baseline_detector
-        self.mcp_enhanced_engine = mcp_enhanced_engine  # Optional - functionality consolidated
+        self.mcp_enhanced_engine = (
+            mcp_enhanced_engine  # Optional - functionality consolidated
+        )
         self.memory_engine = memory_engine  # Optional - functionality consolidated
-        self.transparency_system = transparency_system  # Optional - functionality consolidated
+        self.transparency_system = (
+            transparency_system  # Optional - functionality consolidated
+        )
 
         # Session management integration (consolidated from enhanced_framework_manager)
         self.session_manager = session_manager or SessionManager()

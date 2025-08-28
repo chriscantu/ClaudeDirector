@@ -57,7 +57,9 @@ class EmbeddedFrameworkEngine:
         if self._refactored_engine is None:
             # NOTE: refactored_framework_engine.py was removed in Phase 6.1 consolidation
             # Functionality has been consolidated into unified framework_detector.py
-            logger.warning("RefactoredFrameworkEngine has been deprecated and consolidated")
+            logger.warning(
+                "RefactoredFrameworkEngine has been deprecated and consolidated"
+            )
             # Return None to indicate deprecated functionality
             return None
         return self._refactored_engine
