@@ -55,6 +55,84 @@ from .mcp_enhanced_framework_engine import MCPEnhancedFrameworkEngine
 logger = structlog.get_logger(__name__)
 
 
+# === SESSION MANAGEMENT (CONSOLIDATED FROM ENHANCED_FRAMEWORK_MANAGER) ===
+
+
+class SessionManager:
+    """Simplified session management for framework detector"""
+
+    def __init__(self):
+        self.current_session_id: Optional[str] = None
+        self.session_context: Optional[ConversationContext] = None
+
+    def start_session(self, session_type: str = "strategic") -> str:
+        """Start a new framework detection session"""
+        import uuid
+
+        self.current_session_id = f"{session_type}_{uuid.uuid4().hex[:8]}"
+        self.session_context = ConversationContext(session_id=self.current_session_id)
+        return self.current_session_id
+
+    def get_session_context(self) -> Optional[ConversationContext]:
+        """Get current session context"""
+        return self.session_context
+
+    def update_context(self, **kwargs) -> None:
+        """Update session context with new information"""
+        if self.session_context:
+            for key, value in kwargs.items():
+                if hasattr(self.session_context, key):
+                    setattr(self.session_context, key, value)
+
+
+# === CONSOLIDATED DATA CLASSES FROM ENHANCED_FRAMEWORK_ENGINE ===
+
+
+@dataclass
+class ConversationContext:
+    """Represents conversation context for enhanced framework selection"""
+
+    session_id: str
+    previous_topics: List[str] = field(default_factory=list)
+    strategic_themes: Set[str] = field(default_factory=set)
+    stakeholder_mentions: Set[str] = field(default_factory=set)
+    domain_focus: Optional[str] = None
+    complexity_level: str = "medium"  # low, medium, high
+    conversation_history: List[Dict[str, Any]] = field(default_factory=list)
+    framework_usage_history: List[str] = field(default_factory=list)
+
+
+@dataclass
+class MultiFrameworkAnalysis:
+    """Result of enhanced multi-framework analysis"""
+
+    primary_framework: Any  # FrameworkAnalysis - will be properly typed later
+    supporting_frameworks: List[Any] = field(default_factory=list)
+    integrated_insights: Dict[str, Any] = field(default_factory=dict)
+    cross_framework_patterns: List[str] = field(default_factory=list)
+    comprehensive_recommendations: List[str] = field(default_factory=list)
+    implementation_roadmap: Dict[str, List[str]] = field(default_factory=dict)
+    stakeholder_considerations: Dict[str, List[str]] = field(default_factory=dict)
+    confidence_score: float = 0.0
+    context_relevance: float = 0.0
+
+
+@dataclass
+class EnhancedSystematicResponse:
+    """Complete enhanced systematic analysis response with context awareness"""
+
+    multi_framework_analysis: MultiFrameworkAnalysis
+    persona_integrated_response: str = ""
+    context_aware_recommendations: List[str] = field(default_factory=list)
+    conversation_continuity_notes: List[str] = field(default_factory=list)
+    processing_time_ms: int = 0
+    frameworks_applied: List[str] = field(default_factory=list)
+    learning_insights: Dict[str, Any] = field(default_factory=dict)
+
+
+# === ORIGINAL FRAMEWORK DETECTOR CLASSES ===
+
+
 class FrameworkRelevance(Enum):
     """Framework relevance levels for proactive suggestions"""
 
@@ -124,6 +202,7 @@ class EnhancedFrameworkDetection:
         mcp_enhanced_engine: MCPEnhancedFrameworkEngine,
         memory_engine: ConversationMemoryEngine,
         transparency_system: IntegratedTransparencySystem,
+        session_manager: Optional[SessionManager] = None,
     ):
         """
         Initialize Enhanced Framework Detection
@@ -138,6 +217,11 @@ class EnhancedFrameworkDetection:
         self.mcp_enhanced_engine = mcp_enhanced_engine
         self.memory_engine = memory_engine
         self.transparency_system = transparency_system
+
+        # Session management integration (consolidated from enhanced_framework_manager)
+        self.session_manager = session_manager or SessionManager()
+        if not self.session_manager.current_session_id:
+            self.session_manager.start_session("framework_detection")
 
         # Enhancement configuration
         self.context_patterns = self._initialize_context_patterns()
