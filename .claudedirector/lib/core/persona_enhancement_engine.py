@@ -72,7 +72,10 @@ class PersonaEnhancementEngine:
         self.config = config or {}
 
         # Initialize embedded framework engine (optional - functionality consolidated)
-        if EmbeddedFrameworkEngine is not None and EmbeddedPersonaIntegrator is not None:
+        if (
+            EmbeddedFrameworkEngine is not None
+            and EmbeddedPersonaIntegrator is not None
+        ):
             self.framework_engine = EmbeddedFrameworkEngine(config)
             self.persona_integrator = EmbeddedPersonaIntegrator(self.framework_engine)
         else:
@@ -372,7 +375,7 @@ class PersonaEnhancementEngine:
             logger.info(
                 "embedded_framework_unavailable_graceful_fallback",
                 persona=context.persona_name,
-                note="Framework functionality available in unified detector"
+                note="Framework functionality available in unified detector",
             )
             return None
 

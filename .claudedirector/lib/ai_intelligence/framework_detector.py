@@ -42,6 +42,7 @@ from ..transparency.framework_detection import (
     FrameworkDetectionMiddleware,
     FrameworkUsage,
 )
+
 # ConversationMemoryEngine and ConversationContext now defined in this file - self-sufficient!
 from ..transparency.integrated_transparency import (
     IntegratedTransparencySystem,
@@ -234,7 +235,9 @@ class ConversationMemoryEngine:
 
         return context
 
-    def get_recommended_frameworks(self, session_id: str, topics: List[str]) -> List[str]:
+    def get_recommended_frameworks(
+        self, session_id: str, topics: List[str]
+    ) -> List[str]:
         """Get framework recommendations based on learned patterns"""
         context = self.get_or_create_context(session_id)
 
@@ -246,7 +249,9 @@ class ConversationMemoryEngine:
                     framework_scores[framework] += count
 
         # Return top frameworks
-        return sorted(framework_scores.keys(), key=lambda x: framework_scores[x], reverse=True)[:3]
+        return sorted(
+            framework_scores.keys(), key=lambda x: framework_scores[x], reverse=True
+        )[:3]
 
 
 class EnhancedFrameworkDetection:

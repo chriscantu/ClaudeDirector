@@ -23,6 +23,7 @@ from ..transparency.real_mcp_integration import (
     RealMCPIntegrationHelper,
     EnhancedTransparentPersonaManager,
 )
+
 # Optional imports - functionality consolidated into framework_detector.py
 try:
     from ..core.enhanced_framework_engine import (
@@ -710,6 +711,7 @@ async def create_decision_intelligence_orchestrator(
         create_mcp_integrated_transparency_manager,
     )
     from ..transparency.integrated_transparency import create_transparency_system
+
     # Try to create enhanced framework engine (optional - functionality consolidated)
     framework_engine = None
     if EnhancedFrameworkEngine is not None:

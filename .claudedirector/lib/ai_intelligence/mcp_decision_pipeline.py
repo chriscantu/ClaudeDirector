@@ -26,6 +26,7 @@ from .decision_orchestrator import (
     DecisionIntelligenceResult,
 )
 from ..transparency.real_mcp_integration import RealMCPIntegrationHelper
+
 # Optional import - functionality consolidated into framework_detector.py
 try:
     from ..core.enhanced_framework_engine import MultiFrameworkIntegrationEngine
@@ -585,10 +586,12 @@ class MCPEnhancedDecisionPipeline:
             # Graceful fallback - framework functionality consolidated
             return {
                 "primary_frameworks": ["strategic_analysis", "systematic_approach"],
-                "framework_insights": ["Framework analysis available in unified detector"],
+                "framework_insights": [
+                    "Framework analysis available in unified detector"
+                ],
                 "framework_confidence": 0.85,
                 "analysis_depth": "basic",
-                "consolidation_note": "Framework engine functionality moved to unified detector"
+                "consolidation_note": "Framework engine functionality moved to unified detector",
             }
 
         # Use existing framework engine (87.5% accuracy)
