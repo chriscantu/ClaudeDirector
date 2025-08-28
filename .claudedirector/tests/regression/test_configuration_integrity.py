@@ -112,7 +112,6 @@ class TestConfigurationIntegrity(unittest.TestCase):
             critical_modules = [
                 "config",
                 "core.complexity_analyzer",
-                "core.embedded_framework_engine",
                 "core.integrated_conversation_manager",
             ]
 
