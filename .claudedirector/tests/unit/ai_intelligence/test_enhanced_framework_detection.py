@@ -27,7 +27,7 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 try:
-    from claudedirector.lib.ai_intelligence.enhanced_framework_detection import (
+    from claudedirector.lib.ai_intelligence.framework_detector import (
         EnhancedFrameworkDetection,
         FrameworkRelevance,
         FrameworkSuggestion,
@@ -51,7 +51,7 @@ try:
     )
 except ImportError:
     sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
-    from lib.ai_intelligence.enhanced_framework_detection import (
+    from lib.ai_intelligence.framework_detector import (
         EnhancedFrameworkDetection,
         FrameworkRelevance,
         FrameworkSuggestion,

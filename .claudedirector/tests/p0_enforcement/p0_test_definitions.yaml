@@ -205,14 +205,14 @@ p0_features:
     introduced_version: "v3.0.0"
     owner: "martin"
 
-  # PHASE 2 AI INTELLIGENCE - ENHANCED FRAMEWORK DETECTION
+  # PHASE 2 AI INTELLIGENCE - UNIFIED FRAMEWORK DETECTION (Updated Phase 6.1)
   - name: "Enhanced Framework Detection P0"
     test_module: ".claudedirector/tests/unit/ai_intelligence/test_enhanced_framework_detection.py"
     critical_level: "HIGH"
     timeout_seconds: 180
-    description: "Enhanced Framework Detection must provide 95%+ relevance with proactive suggestions and <200ms latency"
-    failure_impact: "Proactive framework suggestions fail, context analysis degraded, business impact scoring broken"
-    business_impact: "Strategic framework recommendations become reactive, reduced strategic guidance quality, missed optimization opportunities"
+    description: "Unified Framework Detection must provide 95%+ relevance with proactive suggestions and <200ms latency"
+    failure_impact: "Framework detection fails, unified detector broken, context analysis degraded"
+    business_impact: "Strategic framework recommendations fail, reduced strategic guidance quality, missed optimization opportunities"
     introduced_version: "v3.1.0"
     owner: "martin"
 
