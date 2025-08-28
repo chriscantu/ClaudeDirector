@@ -333,10 +333,11 @@ class AICleanupEnforcer:
         new_files = [f for f, status in self.staged_files.items() if status == 'A']
 
         if len(new_files) > self.cleanup_rules['max_new_files_without_justification']:
+            newline = '\n'
             suggestions.append(
-                f"🧹 CLEANUP SUGGESTION: {len(new_files)} new files added. Consider:\n"
-                f"  • Consolidating similar functionality\n"
-                f"  • Removing temporary test files\n"
+                f"🧹 CLEANUP SUGGESTION: {len(new_files)} new files added. Consider:{newline}"
+                f"  • Consolidating similar functionality{newline}"
+                f"  • Removing temporary test files{newline}"
                 f"  • Combining related documentation"
             )
 
