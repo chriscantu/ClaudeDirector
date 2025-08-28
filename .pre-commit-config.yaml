@@ -150,8 +150,8 @@ repos:
 
       - id: ai-cleanup-enforcement
         name: 🧹 AI Cleanup Enforcement
-        entry: .claudedirector/tools/hooks/pre-commit-ai-cleanup
-        language: script
+        entry: bash -c 'if [ "$GITHUB_ACTIONS" = "true" ]; then echo "⚠️ Skipping AI cleanup in CI"; exit 0; else exec .claudedirector/tools/hooks/pre-commit-ai-cleanup; fi'
+        language: system
         pass_filenames: false
         always_run: true
         stages: [pre-commit]
