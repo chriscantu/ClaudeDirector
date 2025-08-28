@@ -123,8 +123,10 @@ class ClaudeDirectorTransparencyExample:
         await mcp_helper.call_mcp_server(
             "org_analytics", "culture_assessment", scope="department"
         )
+        from .config import STAKEHOLDER_ANALYSIS_DOMAIN
+
         await mcp_helper.call_mcp_server(
-            "change_readiness", "stakeholder_analysis", initiative=query
+            "change_readiness", STAKEHOLDER_ANALYSIS_DOMAIN, initiative=query
         )
 
         response = f"""
@@ -267,13 +269,15 @@ class ClaudeDirectorTransparencyExample:
 
     def _extract_objective(self, query: str) -> str:
         """Extract strategic objective from query"""
+        from .config import TECHNICAL_DOMAIN
+
         if "market" in query.lower():
             return "Market expansion and competitive positioning"
         elif "innovation" in query.lower():
             return "Innovation acceleration and technology advancement"
         elif "organization" in query.lower():
             return "Organizational transformation and capability building"
-        elif "technical" in query.lower():
+        elif TECHNICAL_DOMAIN in query.lower():
             return "Technical excellence and system optimization"
         else:
             return "Strategic value creation and sustainable growth"

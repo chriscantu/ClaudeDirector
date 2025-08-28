@@ -8,6 +8,8 @@ from typing import List, Dict
 from dataclasses import dataclass
 
 # Import centralized configuration
+from .config import DEFAULT_CONFIDENCE_SCORE, STRATEGIC_DOMAIN
+
 try:
     from core.constants.framework_definitions import FRAMEWORK_REGISTRY
     from core.constants.constants import PERSONAS, TRANSPARENCY
@@ -25,7 +27,7 @@ class FrameworkUsage:
     framework_name: str
     confidence_score: float
     matched_patterns: List[str]
-    framework_type: str  # 'strategic', 'architectural', 'business', etc.
+    framework_type: str  # STRATEGIC_DOMAIN, 'architectural', 'business', etc.
 
 
 class FrameworkDetectionMiddleware:
@@ -83,8 +85,10 @@ class FrameworkDetectionMiddleware:
                 if pattern_count > 0:
                     matched_patterns.append(pattern)
                     # Add confidence based on pattern occurrence
+                    from .config import STRATEGIC_KEYWORD_THRESHOLD
+
                     confidence_score += min(
-                        pattern_count * 0.3, 0.8
+                        pattern_count * STRATEGIC_KEYWORD_THRESHOLD, 0.8
                     )  # Cap per pattern at 0.8
 
             # Apply base confidence weight
@@ -161,7 +165,7 @@ class FrameworkDetectionMiddleware:
             return {
                 "total_frameworks": 0,
                 "framework_types": [],
-                "highest_confidence": 0.0,
+                "highest_confidence": DEFAULT_CONFIDENCE_SCORE,
                 "frameworks_used": [],
             }
 

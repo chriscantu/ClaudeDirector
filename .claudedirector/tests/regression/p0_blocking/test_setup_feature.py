@@ -36,17 +36,27 @@ class TestSetupP0(unittest.TestCase):
 
         # Walk up the directory tree to find project root
         for parent in current_dir.parents:
-            if (parent / "bin" / "claudedirector").exists():
+            # Check new location first (.claudedirector/tools/bin/claudedirector)
+            if (
+                parent / ".claudedirector" / "tools" / "bin" / "claudedirector"
+            ).exists():
+                project_root = parent
+                break
+            # Check legacy location for backward compatibility
+            elif (parent / "bin" / "claudedirector").exists():
                 project_root = parent
                 break
 
         if not project_root:
             raise RuntimeError(
-                "Cannot find project root - bin/claudedirector not found"
+                "Cannot find project root - claudedirector binary not found in .claudedirector/tools/bin/ or bin/"
             )
 
         cls.project_root = project_root
-        cls.claudedirector_path = project_root / "bin" / "claudedirector"
+        # Use new location if it exists, otherwise fall back to legacy
+        new_path = project_root / ".claudedirector" / "tools" / "bin" / "claudedirector"
+        legacy_path = project_root / "bin" / "claudedirector"
+        cls.claudedirector_path = new_path if new_path.exists() else legacy_path
 
         # Ensure claudedirector is executable
         if not os.access(cls.claudedirector_path, os.X_OK):
