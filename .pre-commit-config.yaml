@@ -120,15 +120,15 @@ repos:
   # Architectural governance
   - repo: local
     hooks:
-      # TEMPORARILY DISABLED: SOLID validation for P0 focus (re-enable in cleanup PR)
-      # - id: solid-principle-validator
-      #   name: 🏗️ SOLID Principle Validation
-      #   entry: python .claudedirector/tools/architecture/solid_validator.py
-      #   language: system
-      #   files: ^\.claudedirector/lib/.*\.py$
-      #   pass_filenames: true
-      #   always_run: true
-      #   verbose: true
+      # RE-ENABLED: SOLID validation for Phase 5.2 architectural cleanup
+      - id: solid-principle-validator
+        name: 🏗️ SOLID Principle Validation
+        entry: python .claudedirector/tools/architecture/solid_validator.py
+        language: system
+        files: ^\.claudedirector/lib/.*\.py$
+        pass_filenames: true
+        always_run: true
+        verbose: true
 
       # P1 Feature Testing
       - id: p1-unit-tests

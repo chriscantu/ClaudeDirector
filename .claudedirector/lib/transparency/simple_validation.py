@@ -20,7 +20,11 @@ def test_mcp_transparency():
     context = MCPContext()
     from datetime import datetime
 
-    call = MCPCall("test_server", "analysis", 0.15, datetime.now(), True)
+    from .config import TEST_ANALYSIS_DURATION
+
+    call = MCPCall(
+        "test_server", "analysis", TEST_ANALYSIS_DURATION, datetime.now(), True
+    )
     context.add_mcp_call(call)
 
     assert len(context.mcp_calls) == 1
@@ -30,7 +34,11 @@ def test_mcp_transparency():
 
     # Test middleware
     middleware = MCPTransparencyMiddleware()
-    middleware.track_mcp_call(context, "server2", "capability2", 0.05, True)
+    from .config import TEST_PROCESSING_TIME
+
+    middleware.track_mcp_call(
+        context, "server2", "capability2", TEST_PROCESSING_TIME, True
+    )
 
     assert len(context.mcp_calls) == 2
     print("  ✓ MCPTransparencyMiddleware tracking working")
@@ -116,7 +124,13 @@ def test_persona_communication_patterns():
         from datetime import datetime
 
         context.add_mcp_call(
-            MCPCall(f"{persona}_server", "analysis", 0.1, datetime.now(), True)
+            MCPCall(
+                f"{persona}_server",
+                "analysis",
+                TEST_RESPONSE_TIME,
+                datetime.now(),
+                True,
+            )
         )
 
         response = f"Test response from {persona}"
@@ -151,7 +165,11 @@ def test_performance_characteristics():
 
     for i in range(100):
         context = MCPContext()
-        context.add_mcp_call(MCPCall(f"server_{i}", "test", 0.01, datetime.now(), True))
+        from .config import TEST_LATENCY_THRESHOLD
+
+        context.add_mcp_call(
+            MCPCall(f"server_{i}", "test", TEST_LATENCY_THRESHOLD, datetime.now(), True)
+        )
         mcp_middleware.wrap_persona_response("diego", f"Response {i}", context)
 
     mcp_time = time.time() - start_time
@@ -194,10 +212,24 @@ async def test_integration_scenario():
     mcp_middleware = MCPTransparencyMiddleware()
 
     # Simulate multiple MCP calls
+    from .config import TEST_FRAMEWORK_SCORES
+
     mcp_calls = [
-        ("market_analysis", "competitive_intel", 0.15),
-        ("strategic_research", "industry_trends", 0.08),
-        ("financial_modeling", "revenue_projection", 0.12),
+        (
+            "market_analysis",
+            "competitive_intel",
+            TEST_FRAMEWORK_SCORES["team_topologies"],
+        ),
+        (
+            "strategic_research",
+            "industry_trends",
+            TEST_FRAMEWORK_SCORES["good_strategy"],
+        ),
+        (
+            "financial_modeling",
+            "revenue_projection",
+            TEST_FRAMEWORK_SCORES["wrap_framework"],
+        ),
     ]
 
     from datetime import datetime
@@ -275,7 +307,11 @@ async def test_integration_scenario():
     print(f"    - Expected frameworks found: {detected_expected}")
 
     # Performance validation
-    assert processing_time < 0.5, f"Integration took too long: {processing_time:.3f}s"
+    from .config import TEST_PERFORMANCE_THRESHOLD
+
+    assert (
+        processing_time < TEST_PERFORMANCE_THRESHOLD
+    ), f"Integration took too long: {processing_time:.3f}s"
     assert len(final_response) > len(base_response), "Response should be enhanced"
 
     print("  ✅ Integration scenario test passed\n")
