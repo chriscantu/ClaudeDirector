@@ -53,12 +53,13 @@ class EmbeddedFrameworkEngine:
         )
 
     def _get_refactored_engine(self):
-        """Get the refactored engine, initializing if needed"""
+        """Get the refactored engine, initializing if needed - DEPRECATED: functionality consolidated"""
         if self._refactored_engine is None:
-            # Import here to avoid circular imports
-            from .refactored_framework_engine import RefactoredFrameworkEngine
-
-            self._refactored_engine = RefactoredFrameworkEngine(config=self.config)
+            # NOTE: refactored_framework_engine.py was removed in Phase 6.1 consolidation
+            # Functionality has been consolidated into unified framework_detector.py
+            logger.warning("RefactoredFrameworkEngine has been deprecated and consolidated")
+            # Return None to indicate deprecated functionality
+            return None
         return self._refactored_engine
 
     def analyze_systematically(
