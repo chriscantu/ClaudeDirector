@@ -31,21 +31,18 @@ TARGET: Single framework detector with 95%+ accuracy and all original functional
 
 import asyncio
 import time
+from collections import defaultdict
 from typing import Dict, Any, List, Optional, Set, Tuple
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 import structlog
-from collections import defaultdict
 
 # Import existing infrastructure
 from ..transparency.framework_detection import (
     FrameworkDetectionMiddleware,
     FrameworkUsage,
 )
-from ..core.enhanced_framework_engine import (
-    ConversationMemoryEngine,
-    ConversationContext,
-)
+# ConversationMemoryEngine and ConversationContext now defined in this file - self-sufficient!
 from ..transparency.integrated_transparency import (
     IntegratedTransparencySystem,
     TransparencyContext,
@@ -184,6 +181,72 @@ class EnhancedDetectionResult:
     learning_insights: Dict[str, Any]
     processing_time_ms: float
     enhancement_confidence: float
+
+
+class ConversationMemoryEngine:
+    """Manages conversation context and learning across sessions - CONSOLIDATED from enhanced_framework_engine.py"""
+
+    def __init__(self):
+        self.session_contexts: Dict[str, ConversationContext] = {}
+        self.global_patterns: Dict[str, int] = defaultdict(int)
+        self.framework_effectiveness: Dict[str, List[float]] = defaultdict(list)
+        self.topic_framework_mapping: Dict[str, Dict[str, int]] = defaultdict(
+            lambda: defaultdict(int)
+        )
+
+    def get_or_create_context(self, session_id: str) -> ConversationContext:
+        """Get existing or create new conversation context"""
+        if session_id not in self.session_contexts:
+            self.session_contexts[session_id] = ConversationContext(
+                session_id=session_id
+            )
+        return self.session_contexts[session_id]
+
+    def update_context(
+        self,
+        session_id: str,
+        user_input: str,
+        topics: List[str],
+        frameworks_used: List[str],
+    ) -> ConversationContext:
+        """Update conversation context with new information"""
+        context = self.get_or_create_context(session_id)
+
+        # Update conversation history
+        context.conversation_history.append(
+            {
+                "input": user_input,
+                "timestamp": time.time(),
+                "topics": topics,
+                "frameworks": frameworks_used,
+            }
+        )
+
+        # Update topics and themes
+        context.previous_topics.extend(topics)
+        context.strategic_themes.update(topics)
+        context.framework_usage_history.extend(frameworks_used)
+
+        # Learn patterns for future recommendations
+        for topic in topics:
+            for framework in frameworks_used:
+                self.topic_framework_mapping[topic][framework] += 1
+
+        return context
+
+    def get_recommended_frameworks(self, session_id: str, topics: List[str]) -> List[str]:
+        """Get framework recommendations based on learned patterns"""
+        context = self.get_or_create_context(session_id)
+
+        # Simple recommendation based on topic-framework mapping
+        framework_scores = defaultdict(float)
+        for topic in topics:
+            if topic in self.topic_framework_mapping:
+                for framework, count in self.topic_framework_mapping[topic].items():
+                    framework_scores[framework] += count
+
+        # Return top frameworks
+        return sorted(framework_scores.keys(), key=lambda x: framework_scores[x], reverse=True)[:3]
 
 
 class EnhancedFrameworkDetection:
