@@ -235,7 +235,7 @@ class StrategicScenarioDemo:
         print("🎯 STRATEGIC SCENARIO DEMO: Director's Strategic Workflow")
         print("=" * 80)
         print(
-            "Scenario: Engineering Director managing platform initiative across multiple teams"
+            "Scenario: Engineering Leader managing platform initiative across multiple teams"
         )
         print(
             "Expected: Complete strategic context and actionable insights in < 2 minutes"
@@ -284,7 +284,7 @@ class StrategicScenarioDemo:
 
         # Step 3: Strategic Dashboard Review
         print("📋 Step 3: Strategic Dashboard Review")
-        print("Director reviews strategic context and accountability...")
+        print("Leader reviews strategic context and accountability...")
 
         step_start = time.time()
 
@@ -314,7 +314,7 @@ class StrategicScenarioDemo:
 
         # Step 4: System Health Check
         print("🔍 Step 4: System Health & Platform Status")
-        print("Director validates platform health for executive reporting...")
+        print("Leader validates platform health for executive reporting...")
 
         step_start = time.time()
         status_result = subprocess.run(
@@ -387,7 +387,7 @@ def main():
     demo = StrategicScenarioDemo()
 
     print("🚀 ClaudeDirector Strategic Scenario Demo")
-    print("Creating realistic director workflow scenario...")
+    print("Creating realistic leadership workflow scenario...")
 
     # Setup demo environment
     demo.setup_demo_environment()

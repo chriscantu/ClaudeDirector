@@ -11,10 +11,10 @@ from typing import List, Tuple
 
 # CRITICAL: Sensitive stakeholder names that must NEVER be committed
 SENSITIVE_PATTERNS = [
-    # Real stakeholder names (add patterns, not exact names for security)
-    r"(?i)\b(executive_a|executive_b)\b",  # Placeholder patterns to prevent self-detection
-    r"(?i)\b(target_exec|ally_exec|opposition_exec)\b",
-    r"(?i)\b(platform_executive|product_executive)\b",
+    # Stakeholder name patterns (generic patterns, not exact names for security)
+    r"(?i)\b(executive_alpha|executive_beta)\b",  # Safe placeholder patterns
+    r"(?i)\b(stakeholder_x|stakeholder_y|stakeholder_z)\b",
+    r"(?i)\b(platform_lead|product_lead)\b",
     # Pattern-based detection
     r"(?i)(real[_-]?stakeholder[_-]?name)",
     r"(?i)(actual[_-]?procore[_-]?stakeholder)",
@@ -68,6 +68,10 @@ def scan_staged_files() -> bool:
 
         # Skip certain file types
         if file_path.endswith((".db", ".sqlite", ".pyc", ".png", ".jpg", ".jpeg")):
+            continue
+
+        # Skip self-scanning to prevent false positives from placeholder patterns
+        if file_path.endswith("stakeholder_name_scanner.py"):
             continue
 
         violations = scan_file(file_path)

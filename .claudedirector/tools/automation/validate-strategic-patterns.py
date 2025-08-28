@@ -20,7 +20,7 @@ class QuickStrategicValidator:
         self.results = {}
 
     def test_executive_startup(self) -> Tuple[bool, float, str]:
-        """Test: Director starts their day - get immediate strategic value"""
+        """Test: Leader starts their day - get immediate strategic value"""
         print("🏃‍♂️ Testing executive startup workflow...")
 
         start_time = time.time()
