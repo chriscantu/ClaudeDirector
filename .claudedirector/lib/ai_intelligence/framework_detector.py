@@ -58,6 +58,23 @@ MCPEnhancedFrameworkEngine = Any  # Deprecated - functionality consolidated
 logger = structlog.get_logger(__name__)
 
 
+# === CONSOLIDATED DATA CLASSES FROM ENHANCED_FRAMEWORK_ENGINE ===
+
+
+@dataclass
+class ConversationContext:
+    """Represents conversation context for enhanced framework selection"""
+
+    session_id: str
+    previous_topics: List[str] = field(default_factory=list)
+    strategic_themes: Set[str] = field(default_factory=set)
+    stakeholder_mentions: Set[str] = field(default_factory=set)
+    domain_focus: Optional[str] = None
+    complexity_level: str = "medium"  # low, medium, high
+    conversation_history: List[Dict[str, Any]] = field(default_factory=list)
+    framework_usage_history: List[str] = field(default_factory=list)
+
+
 # === SESSION MANAGEMENT (CONSOLIDATED FROM ENHANCED_FRAMEWORK_MANAGER) ===
 
 
@@ -86,23 +103,6 @@ class SessionManager:
             for key, value in kwargs.items():
                 if hasattr(self.session_context, key):
                     setattr(self.session_context, key, value)
-
-
-# === CONSOLIDATED DATA CLASSES FROM ENHANCED_FRAMEWORK_ENGINE ===
-
-
-@dataclass
-class ConversationContext:
-    """Represents conversation context for enhanced framework selection"""
-
-    session_id: str
-    previous_topics: List[str] = field(default_factory=list)
-    strategic_themes: Set[str] = field(default_factory=set)
-    stakeholder_mentions: Set[str] = field(default_factory=set)
-    domain_focus: Optional[str] = None
-    complexity_level: str = "medium"  # low, medium, high
-    conversation_history: List[Dict[str, Any]] = field(default_factory=list)
-    framework_usage_history: List[str] = field(default_factory=list)
 
 
 @dataclass

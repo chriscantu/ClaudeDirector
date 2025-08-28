@@ -39,13 +39,11 @@ try:
         FrameworkDetectionMiddleware,
         FrameworkUsage,
     )
-    from claudedirector.lib.core.enhanced_framework_engine import (
+    from claudedirector.lib.ai_intelligence.framework_detector import (
         ConversationMemoryEngine,
         ConversationContext,
     )
-    from claudedirector.lib.ai_intelligence.mcp_enhanced_framework_engine import (
-        MCPEnhancedFrameworkEngine,
-    )
+    # MCPEnhancedFrameworkEngine removed - functionality consolidated
     from claudedirector.lib.transparency.integrated_transparency import (
         IntegratedTransparencySystem,
     )
@@ -63,13 +61,11 @@ except ImportError:
         FrameworkDetectionMiddleware,
         FrameworkUsage,
     )
-    from lib.core.enhanced_framework_engine import (
+    from lib.ai_intelligence.framework_detector import (
         ConversationMemoryEngine,
         ConversationContext,
     )
-    from lib.ai_intelligence.mcp_enhanced_framework_engine import (
-        MCPEnhancedFrameworkEngine,
-    )
+    # MCPEnhancedFrameworkEngine removed - functionality consolidated
     from lib.transparency.integrated_transparency import (
         IntegratedTransparencySystem,
     )
@@ -82,7 +78,7 @@ class TestEnhancedFrameworkDetection:
         """Set up test fixtures"""
         # Mock dependencies
         self.mock_baseline_detector = Mock(spec=FrameworkDetectionMiddleware)
-        self.mock_mcp_enhanced_engine = Mock(spec=MCPEnhancedFrameworkEngine)
+        self.mock_mcp_enhanced_engine = Mock()  # MCPEnhancedFrameworkEngine consolidated
         self.mock_memory_engine = Mock(spec=ConversationMemoryEngine)
         self.mock_transparency_system = Mock(spec=IntegratedTransparencySystem)
 
