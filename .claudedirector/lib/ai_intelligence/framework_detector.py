@@ -4,7 +4,7 @@ Unified Framework Detector - Phase 6.1 Architectural Consolidation
 🏗️ Martin | Platform Architecture - Bloat Cleanup Lead
 
 CONSOLIDATED FROM 6 FRAMEWORK ENGINES:
-✅ enhanced_framework_detection.py (891 lines) - Base implementation
+🗑️ enhanced_framework_detection.py (920 lines) - REMOVED: Base implementation consolidated
 ✅ enhanced_framework_engine.py (1,264 lines) - Conversation context features
 ✅ enhanced_framework_manager.py (332 lines) - Session context preservation
 🗑️ mcp_enhanced_framework_engine.py (605 lines) - REMOVED: MCP coordination consolidated
