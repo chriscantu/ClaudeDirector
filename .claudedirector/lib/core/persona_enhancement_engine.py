@@ -11,10 +11,16 @@ from dataclasses import dataclass
 from typing import Dict, List, Optional, Any, Tuple
 import structlog
 
-from .embedded_framework_engine import (
-    EmbeddedFrameworkEngine,
-    EmbeddedPersonaIntegrator,
-)
+# Optional import - functionality being consolidated into framework_detector.py
+try:
+    from .embedded_framework_engine import (
+        EmbeddedFrameworkEngine,
+        EmbeddedPersonaIntegrator,
+    )
+except ImportError:
+    # Graceful fallbacks - functionality available in unified detector
+    EmbeddedFrameworkEngine = None
+    EmbeddedPersonaIntegrator = None
 from .complexity_analyzer import (
     AnalysisComplexityDetector,
     ComplexityAnalysis,
@@ -65,9 +71,14 @@ class PersonaEnhancementEngine:
         self.complexity_detector = complexity_detector
         self.config = config or {}
 
-        # Initialize embedded framework engine
-        self.framework_engine = EmbeddedFrameworkEngine(config)
-        self.persona_integrator = EmbeddedPersonaIntegrator(self.framework_engine)
+        # Initialize embedded framework engine (optional - functionality consolidated)
+        if EmbeddedFrameworkEngine is not None and EmbeddedPersonaIntegrator is not None:
+            self.framework_engine = EmbeddedFrameworkEngine(config)
+            self.persona_integrator = EmbeddedPersonaIntegrator(self.framework_engine)
+        else:
+            # Graceful fallback - framework functionality available in unified detector
+            self.framework_engine = None
+            self.persona_integrator = None
 
         # Persona personality filters - preserve authentic voice
         self.persona_filters = {
@@ -355,6 +366,15 @@ class PersonaEnhancementEngine:
 
     def _apply_embedded_enhancement(self, context: EnhancementContext) -> Optional[str]:
         """Apply embedded framework enhancement to persona response"""
+
+        # Check if embedded framework is available (functionality consolidated)
+        if self.persona_integrator is None:
+            logger.info(
+                "embedded_framework_unavailable_graceful_fallback",
+                persona=context.persona_name,
+                note="Framework functionality available in unified detector"
+            )
+            return None
 
         try:
             # Determine domain focus based on complexity analysis

@@ -23,11 +23,18 @@ from ..transparency.real_mcp_integration import (
     RealMCPIntegrationHelper,
     EnhancedTransparentPersonaManager,
 )
-from ..core.enhanced_framework_engine import (
-    MultiFrameworkIntegrationEngine,
-    EnhancedFrameworkEngine,
-    ConversationMemoryEngine,
-)
+# Optional imports - functionality consolidated into framework_detector.py
+try:
+    from ..core.enhanced_framework_engine import (
+        MultiFrameworkIntegrationEngine,
+        EnhancedFrameworkEngine,
+        ConversationMemoryEngine,
+    )
+except ImportError:
+    # Graceful fallbacks - functionality available in unified detector
+    MultiFrameworkIntegrationEngine = None
+    EnhancedFrameworkEngine = None
+    ConversationMemoryEngine = None
 from ..transparency.integrated_transparency import (
     IntegratedTransparencySystem,
     TransparencyContext,
@@ -98,9 +105,9 @@ class DecisionIntelligenceOrchestrator:
     def __init__(
         self,
         mcp_integration_helper: RealMCPIntegrationHelper,
-        framework_engine: EnhancedFrameworkEngine,
-        transparency_system: IntegratedTransparencySystem,
-        persona_manager: EnhancedTransparentPersonaManager,
+        framework_engine: Optional[EnhancedFrameworkEngine] = None,
+        transparency_system: Optional[IntegratedTransparencySystem] = None,
+        persona_manager: Optional[EnhancedTransparentPersonaManager] = None,
     ):
         """
         Initialize Decision Intelligence Orchestrator
@@ -703,7 +710,10 @@ async def create_decision_intelligence_orchestrator(
         create_mcp_integrated_transparency_manager,
     )
     from ..transparency.integrated_transparency import create_transparency_system
-    from ..core.enhanced_framework_engine import EnhancedFrameworkEngine
+    # Try to create enhanced framework engine (optional - functionality consolidated)
+    framework_engine = None
+    if EnhancedFrameworkEngine is not None:
+        framework_engine = EnhancedFrameworkEngine()
 
     # Create transparency system
     transparency_system = create_transparency_system(transparency_config)
@@ -712,9 +722,6 @@ async def create_decision_intelligence_orchestrator(
     persona_manager = await create_mcp_integrated_transparency_manager(
         transparency_config, mcp_config_path
     )
-
-    # Create enhanced framework engine
-    framework_engine = EnhancedFrameworkEngine()
 
     # Extract MCP integration helper from persona manager
     mcp_helper = persona_manager.mcp_client  # Access existing MCP integration
