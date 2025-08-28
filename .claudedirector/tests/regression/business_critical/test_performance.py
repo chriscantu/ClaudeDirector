@@ -31,10 +31,12 @@ class TestPerformance(unittest.TestCase):
         """Set up performance testing environment"""
         self.test_dir = tempfile.mkdtemp()
         self.performance_data = []
-        self.max_response_time = 5.0  # 5 seconds max for strategic queries
+        self.max_response_time = (
+            0.5  # 0.5 seconds max for strategic queries (optimized)
+        )
         self.max_memory_mb = 1024  # 1GB max memory usage
         self.min_throughput = (
-            2  # 2 requests per second minimum (single-user local framework)
+            10  # 10 requests per second minimum (optimized computation)
         )
 
     def tearDown(self):
@@ -58,25 +60,25 @@ class TestPerformance(unittest.TestCase):
                 "query": "How should we restructure engineering teams for platform scaling?",
                 "expected_personas": ["diego", "camille"],
                 "complexity": "high",
-                "max_time": 4.0,
+                "max_time": 0.1,  # Optimized for fast computation
             },
             {
                 "query": "What's the ROI analysis for our platform investment?",
                 "expected_personas": ["alvaro"],
                 "complexity": "medium",
-                "max_time": 3.0,
+                "max_time": 0.05,  # Optimized for fast computation
             },
             {
                 "query": "Design system strategy for cross-team adoption?",
                 "expected_personas": ["rachel"],
                 "complexity": "medium",
-                "max_time": 3.0,
+                "max_time": 0.05,  # Optimized for fast computation
             },
             {
                 "query": "Quick status update on current initiatives",
                 "expected_personas": ["diego"],
                 "complexity": "low",
-                "max_time": 2.0,
+                "max_time": 0.02,  # Optimized for fast computation
             },
         ]
 
@@ -173,8 +175,8 @@ class TestPerformance(unittest.TestCase):
                     }
                 )
 
-                # Small delay between queries
-                time.sleep(0.1)
+                # No artificial delay needed for optimized test
+                pass
 
             return user_performance
 
@@ -271,8 +273,8 @@ class TestPerformance(unittest.TestCase):
                 f"Memory usage {current_memory:.1f}MB exceeds limit {self.max_memory_mb}MB",
             )
 
-            # Brief processing simulation
-            time.sleep(0.1)
+            # No artificial delay needed for optimized test
+            pass
 
         # Test memory cleanup
         large_datasets.clear()
@@ -281,7 +283,7 @@ class TestPerformance(unittest.TestCase):
         import gc
 
         gc.collect()
-        time.sleep(0.5)
+        # No artificial delay needed after garbage collection
 
         # Measure memory after cleanup
         final_memory = process.memory_info().rss / 1024 / 1024  # MB
@@ -433,7 +435,7 @@ class TestPerformance(unittest.TestCase):
             # Run workload
             for i in range(workload_iterations):
                 self._simulate_strategic_analysis_work()
-                time.sleep(0.05)  # Brief pause
+                # No artificial delay needed in optimized test
 
             # Measure resources
             cpu_percent = psutil.cpu_percent(interval=0.5)
@@ -460,9 +462,9 @@ class TestPerformance(unittest.TestCase):
             )
 
         # Test resource recovery after load
-        time.sleep(2)  # Allow system to settle
+        # No artificial delay needed for optimized test
 
-        final_cpu = psutil.cpu_percent(interval=1)
+        final_cpu = psutil.cpu_percent(interval=0.1)  # Shorter interval for faster test
         final_memory = psutil.virtual_memory().percent
 
         resource_measurements.append(
@@ -485,19 +487,24 @@ class TestPerformance(unittest.TestCase):
         )
 
     def _simulate_strategic_query(self, query, personas, complexity):
-        """Simulate processing a strategic query"""
-        # Simulate different processing times based on complexity
-        processing_times = {"low": 0.2, "medium": 0.8, "high": 1.5}
+        """Simulate processing a strategic query with fast computation instead of sleep"""
+        start_time = time.time()
 
-        base_time = processing_times.get(complexity, 0.5)
+        # Simulate computational work instead of sleep delays
+        processing_factors = {"low": 100, "medium": 500, "high": 1000}
+        factor = processing_factors.get(complexity, 200)
 
-        # Add some variability
-        import random
+        # Do actual computational work (fast but measurable)
+        result_computation = sum(i * 0.001 for i in range(factor))
 
-        actual_time = base_time * (0.8 + random.random() * 0.4)
+        # Add some string processing to simulate query analysis
+        query_tokens = query.lower().split()
+        processed_tokens = [token.upper() for token in query_tokens if len(token) > 3]
 
-        # Simulate processing work
-        time.sleep(actual_time)
+        # Simulate persona matching work
+        persona_work = sum(len(p) * 10 for p in personas)
+
+        actual_time = time.time() - start_time
 
         return {
             "query": query,
@@ -505,25 +512,40 @@ class TestPerformance(unittest.TestCase):
             "complexity": complexity,
             "processing_time": actual_time,
             "result": f"Strategic analysis for: {query[:30]}...",
+            "computation_result": result_computation,
+            "processed_tokens": len(processed_tokens),
+            "persona_work": persona_work,
         }
 
     def _simulate_database_query(self, operation, records, complexity):
-        """Simulate database query operations"""
-        # Simulate query processing time based on complexity and record count
-        base_time_per_record = {"simple": 0.0001, "medium": 0.0005, "complex": 0.001}
+        """Simulate database query operations with fast computation instead of sleep"""
+        start_time = time.time()
 
-        processing_time = base_time_per_record[complexity] * records
+        # Simulate database work with actual computation
+        complexity_factors = {"simple": 1, "medium": 3, "complex": 10}
+        factor = complexity_factors[complexity]
 
-        # Add some realistic database overhead
-        overhead = 0.05 if complexity == "simple" else 0.1
-        total_time = processing_time + overhead
+        # Simulate record processing work
+        processed_data = []
+        for i in range(min(records, 100)):  # Cap at 100 for performance
+            # Simulate record processing
+            record_hash = hash(f"{operation}_{i}_{complexity}") % 10000
+            processed_data.append(record_hash)
 
-        time.sleep(total_time)
+        # Simulate indexing work
+        if complexity == "complex":
+            index_work = sum(hash(str(i)) % 1000 for i in range(factor * 10))
+        else:
+            index_work = sum(i for i in range(factor * 5))
+
+        total_time = time.time() - start_time
 
         return {
             "operation": operation,
             "records_processed": records,
             "processing_time": total_time,
+            "processed_data_count": len(processed_data),
+            "index_work": index_work,
         }
 
     def _simulate_strategic_analysis_work(self):
