@@ -259,22 +259,24 @@ class TestStrategicCapabilityPreservation(unittest.TestCase):
 class TestDocumentationFunctionalityPreservation(unittest.TestCase):
     """Test that documentation functionality is preserved"""
 
-    def test_implementation_index_exists(self):
-        """Test that implementation index provides navigation"""
-        index_file = PROJECT_ROOT / "docs/IMPLEMENTATION_INDEX.md"
-        self.assertTrue(index_file.exists(), "Implementation index must exist")
+    def test_technical_index_exists(self):
+        """Test that technical index provides navigation (consolidates implementation index)"""
+        index_file = PROJECT_ROOT / "docs/TECHNICAL_INDEX.md"
+        self.assertTrue(
+            index_file.exists(),
+            "Technical index must exist (consolidates implementation navigation)",
+        )
 
         with open(index_file, "r") as f:
             content = f.read()
 
-        # Should contain navigation to all major sections
+        # Should contain navigation to all major technical sections
         navigation_sections = [
-            "Getting Started",
-            "Development",
-            "Reference Documentation",
-            "Strategic Frameworks",
-            "Testing",
-            "Advanced Topics",
+            "Core Architecture",
+            "Transparency System",
+            "Strategic Persona System",
+            "Development & Deployment",
+            "Related Documentation",
         ]
 
         for section in navigation_sections:

@@ -43,9 +43,7 @@ class TestCompleteNewSetupP0Optimized(unittest.TestCase):
         cls.source_project_root = None
 
         for parent in current_dir.parents:
-            if (parent / ".claudedirector").exists() and (
-                parent / "README.md"
-            ).exists():
+            if (parent / ".claudedirector").exists():
                 cls.source_project_root = parent
                 break
 

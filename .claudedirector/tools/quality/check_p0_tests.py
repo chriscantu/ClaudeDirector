@@ -33,10 +33,10 @@ class P0TestProtector:
         ]
 
         self.required_p0_tests = [
-            "test_hybrid_installation_p0.py",
             "test_mcp_transparency.py",
-            "test_conversation_tracking_p0.py",
-            "test_p0_quality_target.py",
+            "test_conversation_tracking.py",
+            "test_conversation_quality.py",
+            "test_complete_new_setup_p0_optimized.py",
         ]
 
     def is_p0_test_file(self, file_path: Path) -> bool:

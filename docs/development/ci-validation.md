@@ -3,7 +3,7 @@
 ## Overview
 These scripts allow you to run the same checks locally that run in the GitHub Actions CI pipeline, eliminating the need for push-and-wait iteration cycles.
 
-## validate-ci-locally.py
+## validate_ci_locally.py
 
 ### Purpose
 Runs **exactly the same checks** as the GitHub Actions pipeline:
@@ -18,10 +18,10 @@ Additional checks will be added in future iterations:
 ### Usage
 ```bash
 # Check all CI requirements locally
-python3 .claudedirector/tools/ci/validate-ci-locally.py
+python3 .claudedirector/tools/ci/validate_ci_locally.py
 
 # Future: Auto-fix formatting issues (Part 3)
-# python3 .claudedirector/tools/ci/validate-ci-locally.py --fix
+# python3 .claudedirector/tools/ci/validate_ci_locally.py --fix
 ```
 
 ### Prerequisites

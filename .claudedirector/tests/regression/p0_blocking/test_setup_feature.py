@@ -118,7 +118,7 @@ class TestSetupP0(unittest.TestCase):
     def test_p0_alternative_setup_available(self):
         """P0: Alternative setup methods must be available (direct tools)"""
         # Since CLI is deprecated, test that direct setup tools exist
-        setup_tools_dir = self.project_root / ".claudedirector" / "tools" / "setup"
+        setup_tools_dir = self.project_root / ".claudedirector" / "tools" / "automation"
 
         self.assertTrue(
             setup_tools_dir.exists(),
@@ -205,22 +205,22 @@ class TestSetupP0(unittest.TestCase):
             self.project_root
             / ".claudedirector"
             / "tools"
-            / "setup"
+            / "automation"
             / "setup_meeting_intelligence.py",
             self.project_root
             / ".claudedirector"
             / "tools"
-            / "setup"
+            / "automation"
             / "setup_smart_git.py",
             self.project_root
             / ".claudedirector"
             / "tools"
-            / "setup"
+            / "automation"
             / "setup_stakeholder_management.py",
             self.project_root
             / ".claudedirector"
             / "tools"
-            / "setup"
+            / "automation"
             / "setup_task_tracking.py",
         ]
 
@@ -303,7 +303,7 @@ class TestSetupP0(unittest.TestCase):
             self.project_root / ".claudedirector",
             self.project_root / ".claudedirector" / "lib",
             self.project_root / ".claudedirector" / "tools",
-            self.project_root / ".claudedirector" / "tools" / "setup",
+            self.project_root / ".claudedirector" / "tools" / "automation",
             self.project_root / "data",
             self.project_root / "data" / "strategic",
         ]
@@ -321,22 +321,22 @@ class TestSetupP0(unittest.TestCase):
             self.project_root
             / ".claudedirector"
             / "tools"
-            / "setup"
+            / "automation"
             / "setup_meeting_intelligence.py",
             self.project_root
             / ".claudedirector"
             / "tools"
-            / "setup"
+            / "automation"
             / "setup_smart_git.py",
             self.project_root
             / ".claudedirector"
             / "tools"
-            / "setup"
+            / "automation"
             / "setup_stakeholder_management.py",
             self.project_root
             / ".claudedirector"
             / "tools"
-            / "setup"
+            / "automation"
             / "setup_task_tracking.py",
         ]
 
@@ -516,22 +516,22 @@ class TestSetupP0RegressionProtection(unittest.TestCase):
             Path(__file__).parents[3]
             / ".claudedirector"
             / "tools"
-            / "setup"
+            / "automation"
             / "setup_meeting_intelligence.py",
             Path(__file__).parents[3]
             / ".claudedirector"
             / "tools"
-            / "setup"
+            / "automation"
             / "setup_smart_git.py",
             Path(__file__).parents[3]
             / ".claudedirector"
             / "tools"
-            / "setup"
+            / "automation"
             / "setup_stakeholder_management.py",
             Path(__file__).parents[3]
             / ".claudedirector"
             / "tools"
-            / "setup"
+            / "automation"
             / "setup_task_tracking.py",
         ]
 
