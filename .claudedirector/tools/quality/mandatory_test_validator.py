@@ -149,13 +149,17 @@ def run_critical_tests_comprehensive():
         print("  ⚠️ Cursor integration tests: FILE NOT FOUND (skipping)")
 
     # Test 4: AI Cleanup Enforcement Tests
-    tests_total += 1
-    cleanup_test_cmd = "python3 .git/hooks/pre-commit-ai-cleanup"
-    if run_command(cleanup_test_cmd, "🧹 AI Cleanup Enforcement Tests"):
-        tests_passed += 1
-        print("  ✅ AI cleanup enforcement: PASSED")
+    cleanup_script = PROJECT_ROOT / ".git" / "hooks" / "pre-commit-ai-cleanup"
+    if cleanup_script.exists():
+        tests_total += 1
+        cleanup_test_cmd = f"python3 {cleanup_script}"
+        if run_command(cleanup_test_cmd, "🧹 AI Cleanup Enforcement Tests"):
+            tests_passed += 1
+            print("  ✅ AI cleanup enforcement: PASSED")
+        else:
+            print("  ❌ AI cleanup enforcement: FAILED")
     else:
-        print("  ❌ AI cleanup enforcement: FAILED")
+        print("  ⚠️ AI cleanup enforcement: FILE NOT FOUND (skipping - test not required in CI)")
 
     # Results Summary
     print("\n" + "=" * 60)
@@ -173,7 +177,12 @@ def run_critical_tests_legacy():
     """Run the critical tests that must pass."""
     print("\n🎯 Running CRITICAL tests (MUST PASS for commit)...")
 
+    # Check for Python interpreter (venv or system)
     venv_python = PROJECT_ROOT / "venv" / "bin" / "python"
+    if venv_python.exists():
+        python_cmd = str(venv_python)
+    else:
+        python_cmd = "python3"
 
     # Test 1: First-Run Wizard Tests (Core functionality)
     wizard_tests = (
@@ -184,7 +193,7 @@ def run_critical_tests_legacy():
         / "test_first_run_wizard_comprehensive.py"
     )
     if wizard_tests.exists():
-        test_cmd = f"{venv_python} {wizard_tests}"
+        test_cmd = f"{python_cmd} {wizard_tests}"
         if not run_command(test_cmd, "First-Run Wizard Comprehensive Tests"):
             print("\n❌ CRITICAL FAILURE: First-run wizard tests failed!")
             print("🚫 These tests validate the core role-based customization system.")
