@@ -150,7 +150,7 @@ repos:
 
       - id: ai-cleanup-enforcement
         name: 🧹 AI Cleanup Enforcement
-        entry: .git/hooks/pre-commit-ai-cleanup
+        entry: .claudedirector/tools/hooks/pre-commit-ai-cleanup
         language: script
         pass_filenames: false
         always_run: true
