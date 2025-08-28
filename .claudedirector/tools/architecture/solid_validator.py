@@ -202,8 +202,12 @@ class SOLIDValidator:
         lines = content.split("\n")
 
         for line_num, line in enumerate(lines, 1):
-            # Skip comments and test files
-            if line.strip().startswith("#") or "test" in str(file_path).lower():
+            # Skip comments, test files, and config files
+            if (
+                line.strip().startswith("#")
+                or "test" in str(file_path).lower()
+                or "config" in str(file_path).lower()
+            ):
                 continue
 
             for pattern in self.hardcode_patterns:
