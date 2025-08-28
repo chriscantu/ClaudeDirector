@@ -7,7 +7,7 @@ CONSOLIDATED FROM 6 FRAMEWORK ENGINES:
 ✅ enhanced_framework_detection.py (891 lines) - Base implementation
 ✅ enhanced_framework_engine.py (1,264 lines) - Conversation context features
 ✅ enhanced_framework_manager.py (332 lines) - Session context preservation
-✅ mcp_enhanced_framework_engine.py (605 lines) - MCP coordination
+🗑️ mcp_enhanced_framework_engine.py (605 lines) - REMOVED: MCP coordination consolidated
 ✅ embedded_framework_engine.py (220 lines) - Core pattern matching
 🗑️ refactored_framework_engine.py (647 lines) - REMOVED: Refactored improvements consolidated
 
@@ -50,7 +50,11 @@ from ..transparency.integrated_transparency import (
     IntegratedTransparencySystem,
     TransparencyContext,
 )
-from .mcp_enhanced_framework_engine import MCPEnhancedFrameworkEngine
+# NOTE: MCP functionality consolidated into unified detector
+# from .mcp_enhanced_framework_engine import MCPEnhancedFrameworkEngine
+
+# Type hint forward declarations for deprecated components
+MCPEnhancedFrameworkEngine = Any  # Deprecated - functionality consolidated
 
 logger = structlog.get_logger(__name__)
 
@@ -199,9 +203,9 @@ class EnhancedFrameworkDetection:
     def __init__(
         self,
         baseline_detector: FrameworkDetectionMiddleware,
-        mcp_enhanced_engine: MCPEnhancedFrameworkEngine,
-        memory_engine: ConversationMemoryEngine,
-        transparency_system: IntegratedTransparencySystem,
+        mcp_enhanced_engine: Optional[MCPEnhancedFrameworkEngine] = None,
+        memory_engine: Optional[ConversationMemoryEngine] = None,
+        transparency_system: Optional[IntegratedTransparencySystem] = None,
         session_manager: Optional[SessionManager] = None,
     ):
         """
@@ -214,9 +218,9 @@ class EnhancedFrameworkDetection:
             transparency_system: Transparency tracking
         """
         self.baseline_detector = baseline_detector
-        self.mcp_enhanced_engine = mcp_enhanced_engine
-        self.memory_engine = memory_engine
-        self.transparency_system = transparency_system
+        self.mcp_enhanced_engine = mcp_enhanced_engine  # Optional - functionality consolidated
+        self.memory_engine = memory_engine  # Optional - functionality consolidated
+        self.transparency_system = transparency_system  # Optional - functionality consolidated
 
         # Session management integration (consolidated from enhanced_framework_manager)
         self.session_manager = session_manager or SessionManager()
@@ -983,9 +987,9 @@ class EnhancedFrameworkDetection:
 
 def create_enhanced_framework_detection(
     baseline_detector: FrameworkDetectionMiddleware,
-    mcp_enhanced_engine: MCPEnhancedFrameworkEngine,
-    memory_engine: ConversationMemoryEngine,
-    transparency_system: IntegratedTransparencySystem,
+    mcp_enhanced_engine: Optional[MCPEnhancedFrameworkEngine] = None,
+    memory_engine: Optional[ConversationMemoryEngine] = None,
+    transparency_system: Optional[IntegratedTransparencySystem] = None,
 ) -> EnhancedFrameworkDetection:
     """
     Factory function to create EnhancedFrameworkDetection with proper dependencies
