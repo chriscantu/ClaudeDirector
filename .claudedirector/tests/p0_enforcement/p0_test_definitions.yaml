@@ -338,6 +338,16 @@ p0_features:
     introduced_version: "v3.3.0"
     owner: "martin"
 
+  - name: "Enhanced Predictive Intelligence P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_enhanced_predictive_intelligence_p0.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 300
+    description: "Phase 11 predictive intelligence must achieve 85%+ accuracy for strategic decisions with <500ms response time"
+    failure_impact: "Strategic decision prediction fails, P1 business value (2.5x ROI) compromised"
+    business_impact: "Predictive strategic guidance becomes unreliable, executive decision support compromised, competitive disadvantage"
+    introduced_version: "v3.4.0"
+    owner: "martin"
+
 
 # Enforcement settings
 enforcement:
