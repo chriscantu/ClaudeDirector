@@ -68,9 +68,9 @@ try:
 except ImportError:
     STAKEHOLDER_INTELLIGENCE_AVAILABLE = False
 
-# Import meeting intelligence (legacy compatibility)
+# Import meeting intelligence (Phase 9 consolidated)
 try:
-    from ..memory.meeting_intelligence import MeetingIntelligenceManager
+    from ..ai_intelligence.context.intelligence_unified import IntelligenceUnified
 
     MEETING_INTELLIGENCE_AVAILABLE = True
 except ImportError:
@@ -140,7 +140,7 @@ class StrategicWorkspaceHandler(FileSystemEventHandler):
 
         # Initialize meeting intelligence (legacy compatibility)
         if MEETING_INTELLIGENCE_AVAILABLE and db_path:
-            self.meeting_manager = MeetingIntelligenceManager(db_path)
+            self.meeting_manager = IntelligenceUnified()
         else:
             self.meeting_manager = None
 
