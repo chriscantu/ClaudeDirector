@@ -13,6 +13,17 @@ import hashlib
 from typing import List, Dict
 from datetime import datetime
 
+# Import configuration system for SOLID compliance
+try:
+    # Adjust path for tools directory structure
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+    from lib.core.config import get_config
+
+    CLAUDEDIRECTOR_CONFIG = get_config()
+except ImportError:
+    # Fallback for environments where config is not available
+    CLAUDEDIRECTOR_CONFIG = None
+
 
 class EnhancedSecurityScanner:
     """
@@ -27,43 +38,59 @@ class EnhancedSecurityScanner:
 
     def __init__(self):
         # Enhanced threat patterns (real but generic)
-        self.stakeholder_patterns = [
-            # Only flag actual sensitive data, not generic role titles
-            r"(?i)\b(real[_\s-]?executive[_\s-]?name)\b",
-            r"(?i)\b(actual[_\s-]?stakeholder[_\s-]?identity)\b",
-            r"(?i)\b(confidential[_\s-]?leadership[_\s-]?data)\b",
-            # Only flag when actual names are present with titles (not generic documentation)
-            r"(?i)\b(director|vp|cpo|cto)\s+[A-Z][a-z]{3,}\s+[A-Z][a-z]{3,}\b",  # Actual names (3+ chars, capitalized)
-            r"(?i)\b(senior|principal|distinguished)\s+(engineer|architect)\s+[A-Z][a-z]{3,}\s+[A-Z][a-z]{3,}\b",
-            # Strategic context markers (actual sensitive data)
-            r"(?i)(real[_\s-]?stakeholder[_\s-]?name)",
-            r"(?i)(actual[_\s-]?procore[_\s-]?stakeholder)",
-            r"(?i)(confidential[_\s-]?stakeholder[_\s-]?data)",
-            # Organizational intelligence (actual meetings/patterns)
-            r"(?i)(skip[_\s-]?level[_\s-]?meeting[_\s-]?with)",  # More specific
-            r"(?i)(slt[_\s-]?resistance[_\s-]?pattern[_\s-]?analysis)",  # More specific
-            r"(?i)(platform[_\s-]?opposition[_\s-]?mapping[_\s-]?data)",  # More specific
-        ]
+        # Load stakeholder patterns from configuration for SOLID compliance
+        if CLAUDEDIRECTOR_CONFIG:
+            self.stakeholder_patterns = CLAUDEDIRECTOR_CONFIG.get(
+                "security_stakeholder_patterns", []
+            )
+        else:
+            # Fallback patterns when configuration is not available
+            self.stakeholder_patterns = [
+                # Only flag actual sensitive data, not generic role titles
+                r"(?i)\b(real[_\s-]?executive[_\s-]?name)\b",
+                r"(?i)\b(actual[_\s-]?stakeholder[_\s-]?identity)\b",
+                r"(?i)\b(confidential[_\s-]?leadership[_\s-]?data)\b",
+                # Only flag when actual names are present with titles (not generic documentation)
+                r"(?i)\b(director|vp|cpo|cto)\s+[A-Z][a-z]{3,}\s+[A-Z][a-z]{3,}\b",  # Actual names (3+ chars, capitalized)
+                r"(?i)\b(senior|principal|distinguished)\s+(engineer|architect)\s+[A-Z][a-z]{3,}\s+[A-Z][a-z]{3,}\b",
+                # Strategic context markers (actual sensitive data)
+                r"(?i)(real[_\s-]?stakeholder[_\s-]?name)",
+                r"(?i)(actual[_\s-]?procore[_\s-]?stakeholder)",
+                r"(?i)(confidential[_\s-]?stakeholder[_\s-]?data)",
+                # Organizational intelligence (actual meetings/patterns)
+                r"(?i)(skip[_\s-]?level[_\s-]?meeting[_\s-]?with)",  # More specific
+                r"(?i)(slt[_\s-]?resistance[_\s-]?pattern[_\s-]?analysis)",  # More specific
+                r"(?i)(platform[_\s-]?opposition[_\s-]?mapping[_\s-]?data)",  # More specific
+            ]
 
-        self.strategic_intelligence_patterns = [
-            # Business intelligence (actual sensitive data, not generic terms)
-            r"(?i)(quarterly[_\s-]?revenue[_\s-]?data[_\s-]?\$)",  # Must have dollar sign
-            r"(?i)(competitive[_\s-]?intelligence[_\s-]?report)",  # More specific
-            r"(?i)(customer[_\s-]?acquisition[_\s-]?cost[_\s-]?\$)",  # Must have dollar sign
-            r"(?i)(internal[_\s-]?strategy[_\s-]?document[_\s-]?confidential)",  # More specific
-            # Technical intelligence (actual credentials, not generic terms)
-            r"(?i)(production[_\s-]?database[_\s-]?credential[_\s-]?password)",  # More specific
-            r"(?i)(api[_\s-]?key[_\s-]?production[_\s-]?[a-zA-Z0-9]{20,})",  # Must have actual key
-            r"(?i)(security[_\s-]?vulnerability[_\s-]?report[_\s-]?cve)",  # More specific
-            # Executive communications (actual sensitive content)
-            r"(?i)(board[_\s-]?presentation[_\s-]?data[_\s-]?confidential)",  # More specific
-            r"(?i)(executive[_\s-]?session[_\s-]?notes[_\s-]?private)",  # More specific
-            r"(?i)(confidential[_\s-]?strategy[_\s-]?discussion[_\s-]?transcript)",  # More specific
-        ]
+        # Load strategic intelligence patterns from configuration for SOLID compliance
+        if CLAUDEDIRECTOR_CONFIG:
+            self.strategic_intelligence_patterns = CLAUDEDIRECTOR_CONFIG.get(
+                "security_strategic_intelligence_patterns", []
+            )
+        else:
+            # Fallback patterns when configuration is not available
+            self.strategic_intelligence_patterns = [
+                # Business intelligence (actual sensitive data, not generic terms)
+                r"(?i)(quarterly[_\s-]?revenue[_\s-]?data[_\s-]?\$)",  # Must have dollar sign
+                r"(?i)(competitive[_\s-]?intelligence[_\s-]?report)",  # More specific
+                r"(?i)(customer[_\s-]?acquisition[_\s-]?cost[_\s-]?\$)",  # Must have dollar sign
+                r"(?i)(internal[_\s-]?strategy[_\s-]?document[_\s-]?confidential)",  # More specific
+                # Technical intelligence (actual credentials, not generic terms)
+                r"(?i)(production[_\s-]?database[_\s-]?credential[_\s-]?password)",  # More specific
+                r"(?i)(api[_\s-]?key[_\s-]?production[_\s-]?[a-zA-Z0-9]{20,})",  # Must have actual key
+                r"(?i)(security[_\s-]?vulnerability[_\s-]?report[_\s-]?cve)",  # More specific
+                # Executive communications (actual sensitive content)
+                r"(?i)(board[_\s-]?presentation[_\s-]?data[_\s-]?confidential)",  # More specific
+                r"(?i)(executive[_\s-]?session[_\s-]?notes[_\s-]?private)",  # More specific
+                r"(?i)(confidential[_\s-]?strategy[_\s-]?discussion[_\s-]?transcript)",  # More specific
+            ]
 
         self.security_exclusions = {
             # Self-exclusion to prevent scanner from flagging itself
             ".claudedirector/tools/security/",
+            ".claudedirector/tools/quality/",  # Quality tools directory
+            ".claudedirector/lib/core/config.py",  # Configuration file containing patterns
             ".claudedirector/archive/",  # Archive directory contains development artifacts
             ".claudedirector/lib/claudedirector/",  # Symlink for backward compatibility
             ".claudedirector/tests/",  # Test files contain generic test data, not real sensitive data
@@ -198,7 +225,13 @@ class EnhancedSecurityScanner:
                         violations.append(
                             {
                                 "type": "STRATEGIC_INTELLIGENCE",
-                                "severity": "HIGH",
+                                "severity": (
+                                    CLAUDEDIRECTOR_CONFIG.get(
+                                        "security_severity_high", "HIGH"
+                                    )
+                                    if CLAUDEDIRECTOR_CONFIG
+                                    else "HIGH"
+                                ),
                                 "file": file_path,
                                 "line": i,
                                 "pattern": pattern,
@@ -242,7 +275,11 @@ class EnhancedSecurityScanner:
                 violations.append(
                     {
                         "type": "SENSITIVE_FILE",
-                        "severity": "HIGH",
+                        "severity": (
+                            CLAUDEDIRECTOR_CONFIG.get("security_severity_high", "HIGH")
+                            if CLAUDEDIRECTOR_CONFIG
+                            else "HIGH"
+                        ),
                         "file": file_path,
                         "pattern": pattern,
                         "threat_level": "DATA_EXPOSURE",
@@ -271,7 +308,11 @@ class EnhancedSecurityScanner:
         for violation in scan_report["violations"]:
             if violation["severity"] == "CRITICAL":
                 score -= 25
-            elif violation["severity"] == "HIGH":
+            elif violation["severity"] == (
+                CLAUDEDIRECTOR_CONFIG.get("security_severity_high", "HIGH")
+                if CLAUDEDIRECTOR_CONFIG
+                else "HIGH"
+            ):
                 score -= 15
             elif violation["severity"] == "WARNING":
                 score -= 5
