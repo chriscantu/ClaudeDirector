@@ -42,6 +42,7 @@ class P0TestEnforcer:
         self.test_results = []
         self.total_tests_run = 0
         self.blocking_failures = 0
+        self.total_failures = 0  # Track ALL P0 failures regardless of critical level
 
     def _load_p0_tests_from_yaml(self) -> List[Dict]:
         """Load P0 test definitions from YAML configuration file"""
@@ -185,9 +186,13 @@ class P0TestEnforcer:
                 if result.stderr:
                     print(f"   Error: {result.stderr[:200]}...")
 
+                # ALL P0 failures are critical regardless of level
+                self.total_failures += 1
                 if critical_level == "BLOCKING":
                     self.blocking_failures += 1
                     print(f"🚨 BLOCKING FAILURE: {test_config['failure_impact']}")
+                else:
+                    print(f"🚨 P0 FAILURE: {test_config['failure_impact']}")
 
             return test_result
 
@@ -300,9 +305,13 @@ class P0TestEnforcer:
                 f"❌ FAILED: {test_name} ({duration:.2f}s) - {len(failed_tests)} modular tests failed: {', '.join(failed_tests)}"
             )
 
+            # ALL P0 failures are critical regardless of level
+            self.total_failures += 1
             if critical_level == "BLOCKING":
                 self.blocking_failures += 1
                 print(f"🚨 BLOCKING FAILURE: {test_config['failure_impact']}")
+            else:
+                print(f"🚨 P0 FAILURE: {test_config['failure_impact']}")
 
             return {
                 "name": test_name,
@@ -335,7 +344,7 @@ class P0TestEnforcer:
             self.test_results.append(test_result)
             self.total_tests_run += 1
 
-        return self.blocking_failures == 0
+        return self.total_failures == 0  # ALL P0 failures block commits
 
     def generate_comprehensive_report(self) -> None:
         """Generate detailed P0 test execution report"""
@@ -347,6 +356,7 @@ class P0TestEnforcer:
         print(f"Execution Time: {total_duration:.2f} seconds")
         print(f"Tests Run: {self.total_tests_run}")
         print(f"Blocking Failures: {self.blocking_failures}")
+        print(f"Total P0 Failures: {self.total_failures}")
         print()
 
         # Categorize results
@@ -387,14 +397,14 @@ class P0TestEnforcer:
 
         # Overall status
         print("\n" + "-" * 80)
-        if self.blocking_failures == 0:
-            print("🎉 ALL BLOCKING P0 FEATURES PASSED")
+        if self.total_failures == 0:
+            print("🎉 ALL P0 FEATURES PASSED")
             print("✅ COMMIT ALLOWED - P0 feature integrity maintained")
         else:
-            print(f"🚨 {self.blocking_failures} BLOCKING P0 FAILURES DETECTED")
+            print(f"🚨 {self.total_failures} P0 FAILURES DETECTED")
             print("❌ COMMIT BLOCKED - P0 feature integrity compromised")
             print("\n🛠️ REQUIRED ACTIONS:")
-            for result in blocking_failed:
+            for result in [r for r in self.test_results if not r["success"]]:
                 print(f"   - Fix {result['name']}: {result['description']}")
 
         # High priority warnings
@@ -420,10 +430,11 @@ class P0TestEnforcer:
                 "timestamp": datetime.now().isoformat(),
                 "total_tests": self.total_tests_run,
                 "blocking_failures": self.blocking_failures,
+                "total_failures": self.total_failures,
                 "total_duration": (datetime.now() - self.start_time).total_seconds(),
                 "test_results": self.test_results,
                 "compliance_status": (
-                    "PASSED" if self.blocking_failures == 0 else "FAILED"
+                    "PASSED" if self.total_failures == 0 else "FAILED"
                 ),
             }
 
@@ -465,7 +476,7 @@ def main():
             print("🚀 P0 feature integrity maintained - commit allowed")
             return 0
         else:
-            print(f"\n❌ {enforcer.blocking_failures} BLOCKING P0 FAILURES")
+            print(f"\n❌ {enforcer.total_failures} P0 FAILURES")
             print("🚫 P0 feature integrity compromised - commit blocked")
             return 1
 
