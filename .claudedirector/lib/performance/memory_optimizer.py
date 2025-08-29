@@ -14,12 +14,13 @@ import logging
 import threading
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 @dataclass
 class MemoryStats:
     """Memory usage statistics"""
+
     current_usage_mb: float
     peak_usage_mb: float
     object_pool_size: int
@@ -61,7 +62,7 @@ class ObjectPool(Generic[T]):
         with self._lock:
             if len(self.pool) < self.max_size:
                 # Reset object state if it has a reset method
-                if hasattr(obj, 'reset'):
+                if hasattr(obj, "reset"):
                     obj.reset()
                 self.pool.append(obj)
 
@@ -75,7 +76,7 @@ class ObjectPool(Generic[T]):
             "created_count": self.created_count,
             "reused_count": self.reused_count,
             "reuse_rate": reuse_rate,
-            "max_size": self.max_size
+            "max_size": self.max_size,
         }
 
 
@@ -127,10 +128,7 @@ class MemoryOptimizer:
         self.logger.info("Garbage collection optimized for performance")
 
     def create_object_pool(
-        self,
-        pool_name: str,
-        factory_func,
-        max_size: int = 100
+        self, pool_name: str, factory_func, max_size: int = 100
     ) -> ObjectPool:
         """Create a new object pool"""
         pool = ObjectPool(factory_func, max_size)
@@ -161,9 +159,13 @@ class MemoryOptimizer:
         self.last_gc_time = time.time()
 
         if gc_time > 100:  # Log slow GC
-            self.logger.warning(f"Slow garbage collection: {gc_time:.1f}ms, collected {collected} objects")
+            self.logger.warning(
+                f"Slow garbage collection: {gc_time:.1f}ms, collected {collected} objects"
+            )
         else:
-            self.logger.debug(f"Garbage collection: {gc_time:.1f}ms, collected {collected} objects")
+            self.logger.debug(
+                f"Garbage collection: {gc_time:.1f}ms, collected {collected} objects"
+            )
 
         return collected
 
@@ -172,6 +174,7 @@ class MemoryOptimizer:
         try:
             import psutil
             import os
+
             process = psutil.Process(os.getpid())
             memory_mb = process.memory_info().rss / 1024 / 1024
 
@@ -190,10 +193,14 @@ class MemoryOptimizer:
         base_usage = 20  # Base Python interpreter usage
 
         # Estimate from object pools
-        pool_usage = sum(len(pool.pool) * 0.1 for pool in self.pools.values())  # 0.1MB per pooled object estimate
+        pool_usage = sum(
+            len(pool.pool) * 0.1 for pool in self.pools.values()
+        )  # 0.1MB per pooled object estimate
 
         # Estimate from tracked objects
-        tracked_usage = len(self.tracked_objects) * 0.01  # 10KB per tracked object estimate
+        tracked_usage = (
+            len(self.tracked_objects) * 0.01
+        )  # 10KB per tracked object estimate
 
         return base_usage + pool_usage + tracked_usage
 
@@ -221,7 +228,9 @@ class MemoryOptimizer:
                 clear_count = int(len(pool.pool) * 0.7)
                 for _ in range(clear_count):
                     pool.pool.pop()
-                self.logger.debug(f"Cleared {clear_count} objects from pool '{pool_name}'")
+                self.logger.debug(
+                    f"Cleared {clear_count} objects from pool '{pool_name}'"
+                )
 
         # Force garbage collection
         collected = self.force_gc()
@@ -253,7 +262,9 @@ class MemoryOptimizer:
         total_objects_created = sum(pool.created_count for pool in self.pools.values())
         total_objects_reused = sum(pool.reused_count for pool in self.pools.values())
         total_requests = total_objects_created + total_objects_reused
-        efficiency = (total_objects_reused / total_requests) if total_requests > 0 else 0
+        efficiency = (
+            (total_objects_reused / total_requests) if total_requests > 0 else 0
+        )
 
         # Estimate cache memory (would need integration with cache manager)
         cache_memory = 0  # Placeholder for cache memory calculation
@@ -265,7 +276,7 @@ class MemoryOptimizer:
             cache_memory_mb=cache_memory,
             garbage_collections=self.gc_count,
             last_gc_time=self.last_gc_time,
-            memory_efficiency=efficiency
+            memory_efficiency=efficiency,
         )
 
     def get_detailed_stats(self) -> Dict[str, Any]:
@@ -283,15 +294,15 @@ class MemoryOptimizer:
                 "target_mb": self.target_memory_mb,
                 "alert_threshold_mb": self.alert_threshold_mb,
                 "efficiency": memory_stats.memory_efficiency,
-                "alerts_count": self.memory_alerts
+                "alerts_count": self.memory_alerts,
             },
             "garbage_collection": {
                 "count": memory_stats.garbage_collections,
                 "last_gc_time": memory_stats.last_gc_time,
-                "thresholds": gc.get_threshold()
+                "thresholds": gc.get_threshold(),
             },
             "object_pools": pool_stats,
-            "tracked_objects": len(self.tracked_objects)
+            "tracked_objects": len(self.tracked_objects),
         }
 
     def cleanup(self):
@@ -309,6 +320,7 @@ class MemoryOptimizer:
 # Global memory optimizer instance
 _memory_optimizer = None
 
+
 def get_memory_optimizer(target_memory_mb: int = 40) -> MemoryOptimizer:
     """Get global memory optimizer instance"""
     global _memory_optimizer
@@ -320,6 +332,7 @@ def get_memory_optimizer(target_memory_mb: int = 40) -> MemoryOptimizer:
 # Common object pool factories
 def create_dict_pool(pool_name: str = "dict_pool", max_size: int = 50) -> ObjectPool:
     """Create a pool for dictionary objects"""
+
     def dict_factory():
         return {}
 
@@ -329,6 +342,7 @@ def create_dict_pool(pool_name: str = "dict_pool", max_size: int = 50) -> Object
 
 def create_list_pool(pool_name: str = "list_pool", max_size: int = 50) -> ObjectPool:
     """Create a pool for list objects"""
+
     def list_factory():
         return []
 

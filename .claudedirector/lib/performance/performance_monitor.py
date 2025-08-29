@@ -18,6 +18,7 @@ import threading
 @dataclass
 class PerformanceAlert:
     """Performance alert data structure"""
+
     alert_type: str
     threshold: float
     current_value: float
@@ -30,6 +31,7 @@ class PerformanceAlert:
 @dataclass
 class MetricPoint:
     """Single metric data point"""
+
     name: str
     value: float
     labels: Dict[str, str]
@@ -97,9 +99,7 @@ class PerformanceMonitor:
             loop = asyncio.get_running_loop()
 
             # Metrics cleanup task
-            self._monitoring_tasks.append(
-                loop.create_task(self._cleanup_old_metrics())
-            )
+            self._monitoring_tasks.append(loop.create_task(self._cleanup_old_metrics()))
 
             # Health monitoring task
             self._monitoring_tasks.append(
@@ -125,7 +125,8 @@ class PerformanceMonitor:
 
                 # Cleanup old alerts
                 self.alert_history = [
-                    alert for alert in self.alert_history
+                    alert
+                    for alert in self.alert_history
                     if alert.timestamp > cutoff_time
                 ]
 
@@ -144,13 +145,22 @@ class PerformanceMonitor:
                 health_issues = []
 
                 # Check response time health
-                avg_response_time = self.get_average_metric("response_time_ms", window_seconds=300)
-                if avg_response_time and avg_response_time > self.thresholds["response_time_ms"]["critical"]:
+                avg_response_time = self.get_average_metric(
+                    "response_time_ms", window_seconds=300
+                )
+                if (
+                    avg_response_time
+                    and avg_response_time
+                    > self.thresholds["response_time_ms"]["critical"]
+                ):
                     health_issues.append("response_time_critical")
 
                 # Check memory health
                 current_memory = self.get_latest_metric("memory_usage_mb")
-                if current_memory and current_memory > self.thresholds["memory_usage_mb"]["critical"]:
+                if (
+                    current_memory
+                    and current_memory > self.thresholds["memory_usage_mb"]["critical"]
+                ):
                     health_issues.append("memory_critical")
 
                 # Check error rate health
@@ -178,18 +188,14 @@ class PerformanceMonitor:
         name: str,
         value: float,
         labels: Optional[Dict[str, str]] = None,
-        unit: str = "ms"
+        unit: str = "ms",
     ):
         """Record a metric data point"""
         if labels is None:
             labels = {}
 
         metric_point = MetricPoint(
-            name=name,
-            value=value,
-            labels=labels,
-            timestamp=time.time(),
-            unit=unit
+            name=name, value=value, labels=labels, timestamp=time.time(), unit=unit
         )
 
         self.metrics[name].append(metric_point)
@@ -219,10 +225,10 @@ class PerformanceMonitor:
         severity = None
         threshold_value = None
 
-        if value > thresholds.get("critical", float('inf')):
+        if value > thresholds.get("critical", float("inf")):
             severity = "CRITICAL"
             threshold_value = thresholds["critical"]
-        elif value > thresholds.get("warning", float('inf')):
+        elif value > thresholds.get("warning", float("inf")):
             severity = "WARNING"
             threshold_value = thresholds["warning"]
 
@@ -235,7 +241,7 @@ class PerformanceMonitor:
                 severity=severity,
                 message=f"{metric_name} exceeded {severity.lower()} threshold: {value:.2f} > {threshold_value}",
                 timestamp=time.time(),
-                component=metric_name
+                component=metric_name,
             )
 
             self._trigger_alert(alert_key, alert)
@@ -247,7 +253,11 @@ class PerformanceMonitor:
         self.last_alert_times[alert_key] = alert.timestamp
 
         # Log alert
-        log_method = self.logger.critical if alert.severity == "CRITICAL" else self.logger.warning
+        log_method = (
+            self.logger.critical
+            if alert.severity == "CRITICAL"
+            else self.logger.warning
+        )
         log_method(f"Performance Alert [{alert.severity}]: {alert.message}")
 
         # Keep alert history manageable
@@ -266,14 +276,17 @@ class PerformanceMonitor:
             return self.metrics[metric_name][-1].value
         return None
 
-    def get_average_metric(self, metric_name: str, window_seconds: int = 300) -> Optional[float]:
+    def get_average_metric(
+        self, metric_name: str, window_seconds: int = 300
+    ) -> Optional[float]:
         """Get average metric value over time window"""
         if metric_name not in self.metrics:
             return None
 
         cutoff_time = time.time() - window_seconds
         recent_points = [
-            point.value for point in self.metrics[metric_name]
+            point.value
+            for point in self.metrics[metric_name]
             if point.timestamp >= cutoff_time
         ]
 
@@ -281,14 +294,17 @@ class PerformanceMonitor:
             return sum(recent_points) / len(recent_points)
         return None
 
-    def get_metric_percentile(self, metric_name: str, percentile: float, window_seconds: int = 300) -> Optional[float]:
+    def get_metric_percentile(
+        self, metric_name: str, percentile: float, window_seconds: int = 300
+    ) -> Optional[float]:
         """Get percentile value for a metric over time window"""
         if metric_name not in self.metrics:
             return None
 
         cutoff_time = time.time() - window_seconds
         recent_values = [
-            point.value for point in self.metrics[metric_name]
+            point.value
+            for point in self.metrics[metric_name]
             if point.timestamp >= cutoff_time
         ]
 
@@ -313,7 +329,9 @@ class PerformanceMonitor:
         lines = []
 
         # Add help and type information
-        lines.append("# HELP claudedirector_response_time_ms Response time in milliseconds")
+        lines.append(
+            "# HELP claudedirector_response_time_ms Response time in milliseconds"
+        )
         lines.append("# TYPE claudedirector_response_time_ms histogram")
 
         # Add counter metrics
@@ -326,7 +344,9 @@ class PerformanceMonitor:
         for metric_name in ["response_time_ms", "memory_usage_mb", "cache_hit_rate"]:
             latest_value = self.get_latest_metric(metric_name)
             if latest_value is not None:
-                lines.append(f"# HELP claudedirector_{metric_name} Current {metric_name}")
+                lines.append(
+                    f"# HELP claudedirector_{metric_name} Current {metric_name}"
+                )
                 lines.append(f"# TYPE claudedirector_{metric_name} gauge")
                 lines.append(f"claudedirector_{metric_name} {latest_value}")
 
@@ -347,7 +367,7 @@ class PerformanceMonitor:
             "timestamp": datetime.utcnow().isoformat(),
             "checks": self.health_checks,
             "active_alerts": len(self.active_alerts),
-            "uptime_seconds": time.time() - getattr(self, '_start_time', time.time())
+            "uptime_seconds": time.time() - getattr(self, "_start_time", time.time()),
         }
 
     def get_performance_dashboard(self) -> Dict[str, Any]:
@@ -362,9 +382,7 @@ class PerformanceMonitor:
         error_rate = self.calculate_error_rate(300)
 
         # Recent alerts
-        recent_alerts = [
-            asdict(alert) for alert in self.alert_history[-10:]
-        ]
+        recent_alerts = [asdict(alert) for alert in self.alert_history[-10:]]
 
         return {
             "health": {
@@ -402,11 +420,10 @@ class PerformanceMonitor:
 
     def set_threshold(self, metric_name: str, warning: float, critical: float):
         """Set custom threshold for a metric"""
-        self.thresholds[metric_name] = {
-            "warning": warning,
-            "critical": critical
-        }
-        self.logger.info(f"Updated thresholds for {metric_name}: warning={warning}, critical={critical}")
+        self.thresholds[metric_name] = {"warning": warning, "critical": critical}
+        self.logger.info(
+            f"Updated thresholds for {metric_name}: warning={warning}, critical={critical}"
+        )
 
     def register_health_check(self, check_name: str, check_func: Callable[[], bool]):
         """Register a custom health check function"""
@@ -432,6 +449,7 @@ class PerformanceMonitor:
 # Global performance monitor instance
 _performance_monitor = None
 
+
 def get_performance_monitor(retention_hours: int = 24) -> PerformanceMonitor:
     """Get global performance monitor instance"""
     global _performance_monitor
@@ -444,10 +462,12 @@ def get_performance_monitor(retention_hours: int = 24) -> PerformanceMonitor:
 # Convenient monitoring decorators
 def monitor_performance(metric_name: str = None):
     """Decorator to automatically monitor function performance"""
+
     def decorator(func):
         actual_metric_name = metric_name or f"{func.__module__}.{func.__name__}"
 
         if asyncio.iscoroutinefunction(func):
+
             async def async_wrapper(*args, **kwargs):
                 monitor = get_performance_monitor()
                 start_time = time.time()
@@ -468,6 +488,7 @@ def monitor_performance(metric_name: str = None):
 
             return async_wrapper
         else:
+
             def sync_wrapper(*args, **kwargs):
                 monitor = get_performance_monitor()
                 start_time = time.time()

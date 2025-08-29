@@ -17,16 +17,18 @@ import json
 
 class CacheLevel(Enum):
     """Cache levels with different TTL strategies"""
+
     FRAMEWORK_PATTERNS = "framework_patterns"  # 1 hour TTL
-    PERSONA_SELECTION = "persona_selection"    # 30 minutes TTL
-    CONTEXT_ANALYSIS = "context_analysis"      # 15 minutes TTL
-    MCP_RESPONSES = "mcp_responses"            # 5 minutes TTL
-    STRATEGIC_MEMORY = "strategic_memory"      # 24 hours TTL
+    PERSONA_SELECTION = "persona_selection"  # 30 minutes TTL
+    CONTEXT_ANALYSIS = "context_analysis"  # 15 minutes TTL
+    MCP_RESPONSES = "mcp_responses"  # 5 minutes TTL
+    STRATEGIC_MEMORY = "strategic_memory"  # 24 hours TTL
 
 
 @dataclass
 class CacheEntry:
     """Cache entry with metadata"""
+
     value: Any
     created_at: float
     ttl_seconds: int
@@ -71,11 +73,11 @@ class CacheManager:
 
         # TTL configuration by cache level
         self.ttl_config = {
-            CacheLevel.FRAMEWORK_PATTERNS: 3600,    # 1 hour
-            CacheLevel.PERSONA_SELECTION: 1800,     # 30 minutes
-            CacheLevel.CONTEXT_ANALYSIS: 900,       # 15 minutes
-            CacheLevel.MCP_RESPONSES: 300,          # 5 minutes
-            CacheLevel.STRATEGIC_MEMORY: 86400,     # 24 hours
+            CacheLevel.FRAMEWORK_PATTERNS: 3600,  # 1 hour
+            CacheLevel.PERSONA_SELECTION: 1800,  # 30 minutes
+            CacheLevel.CONTEXT_ANALYSIS: 900,  # 15 minutes
+            CacheLevel.MCP_RESPONSES: 300,  # 5 minutes
+            CacheLevel.STRATEGIC_MEMORY: 86400,  # 24 hours
         }
 
         # Cleanup task
@@ -84,6 +86,7 @@ class CacheManager:
 
     def _start_cleanup_task(self):
         """Start background cleanup task"""
+
         async def cleanup_expired():
             while True:
                 try:
@@ -125,8 +128,7 @@ class CacheManager:
         """Perform LRU eviction to stay within limits"""
         # Sort by last_accessed time (least recently used first)
         sorted_entries = sorted(
-            self.cache.items(),
-            key=lambda x: x[1].last_accessed or x[1].created_at
+            self.cache.items(), key=lambda x: x[1].last_accessed or x[1].created_at
         )
 
         # Remove oldest 20% when limit exceeded
@@ -172,7 +174,9 @@ class CacheManager:
                     # Performance tracking
                     operation_time = (time.time() - start_time) * 1000
                     if operation_time > 50:
-                        self.logger.warning(f"Slow cache get: {operation_time:.1f}ms for key {key[:8]}...")
+                        self.logger.warning(
+                            f"Slow cache get: {operation_time:.1f}ms for key {key[:8]}..."
+                        )
 
                     return value
                 else:
@@ -193,7 +197,7 @@ class CacheManager:
         key: str,
         value: Any,
         cache_level: CacheLevel = CacheLevel.CONTEXT_ANALYSIS,
-        ttl_override: Optional[int] = None
+        ttl_override: Optional[int] = None,
     ) -> bool:
         """Set value in cache with intelligent TTL"""
         start_time = time.time()
@@ -205,7 +209,7 @@ class CacheManager:
                 value=value,
                 created_at=time.time(),
                 ttl_seconds=ttl,
-                cache_level=cache_level
+                cache_level=cache_level,
             )
 
             self.cache[key] = entry
@@ -213,7 +217,9 @@ class CacheManager:
             # Performance tracking
             operation_time = (time.time() - start_time) * 1000
             if operation_time > 50:
-                self.logger.warning(f"Slow cache set: {operation_time:.1f}ms for key {key[:8]}...")
+                self.logger.warning(
+                    f"Slow cache set: {operation_time:.1f}ms for key {key[:8]}..."
+                )
 
             return True
 
@@ -228,7 +234,7 @@ class CacheManager:
         cache_level: CacheLevel = CacheLevel.CONTEXT_ANALYSIS,
         namespace: str = "default",
         ttl_override: Optional[int] = None,
-        **kwargs
+        **kwargs,
     ) -> Any:
         """
         Decorator-style cached function call
@@ -272,7 +278,9 @@ class CacheManager:
             self.evictions += 1
 
         if keys_to_remove:
-            self.logger.debug(f"Invalidated {len(keys_to_remove)} cache entries matching pattern: {pattern}")
+            self.logger.debug(
+                f"Invalidated {len(keys_to_remove)} cache entries matching pattern: {pattern}"
+            )
 
     def get_stats(self) -> Dict[str, Any]:
         """Get comprehensive cache statistics"""
@@ -283,7 +291,9 @@ class CacheManager:
         memory_estimate = 0
         for entry in self.cache.values():
             try:
-                memory_estimate += len(str(entry.value).encode()) + 200  # Entry overhead
+                memory_estimate += (
+                    len(str(entry.value).encode()) + 200
+                )  # Entry overhead
             except:
                 memory_estimate += 1000  # Conservative estimate for complex objects
 
@@ -296,9 +306,11 @@ class CacheManager:
             "memory_usage_bytes": memory_estimate,
             "memory_usage_mb": memory_estimate / (1024 * 1024),
             "cache_levels": {
-                level.value: sum(1 for entry in self.cache.values() if entry.cache_level == level)
+                level.value: sum(
+                    1 for entry in self.cache.values() if entry.cache_level == level
+                )
                 for level in CacheLevel
-            }
+            },
         }
 
     async def warm_cache(self, warm_data: Dict[str, Any]):
@@ -327,6 +339,7 @@ class CacheManager:
 
 # Global cache manager instance
 _cache_manager = None
+
 
 def get_cache_manager(max_memory_mb: int = 20) -> CacheManager:
     """Get global cache manager instance"""

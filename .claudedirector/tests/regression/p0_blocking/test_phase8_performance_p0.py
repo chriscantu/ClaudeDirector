@@ -19,8 +19,14 @@ sys.path.insert(0, str(PROJECT_ROOT))
 # Import performance components to test
 try:
     from claudedirector.lib.performance.cache_manager import CacheManager, CacheLevel
-    from claudedirector.lib.performance.memory_optimizer import MemoryOptimizer, ObjectPool
-    from claudedirector.lib.performance.response_optimizer import ResponseOptimizer, ResponsePriority
+    from claudedirector.lib.performance.memory_optimizer import (
+        MemoryOptimizer,
+        ObjectPool,
+    )
+    from claudedirector.lib.performance.response_optimizer import (
+        ResponseOptimizer,
+        ResponsePriority,
+    )
     from claudedirector.lib.performance.performance_monitor import PerformanceMonitor
 except ImportError:
     # Fallback for test environment
@@ -37,10 +43,18 @@ class TestPhase8PerformanceP0(unittest.TestCase):
     def setUp(self):
         """Set up test fixtures"""
         self.cache_manager = CacheManager(max_memory_mb=10, max_entries=100)
-        self.memory_optimizer = MemoryOptimizer(target_memory_mb=30, alert_threshold_mb=35)
-        self.response_optimizer = ResponseOptimizer(max_workers=2, target_response_ms=400)
-        self.response_optimizer._test_mode = True  # Enable test mode for direct execution
-        self.performance_monitor = PerformanceMonitor(retention_hours=1, alert_cooldown_seconds=10)
+        self.memory_optimizer = MemoryOptimizer(
+            target_memory_mb=30, alert_threshold_mb=35
+        )
+        self.response_optimizer = ResponseOptimizer(
+            max_workers=2, target_response_ms=400
+        )
+        self.response_optimizer._test_mode = (
+            True  # Enable test mode for direct execution
+        )
+        self.performance_monitor = PerformanceMonitor(
+            retention_hours=1, alert_cooldown_seconds=10
+        )
 
     def test_p0_cache_performance_targets(self):
         """P0: Cache operations must meet <50ms performance targets"""
@@ -48,14 +62,14 @@ class TestPhase8PerformanceP0(unittest.TestCase):
         async def run_cache_performance_test():
             # Test cache set performance
             start_time = time.time()
-            await self.cache_manager.set("test_key", "test_value", CacheLevel.CONTEXT_ANALYSIS)
+            await self.cache_manager.set(
+                "test_key", "test_value", CacheLevel.CONTEXT_ANALYSIS
+            )
             set_time = (time.time() - start_time) * 1000
 
             # P0 CRITICAL: Cache set must be under 50ms
             self.assertLess(
-                set_time,
-                50,
-                f"Cache set took {set_time:.1f}ms, must be <50ms"
+                set_time, 50, f"Cache set took {set_time:.1f}ms, must be <50ms"
             )
 
             # Test cache get performance
@@ -65,9 +79,7 @@ class TestPhase8PerformanceP0(unittest.TestCase):
 
             # P0 CRITICAL: Cache get must be under 50ms
             self.assertLess(
-                get_time,
-                50,
-                f"Cache get took {get_time:.1f}ms, must be <50ms"
+                get_time, 50, f"Cache get took {get_time:.1f}ms, must be <50ms"
             )
 
             # Verify cache functionality
@@ -87,7 +99,7 @@ class TestPhase8PerformanceP0(unittest.TestCase):
             self.assertLess(
                 avg_time_per_op,
                 10,
-                f"Average cache get took {avg_time_per_op:.1f}ms, must be <10ms for batched operations"
+                f"Average cache get took {avg_time_per_op:.1f}ms, must be <10ms for batched operations",
             )
 
         asyncio.run(run_cache_performance_test())
@@ -102,9 +114,7 @@ class TestPhase8PerformanceP0(unittest.TestCase):
 
         # Test object pool memory efficiency
         pool = self.memory_optimizer.create_object_pool(
-            "test_pool",
-            lambda: {"data": "test"},
-            max_size=50
+            "test_pool", lambda: {"data": "test"}, max_size=50
         )
 
         # Create and release objects to test pooling
@@ -135,7 +145,7 @@ class TestPhase8PerformanceP0(unittest.TestCase):
         self.assertLess(
             memory_stats.current_usage_mb,
             50,
-            f"Memory usage {memory_stats.current_usage_mb:.1f}MB exceeds 50MB limit"
+            f"Memory usage {memory_stats.current_usage_mb:.1f}MB exceeds 50MB limit",
         )
 
     def test_p0_response_time_optimization(self):
@@ -154,8 +164,7 @@ class TestPhase8PerformanceP0(unittest.TestCase):
             # Test critical priority optimization
             start_time = time.time()
             result = await self.response_optimizer.optimize_call(
-                fast_function,
-                priority=ResponsePriority.CRITICAL
+                fast_function, priority=ResponsePriority.CRITICAL
             )
             critical_time = (time.time() - start_time) * 1000
 
@@ -163,15 +172,14 @@ class TestPhase8PerformanceP0(unittest.TestCase):
             self.assertLess(
                 critical_time,
                 100,
-                f"Critical priority response took {critical_time:.1f}ms, must be <100ms"
+                f"Critical priority response took {critical_time:.1f}ms, must be <100ms",
             )
             self.assertEqual(result, "fast_result")
 
             # Test normal priority optimization
             start_time = time.time()
             result = await self.response_optimizer.optimize_call(
-                sync_function,
-                priority=ResponsePriority.NORMAL
+                sync_function, priority=ResponsePriority.NORMAL
             )
             normal_time = (time.time() - start_time) * 1000
 
@@ -179,7 +187,7 @@ class TestPhase8PerformanceP0(unittest.TestCase):
             self.assertLess(
                 normal_time,
                 500,
-                f"Normal priority response took {normal_time:.1f}ms, must be <500ms"
+                f"Normal priority response took {normal_time:.1f}ms, must be <500ms",
             )
             self.assertEqual(result, "sync_result")
 
@@ -190,8 +198,7 @@ class TestPhase8PerformanceP0(unittest.TestCase):
             tasks = []
             for i in range(batch_size):
                 task = self.response_optimizer.optimize_call(
-                    fast_function,
-                    priority=ResponsePriority.HIGH
+                    fast_function, priority=ResponsePriority.HIGH
                 )
                 tasks.append(task)
 
@@ -203,7 +210,7 @@ class TestPhase8PerformanceP0(unittest.TestCase):
             self.assertLess(
                 avg_time_per_request,
                 200,
-                f"Average batch response time {avg_time_per_request:.1f}ms, must be <200ms"
+                f"Average batch response time {avg_time_per_request:.1f}ms, must be <200ms",
             )
             self.assertEqual(len(results), batch_size)
 
@@ -223,12 +230,16 @@ class TestPhase8PerformanceP0(unittest.TestCase):
         self.assertEqual(latest_metric, test_metrics[-1])
 
         # Test average calculation
-        avg_metric = self.performance_monitor.get_average_metric("test_response_time", window_seconds=60)
+        avg_metric = self.performance_monitor.get_average_metric(
+            "test_response_time", window_seconds=60
+        )
         expected_avg = sum(test_metrics) / len(test_metrics)
         self.assertAlmostEqual(avg_metric, expected_avg, places=1)
 
         # Test percentile calculation
-        p95_metric = self.performance_monitor.get_metric_percentile("test_response_time", 0.95, window_seconds=60)
+        p95_metric = self.performance_monitor.get_metric_percentile(
+            "test_response_time", 0.95, window_seconds=60
+        )
         self.assertIsNotNone(p95_metric)
         self.assertGreater(p95_metric, 0)
 
@@ -240,10 +251,14 @@ class TestPhase8PerformanceP0(unittest.TestCase):
 
         # Test alerting functionality
         # Set a low threshold to trigger alert
-        self.performance_monitor.set_threshold("test_response_time", warning=50, critical=100)
+        self.performance_monitor.set_threshold(
+            "test_response_time", warning=50, critical=100
+        )
 
         # Record metric that should trigger alert
-        self.performance_monitor.record_metric("test_response_time", 150)  # Above critical threshold
+        self.performance_monitor.record_metric(
+            "test_response_time", 150
+        )  # Above critical threshold
 
         # Verify alert was triggered
         alert_key = "test_response_time_threshold"
@@ -268,24 +283,22 @@ class TestPhase8PerformanceP0(unittest.TestCase):
                 result = f"computed_{data}"
 
                 # Cache the result
-                await self.cache_manager.set(cache_key, result, CacheLevel.CONTEXT_ANALYSIS)
+                await self.cache_manager.set(
+                    cache_key, result, CacheLevel.CONTEXT_ANALYSIS
+                )
                 return result
 
             # First call (cache miss) - should be slower
             start_time = time.time()
             result1 = await self.response_optimizer.optimize_call(
-                cached_expensive_function,
-                "test_data",
-                priority=ResponsePriority.NORMAL
+                cached_expensive_function, "test_data", priority=ResponsePriority.NORMAL
             )
             first_call_time = (time.time() - start_time) * 1000
 
             # Second call (cache hit) - should be much faster
             start_time = time.time()
             result2 = await self.response_optimizer.optimize_call(
-                cached_expensive_function,
-                "test_data",
-                priority=ResponsePriority.NORMAL
+                cached_expensive_function, "test_data", priority=ResponsePriority.NORMAL
             )
             second_call_time = (time.time() - start_time) * 1000
 
@@ -297,14 +310,14 @@ class TestPhase8PerformanceP0(unittest.TestCase):
             self.assertLess(
                 second_call_time,
                 first_call_time / 2,
-                f"Cache hit not fast enough: {second_call_time:.1f}ms vs {first_call_time:.1f}ms"
+                f"Cache hit not fast enough: {second_call_time:.1f}ms vs {first_call_time:.1f}ms",
             )
 
             # P0 CRITICAL: Even cache miss should be under target
             self.assertLess(
                 first_call_time,
                 500,
-                f"Cache miss response time {first_call_time:.1f}ms exceeds 500ms target"
+                f"Cache miss response time {first_call_time:.1f}ms exceeds 500ms target",
             )
 
             # Test memory efficiency during operations
@@ -313,9 +326,7 @@ class TestPhase8PerformanceP0(unittest.TestCase):
             # Perform multiple operations
             for i in range(50):
                 await self.response_optimizer.optimize_call(
-                    lambda x: f"result_{x}",
-                    i,
-                    priority=ResponsePriority.HIGH
+                    lambda x: f"result_{x}", i, priority=ResponsePriority.HIGH
                 )
 
             memory_after = self.memory_optimizer.get_memory_usage()
@@ -325,7 +336,7 @@ class TestPhase8PerformanceP0(unittest.TestCase):
             self.assertLess(
                 memory_increase,
                 10,
-                f"Memory increased by {memory_increase:.1f}MB during operations, should be <10MB"
+                f"Memory increased by {memory_increase:.1f}MB during operations, should be <10MB",
             )
 
         asyncio.run(run_integration_test())
@@ -341,7 +352,7 @@ class TestPhase8PerformanceP0(unittest.TestCase):
         self.assertLess(
             cache_init_time,
             100,
-            f"Cache manager initialization took {cache_init_time:.1f}ms, must be <100ms"
+            f"Cache manager initialization took {cache_init_time:.1f}ms, must be <100ms",
         )
 
         # Test memory optimizer initialization
@@ -352,7 +363,7 @@ class TestPhase8PerformanceP0(unittest.TestCase):
         self.assertLess(
             mem_init_time,
             100,
-            f"Memory optimizer initialization took {mem_init_time:.1f}ms, must be <100ms"
+            f"Memory optimizer initialization took {mem_init_time:.1f}ms, must be <100ms",
         )
 
         # Test response optimizer initialization
@@ -363,7 +374,7 @@ class TestPhase8PerformanceP0(unittest.TestCase):
         self.assertLess(
             resp_init_time,
             100,
-            f"Response optimizer initialization took {resp_init_time:.1f}ms, must be <100ms"
+            f"Response optimizer initialization took {resp_init_time:.1f}ms, must be <100ms",
         )
 
         # Test performance monitor initialization
@@ -374,7 +385,7 @@ class TestPhase8PerformanceP0(unittest.TestCase):
         self.assertLess(
             mon_init_time,
             100,
-            f"Performance monitor initialization took {mon_init_time:.1f}ms, must be <100ms"
+            f"Performance monitor initialization took {mon_init_time:.1f}ms, must be <100ms",
         )
 
     def test_p0_error_handling_and_resilience(self):
@@ -401,8 +412,7 @@ class TestPhase8PerformanceP0(unittest.TestCase):
 
             try:
                 await self.response_optimizer.optimize_call(
-                    failing_function,
-                    priority=ResponsePriority.NORMAL
+                    failing_function, priority=ResponsePriority.NORMAL
                 )
                 self.fail("Expected ValueError to be propagated")
             except ValueError:
@@ -424,8 +434,8 @@ class TestPhase8PerformanceP0(unittest.TestCase):
             # Test performance monitor error handling
             try:
                 # Record invalid metric - should handle gracefully
-                self.performance_monitor.record_metric("test", float('inf'))
-                self.performance_monitor.record_metric("test", float('nan'))
+                self.performance_monitor.record_metric("test", float("inf"))
+                self.performance_monitor.record_metric("test", float("nan"))
 
                 # Should not crash the monitor
                 stats = self.performance_monitor.get_performance_dashboard()
@@ -438,6 +448,7 @@ class TestPhase8PerformanceP0(unittest.TestCase):
 
     def tearDown(self):
         """Clean up test resources"""
+
         # Clean up async resources
         async def cleanup():
             await self.cache_manager.cleanup()

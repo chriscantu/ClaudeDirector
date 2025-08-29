@@ -17,15 +17,17 @@ import threading
 
 class ResponsePriority(Enum):
     """Response priority levels for intelligent routing"""
-    CRITICAL = "critical"      # <100ms target (MCP transparency)
-    HIGH = "high"             # <200ms target (persona selection)
-    NORMAL = "normal"         # <500ms target (strategic analysis)
-    LOW = "low"              # <1000ms target (background tasks)
+
+    CRITICAL = "critical"  # <100ms target (MCP transparency)
+    HIGH = "high"  # <200ms target (persona selection)
+    NORMAL = "normal"  # <500ms target (strategic analysis)
+    LOW = "low"  # <1000ms target (background tasks)
 
 
 @dataclass
 class ResponseMetrics:
     """Response time metrics tracking"""
+
     response_time_ms: float
     queue_time_ms: float
     processing_time_ms: float
@@ -110,14 +112,20 @@ class ResponseOptimizer:
         while True:
             try:
                 # Process queues in priority order
-                for priority in [ResponsePriority.CRITICAL, ResponsePriority.HIGH,
-                               ResponsePriority.NORMAL, ResponsePriority.LOW]:
+                for priority in [
+                    ResponsePriority.CRITICAL,
+                    ResponsePriority.HIGH,
+                    ResponsePriority.NORMAL,
+                    ResponsePriority.LOW,
+                ]:
                     queue = self.priority_queues[priority]
 
                     try:
                         # Non-blocking check for requests
                         request_data = queue.get_nowait()
-                        asyncio.create_task(self._process_request(request_data, priority))
+                        asyncio.create_task(
+                            self._process_request(request_data, priority)
+                        )
                     except asyncio.QueueEmpty:
                         continue
 
@@ -128,16 +136,18 @@ class ResponseOptimizer:
                 self.logger.error(f"Priority queue processing error: {e}")
                 await asyncio.sleep(0.1)
 
-    async def _process_request(self, request_data: Dict[str, Any], priority: ResponsePriority):
+    async def _process_request(
+        self, request_data: Dict[str, Any], priority: ResponsePriority
+    ):
         """Process individual request with optimization"""
         start_time = time.time()
-        queue_time = start_time - request_data.get('queued_at', start_time)
+        queue_time = start_time - request_data.get("queued_at", start_time)
 
         try:
-            func = request_data['func']
-            args = request_data.get('args', ())
-            kwargs = request_data.get('kwargs', {})
-            future = request_data['future']
+            func = request_data["func"]
+            args = request_data.get("args", ())
+            kwargs = request_data.get("kwargs", {})
+            future = request_data["future"]
 
             # Apply optimizations based on priority
             optimizations = []
@@ -168,12 +178,12 @@ class ResponseOptimizer:
                 processing_time_ms=processing_time - (queue_time * 1000),
                 cache_hit=False,  # Would integrate with cache manager
                 priority=priority,
-                optimization_applied=optimizations
+                optimization_applied=optimizations,
             )
 
         except Exception as e:
-            if not request_data['future'].done():
-                request_data['future'].set_exception(e)
+            if not request_data["future"].done():
+                request_data["future"].set_exception(e)
             self.logger.error(f"Request processing error: {e}")
 
     async def _monitor_performance(self):
@@ -186,19 +196,31 @@ class ResponseOptimizer:
                 recent_metrics = self._get_recent_metrics(window_seconds=30)
 
                 if recent_metrics:
-                    avg_response_time = sum(m.response_time_ms for m in recent_metrics) / len(recent_metrics)
-                    slow_request_rate = sum(1 for m in recent_metrics if m.response_time_ms > self.target_response_ms) / len(recent_metrics)
+                    avg_response_time = sum(
+                        m.response_time_ms for m in recent_metrics
+                    ) / len(recent_metrics)
+                    slow_request_rate = sum(
+                        1
+                        for m in recent_metrics
+                        if m.response_time_ms > self.target_response_ms
+                    ) / len(recent_metrics)
 
                     # Auto-tune based on performance
                     if avg_response_time > self.target_response_ms:
-                        await self._auto_tune_performance(avg_response_time, slow_request_rate)
+                        await self._auto_tune_performance(
+                            avg_response_time, slow_request_rate
+                        )
 
             except Exception as e:
                 self.logger.error(f"Performance monitoring error: {e}")
 
-    async def _auto_tune_performance(self, avg_response_time: float, slow_request_rate: float):
+    async def _auto_tune_performance(
+        self, avg_response_time: float, slow_request_rate: float
+    ):
         """Automatically tune performance settings"""
-        self.logger.info(f"Auto-tuning: avg_response_time={avg_response_time:.1f}ms, slow_rate={slow_request_rate:.2f}")
+        self.logger.info(
+            f"Auto-tuning: avg_response_time={avg_response_time:.1f}ms, slow_rate={slow_request_rate:.2f}"
+        )
 
         # Increase thread pool size if needed
         if slow_request_rate > 0.1 and self.max_workers < 8:
@@ -210,7 +232,9 @@ class ResponseOptimizer:
             self.thread_pool = ThreadPoolExecutor(max_workers=self.max_workers)
             old_pool.shutdown(wait=False)
 
-            self.logger.info(f"Increased thread pool workers: {old_workers} -> {self.max_workers}")
+            self.logger.info(
+                f"Increased thread pool workers: {old_workers} -> {self.max_workers}"
+            )
 
     def _record_response_metrics(
         self,
@@ -219,7 +243,7 @@ class ResponseOptimizer:
         processing_time_ms: float,
         cache_hit: bool,
         priority: ResponsePriority,
-        optimization_applied: List[str]
+        optimization_applied: List[str],
     ):
         """Record response metrics for analysis"""
         metrics = ResponseMetrics(
@@ -229,7 +253,7 @@ class ResponseOptimizer:
             cache_hit=cache_hit,
             priority=priority,
             optimization_applied=optimization_applied,
-            timestamp=time.time()
+            timestamp=time.time(),
         )
 
         self.response_metrics.append(metrics)
@@ -263,7 +287,7 @@ class ResponseOptimizer:
         *args,
         priority: ResponsePriority = ResponsePriority.NORMAL,
         timeout_ms: Optional[int] = None,
-        **kwargs
+        **kwargs,
     ) -> Any:
         """
         Optimize function call with response time targets
@@ -292,17 +316,17 @@ class ResponseOptimizer:
 
         # Queue request based on priority
         request_data = {
-            'func': func,
-            'args': args,
-            'kwargs': kwargs,
-            'future': future,
-            'queued_at': time.time(),
-            'timeout_ms': timeout_ms,
+            "func": func,
+            "args": args,
+            "kwargs": kwargs,
+            "future": future,
+            "queued_at": time.time(),
+            "timeout_ms": timeout_ms,
         }
 
         try:
             # For test environments, execute directly to avoid queue timeout issues
-            if hasattr(self, '_test_mode') or not self._optimization_tasks:
+            if hasattr(self, "_test_mode") or not self._optimization_tasks:
                 if asyncio.iscoroutinefunction(func):
                     return await func(*args, **kwargs)
                 else:
@@ -329,11 +353,15 @@ class ResponseOptimizer:
             return result
 
         except asyncio.TimeoutError:
-            self.logger.error(f"Request timeout after {timeout_ms}ms for priority {priority.value}")
+            self.logger.error(
+                f"Request timeout after {timeout_ms}ms for priority {priority.value}"
+            )
             raise
         except asyncio.QueueFull:
             # Fallback to direct execution if queue is full
-            self.logger.warning(f"Priority queue full for {priority.value}, executing directly")
+            self.logger.warning(
+                f"Priority queue full for {priority.value}, executing directly"
+            )
 
             if asyncio.iscoroutinefunction(func):
                 return await func(*args, **kwargs)
@@ -347,7 +375,7 @@ class ResponseOptimizer:
         func: Callable,
         *args,
         priority: ResponsePriority = ResponsePriority.NORMAL,
-        **kwargs
+        **kwargs,
     ) -> Any:
         """Synchronous wrapper for optimize_call"""
         try:
@@ -359,12 +387,17 @@ class ResponseOptimizer:
             # No event loop, execute directly
             return func(*args, **kwargs)
 
-    def response_time_target(self, priority: ResponsePriority = ResponsePriority.NORMAL):
+    def response_time_target(
+        self, priority: ResponsePriority = ResponsePriority.NORMAL
+    ):
         """Decorator for automatic response time optimization"""
+
         def decorator(func):
             @functools.wraps(func)
             async def async_wrapper(*args, **kwargs):
-                return await self.optimize_call(func, *args, priority=priority, **kwargs)
+                return await self.optimize_call(
+                    func, *args, priority=priority, **kwargs
+                )
 
             @functools.wraps(func)
             def sync_wrapper(*args, **kwargs):
@@ -411,7 +444,11 @@ class ResponseOptimizer:
                 "total_requests": self.total_requests,
                 "slow_requests": self.slow_requests,
                 "cache_hits": self.cache_hits,
-                "cache_hit_rate": (self.cache_hits / self.total_requests) if self.total_requests > 0 else 0,
+                "cache_hit_rate": (
+                    (self.cache_hits / self.total_requests)
+                    if self.total_requests > 0
+                    else 0
+                ),
             },
             "resources": {
                 "thread_pool_workers": self.max_workers,
@@ -443,11 +480,16 @@ class ResponseOptimizer:
 # Global response optimizer instance
 _response_optimizer = None
 
-def get_response_optimizer(max_workers: int = 4, target_response_ms: int = 400) -> ResponseOptimizer:
+
+def get_response_optimizer(
+    max_workers: int = 4, target_response_ms: int = 400
+) -> ResponseOptimizer:
     """Get global response optimizer instance"""
     global _response_optimizer
     if _response_optimizer is None:
-        _response_optimizer = ResponseOptimizer(max_workers=max_workers, target_response_ms=target_response_ms)
+        _response_optimizer = ResponseOptimizer(
+            max_workers=max_workers, target_response_ms=target_response_ms
+        )
     return _response_optimizer
 
 
