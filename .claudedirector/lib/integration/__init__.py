@@ -26,6 +26,14 @@ from .unified_bridge import (
     create_memory_bridge,
     create_intelligence_bridge,
     create_unified_bridge,
+    # Phase 10 consolidation from integrations/ + bridges/
+    MCPUseClient,
+    MCPResponse,
+    ConnectionStatus,
+    CLIContextBridge,
+    create_mcp_client,
+    create_cli_bridge,
+    create_complete_integration_suite,
 )
 
 __all__ = [
@@ -37,4 +45,12 @@ __all__ = [
     "create_memory_bridge",
     "create_intelligence_bridge",
     "create_unified_bridge",
+    # Phase 10 consolidation
+    "MCPUseClient",
+    "MCPResponse",
+    "ConnectionStatus",
+    "CLIContextBridge",
+    "create_mcp_client",
+    "create_cli_bridge",
+    "create_complete_integration_suite",
 ]

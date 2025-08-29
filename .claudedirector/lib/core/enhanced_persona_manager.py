@@ -10,7 +10,17 @@ from typing import Dict, Any, Optional
 from dataclasses import dataclass
 from enum import Enum
 
-from integrations.mcp_use_client import MCPUseClient
+# Import with fallback for consolidated integration
+try:
+    from ..integration.unified_bridge import MCPUseClient
+except ImportError:
+    try:
+        from integration.unified_bridge import MCPUseClient
+    except ImportError:
+        # Fallback minimal class for testing
+        class MCPUseClient:
+            def __init__(self, *args, **kwargs):
+                self.is_available = False
 from .complexity_analyzer import (
     AnalysisComplexityDetector as ComplexityAnalyzer,
     ComplexityAnalysis,
