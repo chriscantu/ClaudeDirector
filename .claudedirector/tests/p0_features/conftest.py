@@ -15,7 +15,9 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from memory.optimized_db_manager import get_db_manager
+from lib.context_engineering.strategic_memory_manager import (
+    get_strategic_memory_manager as get_db_manager,
+)
 from lib.claudedirector.p0_features.shared.ai_pipeline.ai_base import (
     AIModelConfig,
 )

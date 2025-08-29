@@ -265,7 +265,9 @@ class TestDecisionIntelligenceEngine:
         engine.load_model()
 
         # Verify that existing database operations still work
-        from memory.optimized_db_manager import get_db_manager
+        from lib.context_engineering.strategic_memory_manager import (
+            get_strategic_memory_manager as get_db_manager,
+        )
 
         db_manager = get_db_manager(test_database)
         with db_manager.get_connection() as conn:
