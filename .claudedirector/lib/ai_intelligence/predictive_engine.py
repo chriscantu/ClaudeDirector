@@ -54,6 +54,7 @@ except ImportError:
         def __init__(self, *args, **kwargs):
             self.persona = "diego"
 
+
 logger = structlog.get_logger(__name__)
 
 
@@ -215,7 +216,9 @@ class EnhancedPredictiveEngine:
             "framework_effectiveness": [],
         }
 
-    def _get_rules_for_prediction_type(self, prediction_type: PredictionType) -> List[str]:
+    def _get_rules_for_prediction_type(
+        self, prediction_type: PredictionType
+    ) -> List[str]:
         """Get rule-based logic for each prediction type"""
         rules = {
             PredictionType.DECISION_OUTCOME: [
@@ -280,7 +283,9 @@ class EnhancedPredictiveEngine:
 
             # Update metrics
             processing_time = int((time.time() - start_time) * 1000)
-            self._update_prediction_metrics(processing_time, prediction_result.confidence_score)
+            self._update_prediction_metrics(
+                processing_time, prediction_result.confidence_score
+            )
 
             logger.info(
                 "decision_outcome_predicted",
@@ -315,7 +320,9 @@ class EnhancedPredictiveEngine:
             features = self._extract_collaboration_features(team_context)
 
             # Apply collaboration prediction model
-            challenges = await self._predict_collaboration_patterns(features, timeline_weeks)
+            challenges = await self._predict_collaboration_patterns(
+                features, timeline_weeks
+            )
 
             # Filter for high-confidence predictions
             significant_challenges = [
@@ -328,7 +335,9 @@ class EnhancedPredictiveEngine:
                 "collaboration_challenges_predicted",
                 challenges_count=len(significant_challenges),
                 timeline_weeks=timeline_weeks,
-                high_risk_count=len([c for c in significant_challenges if c.impact_severity == "high"]),
+                high_risk_count=len(
+                    [c for c in significant_challenges if c.impact_severity == "high"]
+                ),
             )
 
             return significant_challenges
@@ -432,7 +441,10 @@ class EnhancedPredictiveEngine:
     # === FEATURE EXTRACTION METHODS ===
 
     async def _extract_prediction_features(
-        self, decision_context: DecisionContext, user_input: str, prediction_type: PredictionType
+        self,
+        decision_context: DecisionContext,
+        user_input: str,
+        prediction_type: PredictionType,
     ) -> PredictionFeatures:
         """Extract features for prediction modeling"""
         features = PredictionFeatures()
@@ -451,11 +463,15 @@ class EnhancedPredictiveEngine:
         }
 
         # Extract organizational features
-        features.organizational_state = self._extract_organizational_features(decision_context)
+        features.organizational_state = self._extract_organizational_features(
+            decision_context
+        )
 
         # Calculate derived features
         features.complexity_score = self._calculate_complexity_score(decision_context)
-        features.strategic_alignment = self._calculate_strategic_alignment(decision_context)
+        features.strategic_alignment = self._calculate_strategic_alignment(
+            decision_context
+        )
 
         return features
 
@@ -495,7 +511,9 @@ class EnhancedPredictiveEngine:
             "quarter_progress": (now.month - 1) // 3,
         }
 
-    def _extract_collaboration_features(self, team_context: Dict[str, Any]) -> Dict[str, Any]:
+    def _extract_collaboration_features(
+        self, team_context: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Extract team collaboration features"""
         return {
             "communication_frequency": team_context.get("communication_frequency", 0.5),
@@ -504,12 +522,16 @@ class EnhancedPredictiveEngine:
             "process_clarity": team_context.get("process_clarity", 0.6),
         }
 
-    def _extract_initiative_features(self, initiative_data: Dict[str, Any]) -> Dict[str, Any]:
+    def _extract_initiative_features(
+        self, initiative_data: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Extract initiative health features"""
         return {
             "budget_variance": initiative_data.get("budget_variance", 0.0),
             "timeline_variance": initiative_data.get("timeline_variance", 0.0),
-            "stakeholder_satisfaction": initiative_data.get("stakeholder_satisfaction", 0.7),
+            "stakeholder_satisfaction": initiative_data.get(
+                "stakeholder_satisfaction", 0.7
+            ),
             "progress_velocity": initiative_data.get("progress_velocity", 0.6),
             "risk_indicators": initiative_data.get("risk_indicators", []),
         }
@@ -531,7 +553,10 @@ class EnhancedPredictiveEngine:
             return await self._apply_rule_based_model(prediction_type, features, model)
 
     async def _apply_rule_based_model(
-        self, prediction_type: PredictionType, features: PredictionFeatures, model: Dict[str, Any]
+        self,
+        prediction_type: PredictionType,
+        features: PredictionFeatures,
+        model: Dict[str, Any],
     ) -> PredictionResult:
         """Apply rule-based prediction model"""
         # Simulate rule-based logic
@@ -564,8 +589,12 @@ class EnhancedPredictiveEngine:
             reasoning=self._generate_reasoning(prediction_type, features),
             contributing_factors=self._extract_contributing_factors(features),
             risk_factors=self._identify_risk_factors(features),
-            mitigation_suggestions=self._generate_mitigation_suggestions(prediction_type, features),
-            transparency_trail=[f"Rule-based model applied for {prediction_type.value}"],
+            mitigation_suggestions=self._generate_mitigation_suggestions(
+                prediction_type, features
+            ),
+            transparency_trail=[
+                f"Rule-based model applied for {prediction_type.value}"
+            ],
         )
 
     def _generate_outcome_for_type(
@@ -573,11 +602,31 @@ class EnhancedPredictiveEngine:
     ) -> str:
         """Generate predicted outcome based on prediction type"""
         outcomes = {
-            PredictionType.DECISION_OUTCOME: ["Success likely", "Success uncertain", "Risk high"],
-            PredictionType.TEAM_COLLABORATION: ["Smooth collaboration", "Minor friction expected", "Coordination challenges likely"],
-            PredictionType.INITIATIVE_HEALTH: ["Healthy progress", "Monitor closely", "Intervention needed"],
-            PredictionType.STRATEGIC_CHALLENGE: ["No challenges expected", "Minor challenges possible", "Significant challenges likely"],
-            PredictionType.FRAMEWORK_EFFECTIVENESS: ["High effectiveness", "Moderate effectiveness", "Low effectiveness"],
+            PredictionType.DECISION_OUTCOME: [
+                "Success likely",
+                "Success uncertain",
+                "Risk high",
+            ],
+            PredictionType.TEAM_COLLABORATION: [
+                "Smooth collaboration",
+                "Minor friction expected",
+                "Coordination challenges likely",
+            ],
+            PredictionType.INITIATIVE_HEALTH: [
+                "Healthy progress",
+                "Monitor closely",
+                "Intervention needed",
+            ],
+            PredictionType.STRATEGIC_CHALLENGE: [
+                "No challenges expected",
+                "Minor challenges possible",
+                "Significant challenges likely",
+            ],
+            PredictionType.FRAMEWORK_EFFECTIVENESS: [
+                "High effectiveness",
+                "Moderate effectiveness",
+                "Low effectiveness",
+            ],
         }
 
         # Simple logic based on complexity score
@@ -595,15 +644,19 @@ class EnhancedPredictiveEngine:
         """Enhance prediction with MCP Sequential analysis"""
         try:
             # Use existing decision orchestrator for MCP enhancement
-            enhanced_analysis = await self.decision_orchestrator.analyze_decision_intelligence(
-                f"Analyze prediction: {prediction_result.predicted_outcome}",
-                "prediction_enhancement",
-                decision_context.persona,
+            enhanced_analysis = (
+                await self.decision_orchestrator.analyze_decision_intelligence(
+                    f"Analyze prediction: {prediction_result.predicted_outcome}",
+                    "prediction_enhancement",
+                    decision_context.persona,
+                )
             )
 
             # Integrate MCP insights
             if enhanced_analysis.success:
-                prediction_result.reasoning.append("Enhanced with MCP Sequential analysis")
+                prediction_result.reasoning.append(
+                    "Enhanced with MCP Sequential analysis"
+                )
                 prediction_result.confidence_score = min(
                     prediction_result.confidence_score + 0.05, 0.95
                 )
@@ -628,7 +681,9 @@ class EnhancedPredictiveEngine:
         }
         return complexity_map.get(decision_context.complexity, 0.5)
 
-    def _calculate_strategic_alignment(self, decision_context: DecisionContext) -> float:
+    def _calculate_strategic_alignment(
+        self, decision_context: DecisionContext
+    ) -> float:
         """Calculate strategic alignment score"""
         # Placeholder - would integrate with actual strategic context
         return 0.7
@@ -647,8 +702,19 @@ class EnhancedPredictiveEngine:
 
     def _detect_urgency_indicators(self, user_input: str) -> List[str]:
         """Detect urgency indicators in user input"""
-        urgency_keywords = ["urgent", "asap", "immediately", "crisis", "emergency", "deadline"]
-        return [keyword for keyword in urgency_keywords if keyword.lower() in user_input.lower()]
+        urgency_keywords = [
+            "urgent",
+            "asap",
+            "immediately",
+            "crisis",
+            "emergency",
+            "deadline",
+        ]
+        return [
+            keyword
+            for keyword in urgency_keywords
+            if keyword.lower() in user_input.lower()
+        ]
 
     def _generate_reasoning(
         self, prediction_type: PredictionType, features: PredictionFeatures
@@ -661,7 +727,9 @@ class EnhancedPredictiveEngine:
             "Applied rule-based prediction model",
         ]
 
-    def _extract_contributing_factors(self, features: PredictionFeatures) -> Dict[str, float]:
+    def _extract_contributing_factors(
+        self, features: PredictionFeatures
+    ) -> Dict[str, float]:
         """Extract contributing factors with weights"""
         return {
             "complexity": features.complexity_score,
@@ -709,8 +777,14 @@ class EnhancedPredictiveEngine:
                     expected_timeline=f"{timeline_weeks} weeks",
                     impact_severity="high",
                     affected_areas=["Team coordination", "Decision making"],
-                    early_warning_indicators=["Decreased meeting frequency", "Delayed responses"],
-                    recommended_preparation=["Schedule regular check-ins", "Clarify communication protocols"],
+                    early_warning_indicators=[
+                        "Decreased meeting frequency",
+                        "Delayed responses",
+                    ],
+                    recommended_preparation=[
+                        "Schedule regular check-ins",
+                        "Clarify communication protocols",
+                    ],
                 )
             )
 
@@ -723,8 +797,14 @@ class EnhancedPredictiveEngine:
                     expected_timeline=f"{timeline_weeks-1} weeks",
                     impact_severity="medium",
                     affected_areas=["Timeline adherence", "Quality delivery"],
-                    early_warning_indicators=["Dependency conflicts", "Unclear ownership"],
-                    recommended_preparation=["Map dependency chains", "Establish clear owners"],
+                    early_warning_indicators=[
+                        "Dependency conflicts",
+                        "Unclear ownership",
+                    ],
+                    recommended_preparation=[
+                        "Map dependency chains",
+                        "Establish clear owners",
+                    ],
                 )
             )
 
@@ -738,9 +818,13 @@ class EnhancedPredictiveEngine:
 
         if prediction.confidence == PredictionConfidence.HIGH:
             if "risk" in prediction.predicted_outcome.lower():
-                recommendations.append("Take immediate action to mitigate identified risks")
+                recommendations.append(
+                    "Take immediate action to mitigate identified risks"
+                )
             else:
-                recommendations.append("Proceed with confidence but maintain monitoring")
+                recommendations.append(
+                    "Proceed with confidence but maintain monitoring"
+                )
 
         # Add prediction-specific recommendations
         recommendations.extend(prediction.mitigation_suggestions)
@@ -799,7 +883,9 @@ class EnhancedPredictiveEngine:
             transparency_trail=[f"Fallback prediction due to error: {error_message}"],
         )
 
-    def _update_prediction_metrics(self, processing_time_ms: int, confidence_score: float):
+    def _update_prediction_metrics(
+        self, processing_time_ms: int, confidence_score: float
+    ):
         """Update prediction performance metrics"""
         self.prediction_metrics["predictions_made"] += 1
 
@@ -807,14 +893,14 @@ class EnhancedPredictiveEngine:
         prev_avg = self.prediction_metrics["avg_processing_time_ms"]
         count = self.prediction_metrics["predictions_made"]
         self.prediction_metrics["avg_processing_time_ms"] = (
-            (prev_avg * (count - 1) + processing_time_ms) / count
-        )
+            prev_avg * (count - 1) + processing_time_ms
+        ) / count
 
         # Update average confidence
         prev_conf = self.prediction_metrics["avg_confidence"]
         self.prediction_metrics["avg_confidence"] = (
-            (prev_conf * (count - 1) + confidence_score) / count
-        )
+            prev_conf * (count - 1) + confidence_score
+        ) / count
 
     def get_prediction_metrics(self) -> Dict[str, Any]:
         """Get current prediction performance metrics"""

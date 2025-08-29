@@ -34,6 +34,7 @@ try:
         DecisionContext,
         DecisionComplexity,
     )
+
     ENHANCED_PREDICTIVE_INTELLIGENCE_AVAILABLE = True
 except ImportError as e:
     ENHANCED_PREDICTIVE_INTELLIGENCE_AVAILABLE = False
@@ -70,16 +71,23 @@ class TestEnhancedPredictiveIntelligenceP0(unittest.TestCase):
         execution_time = time.time() - self.start_time
         # Per OVERVIEW.md: <500ms for strategic responses
         self.assertLess(
-            execution_time, 2.0,
-            f"P0 FAILURE: Predictive intelligence test exceeded 2s limit: {execution_time:.2f}s"
+            execution_time,
+            2.0,
+            f"P0 FAILURE: Predictive intelligence test exceeded 2s limit: {execution_time:.2f}s",
         )
 
     def test_p0_enhanced_predictive_engine_availability(self):
         """P0 TEST: Enhanced Predictive Engine must be available"""
         if not ENHANCED_PREDICTIVE_INTELLIGENCE_AVAILABLE:
-            print("⚠️ Running P0 validation in fallback mode - Enhanced Predictive Intelligence dependencies not available")
-            print("✅ P0 Core Interface Validation: Enhanced Predictive Intelligence interface defined")
-            self.assertTrue(True, "P0 fallback validation passed - core interfaces available")
+            print(
+                "⚠️ Running P0 validation in fallback mode - Enhanced Predictive Intelligence dependencies not available"
+            )
+            print(
+                "✅ P0 Core Interface Validation: Enhanced Predictive Intelligence interface defined"
+            )
+            self.assertTrue(
+                True, "P0 fallback validation passed - core interfaces available"
+            )
             return
 
         # Full test when dependencies available
@@ -93,9 +101,15 @@ class TestEnhancedPredictiveIntelligenceP0(unittest.TestCase):
     def test_p0_decision_outcome_prediction_accuracy(self):
         """P0 TEST: Decision outcome prediction must achieve 85%+ confidence threshold"""
         if not ENHANCED_PREDICTIVE_INTELLIGENCE_AVAILABLE:
-            print("⚠️ Running P0 validation in fallback mode - Enhanced Predictive Intelligence dependencies not available")
-            print("✅ P0 Core Interface Validation: Enhanced Predictive Intelligence interface defined")
-            self.assertTrue(True, "P0 fallback validation passed - core interfaces available")
+            print(
+                "⚠️ Running P0 validation in fallback mode - Enhanced Predictive Intelligence dependencies not available"
+            )
+            print(
+                "✅ P0 Core Interface Validation: Enhanced Predictive Intelligence interface defined"
+            )
+            self.assertTrue(
+                True, "P0 fallback validation passed - core interfaces available"
+            )
             return
 
         async def run_prediction_test():
@@ -113,27 +127,36 @@ class TestEnhancedPredictiveIntelligenceP0(unittest.TestCase):
             # Test prediction
             result = await engine.predict_decision_outcome(
                 decision_context,
-                "We need to develop a comprehensive platform strategy for international expansion"
+                "We need to develop a comprehensive platform strategy for international expansion",
             )
 
             # P0 Requirements per Phase 11 plan
             self.assertTrue(result, "P0 FAILURE: Prediction result must not be None")
-            self.assertIsNotNone(result.predicted_outcome, "P0 FAILURE: Predicted outcome required")
-            self.assertIsNotNone(result.confidence, "P0 FAILURE: Confidence level required")
+            self.assertIsNotNone(
+                result.predicted_outcome, "P0 FAILURE: Predicted outcome required"
+            )
+            self.assertIsNotNone(
+                result.confidence, "P0 FAILURE: Confidence level required"
+            )
             self.assertGreaterEqual(
-                result.confidence_score, 0.0,
-                "P0 FAILURE: Confidence score must be non-negative"
+                result.confidence_score,
+                0.0,
+                "P0 FAILURE: Confidence score must be non-negative",
             )
             self.assertLessEqual(
-                result.confidence_score, 1.0,
-                "P0 FAILURE: Confidence score must not exceed 1.0"
+                result.confidence_score,
+                1.0,
+                "P0 FAILURE: Confidence score must not exceed 1.0",
             )
 
             # Business requirement: Strategic predictions must be actionable
-            self.assertIsInstance(result.reasoning, list, "P0 FAILURE: Reasoning must be provided")
+            self.assertIsInstance(
+                result.reasoning, list, "P0 FAILURE: Reasoning must be provided"
+            )
             self.assertGreater(
-                len(result.reasoning), 0,
-                "P0 FAILURE: Strategic reasoning required for business decisions"
+                len(result.reasoning),
+                0,
+                "P0 FAILURE: Strategic reasoning required for business decisions",
             )
 
         # Run async test
@@ -142,9 +165,15 @@ class TestEnhancedPredictiveIntelligenceP0(unittest.TestCase):
     def test_p0_predictive_intelligence_performance_requirement(self):
         """P0 TEST: Predictive intelligence must meet performance SLA (<500ms)"""
         if not ENHANCED_PREDICTIVE_INTELLIGENCE_AVAILABLE:
-            print("⚠️ Running P0 validation in fallback mode - Enhanced Predictive Intelligence dependencies not available")
-            print("✅ P0 Core Interface Validation: Enhanced Predictive Intelligence interface defined")
-            self.assertTrue(True, "P0 fallback validation passed - core interfaces available")
+            print(
+                "⚠️ Running P0 validation in fallback mode - Enhanced Predictive Intelligence dependencies not available"
+            )
+            print(
+                "✅ P0 Core Interface Validation: Enhanced Predictive Intelligence interface defined"
+            )
+            self.assertTrue(
+                True, "P0 fallback validation passed - core interfaces available"
+            )
             return
 
         async def run_performance_test():
@@ -162,19 +191,24 @@ class TestEnhancedPredictiveIntelligenceP0(unittest.TestCase):
             )
 
             # Test prediction performance
-            result = await engine.predict_decision_outcome(decision_context, "Quick strategic assessment needed")
+            result = await engine.predict_decision_outcome(
+                decision_context, "Quick strategic assessment needed"
+            )
 
             processing_time = time.time() - start_time
 
             # P0 Performance requirement per OVERVIEW.md: <500ms for strategic responses
             self.assertLess(
-                processing_time, 0.5,
-                f"P0 FAILURE: Predictive intelligence exceeded 500ms SLA: {processing_time:.3f}s"
+                processing_time,
+                0.5,
+                f"P0 FAILURE: Predictive intelligence exceeded 500ms SLA: {processing_time:.3f}s",
             )
 
             # Validate result quality
-            self.assertTrue(result.success if hasattr(result, 'success') else True,
-                           "P0 FAILURE: Prediction must succeed within performance window")
+            self.assertTrue(
+                result.success if hasattr(result, "success") else True,
+                "P0 FAILURE: Prediction must succeed within performance window",
+            )
 
         # Run async test
         asyncio.run(run_performance_test())
@@ -182,9 +216,15 @@ class TestEnhancedPredictiveIntelligenceP0(unittest.TestCase):
     def test_p0_context_engineering_integration(self):
         """P0 TEST: Must integrate with 8-layer Context Engineering architecture"""
         if not ENHANCED_PREDICTIVE_INTELLIGENCE_AVAILABLE:
-            print("⚠️ Running P0 validation in fallback mode - Enhanced Predictive Intelligence dependencies not available")
-            print("✅ P0 Core Interface Validation: Enhanced Predictive Intelligence interface defined")
-            self.assertTrue(True, "P0 fallback validation passed - core interfaces available")
+            print(
+                "⚠️ Running P0 validation in fallback mode - Enhanced Predictive Intelligence dependencies not available"
+            )
+            print(
+                "✅ P0 Core Interface Validation: Enhanced Predictive Intelligence interface defined"
+            )
+            self.assertTrue(
+                True, "P0 fallback validation passed - core interfaces available"
+            )
             return
 
         async def run_integration_test():
@@ -195,7 +235,7 @@ class TestEnhancedPredictiveIntelligenceP0(unittest.TestCase):
             # Validate integration
             self.assertIsNotNone(
                 engine.decision_orchestrator,
-                "P0 FAILURE: Must integrate with existing decision orchestrator"
+                "P0 FAILURE: Must integrate with existing decision orchestrator",
             )
 
             # Test that prediction leverages existing framework detection
@@ -205,21 +245,29 @@ class TestEnhancedPredictiveIntelligenceP0(unittest.TestCase):
                 persona="diego",
                 complexity=DecisionComplexity.MEDIUM,
             )
-            
-            result = await engine.predict_decision_outcome(decision_context, "Strategic team coordination needed")
-            
+
+            result = await engine.predict_decision_outcome(
+                decision_context, "Strategic team coordination needed"
+            )
+
             # Validate architectural integration
             self.assertIsNotNone(result, "P0 FAILURE: Integration must produce results")
-            
+
             # Validate result has required attributes per architecture
-            self.assertTrue(hasattr(result, 'predicted_outcome'), "P0 FAILURE: Result must have predicted_outcome")
-            self.assertTrue(hasattr(result, 'confidence'), "P0 FAILURE: Result must have confidence")
-            
+            self.assertTrue(
+                hasattr(result, "predicted_outcome"),
+                "P0 FAILURE: Result must have predicted_outcome",
+            )
+            self.assertTrue(
+                hasattr(result, "confidence"), "P0 FAILURE: Result must have confidence"
+            )
+
             # Validate transparency trail integration per OVERVIEW.md
-            if hasattr(result, 'transparency_trail'):
+            if hasattr(result, "transparency_trail"):
                 self.assertIsInstance(
-                    result.transparency_trail, list,
-                    "P0 FAILURE: Must maintain transparency trail for audit compliance"
+                    result.transparency_trail,
+                    list,
+                    "P0 FAILURE: Must maintain transparency trail for audit compliance",
                 )
 
         # Run async test
@@ -228,9 +276,15 @@ class TestEnhancedPredictiveIntelligenceP0(unittest.TestCase):
     def test_p0_prediction_types_coverage(self):
         """P0 TEST: Must support all required prediction types for P1 business value"""
         if not ENHANCED_PREDICTIVE_INTELLIGENCE_AVAILABLE:
-            print("⚠️ Running P0 validation in fallback mode - Enhanced Predictive Intelligence dependencies not available")
-            print("✅ P0 Core Interface Validation: Enhanced Predictive Intelligence interface defined")
-            self.assertTrue(True, "P0 fallback validation passed - core interfaces available")
+            print(
+                "⚠️ Running P0 validation in fallback mode - Enhanced Predictive Intelligence dependencies not available"
+            )
+            print(
+                "✅ P0 Core Interface Validation: Enhanced Predictive Intelligence interface defined"
+            )
+            self.assertTrue(
+                True, "P0 fallback validation passed - core interfaces available"
+            )
             return
 
         # Validate PredictionType enum covers P1 requirements
@@ -244,7 +298,7 @@ class TestEnhancedPredictiveIntelligenceP0(unittest.TestCase):
         for prediction_type in required_types:
             self.assertIsNotNone(
                 prediction_type,
-                f"P0 FAILURE: Required prediction type missing: {prediction_type}"
+                f"P0 FAILURE: Required prediction type missing: {prediction_type}",
             )
 
     def test_p0_graceful_degradation_fallback(self):
@@ -265,7 +319,9 @@ class TestEnhancedPredictiveIntelligenceP0(unittest.TestCase):
             )
 
             try:
-                result = await engine.predict_decision_outcome(decision_context, "Fallback test")
+                result = await engine.predict_decision_outcome(
+                    decision_context, "Fallback test"
+                )
                 # Fallback should return a result, even if limited
                 self.assertIsNotNone(result, "P0 FAILURE: Fallback must return result")
             except Exception as e:
@@ -277,9 +333,15 @@ class TestEnhancedPredictiveIntelligenceP0(unittest.TestCase):
     def test_p0_transparency_and_audit_compliance(self):
         """P0 TEST: Must maintain transparency and audit trails per OVERVIEW.md"""
         if not ENHANCED_PREDICTIVE_INTELLIGENCE_AVAILABLE:
-            print("⚠️ Running P0 validation in fallback mode - Enhanced Predictive Intelligence dependencies not available")
-            print("✅ P0 Core Interface Validation: Enhanced Predictive Intelligence interface defined")
-            self.assertTrue(True, "P0 fallback validation passed - core interfaces available")
+            print(
+                "⚠️ Running P0 validation in fallback mode - Enhanced Predictive Intelligence dependencies not available"
+            )
+            print(
+                "✅ P0 Core Interface Validation: Enhanced Predictive Intelligence interface defined"
+            )
+            self.assertTrue(
+                True, "P0 fallback validation passed - core interfaces available"
+            )
             return
 
         async def run_transparency_test():
@@ -292,23 +354,27 @@ class TestEnhancedPredictiveIntelligenceP0(unittest.TestCase):
                 complexity=DecisionComplexity.COMPLEX,
             )
 
-            result = await engine.predict_decision_outcome(decision_context, "Executive strategic decision")
+            result = await engine.predict_decision_outcome(
+                decision_context, "Executive strategic decision"
+            )
 
             # Validate transparency requirements per OVERVIEW.md
-            if hasattr(result, 'transparency_trail'):
+            if hasattr(result, "transparency_trail"):
                 self.assertIsInstance(
-                    result.transparency_trail, list,
-                    "P0 FAILURE: Transparency trail required for audit compliance"
+                    result.transparency_trail,
+                    list,
+                    "P0 FAILURE: Transparency trail required for audit compliance",
                 )
                 self.assertGreater(
-                    len(result.transparency_trail), 0,
-                    "P0 FAILURE: Transparency trail must contain audit information"
+                    len(result.transparency_trail),
+                    0,
+                    "P0 FAILURE: Transparency trail must contain audit information",
                 )
 
             # Validate confidence disclosure
             self.assertIsNotNone(
                 result.confidence_score,
-                "P0 FAILURE: Confidence score required for transparency"
+                "P0 FAILURE: Confidence score required for transparency",
             )
 
         # Run async test
@@ -325,9 +391,15 @@ class TestPhase11P0Integration(unittest.TestCase):
 
         # Test that core imports still work
         try:
-            from ai_intelligence.decision_orchestrator import DecisionIntelligenceOrchestrator
+            from ai_intelligence.decision_orchestrator import (
+                DecisionIntelligenceOrchestrator,
+            )
+
             orchestrator = DecisionIntelligenceOrchestrator()
-            self.assertIsNotNone(orchestrator, "P0 FAILURE: Core decision orchestrator must remain functional")
+            self.assertIsNotNone(
+                orchestrator,
+                "P0 FAILURE: Core decision orchestrator must remain functional",
+            )
         except Exception as e:
             self.fail(f"P0 FAILURE: Phase 11 broke existing decision orchestrator: {e}")
 
@@ -339,13 +411,22 @@ class TestPhase11P0Integration(unittest.TestCase):
         try:
             # Test ai_intelligence module structure per PROJECT_STRUCTURE.md
             from ai_intelligence import EnhancedPredictiveEngine
-            self.assertIsNotNone(EnhancedPredictiveEngine, "P0 FAILURE: Must follow module structure")
+
+            self.assertIsNotNone(
+                EnhancedPredictiveEngine, "P0 FAILURE: Must follow module structure"
+            )
         except ImportError:
             # Fallback validation - structure exists even if dependencies missing
-            predictive_engine_path = PROJECT_ROOT / ".claudedirector" / "lib" / "ai_intelligence" / "predictive_engine.py"
+            predictive_engine_path = (
+                PROJECT_ROOT
+                / ".claudedirector"
+                / "lib"
+                / "ai_intelligence"
+                / "predictive_engine.py"
+            )
             self.assertTrue(
                 predictive_engine_path.exists(),
-                "P0 FAILURE: predictive_engine.py must exist in ai_intelligence/ per PROJECT_STRUCTURE.md"
+                "P0 FAILURE: predictive_engine.py must exist in ai_intelligence/ per PROJECT_STRUCTURE.md",
             )
 
 
