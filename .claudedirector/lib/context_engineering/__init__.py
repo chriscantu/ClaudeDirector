@@ -15,6 +15,18 @@ from .stakeholder_layer import StakeholderLayerMemory
 from .learning_layer import LearningLayerMemory
 from .organizational_layer import OrganizationalLayerMemory
 from .context_orchestrator import ContextOrchestrator
+from .clarity_analyzer import (
+    ClarityAnalyzer,
+    ActionDetectionEngine,
+    ClarityMetricsEngine,
+    ConversationAnalyzer,
+    ActionItem,
+    ActionType,
+    ClarityMetrics,
+    ClarityIndicator,
+    ConversationAnalysis,
+    get_clarity_analyzer,
+)
 from .realtime_monitor import (
     RealTimeMonitor,
     EventProcessor,
@@ -90,6 +102,16 @@ __all__ = [
     "LearningLayerMemory",
     "OrganizationalLayerMemory",
     "ContextOrchestrator",
+    "ClarityAnalyzer",
+    "ActionDetectionEngine",
+    "ClarityMetricsEngine",
+    "ConversationAnalyzer",
+    "ActionItem",
+    "ActionType",
+    "ClarityMetrics",
+    "ClarityIndicator",
+    "ConversationAnalysis",
+    "get_clarity_analyzer",
     "RealTimeMonitor",
     "EventProcessor",
     "AlertEngine",
