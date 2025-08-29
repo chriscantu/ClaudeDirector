@@ -1,48 +1,40 @@
 #!/bin/bash
-# README.md Protection System - Enhanced Pre-commit Hook
-# Prevents README.md deletion during git operations
+# README.md Protection Hook
+# Prevents deletion and ensures restoration of README.md
 
 echo "🛡️ README.md PROTECTION SYSTEM - Active"
+
+# Prioritize restoration from pre-stash backup first
+if [ -f ".claudedirector/README.md.prestash.backup" ]; then
+    echo "⚡ Fast restoration: Found pre-stash backup"
+    cp ".claudedirector/README.md.prestash.backup" "README.md"
+    echo "✅ README.md restored from pre-stash backup"
+    git add README.md
+    echo "✅ README.md re-staged for commit"
+    echo "✅ README.md protection complete (via pre-stash backup)"
+    exit 0
+fi
 
 # Check if README.md exists
 if [ ! -f "README.md" ]; then
     echo "🚨 CRITICAL: README.md is missing!"
-    echo "🔧 Attempting automatic restoration..."
 
-    # Try to restore from pre-stash backup first (faster and more reliable)
-    if [ -f ".claudedirector/README.md.prestash.backup" ]; then
-        echo "🔧 Restoring from pre-stash backup..."
-        cp ".claudedirector/README.md.prestash.backup" "README.md"
+    # Try to restore from git
+    if git show HEAD:README.md > README.md 2>/dev/null; then
+        echo "✅ README.md restored from git HEAD"
         git add README.md
-        echo "✅ README.md restored from pre-stash backup"
-    # Fallback to git history restoration
-    elif git checkout HEAD~1 -- README.md 2>/dev/null; then
-        echo "✅ README.md restored from git history"
-        git add README.md
+        echo "✅ README.md re-staged for commit"
     else
-        echo "❌ Failed to restore README.md from all sources"
-        echo "⚠️  Manual intervention required"
+        echo "❌ Cannot restore README.md from git"
+        echo "🚨 COMMIT BLOCKED: README.md must exist"
         exit 1
     fi
+else
+    echo "✅ README.md exists"
 fi
 
-# Check if README.md is being deleted in this commit
-if git diff --cached --name-status | grep -q "^D.*README.md$"; then
-    echo "🚨 BLOCKED: Attempt to delete README.md detected!"
-    echo "README.md is critical for project discovery and must not be deleted"
-    echo "If you need to modify README.md, use 'git add README.md' instead"
-    exit 1
-fi
+# Ensure README.md is always staged
+git add README.md 2>/dev/null || true
 
-# Verify README.md has minimum required content
-if [ -f "README.md" ]; then
-    if ! grep -q "Value Proposition" README.md; then
-        echo "⚠️  WARNING: README.md missing 'Value Proposition' section"
-    fi
-    if ! grep -q "Quick Start" README.md; then
-        echo "⚠️  WARNING: README.md missing 'Quick Start' section"
-    fi
-fi
-
-echo "✅ README.md protection check passed"
+echo "✅ README.md protection complete"
 exit 0

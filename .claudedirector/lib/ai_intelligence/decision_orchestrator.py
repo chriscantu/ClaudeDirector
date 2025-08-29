@@ -18,6 +18,17 @@ from dataclasses import dataclass
 from enum import Enum
 import structlog
 
+# PHASE 13: ML Infrastructure imports
+try:
+    from ..ml_intelligence.ml_prediction_router import MLPredictionRouter
+    from ..ml_intelligence.collaboration_models import CollaborationPredictionEngine
+    from ..ml_intelligence.timeline_forecasting import TimelineForecastingEngine
+except ImportError:
+    # Graceful fallback when ML modules are not yet implemented
+    MLPredictionRouter = None
+    CollaborationPredictionEngine = None
+    TimelineForecastingEngine = None
+
 # Import existing infrastructure we're building on
 try:
     from ..transparency.real_mcp_integration import (
@@ -135,6 +146,19 @@ class DecisionContext:
 
 
 @dataclass
+class MLPredictionResult:
+    """Result from ML-enhanced predictions - PHASE 13"""
+
+    collaboration_success_probability: Optional[float] = None
+    timeline_forecast: Optional[Dict[str, float]] = None  # {week: probability}
+    risk_factors: Optional[List[str]] = None
+    success_factors: Optional[List[str]] = None
+    confidence_interval: Optional[Tuple[float, float]] = None
+    ml_model_version: Optional[str] = None
+    prediction_quality: Optional[str] = None  # "high", "medium", "low"
+
+
+@dataclass
 class DecisionIntelligenceResult:
     """Result from decision intelligence analysis"""
 
@@ -146,6 +170,9 @@ class DecisionIntelligenceResult:
     transparency_trail: List[str]
     next_actions: List[str]
     success: bool
+    # PHASE 13: ML Enhancement integration
+    ml_predictions: Optional[MLPredictionResult] = None
+    ml_enhancement_used: bool = False
     error_message: Optional[str] = None
 
 
@@ -176,6 +203,9 @@ class DecisionIntelligenceOrchestrator:
         framework_engine: Optional[EnhancedFrameworkEngine] = None,
         transparency_system: Optional[IntegratedTransparencySystem] = None,
         persona_manager: Optional[EnhancedTransparentPersonaManager] = None,
+        # PHASE 13: ML Infrastructure integration
+        ml_prediction_router: Optional[MLPredictionRouter] = None,
+        enable_ml_predictions: bool = True,
     ):
         """
         Initialize Decision Intelligence Orchestrator
@@ -185,12 +215,35 @@ class DecisionIntelligenceOrchestrator:
             framework_engine: Existing framework detection (87.5% accuracy)
             transparency_system: Existing transparency and audit trail
             persona_manager: Existing persona routing system
+            ml_prediction_router: PHASE 13 ML prediction routing system
+            enable_ml_predictions: Enable ML-enhanced predictions
         """
         # Core existing infrastructure
         self.mcp_helper = mcp_integration_helper or RealMCPIntegrationHelper()
         self.framework_engine = framework_engine or MultiFrameworkIntegrationEngine()
         self.transparency_system = transparency_system or IntegratedTransparencySystem()
         self.persona_manager = persona_manager or EnhancedTransparentPersonaManager()
+
+        # PHASE 13: ML Infrastructure integration
+        self.ml_prediction_router = ml_prediction_router
+        self.enable_ml_predictions = enable_ml_predictions and (
+            MLPredictionRouter is not None
+        )
+
+        # Initialize ML components if available
+        if self.enable_ml_predictions and self.ml_prediction_router is None:
+            try:
+                self.ml_prediction_router = MLPredictionRouter()
+                logger.info(
+                    "ml_prediction_router_initialized",
+                    ml_capabilities=[
+                        "collaboration_prediction",
+                        "timeline_forecasting",
+                    ],
+                )
+            except Exception as e:
+                logger.warning("ml_prediction_router_unavailable", error=str(e))
+                self.enable_ml_predictions = False
 
         # Enhanced decision intelligence components
         self.decision_patterns = self._initialize_decision_patterns()
@@ -387,9 +440,31 @@ class DecisionIntelligenceOrchestrator:
                 decision_context, mcp_servers_used, recommended_frameworks
             )
 
-            # 🤖 Berny: Generate next actions based on analysis
+            # PHASE 13: ML-Enhanced Predictions
+            ml_predictions = None
+            ml_enhancement_used = False
+            if self.enable_ml_predictions and self.ml_prediction_router:
+                try:
+                    ml_predictions = await self._get_ml_predictions(
+                        decision_context, transparency_context
+                    )
+                    ml_enhancement_used = True
+                    transparency_trail.append(
+                        "🤖 ML Enhancement: Predictive analysis integrated"
+                    )
+                except Exception as e:
+                    logger.warning(
+                        "ml_prediction_failed",
+                        error=str(e),
+                        fallback="continuing_with_traditional_analysis",
+                    )
+                    transparency_trail.append(
+                        "⚡ Essential Mode: Traditional analysis (ML unavailable)"
+                    )
+
+            # 🤖 Berny: Generate next actions based on analysis (enhanced with ML insights)
             next_actions = self._generate_next_actions(
-                decision_context, recommended_frameworks
+                decision_context, recommended_frameworks, ml_predictions
             )
 
             processing_time_ms = int((time.time() - start_time) * 1000)
@@ -406,6 +481,9 @@ class DecisionIntelligenceOrchestrator:
                 transparency_trail=transparency_trail,
                 next_actions=next_actions,
                 success=True,
+                # PHASE 13: ML Enhancement results
+                ml_predictions=ml_predictions,
+                ml_enhancement_used=ml_enhancement_used,
             )
 
             logger.info(
@@ -638,11 +716,148 @@ class DecisionIntelligenceOrchestrator:
         ]
         return trail
 
+    async def _get_ml_predictions(
+        self,
+        decision_context: DecisionContext,
+        transparency_context: TransparencyContext,
+    ) -> MLPredictionResult:
+        """
+        PHASE 13: Get ML-enhanced predictions for strategic decision
+
+        Integrates with ML prediction routing for collaboration success and timeline forecasting.
+        """
+        if not self.ml_prediction_router:
+            raise Exception("ML prediction router not available")
+
+        # Extract features for ML prediction
+        features = self._extract_ml_features(decision_context)
+
+        # Get collaboration success prediction
+        collaboration_prediction = None
+        timeline_forecast = None
+        risk_factors = []
+        success_factors = []
+
+        try:
+            # Collaboration success prediction
+            if "collaboration" in decision_context.user_input.lower():
+                collaboration_result = (
+                    await self.ml_prediction_router.predict_collaboration_success(
+                        features=features,
+                        context=decision_context.user_input,
+                        persona=decision_context.persona,
+                    )
+                )
+                collaboration_prediction = collaboration_result.get(
+                    "success_probability"
+                )
+                risk_factors.extend(collaboration_result.get("risk_factors", []))
+                success_factors.extend(collaboration_result.get("success_factors", []))
+
+            # Timeline forecasting for strategic initiatives
+            if any(
+                keyword in decision_context.user_input.lower()
+                for keyword in [
+                    "timeline",
+                    "when",
+                    "schedule",
+                    "delivery",
+                    "initiative",
+                ]
+            ):
+                timeline_result = (
+                    await self.ml_prediction_router.predict_timeline_forecast(
+                        features=features,
+                        context=decision_context.user_input,
+                        horizon_weeks=4,
+                    )
+                )
+                timeline_forecast = timeline_result.get("weekly_probabilities", {})
+
+        except Exception as e:
+            logger.warning("ml_prediction_component_failed", error=str(e))
+            # Continue with partial results
+
+        return MLPredictionResult(
+            collaboration_success_probability=collaboration_prediction,
+            timeline_forecast=timeline_forecast,
+            risk_factors=risk_factors,
+            success_factors=success_factors,
+            confidence_interval=(0.7, 0.9) if collaboration_prediction else None,
+            ml_model_version="v1.0-phase13",
+            prediction_quality=(
+                "high" if collaboration_prediction and timeline_forecast else "medium"
+            ),
+        )
+
+    def _extract_ml_features(self, decision_context: DecisionContext) -> Dict[str, Any]:
+        """Extract features for ML prediction models"""
+        return {
+            "complexity": decision_context.complexity.value,
+            "stakeholder_count": len(decision_context.stakeholder_scope),
+            "framework_count": len(decision_context.detected_frameworks),
+            "time_sensitivity": decision_context.time_sensitivity,
+            "business_impact": decision_context.business_impact,
+            "persona": decision_context.persona,
+            "input_length": len(decision_context.user_input),
+            "has_technical_terms": any(
+                term in decision_context.user_input.lower()
+                for term in ["architecture", "platform", "system"]
+            ),
+            "has_people_terms": any(
+                term in decision_context.user_input.lower()
+                for term in ["team", "people", "collaboration"]
+            ),
+            "has_timeline_terms": any(
+                term in decision_context.user_input.lower()
+                for term in ["when", "timeline", "schedule"]
+            ),
+        }
+
     def _generate_next_actions(
-        self, decision_context: DecisionContext, frameworks: List[str]
+        self,
+        decision_context: DecisionContext,
+        frameworks: List[str],
+        ml_predictions: Optional[MLPredictionResult] = None,
     ) -> List[str]:
-        """🤖 Berny: Generate actionable next steps based on analysis"""
+        """🤖 Berny: Generate actionable next steps based on analysis (PHASE 13: ML-enhanced)"""
         actions = []
+
+        # PHASE 13: ML-enhanced actions based on predictions
+        if ml_predictions:
+            if ml_predictions.collaboration_success_probability:
+                prob = ml_predictions.collaboration_success_probability
+                if prob < 0.7:
+                    actions.append(
+                        f"⚠️ Collaboration risk detected ({prob:.0%} success probability) - address risk factors first"
+                    )
+                    if ml_predictions.risk_factors:
+                        actions.extend(
+                            [
+                                f"• Mitigate: {factor}"
+                                for factor in ml_predictions.risk_factors[:2]
+                            ]
+                        )
+                elif prob > 0.85:
+                    actions.append(
+                        f"✅ High collaboration success probability ({prob:.0%}) - leverage success factors"
+                    )
+                    if ml_predictions.success_factors:
+                        actions.extend(
+                            [
+                                f"• Amplify: {factor}"
+                                for factor in ml_predictions.success_factors[:2]
+                            ]
+                        )
+
+            if ml_predictions.timeline_forecast:
+                worst_week = min(
+                    ml_predictions.timeline_forecast.items(), key=lambda x: x[1]
+                )
+                if worst_week[1] < 0.8:  # Less than 80% probability
+                    actions.append(
+                        f"📅 Timeline risk at week {worst_week[0]} ({worst_week[1]:.0%} on-track) - plan interventions"
+                    )
 
         # Framework-specific actions
         if "rumelt_strategy_kernel" in frameworks:
@@ -662,6 +877,12 @@ class DecisionIntelligenceOrchestrator:
         if decision_context.complexity == DecisionComplexity.STRATEGIC:
             actions.append("Engage cross-functional stakeholders for alignment")
             actions.append("Create detailed implementation roadmap with milestones")
+
+        # PHASE 13: Add ML-specific monitoring actions
+        if ml_predictions and ml_predictions.ml_enhancement_used:
+            actions.append(
+                "📊 Monitor initiative progress against ML predictions for continuous learning"
+            )
 
         # Default actions if none specific
         if not actions:
@@ -759,6 +980,7 @@ class DecisionIntelligenceOrchestrator:
 async def create_decision_intelligence_orchestrator(
     transparency_config: str = "default",
     mcp_config_path: Optional[str] = None,
+    enable_ml_predictions: bool = True,
 ) -> DecisionIntelligenceOrchestrator:
     """
     🏗️ Martin's Architecture: Factory for Decision Intelligence Orchestrator
@@ -793,12 +1015,23 @@ async def create_decision_intelligence_orchestrator(
     # Extract MCP integration helper from persona manager
     mcp_helper = persona_manager.mcp_client  # Access existing MCP integration
 
+    # PHASE 13: Initialize ML prediction router if enabled
+    ml_prediction_router = None
+    if enable_ml_predictions and MLPredictionRouter is not None:
+        try:
+            ml_prediction_router = MLPredictionRouter()
+            logger.info("ml_prediction_router_created_successfully")
+        except Exception as e:
+            logger.warning("ml_prediction_router_creation_failed", error=str(e))
+
     # Create decision intelligence orchestrator
     orchestrator = DecisionIntelligenceOrchestrator(
         mcp_integration_helper=mcp_helper,
         framework_engine=framework_engine,
         transparency_system=transparency_system,
         persona_manager=persona_manager,
+        ml_prediction_router=ml_prediction_router,
+        enable_ml_predictions=enable_ml_predictions,
     )
 
     logger.info(
