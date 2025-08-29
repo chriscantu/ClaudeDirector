@@ -9,6 +9,12 @@ import asyncio
 import time
 from unittest.mock import Mock, AsyncMock, patch
 from datetime import datetime
+import sys
+from pathlib import Path
+
+# Add project root to path
+PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
 
 # Import components to test
 try:
@@ -26,6 +32,8 @@ try:
         PersonaActivationRecommendation,
     )
 except ImportError:
+    # Fallback for test environment
+    sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
     from lib.ai_intelligence.context_aware_intelligence import ContextAwareIntelligence
     from lib.ai_intelligence.context.context_analyzer import (
         ContextComplexity,
@@ -46,16 +54,53 @@ class TestContextAwareIntelligenceV2P0(unittest.TestCase):
         """Set up test fixtures"""
         self.mock_context_engine = Mock()
         self.mock_framework_detector = Mock()
+        self.mock_framework_detector.detect_frameworks = Mock(return_value=[
+            {"framework": "Team Topologies", "confidence": 0.8},
+            {"framework": "Good Strategy Bad Strategy", "confidence": 0.7}
+        ])
         self.mock_mcp_pipeline = Mock()
         self.mock_predictive_engine = Mock()
 
-        # Mock context engine layers
+        # Mock context engine layers with proper return values
         self.mock_context_engine.conversation_layer = Mock()
+        self.mock_context_engine.conversation_layer.get_conversation_context = AsyncMock(return_value={
+            "conversation_length": 5,
+            "topic_complexity": 0.7,
+            "stakeholder_count": 3
+        })
+
         self.mock_context_engine.strategic_layer = Mock()
+        self.mock_context_engine.strategic_layer.get_strategic_context = AsyncMock(return_value={
+            "active_initiatives": 2,
+            "strategic_complexity": 0.8,
+            "timeline_pressure": 0.6
+        })
+
         self.mock_context_engine.stakeholder_layer = Mock()
+        self.mock_context_engine.stakeholder_layer.get_stakeholder_context = AsyncMock(return_value={
+            "stakeholder_count": 4,
+            "executive_involvement": True,
+            "cross_functional": True
+        })
+
         self.mock_context_engine.learning_layer = Mock()
+        self.mock_context_engine.learning_layer.get_learning_context = AsyncMock(return_value={
+            "learning_complexity": 0.5,
+            "knowledge_gaps": 2
+        })
+
         self.mock_context_engine.organizational_layer = Mock()
+        self.mock_context_engine.organizational_layer.get_organizational_context = AsyncMock(return_value={
+            "org_complexity": 0.9,
+            "team_count": 5,
+            "coordination_required": True
+        })
+
         self.mock_context_engine.team_dynamics_engine = Mock()
+        self.mock_context_engine.team_dynamics_engine.get_current_dynamics = AsyncMock(return_value={
+            "team_health": 0.8,
+            "collaboration_score": 0.7
+        })
 
         self.config = {
             "response_time_target_ms": 200,

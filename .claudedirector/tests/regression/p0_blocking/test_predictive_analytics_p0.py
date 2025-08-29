@@ -9,6 +9,12 @@ import asyncio
 import time
 from unittest.mock import Mock, AsyncMock, patch
 from datetime import datetime, timedelta
+import sys
+from pathlib import Path
+
+# Add project root to path
+PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
 
 # Import components to test
 try:
@@ -23,6 +29,8 @@ try:
         PredictionConfidence,
     )
 except ImportError:
+    # Fallback for test environment
+    sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
     from lib.ai_intelligence.predictive_analytics_engine import (
         PredictiveAnalyticsEngine,
         StrategicChallengePrediction,
