@@ -51,8 +51,8 @@ all = [
     "claudedirector[dev,pydantic,performance]"
 ]
 
-[project.scripts]
-claudedirector = "cli:main"
+# [project.scripts] - Disabled: CLI is deprecated in favor of Cursor integration
+# claudedirector = "cli:main"
 
 [project.urls]
 Homepage = "https://github.com/chriscantu/claudedirector"
@@ -65,9 +65,9 @@ packages = [
     "core",
     "bridges",
     "config",
+    "context_engineering",
     "integrations",
     "intelligence",
-    "memory",
     "monitoring",
     "p0_features",
     "p1_features",

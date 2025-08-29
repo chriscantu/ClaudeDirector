@@ -86,6 +86,30 @@ class EnumConfig:
 
 
 @dataclass
+class SecurityConfig:
+    """Security scanner configuration"""
+
+    severity_levels: List[str] = field(
+        default_factory=lambda: ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
+    )
+    stakeholder_patterns: List[str] = field(
+        default_factory=lambda: [
+            r"(?i)(stakeholder[_\s-]?data|strategic[_\s-]?intelligence)",
+            r"(?i)(platform[_\s-]?opposition[_\s-]?mapping[_\s-]?data)",
+            r"(?i)(slt[_\s-]?resistance[_\s-]?pattern[_\s-]?analysis)",
+        ]
+    )
+    strategic_intelligence_patterns: List[str] = field(
+        default_factory=lambda: [
+            r"(?i)(quarterly[_\s-]?revenue[_\s-]?data[_\s-]?\$)",
+            r"(?i)(competitive[_\s-]?intelligence[_\s-]?report)",
+            r"(?i)(customer[_\s-]?acquisition[_\s-]?cost[_\s-]?\$)",
+            r"(?i)(internal[_\s-]?strategy[_\s-]?document[_\s-]?confidential)",
+        ]
+    )
+
+
+@dataclass
 class MessageConfig:
     """Message templates configuration"""
 
@@ -153,6 +177,7 @@ class ClaudeDirectorConfig:
         # Initialize with defaults
         self.thresholds = ThresholdConfig()
         self.enums = EnumConfig()
+        self.security = SecurityConfig()
         self.messages = MessageConfig()
         self.paths = PathConfig()
 
@@ -214,6 +239,11 @@ class ClaudeDirectorConfig:
         for key, value in self.enums.__dict__.items():
             self._lookup[key] = value
             self._lookup[f"enum_{key}"] = value
+
+        # Add security
+        for key, value in self.security.__dict__.items():
+            self._lookup[key] = value
+            self._lookup[f"security_{key}"] = value
 
         # Add messages
         for key, value in self.messages.__dict__.items():
@@ -306,6 +336,7 @@ class ClaudeDirectorConfig:
         config_data = {
             "thresholds": self.thresholds.__dict__,
             "enums": self.enums.__dict__,
+            "security": self.security.__dict__,
             "messages": self.messages.__dict__,
             "paths": self.paths.__dict__,
         }
