@@ -224,7 +224,9 @@ class TestPredictiveAnalyticsV2P0(unittest.TestCase):
                 def memory_info(self):
                     class MockMemInfo:
                         rss = 30 * 1024 * 1024  # 30MB mock
+
                     return MockMemInfo()
+
             process = MockProcess()
         else:
             process = psutil.Process(os.getpid())

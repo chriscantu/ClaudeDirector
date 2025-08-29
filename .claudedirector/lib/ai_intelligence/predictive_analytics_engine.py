@@ -155,7 +155,7 @@ class PredictiveAnalyticsEngine:
             try:
                 supported_types = self.prediction_models.get_supported_challenge_types()
                 # Handle case where method returns Mock object (for testing)
-                if hasattr(supported_types, '_mock_name'):
+                if hasattr(supported_types, "_mock_name"):
                     supported_types = []
 
                 for challenge_type in supported_types:
@@ -168,7 +168,9 @@ class PredictiveAnalyticsEngine:
                     ):
                         predictions.append(prediction)
             except (TypeError, AttributeError) as e:
-                self.logger.debug(f"Challenge type iteration failed (likely test mock): {e}")
+                self.logger.debug(
+                    f"Challenge type iteration failed (likely test mock): {e}"
+                )
                 # Return empty predictions for test scenarios
 
             # Sort by severity and confidence
