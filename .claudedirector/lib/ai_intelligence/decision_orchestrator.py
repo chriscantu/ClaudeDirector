@@ -96,6 +96,18 @@ except ImportError:
             self.audit_trail = []
 
 
+# PHASE 12: Lightweight fallback pattern integration
+try:
+    from ..core.lightweight_fallback import (
+        create_lightweight_fallback_system,
+        FallbackMode,
+    )
+except ImportError:
+    # Graceful fallback when module unavailable
+    create_lightweight_fallback_system = None
+    FallbackMode = None
+
+
 logger = structlog.get_logger(__name__)
 
 

@@ -28,6 +28,11 @@ from .complexity_analyzer import (
     ComplexityAnalysis,
 )
 from .visual_template_manager import VisualTemplateManager
+from .lightweight_fallback import (
+    create_lightweight_fallback_system,
+    FallbackMode,
+    FallbackResponse,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -128,6 +133,10 @@ class EnhancedPersonaManager:
         self.transparency_manager = TransparencyManager()
         # PHASE 12: Visual template manager for Magic MCP integration
         self.visual_template_manager = VisualTemplateManager()
+        # PHASE 12: Lightweight fallback pattern for graceful degradation
+        self.persona_fallback, self.dependency_checker = (
+            create_lightweight_fallback_system()
+        )
         self.is_initialized = False
 
         # Persona-specific settings
@@ -223,27 +232,53 @@ class EnhancedPersonaManager:
             user_input, {"current_persona": persona}
         )
 
-        # Check if enhancement should be attempted
-        if not self._should_enhance(persona, complexity_analysis):
-            # Return standard response
-            standard_response = await self._get_standard_response(
-                persona, user_input, context
+        # PHASE 12: Always-on enhancement with lightweight fallback pattern
+        # Implements OVERVIEW.md Lightweight Fallback Pattern
+        try:
+            # 🔍 Dependency Check (OVERVIEW.md pattern)
+            mcp_available = await self.dependency_checker.check_mcp_dependency(
+                persona, self.mcp_client
             )
-            processing_time = time.time() - start_time
+
+            if mcp_available:
+                # 💪 Heavyweight Module - Full MCP Enhancement
+                return await self._get_enhanced_response(
+                    persona, user_input, complexity_analysis, context, start_time
+                )
+            else:
+                # 🪶 Lightweight Fallback - Essential Features
+                fallback_response = (
+                    await self.persona_fallback.generate_lightweight_response(
+                        persona, user_input, "MCP servers temporarily unavailable"
+                    )
+                )
+
+                return EnhancedResponse(
+                    content=fallback_response.content,
+                    persona=persona,
+                    enhancement_status=EnhancementStatus.FALLBACK,
+                    processing_time=fallback_response.processing_time,
+                    complexity_score=complexity_analysis.confidence,
+                    fallback_reason=fallback_response.fallback_reason,
+                )
+
+        except Exception as e:
+            # ⚡ Essential Features Always Available
+            logger.warning(f"Enhancement system failure for {persona}: {e}")
+            essential_response = (
+                await self.persona_fallback.generate_essential_response(
+                    persona, user_input
+                )
+            )
 
             return EnhancedResponse(
-                content=standard_response,
+                content=essential_response.content,
                 persona=persona,
-                enhancement_status=EnhancementStatus.FALLBACK,
-                processing_time=processing_time,
-                complexity_score=complexity_analysis.confidence,
-                fallback_reason="Complexity below enhancement threshold",
+                enhancement_status=EnhancementStatus.ERROR,
+                processing_time=essential_response.processing_time,
+                complexity_score=0.0,
+                fallback_reason=f"System error: {str(e)}",
             )
-
-        # Attempt enhanced response
-        return await self._get_enhanced_response(
-            persona, user_input, complexity_analysis, context, start_time
-        )
 
     def _should_enhance(
         self, persona: str, complexity_analysis: ComplexityAnalysis

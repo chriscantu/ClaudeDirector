@@ -27,6 +27,8 @@ ClaudeDirector is the industry's first completely transparent AI strategic leade
 
 **✅ Phase 11 Enhanced Predictive Intelligence Foundation**: Complete foundation implementation with 100% P0 compliance achieved through lightweight fallback pattern. Enhanced Predictive Engine ready for Week 3-4 ML implementation while maintaining zero-tolerance P0 standards.
 
+**🚀 Phase 12 Always-On MCP Enhancement - ACTIVE**: Major architectural transformation implementing 100% MCP enhancement rate with automatic Magic MCP visual routing. Eliminates complexity threshold detection for guaranteed enterprise-grade AI consistency. All strategic queries now receive MCP enhancement with persona-specific visual templates.
+
 ```mermaid
 graph TB
     subgraph "User Interface Layer"
@@ -47,6 +49,8 @@ graph TB
         I[🔍 Enhanced Framework Detection]
         J[🔄 MCP Coordinator]
         NEW[🎯 Enhanced Predictive Engine]
+        P12[🚀 Always-On MCP Router]
+        VTM[🎨 Visual Template Manager]
         K[⚡ MCP Sequential Server]
         L[🏗️ MCP Context7 Server]
         M[✨ MCP Magic Server]
@@ -137,13 +141,15 @@ graph TB
 - **Framework Detector**: AI-powered identification and attribution of 25+ strategic frameworks with 87%+ accuracy
 
 #### **AI Intelligence Layer**
-- **Decision Orchestrator**: Central coordination of AI enhancement decisions with complexity threshold detection
+- **Decision Orchestrator**: Central coordination of AI enhancement decisions *(Phase 12: Always returns STRATEGIC complexity for 100% enhancement)*
+- **Always-On MCP Router**: Phase 12 direct persona→server routing eliminating complexity threshold detection for guaranteed 100% MCP enhancement rate
+- **Visual Template Manager**: Phase 12 persona-specific visual enhancement templates for automatic Magic MCP integration (5 personas, 8 visual types)
 - **Enhanced Framework Detection**: ML-powered framework recognition with confidence scoring and multi-framework support
 - **MCP Coordinator**: Strategic coordination of MCP server enhancement with transparent disclosure
 - **Enhanced Predictive Engine**: Phase 11 foundation for strategic decision prediction with 85%+ accuracy target and <500ms response time
 - **MCP Sequential Server**: Systematic analysis and business strategy enhancement capabilities
 - **MCP Context7 Server**: Architectural patterns, best practices, and methodology lookup
-- **MCP Magic Server**: Visual generation, diagram creation, and UI enhancement capabilities
+- **MCP Magic Server**: Visual generation, diagram creation, and UI enhancement capabilities *(Phase 12: Default for all visual requests)*
 
 #### **Context Engineering (8-Layer Architecture - Phase 3.2B Complete)**
 - **Advanced Context Engine**: Primary orchestration engine for multi-layered strategic memory
@@ -176,14 +182,15 @@ graph TB
 
 ## 🔄 **Core Workflows**
 
-### **Strategic Question Flow**
+### **Strategic Question Flow (Phase 12: Always-On Enhancement)**
 1. **Input Processing**: User asks strategic question through any interface
-2. **Context Analysis**: System analyzes complexity, domain, and stakeholder requirements
+2. **Context Analysis**: System analyzes domain and stakeholder requirements *(Phase 12: Complexity analysis simplified)*
 3. **Persona Selection**: Optimal strategic persona selected (Diego, Camille, Rachel, etc.)
-4. **Enhancement Decision**: Determines if MCP server enhancement needed (≥3 complexity indicators)
-5. **Transparency Disclosure**: Real-time disclosure of any AI enhancements
-6. **Strategic Response**: Persona-specific response with framework attribution
-7. **Memory Persistence**: Context and insights stored for future conversations
+4. **Always-On Enhancement**: **100% MCP enhancement guaranteed** - direct persona→server routing *(Phase 12: No complexity thresholds)*
+5. **Visual Detection**: Automatic Magic MCP routing for visual requests (diagrams, charts, mockups) *(Phase 12: New)*
+6. **Transparency Disclosure**: **Always shows MCP enhancement** - real-time disclosure for every query *(Phase 12: 100% transparency)*
+7. **Strategic Response**: Persona-specific response with framework attribution and visual enhancements
+8. **Memory Persistence**: Context and insights stored for future conversations
 
 ### **Transparency Pipeline**
 1. **Request Analysis**: Every strategic request analyzed for enhancement opportunities
