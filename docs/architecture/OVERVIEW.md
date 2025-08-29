@@ -315,17 +315,17 @@ graph TD
     A[🏗️ System Request] --> B{🔍 Dependency Check}
     B -->|Available| C[💪 Heavyweight Module]
     B -->|Missing| D[🪶 Lightweight Fallback]
-    
+
     C --> E[🚀 Full Features]
     D --> F[⚡ Essential Features]
-    
+
     E --> G[✅ Complete API]
     F --> G
-    
+
     classDef heavyweight fill:#4dabf7,color:#fff
     classDef lightweight fill:#51cf66,color:#fff
     classDef api fill:#ffd43b
-    
+
     class C heavyweight
     class D lightweight
     class G api

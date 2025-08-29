@@ -53,7 +53,7 @@ try:
     )
 
     ML_PATTERN_DETECTION_AVAILABLE = True
-except ImportError as e:
+except (ImportError, TypeError, AttributeError) as e:
     ML_PATTERN_DETECTION_AVAILABLE = False
     print(f"⚠️ ML Pattern Detection not available for testing: {e}")
 

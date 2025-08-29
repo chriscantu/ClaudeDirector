@@ -13,7 +13,7 @@ from typing import Dict, List
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from memory.architecture_health_monitor import ArchitectureHealthMonitor
+from context_engineering.workspace_monitor_unified import ArchitectureHealthMonitor
 
 
 class DailyArchitectureAlerts:

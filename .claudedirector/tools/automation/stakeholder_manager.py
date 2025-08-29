@@ -8,7 +8,7 @@ import json
 import sys
 from datetime import datetime
 
-from memory.stakeholder_engagement_engine import StakeholderEngagementEngine
+from context_engineering.stakeholder_intelligence_unified import StakeholderIntelligence as StakeholderEngagementEngine
 
 
 class StakeholderManager:
