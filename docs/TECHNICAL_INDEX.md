@@ -65,6 +65,26 @@
 
 ---
 
+## 🤖 **AI Intelligence Layer**
+
+### **Phase 11: Enhanced Predictive Intelligence**
+- **[Enhanced Predictive Engine](../.claudedirector/lib/ai_intelligence/predictive_engine.py)** - Foundation for strategic decision prediction with 85%+ accuracy target
+- **[Decision Orchestrator Integration](../.claudedirector/lib/ai_intelligence/decision_orchestrator.py)** - Central coordination with predictive intelligence
+- **[P0 Foundation Tests](../.claudedirector/tests/regression/p0_blocking/test_enhanced_predictive_intelligence_p0.py)** - Complete P0 test suite with fallback validation
+
+### **Core AI Intelligence Components**
+- **[Decision Intelligence Orchestrator](../.claudedirector/lib/ai_intelligence/decision_orchestrator.py)** - Central AI decision coordination
+- **[Enhanced Framework Detection](../.claudedirector/tests/unit/ai_intelligence/test_enhanced_framework_detection.py)** - ML-powered framework recognition
+- **[Predictive Analytics Engine](../.claudedirector/lib/ai_intelligence/predictive_analytics_engine.py)** - Production ML intelligence engine
+- **[Context-Aware Intelligence](../.claudedirector/lib/ai_intelligence/context_aware_intelligence.py)** - Strategic context analysis
+
+### **ML Pattern Detection**
+- **[CollaborationScorer](../.claudedirector/lib/ai_intelligence/collaboration_scorer.py)** - 85%+ collaboration success prediction
+- **[ML Pattern Detection](../.claudedirector/tests/regression/p0_blocking/test_ml_pattern_detection_p0.py)** - Advanced machine learning patterns
+- **[Team Dynamics Intelligence](../.claudedirector/tests/regression/p0_blocking/test_team_dynamics_p0.py)** - Cross-team coordination optimization
+
+---
+
 ## 📊 **System Components**
 
 ### **Core Components**
@@ -74,6 +94,8 @@
 | **Persona Manager** | Strategic advisor selection | [Personas](../framework/PERSONAS.md) | [Core System](../lib/claudedirector/) |
 | **Transparency Engine** | Real-time capability disclosure | [Architecture](architecture/COMPONENTS.md#transparency-system-architecture) | [Implementation](../lib/claudedirector/transparency/) |
 | **Framework Detection** | Strategic methodology attribution | [Frameworks](STRATEGIC_FRAMEWORKS_GUIDE.md) | [Detection Engine](../lib/claudedirector/transparency/) |
+| **Enhanced Predictive Engine** | **Phase 11**: Strategic decision prediction | [AI Intelligence](#-ai-intelligence-layer) | [Predictive Engine](../.claudedirector/lib/ai_intelligence/predictive_engine.py) |
+| **Decision Orchestrator** | AI enhancement coordination | [AI Intelligence](#-ai-intelligence-layer) | [Decision Intelligence](../.claudedirector/lib/ai_intelligence/decision_orchestrator.py) |
 | **MCP Client** | Server communication | [MCP Integration](architecture/COMPONENTS.md#mcp-integration-architecture) | [Technical Assessment](technical/mcp-integration-technical-assessment.md) |
 | **Multi-Persona Coordinator** | Cross-functional collaboration | [Multi-Persona Guide](architecture/PATTERNS.md#multi-persona-collaboration-patterns) | [Transparency System](../lib/claudedirector/transparency/) |
 
@@ -190,5 +212,5 @@
 ---
 
 **Technical Index maintained by Martin (Principal Platform Architect)**
-**Last Updated**: ClaudeDirector v1.1.1 - Enhanced Architecture Documentation Release
+**Last Updated**: ClaudeDirector v3.4.0 - Phase 11 Enhanced Predictive Intelligence Foundation
 **Coverage**: Complete technical documentation for transparent AI strategic leadership platform
