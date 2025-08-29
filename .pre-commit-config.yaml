@@ -112,7 +112,7 @@ repos:
     hooks:
       - id: mandatory-test-validation
         name: 🛡️ MANDATORY TEST VALIDATION
-        entry: python3 .claudedirector/tools/quality/mandatory_test_validator.py
+        entry: python3 .claudedirector/tools/ci/mandatory_test_validator.py
         language: system
         pass_filenames: false
         stages: [pre-commit]
