@@ -22,21 +22,35 @@ from dataclasses import dataclass, asdict
 try:
     from watchdog.events import FileSystemEventHandler
     from watchdog.observers import Observer
+
     WATCHDOG_AVAILABLE = True
 except ImportError:
     WATCHDOG_AVAILABLE = False
 
     # Fallback minimal implementations
     class FileSystemEventHandler:
-        def on_modified(self, event): pass
-        def on_created(self, event): pass
-        def on_deleted(self, event): pass
+        def on_modified(self, event):
+            pass
+
+        def on_created(self, event):
+            pass
+
+        def on_deleted(self, event):
+            pass
 
     class Observer:
-        def schedule(self, handler, path, recursive=False): pass
-        def start(self): pass
-        def stop(self): pass
-        def join(self): pass
+        def schedule(self, handler, path, recursive=False):
+            pass
+
+        def start(self):
+            pass
+
+        def stop(self):
+            pass
+
+        def join(self):
+            pass
+
 
 # Import strategic memory manager
 try:

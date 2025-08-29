@@ -15,6 +15,18 @@ from .stakeholder_layer import StakeholderLayerMemory
 from .learning_layer import LearningLayerMemory
 from .organizational_layer import OrganizationalLayerMemory
 from .context_orchestrator import ContextOrchestrator
+from .clarity_analyzer import (
+    ClarityAnalyzer,
+    ActionDetectionEngine,
+    ClarityMetricsEngine,
+    ConversationAnalyzer,
+    ActionItem,
+    ActionType,
+    ClarityMetrics,
+    ClarityIndicator,
+    ConversationAnalysis,
+    get_clarity_analyzer,
+)
 from .realtime_monitor import (
     RealTimeMonitor,
     EventProcessor,
@@ -26,6 +38,7 @@ from .realtime_monitor import (
     EventType,
     AlertSeverity,
 )
+
 # Optional ML Pattern Engine import for P0 compatibility
 try:
     from .ml_pattern_engine import (
@@ -45,6 +58,7 @@ try:
         RiskAssessmentEngine,
         AdvancedCollaborationPrediction,
     )
+
     ML_PATTERN_ENGINE_AVAILABLE = True
 except (ImportError, TypeError, AttributeError) as e:
     # Fallback for P0 compatibility when heavyweight dependencies unavailable
@@ -52,23 +66,35 @@ except (ImportError, TypeError, AttributeError) as e:
 
     # Minimal stubs for compatibility
     class MLPatternEngine:
-        def __init__(self, *args, **kwargs): pass
+        def __init__(self, *args, **kwargs):
+            pass
+
     class TeamFeatureExtractor:
-        def __init__(self, *args, **kwargs): pass
+        def __init__(self, *args, **kwargs):
+            pass
+
     class CollaborationClassifier:
-        def __init__(self, *args, **kwargs): pass
+        def __init__(self, *args, **kwargs):
+            pass
+
     FeatureVector = dict
     CollaborationPrediction = dict
     SuccessPattern = dict
     TeamCollaborationOutcome = dict
     CollaborationOutcome = dict
     FeatureType = str
+
     class CollaborationScorer:
-        def __init__(self, *args, **kwargs): pass
+        def __init__(self, *args, **kwargs):
+            pass
+
     EnsembleModelConfig = dict
     RiskAssessment = dict
+
     class RiskAssessmentEngine:
-        def __init__(self, *args, **kwargs): pass
+        def __init__(self, *args, **kwargs):
+            pass
+
     AdvancedCollaborationPrediction = dict
 
 from .strategic_layer import InitiativeStatus
@@ -90,6 +116,16 @@ __all__ = [
     "LearningLayerMemory",
     "OrganizationalLayerMemory",
     "ContextOrchestrator",
+    "ClarityAnalyzer",
+    "ActionDetectionEngine",
+    "ClarityMetricsEngine",
+    "ConversationAnalyzer",
+    "ActionItem",
+    "ActionType",
+    "ClarityMetrics",
+    "ClarityIndicator",
+    "ConversationAnalysis",
+    "get_clarity_analyzer",
     "RealTimeMonitor",
     "EventProcessor",
     "AlertEngine",
