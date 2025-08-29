@@ -59,43 +59,43 @@ except (ImportError, TypeError, AttributeError) as e:
     # Lightweight fallback for P0 compatibility
     ENHANCED_FRAMEWORK_DETECTION_AVAILABLE = False
     print(f"⚠️ Enhanced Framework Detection not available for testing: {e}")
-    
+
     # Define placeholder classes for P0 compatibility
     class EnhancedFrameworkDetection:
         def __init__(self, *args, **kwargs): pass
-        def analyze_conversation_async(self, *args, **kwargs): 
+        def analyze_conversation_async(self, *args, **kwargs):
             return {"status": "fallback", "frameworks": []}
-    
+
     class FrameworkRelevance:
         pass
-    
+
     class FrameworkSuggestion:
         pass
-    
+
     class ContextualFrameworkAnalysis:
         pass
-    
+
     class EnhancedDetectionResult:
         pass
-    
+
     class FrameworkDetectionMiddleware:
         pass
-    
+
     class FrameworkUsage:
         def __init__(self, *args, **kwargs): pass
-    
+
     class ConversationMemoryEngine:
         pass
-    
+
     class ConversationContext:
         pass
-    
+
     class IntegratedTransparencySystem:
         pass
-    
+
     def create_enhanced_framework_detection(*args, **kwargs):
         return EnhancedFrameworkDetection()
-        
+
     ENHANCED_FRAMEWORK_DETECTION_AVAILABLE = False
 else:
     ENHANCED_FRAMEWORK_DETECTION_AVAILABLE = True
@@ -769,11 +769,11 @@ class TestEnhancedFrameworkDetection(unittest.TestCase):
             print("✅ P0 Core Interface Validation: Enhanced Framework Detection interface defined")
             self.assertTrue(True, "P0 fallback validation passed - core interfaces available")
             return
-            
+
         # Full test when dependencies available
         self.assertIsNotNone(EnhancedFrameworkDetection)
         self.assertIsNotNone(create_enhanced_framework_detection)
-        
+
         # Test basic instantiation
         detector = create_enhanced_framework_detection()
         self.assertIsInstance(detector, EnhancedFrameworkDetection)
