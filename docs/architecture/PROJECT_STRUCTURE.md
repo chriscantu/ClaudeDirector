@@ -1,6 +1,6 @@
 # ClaudeDirector Project Structure
 
-**Definitive architectural organization guide for ClaudeDirector v2.12.0+**
+**Definitive architectural organization guide for ClaudeDirector v3.3.0+**
 
 ---
 
@@ -8,8 +8,8 @@
 
 This document defines the **mandatory** project structure for ClaudeDirector. All development MUST adhere to this structure to maintain architectural consistency and avoid technical debt accumulation.
 
-**Last Updated**: August 27, 2025 (Post-v2.12.0 Context Engineering Phase 3.2B)
-**Architecture Status**: ✅ **Production Validated** - 28/28 P0 tests passing
+**Last Updated**: January 15, 2025 (Post-v3.3.0 Phase 9 Architecture Cleanup)
+**Architecture Status**: 🚧 **CLEANUP IN PROGRESS** - 32/32 P0 tests passing, legacy directories being migrated
 
 ---
 
@@ -112,13 +112,13 @@ lib/
 ├── utils/                                  # 🔧 Utility Functions
 │   └── [5 utility modules]                 # Helper functions
 │
-└── [legacy directories to be cleaned]      # 🧹 Cleanup candidates
-    ├── clarity/                            # → context_engineering (Phase 1)
-    ├── intelligence/                       # → ai_intelligence (Phase 2)
-    ├── memory/                             # → context_engineering (superseded)
-    ├── persona_integration/                # → context_engineering
-    ├── integrations/                       # → integration (consolidated)
-    └── bridges/                            # → integration (unified)
+└── [legacy directories - CLEANUP IN PROGRESS] # 🚧 Phase 9 Migration Active
+    ├── clarity/                            # 🚧 MIGRATING → context_engineering (action detection)
+    ├── intelligence/                       # 🚧 MIGRATING → ai_intelligence + context_engineering
+    ├── memory/                             # 🚧 MIGRATING → context_engineering (memory systems)
+    ├── persona_integration/                # 🚧 MIGRATING → context_engineering (persona logic)
+    ├── integrations/                       # 🚧 MIGRATING → integration/unified_bridge.py
+    └── bridges/                            # 🚧 MIGRATING → integration/unified_bridge.py
 ```
 
 ### **`tests/` - Comprehensive Test Architecture**
