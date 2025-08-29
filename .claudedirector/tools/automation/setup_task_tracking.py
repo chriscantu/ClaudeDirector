@@ -110,7 +110,9 @@ class TaskTrackingSetup:
         print("🧠 Testing AI task detection...")
 
         try:
-            from ai_intelligence.context.intelligence_unified import TaskIntelligence as IntelligentTaskDetector
+            from ai_intelligence.context.intelligence_unified import (
+                TaskIntelligence as IntelligentTaskDetector,
+            )
 
             detector = IntelligentTaskDetector(str(self.db_path))
 

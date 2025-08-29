@@ -21,6 +21,7 @@ from dataclasses import dataclass
 try:
     from ..core.config import get_config
     from ..core.exceptions import DatabaseError
+
     CONFIG_AVAILABLE = True
 except ImportError:
     CONFIG_AVAILABLE = False
@@ -33,12 +34,14 @@ except ImportError:
     def get_config():
         return MinimalConfig()
 
+
 logger = logging.getLogger(__name__)
 
 
 @dataclass
 class LightweightMemorySession:
     """Lightweight session for P0 test compatibility"""
+
     session_id: str
     session_type: str
     created_timestamp: float
@@ -51,7 +54,7 @@ class LightweightMemorySession:
             "session_type": self.session_type,
             "created_timestamp": self.created_timestamp,
             "updated_timestamp": self.updated_timestamp,
-            "status": self.status
+            "status": self.status,
         }
 
 
@@ -69,7 +72,7 @@ class LightweightMemoryManager:
         self.logger = logging.getLogger(__name__)
 
         # Initialize database path
-        if hasattr(self.config, 'database_path'):
+        if hasattr(self.config, "database_path"):
             self.db_path = self.config.database_path
         else:
             self.db_path = "data/strategic_memory.db"
@@ -89,7 +92,8 @@ class LightweightMemoryManager:
                 cursor = conn.cursor()
 
                 # Essential session table
-                cursor.execute("""
+                cursor.execute(
+                    """
                     CREATE TABLE IF NOT EXISTS sessions (
                         session_id TEXT PRIMARY KEY,
                         session_type TEXT NOT NULL,
@@ -98,10 +102,12 @@ class LightweightMemoryManager:
                         status TEXT DEFAULT 'active',
                         metadata TEXT
                     )
-                """)
+                """
+                )
 
                 # Essential context table
-                cursor.execute("""
+                cursor.execute(
+                    """
                     CREATE TABLE IF NOT EXISTS session_context (
                         context_id TEXT PRIMARY KEY,
                         session_id TEXT NOT NULL,
@@ -110,7 +116,8 @@ class LightweightMemoryManager:
                         created_timestamp REAL NOT NULL,
                         FOREIGN KEY (session_id) REFERENCES sessions (session_id)
                     )
-                """)
+                """
+                )
 
                 conn.commit()
                 self.logger.debug("Lightweight database schema initialized")
@@ -127,23 +134,26 @@ class LightweightMemoryManager:
             session_id=session_id,
             session_type=session_type,
             created_timestamp=current_time,
-            updated_timestamp=current_time
+            updated_timestamp=current_time,
         )
 
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
-                cursor.execute("""
+                cursor.execute(
+                    """
                     INSERT INTO sessions
                     (session_id, session_type, created_timestamp, updated_timestamp, status)
                     VALUES (?, ?, ?, ?, ?)
-                """, (
-                    session.session_id,
-                    session.session_type,
-                    session.created_timestamp,
-                    session.updated_timestamp,
-                    session.status
-                ))
+                """,
+                    (
+                        session.session_id,
+                        session.session_type,
+                        session.created_timestamp,
+                        session.updated_timestamp,
+                        session.status,
+                    ),
+                )
                 conn.commit()
 
             self.logger.info(f"Started lightweight session: {session_id}")
@@ -153,10 +163,7 @@ class LightweightMemoryManager:
             raise DatabaseError(f"Failed to start session: {e}")
 
     def store_context(
-        self,
-        session_id: str,
-        context_type: str,
-        context_data: Dict[str, Any]
+        self, session_id: str, context_type: str, context_data: Dict[str, Any]
     ) -> bool:
         """Store context data for session"""
         context_id = f"ctx_{int(time.time() * 1000000)}"
@@ -164,17 +171,20 @@ class LightweightMemoryManager:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
-                cursor.execute("""
+                cursor.execute(
+                    """
                     INSERT INTO session_context
                     (context_id, session_id, context_type, context_data, created_timestamp)
                     VALUES (?, ?, ?, ?, ?)
-                """, (
-                    context_id,
-                    session_id,
-                    context_type,
-                    json.dumps(context_data),
-                    time.time()
-                ))
+                """,
+                    (
+                        context_id,
+                        session_id,
+                        context_type,
+                        json.dumps(context_data),
+                        time.time(),
+                    ),
+                )
                 conn.commit()
 
             self.logger.debug(f"Stored context: {context_id}")
@@ -189,11 +199,14 @@ class LightweightMemoryManager:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT session_id, session_type, created_timestamp,
                            updated_timestamp, status
                     FROM sessions WHERE session_id = ?
-                """, (session_id,))
+                """,
+                    (session_id,),
+                )
 
                 row = cursor.fetchone()
                 if row:
@@ -202,7 +215,7 @@ class LightweightMemoryManager:
                         session_type=row[1],
                         created_timestamp=row[2],
                         updated_timestamp=row[3],
-                        status=row[4]
+                        status=row[4],
                     )
                 return None
 
@@ -215,25 +228,32 @@ class LightweightMemoryManager:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT session_id, session_type, created_timestamp,
                            updated_timestamp, status
                     FROM sessions
                     ORDER BY created_timestamp DESC
                     LIMIT ?
-                """, (limit,))
+                """,
+                    (limit,),
+                )
 
                 sessions = []
                 for row in cursor.fetchall():
-                    sessions.append({
-                        "session_id": row[0],
-                        "session_type": row[1],
-                        "created_timestamp": row[2],
-                        "updated_timestamp": row[3],
-                        "status": row[4],
-                        "session_start_timestamp": datetime.fromtimestamp(row[2]).isoformat(),
-                        "last_activity": row[3]
-                    })
+                    sessions.append(
+                        {
+                            "session_id": row[0],
+                            "session_type": row[1],
+                            "created_timestamp": row[2],
+                            "updated_timestamp": row[3],
+                            "status": row[4],
+                            "session_start_timestamp": datetime.fromtimestamp(
+                                row[2]
+                            ).isoformat(),
+                            "last_activity": row[3],
+                        }
+                    )
 
                 return sessions
 
@@ -246,20 +266,25 @@ class LightweightMemoryManager:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT context_type, context_data, created_timestamp
                     FROM session_context
                     WHERE session_id = ?
                     ORDER BY created_timestamp ASC
-                """, (session_id,))
+                """,
+                    (session_id,),
+                )
 
                 contexts = []
                 for row in cursor.fetchall():
-                    contexts.append({
-                        "context_type": row[0],
-                        "context_data": json.loads(row[1]),
-                        "created_timestamp": row[2]
-                    })
+                    contexts.append(
+                        {
+                            "context_type": row[0],
+                            "context_data": json.loads(row[1]),
+                            "created_timestamp": row[2],
+                        }
+                    )
 
                 return contexts
 
@@ -276,11 +301,14 @@ class LightweightMemoryManager:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
-                cursor.execute("""
+                cursor.execute(
+                    """
                     UPDATE sessions
                     SET status = 'closed', updated_timestamp = ?
                     WHERE session_id = ?
-                """, (time.time(), session_id))
+                """,
+                    (time.time(), session_id),
+                )
                 conn.commit()
 
             self.logger.info(f"Closed session: {session_id}")
@@ -297,25 +325,32 @@ class LightweightMemoryManager:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT session_id, session_type, created_timestamp,
                            updated_timestamp, status
                     FROM sessions
                     WHERE created_timestamp > ?
                     ORDER BY created_timestamp DESC
-                """, (cutoff_time,))
+                """,
+                    (cutoff_time,),
+                )
 
                 sessions = []
                 for row in cursor.fetchall():
-                    sessions.append({
-                        "session_id": row[0],
-                        "session_type": row[1],
-                        "created_timestamp": row[2],
-                        "updated_timestamp": row[3],
-                        "status": row[4],
-                        "session_start_timestamp": datetime.fromtimestamp(row[2]).isoformat(),
-                        "last_activity": row[3]
-                    })
+                    sessions.append(
+                        {
+                            "session_id": row[0],
+                            "session_type": row[1],
+                            "created_timestamp": row[2],
+                            "updated_timestamp": row[3],
+                            "status": row[4],
+                            "session_start_timestamp": datetime.fromtimestamp(
+                                row[2]
+                            ).isoformat(),
+                            "last_activity": row[3],
+                        }
+                    )
 
                 return sessions
 
@@ -324,9 +359,7 @@ class LightweightMemoryManager:
             return []
 
     def update_session_context(
-        self,
-        session_id: str,
-        context_updates: Dict[str, Any]
+        self, session_id: str, context_updates: Dict[str, Any]
     ) -> bool:
         """Update session context with new data"""
         return self.store_context(session_id, "context_update", context_updates)
@@ -338,7 +371,7 @@ class LightweightMemoryManager:
             "contexts": contexts,
             "restored": len(contexts) > 0,
             "session_id": session_id,
-            "context_data": contexts
+            "context_data": contexts,
         }
 
     def get_stats(self) -> Dict[str, Any]:
@@ -364,7 +397,7 @@ class LightweightMemoryManager:
                     "active_sessions": active_sessions,
                     "total_contexts": total_contexts,
                     "lightweight_mode": True,
-                    "last_updated": time.time()
+                    "last_updated": time.time(),
                 }
 
         except Exception as e:
@@ -374,6 +407,7 @@ class LightweightMemoryManager:
 
 # Global lightweight instance
 _lightweight_manager = None
+
 
 def get_lightweight_memory_manager() -> LightweightMemoryManager:
     """Get lightweight memory manager instance"""
@@ -398,7 +432,9 @@ class SessionContextManager:
     def start_session(self, session_type: str = "strategic") -> str:
         return self.memory_manager.start_session(session_type)
 
-    def store_stakeholder_profile(self, stakeholder_key: str, profile_data: Dict[str, Any]) -> bool:
+    def store_stakeholder_profile(
+        self, stakeholder_key: str, profile_data: Dict[str, Any]
+    ) -> bool:
         # Find or create a session for this operation
         sessions = self.memory_manager.list_sessions(limit=1)
         if sessions:
@@ -409,7 +445,7 @@ class SessionContextManager:
         return self.memory_manager.store_context(
             session_id,
             "stakeholder_profile",
-            {"stakeholder_key": stakeholder_key, "profile_data": profile_data}
+            {"stakeholder_key": stakeholder_key, "profile_data": profile_data},
         )
 
     def detect_session_restart(self) -> bool:

@@ -21,11 +21,13 @@ import sys
 # Optional psutil import for performance monitoring
 try:
     import psutil
+
     PSUTIL_AVAILABLE = True
 except ImportError:
     PSUTIL_AVAILABLE = False
     # Mock psutil for fallback
     import random
+
     class MockPsutil:
         def __init__(self):
             self._memory_base = 50000000  # 50MB base
@@ -39,7 +41,8 @@ except ImportError:
 
             def memory_info(self):
                 from collections import namedtuple
-                MemInfo = namedtuple('MemInfo', ['rss'])
+
+                MemInfo = namedtuple("MemInfo", ["rss"])
                 # Simulate realistic memory usage patterns:
                 # - Initial baseline
                 # - Gradual increase during load
@@ -54,7 +57,9 @@ except ImportError:
                     self._peak_reached = True
                 else:  # Recovery phase - decrease significantly
                     if self._peak_reached:
-                        variance = random.randint(2000000, 6000000)  # +2-6MB after recovery
+                        variance = random.randint(
+                            2000000, 6000000
+                        )  # +2-6MB after recovery
                     else:
                         variance = random.randint(-1000000, 1000000)  # ±1MB normal
 
@@ -66,7 +71,8 @@ except ImportError:
         @staticmethod
         def virtual_memory():
             from collections import namedtuple
-            VirtMem = namedtuple('VirtMem', ['percent'])
+
+            VirtMem = namedtuple("VirtMem", ["percent"])
             return VirtMem(percent=60.0 + random.uniform(-5, 10))  # 55-70% fallback
 
         @staticmethod

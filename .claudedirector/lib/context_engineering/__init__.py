@@ -38,6 +38,7 @@ from .realtime_monitor import (
     EventType,
     AlertSeverity,
 )
+
 # Optional ML Pattern Engine import for P0 compatibility
 try:
     from .ml_pattern_engine import (
@@ -57,6 +58,7 @@ try:
         RiskAssessmentEngine,
         AdvancedCollaborationPrediction,
     )
+
     ML_PATTERN_ENGINE_AVAILABLE = True
 except (ImportError, TypeError, AttributeError) as e:
     # Fallback for P0 compatibility when heavyweight dependencies unavailable
@@ -64,23 +66,35 @@ except (ImportError, TypeError, AttributeError) as e:
 
     # Minimal stubs for compatibility
     class MLPatternEngine:
-        def __init__(self, *args, **kwargs): pass
+        def __init__(self, *args, **kwargs):
+            pass
+
     class TeamFeatureExtractor:
-        def __init__(self, *args, **kwargs): pass
+        def __init__(self, *args, **kwargs):
+            pass
+
     class CollaborationClassifier:
-        def __init__(self, *args, **kwargs): pass
+        def __init__(self, *args, **kwargs):
+            pass
+
     FeatureVector = dict
     CollaborationPrediction = dict
     SuccessPattern = dict
     TeamCollaborationOutcome = dict
     CollaborationOutcome = dict
     FeatureType = str
+
     class CollaborationScorer:
-        def __init__(self, *args, **kwargs): pass
+        def __init__(self, *args, **kwargs):
+            pass
+
     EnsembleModelConfig = dict
     RiskAssessment = dict
+
     class RiskAssessmentEngine:
-        def __init__(self, *args, **kwargs): pass
+        def __init__(self, *args, **kwargs):
+            pass
+
     AdvancedCollaborationPrediction = dict
 
 from .strategic_layer import InitiativeStatus

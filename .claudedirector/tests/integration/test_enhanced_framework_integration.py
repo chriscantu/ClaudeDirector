@@ -15,7 +15,9 @@ if lib_dir not in sys.path:
     sys.path.insert(0, lib_dir)
 
 try:
-    from lib.context_engineering.strategic_memory_manager import get_strategic_memory_manager
+    from lib.context_engineering.strategic_memory_manager import (
+        get_strategic_memory_manager,
+    )
     from lib.core.enhanced_framework_manager import EnhancedFrameworkManager
 
     print("✅ Successfully imported ClaudeDirector enhanced framework modules")

@@ -15,6 +15,7 @@ project_root = Path(
 lib_path = project_root / ".claudedirector" / "lib"
 sys.path.insert(0, str(lib_path))
 
+
 # Lightweight wrapper for setup compatibility
 class MeetingIntelligenceManager:
     """Lightweight wrapper for setup script compatibility"""

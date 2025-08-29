@@ -245,7 +245,9 @@ class ActionDetectionEngine:
                     action_text = match.group(0)
                     specificity = self._calculate_specificity(action_text)
                     timeline = self._extract_timeline(action_text)
-                    responsible_party = self._extract_responsible_party(action_text, action_type)
+                    responsible_party = self._extract_responsible_party(
+                        action_text, action_type
+                    )
 
                     action = ActionItem(
                         text=action_text.strip(),
@@ -287,7 +289,9 @@ class ActionDetectionEngine:
                 return match.group(1)
         return None
 
-    def _extract_responsible_party(self, text: str, action_type: ActionType) -> Optional[str]:
+    def _extract_responsible_party(
+        self, text: str, action_type: ActionType
+    ) -> Optional[str]:
         """Extract who is responsible for the action"""
         # Look for person names (simple heuristic)
         name_pattern = r"([A-Z][a-z]+\s+[A-Z][a-z]+)"
@@ -342,7 +346,9 @@ class ActionDetectionEngine:
 
             for seen_text in seen_texts:
                 seen_words = set(seen_text.lower().split())
-                overlap = len(action_words & seen_words) / len(action_words | seen_words)
+                overlap = len(action_words & seen_words) / len(
+                    action_words | seen_words
+                )
                 if overlap > 0.7:  # 70% similarity threshold
                     is_duplicate = True
                     break
@@ -438,7 +444,9 @@ class ClarityMetricsEngine:
         overall_score = (action_clarity + decision_clarity + context_clarity) / 3
 
         # Count specific elements
-        clear_actions = sum(1 for action in action_items if action.specificity_score >= 0.6)
+        clear_actions = sum(
+            1 for action in action_items if action.specificity_score >= 0.6
+        )
         vague_statements = self._count_vague_statements(text)
         decision_points = self._count_decision_points(text)
         ambiguous_refs = self._count_ambiguous_references(text)
@@ -471,13 +479,17 @@ class ClarityMetricsEngine:
             return 0.3  # Low score for no actions
 
         # Average specificity of actions
-        avg_specificity = statistics.mean([action.specificity_score for action in action_items])
+        avg_specificity = statistics.mean(
+            [action.specificity_score for action in action_items]
+        )
 
         # Bonus for having multiple actions
         action_bonus = min(0.2, len(action_items) * 0.05)
 
         # Penalty for very low confidence actions
-        low_confidence_penalty = sum(1 for action in action_items if action.confidence < 0.5) * 0.1
+        low_confidence_penalty = (
+            sum(1 for action in action_items if action.confidence < 0.5) * 0.1
+        )
 
         score = avg_specificity + action_bonus - low_confidence_penalty
         return max(0.0, min(1.0, score))
@@ -613,7 +625,9 @@ class ConversationAnalyzer:
         action_items = self.action_detector.extract_action_items(text)
 
         # Calculate clarity metrics
-        clarity_metrics = self.metrics_engine.calculate_clarity_metrics(text, action_items)
+        clarity_metrics = self.metrics_engine.calculate_clarity_metrics(
+            text, action_items
+        )
 
         # Extract strategic content
         key_decisions = self._extract_key_decisions(text)
@@ -734,12 +748,16 @@ class ConversationAnalyzer:
 
         return max(0.0, min(1.0, coherence_score))
 
-    def _calculate_completeness(self, text: str, action_items: List[ActionItem]) -> float:
+    def _calculate_completeness(
+        self, text: str, action_items: List[ActionItem]
+    ) -> float:
         """Calculate completeness of the conversation"""
         completeness_score = 0.5  # Base score
 
         # Has clear context
-        if re.search(r"\b(?:background|context|situation|currently)\b", text, re.IGNORECASE):
+        if re.search(
+            r"\b(?:background|context|situation|currently)\b", text, re.IGNORECASE
+        ):
             completeness_score += 0.15
 
         # Has decisions
@@ -750,7 +768,9 @@ class ConversationAnalyzer:
         if action_items:
             completeness_score += 0.1
             # Bonus for specific actions
-            specific_actions = sum(1 for action in action_items if action.specificity_score >= 0.6)
+            specific_actions = sum(
+                1 for action in action_items if action.specificity_score >= 0.6
+            )
             if specific_actions > 0:
                 completeness_score += 0.1
 
@@ -762,19 +782,27 @@ class ConversationAnalyzer:
             return 0.2
 
         # Average specificity and confidence
-        avg_specificity = statistics.mean([action.specificity_score for action in action_items])
+        avg_specificity = statistics.mean(
+            [action.specificity_score for action in action_items]
+        )
         avg_confidence = statistics.mean([action.confidence for action in action_items])
 
         # Bonus for having timelines and responsible parties
         timeline_bonus = (
-            sum(1 for action in action_items if action.timeline) / len(action_items) * 0.2
+            sum(1 for action in action_items if action.timeline)
+            / len(action_items)
+            * 0.2
         )
         responsibility_bonus = (
-            sum(1 for action in action_items if action.responsible_party) / len(action_items) * 0.1
+            sum(1 for action in action_items if action.responsible_party)
+            / len(action_items)
+            * 0.1
         )
 
         actionability = (
-            (avg_specificity + avg_confidence) / 2 + timeline_bonus + responsibility_bonus
+            (avg_specificity + avg_confidence) / 2
+            + timeline_bonus
+            + responsibility_bonus
         )
         return max(0.0, min(1.0, actionability))
 
@@ -803,7 +831,9 @@ class ClarityAnalyzer:
         """Extract action items from text"""
         return self.action_detector.extract_action_items(text)
 
-    def calculate_metrics(self, text: str, action_items: List[ActionItem] = None) -> ClarityMetrics:
+    def calculate_metrics(
+        self, text: str, action_items: List[ActionItem] = None
+    ) -> ClarityMetrics:
         """Calculate clarity metrics"""
         if action_items is None:
             action_items = self.extract_actions(text)

@@ -15,7 +15,9 @@ project_root = Path(
 lib_path = project_root / ".claudedirector" / "lib"
 sys.path.insert(0, str(lib_path))
 
-from context_engineering.stakeholder_intelligence_unified import StakeholderIntelligence as StakeholderEngagementEngine
+from context_engineering.stakeholder_intelligence_unified import (
+    StakeholderIntelligence as StakeholderEngagementEngine,
+)
 
 
 class StakeholderManagementSetup:

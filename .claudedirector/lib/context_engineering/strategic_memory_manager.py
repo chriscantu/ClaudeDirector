@@ -346,22 +346,27 @@ class StrategicMemoryManager:
 
         try:
             with self.get_connection() as conn:
-                results = conn.execute("""
+                results = conn.execute(
+                    """
                     SELECT session_id, session_type, created_at, last_activity, status
                     FROM sessions
                     WHERE created_at > ?
                     ORDER BY created_at DESC
-                """, (cutoff_time,)).fetchall()
+                """,
+                    (cutoff_time,),
+                ).fetchall()
 
                 sessions = []
                 for row in results:
-                    sessions.append({
-                        "session_id": row[0],
-                        "session_type": row[1],
-                        "created_timestamp": row[2],
-                        "updated_timestamp": row[3],
-                        "status": row[4]
-                    })
+                    sessions.append(
+                        {
+                            "session_id": row[0],
+                            "session_type": row[1],
+                            "created_timestamp": row[2],
+                            "updated_timestamp": row[3],
+                            "status": row[4],
+                        }
+                    )
 
                 return sessions
 
@@ -690,7 +695,7 @@ def get_strategic_memory_manager(
             db_path=db_path, enable_performance=enable_performance
         )
         # Test if it has required attributes for P0 compatibility
-        if hasattr(manager, 'cache_manager') or not enable_performance:
+        if hasattr(manager, "cache_manager") or not enable_performance:
             return manager
         else:
             # Missing performance components, fall back to lightweight
@@ -698,6 +703,7 @@ def get_strategic_memory_manager(
     except Exception:
         # Fallback to lightweight manager for P0 compatibility
         from .core_lightweight import get_lightweight_memory_manager
+
         return get_lightweight_memory_manager()
 
 
