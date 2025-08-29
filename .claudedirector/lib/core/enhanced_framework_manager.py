@@ -16,7 +16,7 @@ lib_dir = os.path.dirname(current_dir)
 if lib_dir not in sys.path:
     sys.path.insert(0, lib_dir)
 
-from memory.session_context_manager import SessionContextManager
+from context_engineering.strategic_memory_manager import get_strategic_memory_manager
 
 
 class EnhancedFrameworkManager:

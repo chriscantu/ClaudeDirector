@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 from lib.core.exceptions import AIDetectionError
-from lib.intelligence.task import TaskIntelligence
+from lib.ai_intelligence.context.intelligence_unified import TaskIntelligence
 
 
 class TestTaskIntelligence:

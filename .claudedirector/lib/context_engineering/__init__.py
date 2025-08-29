@@ -26,23 +26,50 @@ from .realtime_monitor import (
     EventType,
     AlertSeverity,
 )
-from .ml_pattern_engine import (
-    MLPatternEngine,
-    TeamFeatureExtractor,
-    CollaborationClassifier,
-    FeatureVector,
-    CollaborationPrediction,
-    SuccessPattern,
-    TeamCollaborationOutcome,
-    CollaborationOutcome,
-    FeatureType,
-    # CollaborationScorer - Epic 2 Completion Components
-    CollaborationScorer,
-    EnsembleModelConfig,
-    RiskAssessment,
-    RiskAssessmentEngine,
-    AdvancedCollaborationPrediction,
-)
+# Optional ML Pattern Engine import for P0 compatibility
+try:
+    from .ml_pattern_engine import (
+        MLPatternEngine,
+        TeamFeatureExtractor,
+        CollaborationClassifier,
+        FeatureVector,
+        CollaborationPrediction,
+        SuccessPattern,
+        TeamCollaborationOutcome,
+        CollaborationOutcome,
+        FeatureType,
+        # CollaborationScorer - Epic 2 Completion Components
+        CollaborationScorer,
+        EnsembleModelConfig,
+        RiskAssessment,
+        RiskAssessmentEngine,
+        AdvancedCollaborationPrediction,
+    )
+    ML_PATTERN_ENGINE_AVAILABLE = True
+except (ImportError, TypeError, AttributeError) as e:
+    # Fallback for P0 compatibility when heavyweight dependencies unavailable
+    ML_PATTERN_ENGINE_AVAILABLE = False
+
+    # Minimal stubs for compatibility
+    class MLPatternEngine:
+        def __init__(self, *args, **kwargs): pass
+    class TeamFeatureExtractor:
+        def __init__(self, *args, **kwargs): pass
+    class CollaborationClassifier:
+        def __init__(self, *args, **kwargs): pass
+    FeatureVector = dict
+    CollaborationPrediction = dict
+    SuccessPattern = dict
+    TeamCollaborationOutcome = dict
+    CollaborationOutcome = dict
+    FeatureType = str
+    class CollaborationScorer:
+        def __init__(self, *args, **kwargs): pass
+    EnsembleModelConfig = dict
+    RiskAssessment = dict
+    class RiskAssessmentEngine:
+        def __init__(self, *args, **kwargs): pass
+    AdvancedCollaborationPrediction = dict
 
 from .strategic_layer import InitiativeStatus
 from .stakeholder_layer import StakeholderRole, CommunicationStyle

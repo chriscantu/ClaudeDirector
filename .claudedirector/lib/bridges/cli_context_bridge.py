@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import Any, Dict, List
 from pathlib import Path
 
-from memory.session_context_manager import SessionContextManager
+from context_engineering.strategic_memory_manager import get_strategic_memory_manager
 
 
 class CLIContextBridge:
@@ -27,7 +27,7 @@ class CLIContextBridge:
             db_path = base_path / ".claudedirector" / "data" / "strategic_memory.db"
 
         self.db_path = str(db_path)
-        self.session_manager = SessionContextManager(self.db_path)
+        self.session_manager = get_strategic_memory_manager()
 
     def export_current_context(
         self, format_type: str = "markdown", output_file: str = None
