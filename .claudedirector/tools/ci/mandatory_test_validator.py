@@ -15,6 +15,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+
 def detect_python_environment():
     """Detect Python interpreter path for both local venv and CI environments."""
 
@@ -34,6 +35,7 @@ def detect_python_environment():
     # Fallback to system python3
     return "python3"
 
+
 def run_critical_tests():
     """Run mandatory P0 tests with proper environment detection."""
 
@@ -44,7 +46,13 @@ def run_critical_tests():
     print(f"🐍 Using Python: {python_path}")
 
     # Path to P0 test runner
-    p0_runner = PROJECT_ROOT / ".claudedirector" / "tests" / "p0_enforcement" / "run_mandatory_p0_tests.py"
+    p0_runner = (
+        PROJECT_ROOT
+        / ".claudedirector"
+        / "tests"
+        / "p0_enforcement"
+        / "run_mandatory_p0_tests.py"
+    )
 
     if not p0_runner.exists():
         print(f"❌ P0 test runner not found: {p0_runner}")
@@ -59,7 +67,7 @@ def run_critical_tests():
             cwd=str(PROJECT_ROOT),
             capture_output=True,
             text=True,
-            timeout=300  # 5 minute timeout
+            timeout=300,  # 5 minute timeout
         )
 
         print("📤 P0 Test Output:")
@@ -83,6 +91,7 @@ def run_critical_tests():
         print(f"❌ Error running P0 tests: {e}")
         return False
 
+
 def main():
     """Main entry point for mandatory test validation."""
 
@@ -99,6 +108,7 @@ def main():
         print("❌ MANDATORY TEST VALIDATION FAILED")
         print("🚨 Commit blocked due to P0 test failures")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

@@ -8,7 +8,7 @@ from typing import List, Dict
 from dataclasses import dataclass
 
 # Import centralized configuration
-from .config import DEFAULT_CONFIDENCE_SCORE, STRATEGIC_DOMAIN
+from ..core.constants.transparency_config import DEFAULT_CONFIDENCE_SCORE, STRATEGIC_DOMAIN
 
 try:
     from core.constants.framework_definitions import FRAMEWORK_REGISTRY
