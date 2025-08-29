@@ -112,6 +112,37 @@ p0_features:
     owner: "rachel"
     modules: ["test_framework_detection.py", "test_framework_attribution.py", "test_framework_coordination.py", "test_framework_recommendations.py"]
 
+  # PHASE 12: ALWAYS-ON MCP ENHANCEMENT P0 TESTS
+  - name: "Always-On MCP Enhancement P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_phase12_always_on_mcp.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 120
+    description: "Phase 12 always-on MCP enhancement must work with 100% enhancement rate"
+    failure_impact: "MCP enhancement rate drops below 100%, users lose guaranteed AI enhancement"
+    business_impact: "Strategic guidance becomes inconsistent - Phase 12 value proposition broken"
+    introduced_version: "v3.5.0"
+    owner: "martin"
+
+  - name: "Lightweight Fallback Pattern P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_lightweight_fallback.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 90
+    description: "OVERVIEW.md lightweight fallback pattern must provide graceful degradation"
+    failure_impact: "System fails when MCP servers unavailable, no fallback functionality"
+    business_impact: "Strategic guidance becomes unavailable during server maintenance"
+    introduced_version: "v3.5.0"
+    owner: "martin"
+
+  - name: "Magic MCP Visual Integration P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_magic_mcp_visual.py"
+    critical_level: "HIGH"
+    timeout_seconds: 120
+    description: "Phase 12 Magic MCP visual detection and routing must work automatically"
+    failure_impact: "Visual requests not routed to Magic MCP, users lose automatic visual enhancement"
+    business_impact: "Strategic visuals become manual, reduced user experience for diagrams/charts"
+    introduced_version: "v3.5.0"
+    owner: "rachel"
+
   # ALVARO'S BUSINESS-CRITICAL TESTS
   - name: "Configuration Persistence P0"
     test_module: ".claudedirector/tests/regression/p0_blocking/test_configuration_persistence.py"

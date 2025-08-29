@@ -539,63 +539,29 @@ class AnalysisComplexityDetector:
         thresholds: Optional[Dict[str, float]] = None,
     ) -> Tuple[bool, Optional[str]]:
         """
-        Determine if MCP enhancement should be used for this specific persona.
+        PHASE 12: Always-on MCP enhancement - removed complexity thresholds
+
+        Always returns True for guaranteed 100% enhancement rate.
+        Returns persona's primary MCP server for direct routing.
 
         Args:
-            analysis: The complexity analysis result
+            analysis: ComplexityAnalysis (kept for API compatibility)
             persona: The target persona name
-            thresholds: Override thresholds from config
+            thresholds: Ignored (kept for API compatibility)
 
         Returns:
-            Tuple of (should_enhance, recommended_server)
+            Tuple of (True, recommended_server) - always enhance
         """
-        if not thresholds:
-            thresholds = self.config.get(
-                "enhancement_thresholds",
-                {
-                    "systematic_analysis": 0.7,
-                    "framework_lookup": 0.6,
-                    "visual_generation": 0.8,
-                    "minimum_complexity": 0.5,
-                },
-            )
+        # PHASE 12: Always-on enhancement - import persona mapping
+        from .enhanced_persona_manager import EnhancedPersonaManager
 
-        # Check minimum complexity threshold
-        if analysis.confidence < thresholds.get("minimum_complexity", 0.5):
-            return False, None
+        # Get persona's primary MCP server
+        recommended_server = EnhancedPersonaManager.PERSONA_SERVER_MAPPING.get(
+            persona, "sequential"
+        )
 
-        # Check persona suitability
-        persona_score = analysis.persona_suitability.get(persona, 0.0)
-        if persona_score < 0.3:  # Minimum persona suitability
-            return False, None
-
-        # Determine recommended server for persona
-        persona_info = self.persona_capabilities.get(persona, {})
-        available_servers = persona_info.get("mcp_servers", [])
-
-        if not available_servers:
-            return False, None
-
-        # Check strategy-specific thresholds
-        strategy_thresholds = {
-            EnhancementStrategy.SYSTEMATIC_ANALYSIS: thresholds.get(
-                "systematic_analysis", 0.7
-            ),
-            EnhancementStrategy.LIGHT_FRAMEWORK: thresholds.get(
-                "framework_lookup", 0.6
-            ),
-            EnhancementStrategy.VISUAL_ENHANCEMENT: thresholds.get(
-                "visual_generation", 0.8
-            ),
-        }
-
-        required_threshold = strategy_thresholds.get(analysis.enhancement_strategy, 1.0)
-
-        if analysis.confidence >= required_threshold:
-            # Return the primary server for this persona
-            return True, available_servers[0]
-
-        return False, None
+        # Always enhance with persona's primary server
+        return True, recommended_server
 
     def get_enhancement_context(self, analysis: ComplexityAnalysis) -> Dict[str, Any]:
         """

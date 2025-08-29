@@ -69,7 +69,7 @@ sys.path.insert(0, '.claudedirector/lib')
 try:
     from core import integrated_conversation_manager
     from transparency import mcp_transparency
-    from memory import session_context_manager
+    from context_engineering import strategic_memory_manager
     print('✅ Core modules importable via direct import')
 except ImportError as e:
     print(f'⚠️ Direct import failed, trying fallback: {e}')

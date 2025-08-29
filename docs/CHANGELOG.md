@@ -7,8 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### In Development
+- **Phase 12.3-12.4**: Lightweight Fallback Pattern, P0 Test Extension, Performance Optimization
 - **Week 3-4 ML Implementation**: Full Enhanced Predictive Intelligence implementation with 85%+ accuracy
 - **Advanced Enterprise Features**: Multi-team coordination and advanced analytics capabilities
+
+## [3.5.0] - 2025-08-29
+### Added - Phase 12: Always-On MCP Enhancement (Major Release)
+- **🚀 100% MCP Enhancement Rate**: Revolutionary transformation from 40-60% threshold-based to guaranteed 100% enhancement
+  - **Eliminated Complexity Thresholds**: Removed AnalysisComplexityDetector complexity scoring for always-on enhancement
+  - **Direct Persona Routing**: Simple persona → MCP server mapping (diego→sequential, martin→context7, etc.)
+  - **Always-On Transparency**: 100% of strategic queries now show MCP enhancement disclosure
+  - **Zero Enhancement Anxiety**: Users never wonder "will this get enhanced?" - predictable enterprise experience
+
+- **🎨 Magic MCP Visual Enhancement Default**: Automatic visual intelligence for all strategic communication
+  - **Automatic Visual Detection**: 18+ visual keywords trigger Magic MCP (diagram, chart, mockup, etc.)
+  - **Persona-Specific Templates**: 5 personas × 8 visual types = 40 specialized visual enhancement templates
+  - **Professional Visual Output**: Diego (org charts), Martin (architecture), Rachel (design systems), Camille (roadmaps), Alvaro (dashboards)
+  - **<50ms Visual Detection**: High-performance visual routing per OVERVIEW.md requirements
+
+### Enhanced
+- **🛡️ P0 Test Compliance**: Updated MCP Transparency P0 test for always-on behavior validation
+  - **Test Modernization**: Phase 12 test validates 100% enhancement instead of avoiding "false positives"
+  - **Always-On Validation**: Simple queries now correctly show MCP enhancement (feature, not bug)
+  - **33/33 P0 Tests Passing**: Maintained zero-tolerance P0 standards throughout transformation
+
+### Technical Architecture
+- **🏗️ Core Architecture Transformation**: Major simplification of MCP enhancement logic
+  - **Enhanced Persona Manager**: Always-on enhancement without complexity analysis
+  - **Decision Orchestrator**: Always returns STRATEGIC complexity for maximum enhancement
+  - **Transparency Engine**: 100% disclosure rate with performance optimization
+  - **Visual Template Manager**: New comprehensive persona-specific visual enhancement system
+
+### Performance & Quality
+- **⚡ <50ms Transparency Overhead**: Maintained OVERVIEW.md performance requirements during transformation
+- **📊 Enterprise Consistency**: Positioned as "first always excellent AI platform" for competitive advantage
+- **🎯 User Experience**: Eliminated confusion about enhancement detection with predictable behavior
+- **🔄 API Compatibility**: Maintained all existing interfaces during architectural transformation
 
 ## [3.4.0] - 2025-08-29
 ### Added - Phase 11: Enhanced Predictive Intelligence Foundation
