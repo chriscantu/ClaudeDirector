@@ -92,6 +92,7 @@ class EnhancedSecurityScanner:
             ".claudedirector/tools/quality/",  # Quality tools directory
             ".claudedirector/lib/core/config.py",  # Configuration file containing patterns
             ".claudedirector/archive/",  # Archive directory contains development artifacts
+            "docs/phases/completed/",  # Completed phase documentation (planning docs, not sensitive data)
             ".claudedirector/lib/claudedirector/",  # Symlink for backward compatibility
             ".claudedirector/tests/",  # Test files contain generic test data, not real sensitive data
             "SECURITY.md",
