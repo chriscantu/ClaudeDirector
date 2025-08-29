@@ -1,8 +1,8 @@
 """
-Predictive Analytics Engine
+Predictive Analytics Engine - Refactored Modular Version
 
 Phase 7 Strategic AI Development - Stream 1
-Anticipates strategic challenges before they occur using ML-powered analysis.
+Lightweight orchestration of specialized prediction components.
 
 Performance Targets:
 - >90% prediction accuracy for strategic challenges
@@ -17,62 +17,32 @@ Architecture Integration:
 - Enhances MCP coordination with predictive insights
 """
 
-from typing import Dict, List, Any, Optional, Tuple, Union
-from dataclasses import dataclass, asdict
+from typing import Dict, List, Any, Optional
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 import logging
-import numpy as np
-from enum import Enum
-import json
 import time
 
 # Integration with existing 8-layer architecture
 try:
     from context_engineering.advanced_context_engine import AdvancedContextEngine
-    from context_engineering.stakeholder_layer import StakeholderLayerMemory
-    from context_engineering.strategic_layer import StrategicLayerMemory
-    from context_engineering.organizational_layer import OrganizationalLayerMemory
-    from context_engineering.team_dynamics_engine import TeamDynamicsEngine
-    from context_engineering.ml_pattern_engine import MLPatternEngine
 except ImportError:
-    # For test environments
     try:
         from ..context_engineering.advanced_context_engine import AdvancedContextEngine
-        from ..context_engineering.stakeholder_layer import StakeholderLayerMemory
-        from ..context_engineering.strategic_layer import StrategicLayerMemory
-        from ..context_engineering.organizational_layer import OrganizationalLayerMemory
-        from ..context_engineering.team_dynamics_engine import TeamDynamicsEngine
-        from ..context_engineering.ml_pattern_engine import MLPatternEngine
     except ImportError:
-        # Mock for testing if imports fail
         AdvancedContextEngine = object
-        StakeholderLayerMemory = object
-        StrategicLayerMemory = object
-        OrganizationalLayerMemory = object
-        TeamDynamicsEngine = object
-        MLPatternEngine = object
 
-
-class PredictionConfidence(Enum):
-    """Confidence levels for predictive analytics"""
-
-    LOW = "low"  # 50-70% confidence
-    MEDIUM = "medium"  # 70-85% confidence
-    HIGH = "high"  # 85-95% confidence
-    CRITICAL = "critical"  # 95%+ confidence
-
-
-class ChallengeType(Enum):
-    """Types of strategic challenges that can be predicted"""
-
-    TEAM_BURNOUT = "team_burnout"
-    STAKEHOLDER_CONFLICT = "stakeholder_conflict"
-    DELIVERY_RISK = "delivery_risk"
-    TECHNICAL_DEBT = "technical_debt"
-    RESOURCE_SHORTAGE = "resource_shortage"
-    COMMUNICATION_BREAKDOWN = "communication_breakdown"
-    STRATEGIC_MISALIGNMENT = "strategic_misalignment"
-    TALENT_RETENTION = "talent_retention"
+# Import specialized components
+from .predictive.prediction_models import PredictionModels, ChallengeType
+from .predictive.indicator_analyzers import IndicatorAnalyzers
+from .predictive.health_metrics_calculator import (
+    HealthMetricsCalculator,
+    OrganizationalHealthMetrics,
+)
+from .predictive.recommendation_generator import (
+    RecommendationGenerator,
+    PredictionConfidence,
+)
 
 
 @dataclass
@@ -96,46 +66,26 @@ class StrategicChallengePrediction:
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert prediction to dictionary format"""
-        result = asdict(self)
-        result["challenge_type"] = self.challenge_type.value
-        result["confidence"] = self.confidence.value
-        result["prediction_timestamp"] = self.prediction_timestamp.isoformat()
-        return result
-
-
-@dataclass
-class OrganizationalHealthMetrics:
-    """Real-time organizational health indicators"""
-
-    overall_health_score: float  # 0.0 to 1.0
-    team_velocity_trend: float  # -1.0 to 1.0 (declining to improving)
-    stakeholder_satisfaction: float  # 0.0 to 1.0
-    technical_debt_ratio: float  # 0.0 to 1.0
-    communication_effectiveness: float  # 0.0 to 1.0
-
-    # Detailed metrics
-    burnout_risk_indicators: List[str]
-    conflict_probability: float
-    delivery_confidence: float
-    talent_retention_risk: float
-
-    # Performance tracking
-    calculated_timestamp: datetime
-    data_freshness_hours: float
+        return {
+            "challenge_type": self.challenge_type.value,
+            "confidence": self.confidence.value,
+            "probability_score": self.probability_score,
+            "time_horizon_days": self.time_horizon_days,
+            "impact_severity": self.impact_severity,
+            "contributing_factors": self.contributing_factors,
+            "evidence_signals": self.evidence_signals,
+            "recommended_actions": self.recommended_actions,
+            "prediction_timestamp": self.prediction_timestamp.isoformat(),
+            "analysis_duration_ms": self.analysis_duration_ms,
+        }
 
 
 class PredictiveAnalyticsEngine:
     """
-    ML-powered predictive analytics for strategic challenge anticipation
+    Lightweight orchestration engine for predictive analytics
 
-    Integrates with ClaudeDirector's 8-layer Context Engineering architecture
-    to provide proactive strategic intelligence and early warning systems.
-
-    Key Capabilities:
-    - Strategic challenge prediction with >90% accuracy
-    - Real-time organizational health monitoring
-    - Proactive recommendation generation
-    - Integration with existing persona and MCP systems
+    Coordinates specialized components for challenge prediction,
+    health monitoring, and recommendation generation.
     """
 
     def __init__(
@@ -143,24 +93,23 @@ class PredictiveAnalyticsEngine:
         context_engine: AdvancedContextEngine,
         config: Optional[Dict[str, Any]] = None,
     ):
-        """Initialize predictive analytics engine"""
+        """Initialize predictive analytics engine with modular components"""
         self.config = config or {}
         self.logger = logging.getLogger(__name__)
 
         # Core dependencies
         self.context_engine = context_engine
-        self.stakeholder_layer = context_engine.stakeholder_layer
-        self.strategic_layer = context_engine.strategic_layer
-        self.organizational_layer = context_engine.organizational_layer
 
-        # Advanced analytics dependencies
-        self.team_dynamics_engine = getattr(
-            context_engine, "team_dynamics_engine", None
-        )
-        self.ml_pattern_engine = getattr(context_engine, "ml_pattern_engine", None)
+        # Initialize specialized components
+        self.prediction_models = PredictionModels(self.config)
+        self.indicator_analyzers = IndicatorAnalyzers(self.config)
+        self.health_calculator = HealthMetricsCalculator(self.config)
+        self.recommendation_generator = RecommendationGenerator(self.config)
 
         # Configuration
-        self.prediction_threshold = self.config.get("prediction_threshold", 0.7)
+        self.prediction_threshold = (
+            self.prediction_models.get_prediction_confidence_threshold()
+        )
         self.max_prediction_horizon_days = self.config.get("max_prediction_horizon", 90)
         self.health_check_interval_hours = self.config.get("health_check_interval", 4)
 
@@ -168,64 +117,13 @@ class PredictiveAnalyticsEngine:
         self.target_response_time_ms = self.config.get("target_response_time_ms", 500)
         self.target_accuracy = self.config.get("target_accuracy", 0.90)
 
-        # Prediction cache and state
+        # Cache and state
         self.prediction_cache: Dict[str, StrategicChallengePrediction] = {}
         self.last_health_check: Optional[datetime] = None
         self.current_health_metrics: Optional[OrganizationalHealthMetrics] = None
 
-        # ML models (simplified for Phase 7.1)
-        self._initialize_prediction_models()
-
         self.logger.info(
-            "PredictiveAnalyticsEngine initialized with 8-layer architecture integration"
-        )
-
-    def _initialize_prediction_models(self):
-        """Initialize ML prediction models (simplified for Phase 7.1)"""
-        # In Phase 7.1, we use rule-based models with pattern recognition
-        # Phase 7.2+ will integrate advanced ML models
-
-        self.challenge_indicators = {
-            ChallengeType.TEAM_BURNOUT: {
-                "velocity_decline_threshold": 0.15,
-                "overtime_pattern_days": 14,
-                "satisfaction_threshold": 0.6,
-                "key_signals": [
-                    "velocity_decline",
-                    "overtime_pattern",
-                    "satisfaction_drop",
-                ],
-            },
-            ChallengeType.STAKEHOLDER_CONFLICT: {
-                "communication_frequency_drop": 0.3,
-                "sentiment_decline_threshold": 0.2,
-                "decision_delay_days": 7,
-                "key_signals": [
-                    "communication_drop",
-                    "sentiment_decline",
-                    "decision_delays",
-                ],
-            },
-            ChallengeType.DELIVERY_RISK: {
-                "scope_creep_threshold": 0.2,
-                "dependency_failure_rate": 0.15,
-                "quality_decline_threshold": 0.25,
-                "key_signals": ["scope_creep", "dependency_issues", "quality_decline"],
-            },
-            ChallengeType.TECHNICAL_DEBT: {
-                "complexity_growth_rate": 0.1,
-                "bug_fix_time_increase": 0.3,
-                "new_feature_velocity_decline": 0.2,
-                "key_signals": [
-                    "complexity_growth",
-                    "slower_bug_fixes",
-                    "feature_velocity_decline",
-                ],
-            },
-        }
-
-        self.logger.info(
-            "Prediction models initialized with rule-based pattern recognition"
+            "PredictiveAnalyticsEngine initialized with modular architecture"
         )
 
     async def predict_strategic_challenges(
@@ -252,9 +150,11 @@ class PredictiveAnalyticsEngine:
             # Gather comprehensive context from 8-layer architecture
             context_data = await self._gather_prediction_context(context_query)
 
-            # Analyze patterns and indicators
+            # Analyze patterns and indicators for all supported challenge types
             predictions = []
-            for challenge_type in ChallengeType:
+            for (
+                challenge_type
+            ) in self.prediction_models.get_supported_challenge_types():
                 prediction = await self._analyze_challenge_indicators(
                     challenge_type, context_data, time_horizon_days
                 )
@@ -270,9 +170,7 @@ class PredictiveAnalyticsEngine:
             )
 
             # Cache predictions
-            cache_key = f"predictions_{int(time.time())}"
-            for pred in predictions:
-                self.prediction_cache[f"{cache_key}_{pred.challenge_type.value}"] = pred
+            self._cache_predictions(predictions)
 
             # Performance tracking
             analysis_duration = (time.time() - start_time) * 1000
@@ -298,50 +196,19 @@ class PredictiveAnalyticsEngine:
 
         try:
             # Check cache freshness
-            if (
-                self.current_health_metrics
-                and self.last_health_check
-                and datetime.now() - self.last_health_check
-                < timedelta(hours=self.health_check_interval_hours)
-            ):
+            if self._is_health_cache_valid():
                 return self.current_health_metrics
 
             # Gather health data from context layers
-            stakeholder_data = await self._get_stakeholder_health_data()
-            strategic_data = await self._get_strategic_health_data()
-            organizational_data = await self._get_organizational_health_data()
-            team_dynamics_data = await self._get_team_dynamics_health_data()
+            health_data = await self._gather_health_data()
 
-            # Calculate composite health metrics
-            health_metrics = OrganizationalHealthMetrics(
-                overall_health_score=self._calculate_overall_health_score(
-                    stakeholder_data,
-                    strategic_data,
-                    organizational_data,
-                    team_dynamics_data,
-                ),
-                team_velocity_trend=self._calculate_velocity_trend(strategic_data),
-                stakeholder_satisfaction=self._calculate_stakeholder_satisfaction(
-                    stakeholder_data
-                ),
-                technical_debt_ratio=self._calculate_technical_debt_ratio(
-                    strategic_data
-                ),
-                communication_effectiveness=self._calculate_communication_effectiveness(
-                    stakeholder_data, team_dynamics_data
-                ),
-                burnout_risk_indicators=self._identify_burnout_indicators(
-                    strategic_data, team_dynamics_data
-                ),
-                conflict_probability=self._calculate_conflict_probability(
-                    stakeholder_data
-                ),
-                delivery_confidence=self._calculate_delivery_confidence(strategic_data),
-                talent_retention_risk=self._calculate_retention_risk(
-                    organizational_data, team_dynamics_data
-                ),
-                calculated_timestamp=datetime.now(),
-                data_freshness_hours=(time.time() - start_time) / 3600,
+            # Calculate composite health metrics using specialized calculator
+            health_metrics = self.health_calculator.calculate_health_metrics(
+                health_data["stakeholder"],
+                health_data["strategic"],
+                health_data["organizational"],
+                health_data["team_dynamics"],
+                start_time,
             )
 
             # Cache results
@@ -355,20 +222,7 @@ class PredictiveAnalyticsEngine:
 
         except Exception as e:
             self.logger.error(f"Health metrics calculation failed: {e}")
-            # Return default safe metrics
-            return OrganizationalHealthMetrics(
-                overall_health_score=0.5,
-                team_velocity_trend=0.0,
-                stakeholder_satisfaction=0.5,
-                technical_debt_ratio=0.5,
-                communication_effectiveness=0.5,
-                burnout_risk_indicators=["insufficient_data"],
-                conflict_probability=0.5,
-                delivery_confidence=0.5,
-                talent_retention_risk=0.5,
-                calculated_timestamp=datetime.now(),
-                data_freshness_hours=0.0,
-            )
+            return self._get_default_health_metrics()
 
     async def get_proactive_recommendations(
         self, predictions: List[StrategicChallengePrediction]
@@ -389,7 +243,13 @@ class PredictiveAnalyticsEngine:
                 PredictionConfidence.HIGH,
                 PredictionConfidence.CRITICAL,
             ]:
-                rec = await self._generate_challenge_recommendation(prediction)
+                rec = (
+                    self.recommendation_generator.generate_comprehensive_recommendation(
+                        prediction.challenge_type,
+                        prediction.probability_score,
+                        prediction.impact_severity,
+                    )
+                )
                 if rec:
                     recommendations.append(rec)
 
@@ -408,34 +268,44 @@ class PredictiveAnalyticsEngine:
         context_data = {}
 
         try:
-            # Layer 3: Stakeholder Intelligence
-            if self.stakeholder_layer:
+            # Simplified context gathering - delegate to context engine layers
+            if hasattr(self.context_engine, "stakeholder_layer"):
                 context_data["stakeholder"] = await self._safe_async_call(
-                    self.stakeholder_layer.get_stakeholder_context, query
+                    getattr(
+                        self.context_engine.stakeholder_layer,
+                        "get_stakeholder_context",
+                        lambda x: {},
+                    ),
+                    query,
                 )
 
-            # Layer 2: Strategic Memory
-            if self.strategic_layer:
+            if hasattr(self.context_engine, "strategic_layer"):
                 context_data["strategic"] = await self._safe_async_call(
-                    self.strategic_layer.get_strategic_context, query
+                    getattr(
+                        self.context_engine.strategic_layer,
+                        "get_strategic_context",
+                        lambda x: {},
+                    ),
+                    query,
                 )
 
-            # Layer 5: Organizational Memory
-            if self.organizational_layer:
+            if hasattr(self.context_engine, "organizational_layer"):
                 context_data["organizational"] = await self._safe_async_call(
-                    self.organizational_layer.get_organizational_context, query
+                    getattr(
+                        self.context_engine.organizational_layer,
+                        "get_organizational_context",
+                        lambda x: {},
+                    ),
+                    query,
                 )
 
-            # Layer 6: Team Dynamics (if available)
-            if self.team_dynamics_engine:
+            if hasattr(self.context_engine, "team_dynamics_engine"):
                 context_data["team_dynamics"] = await self._safe_async_call(
-                    self.team_dynamics_engine.get_current_dynamics
-                )
-
-            # Layer 8: ML Pattern Detection (if available)
-            if self.ml_pattern_engine:
-                context_data["ml_patterns"] = await self._safe_async_call(
-                    self.ml_pattern_engine.detect_collaboration_patterns
+                    getattr(
+                        self.context_engine.team_dynamics_engine,
+                        "get_current_dynamics",
+                        lambda: {},
+                    )
                 )
 
         except Exception as e:
@@ -443,71 +313,39 @@ class PredictiveAnalyticsEngine:
 
         return context_data
 
-    async def _safe_async_call(self, func, *args, **kwargs):
-        """Safely call async function with fallback"""
-        try:
-            if hasattr(func, "__call__"):
-                return func(*args, **kwargs)
-            return None
-        except Exception as e:
-            self.logger.warning(f"Safe async call failed: {e}")
-            return None
-
     async def _analyze_challenge_indicators(
         self,
         challenge_type: ChallengeType,
         context_data: Dict[str, Any],
         time_horizon_days: int,
     ) -> Optional[StrategicChallengePrediction]:
-        """Analyze indicators for specific challenge type"""
+        """Analyze indicators for specific challenge type using specialized analyzers"""
 
-        indicators = self.challenge_indicators.get(challenge_type)
+        indicators = self.prediction_models.get_challenge_indicators(challenge_type)
         if not indicators:
             return None
 
-        # Calculate probability based on indicators
-        probability_score = 0.0
-        evidence_signals = []
-        contributing_factors = []
+        # Get appropriate analyzer for this challenge type
+        analyzer_func = self.indicator_analyzers.get_analyzer_for_challenge(
+            challenge_type
+        )
 
-        # Analyze based on challenge type
-        if challenge_type == ChallengeType.TEAM_BURNOUT:
-            prob, evidence, factors = self._analyze_burnout_indicators(
-                context_data, indicators
-            )
-        elif challenge_type == ChallengeType.STAKEHOLDER_CONFLICT:
-            prob, evidence, factors = self._analyze_conflict_indicators(
-                context_data, indicators
-            )
-        elif challenge_type == ChallengeType.DELIVERY_RISK:
-            prob, evidence, factors = self._analyze_delivery_indicators(
-                context_data, indicators
-            )
-        elif challenge_type == ChallengeType.TECHNICAL_DEBT:
-            prob, evidence, factors = self._analyze_debt_indicators(
-                context_data, indicators
-            )
-        else:
-            # Default analysis for other challenge types
-            prob, evidence, factors = 0.3, [], ["general_risk_indicators"]
-
-        probability_score = prob
-        evidence_signals = evidence
-        contributing_factors = factors
+        # Run analysis
+        probability_score, evidence_signals, contributing_factors = analyzer_func(
+            context_data, indicators
+        )
 
         if probability_score < self.prediction_threshold:
             return None
 
-        # Determine confidence level
-        confidence = self._calculate_prediction_confidence(
+        # Use recommendation generator for additional calculations
+        confidence = self.recommendation_generator.calculate_prediction_confidence(
             probability_score, evidence_signals
         )
-
-        # Calculate impact severity
-        impact_severity = self._calculate_impact_severity(challenge_type, context_data)
-
-        # Generate recommendations
-        recommended_actions = self._generate_challenge_actions(
+        impact_severity = self.recommendation_generator.calculate_impact_severity(
+            challenge_type, context_data
+        )
+        recommended_actions = self.recommendation_generator.generate_challenge_actions(
             challenge_type, context_data
         )
 
@@ -524,222 +362,20 @@ class PredictiveAnalyticsEngine:
             analysis_duration_ms=0.0,  # Will be updated by caller
         )
 
-    def _analyze_burnout_indicators(
-        self, context_data: Dict[str, Any], indicators: Dict[str, Any]
-    ) -> Tuple[float, List[Dict], List[str]]:
-        """Analyze team burnout indicators"""
-        probability = 0.0
-        evidence = []
-        factors = []
-
-        # Check velocity decline
-        strategic_data = context_data.get("strategic", {})
-        if (
-            "velocity_trend" in strategic_data
-            and strategic_data["velocity_trend"]
-            < -indicators["velocity_decline_threshold"]
-        ):
-            probability += 0.3
-            evidence.append(
-                {
-                    "signal": "velocity_decline",
-                    "value": strategic_data["velocity_trend"],
-                }
-            )
-            factors.append("declining_team_velocity")
-
-        # Check team dynamics
-        team_data = context_data.get("team_dynamics", {})
-        if "stress_indicators" in team_data and team_data["stress_indicators"] > 0.7:
-            probability += 0.4
-            evidence.append(
-                {"signal": "stress_indicators", "value": team_data["stress_indicators"]}
-            )
-            factors.append("high_stress_levels")
-
-        # Check organizational signals
-        org_data = context_data.get("organizational", {})
-        if "workload_increase" in org_data and org_data["workload_increase"] > 0.2:
-            probability += 0.3
-            evidence.append(
-                {"signal": "workload_increase", "value": org_data["workload_increase"]}
-            )
-            factors.append("increased_workload")
-
-        return min(probability, 1.0), evidence, factors
-
-    def _analyze_conflict_indicators(
-        self, context_data: Dict[str, Any], indicators: Dict[str, Any]
-    ) -> Tuple[float, List[Dict], List[str]]:
-        """Analyze stakeholder conflict indicators"""
-        probability = 0.0
-        evidence = []
-        factors = []
-
-        stakeholder_data = context_data.get("stakeholder", {})
-
-        # Check communication patterns
-        if "communication_frequency" in stakeholder_data:
-            freq_change = stakeholder_data.get("communication_frequency_change", 0)
-            if freq_change < -indicators["communication_frequency_drop"]:
-                probability += 0.4
-                evidence.append(
-                    {"signal": "communication_decline", "value": freq_change}
-                )
-                factors.append("reduced_stakeholder_communication")
-
-        # Check sentiment indicators
-        if (
-            "sentiment_score" in stakeholder_data
-            and stakeholder_data["sentiment_score"] < 0.4
-        ):
-            probability += 0.3
-            evidence.append(
-                {
-                    "signal": "negative_sentiment",
-                    "value": stakeholder_data["sentiment_score"],
-                }
-            )
-            factors.append("stakeholder_dissatisfaction")
-
-        # Check decision delays
-        strategic_data = context_data.get("strategic", {})
-        if "average_decision_time" in strategic_data:
-            if (
-                strategic_data["average_decision_time"]
-                > indicators["decision_delay_days"]
-            ):
-                probability += 0.3
-                evidence.append(
-                    {
-                        "signal": "decision_delays",
-                        "value": strategic_data["average_decision_time"],
-                    }
-                )
-                factors.append("delayed_strategic_decisions")
-
-        return min(probability, 1.0), evidence, factors
-
-    def _analyze_delivery_indicators(
-        self, context_data: Dict[str, Any], indicators: Dict[str, Any]
-    ) -> Tuple[float, List[Dict], List[str]]:
-        """Analyze delivery risk indicators"""
-        probability = 0.0
-        evidence = []
-        factors = []
-
-        strategic_data = context_data.get("strategic", {})
-
-        # Check scope management
-        if "scope_creep_rate" in strategic_data:
-            if strategic_data["scope_creep_rate"] > indicators["scope_creep_threshold"]:
-                probability += 0.4
-                evidence.append(
-                    {
-                        "signal": "scope_creep",
-                        "value": strategic_data["scope_creep_rate"],
-                    }
-                )
-                factors.append("uncontrolled_scope_expansion")
-
-        # Check dependency health
-        if "dependency_failure_rate" in strategic_data:
-            if (
-                strategic_data["dependency_failure_rate"]
-                > indicators["dependency_failure_rate"]
-            ):
-                probability += 0.3
-                evidence.append(
-                    {
-                        "signal": "dependency_failures",
-                        "value": strategic_data["dependency_failure_rate"],
-                    }
-                )
-                factors.append("external_dependency_issues")
-
-        # Check quality trends
-        if "quality_score_trend" in strategic_data:
-            if (
-                strategic_data["quality_score_trend"]
-                < -indicators["quality_decline_threshold"]
-            ):
-                probability += 0.3
-                evidence.append(
-                    {
-                        "signal": "quality_decline",
-                        "value": strategic_data["quality_score_trend"],
-                    }
-                )
-                factors.append("declining_delivery_quality")
-
-        return min(probability, 1.0), evidence, factors
-
-    def _analyze_debt_indicators(
-        self, context_data: Dict[str, Any], indicators: Dict[str, Any]
-    ) -> Tuple[float, List[Dict], List[str]]:
-        """Analyze technical debt indicators"""
-        probability = 0.0
-        evidence = []
-        factors = []
-
-        strategic_data = context_data.get("strategic", {})
-
-        # Check complexity growth
-        if "code_complexity_trend" in strategic_data:
-            if (
-                strategic_data["code_complexity_trend"]
-                > indicators["complexity_growth_rate"]
-            ):
-                probability += 0.3
-                evidence.append(
-                    {
-                        "signal": "complexity_growth",
-                        "value": strategic_data["code_complexity_trend"],
-                    }
-                )
-                factors.append("increasing_system_complexity")
-
-        # Check bug fix efficiency
-        if "bug_fix_time_trend" in strategic_data:
-            if (
-                strategic_data["bug_fix_time_trend"]
-                > indicators["bug_fix_time_increase"]
-            ):
-                probability += 0.4
-                evidence.append(
-                    {
-                        "signal": "slower_bug_fixes",
-                        "value": strategic_data["bug_fix_time_trend"],
-                    }
-                )
-                factors.append("decreasing_maintenance_efficiency")
-
-        # Check feature velocity
-        if "feature_velocity_trend" in strategic_data:
-            if (
-                strategic_data["feature_velocity_trend"]
-                < -indicators["new_feature_velocity_decline"]
-            ):
-                probability += 0.3
-                evidence.append(
-                    {
-                        "signal": "feature_velocity_decline",
-                        "value": strategic_data["feature_velocity_trend"],
-                    }
-                )
-                factors.append("reduced_development_velocity")
-
-        return min(probability, 1.0), evidence, factors
-
-    # === ADDITIONAL HELPER METHODS FOR HEALTH METRICS ===
+    async def _gather_health_data(self) -> Dict[str, Dict[str, Any]]:
+        """Gather health data from all context layers"""
+        return {
+            "stakeholder": await self._get_stakeholder_health_data(),
+            "strategic": await self._get_strategic_health_data(),
+            "organizational": await self._get_organizational_health_data(),
+            "team_dynamics": await self._get_team_dynamics_health_data(),
+        }
 
     async def _get_stakeholder_health_data(self) -> Dict[str, Any]:
         """Get stakeholder health indicators"""
-        if not self.stakeholder_layer:
-            return {}
-
+        # Mock data for Phase 7.1 - will integrate with real stakeholder layer
         return {
-            "satisfaction_scores": [0.8, 0.7, 0.9],  # Mock data for Phase 7.1
+            "satisfaction_scores": [0.8, 0.7, 0.9],
             "communication_frequency": 0.8,
             "sentiment_score": 0.75,
             "engagement_level": 0.85,
@@ -747,9 +383,7 @@ class PredictiveAnalyticsEngine:
 
     async def _get_strategic_health_data(self) -> Dict[str, Any]:
         """Get strategic layer health indicators"""
-        if not self.strategic_layer:
-            return {}
-
+        # Mock data for Phase 7.1 - will integrate with real strategic layer
         return {
             "initiative_success_rate": 0.82,
             "velocity_trend": 0.05,
@@ -760,9 +394,7 @@ class PredictiveAnalyticsEngine:
 
     async def _get_organizational_health_data(self) -> Dict[str, Any]:
         """Get organizational layer health indicators"""
-        if not self.organizational_layer:
-            return {}
-
+        # Mock data for Phase 7.1 - will integrate with real organizational layer
         return {
             "structure_stability": 0.9,
             "culture_health": 0.85,
@@ -772,9 +404,7 @@ class PredictiveAnalyticsEngine:
 
     async def _get_team_dynamics_health_data(self) -> Dict[str, Any]:
         """Get team dynamics health indicators"""
-        if not self.team_dynamics_engine:
-            return {}
-
+        # Mock data for Phase 7.1 - will integrate with real team dynamics engine
         return {
             "collaboration_score": 0.88,
             "communication_effectiveness": 0.82,
@@ -782,238 +412,43 @@ class PredictiveAnalyticsEngine:
             "productivity_trend": 0.08,
         }
 
-    def _calculate_overall_health_score(self, *health_data) -> float:
-        """Calculate composite organizational health score"""
-        scores = []
+    async def _safe_async_call(self, func, *args, **kwargs):
+        """Safely call async function with fallback"""
+        try:
+            if hasattr(func, "__call__"):
+                return func(*args, **kwargs)
+            return {}
+        except Exception as e:
+            self.logger.warning(f"Safe async call failed: {e}")
+            return {}
 
-        for data in health_data:
-            if data:
-                # Extract key health indicators and normalize
-                data_scores = [
-                    v
-                    for v in data.values()
-                    if isinstance(v, (int, float)) and 0 <= v <= 1
-                ]
-                if data_scores:
-                    scores.extend(data_scores)
+    def _cache_predictions(self, predictions: List[StrategicChallengePrediction]):
+        """Cache predictions for performance"""
+        cache_key = f"predictions_{int(time.time())}"
+        for pred in predictions:
+            self.prediction_cache[f"{cache_key}_{pred.challenge_type.value}"] = pred
 
-        return sum(scores) / len(scores) if scores else 0.5
-
-    def _calculate_velocity_trend(self, strategic_data: Dict[str, Any]) -> float:
-        """Calculate team velocity trend"""
-        return strategic_data.get("velocity_trend", 0.0)
-
-    def _calculate_stakeholder_satisfaction(
-        self, stakeholder_data: Dict[str, Any]
-    ) -> float:
-        """Calculate stakeholder satisfaction score"""
-        satisfaction_scores = stakeholder_data.get("satisfaction_scores", [0.5])
-        return sum(satisfaction_scores) / len(satisfaction_scores)
-
-    def _calculate_technical_debt_ratio(self, strategic_data: Dict[str, Any]) -> float:
-        """Calculate technical debt ratio"""
-        # Inverse of quality trend (higher quality = lower debt)
-        quality_trend = strategic_data.get("quality_score_trend", 0.0)
-        base_debt = 0.3  # Baseline debt ratio
-        return max(0.0, min(1.0, base_debt - quality_trend))
-
-    def _calculate_communication_effectiveness(
-        self, stakeholder_data: Dict[str, Any], team_data: Dict[str, Any]
-    ) -> float:
-        """Calculate communication effectiveness score"""
-        stakeholder_comm = stakeholder_data.get("communication_frequency", 0.5)
-        team_comm = team_data.get("communication_effectiveness", 0.5)
-        return (stakeholder_comm + team_comm) / 2
-
-    def _identify_burnout_indicators(
-        self, strategic_data: Dict[str, Any], team_data: Dict[str, Any]
-    ) -> List[str]:
-        """Identify burnout risk indicators"""
-        indicators = []
-
-        if strategic_data.get("velocity_trend", 0) < -0.1:
-            indicators.append("declining_velocity")
-        if team_data.get("stress_indicators", 0) > 0.7:
-            indicators.append("high_stress_levels")
-        if strategic_data.get("quality_score_trend", 0) < -0.15:
-            indicators.append("quality_decline")
-
-        return indicators or ["normal_operations"]
-
-    def _calculate_conflict_probability(
-        self, stakeholder_data: Dict[str, Any]
-    ) -> float:
-        """Calculate probability of stakeholder conflicts"""
-        sentiment = stakeholder_data.get("sentiment_score", 0.5)
-        engagement = stakeholder_data.get("engagement_level", 0.5)
-
-        # Lower sentiment and engagement increase conflict probability
-        return 1.0 - ((sentiment + engagement) / 2)
-
-    def _calculate_delivery_confidence(self, strategic_data: Dict[str, Any]) -> float:
-        """Calculate delivery confidence score"""
-        return strategic_data.get("delivery_confidence", 0.5)
-
-    def _calculate_retention_risk(
-        self, org_data: Dict[str, Any], team_data: Dict[str, Any]
-    ) -> float:
-        """Calculate talent retention risk"""
-        retention_indicators = org_data.get("retention_indicators", 0.5)
-        stress_level = team_data.get("stress_indicators", 0.5)
-
-        # Higher stress increases retention risk
-        return 1.0 - ((retention_indicators + (1.0 - stress_level)) / 2)
-
-    def _calculate_prediction_confidence(
-        self, probability: float, evidence: List[Dict]
-    ) -> PredictionConfidence:
-        """Calculate prediction confidence based on probability and evidence quality"""
-        evidence_quality = len(evidence) / 5.0  # Normalize evidence count
-
-        confidence_score = (probability + evidence_quality) / 2
-
-        if confidence_score >= 0.95:
-            return PredictionConfidence.CRITICAL
-        elif confidence_score >= 0.85:
-            return PredictionConfidence.HIGH
-        elif confidence_score >= 0.70:
-            return PredictionConfidence.MEDIUM
-        else:
-            return PredictionConfidence.LOW
-
-    def _calculate_impact_severity(
-        self, challenge_type: ChallengeType, context_data: Dict[str, Any]
-    ) -> float:
-        """Calculate impact severity for challenge type"""
-        severity_map = {
-            ChallengeType.TEAM_BURNOUT: 0.9,
-            ChallengeType.STAKEHOLDER_CONFLICT: 0.8,
-            ChallengeType.DELIVERY_RISK: 0.85,
-            ChallengeType.TECHNICAL_DEBT: 0.7,
-            ChallengeType.RESOURCE_SHORTAGE: 0.75,
-            ChallengeType.COMMUNICATION_BREAKDOWN: 0.8,
-            ChallengeType.STRATEGIC_MISALIGNMENT: 0.9,
-            ChallengeType.TALENT_RETENTION: 0.85,
-        }
-
-        return severity_map.get(challenge_type, 0.5)
-
-    def _generate_challenge_actions(
-        self, challenge_type: ChallengeType, context_data: Dict[str, Any]
-    ) -> List[str]:
-        """Generate recommended actions for challenge type"""
-        action_map = {
-            ChallengeType.TEAM_BURNOUT: [
-                "Implement immediate workload redistribution",
-                "Schedule team retrospective to identify stressors",
-                "Consider temporary resource augmentation",
-                "Review and adjust sprint planning capacity",
-            ],
-            ChallengeType.STAKEHOLDER_CONFLICT: [
-                "Schedule immediate stakeholder alignment meeting",
-                "Clarify roles and decision-making authority",
-                "Implement structured communication protocols",
-                "Consider bringing in neutral facilitator",
-            ],
-            ChallengeType.DELIVERY_RISK: [
-                "Conduct immediate scope review and prioritization",
-                "Implement stricter change control processes",
-                "Increase delivery checkpoint frequency",
-                "Assess and mitigate critical dependencies",
-            ],
-            ChallengeType.TECHNICAL_DEBT: [
-                "Allocate dedicated refactoring capacity",
-                "Implement code quality gates and reviews",
-                "Create technical debt tracking and prioritization",
-                "Schedule architecture review sessions",
-            ],
-        }
-
-        return action_map.get(
-            challenge_type, ["Monitor situation closely", "Gather additional data"]
+    def _is_health_cache_valid(self) -> bool:
+        """Check if health metrics cache is still valid"""
+        return (
+            self.current_health_metrics
+            and self.last_health_check
+            and datetime.now() - self.last_health_check
+            < timedelta(hours=self.health_check_interval_hours)
         )
 
-    async def _generate_challenge_recommendation(
-        self, prediction: StrategicChallengePrediction
-    ) -> Dict[str, Any]:
-        """Generate comprehensive recommendation for a challenge prediction"""
-        return {
-            "challenge_type": prediction.challenge_type.value,
-            "urgency_score": prediction.probability_score * prediction.impact_severity,
-            "impact_score": prediction.impact_severity,
-            "timeline_days": prediction.time_horizon_days,
-            "recommended_actions": prediction.recommended_actions,
-            "success_metrics": self._get_success_metrics_for_challenge(
-                prediction.challenge_type
-            ),
-            "resource_requirements": self._estimate_resource_requirements(
-                prediction.challenge_type
-            ),
-            "stakeholder_involvement": self._identify_key_stakeholders(
-                prediction.challenge_type
-            ),
-        }
-
-    def _get_success_metrics_for_challenge(
-        self, challenge_type: ChallengeType
-    ) -> List[str]:
-        """Get success metrics for addressing specific challenge"""
-        metrics_map = {
-            ChallengeType.TEAM_BURNOUT: [
-                "Team satisfaction score improvement",
-                "Velocity stabilization within 2 sprints",
-                "Overtime reduction to <10% team capacity",
-            ],
-            ChallengeType.STAKEHOLDER_CONFLICT: [
-                "Stakeholder alignment score >0.8",
-                "Decision time reduction to <3 days",
-                "Communication frequency restoration",
-            ],
-            ChallengeType.DELIVERY_RISK: [
-                "Scope adherence >90%",
-                "Dependency success rate >95%",
-                "Quality metrics maintained",
-            ],
-        }
-
-        return metrics_map.get(
-            challenge_type, ["Situation monitoring", "Regular assessment"]
+    def _get_default_health_metrics(self) -> OrganizationalHealthMetrics:
+        """Return default safe health metrics on error"""
+        return OrganizationalHealthMetrics(
+            overall_health_score=0.5,
+            team_velocity_trend=0.0,
+            stakeholder_satisfaction=0.5,
+            technical_debt_ratio=0.5,
+            communication_effectiveness=0.5,
+            burnout_risk_indicators=["insufficient_data"],
+            conflict_probability=0.5,
+            delivery_confidence=0.5,
+            talent_retention_risk=0.5,
+            calculated_timestamp=datetime.now(),
+            data_freshness_hours=0.0,
         )
-
-    def _estimate_resource_requirements(
-        self, challenge_type: ChallengeType
-    ) -> Dict[str, str]:
-        """Estimate resource requirements for addressing challenge"""
-        return {
-            "time_investment": "1-2 weeks focused effort",
-            "people_involved": "2-5 team members",
-            "external_support": "May require management escalation",
-            "budget_impact": "Minimal additional cost",
-        }
-
-    def _identify_key_stakeholders(self, challenge_type: ChallengeType) -> List[str]:
-        """Identify key stakeholders for addressing challenge"""
-        stakeholder_map = {
-            ChallengeType.TEAM_BURNOUT: [
-                "Team Lead",
-                "Engineering Manager",
-                "HR Partner",
-            ],
-            ChallengeType.STAKEHOLDER_CONFLICT: [
-                "Product Manager",
-                "Engineering Director",
-                "Project Stakeholders",
-            ],
-            ChallengeType.DELIVERY_RISK: [
-                "Project Manager",
-                "Tech Lead",
-                "Product Owner",
-            ],
-            ChallengeType.TECHNICAL_DEBT: [
-                "Tech Lead",
-                "Senior Engineers",
-                "Architecture Team",
-            ],
-        }
-
-        return stakeholder_map.get(challenge_type, ["Engineering Manager", "Team Lead"])

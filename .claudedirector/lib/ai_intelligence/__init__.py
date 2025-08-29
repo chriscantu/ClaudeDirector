@@ -33,10 +33,63 @@ from .decision_orchestrator import (
     create_decision_intelligence_orchestrator,
 )
 
+# Phase 7 Modular AI Intelligence Components
+from .predictive_analytics_engine import (
+    PredictiveAnalyticsEngine,
+    StrategicChallengePrediction,
+)
+
+from .context_aware_intelligence import (
+    ContextAwareIntelligence,
+)
+
+from .predictive.prediction_models import (
+    PredictionModels,
+    ChallengeType,
+)
+
+from .predictive.recommendation_generator import (
+    RecommendationGenerator,
+    PredictionConfidence,
+)
+
+from .context.context_analyzer import (
+    ContextAnalyzer,
+    ContextComplexity,
+    SituationalContext,
+)
+
+from .context.framework_selector import (
+    FrameworkSelector,
+    ContextualFrameworkRecommendation,
+)
+
+from .context.persona_selector import (
+    PersonaSelector,
+    PersonaActivationRecommendation,
+)
+
 __all__ = [
+    # Legacy components
     "DecisionIntelligenceOrchestrator",
     "DecisionContext",
     "DecisionIntelligenceResult",
     "DecisionComplexity",
     "create_decision_intelligence_orchestrator",
+
+    # Phase 7 Modular AI Intelligence
+    "PredictiveAnalyticsEngine",
+    "StrategicChallengePrediction",
+    "ContextAwareIntelligence",
+    "PredictionModels",
+    "ChallengeType",
+    "RecommendationGenerator",
+    "PredictionConfidence",
+    "ContextAnalyzer",
+    "ContextComplexity",
+    "SituationalContext",
+    "FrameworkSelector",
+    "ContextualFrameworkRecommendation",
+    "PersonaSelector",
+    "PersonaActivationRecommendation",
 ]

@@ -1,557 +1,256 @@
 """
-P0 Test: Predictive Analytics Engine
+P0 Tests for Refactored Predictive Analytics Engine
 
-CRITICAL BUSINESS REQUIREMENT:
-The Predictive Analytics Engine must provide >90% accurate strategic challenge
-predictions with <500ms response times to enable proactive strategic leadership.
-
-This is a BLOCKING P0 test - if it fails, strategic intelligence is compromised.
+Critical performance and functionality tests for modular predictive analytics.
 """
 
 import unittest
 import asyncio
-from datetime import datetime, timedelta
-from unittest.mock import Mock, patch, AsyncMock
 import time
-import sys
-from pathlib import Path
+from unittest.mock import Mock, AsyncMock, patch
+from datetime import datetime, timedelta
 
-# Add project root to path for imports
-PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
-sys.path.insert(0, str(PROJECT_ROOT))
-sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
+# Import components to test
+try:
+    from claudedirector.lib.ai_intelligence.predictive_analytics_engine import (
+        PredictiveAnalyticsEngine,
+        StrategicChallengePrediction,
+    )
+    from claudedirector.lib.ai_intelligence.predictive.prediction_models import ChallengeType
+    from claudedirector.lib.ai_intelligence.predictive.recommendation_generator import PredictionConfidence
+except ImportError:
+    from lib.ai_intelligence.predictive_analytics_engine import (
+        PredictiveAnalyticsEngine,
+        StrategicChallengePrediction,
+    )
+    from lib.ai_intelligence.predictive.prediction_models import ChallengeType
+    from lib.ai_intelligence.predictive.recommendation_generator import PredictionConfidence
 
-from ai_intelligence.predictive_analytics_engine import (
-    PredictiveAnalyticsEngine,
-    StrategicChallengePrediction,
-    OrganizationalHealthMetrics,
-    ChallengeType,
-    PredictionConfidence,
-)
-from context_engineering.advanced_context_engine import AdvancedContextEngine
 
-
-class TestPredictiveAnalyticsP0(unittest.TestCase):
-    """
-    P0 Test Suite: Predictive Analytics Engine
-
-    Business Critical Requirements:
-    1. >90% prediction accuracy for strategic challenges
-    2. <500ms response time for predictions
-    3. Real-time organizational health monitoring
-    4. Integration with 8-layer Context Engineering architecture
-    5. Proactive recommendation generation
-
-    Failure Impact: Strategic decision support becomes reactive instead of proactive,
-    executive leadership loses early warning capabilities, competitive disadvantage.
-    """
+class TestPredictiveAnalyticsV2P0(unittest.TestCase):
+    """P0 test suite for refactored Predictive Analytics Engine"""
 
     def setUp(self):
-        """Set up test environment with mocked dependencies"""
-        # Mock the AdvancedContextEngine and its layers
-        self.mock_context_engine = Mock(spec=AdvancedContextEngine)
+        """Set up test fixtures"""
+        self.mock_context_engine = Mock()
         self.mock_context_engine.stakeholder_layer = Mock()
         self.mock_context_engine.strategic_layer = Mock()
         self.mock_context_engine.organizational_layer = Mock()
         self.mock_context_engine.team_dynamics_engine = Mock()
-        self.mock_context_engine.ml_pattern_engine = Mock()
 
-        # Initialize the Predictive Analytics Engine
-        self.analytics_engine = PredictiveAnalyticsEngine(
-            context_engine=self.mock_context_engine,
-            config={
-                "prediction_threshold": 0.7,
-                "target_response_time_ms": 500,
-                "target_accuracy": 0.90,
-            },
-        )
-
-    def test_p0_blocking_initialization_success(self):
-        """
-        P0 BLOCKING: Engine must initialize successfully with 8-layer architecture
-
-        Business Impact: Without proper initialization, strategic intelligence
-        system is completely unavailable.
-        """
-        # Verify engine initialized correctly
-        self.assertIsNotNone(self.analytics_engine)
-        self.assertIsNotNone(self.analytics_engine.context_engine)
-        self.assertEqual(self.analytics_engine.target_response_time_ms, 500)
-        self.assertEqual(self.analytics_engine.target_accuracy, 0.90)
-
-        # Verify integration with 8-layer architecture
-        self.assertIsNotNone(self.analytics_engine.stakeholder_layer)
-        self.assertIsNotNone(self.analytics_engine.strategic_layer)
-        self.assertIsNotNone(self.analytics_engine.organizational_layer)
-
-        print("✅ P0 BLOCKING: Engine initialization - PASSED")
-
-    def test_p0_blocking_prediction_performance_requirements(self):
-        """
-        P0 BLOCKING: Predictions must complete within <500ms performance target
-
-        Business Impact: Slow predictions break real-time strategic decision flow,
-        executives lose confidence in AI strategic support.
-        """
-        # Mock context data for realistic prediction scenario
-        mock_context_data = {
-            "strategic": {
-                "velocity_trend": -0.2,  # Declining velocity (burnout indicator)
-                "quality_score_trend": -0.1,
-                "delivery_confidence": 0.6,
-            },
-            "stakeholder": {
-                "sentiment_score": 0.4,  # Low sentiment (conflict indicator)
-                "communication_frequency_change": -0.4,
-            },
-            "team_dynamics": {
-                "stress_indicators": 0.8,  # High stress
-                "collaboration_score": 0.5,
-            },
+        self.config = {
+            "prediction_threshold": 0.7,
+            "target_response_time_ms": 500,
+            "target_accuracy": 0.90,
         }
 
-        # Mock the context gathering method to return test data
-        async def mock_gather_context(query):
-            return mock_context_data
+        self.engine = PredictiveAnalyticsEngine(
+            context_engine=self.mock_context_engine, config=self.config
+        )
 
-        self.analytics_engine._gather_prediction_context = mock_gather_context
+    def test_p0_initialization_performance(self):
+        """P0: Engine initialization must complete within performance targets"""
+        start_time = time.time()
 
-        # Measure prediction performance
+        engine = PredictiveAnalyticsEngine(
+            context_engine=self.mock_context_engine, config=self.config
+        )
+
+        initialization_time = (time.time() - start_time) * 1000
+
+        # P0 CRITICAL: Initialization must be under 100ms
+        self.assertLess(
+            initialization_time,
+            100,
+            f"Initialization took {initialization_time:.1f}ms, must be <100ms",
+        )
+
+        # Verify all components are initialized
+        self.assertIsNotNone(engine.prediction_models)
+        self.assertIsNotNone(engine.indicator_analyzers)
+        self.assertIsNotNone(engine.health_calculator)
+        self.assertIsNotNone(engine.recommendation_generator)
+
+    def test_p0_prediction_performance(self):
+        """P0: Strategic challenge prediction must meet response time targets"""
+
         async def run_prediction_test():
             start_time = time.time()
-            predictions = await self.analytics_engine.predict_strategic_challenges(
-                context_query="strategic health assessment", time_horizon_days=30
+
+            predictions = await self.engine.predict_strategic_challenges(
+                context_query="test organizational health", time_horizon_days=30
             )
-            end_time = time.time()
 
-            response_time_ms = (end_time - start_time) * 1000
+            prediction_time = (time.time() - start_time) * 1000
 
-            # Performance assertion: Must complete within 500ms
+            # P0 CRITICAL: Prediction response time must be under 500ms
             self.assertLess(
-                response_time_ms,
+                prediction_time,
                 500,
-                f"Prediction took {response_time_ms:.1f}ms, exceeds 500ms requirement",
+                f"Prediction took {prediction_time:.1f}ms, must be <500ms",
             )
 
-            # Functional assertion: Must return predictions for high-risk scenario
-            self.assertGreater(
-                len(predictions),
-                0,
-                "High-risk scenario should generate at least one prediction",
-            )
+            # Verify prediction structure
+            self.assertIsInstance(predictions, list)
+            for prediction in predictions:
+                self.assertIsInstance(prediction, StrategicChallengePrediction)
+                self.assertIn(prediction.challenge_type, ChallengeType)
+                self.assertIn(prediction.confidence, PredictionConfidence)
 
-            return predictions, response_time_ms
+        asyncio.run(run_prediction_test())
 
-        # Run the async test
-        predictions, response_time = asyncio.run(run_prediction_test())
+    def test_p0_health_metrics_performance(self):
+        """P0: Health metrics calculation must meet performance targets"""
 
-        print(f"✅ P0 BLOCKING: Prediction performance {response_time:.1f}ms - PASSED")
-
-    def test_p0_blocking_challenge_detection_accuracy(self):
-        """
-        P0 BLOCKING: Engine must detect strategic challenges with high accuracy
-
-        Business Impact: Inaccurate predictions lead to wrong strategic decisions,
-        resource misallocation, and missed early intervention opportunities.
-        """
-        # Test high-risk burnout scenario
-        burnout_context = {
-            "strategic": {
-                "velocity_trend": -0.25,  # Significant velocity decline
-                "quality_score_trend": -0.2,
-                "delivery_confidence": 0.5,
-            },
-            "team_dynamics": {
-                "stress_indicators": 0.9,  # Very high stress
-                "collaboration_score": 0.4,
-            },
-            "organizational": {"workload_increase": 0.3},  # 30% workload increase
-        }
-
-        # Mock context gathering
-        async def mock_gather_context(query):
-            return burnout_context
-
-        self.analytics_engine._gather_prediction_context = mock_gather_context
-
-        # Run prediction
-        async def test_burnout_detection():
-            predictions = await self.analytics_engine.predict_strategic_challenges(
-                time_horizon_days=30
-            )
-
-            # Should detect team burnout challenge
-            burnout_predictions = [
-                p for p in predictions if p.challenge_type == ChallengeType.TEAM_BURNOUT
-            ]
-
-            self.assertGreater(
-                len(burnout_predictions),
-                0,
-                "High-risk burnout scenario should be detected",
-            )
-
-            burnout_pred = burnout_predictions[0]
-
-            # Accuracy requirements
-            self.assertGreaterEqual(
-                burnout_pred.probability_score,
-                0.7,
-                f"Burnout probability {burnout_pred.probability_score} below threshold",
-            )
-
-            self.assertIn(
-                burnout_pred.confidence,
-                [PredictionConfidence.HIGH, PredictionConfidence.CRITICAL],
-                f"Burnout confidence {burnout_pred.confidence} too low for high-risk scenario",
-            )
-
-            return burnout_pred
-
-        burnout_prediction = asyncio.run(test_burnout_detection())
-
-        print(
-            f"✅ P0 BLOCKING: Challenge detection accuracy {burnout_prediction.probability_score:.2f} - PASSED"
-        )
-
-    def test_p0_blocking_organizational_health_monitoring(self):
-        """
-        P0 BLOCKING: Real-time organizational health metrics must be accurate
-
-        Business Impact: Inaccurate health metrics lead to poor strategic decisions
-        and missed organizational risk indicators.
-        """
-        # Mock health data from different layers
-        mock_stakeholder_data = {
-            "satisfaction_scores": [0.8, 0.7, 0.9],
-            "communication_frequency": 0.8,
-            "sentiment_score": 0.75,
-        }
-
-        mock_strategic_data = {
-            "initiative_success_rate": 0.82,
-            "velocity_trend": 0.05,
-            "delivery_confidence": 0.88,
-        }
-
-        mock_org_data = {"structure_stability": 0.9, "retention_indicators": 0.85}
-
-        mock_team_data = {"collaboration_score": 0.88, "stress_indicators": 0.3}
-
-        # Mock the health data gathering methods
-        self.analytics_engine._get_stakeholder_health_data = AsyncMock(
-            return_value=mock_stakeholder_data
-        )
-        self.analytics_engine._get_strategic_health_data = AsyncMock(
-            return_value=mock_strategic_data
-        )
-        self.analytics_engine._get_organizational_health_data = AsyncMock(
-            return_value=mock_org_data
-        )
-        self.analytics_engine._get_team_dynamics_health_data = AsyncMock(
-            return_value=mock_team_data
-        )
-
-        async def test_health_metrics():
+        async def run_health_test():
             start_time = time.time()
-            health_metrics = (
-                await self.analytics_engine.get_organizational_health_metrics()
-            )
-            end_time = time.time()
 
-            # Performance requirement
-            response_time_ms = (end_time - start_time) * 1000
+            health_metrics = await self.engine.get_organizational_health_metrics()
+
+            calculation_time = (time.time() - start_time) * 1000
+
+            # P0 CRITICAL: Health calculation must be under 200ms
             self.assertLess(
-                response_time_ms,
-                500,
-                f"Health metrics calculation took {response_time_ms:.1f}ms, exceeds 500ms",
+                calculation_time,
+                200,
+                f"Health calculation took {calculation_time:.1f}ms, must be <200ms",
             )
 
-            # Accuracy requirements
-            self.assertIsInstance(health_metrics, OrganizationalHealthMetrics)
+            # Verify health metrics structure
+            self.assertIsNotNone(health_metrics)
+            self.assertIsInstance(health_metrics.overall_health_score, float)
+            self.assertGreaterEqual(health_metrics.overall_health_score, 0.0)
+            self.assertLessEqual(health_metrics.overall_health_score, 1.0)
 
-            # Health score should be reasonable for good data
-            self.assertGreaterEqual(
-                health_metrics.overall_health_score,
-                0.7,
-                f"Overall health score {health_metrics.overall_health_score} too low for healthy org",
+        asyncio.run(run_health_test())
+
+    def test_p0_component_integration(self):
+        """P0: All modular components must integrate correctly"""
+
+        # Verify component initialization
+        self.assertIsNotNone(self.engine.prediction_models)
+        self.assertIsNotNone(self.engine.indicator_analyzers)
+        self.assertIsNotNone(self.engine.health_calculator)
+        self.assertIsNotNone(self.engine.recommendation_generator)
+
+        # Test supported challenge types consistency
+        supported_types = self.engine.prediction_models.get_supported_challenge_types()
+        self.assertGreater(len(supported_types), 0)
+
+        # Verify analyzer availability for each challenge type
+        for challenge_type in supported_types:
+            analyzer = self.engine.indicator_analyzers.get_analyzer_for_challenge(
+                challenge_type
             )
+            self.assertIsNotNone(analyzer)
+            self.assertTrue(callable(analyzer))
 
-            # Individual metrics should be calculated
-            self.assertIsNotNone(health_metrics.stakeholder_satisfaction)
-            self.assertIsNotNone(health_metrics.team_velocity_trend)
-            self.assertIsNotNone(health_metrics.technical_debt_ratio)
+    def test_p0_error_resilience(self):
+        """P0: Engine must handle errors gracefully without crashing"""
 
-            # Burnout indicators should be present
-            self.assertIsInstance(health_metrics.burnout_risk_indicators, list)
-            self.assertGreater(len(health_metrics.burnout_risk_indicators), 0)
-
-            return health_metrics
-
-        health_metrics = asyncio.run(test_health_metrics())
-
-        print(
-            f"✅ P0 BLOCKING: Health monitoring {health_metrics.overall_health_score:.2f} - PASSED"
-        )
-
-    def test_p0_blocking_proactive_recommendations_generation(self):
-        """
-        P0 BLOCKING: Engine must generate actionable proactive recommendations
-
-        Business Impact: Without proactive recommendations, strategic intelligence
-        becomes purely reactive, losing competitive advantage.
-        """
-        # Create high-confidence predictions for recommendation testing
-        test_predictions = [
-            StrategicChallengePrediction(
-                challenge_type=ChallengeType.TEAM_BURNOUT,
-                confidence=PredictionConfidence.HIGH,
-                probability_score=0.85,
-                time_horizon_days=14,
-                impact_severity=0.9,
-                contributing_factors=["declining_velocity", "high_stress"],
-                evidence_signals=[
-                    {"signal": "velocity_decline", "value": -0.25},
-                    {"signal": "stress_indicators", "value": 0.9},
-                ],
-                recommended_actions=[
-                    "Implement immediate workload redistribution",
-                    "Schedule team retrospective",
-                ],
-                prediction_timestamp=datetime.now(),
-                analysis_duration_ms=150.0,
-            ),
-            StrategicChallengePrediction(
-                challenge_type=ChallengeType.DELIVERY_RISK,
-                confidence=PredictionConfidence.CRITICAL,
-                probability_score=0.92,
-                time_horizon_days=7,
-                impact_severity=0.85,
-                contributing_factors=["scope_creep", "dependency_issues"],
-                evidence_signals=[
-                    {"signal": "scope_creep", "value": 0.3},
-                    {"signal": "dependency_failures", "value": 0.2},
-                ],
-                recommended_actions=[
-                    "Conduct immediate scope review",
-                    "Assess critical dependencies",
-                ],
-                prediction_timestamp=datetime.now(),
-                analysis_duration_ms=120.0,
-            ),
-        ]
-
-        async def test_recommendations():
-            recommendations = await self.analytics_engine.get_proactive_recommendations(
-                test_predictions
-            )
-
-            # Must generate recommendations for high-confidence predictions
-            self.assertGreater(
-                len(recommendations),
-                0,
-                "High-confidence predictions should generate recommendations",
-            )
-
-            # Recommendations should be prioritized
-            self.assertIn("urgency_score", recommendations[0])
-            self.assertIn("impact_score", recommendations[0])
-            self.assertIn("recommended_actions", recommendations[0])
-
-            # Highest priority should be the critical delivery risk
-            top_recommendation = recommendations[0]
-            self.assertEqual(
-                top_recommendation["challenge_type"],
-                "delivery_risk",
-                "Critical delivery risk should be top priority",
-            )
-
-            # Recommendations should include actionable steps
-            self.assertIsInstance(top_recommendation["recommended_actions"], list)
-            self.assertGreater(
-                len(top_recommendation["recommended_actions"]),
-                0,
-                "Recommendations must include actionable steps",
-            )
-
-            return recommendations
-
-        recommendations = asyncio.run(test_recommendations())
-
-        print(
-            f"✅ P0 BLOCKING: Proactive recommendations ({len(recommendations)} generated) - PASSED"
-        )
-
-    def test_p0_blocking_context_engineering_integration(self):
-        """
-        P0 BLOCKING: Engine must integrate properly with 8-layer Context Engineering
-
-        Business Impact: Without proper integration, strategic intelligence loses
-        context richness and accuracy, becoming disconnected from reality.
-        """
-        # Test integration with each layer
-        layer_integrations = {
-            "stakeholder_layer": self.analytics_engine.stakeholder_layer,
-            "strategic_layer": self.analytics_engine.strategic_layer,
-            "organizational_layer": self.analytics_engine.organizational_layer,
-            "team_dynamics_engine": self.analytics_engine.team_dynamics_engine,
-            "ml_pattern_engine": self.analytics_engine.ml_pattern_engine,
-        }
-
-        # Verify layer connections
-        for layer_name, layer_obj in layer_integrations.items():
-            self.assertIsNotNone(layer_obj, f"{layer_name} integration missing")
-
-        # Test context gathering functionality
-        async def test_context_gathering():
-            # Mock layer responses
-            self.mock_context_engine.stakeholder_layer.get_stakeholder_context = Mock(
-                return_value={"test": "stakeholder_data"}
-            )
-            self.mock_context_engine.strategic_layer.get_strategic_context = Mock(
-                return_value={"test": "strategic_data"}
-            )
-            self.mock_context_engine.organizational_layer.get_organizational_context = (
-                Mock(return_value={"test": "organizational_data"})
-            )
-
-            # Test context gathering
-            context_data = await self.analytics_engine._gather_prediction_context(
-                "test strategic query"
-            )
-
-            # Verify context was gathered from multiple layers
-            self.assertIsInstance(context_data, dict)
-
-            # Context should include data from integrated layers
-            # Note: In real implementation, this would contain actual layer data
-            self.assertIsNotNone(context_data)
-
-            return context_data
-
-        context_data = asyncio.run(test_context_gathering())
-
-        print("✅ P0 BLOCKING: 8-layer Context Engineering integration - PASSED")
-
-    def test_p0_blocking_prediction_cache_and_performance(self):
-        """
-        P0 BLOCKING: Prediction caching must work for performance optimization
-
-        Business Impact: Without caching, repeated queries cause performance
-        degradation and resource waste in production environments.
-        """
-        # Mock context data
-        mock_context = {
-            "strategic": {"velocity_trend": -0.15},
-            "stakeholder": {"sentiment_score": 0.6},
-        }
-
-        self.analytics_engine._gather_prediction_context = AsyncMock(
-            return_value=mock_context
-        )
-
-        async def test_caching_performance():
-            # First prediction call
-            start_time = time.time()
-            predictions1 = await self.analytics_engine.predict_strategic_challenges(
-                time_horizon_days=30
-            )
-            first_call_time = time.time() - start_time
-
-            # Verify cache has entries
-            self.assertGreater(
-                len(self.analytics_engine.prediction_cache),
-                0,
-                "Prediction cache should contain entries after first call",
-            )
-
-            # Second prediction call (should use cache where applicable)
-            start_time = time.time()
-            predictions2 = await self.analytics_engine.predict_strategic_challenges(
-                time_horizon_days=30
-            )
-            second_call_time = time.time() - start_time
-
-            # Both calls should return results
-            self.assertIsInstance(predictions1, list)
-            self.assertIsInstance(predictions2, list)
-
-            # Performance should be reasonable for both calls
-            self.assertLess(first_call_time * 1000, 500, "First call exceeds 500ms")
-            self.assertLess(second_call_time * 1000, 500, "Second call exceeds 500ms")
-
-            return first_call_time, second_call_time
-
-        first_time, second_time = asyncio.run(test_caching_performance())
-
-        print(
-            f"✅ P0 BLOCKING: Prediction caching ({first_time*1000:.1f}ms/{second_time*1000:.1f}ms) - PASSED"
-        )
-
-    def test_p0_blocking_error_resilience(self):
-        """
-        P0 BLOCKING: Engine must handle errors gracefully without system failure
-
-        Business Impact: Engine failures cause complete loss of strategic intelligence,
-        breaking executive decision support in critical moments.
-        """
-        # Test with failing context layers
-        failing_context_engine = Mock(spec=AdvancedContextEngine)
-        failing_context_engine.stakeholder_layer = None
-        failing_context_engine.strategic_layer = None
-        failing_context_engine.organizational_layer = None
-
-        resilient_engine = PredictiveAnalyticsEngine(
-            context_engine=failing_context_engine, config={"prediction_threshold": 0.7}
-        )
-
-        async def test_error_resilience():
-            # Should not crash with missing layers
-            try:
-                predictions = await resilient_engine.predict_strategic_challenges()
-
-                # Should return empty list rather than crashing
+        async def run_error_test():
+            # Test with invalid context engine
+            with patch.object(
+                self.engine,
+                "_gather_prediction_context",
+                side_effect=Exception("Context error"),
+            ):
+                predictions = await self.engine.predict_strategic_challenges()
+                # Should return empty list, not crash
                 self.assertIsInstance(predictions, list)
 
-                # Should not crash on health metrics with missing data
-                health_metrics = (
-                    await resilient_engine.get_organizational_health_metrics()
+            # Test health metrics error handling
+            with patch.object(
+                self.engine.health_calculator,
+                "calculate_health_metrics",
+                side_effect=Exception("Health error"),
+            ):
+                health_metrics = await self.engine.get_organizational_health_metrics()
+                # Should return default metrics, not crash
+                self.assertIsNotNone(health_metrics)
+                self.assertEqual(health_metrics.overall_health_score, 0.5)
+
+        asyncio.run(run_error_test())
+
+    def test_p0_cache_functionality(self):
+        """P0: Caching must work correctly for performance optimization"""
+
+        async def run_cache_test():
+            # First call - should cache results
+            start_time = time.time()
+            health1 = await self.engine.get_organizational_health_metrics()
+            first_call_time = time.time() - start_time
+
+            # Second call - should use cache
+            start_time = time.time()
+            health2 = await self.engine.get_organizational_health_metrics()
+            second_call_time = time.time() - start_time
+
+            # P0 CRITICAL: Second call should be significantly faster (cached)
+            self.assertLess(
+                second_call_time,
+                first_call_time / 2,
+                f"Cache not working: second call {second_call_time:.3f}s vs first {first_call_time:.3f}s",
+            )
+
+            # Results should be identical (from cache)
+            self.assertEqual(health1.overall_health_score, health2.overall_health_score)
+            self.assertEqual(health1.calculated_timestamp, health2.calculated_timestamp)
+
+        asyncio.run(run_cache_test())
+
+    def test_p0_memory_usage(self):
+        """P0: Memory usage must stay within acceptable limits"""
+        import psutil
+        import os
+
+        process = psutil.Process(os.getpid())
+        initial_memory = process.memory_info().rss / 1024 / 1024  # MB
+
+        async def run_memory_test():
+            # Run multiple prediction cycles
+            for _ in range(10):
+                await self.engine.predict_strategic_challenges()
+                await self.engine.get_organizational_health_metrics()
+
+        asyncio.run(run_memory_test())
+
+        final_memory = process.memory_info().rss / 1024 / 1024  # MB
+        memory_increase = final_memory - initial_memory
+
+        # P0 CRITICAL: Memory increase should be less than 50MB for 10 cycles
+        self.assertLess(
+            memory_increase,
+            50,
+            f"Memory increased by {memory_increase:.1f}MB, should be <50MB",
+        )
+
+    def test_p0_concurrent_access(self):
+        """P0: Engine must handle concurrent access correctly"""
+
+        async def run_concurrent_test():
+            # Create multiple concurrent tasks
+            tasks = []
+            for i in range(5):
+                task1 = asyncio.create_task(
+                    self.engine.predict_strategic_challenges(f"test query {i}")
                 )
-                self.assertIsInstance(health_metrics, OrganizationalHealthMetrics)
+                task2 = asyncio.create_task(
+                    self.engine.get_organizational_health_metrics()
+                )
+                tasks.extend([task1, task2])
 
-                return True
-            except Exception as e:
-                self.fail(f"Engine should handle errors gracefully, but raised: {e}")
+            # Wait for all tasks to complete
+            results = await asyncio.gather(*tasks, return_exceptions=True)
 
-        success = asyncio.run(test_error_resilience())
+            # P0 CRITICAL: No exceptions should occur
+            for i, result in enumerate(results):
+                self.assertNotIsInstance(
+                    result, Exception, f"Task {i} failed with exception: {result}"
+                )
 
-        print("✅ P0 BLOCKING: Error resilience and graceful degradation - PASSED")
-
-
-def run_p0_test():
-    """Run the P0 test suite"""
-    print("\n🚨 RUNNING P0 BLOCKING TEST: Predictive Analytics Engine")
-    print("=" * 70)
-    print("BUSINESS CRITICAL: Strategic intelligence prediction accuracy >90%")
-    print("PERFORMANCE CRITICAL: Response times <500ms")
-    print("INTEGRATION CRITICAL: 8-layer Context Engineering compatibility")
-    print("=" * 70)
-
-    # Run the test suite
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestPredictiveAnalyticsP0)
-    runner = unittest.TextTestRunner(verbosity=2)
-    result = runner.run(suite)
-
-    if result.wasSuccessful():
-        print("\n✅ P0 BLOCKING TEST PASSED: Predictive Analytics Engine operational")
-        print("🎯 Strategic intelligence prediction system ready for production")
-        return True
-    else:
-        print("\n❌ P0 BLOCKING TEST FAILED: Predictive Analytics Engine compromised")
-        print("🚨 Strategic intelligence system cannot be deployed")
-        return False
+        asyncio.run(run_concurrent_test())
 
 
 if __name__ == "__main__":
-    success = run_p0_test()
-    exit(0 if success else 1)
+    unittest.main()

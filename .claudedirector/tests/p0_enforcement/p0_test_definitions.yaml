@@ -307,29 +307,26 @@ p0_features:
     introduced_version: "v2.13.0"
     owner: "martin"
 
-  # PHASE 7 STRATEGIC AI DEVELOPMENT - PREDICTIVE ANALYTICS (DEVELOPMENT)
-  # Note: Temporarily disabled during Phase 7 development for import resolution
-  # - name: "Predictive Analytics Engine P0"
-  #   test_module: ".claudedirector/tests/regression/p0_blocking/test_predictive_analytics_p0.py"
-  #   critical_level: "BLOCKING"
-  #   timeout_seconds: 180
-  #   description: "Phase 7 Predictive Analytics Engine must provide >90% accurate strategic challenge predictions with <500ms response times"
-  #   failure_impact: "Strategic intelligence becomes reactive instead of proactive, executives lose early warning capabilities"
-  #   business_impact: "Competitive disadvantage, missed strategic interventions, reduced strategic decision quality"
-  #   introduced_version: "v3.2.0"
-  #   owner: "martin"
+  # PHASE 7 STRATEGIC AI DEVELOPMENT - MODULAR AI INTELLIGENCE
+  - name: "Predictive Analytics Engine P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_predictive_analytics_p0.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 180
+    description: "Phase 7 Modular Predictive Analytics Engine must provide >90% accurate strategic challenge predictions with <500ms response times"
+    failure_impact: "Strategic intelligence becomes reactive instead of proactive, executives lose early warning capabilities"
+    business_impact: "Competitive disadvantage, missed strategic interventions, reduced strategic decision quality"
+    introduced_version: "v3.2.0"
+    owner: "martin"
 
-  # PHASE 7 STRATEGIC AI DEVELOPMENT - CONTEXT-AWARE INTELLIGENCE (DEVELOPMENT)
-  # Note: Temporarily disabled during Phase 7 development for import resolution
-  # - name: "Context-Aware Intelligence P0"
-  #   test_module: ".claudedirector/tests/regression/p0_blocking/test_context_aware_intelligence_p0.py"
-  #   critical_level: "BLOCKING"
-  #   timeout_seconds: 180
-  #   description: "Phase 7 Context-Aware Intelligence must provide >95% context relevance accuracy with <200ms framework selection response times"
-  #   failure_impact: "Strategic intelligence loses situational awareness, becomes generic instead of contextually optimized"
-  #   business_impact: "Reduced strategic guidance effectiveness, suboptimal framework selection, competitive disadvantage"
-  #   introduced_version: "v3.2.0"
-  #   owner: "martin"
+  - name: "Context-Aware Intelligence P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_context_aware_intelligence_p0.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 180
+    description: "Phase 7 Modular Context-Aware Intelligence must provide >95% context relevance accuracy with <200ms framework selection response times"
+    failure_impact: "Strategic intelligence loses situational awareness, becomes generic instead of contextually optimized"
+    business_impact: "Reduced strategic guidance effectiveness, suboptimal framework selection, competitive disadvantage"
+    introduced_version: "v3.2.0"
+    owner: "martin"
 
 
 
