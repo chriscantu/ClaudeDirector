@@ -8,7 +8,9 @@ import json
 import sqlite3
 from pathlib import Path
 
-from ai_intelligence.context.intelligence_unified import MeetingIntelligence as MeetingIntelligenceManager
+from ai_intelligence.context.intelligence_unified import (
+    MeetingIntelligence as MeetingIntelligenceManager,
+)
 
 
 def demo_meeting_intelligence():

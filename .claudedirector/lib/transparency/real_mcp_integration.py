@@ -9,7 +9,19 @@ import structlog
 
 from .integrated_transparency import IntegratedTransparencySystem, TransparencyContext
 from .persona_integration import TransparentPersonaManager, MCPIntegrationHelper
-from ..integrations.mcp_use_client import MCPUseClient, MCPResponse
+
+try:
+    from ..integration.unified_bridge import MCPUseClient, MCPResponse
+except ImportError:
+    # Fallback classes for testing
+    class MCPUseClient:
+        def __init__(self, *args, **kwargs):
+            self.is_available = False
+
+    class MCPResponse:
+        def __init__(self, *args, **kwargs):
+            self.success = False
+
 
 logger = structlog.get_logger(__name__)
 

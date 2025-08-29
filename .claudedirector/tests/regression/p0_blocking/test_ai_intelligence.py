@@ -24,13 +24,14 @@ from pathlib import Path
 # Add project root to path
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector" / "lib"))
 
 try:
-    from claudedirector.lib.ai_intelligence.decision_orchestrator import (
+    from ai_intelligence.decision_orchestrator import (
         DecisionIntelligenceOrchestrator,
         DecisionComplexity,
     )
-    from claudedirector.lib.ai_intelligence.mcp_decision_pipeline import (
+    from ai_intelligence.mcp_decision_pipeline import (
         MCPEnhancedDecisionPipeline,
     )
 except ImportError:

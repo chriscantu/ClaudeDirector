@@ -6,7 +6,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 from lib.core.exceptions import AIDetectionError
-from lib.context_engineering.stakeholder_intelligence_unified import get_stakeholder_intelligence
+from lib.context_engineering.stakeholder_intelligence_unified import (
+    get_stakeholder_intelligence,
+)
 
 
 class TestStakeholderIntelligence:

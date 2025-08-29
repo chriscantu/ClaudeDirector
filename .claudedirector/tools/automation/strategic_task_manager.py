@@ -13,7 +13,9 @@ from typing import Dict, Optional
 
 import structlog
 
-from ai_intelligence.context.intelligence_unified import TaskIntelligence as IntelligentTaskDetector
+from ai_intelligence.context.intelligence_unified import (
+    TaskIntelligence as IntelligentTaskDetector,
+)
 
 logger = structlog.get_logger()
 

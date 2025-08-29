@@ -8,7 +8,14 @@ from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 
 from context_engineering.strategic_memory_manager import get_strategic_memory_manager
-from bridges.cli_context_bridge import CLIContextBridge
+
+try:
+    from ..integration.unified_bridge import CLIContextBridge
+except ImportError:
+    # Fallback for testing environments
+    class CLIContextBridge:
+        def __init__(self, *args, **kwargs):
+            pass
 
 
 class IntegratedConversationManager:

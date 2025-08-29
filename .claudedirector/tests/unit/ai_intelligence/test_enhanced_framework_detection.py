@@ -29,6 +29,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 # Optional pytest import for enhanced testing
 try:
     import pytest
+
     PYTEST_AVAILABLE = True
 except ImportError:
     PYTEST_AVAILABLE = False
@@ -62,7 +63,9 @@ except (ImportError, TypeError, AttributeError) as e:
 
     # Define placeholder classes for P0 compatibility
     class EnhancedFrameworkDetection:
-        def __init__(self, *args, **kwargs): pass
+        def __init__(self, *args, **kwargs):
+            pass
+
         def analyze_conversation_async(self, *args, **kwargs):
             return {"status": "fallback", "frameworks": []}
 
@@ -82,7 +85,8 @@ except (ImportError, TypeError, AttributeError) as e:
         pass
 
     class FrameworkUsage:
-        def __init__(self, *args, **kwargs): pass
+        def __init__(self, *args, **kwargs):
+            pass
 
     class ConversationMemoryEngine:
         pass
@@ -761,13 +765,18 @@ class TestEnhancedFrameworkDetection(unittest.TestCase):
             )
             assert high_relevance_count >= 1
 
-
     def test_p0_enhanced_framework_detection_interface(self):
         """P0 TEST: Enhanced Framework Detection interface must be available"""
         if not ENHANCED_FRAMEWORK_DETECTION_AVAILABLE:
-            print("⚠️ Running P0 validation in fallback mode - Enhanced Framework Detection dependencies not available")
-            print("✅ P0 Core Interface Validation: Enhanced Framework Detection interface defined")
-            self.assertTrue(True, "P0 fallback validation passed - core interfaces available")
+            print(
+                "⚠️ Running P0 validation in fallback mode - Enhanced Framework Detection dependencies not available"
+            )
+            print(
+                "✅ P0 Core Interface Validation: Enhanced Framework Detection interface defined"
+            )
+            self.assertTrue(
+                True, "P0 fallback validation passed - core interfaces available"
+            )
             return
 
         # Full test when dependencies available

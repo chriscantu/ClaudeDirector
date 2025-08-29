@@ -9,7 +9,9 @@ import sys
 from pathlib import Path
 from typing import Dict
 
-from context_engineering.stakeholder_intelligence_unified import StakeholderIntelligence as IntelligentStakeholderDetector
+from context_engineering.stakeholder_intelligence_unified import (
+    StakeholderIntelligence as IntelligentStakeholderDetector,
+)
 
 
 class StakeholderAIManager:
