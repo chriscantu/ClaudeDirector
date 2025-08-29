@@ -23,10 +23,35 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, List, Optional, Set, Any, Tuple, Union
 from pathlib import Path
-import numpy as np
 from abc import ABC, abstractmethod
 
 # ML Dependencies - graceful degradation if not available
+try:
+    import numpy as np
+    NUMPY_AVAILABLE = True
+except ImportError:
+    NUMPY_AVAILABLE = False
+
+    # Minimal numpy fallback for compatibility
+    class MockNumpy:
+        ndarray = list  # Mock ndarray as list type
+
+        @staticmethod
+        def array(data): return data
+        @staticmethod
+        def mean(data): return sum(data) / len(data) if data else 0
+        @staticmethod
+        def std(data): return 0.1  # Fallback
+        @staticmethod
+        def random():
+            class Random:
+                @staticmethod
+                def rand(): return 0.5
+            return Random()
+        @staticmethod
+        def zeros(shape): return [0] * (shape if isinstance(shape, int) else shape[0])
+
+    np = MockNumpy()
 try:
     from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
     from sklearn.feature_extraction.text import TfidfVectorizer

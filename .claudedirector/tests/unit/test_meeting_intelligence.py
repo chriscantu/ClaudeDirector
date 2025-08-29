@@ -7,7 +7,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 from lib.core.exceptions import AIDetectionError
-from lib.intelligence.meeting import MeetingIntelligence
+from lib.ai_intelligence.context.intelligence_unified import MeetingIntelligence
 
 
 class TestMeetingIntelligence:

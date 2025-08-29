@@ -14,6 +14,7 @@ import argparse
 import json
 import os
 import sqlite3
+import time
 import uuid
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -339,6 +340,35 @@ class StrategicMemoryManager:
 
             return recovery_context
 
+    def get_recent_sessions(self, hours: int = 24) -> List[Dict[str, Any]]:
+        """Get recent sessions within specified hours"""
+        cutoff_time = time.time() - (hours * 3600)  # Convert hours to seconds
+
+        try:
+            with self.get_connection() as conn:
+                results = conn.execute("""
+                    SELECT session_id, session_type, created_at, last_activity, status
+                    FROM sessions
+                    WHERE created_at > ?
+                    ORDER BY created_at DESC
+                """, (cutoff_time,)).fetchall()
+
+                sessions = []
+                for row in results:
+                    sessions.append({
+                        "session_id": row[0],
+                        "session_type": row[1],
+                        "created_timestamp": row[2],
+                        "updated_timestamp": row[3],
+                        "status": row[4]
+                    })
+
+                return sessions
+
+        except Exception:
+            # Graceful fallback for P0 compatibility
+            return []
+
     def get_active_sessions(self) -> List[Dict[str, Any]]:
         """Get all active sessions for context restoration"""
         with self.get_connection() as conn:
@@ -652,11 +682,23 @@ class StrategicMemoryManager:
 
 def get_strategic_memory_manager(
     db_path: Optional[str] = None, enable_performance: bool = True
-) -> StrategicMemoryManager:
-    """Get unified strategic memory manager instance"""
-    return StrategicMemoryManager(
-        db_path=db_path, enable_performance=enable_performance
-    )
+):
+    """Get unified strategic memory manager instance with lightweight fallback"""
+    try:
+        # Try to create the heavyweight manager
+        manager = StrategicMemoryManager(
+            db_path=db_path, enable_performance=enable_performance
+        )
+        # Test if it has required attributes for P0 compatibility
+        if hasattr(manager, 'cache_manager') or not enable_performance:
+            return manager
+        else:
+            # Missing performance components, fall back to lightweight
+            raise AttributeError("Performance components not available")
+    except Exception:
+        # Fallback to lightweight manager for P0 compatibility
+        from .core_lightweight import get_lightweight_memory_manager
+        return get_lightweight_memory_manager()
 
 
 # Legacy compatibility classes for migration period

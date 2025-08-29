@@ -14,7 +14,7 @@ lib_path = Path(__file__).parent.parent.parent / "lib"
 sys.path.insert(0, str(lib_path))
 
 try:
-    from lib.intelligence.task import TaskIntelligence
+    from lib.ai_intelligence.context.intelligence_unified import TaskIntelligence
     from lib.core.config import ClaudeDirectorConfig
     from lib.core.exceptions import AIDetectionError
 

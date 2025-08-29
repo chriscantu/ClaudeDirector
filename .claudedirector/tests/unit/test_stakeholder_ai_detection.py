@@ -14,7 +14,7 @@ lib_path = Path(__file__).parent.parent.parent / "lib"
 sys.path.insert(0, str(lib_path))
 
 try:
-    from lib.intelligence.stakeholder import StakeholderIntelligence
+    from lib.context_engineering.stakeholder_intelligence_unified import get_stakeholder_intelligence
     from lib.core.config import ClaudeDirectorConfig
     from lib.core.exceptions import AIDetectionError
 
