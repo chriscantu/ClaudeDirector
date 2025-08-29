@@ -12,21 +12,31 @@ from datetime import datetime
 
 # Import components to test
 try:
-    from claudedirector.lib.ai_intelligence.context_aware_intelligence import ContextAwareIntelligence
+    from claudedirector.lib.ai_intelligence.context_aware_intelligence import (
+        ContextAwareIntelligence,
+    )
     from claudedirector.lib.ai_intelligence.context.context_analyzer import (
         ContextComplexity,
         SituationalContext,
     )
-    from claudedirector.lib.ai_intelligence.context.framework_selector import ContextualFrameworkRecommendation
-    from claudedirector.lib.ai_intelligence.context.persona_selector import PersonaActivationRecommendation
+    from claudedirector.lib.ai_intelligence.context.framework_selector import (
+        ContextualFrameworkRecommendation,
+    )
+    from claudedirector.lib.ai_intelligence.context.persona_selector import (
+        PersonaActivationRecommendation,
+    )
 except ImportError:
     from lib.ai_intelligence.context_aware_intelligence import ContextAwareIntelligence
     from lib.ai_intelligence.context.context_analyzer import (
         ContextComplexity,
         SituationalContext,
     )
-    from lib.ai_intelligence.context.framework_selector import ContextualFrameworkRecommendation
-    from lib.ai_intelligence.context.persona_selector import PersonaActivationRecommendation
+    from lib.ai_intelligence.context.framework_selector import (
+        ContextualFrameworkRecommendation,
+    )
+    from lib.ai_intelligence.context.persona_selector import (
+        PersonaActivationRecommendation,
+    )
 
 
 class TestContextAwareIntelligenceV2P0(unittest.TestCase):

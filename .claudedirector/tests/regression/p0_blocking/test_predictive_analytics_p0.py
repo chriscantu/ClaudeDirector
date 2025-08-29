@@ -16,15 +16,21 @@ try:
         PredictiveAnalyticsEngine,
         StrategicChallengePrediction,
     )
-    from claudedirector.lib.ai_intelligence.predictive.prediction_models import ChallengeType
-    from claudedirector.lib.ai_intelligence.predictive.recommendation_generator import PredictionConfidence
+    from claudedirector.lib.ai_intelligence.predictive.prediction_models import (
+        ChallengeType,
+    )
+    from claudedirector.lib.ai_intelligence.predictive.recommendation_generator import (
+        PredictionConfidence,
+    )
 except ImportError:
     from lib.ai_intelligence.predictive_analytics_engine import (
         PredictiveAnalyticsEngine,
         StrategicChallengePrediction,
     )
     from lib.ai_intelligence.predictive.prediction_models import ChallengeType
-    from lib.ai_intelligence.predictive.recommendation_generator import PredictionConfidence
+    from lib.ai_intelligence.predictive.recommendation_generator import (
+        PredictionConfidence,
+    )
 
 
 class TestPredictiveAnalyticsV2P0(unittest.TestCase):

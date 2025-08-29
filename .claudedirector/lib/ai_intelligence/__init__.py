@@ -76,7 +76,6 @@ __all__ = [
     "DecisionIntelligenceResult",
     "DecisionComplexity",
     "create_decision_intelligence_orchestrator",
-
     # Phase 7 Modular AI Intelligence
     "PredictiveAnalyticsEngine",
     "StrategicChallengePrediction",
