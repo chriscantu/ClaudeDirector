@@ -33,6 +33,16 @@ from .decision_orchestrator import (
     create_decision_intelligence_orchestrator,
 )
 
+# Phase 11 Advanced AI Intelligence - P1 High Priority (2.5x ROI)
+from .predictive_engine import (
+    EnhancedPredictiveEngine,
+    PredictionResult,
+    PredictionType,
+    PredictionConfidence,
+    StrategicChallengePrediction,
+    create_enhanced_predictive_engine,
+)
+
 # Phase 7 Modular AI Intelligence Components
 from .predictive_analytics_engine import (
     PredictiveAnalyticsEngine,
