@@ -92,7 +92,20 @@ test_suites:
         path: ".claudedirector/tests/regression/business_critical/test_performance.py"
         timeout: 60
         critical: true
-        description: "Performance benchmarks and optimization"
+        description: "Performance and response time validation"
+
+      # PHASE 12: ALWAYS-ON MCP ENHANCEMENT P0 TESTS
+      - name: "Always-On MCP Enhancement P0"
+        path: ".claudedirector/tests/regression/p0_blocking/test_phase12_always_on_mcp.py"
+        timeout: 120
+        critical: true
+        description: "Phase 12 always-on MCP enhancement with 100% enhancement rate"
+
+      - name: "Lightweight Fallback Pattern P0"
+        path: ".claudedirector/tests/regression/p0_blocking/test_lightweight_fallback.py"
+        timeout: 90
+        critical: true
+        description: "OVERVIEW.md lightweight fallback pattern graceful degradation"
 
       - name: "Persona Consistency P0"
         path: ".claudedirector/tests/regression/ux_continuity/test_persona_consistency.py"
@@ -123,6 +136,12 @@ test_suites:
         timeout: 60
         critical: true
         description: "Strategic thinking capabilities and persona intelligence"
+
+      - name: "Magic MCP Visual Integration P0"
+        path: ".claudedirector/tests/regression/p0_blocking/test_magic_mcp_visual.py"
+        timeout: 120
+        critical: false  # HIGH priority, not blocking
+        description: "Phase 12 Magic MCP visual detection and routing"
 
   # HIGH PRIORITY TESTS - Important but non-blocking
   p0_high_priority:

@@ -1,6 +1,6 @@
 # ClaudeDirector Product Requirements Document (PRD)
 
-**Version**: 2.3.0
+**Version**: 2.4.0
 **Owner**: Alvaro (Business Strategy) + Martin (Technical Architecture)
 **Status**: Active - Single Source of Truth
 
@@ -11,7 +11,7 @@ ClaudeDirector is the industry's first completely transparent AI strategic leade
 **Architecture**: Local single-user framework (not a web service)
 **Primary Value**: Transparent AI strategic intelligence driving leaders from analysis to clear, actionable next steps
 **Target Market**: VP/CTO/Director/Manager/Staff/Product Engineering Leaders (individual users)
-**Competitive Advantage**: Complete transparency + role-based customization + Next Action Clarity Rate >85%
+**Competitive Advantage**: Complete transparency + role-based customization + **always-on enterprise AI enhancement** + Next Action Clarity Rate >85%
 
 ### Deployment Model
 - **Local Installation**: Runs entirely on user's local machine
@@ -103,9 +103,30 @@ ClaudeDirector is the industry's first completely transparent AI strategic leade
 
 ## P1 Features - HIGH PRIORITY
 
-### 1. Advanced AI Intelligence 🔄 IN DEVELOPMENT
+### 1. Always-On MCP Enhancement 🚀 READY FOR IMPLEMENTATION
+**Owner**: Martin (Platform Architecture) + Alvaro (Business Strategy)
+**Target ROI**: 3.5x within 12 months
+**Business Justification**: Transform from inconsistent 40-60% MCP enhancement to guaranteed 100% enterprise-grade AI consistency
+
+**Success Metrics**:
+- **MCP Enhancement Rate**: 100% (up from 40-60% threshold-based)
+- **User Experience Consistency**: Predictable enterprise-grade strategic guidance
+- **Visual Enhancement**: 100% automatic Magic MCP for diagrams/charts/visuals
+- **Response Quality**: Consistent professional-level strategic advice
+- **Competitive Differentiation**: First platform with "always excellent" AI enhancement
+
+**Technical Requirements** (P1 - Market Differentiator):
+- Remove complexity threshold detection system (0.5-0.8 confidence scoring)
+- Implement direct persona → MCP server routing (always-on)
+- Magic MCP visual enhancement default for all strategic interactions
+- Lightweight fallback pattern implementation per OVERVIEW.md architecture
+- <50ms transparency overhead compliance with performance requirements
+- Maintain 33/33 P0 test compliance throughout transformation
+
+### 2. Advanced AI Intelligence 🔄 FOUNDATION COMPLETE
 **Owner**: Berny (AI/ML) + Martin (Integration)
 **Target ROI**: 2.5x within 12 months
+**Status**: ✅ **Enhanced Predictive Engine Foundation Complete** (Phase 11)
 
 **Technical Requirements** (P1 - Critical Gap):
 - ML pipeline infrastructure with training/inference separation
@@ -114,7 +135,7 @@ ClaudeDirector is the industry's first completely transparent AI strategic leade
 - Vector database optimization for semantic search at scale
 - Health scoring models with 80%+ prediction accuracy
 
-### 2. Enterprise Integration 📋 PLANNED
+### 3. Enterprise Integration 📋 PLANNED
 **Owner**: Sofia (Vendor Strategy) + Martin (Architecture)
 **Target ROI**: 3.0x within 12 months
 
@@ -129,7 +150,7 @@ ClaudeDirector is the industry's first completely transparent AI strategic leade
 - Rate limiting and API quota management
 - Robust error handling and retry logic for external APIs
 
-### 3. Advanced Analytics and Reporting 📋 PLANNED
+### 4. Advanced Analytics and Reporting 📋 PLANNED
 **Owner**: Delbert (Data Engineering) + Alvaro (Business Requirements)
 **Target ROI**: 2.0x within 15 months
 
@@ -161,9 +182,10 @@ ClaudeDirector is the industry's first completely transparent AI strategic leade
 | Feature Category | P0 Investment | P1 Investment | Single-User ROI Target |
 |------------------|---------------|---------------|------------------------|
 | **Core Platform** | $1.2M (60%) | $400K (30%) | 5.2x over 2 years |
+| **Always-On MCP Enhancement** | - | $300K (Phase 12) | 3.5x over 12 months |
 | **AI Intelligence** | $300K (P0 part) | $600K (P1 part) | 4.8x over 18 months |
 | **Local Integration** | - | $400K (focused) | 3.5x over 12 months |
-| **Total Investment** | **$1.5M** | **$1.4M** | **$2.9M total** |
+| **Total Investment** | **$1.5M** | **$1.7M** | **$3.2M total** |
 
 ### ROI Calculation Basis (Single-User)
 - **Individual Productivity Gains**: 15-20 minutes saved per strategic session

@@ -67,13 +67,20 @@
 
 ## 🤖 **AI Intelligence Layer**
 
+### **Phase 12: Always-On MCP Enhancement** 🚀 **NEW**
+- **[Always-On MCP Router](../.claudedirector/lib/core/enhanced_persona_manager.py)** - Direct persona→server routing for guaranteed 100% enhancement rate
+- **[Visual Template Manager](../.claudedirector/lib/core/visual_template_manager.py)** - Persona-specific visual enhancement templates (5 personas × 8 visual types)
+- **[Magic MCP Integration](../.claudedirector/lib/core/cursor_response_enhancer.py)** - Automatic visual detection and Magic MCP routing
+- **[Always-On Transparency](../.claudedirector/lib/cursor_transparency_bridge.py)** - 100% transparency disclosure for all strategic queries
+- **[P0 Test Compliance](../.claudedirector/tests/regression/p0_blocking/test_mcp_transparency.py)** - Updated P0 tests validating always-on behavior
+
 ### **Phase 11: Enhanced Predictive Intelligence**
 - **[Enhanced Predictive Engine](../.claudedirector/lib/ai_intelligence/predictive_engine.py)** - Foundation for strategic decision prediction with 85%+ accuracy target
-- **[Decision Orchestrator Integration](../.claudedirector/lib/ai_intelligence/decision_orchestrator.py)** - Central coordination with predictive intelligence
+- **[Decision Orchestrator Integration](../.claudedirector/lib/ai_intelligence/decision_orchestrator.py)** - Central coordination with predictive intelligence *(Phase 12: Always returns STRATEGIC)*
 - **[P0 Foundation Tests](../.claudedirector/tests/regression/p0_blocking/test_enhanced_predictive_intelligence_p0.py)** - Complete P0 test suite with fallback validation
 
 ### **Core AI Intelligence Components**
-- **[Decision Intelligence Orchestrator](../.claudedirector/lib/ai_intelligence/decision_orchestrator.py)** - Central AI decision coordination
+- **[Decision Intelligence Orchestrator](../.claudedirector/lib/ai_intelligence/decision_orchestrator.py)** - Central AI decision coordination *(Phase 12: Simplified for always-on)*
 - **[Enhanced Framework Detection](../.claudedirector/tests/unit/ai_intelligence/test_enhanced_framework_detection.py)** - ML-powered framework recognition
 - **[Predictive Analytics Engine](../.claudedirector/lib/ai_intelligence/predictive_analytics_engine.py)** - Production ML intelligence engine
 - **[Context-Aware Intelligence](../.claudedirector/lib/ai_intelligence/context_aware_intelligence.py)** - Strategic context analysis
@@ -212,5 +219,5 @@
 ---
 
 **Technical Index maintained by Martin (Principal Platform Architect)**
-**Last Updated**: ClaudeDirector v3.4.0 - Phase 11 Enhanced Predictive Intelligence Foundation
+**Last Updated**: ClaudeDirector v3.5.0 - Phase 12 Always-On MCP Enhancement
 **Coverage**: Complete technical documentation for transparent AI strategic leadership platform
