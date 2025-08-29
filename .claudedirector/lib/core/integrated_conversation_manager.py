@@ -7,7 +7,7 @@ Martin's solution for automatic session context capture and management
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 
-from memory.session_context_manager import SessionContextManager
+from context_engineering.strategic_memory_manager import get_strategic_memory_manager
 from bridges.cli_context_bridge import CLIContextBridge
 
 
@@ -26,7 +26,7 @@ class IntegratedConversationManager:
             base_path = Path(__file__).parent.parent.parent.parent.parent
             db_path = str(base_path / "data" / "strategic_memory.db")
 
-        self.session_manager = SessionContextManager(db_path)
+        self.session_manager = get_strategic_memory_manager()
         self.cli_bridge = CLIContextBridge(db_path)
         self.current_session_id = None
         self.conversation_buffer = []

@@ -20,8 +20,30 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any, Set
 from dataclasses import dataclass, asdict
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler, FileModifiedEvent, FileCreatedEvent
+try:
+    from watchdog.observers import Observer
+    from watchdog.events import FileSystemEventHandler, FileModifiedEvent, FileCreatedEvent
+    WATCHDOG_AVAILABLE = True
+except ImportError:
+    WATCHDOG_AVAILABLE = False
+
+    # Fallback minimal implementations
+    class FileSystemEventHandler:
+        def on_modified(self, event): pass
+        def on_created(self, event): pass
+        def on_deleted(self, event): pass
+
+    class Observer:
+        def schedule(self, handler, path, recursive=False): pass
+        def start(self): pass
+        def stop(self): pass
+        def join(self): pass
+
+    class FileModifiedEvent:
+        def __init__(self, src_path): self.src_path = src_path
+
+    class FileCreatedEvent:
+        def __init__(self, src_path): self.src_path = src_path
 
 logger = logging.getLogger(__name__)
 

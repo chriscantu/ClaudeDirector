@@ -15,7 +15,7 @@ if lib_dir not in sys.path:
     sys.path.insert(0, lib_dir)
 
 try:
-    from lib.memory.session_context_manager import SessionContextManager
+    from lib.context_engineering.strategic_memory_manager import get_strategic_memory_manager
     from lib.core.enhanced_framework_manager import EnhancedFrameworkManager
 
     print("✅ Successfully imported ClaudeDirector enhanced framework modules")
@@ -34,7 +34,7 @@ def test_session_context_manager():
 
     try:
         # Initialize session manager
-        manager = SessionContextManager(db_path)
+        manager = get_strategic_memory_manager()
         print("✅ SessionContextManager initialized")
 
         # Start new session
@@ -149,7 +149,7 @@ def test_session_recovery_simulation():
         # Step 1: Create initial session with context
         print("📝 Step 1: Creating initial session with context...")
 
-        manager1 = SessionContextManager(db_path)
+        manager1 = get_strategic_memory_manager()
         session_id = manager1.start_session("strategic")
 
         # Add some test context
@@ -175,7 +175,7 @@ def test_session_recovery_simulation():
         # Step 2: Simulate session restart
         print("🔄 Step 2: Simulating session restart...")
 
-        manager2 = SessionContextManager(db_path)
+        manager2 = get_strategic_memory_manager()
         restart_detected = manager2.detect_session_restart()
         print(f"✅ Session restart detected: {restart_detected}")
 

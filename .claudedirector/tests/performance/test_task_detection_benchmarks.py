@@ -11,7 +11,7 @@ from unittest.mock import Mock, patch
 from typing import Callable, Dict, Any
 
 try:
-    from lib.intelligence.task import TaskIntelligence
+    from lib.ai_intelligence.context.intelligence_unified import TaskIntelligence
     from lib.core.config import ClaudeDirectorConfig
 
     IMPORTS_AVAILABLE = True

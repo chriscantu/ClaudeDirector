@@ -622,7 +622,7 @@ class SQLiteEngine(DatabaseEngineBase):
 
     def connect(self) -> bool:
         # Implementation delegated to existing optimized_db_manager
-        from memory.optimized_db_manager import get_db_manager
+        from context_engineering.strategic_memory_manager import get_strategic_memory_manager
 
         try:
             self._db_manager = get_db_manager(str(self.config.database_path))

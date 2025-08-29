@@ -10,7 +10,7 @@ from pathlib import Path
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from memory.stakeholder_engagement_engine import StakeholderEngagementEngine
+from context_engineering.stakeholder_intelligence_unified import StakeholderIntelligence as StakeholderEngagementEngine
 
 
 def check_daily_alerts():
