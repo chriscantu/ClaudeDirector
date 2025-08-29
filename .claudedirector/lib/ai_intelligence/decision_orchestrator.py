@@ -19,10 +19,23 @@ from enum import Enum
 import structlog
 
 # Import existing infrastructure we're building on
-from ..transparency.real_mcp_integration import (
-    RealMCPIntegrationHelper,
-    EnhancedTransparentPersonaManager,
-)
+try:
+    from ..transparency.real_mcp_integration import (
+        RealMCPIntegrationHelper,
+        EnhancedTransparentPersonaManager,
+    )
+except ImportError:
+    # Fallback classes for testing environments
+    class RealMCPIntegrationHelper:
+        def __init__(self, *args, **kwargs):
+            self.is_available = False
+
+        async def enhance_analysis(self, *args, **kwargs):
+            return {"enhanced": False, "fallback": True}
+
+    class EnhancedTransparentPersonaManager:
+        def __init__(self, *args, **kwargs):
+            self.is_available = False
 
 # Optional imports - functionality consolidated into framework_detector.py
 try:
@@ -36,10 +49,21 @@ except ImportError:
     MultiFrameworkIntegrationEngine = None
     EnhancedFrameworkEngine = None
     ConversationMemoryEngine = None
-from ..transparency.integrated_transparency import (
-    IntegratedTransparencySystem,
-    TransparencyContext,
-)
+try:
+    from ..transparency.integrated_transparency import (
+        IntegratedTransparencySystem,
+        TransparencyContext,
+    )
+except ImportError:
+    # Fallback classes for testing environments
+    class IntegratedTransparencySystem:
+        def __init__(self, *args, **kwargs): pass
+
+        def create_transparency_context(self, *args, **kwargs):
+            return {}
+
+    class TransparencyContext:
+        def __init__(self, *args, **kwargs): pass
 
 logger = structlog.get_logger(__name__)
 
