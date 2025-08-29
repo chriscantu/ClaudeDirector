@@ -21,6 +21,7 @@ import logging
 # Core ClaudeDirector imports
 try:
     from .config import ClaudeDirectorConfig, get_config
+
     CONFIG_AVAILABLE = True
 except ImportError:
     CONFIG_AVAILABLE = False
@@ -31,25 +32,36 @@ except ImportError:
     def get_config():
         return ClaudeDirectorConfig()
 
+
 # P2 Communication system imports (with fallback)
 try:
     from ..p2_communication.integrations.demo_data_source import DemoDataSource
-    from ..p2_communication.report_generation.executive_summary import ExecutiveSummaryGenerator
+    from ..p2_communication.report_generation.executive_summary import (
+        ExecutiveSummaryGenerator,
+    )
     from ..p2_communication.integrations.alert_system import IntelligentAlertSystem
-    from ..p2_communication.interfaces.report_interface import StakeholderType, ReportContext, ReportFormat
+    from ..p2_communication.interfaces.report_interface import (
+        StakeholderType,
+        ReportContext,
+        ReportFormat,
+    )
+
     P2_COMMUNICATION_AVAILABLE = True
 except ImportError:
     P2_COMMUNICATION_AVAILABLE = False
 
     # Fallback minimal classes
     class DemoDataSource:
-        def __init__(self): pass
+        def __init__(self):
+            pass
 
     class ExecutiveSummaryGenerator:
-        def __init__(self, *args): pass
+        def __init__(self, *args):
+            pass
 
     class IntelligentAlertSystem:
-        def __init__(self, *args): pass
+        def __init__(self, *args):
+            pass
 
     class StakeholderType:
         VP_ENGINEERING = "vp_engineering"
@@ -67,6 +79,7 @@ logger = logging.getLogger(__name__)
 
 
 # === ENUMS AND DATA MODELS ===
+
 
 class PersonaType(Enum):
     """Supported persona types for chat integration."""
@@ -146,6 +159,7 @@ class PersonaResponse:
 
 # === CONVERSATION FORMATTER ===
 
+
 class ConversationFormatter:
     """
     Formats responses for natural conversation flow.
@@ -164,32 +178,32 @@ class ConversationFormatter:
                 "greeting": "Great to connect! Let me analyze this from an engineering leadership perspective...",
                 "analysis_prefix": "Looking at the platform implications,",
                 "recommendation_prefix": "My recommendation for cross-team coordination:",
-                "closing": "Let me know if you need deeper analysis on any aspect."
+                "closing": "Let me know if you need deeper analysis on any aspect.",
             },
             PersonaType.CAMILLE: {
                 "greeting": "Excellent strategic question. Let me provide the executive perspective...",
                 "analysis_prefix": "From a technology leadership standpoint,",
                 "recommendation_prefix": "The strategic approach I'd recommend:",
-                "closing": "Happy to dive deeper into any of these strategic elements."
+                "closing": "Happy to dive deeper into any of these strategic elements.",
             },
             PersonaType.RACHEL: {
                 "greeting": "Great design systems question! Let me approach this systematically...",
                 "analysis_prefix": "From a user experience and design perspective,",
                 "recommendation_prefix": "My recommendation for design system strategy:",
-                "closing": "Feel free to ask about implementation details or accessibility considerations."
+                "closing": "Feel free to ask about implementation details or accessibility considerations.",
             },
             PersonaType.ALVARO: {
                 "greeting": "Perfect business question. Let me analyze the value proposition...",
                 "analysis_prefix": "Looking at the business impact and ROI,",
                 "recommendation_prefix": "From an investment strategy perspective:",
-                "closing": "Let me know if you need deeper financial analysis or competitive positioning."
+                "closing": "Let me know if you need deeper financial analysis or competitive positioning.",
             },
             PersonaType.MARTIN: {
                 "greeting": "Excellent architecture question. Let me stress-test this thinking...",
                 "analysis_prefix": "From a platform architecture perspective,",
                 "recommendation_prefix": "My recommendation for technical implementation:",
-                "closing": "Happy to dive deeper into technical specifications or evolutionary patterns."
-            }
+                "closing": "Happy to dive deeper into technical specifications or evolutionary patterns.",
+            },
         }
 
     def _initialize_response_patterns(self) -> Dict[str, str]:
@@ -200,7 +214,7 @@ class ConversationFormatter:
             "emphasis": "**{content}**",
             "code_mention": "`{content}`",
             "section_header": "\n## {header}\n",
-            "subsection": "\n### {subsection}\n"
+            "subsection": "\n### {subsection}\n",
         }
 
     def format_response(
@@ -208,7 +222,7 @@ class ConversationFormatter:
         content: str,
         persona: PersonaType,
         style: ConversationStyle = ConversationStyle.COLLABORATIVE,
-        include_technical_details: bool = False
+        include_technical_details: bool = False,
     ) -> str:
         """Format response with persona-specific styling."""
 
@@ -238,12 +252,16 @@ class ConversationFormatter:
 
         return "\n".join(formatted_parts)
 
-    def format_executive_summary(self, summary_data: Dict[str, Any], persona: PersonaType) -> str:
+    def format_executive_summary(
+        self, summary_data: Dict[str, Any], persona: PersonaType
+    ) -> str:
         """Format executive summary with persona perspective."""
         if not summary_data:
             return "No summary data available at this time."
 
-        template = self.persona_templates.get(persona, self.persona_templates[PersonaType.DIEGO])
+        template = self.persona_templates.get(
+            persona, self.persona_templates[PersonaType.DIEGO]
+        )
 
         formatted_summary = []
         formatted_summary.append(template["greeting"])
@@ -264,12 +282,16 @@ class ConversationFormatter:
         formatted_summary.append(f"\n{template['closing']}")
         return "\n".join(formatted_summary)
 
-    def format_alert_summary(self, alerts: List[Dict[str, Any]], persona: PersonaType) -> str:
+    def format_alert_summary(
+        self, alerts: List[Dict[str, Any]], persona: PersonaType
+    ) -> str:
         """Format alert summary with persona-specific priorities."""
         if not alerts:
             return "No active alerts at this time. Systems are operating normally."
 
-        template = self.persona_templates.get(persona, self.persona_templates[PersonaType.DIEGO])
+        template = self.persona_templates.get(
+            persona, self.persona_templates[PersonaType.DIEGO]
+        )
 
         formatted_alerts = []
         formatted_alerts.append(template["greeting"])
@@ -282,18 +304,23 @@ class ConversationFormatter:
         if high_priority:
             formatted_alerts.append("### 🔴 High Priority")
             for alert in high_priority:
-                formatted_alerts.append(f"• **{alert.get('title', 'Alert')}**: {alert.get('description', 'No description')}")
+                formatted_alerts.append(
+                    f"• **{alert.get('title', 'Alert')}**: {alert.get('description', 'No description')}"
+                )
 
         if medium_priority:
             formatted_alerts.append("\n### 🟡 Medium Priority")
             for alert in medium_priority:
-                formatted_alerts.append(f"• {alert.get('title', 'Alert')}: {alert.get('description', 'No description')}")
+                formatted_alerts.append(
+                    f"• {alert.get('title', 'Alert')}: {alert.get('description', 'No description')}"
+                )
 
         formatted_alerts.append(f"\n{template['closing']}")
         return "\n".join(formatted_alerts)
 
 
 # === PERSONA CHAT INTERFACE ===
+
 
 class PersonaChatInterface:
     """
@@ -315,7 +342,9 @@ class PersonaChatInterface:
             self.data_source = None
             self.summary_generator = None
             self.alert_system = None
-            logger.warning("P2 Communication system not available - running in fallback mode")
+            logger.warning(
+                "P2 Communication system not available - running in fallback mode"
+            )
 
         # Persona to stakeholder mapping
         self.persona_stakeholder_map = {
@@ -337,28 +366,28 @@ class PersonaChatInterface:
             RequestType.EXECUTIVE_SUMMARY: [
                 r"(?:executive|summary|report|overview|status)",
                 r"(?:what'?s|how are|show me).*(?:progress|status|metrics)",
-                r"(?:dashboard|overview|summary|report)"
+                r"(?:dashboard|overview|summary|report)",
             ],
             RequestType.ALERT_CHECK: [
                 r"(?:alert|issue|problem|warning|concern)",
                 r"(?:anything|issues|problems).*(?:wrong|concerning|urgent)",
-                r"(?:check|review).*(?:alerts|issues|problems)"
+                r"(?:check|review).*(?:alerts|issues|problems)",
             ],
             RequestType.STRATEGIC_ANALYSIS: [
                 r"(?:strategy|strategic|analysis|recommendation)",
                 r"(?:how should|what'?s the best|recommend|suggest)",
-                r"(?:approach|strategy|plan|direction)"
+                r"(?:approach|strategy|plan|direction)",
             ],
             RequestType.TECHNICAL_CONSULTATION: [
                 r"(?:technical|architecture|implementation|development)",
                 r"(?:how to|implement|build|architect|design)",
-                r"(?:code|system|platform|infrastructure)"
+                r"(?:code|system|platform|infrastructure)",
             ],
             RequestType.STATUS_UPDATE: [
                 r"(?:status|progress|update|current)",
                 r"(?:where are we|how far|progress on)",
-                r"(?:timeline|schedule|delivery|completion)"
-            ]
+                r"(?:timeline|schedule|delivery|completion)",
+            ],
         }
 
     def process_chat_request(self, request: ChatRequest) -> ChatResponse:
@@ -383,9 +412,7 @@ class PersonaChatInterface:
 
         # Format response with persona styling
         formatted_response = self.formatter.format_response(
-            response_content,
-            request.persona,
-            request.style
+            response_content, request.persona, request.style
         )
 
         return ChatResponse(
@@ -393,7 +420,7 @@ class PersonaChatInterface:
             persona=request.persona,
             request_type=request_type,
             confidence=0.8,  # Base confidence
-            technical_details=request.context
+            technical_details=request.context,
         )
 
     def _classify_request(self, message: str) -> RequestType:
@@ -414,7 +441,9 @@ class PersonaChatInterface:
 
         try:
             # Get stakeholder type for persona
-            stakeholder = self.persona_stakeholder_map.get(request.persona, StakeholderType.VP_ENGINEERING)
+            stakeholder = self.persona_stakeholder_map.get(
+                request.persona, StakeholderType.VP_ENGINEERING
+            )
 
             # Generate summary (this would call P2.1 system)
             summary_data = {
@@ -422,16 +451,18 @@ class PersonaChatInterface:
                     "Active Projects": "12",
                     "Completion Rate": "87%",
                     "Team Velocity": "23 points",
-                    "Quality Score": "94%"
+                    "Quality Score": "94%",
                 },
                 "insights": [
                     "Platform adoption increased 15% this quarter",
                     "Cross-team collaboration metrics improved significantly",
-                    "Technical debt reduced by 8% through systematic cleanup"
-                ]
+                    "Technical debt reduced by 8% through systematic cleanup",
+                ],
             }
 
-            return self.formatter.format_executive_summary(summary_data, request.persona)
+            return self.formatter.format_executive_summary(
+                summary_data, request.persona
+            )
 
         except Exception as e:
             logger.error(f"Executive summary generation failed: {e}")
@@ -448,13 +479,13 @@ class PersonaChatInterface:
                 {
                     "title": "High Memory Usage",
                     "description": "Production servers showing 85% memory utilization",
-                    "severity": "medium"
+                    "severity": "medium",
                 },
                 {
                     "title": "CI Pipeline Delay",
                     "description": "Average build time increased by 20%",
-                    "severity": "medium"
-                }
+                    "severity": "medium",
+                },
             ]
 
             return self.formatter.format_alert_summary(alerts, request.persona)
@@ -466,8 +497,7 @@ class PersonaChatInterface:
     def _handle_strategic_analysis(self, request: ChatRequest) -> str:
         """Handle strategic analysis requests."""
         template = self.formatter.persona_templates.get(
-            request.persona,
-            self.formatter.persona_templates[PersonaType.DIEGO]
+            request.persona, self.formatter.persona_templates[PersonaType.DIEGO]
         )
 
         analysis_content = f"""
@@ -547,8 +577,7 @@ Current trajectory indicates on-time delivery for all Phase 10 objectives.
     def _handle_general_chat(self, request: ChatRequest) -> str:
         """Handle general chat requests."""
         template = self.formatter.persona_templates.get(
-            request.persona,
-            self.formatter.persona_templates[PersonaType.DIEGO]
+            request.persona, self.formatter.persona_templates[PersonaType.DIEGO]
         )
 
         return f"""
@@ -568,6 +597,7 @@ Feel free to ask about specific challenges you're facing or areas where you'd li
 
 # === PERSONA P2 BRIDGE ===
 
+
 class PersonaP2Bridge:
     """
     Main bridge between persona framework and P2.1 system.
@@ -581,8 +611,20 @@ class PersonaP2Bridge:
 
         # Persona activation keywords
         self.persona_keywords = {
-            "diego": ["platform", "engineering", "cross-team", "coordination", "infrastructure"],
-            "camille": ["strategic", "technology", "competitive", "advantage", "scaling"],
+            "diego": [
+                "platform",
+                "engineering",
+                "cross-team",
+                "coordination",
+                "infrastructure",
+            ],
+            "camille": [
+                "strategic",
+                "technology",
+                "competitive",
+                "advantage",
+                "scaling",
+            ],
             "rachel": ["design", "ux", "accessibility", "user", "interface", "system"],
             "alvaro": ["business", "roi", "value", "investment", "financial", "cost"],
             "martin": ["architecture", "technical", "debt", "platform", "scalability"],
@@ -599,21 +641,23 @@ class PersonaP2Bridge:
             "executive_summary": [
                 r"(?:executive|summary|dashboard|overview)",
                 r"(?:show me|what'?s).*(?:status|progress|metrics)",
-                r"(?:report|summary).*(?:for|on|about)"
+                r"(?:report|summary).*(?:for|on|about)",
             ],
             "alert_check": [
                 r"(?:alert|issue|problem|concern|warning)",
                 r"(?:anything|issues).*(?:wrong|concerning)",
-                r"(?:check|review).*(?:alerts|issues)"
+                r"(?:check|review).*(?:alerts|issues)",
             ],
             "strategic_analysis": [
                 r"(?:strategy|strategic|analysis|approach)",
                 r"(?:how should|recommend|suggest|advise)",
-                r"(?:best practices|methodology|framework)"
-            ]
+                r"(?:best practices|methodology|framework)",
+            ],
         }
 
-    def detect_persona(self, message: str, context: Optional[Dict[str, Any]] = None) -> PersonaType:
+    def detect_persona(
+        self, message: str, context: Optional[Dict[str, Any]] = None
+    ) -> PersonaType:
         """Detect which persona is most relevant for the message."""
         message_lower = message.lower()
         persona_scores = {}
@@ -646,7 +690,7 @@ class PersonaP2Bridge:
         self,
         message: str,
         persona: Optional[PersonaType] = None,
-        context: Optional[Dict[str, Any]] = None
+        context: Optional[Dict[str, Any]] = None,
     ) -> PersonaResponse:
         """Process a request through persona and P2.1 integration."""
 
@@ -662,7 +706,7 @@ class PersonaP2Bridge:
             message=message,
             persona=persona,
             context=context,
-            style=ConversationStyle.COLLABORATIVE
+            style=ConversationStyle.COLLABORATIVE,
         )
 
         # Process through chat interface
@@ -680,44 +724,47 @@ class PersonaP2Bridge:
                 "request_type": chat_response.request_type.value,
                 "confidence": chat_response.confidence,
                 "processing_time": datetime.now().isoformat(),
-                "p2_integration_available": P2_COMMUNICATION_AVAILABLE
-            }
+                "p2_integration_available": P2_COMMUNICATION_AVAILABLE,
+            },
         )
 
-    def _generate_follow_ups(self, persona: PersonaType, request_type: RequestType) -> List[str]:
+    def _generate_follow_ups(
+        self, persona: PersonaType, request_type: RequestType
+    ) -> List[str]:
         """Generate contextual follow-up suggestions."""
         base_suggestions = {
             PersonaType.DIEGO: [
                 "Would you like me to analyze cross-team coordination implications?",
                 "Should we discuss platform scalability considerations?",
-                "Do you need help with stakeholder alignment strategies?"
+                "Do you need help with stakeholder alignment strategies?",
             ],
             PersonaType.CAMILLE: [
                 "Would you like a strategic technology roadmap analysis?",
                 "Should we explore competitive positioning implications?",
-                "Do you need executive communication strategies?"
+                "Do you need executive communication strategies?",
             ],
             PersonaType.RACHEL: [
                 "Would you like me to analyze design system implications?",
                 "Should we discuss accessibility compliance requirements?",
-                "Do you need user experience optimization strategies?"
+                "Do you need user experience optimization strategies?",
             ],
             PersonaType.ALVARO: [
                 "Would you like ROI analysis and business case development?",
                 "Should we explore investment strategy implications?",
-                "Do you need competitive market analysis?"
+                "Do you need competitive market analysis?",
             ],
             PersonaType.MARTIN: [
                 "Would you like detailed technical architecture analysis?",
                 "Should we discuss implementation patterns and best practices?",
-                "Do you need platform evolution strategies?"
-            ]
+                "Do you need platform evolution strategies?",
+            ],
         }
 
         return base_suggestions.get(persona, base_suggestions[PersonaType.DIEGO])
 
 
 # === P2 CHAT ADAPTER ===
+
 
 class P2ChatAdapter:
     """
@@ -740,10 +787,7 @@ class P2ChatAdapter:
             self.alert_system = None
 
     def get_executive_summary(
-        self,
-        persona_name: str,
-        stakeholder: str = "auto",
-        period: str = "current_week"
+        self, persona_name: str, stakeholder: str = "auto", period: str = "current_week"
     ) -> str:
         """Get executive summary through persona lens."""
         try:
@@ -751,7 +795,9 @@ class P2ChatAdapter:
         except ValueError:
             persona = PersonaType.DIEGO
 
-        message = f"Please provide an executive summary for {stakeholder} covering {period}"
+        message = (
+            f"Please provide an executive summary for {stakeholder} covering {period}"
+        )
         response = self.bridge.process_persona_request(message, persona)
         return response.response_text
 
@@ -777,7 +823,9 @@ class P2ChatAdapter:
         response = self.bridge.process_persona_request(message, persona)
         return response.response_text
 
-    def natural_language_query(self, query: str, persona_name: Optional[str] = None) -> str:
+    def natural_language_query(
+        self, query: str, persona_name: Optional[str] = None
+    ) -> str:
         """Process natural language query through persona system."""
         persona = None
         if persona_name:
@@ -791,6 +839,7 @@ class P2ChatAdapter:
 
 
 # === MAIN INTERFACE ===
+
 
 class UnifiedPersonaChatIntegration:
     """
@@ -811,14 +860,14 @@ class UnifiedPersonaChatIntegration:
         logger.info(
             "Unified Persona Chat Integration initialized",
             p2_communication_available=P2_COMMUNICATION_AVAILABLE,
-            config_available=CONFIG_AVAILABLE
+            config_available=CONFIG_AVAILABLE,
         )
 
     def process_message(
         self,
         message: str,
         persona: Optional[str] = None,
-        context: Optional[Dict[str, Any]] = None
+        context: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Main message processing interface."""
 
@@ -838,7 +887,7 @@ class UnifiedPersonaChatIntegration:
             "persona": response.persona_used.value,
             "p2_integration": response.p2_data_included,
             "follow_ups": response.follow_up_suggestions,
-            "metadata": response.metadata
+            "metadata": response.metadata,
         }
 
     def get_executive_summary(self, persona: str = "diego", **kwargs) -> str:
@@ -856,8 +905,11 @@ class UnifiedPersonaChatIntegration:
 
 # === LEGACY COMPATIBILITY LAYER ===
 
+
 # For backward compatibility during migration
-def get_persona_chat_integration(config: Optional[ClaudeDirectorConfig] = None) -> UnifiedPersonaChatIntegration:
+def get_persona_chat_integration(
+    config: Optional[ClaudeDirectorConfig] = None,
+) -> UnifiedPersonaChatIntegration:
     """Factory function for creating persona chat integration."""
     return UnifiedPersonaChatIntegration(config)
 

@@ -9,6 +9,7 @@ import structlog
 
 from .integrated_transparency import IntegratedTransparencySystem, TransparencyContext
 from .persona_integration import TransparentPersonaManager, MCPIntegrationHelper
+
 try:
     from ..integration.unified_bridge import MCPUseClient, MCPResponse
 except ImportError:
@@ -20,6 +21,7 @@ except ImportError:
     class MCPResponse:
         def __init__(self, *args, **kwargs):
             self.success = False
+
 
 logger = structlog.get_logger(__name__)
 

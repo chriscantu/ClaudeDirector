@@ -25,7 +25,7 @@ try:
         EnhancedTransparentPersonaManager,
     )
 except ImportError:
-        # Fallback classes for testing environments
+    # Fallback classes for testing environments
     class RealMCPIntegrationHelper:
         def __init__(self, *args, **kwargs):
             self.is_available = False
@@ -49,6 +49,7 @@ except ImportError:
         def __init__(self, *args, **kwargs):
             self.is_available = False
 
+
 # Optional imports - functionality consolidated into framework_detector.py
 try:
     from ..core.enhanced_framework_engine import (
@@ -61,7 +62,10 @@ except ImportError:
     class FrameworkAnalysisResult:
         def __init__(self):
             self.primary_frameworks = ["Team Topologies", "WRAP Framework"]
-            self.supporting_frameworks = ["Strategic Analysis", "Good Strategy Bad Strategy"]
+            self.supporting_frameworks = [
+                "Strategic Analysis",
+                "Good Strategy Bad Strategy",
+            ]
 
     class MultiFrameworkIntegrationEngine:
         def analyze_systematically(self, user_input, session_id, context):
@@ -78,17 +82,19 @@ try:
         TransparencyContext,
     )
 except ImportError:
-        # Fallback classes for testing environments
+    # Fallback classes for testing environments
     class IntegratedTransparencySystem:
-        def __init__(self, *args, **kwargs): pass
+        def __init__(self, *args, **kwargs):
+            pass
 
         def create_transparency_context(self, *args, **kwargs):
             return TransparencyContext()
 
     class TransparencyContext:
         def __init__(self, *args, **kwargs):
-            self.persona = kwargs.get('persona', 'diego')
+            self.persona = kwargs.get("persona", "diego")
             self.audit_trail = []
+
 
 logger = structlog.get_logger(__name__)
 

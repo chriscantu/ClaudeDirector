@@ -21,6 +21,8 @@ except ImportError:
         class MCPUseClient:
             def __init__(self, *args, **kwargs):
                 self.is_available = False
+
+
 from .complexity_analyzer import (
     AnalysisComplexityDetector as ComplexityAnalyzer,
     ComplexityAnalysis,

@@ -891,21 +891,31 @@ class MCPUseClient:
                     else:
                         failed_servers.append(server_name)
                         self.failed_servers.add(server_name)
-                        logger.warning(f"Failed to connect to MCP server: {server_name}")
+                        logger.warning(
+                            f"Failed to connect to MCP server: {server_name}"
+                        )
                 except Exception as e:
                     failed_servers.append(server_name)
                     self.failed_servers.add(server_name)
                     logger.error(f"Error connecting to {server_name}: {e}")
 
             total_servers = len(self.config.get("servers", {}))
-            success_rate = len(available_servers) / total_servers if total_servers > 0 else 0.0
+            success_rate = (
+                len(available_servers) / total_servers if total_servers > 0 else 0.0
+            )
 
-            return ConnectionStatus(available_servers, failed_servers, total_servers, success_rate)
+            return ConnectionStatus(
+                available_servers, failed_servers, total_servers, success_rate
+            )
 
         except Exception as e:
             logger.error(f"Failed to initialize MCP connections: {e}")
-            return ConnectionStatus([], list(self.config.get("servers", {}).keys()),
-                                  len(self.config.get("servers", {})), 0.0)
+            return ConnectionStatus(
+                [],
+                list(self.config.get("servers", {}).keys()),
+                len(self.config.get("servers", {})),
+                0.0,
+            )
 
     def _build_client_config(self) -> Dict[str, Any]:
         """Build mcp-use client configuration from our config"""
@@ -920,7 +930,9 @@ class MCPUseClient:
 
         return client_config
 
-    async def execute_tool(self, server_name: str, tool_name: str, **kwargs) -> MCPResponse:
+    async def execute_tool(
+        self, server_name: str, tool_name: str, **kwargs
+    ) -> MCPResponse:
         """Execute a tool on specified MCP server"""
         start_time = time.time()
 
@@ -930,7 +942,7 @@ class MCPUseClient:
                 source_server=server_name,
                 processing_time=0.0,
                 success=False,
-                error_message="Server not available or failed to connect"
+                error_message="Server not available or failed to connect",
             )
 
         try:
@@ -941,7 +953,7 @@ class MCPUseClient:
                     source_server=server_name,
                     processing_time=time.time() - start_time,
                     success=False,
-                    error_message="No active session for server"
+                    error_message="No active session for server",
                 )
 
             # Execute tool via mcp-use
@@ -951,7 +963,7 @@ class MCPUseClient:
                 content=str(result),
                 source_server=server_name,
                 processing_time=time.time() - start_time,
-                success=True
+                success=True,
             )
 
         except Exception as e:
@@ -961,7 +973,7 @@ class MCPUseClient:
                 source_server=server_name,
                 processing_time=time.time() - start_time,
                 success=False,
-                error_message=str(e)
+                error_message=str(e),
             )
 
 
@@ -989,13 +1001,18 @@ class CLIContextBridge:
 
         # Import with fallback
         try:
-            from ..context_engineering.strategic_memory_manager import get_strategic_memory_manager
+            from ..context_engineering.strategic_memory_manager import (
+                get_strategic_memory_manager,
+            )
+
             self.session_manager = get_strategic_memory_manager()
         except ImportError:
             logger.warning("Strategic memory manager not available - using fallback")
             self.session_manager = None
 
-    def export_current_context(self, format_type: str = "markdown", output_file: str = None) -> str:
+    def export_current_context(
+        self, format_type: str = "markdown", output_file: str = None
+    ) -> str:
         """Export current strategic context for CLI use"""
         if not self.session_manager:
             return "# Context Export Not Available\nStrategic memory manager not initialized."
@@ -1007,17 +1024,25 @@ class CLIContextBridge:
 
             # Format based on type
             if format_type == "markdown":
-                formatted_content = self._format_markdown_export(strategic_context, session_context)
+                formatted_content = self._format_markdown_export(
+                    strategic_context, session_context
+                )
             elif format_type == "json":
-                formatted_content = self._format_json_export(strategic_context, session_context)
+                formatted_content = self._format_json_export(
+                    strategic_context, session_context
+                )
             elif format_type == "yaml":
-                formatted_content = self._format_yaml_export(strategic_context, session_context)
+                formatted_content = self._format_yaml_export(
+                    strategic_context, session_context
+                )
             else:
-                formatted_content = self._format_markdown_export(strategic_context, session_context)
+                formatted_content = self._format_markdown_export(
+                    strategic_context, session_context
+                )
 
             # Write to file if specified
             if output_file:
-                with open(output_file, 'w') as f:
+                with open(output_file, "w") as f:
                     f.write(formatted_content)
                 return f"Context exported to {output_file}"
 
@@ -1046,7 +1071,7 @@ class CLIContextBridge:
 ---
 """.format(
             timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            context=context[:500] + "..." if len(context) > 500 else context
+            context=context[:500] + "..." if len(context) > 500 else context,
         )
 
         return cli_header
@@ -1054,11 +1079,11 @@ class CLIContextBridge:
     def import_context_from_file(self, file_path: str) -> bool:
         """Import context from file"""
         try:
-            with open(file_path, 'r') as f:
+            with open(file_path, "r") as f:
                 content = f.read()
 
             # Parse based on file extension
-            if file_path.endswith('.json'):
+            if file_path.endswith(".json"):
                 context_data = json.loads(content)
             else:
                 # For markdown/yaml, extract key information
@@ -1084,7 +1109,7 @@ class CLIContextBridge:
             "stakeholders": [],
             "frameworks": [],
             "decisions": [],
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
     def _get_session_context(self) -> Dict[str, Any]:
@@ -1093,10 +1118,12 @@ class CLIContextBridge:
             "active_personas": [],
             "conversation_history": [],
             "current_focus": "strategic_leadership",
-            "session_duration": "ongoing"
+            "session_duration": "ongoing",
         }
 
-    def _format_markdown_export(self, strategic_context: Dict, session_context: Dict) -> str:
+    def _format_markdown_export(
+        self, strategic_context: Dict, session_context: Dict
+    ) -> str:
         """Format context as markdown"""
         return f"""# Strategic Context Export
 *Generated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}*
@@ -1115,17 +1142,21 @@ class CLIContextBridge:
 This context is optimized for ClaudeDirector CLI usage.
 """
 
-    def _format_json_export(self, strategic_context: Dict, session_context: Dict) -> str:
+    def _format_json_export(
+        self, strategic_context: Dict, session_context: Dict
+    ) -> str:
         """Format context as JSON"""
         export_data = {
             "timestamp": datetime.now().isoformat(),
             "strategic_context": strategic_context,
             "session_context": session_context,
-            "export_version": "1.0"
+            "export_version": "1.0",
         }
         return json.dumps(export_data, indent=2)
 
-    def _format_yaml_export(self, strategic_context: Dict, session_context: Dict) -> str:
+    def _format_yaml_export(
+        self, strategic_context: Dict, session_context: Dict
+    ) -> str:
         """Format context as YAML"""
         return f"""# ClaudeDirector Context Export
 timestamp: {datetime.now().isoformat()}
@@ -1146,11 +1177,12 @@ session_context:
         return {
             "content": content,
             "parsed_at": datetime.now().isoformat(),
-            "type": "text_import"
+            "type": "text_import",
         }
 
 
 # === UNIFIED INTEGRATION FACTORY ===
+
 
 def create_mcp_client(config_path: Optional[str] = None) -> MCPUseClient:
     """Factory function for MCP client"""
@@ -1169,5 +1201,5 @@ def create_complete_integration_suite() -> Dict[str, Any]:
         "mcp_client": create_mcp_client(),
         "cli_bridge": create_cli_bridge(),
         "available_integrations": ["unified_bridge", "mcp_client", "cli_bridge"],
-        "initialized_at": datetime.now().isoformat()
+        "initialized_at": datetime.now().isoformat(),
     }
