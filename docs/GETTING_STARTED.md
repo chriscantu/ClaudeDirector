@@ -4,15 +4,18 @@ Complete setup guide for engineering leaders at any level.
 
 ## Installation & Setup
 
-### Cursor Users (Recommended) - Bulletproof Setup
-1. **Clone & Open**: `git clone https://github.com/chriscantu/ClaudeDirector.git && cd ClaudeDirector && cursor .`
-2. **Immediate Reliability**: Setup validated by 29 P0 tests - zero setup failures
-3. **Ask Strategic Question**: "How should we structure our teams for this initiative?"
-4. **60-Second Customization**: First-time users see personalized setup wizard
-5. **Tailored Guidance**: Personas and frameworks activate for your specific role
-6. **Persistent Context**: No need to re-explain across sessions
+### Cursor Users (Recommended) - Production Ready Setup
 
-✅ **Setup Guarantee**: P0-validated setup process ensures 95%+ reliability across all environments
+**Prerequisites**: Git, Python 3.8+, Cursor IDE
+
+1. **Clone & Open**: `git clone https://github.com/chriscantu/ClaudeDirector.git && cd ClaudeDirector && cursor .`
+2. **Reliability Validated**: Setup protected by 36 P0 tests across all environments
+3. **Ask Strategic Question**: "How should we structure our teams for this initiative?"
+4. **60-Second Customization**: First-time wizard personalizes for your leadership role
+5. **Always-On Enhancement**: 100% MCP intelligence active (Phase 12)
+6. **Persistent Context**: All strategic context maintained across sessions
+
+✅ **Quality Assurance**: Production-tested across macOS, Linux, Windows with comprehensive P0 validation
 
 ### Claude Chat Users
 1. Share this repo: `https://github.com/chriscantu/ClaudeDirector`
@@ -92,33 +95,42 @@ Once configured, ClaudeDirector automatically:
 - **Preserves your context** across all sessions (Cursor users)
 - **Shows AI enhancements** in real-time for complete transparency
 
-## 🤖 **ML-Enhanced Intelligence**
+## 🔄 **Phase 12: Always-On MCP Enhancement (Current)**
 
-ClaudeDirector now provides advanced machine learning capabilities for strategic leadership:
+ClaudeDirector v3.5.0 provides guaranteed intelligent enhancement for every strategic query:
 
-### **Real-Time Team Intelligence**
-- **Live coordination monitoring** with <5 minute issue detection
-- **Proactive alerts** for team collaboration challenges (90%+ accuracy)
-- **Pattern recognition** across communication, timing, and workflow
+### **100% Enhancement Rate**
+- **Always-on MCP intelligence** - No complexity thresholds, every query enhanced
+- **Direct persona-server routing** - Intelligent routing based on persona expertise
+- **Magic MCP visual detection** - Automatic routing for diagrams, charts, mockups
+- **<50ms transparency overhead** - Real-time disclosure without performance impact
 
-### **Predictive Collaboration Success**
-- **85%+ accuracy** in predicting team collaboration outcomes
-- **1-week advance warning** for potential coordination issues
-- **Actionable recommendations** for improving team collaboration
+### **Enterprise Reliability**
+- **Lightweight fallback pattern** - Graceful degradation when MCP servers unavailable
+- **36 P0 tests** - Comprehensive validation prevents regressions
+- **Complete transparency** - Full audit trail for enterprise AI governance
 
 ### **How It Works in Practice**
-Ask questions like:
-- "How likely is this cross-functional initiative to succeed?"
-- "What are the collaboration risks for this project timeline?"
-- "Which team patterns should we replicate for better outcomes?"
+Ask current strategic questions like:
+- "How should we structure our teams for this initiative?"
+- "What's the ROI case for our platform investment?"
+- "How do we coordinate across multiple product teams?"
 
-The ML engine automatically analyzes your team context and provides:
-- **Success probability** with confidence intervals
-- **Risk factors** and mitigation strategies
-- **Pattern insights** from successful collaborations
-- **Timeline predictions** for 1-4 week forecasts
+Every query receives:
+- **Specialized persona expertise** with transparent framework attribution
+- **Always-on MCP enhancement** for sophisticated analysis
+- **Visual intelligence** for diagram and chart requests
+- **Complete audit trail** for enterprise compliance
 
-*Performance: <5 seconds for ML predictions, graceful degradation when ML libraries unavailable*
+## 🎯 **Phase 13+: ML-Enhanced Intelligence (Planned)**
+
+Future ML capabilities for predictive strategic leadership:
+- **85%+ accuracy** in predicting team collaboration outcomes
+- **Real-time coordination monitoring** with proactive alerts
+- **Pattern recognition** across communication, timing, and workflow
+- **Predictive timeline analysis** for 1-4 week forecasts
+
+*Current Phase 12 provides the foundation for all future ML enhancements*
 
 ## 📚 **Next Steps**
 

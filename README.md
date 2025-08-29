@@ -1,38 +1,61 @@
 # ClaudeDirector
 
-**Local AI-powered strategic leadership platform** with ML-enhanced team intelligence for engineering leaders. Predict collaboration success with 85%+ accuracy, receive 1-week advance warnings for coordination issues, and get real-time strategic guidance from specialized AI personas - all with complete transparency and running entirely on your local machine.
+## Value Proposition
+
+**The industry's first completely transparent AI strategic leadership system** that transforms engineering leadership from reactive to predictive. Get specialized strategic guidance through role-based AI personas, 25+ proven frameworks, and 100% always-on MCP enhancement - all while maintaining complete privacy with local-first architecture.
+
+### Why ClaudeDirector vs Direct AI Tools?
+- **🎯 Specialized for Leaders**: 25+ strategic frameworks vs generic responses
+- **🔄 Always-On Enhancement**: 100% guaranteed MCP intelligence (Phase 12)
+- **🛡️ Complete Privacy**: Zero data leaves your machine
+- **📊 Enterprise Ready**: Full transparency and audit trails
+- **⚡ Role-Optimized**: Customized for your specific leadership level
+
+---
+
+## Current Capabilities (Phase 12 - Production Ready)
+
+**100% Always-On MCP Enhancement** - Every strategic query receives intelligent enhancement with direct persona-to-server routing, Magic MCP visual intelligence, and lightweight fallback for enterprise reliability.
 
 ## Quick Start
 
-### Local Installation (Git-based) - P0 Validated
-1. **Clone**: `git clone https://github.com/chriscantu/ClaudeDirector.git`
-2. **Open**: `cd ClaudeDirector && cursor .` for seamless integration
-3. **Immediate functionality**: Works without additional setup (29 P0 tests guarantee this)
-4. **Ask strategic question**: "How should we structure our teams for this initiative?"
-5. **60-second customization**: Complete personalization wizard
-6. **Persistent guidance**: Context maintained across all sessions
+### Local Installation (Cursor Recommended)
 
-### Privacy-First Benefits
-- **All data stays local** - No external servers or cloud dependencies
-- **Offline capable** - Works without internet after installation
-- **Individual optimization** - Tuned for personal strategic workflows
-- **Zero recurring costs** - One-time setup, no subscription fees
+**Prerequisites**: Git, Python 3.8+, Cursor IDE (or VS Code)
 
-### Setup Reliability Guarantee
-- **95%+ success rate** across all environments (macOS, Linux, Windows)
-- **P0-validated setup** - 29 automated tests prevent setup failures
-- **Network independent** - basic functionality works without internet
-- **Zero dependencies** - works immediately after git clone
+1. **Clone & Open**: `git clone https://github.com/chriscantu/ClaudeDirector.git && cd ClaudeDirector && cursor .`
+2. **Ask Strategic Question**: "How should we structure our teams for this initiative?"
+3. **60-Second Customization**: First-time wizard personalizes for your role
+4. **Immediate Strategic Guidance**: 100% always-on MCP enhancement active
+5. **Persistent Context**: All decisions and context maintained across sessions
+
+### Privacy-First Architecture
+- **🔒 All data stays local** - No external servers or cloud dependencies
+- **🌐 Offline capable** - Core functionality works without internet
+- **💰 Zero recurring costs** - One-time setup, no subscription fees
+- **⚖️ Enterprise compliant** - Complete audit trails and transparency
+
+### Reliability & Quality
+- **🛡️ 36 P0 Tests** - Comprehensive validation prevents setup failures
+- **✅ Production tested** - Validated across macOS, Linux, Windows
+- **🔄 Graceful degradation** - Lightweight fallback when MCP unavailable
+- **📊 100% MCP enhancement** - Always-on intelligence (Phase 12)
 
 ---
 
 ## Key Features
 
-### ML-Enhanced Team Intelligence
-- **85%+ collaboration success prediction** with 1-week advance warning capability
-- **Real-time coordination monitoring** with <5 minute issue detection
-- **Predictive pattern analysis** across communication, timing, and workflow
-- **Proactive strategic recommendations** based on team interaction data
+### Phase 12: Always-On MCP Enhancement (Current)
+- **🔄 100% Enhancement Rate** - Every strategic query gets MCP intelligence
+- **🎨 Magic MCP Visual Intelligence** - Automatic visual request detection and routing
+- **🛡️ Lightweight Fallback Pattern** - Enterprise reliability with graceful degradation
+- **⚡ <50ms Transparency Overhead** - Real-time disclosure without performance impact
+
+### Phase 13+: ML-Enhanced Team Intelligence (Planned)
+- **🎯 85%+ Collaboration prediction** with 1-week advance warning capability
+- **📊 Real-time coordination monitoring** with <5 minute issue detection
+- **🔍 Predictive pattern analysis** across communication, timing, and workflow
+- **💡 Proactive strategic recommendations** based on team interaction data
 
 ### Complete Transparency
 - Real-time disclosure when AI capabilities are enhanced
@@ -46,12 +69,12 @@
 - Persistent context and memory (Cursor users)
 - Professional strategic guidance for engineering decisions
 
-### Specialized AI Personas (ML-Enhanced)
-- **🎯 Diego** (Engineering Leadership) - Team structure, platform strategy + **predictive team management**
-- **📊 Camille** (Executive Strategy) - Board communication, organizational scaling + **ML-powered strategic planning**
-- **🎨 Rachel** (Design & UX Strategy) - User experience, design systems + **collaboration pattern optimization**
-- **💼 Alvaro** (Business Strategy) - ROI analysis, investment decisions + **ML-enhanced forecasting**
-- **🏗️ Martin** (Technical Architecture) - System design, platform evolution + **intelligent coordination analysis**
+### Specialized AI Personas (Always-On MCP Enhanced)
+- **🎯 Diego** (Engineering Leadership) - Team structure, platform strategy, multinational coordination
+- **📊 Camille** (Executive Strategy) - Board communication, organizational scaling, strategic technology
+- **🎨 Rachel** (Design & UX Strategy) - Design systems, cross-functional alignment, UX leadership
+- **💼 Alvaro** (Business Strategy) - ROI analysis, platform investment, stakeholder communication
+- **🏗️ Martin** (Technical Architecture) - System design, platform evolution, architectural decisions
 - [See all capabilities →](docs/CAPABILITIES.md)
 
 ---
@@ -97,12 +120,12 @@ This is about influence patterns and technical leadership...
 
 ## Advanced Features
 
-### 8-Layer Context Engineering with ML Intelligence
-- **Real-time team coordination monitoring** with predictive analysis
-- **Organizational context persists** across all sessions with learning algorithms
-- **Strategic insights build over time** through ML pattern recognition
-- **Predictive collaboration health scoring** with 85%+ accuracy
-- **Proactive coordination issue detection** with <5 minute alert capability
+### 8-Layer Context Engineering (Phase 12)
+- **Always-on MCP enhancement** with direct persona-server routing
+- **Organizational context persists** across all sessions (Cursor integration)
+- **Strategic framework detection** with automatic attribution
+- **Magic MCP visual intelligence** for diagrams, charts, and mockups
+- **Lightweight fallback pattern** for enterprise reliability
 
 ### 25+ Strategic Frameworks
 Automatically applied with complete transparency:
@@ -110,13 +133,13 @@ Automatically applied with complete transparency:
 - **Capital Allocation Framework** - Strategic investment and ROI optimization
 - **Crucial Conversations** - High-stakes dialogue and conflict resolution
 - **Accelerate Performance** - High-performing technology organization patterns
-- [See all 25+ frameworks →](docs/STRATEGIC_FRAMEWORKS_GUIDE.md)
+- [See all 25+ frameworks →](docs/frameworks/FRAMEWORKS_INDEX.md)
 
-### Local Framework Benefits
-- **Privacy-first architecture** - All strategic data and ML models remain on your machine
-- **Zero server dependencies** - Complete offline capability after installation, including ML predictions
-- **High-performance intelligence** - <5s ML predictions, real-time monitoring, 15-20 minutes saved per session
-- **Enterprise-ready** - Complete transparency for AI governance, compliance, and predictive analytics audit trails
+### Platform Benefits
+- **Privacy-first architecture** - All strategic data remains on your machine
+- **Zero server dependencies** - Complete offline capability after installation
+- **High-performance intelligence** - <50ms transparency overhead, 15-20 minutes saved per session
+- **Enterprise-ready** - Complete transparency for AI governance and compliance audit trails
 
 ---
 
@@ -128,8 +151,8 @@ Automatically applied with complete transparency:
 - [Full Capabilities](docs/CAPABILITIES.md) - Complete persona and framework overview
 
 ### Reference Guides
-- [Strategic Frameworks](docs/STRATEGIC_FRAMEWORKS_GUIDE.md) - 25+ proven methodologies
-- [Architecture Guide](docs/ARCHITECTURE.md) - Technical implementation details
+- [Strategic Frameworks](docs/frameworks/FRAMEWORKS_INDEX.md) - 25+ proven methodologies
+- [Architecture Guide](docs/architecture/OVERVIEW.md) - Technical implementation details
 - [Workspace Guide](docs/WORKSPACE_GUIDE.md) - Leadership templates and best practices
 - [Security Guide](docs/SECURITY.md) - Enterprise security and compliance
 
@@ -141,11 +164,18 @@ Automatically applied with complete transparency:
 
 ## Get Started
 
-Start with your biggest strategic challenge and experience the 60-second customization wizard with ML-enhanced intelligence.
+Start with your biggest strategic challenge and experience the 60-second customization wizard with always-on MCP enhancement.
 
+### Current Capabilities (Phase 12)
 Ask questions like:
+- "How should we structure our teams for this initiative?"
+- "What's the ROI case for our platform investment?"
+- "How do we coordinate across multiple product teams?"
+
+### Future Capabilities (Phase 13+)
+Planned ML-enhanced questions:
 - "How likely is this cross-functional initiative to succeed?"
 - "What are the collaboration risks for this project timeline?"
 - "Which team patterns should we replicate for better outcomes?"
 
-ClaudeDirector delivers predictive insights and strategic guidance for organizational strategy, technology decisions, team optimization, and architectural challenges - with 85%+ collaboration success prediction accuracy.
+**ClaudeDirector delivers specialized strategic guidance for organizational strategy, technology decisions, team optimization, and architectural challenges - with complete transparency and 100% always-on enhancement.**
