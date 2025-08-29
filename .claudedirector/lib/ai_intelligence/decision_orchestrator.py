@@ -491,19 +491,14 @@ class DecisionIntelligenceOrchestrator:
     def _determine_complexity(
         self, detected_patterns: List[str], frameworks: List[str]
     ) -> DecisionComplexity:
-        """🤖 Berny: Determine decision complexity for MCP routing"""
-        pattern_count = len(detected_patterns)
-        framework_count = len(frameworks)
+        """
+        PHASE 12: Always-on MCP enhancement - removed complexity thresholds
 
-        # Strategic decisions with multiple patterns and frameworks
-        if pattern_count >= 3 and framework_count >= 3:
-            return DecisionComplexity.STRATEGIC
-        elif pattern_count >= 2 and framework_count >= 2:
-            return DecisionComplexity.COMPLEX
-        elif pattern_count >= 1 or framework_count >= 1:
-            return DecisionComplexity.MODERATE
-        else:
-            return DecisionComplexity.SIMPLE
+        Always returns STRATEGIC complexity for guaranteed MCP enhancement.
+        This ensures 100% enhancement rate regardless of pattern/framework detection.
+        """
+        # Phase 12: Always return STRATEGIC for maximum MCP enhancement
+        return DecisionComplexity.STRATEGIC
 
     async def _route_to_mcp_servers(
         self,
@@ -515,19 +510,22 @@ class DecisionIntelligenceOrchestrator:
 
         Uses existing RealMCPIntegrationHelper for server coordination.
         """
-        # Get MCP servers based on complexity thresholds
-        complexity_config = self.complexity_thresholds[
-            decision_context.complexity.value
-        ]
-        base_servers = complexity_config["mcp_servers"]
+        # PHASE 12: Always-on MCP enhancement - use direct persona mapping
+        # Get primary server for persona (always-on enhancement)
+        from ..core.enhanced_persona_manager import EnhancedPersonaManager
 
-        # Add persona-specific server preferences
-        persona_servers = self.mcp_helper.server_mapping.get(
-            decision_context.persona, []
+        primary_server = EnhancedPersonaManager.PERSONA_SERVER_MAPPING.get(
+            decision_context.persona, "sequential"
         )
 
-        # Combine and deduplicate
-        all_servers = list(set(base_servers + persona_servers))
+        # Phase 12: Always route to persona's primary server + supporting servers
+        all_servers = [primary_server]
+
+        # Add supporting servers for comprehensive enhancement (strategic level)
+        supporting_servers = ["context7", "sequential", "magic"]
+        for server in supporting_servers:
+            if server not in all_servers:
+                all_servers.append(server)
 
         # Validate server availability (use existing MCP helper)
         available_servers = []

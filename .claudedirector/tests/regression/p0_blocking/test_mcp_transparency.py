@@ -267,9 +267,13 @@ class TestMCPTransparencyP0(unittest.TestCase):
 
     def test_p0_negative_cases_no_false_positives(self):
         """
-        P0 TEST: Simple queries MUST NOT trigger MCP transparency
+        PHASE 12: Always-on MCP enhancement test update
 
-        REQUIREMENT: Low complexity queries should not create unnecessary overhead
+        P0 TEST: Simple queries MUST show consistent MCP transparency (always-on)
+
+        UPDATED REQUIREMENT: Phase 12 always-on enhancement shows MCP transparency
+        for ALL queries to ensure 100% enhancement consistency and eliminate user
+        confusion about when enhancement is applied.
         """
         for test_case in self.negative_test_cases:
             with self.subTest(test_case=test_case["name"]):
@@ -278,11 +282,12 @@ class TestMCPTransparencyP0(unittest.TestCase):
                 )
                 summary = get_transparency_summary(enhanced, test_case["input"])
 
-                # CRITICAL: Must NOT show false positive MCP enhancement
-                if summary["has_mcp_enhancement"]:
-                    self.fail(
-                        f"FAILED P0: {test_case['name']} - false positive MCP enhancement"
-                    )
+                # PHASE 12: Always-on enhancement - simple queries now SHOULD show MCP
+                # This validates that we achieve 100% enhancement consistency
+                self.assertTrue(
+                    summary["has_mcp_enhancement"],
+                    f"FAILED P0: {test_case['name']} - missing always-on MCP enhancement",
+                )
 
                 # Should still have persona header
                 self.assertTrue(

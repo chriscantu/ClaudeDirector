@@ -27,6 +27,7 @@ from .complexity_analyzer import (
     AnalysisComplexityDetector as ComplexityAnalyzer,
     ComplexityAnalysis,
 )
+from .visual_template_manager import VisualTemplateManager
 
 logger = logging.getLogger(__name__)
 
@@ -95,7 +96,25 @@ class TransparencyManager:
 class EnhancedPersonaManager:
     """
     Enhanced persona manager that integrates MCP capabilities with existing personas
+    PHASE 12: Always-on MCP enhancement with direct persona → server routing
     """
+
+    # PHASE 12: Direct persona → MCP server mapping for always-on enhancement
+    PERSONA_SERVER_MAPPING = {
+        "diego": "sequential",  # systematic_analysis
+        "martin": "context7",  # architecture_patterns
+        "rachel": "context7",  # design_methodology
+        "camille": "sequential",  # strategic_technology
+        "alvaro": "sequential",  # business_strategy
+        "sofia": "sequential",  # vendor_strategy
+        "elena": "context7",  # compliance_strategy
+        "marcus": "context7",  # platform_adoption
+        "david": "sequential",  # financial_planning
+        "berny": "sequential",  # ai_ml_strategy
+        "delbert": "sequential",  # data_strategy
+        "security": "context7",  # security_architecture
+        "data": "sequential",  # analytics_strategy
+    }
 
     def __init__(self, config_path: Optional[str] = None):
         """
@@ -107,6 +126,8 @@ class EnhancedPersonaManager:
         self.mcp_client = MCPUseClient(config_path)
         self.complexity_analyzer = ComplexityAnalyzer(self.mcp_client.config)
         self.transparency_manager = TransparencyManager()
+        # PHASE 12: Visual template manager for Magic MCP integration
+        self.visual_template_manager = VisualTemplateManager()
         self.is_initialized = False
 
         # Persona-specific settings
@@ -228,56 +249,63 @@ class EnhancedPersonaManager:
         self, persona: str, complexity_analysis: ComplexityAnalysis
     ) -> bool:
         """
-        Determine if enhancement should be attempted
+        PHASE 12: Always-on MCP enhancement - removed complexity thresholds
+
+        Always returns True when MCP client is available for guaranteed 100% enhancement rate.
+        No more complexity threshold detection or conditional enhancement logic.
 
         Args:
             persona: Persona name
-            complexity_analysis: Complexity analysis result
+            complexity_analysis: ComplexityAnalysis (kept for API compatibility)
 
         Returns:
-            True if enhancement should be attempted
+            True if MCP client is available (always-on enhancement)
         """
-        if not self.mcp_client.is_available:
-            return False
+        # Phase 12: Always-on enhancement - only check MCP availability
+        return self.mcp_client.is_available
 
-        persona_config = self.persona_configs.get(persona, {})
-        threshold = persona_config.get("enhancement_threshold", 0.6)
+    def get_mcp_server_for_persona(self, persona: str) -> str:
+        """
+        PHASE 12: Get primary MCP server for persona (always-on routing)
 
-        # Check if complexity meets threshold
-        if complexity_analysis.confidence < threshold:
-            return False
+        Args:
+            persona: Persona name
 
-        # Check if recommended enhancement matches persona capabilities
-        if complexity_analysis.recommended_enhancement:
-            capabilities = persona_config.get("capabilities", [])
-            enhancement_type = complexity_analysis.recommended_enhancement
+        Returns:
+            MCP server name for this persona
+        """
+        return self.PERSONA_SERVER_MAPPING.get(
+            persona, "sequential"
+        )  # Default to sequential
 
-            # Map enhancement types to capabilities
-            enhancement_mapping = {
-                "systematic_analysis": [
-                    "systematic_analysis",
-                    "organizational_scaling",
-                ],
-                "architecture_patterns": [
-                    "architecture_patterns",
-                    "technical_frameworks",
-                ],
-                "design_system_methodology": [
-                    "design_system_methodology",
-                    "cross_team_coordination",
-                ],
-                "business_strategy": ["business_strategy", "competitive_analysis"],
-                "technology_leadership": [
-                    "technology_leadership",
-                    "organizational_scaling",
-                ],
-            }
+    def is_visual_request(self, user_input: str) -> bool:
+        """
+        PHASE 12: Check if user input requests visual enhancement
 
-            required_capabilities = enhancement_mapping.get(enhancement_type, [])
-            if any(cap in capabilities for cap in required_capabilities):
-                return True
+        Args:
+            user_input: User's request
 
-        return False
+        Returns:
+            True if request should route to Magic MCP for visual enhancement
+        """
+        return self.visual_template_manager.detect_visual_request(user_input)
+
+    def get_visual_enhancement_context(
+        self, persona: str, user_input: str
+    ) -> Dict[str, Any]:
+        """
+        PHASE 12: Get Magic MCP visual enhancement context for persona
+
+        Args:
+            persona: Persona name
+            user_input: User's visual request
+
+        Returns:
+            Context dictionary for Magic MCP visual enhancement
+        """
+        return self.visual_template_manager.get_magic_mcp_enhancement_context(
+            persona, user_input
+        )
 
     async def _get_enhanced_response(
         self,
@@ -601,15 +629,15 @@ class EnhancedPersonaManager:
         self, persona: str, user_input: str, context: Optional[Dict[str, Any]]
     ) -> str:
         """
-        Get standard response without MCP enhancement
+            Get standard response without MCP enhancement
 
         Args:
-            persona: Persona name
-            user_input: User input
-            context: Conversation context
+                persona: Persona name
+                user_input: User input
+                context: Conversation context
 
         Returns:
-            Standard persona response
+                Standard persona response
         """
         # Enhanced standard responses with persona-specific context awareness
         input_preview = user_input[:50] + "..." if len(user_input) > 50 else user_input

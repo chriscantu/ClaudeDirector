@@ -137,11 +137,13 @@ def enhance_response_with_transparency(response: str, persona: str) -> str:
 
 ## 📊 **PERFORMANCE & QUALITY TARGETS**
 
-### **Response Time Optimization:**
+### **Response Time Optimization (OVERVIEW.md Compliant):**
+- **Transparency Overhead**: <50ms for MCP disclosure generation (OVERVIEW.md requirement)
 - **Primary Server**: <300ms for single MCP server enhancement
 - **Multi-Server**: <500ms for complex queries requiring multiple servers
 - **Fallback Mode**: <100ms when MCP servers unavailable
-- **Caching Strategy**: Intelligent caching of framework patterns and persona preferences
+- **Cache Operations**: <50ms for 95% of cache hits (OVERVIEW.md requirement)
+- **Visual Enhancement**: <50ms for Magic MCP detection and routing
 
 ### **Quality Improvements:**
 - **Consistency**: 100% of strategic queries get MCP enhancement
@@ -155,13 +157,19 @@ def enhance_response_with_transparency(response: str, persona: str) -> str:
 
 ### **Persona → Server Mapping (Always Active):**
 
-| Persona | Primary Server | Capability | Use Case |
-|---------|---------------|------------|----------|
-| **Diego** | Sequential | systematic_analysis | Engineering leadership, organizational scaling |
-| **Martin** | Context7 | architecture_patterns | Technical architecture, system design |
-| **Rachel** | Context7 | design_methodology | Design systems, UX strategy |
-| **Camille** | Sequential | strategic_technology | Technology leadership, executive strategy |
-| **Alvaro** | Sequential | business_strategy | Platform investment, competitive analysis |
+| Persona | Primary Server | Capability | Use Case | Visual Enhancement |
+|---------|---------------|------------|----------|-------------------|
+| **Diego** | Sequential | systematic_analysis | Engineering leadership, organizational scaling | Magic (org charts) |
+| **Martin** | Context7 | architecture_patterns | Technical architecture, system design | Magic (diagrams) |
+| **Rachel** | Context7 | design_methodology | Design systems, UX strategy | **Magic (Default)** |
+| **Camille** | Sequential | strategic_technology | Technology leadership, executive strategy | Magic (strategy visuals) |
+| **Alvaro** | Sequential | business_strategy | Platform investment, competitive analysis | Magic (ROI dashboards) |
+
+#### **🎨 Magic MCP Visual Enhancement - DEFAULT BEHAVIOR (OVERVIEW.md Compliant):**
+- **Automatic Trigger**: All visual requests (diagrams, charts, mockups) → Magic MCP
+- **Persona Integration**: Each persona has specialized visual templates
+- **Performance**: <50ms visual enhancement detection per OVERVIEW.md
+- **Transparency**: Always disclose Magic MCP usage: `🔧 Accessing MCP Server: magic (visual_generation)`
 
 ### **Multi-Server Enhancement Logic:**
 - **Executive Context**: Add Sequential for business modeling
@@ -179,29 +187,44 @@ def enhance_response_with_transparency(response: str, persona: str) -> str:
 - **Performance SLA**: <500ms response time maintained
 - **Zero Regression**: Existing functionality preserved
 
-### **Graceful Degradation Strategy:**
+### **Lightweight Fallback Pattern (OVERVIEW.md Architecture Innovation):**
 ```python
+# Phase 12 implements OVERVIEW.md Lightweight Fallback Pattern
 async def enhance_with_mcp_or_fallback(persona: str, query: str) -> str:
+    """Implements lightweight fallback pattern from OVERVIEW.md"""
     try:
-        # Always attempt MCP enhancement
-        server = self.get_primary_server(persona)
-        enhanced_response = await self.mcp_client.enhance(server, query)
-        return self.add_transparency_disclosure(enhanced_response, server)
-    except MCPServerUnavailable:
-        # Fallback to high-quality persona response
-        fallback_response = await self.generate_persona_response(persona, query)
-        return self.add_fallback_disclosure(fallback_response)
+        # 🔍 Dependency Check (OVERVIEW.md pattern)
+        if self.mcp_dependency_check(persona):
+            # 💪 Heavyweight Module - Full MCP Enhancement
+            server = self.get_primary_server(persona)
+            enhanced_response = await self.mcp_client.enhance(server, query)
+            return self.add_transparency_disclosure(enhanced_response, server)
+        else:
+            # 🪶 Lightweight Fallback - Essential Features
+            fallback_response = self.generate_lightweight_persona_response(persona, query)
+            return self.add_fallback_transparency(fallback_response)
+    except Exception:
+        # ⚡ Essential Features Always Available
+        essential_response = self.generate_essential_response(persona, query)
+        return self.add_essential_disclosure(essential_response)
+
+def mcp_dependency_check(self, persona: str) -> bool:
+    """Smart Detection: OVERVIEW.md lightweight fallback pattern"""
+    return (self.mcp_client.is_available() and
+            self.server_health_check(self.get_primary_server(persona)))
 ```
 
 ---
 
 ## 🚀 **IMPLEMENTATION PHASES**
 
-### **Phase 12.1: Core Architecture (Week 1)**
+### **Phase 12.1: Core Architecture (Week 1) - TESTING_ARCHITECTURE.md Compliant**
 1. **Simplify Persona Manager**: Remove complexity thresholds, implement always-on routing
 2. **Update Decision Orchestrator**: Streamline MCP server selection logic
 3. **Enhance Transparency**: Always-on disclosure formatting
-4. **P0 Test Updates**: Ensure all tests pass with new behavior
+4. **P0 Test Registry Update**: Add Phase 12 tests to `p0_test_definitions.yaml` (TESTING_ARCHITECTURE.md requirement)
+5. **Unified Test Runner Integration**: Integrate with existing `P0TestEnforcer` system
+6. **Environment Parity**: Ensure local = CI test execution consistency
 
 ### **Phase 12.2: Performance Optimization (Week 2)**
 1. **Caching Strategy**: Implement intelligent MCP response caching
@@ -235,11 +258,37 @@ async def enhance_with_mcp_or_fallback(persona: str, query: str) -> str:
 
 ## ✅ **SUCCESS CRITERIA**
 
-### **Technical Milestones:**
+### **Technical Milestones (TESTING_ARCHITECTURE.md Compliant):**
 - [ ] **Complexity Thresholds Removed**: Simplified always-on architecture
 - [ ] **Persona-Server Mapping**: Direct routing without decision complexity
 - [ ] **Transparency Enhanced**: Always-on MCP disclosure
 - [ ] **Performance Maintained**: <500ms response time with 100% MCP enhancement
+- [ ] **P0 Test Registry Updated**: New Phase 12 tests added to YAML configuration
+- [ ] **Unified Test Runner**: Integration with existing P0TestEnforcer system
+
+#### **Required P0 Test Additions (TESTING_ARCHITECTURE.md Pattern):**
+```yaml
+# Phase 12 P0 tests for p0_test_definitions.yaml
+- name: "MCP Always-On Enhancement P0"
+  test_module: ".claudedirector/tests/regression/p0_blocking/test_mcp_always_on_p0.py"
+  critical_level: "BLOCKING"
+  timeout_seconds: 120
+  description: "Always-on MCP enhancement must achieve 100% enhancement rate"
+  failure_impact: "MCP enhancement becomes inconsistent, user experience degraded"
+  business_impact: "Enterprise AI consistency compromised, competitive advantage lost"
+  introduced_version: "v3.5.0"
+  owner: "martin"
+
+- name: "Magic MCP Visual Enhancement P0"
+  test_module: ".claudedirector/tests/regression/p0_blocking/test_magic_mcp_visual_p0.py"
+  critical_level: "BLOCKING"
+  timeout_seconds: 90
+  description: "Magic MCP must automatically handle all visual enhancement requests"
+  failure_impact: "Visual enhancements fail, strategic communication compromised"
+  business_impact: "Executive presentations and strategic visualization degraded"
+  introduced_version: "v3.5.0"
+  owner: "martin"
+```
 
 ### **Quality Milestones:**
 - [ ] **33/33 P0 Tests**: All tests passing with new architecture
