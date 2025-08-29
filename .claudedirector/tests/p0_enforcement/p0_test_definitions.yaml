@@ -328,7 +328,15 @@ p0_features:
     introduced_version: "v3.2.0"
     owner: "martin"
 
-
+  - name: "Phase 8 Performance Optimization P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_phase8_performance_p0.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 300
+    description: "Phase 8 performance optimization must achieve <500ms response times and <50MB memory usage for enterprise-grade performance"
+    failure_impact: "System performance degrades below enterprise thresholds, user experience suffers significantly"
+    business_impact: "Executive frustration with slow responses, system abandonment risk, competitive disadvantage"
+    introduced_version: "v3.3.0"
+    owner: "martin"
 
 
 # Enforcement settings
