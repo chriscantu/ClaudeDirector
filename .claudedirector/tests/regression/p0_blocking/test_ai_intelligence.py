@@ -202,7 +202,8 @@ class TestAIIntelligenceP0(unittest.TestCase):
         if self.fallback_mode:
             # P0 FALLBACK: Validate performance interfaces exist
             import time
-            self.assertTrue(hasattr(time, 'time'))
+
+            self.assertTrue(hasattr(time, "time"))
             return
         complex_decision = """
         We're planning a major organizational transformation involving team restructuring,
@@ -487,7 +488,8 @@ class TestAIIntelligenceP0(unittest.TestCase):
         if self.fallback_mode:
             # P0 FALLBACK: Validate concurrent processing interfaces exist
             import concurrent.futures
-            self.assertTrue(hasattr(concurrent.futures, 'ThreadPoolExecutor'))
+
+            self.assertTrue(hasattr(concurrent.futures, "ThreadPoolExecutor"))
             return
 
         # Create multiple concurrent tasks
@@ -535,7 +537,8 @@ class TestAIIntelligenceP0(unittest.TestCase):
         if self.fallback_mode:
             # P0 FALLBACK: Validate resource management interfaces exist
             import gc
-            self.assertTrue(hasattr(gc, 'collect'))
+
+            self.assertTrue(hasattr(gc, "collect"))
             return
         # Test with large decision input (simulating real-world complexity)
         large_decision = "Strategic decision " * 1000  # Large input
@@ -562,7 +565,8 @@ class TestAIIntelligenceP0(unittest.TestCase):
         if self.fallback_mode:
             # P0 FALLBACK: Validate error recovery interfaces exist
             import logging
-            self.assertTrue(hasattr(logging, 'getLogger'))
+
+            self.assertTrue(hasattr(logging, "getLogger"))
             return
         # Test with invalid input
         invalid_inputs = [

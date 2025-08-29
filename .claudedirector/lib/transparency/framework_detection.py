@@ -8,7 +8,15 @@ from typing import List, Dict
 from dataclasses import dataclass
 
 # Import centralized configuration
-from ..core.constants.transparency_config import DEFAULT_CONFIDENCE_SCORE, STRATEGIC_DOMAIN
+try:
+    from ..core.constants.transparency_config import (
+        DEFAULT_CONFIDENCE_SCORE,
+        STRATEGIC_DOMAIN,
+    )
+except ImportError:
+    # Fallback constants for import issues
+    DEFAULT_CONFIDENCE_SCORE = 0.0
+    STRATEGIC_DOMAIN = "strategic"
 
 try:
     from core.constants.framework_definitions import FRAMEWORK_REGISTRY
