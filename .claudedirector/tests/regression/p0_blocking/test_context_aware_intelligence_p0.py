@@ -13,76 +13,24 @@ import sys
 from pathlib import Path
 
 # Add project root to path
-PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
+PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector" / "lib"))
 
-# Import components to test
-try:
-    # First try direct import (works when PYTHONPATH is set correctly)
-    from ai_intelligence.context_aware_intelligence import (
-        ContextAwareIntelligence,
-    )
-    from ai_intelligence.context.context_analyzer import (
-        ContextComplexity,
-        SituationalContext,
-    )
-    from ai_intelligence.context.framework_selector import (
-        ContextualFrameworkRecommendation,
-    )
-    from ai_intelligence.context.persona_selector import (
-        PersonaActivationRecommendation,
-    )
-except ImportError:
-    try:
-        # Fallback 1: Try with lib prefix
-        from lib.ai_intelligence.context_aware_intelligence import (
-            ContextAwareIntelligence,
-        )
-        from lib.ai_intelligence.context.context_analyzer import (
-            ContextComplexity,
-            SituationalContext,
-        )
-        from lib.ai_intelligence.context.framework_selector import (
-            ContextualFrameworkRecommendation,
-        )
-        from lib.ai_intelligence.context.persona_selector import (
-            PersonaActivationRecommendation,
-        )
-    except ImportError:
-        # Fallback 2: Add paths and try again
-        import sys
-
-        sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector" / "lib"))
-        sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
-
-        try:
-            from ai_intelligence.context_aware_intelligence import (
-                ContextAwareIntelligence,
-            )
-            from ai_intelligence.context.context_analyzer import (
-                ContextComplexity,
-                SituationalContext,
-            )
-            from ai_intelligence.context.framework_selector import (
-                ContextualFrameworkRecommendation,
-            )
-            from ai_intelligence.context.persona_selector import (
-                PersonaActivationRecommendation,
-            )
-        except ImportError:
-            from lib.ai_intelligence.context_aware_intelligence import (
-                ContextAwareIntelligence,
-            )
-            from lib.ai_intelligence.context.context_analyzer import (
-                ContextComplexity,
-                SituationalContext,
-            )
-            from lib.ai_intelligence.context.framework_selector import (
-                ContextualFrameworkRecommendation,
-            )
-            from lib.ai_intelligence.context.persona_selector import (
-                PersonaActivationRecommendation,
-            )
+# Simplified import strategy - direct path, no complex fallbacks
+from ai_intelligence.context_aware_intelligence import (
+    ContextAwareIntelligence,
+)
+from ai_intelligence.context.context_analyzer import (
+    ContextComplexity,
+    SituationalContext,
+)
+from ai_intelligence.context.framework_selector import (
+    ContextualFrameworkRecommendation,
+)
+from ai_intelligence.context.persona_selector import (
+    PersonaActivationRecommendation,
+)
 
 
 class TestContextAwareIntelligenceV2P0(unittest.TestCase):
