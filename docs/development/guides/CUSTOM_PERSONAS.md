@@ -23,12 +23,15 @@ class PersonaDefinition:
     personality_traits: Dict     # Communication style
     mcp_preferences: Dict        # Preferred enhancement servers
     framework_affinity: List[str] # Strategic frameworks
+    challenge_patterns: Dict     # Challenge behavior configuration
+    challenge_focus: List[str]   # Domain-specific challenge areas
 
 class CustomPersona:
     """Base class for strategic personas"""
 
     def __init__(self, definition: PersonaDefinition):
         self.definition = definition
+        self.challenge_framework = StrategicChallengeFramework()
 
     def analyze_context(self, input_text: str) -> float:
         """Return confidence score for handling this context"""
@@ -38,6 +41,16 @@ class CustomPersona:
 
     def select_frameworks(self, context: str) -> List[str]:
         """Choose relevant strategic frameworks"""
+
+    def should_challenge(self, user_input: str) -> bool:
+        """Determine if persona should challenge user assumptions"""
+        return self.challenge_framework.should_challenge(user_input, self.definition.name)
+
+    def generate_challenge_questions(self, user_input: str) -> List[str]:
+        """Generate domain-specific challenge questions"""
+        return self.challenge_framework.generate_persona_challenges(
+            user_input, self.definition.name, self.definition.challenge_focus
+        )
 ```
 
 ### **Persona Registration**
@@ -45,14 +58,21 @@ class CustomPersona:
 # .claudedirector/config/persona_registry.py
 from claudedirector.personas.custom_persona import CustomPersona
 
-# Register new persona
+# Register new persona with challenge framework integration
 persona_registry.register(
     name="sofia",
     class_ref=VendorStrategyPersona,
     activation_keywords=["vendor", "partnership", "procurement", "supplier"],
     domain_expertise=["vendor_management", "strategic_partnerships"],
     mcp_servers=["sequential", "context7"],
-    frameworks=["Vendor Selection Framework", "Partnership Strategy"]
+    frameworks=["Vendor Selection Framework", "Partnership Strategy"],
+    challenge_patterns={
+        "assumption_test": ["vendor", "partnership", "obviously", "clearly"],
+        "root_cause_probe": ["problem", "issue", "challenge", "need"],
+        "evidence_demand": ["best", "should", "must", "always"],
+        "alternative_exploration": ["solution", "approach", "strategy"]
+    },
+    challenge_focus=["vendor_assumptions", "partnership_validation", "procurement_evidence"]
 )
 ```
 
@@ -62,6 +82,10 @@ persona_registry.register(
 
 ### **Persona Design Principles**
 - **Domain Expertise**: Clear specialization area with specific knowledge
+- **Challenge Integration**: Define domain-specific challenge patterns and focus areas
+- **Evidence Requirements**: Specify what evidence the persona demands for validation
+- **Professional Tone**: Maintain collaborative but firm challenge approach
+- **Assumption Testing**: Identify key assumptions the persona should challenge in their domain
 - **Authentic Personality**: Consistent communication style and approach
 - **Strategic Focus**: Business and organizational leadership orientation
 - **Framework Integration**: Natural use of relevant strategic methodologies

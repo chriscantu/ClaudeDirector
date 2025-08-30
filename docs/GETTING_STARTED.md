@@ -63,13 +63,19 @@ Ask questions like these to trigger the customization wizard:
 
 ### **Engineering Director**
 - "How should we structure our platform teams?"
+  - **Challenge Response**: "What organizational assumptions are we making about team structure? Have we validated that team boundaries align with actual system boundaries?"
 - "What's the ROI case for our design system investment?"
+  - **Challenge Response**: "What evidence do we have that design system adoption will deliver the projected ROI? Have we measured current design inefficiencies?"
 - "How do we coordinate across 8 different product teams?"
+  - **Challenge Response**: "Are we solving a coordination problem or a communication problem? What's the root cause of the coordination challenges?"
 
 ### **Engineering Manager**
 - "How do we improve cross-functional collaboration with Product?"
+  - **Challenge Response**: "What assumptions are we making about why collaboration is poor? Have we validated the root causes with both teams?"
 - "What's the best way to structure team rituals and meetings?"
+  - **Challenge Response**: "Are we solving a process problem or a communication problem? What evidence shows current rituals aren't working?"
 - "How do I help my team members grow their careers?"
+  - **Challenge Response**: "What assumptions are we making about what career growth means to each individual? Have we validated their actual career goals?"
 
 ### **Staff/Principal Engineer**
 - "How do I drive architectural decisions without direct authority?"
@@ -92,6 +98,8 @@ Ask questions like these to trigger the customization wizard:
 Once configured, ClaudeDirector automatically:
 - **Activates relevant personas** for your role and challenges
 - **Applies proven frameworks** transparently with attribution
+- **Challenges your assumptions** with 100% detection accuracy to ensure strategic clarity
+- **Demands evidence and validation** before providing recommendations
 - **Preserves your context** across all sessions (Cursor users)
 - **Shows AI enhancements** in real-time for complete transparency
 
