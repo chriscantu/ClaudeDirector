@@ -1,0 +1,41 @@
+🔍 CI IMPORT DIAGNOSTIC
+==================================================
+Python version: 3.13.7 (main, Aug 14 2025, 11:12:11) [Clang 17.0.0 (clang-1700.0.13.3)]
+Python executable: /opt/homebrew/opt/python@3.13/bin/python3.13
+Current working directory: /Users/chris.cantu/repos/ai-leadership
+PYTHONPATH: NOT SET
+
+Python sys.path:
+  0: /Users/chris.cantu/repos/ai-leadership/.claudedirector/tests
+  1: /opt/homebrew/Cellar/python@3.13/3.13.7/Frameworks/Python.framework/Versions/3.13/lib/python313.zip
+  2: /opt/homebrew/Cellar/python@3.13/3.13.7/Frameworks/Python.framework/Versions/3.13/lib/python3.13
+  3: /opt/homebrew/Cellar/python@3.13/3.13.7/Frameworks/Python.framework/Versions/3.13/lib/python3.13/lib-dynload
+  4: /Users/chris.cantu/Library/Python/3.13/lib/python/site-packages
+  5: /opt/homebrew/lib/python3.13/site-packages
+
+PROJECT_ROOT calculation:
+  Test file: /Users/chris.cantu/repos/ai-leadership/.claudedirector/tests/debug_ci_import.py
+  PROJECT_ROOT: /Users/chris.cantu/repos/ai-leadership
+  PROJECT_ROOT absolute: /Users/chris.cantu/repos/ai-leadership
+
+Lib directory check:
+  Lib path: /Users/chris.cantu/repos/ai-leadership/.claudedirector/lib
+  Lib exists: True
+  Lib contents: [PosixPath('/Users/chris.cantu/repos/ai-leadership/.claudedirector/lib/transparency'), PosixPath('/Users/chris.cantu/repos/ai-leadership/.claudedirector/lib/ml_intelligence'), PosixPath('/Users/chris.cantu/repos/ai-leadership/.claudedirector/lib/core'), PosixPath('/Users/chris.cantu/repos/ai-leadership/.claudedirector/lib/cursor_transparency_bridge.py'), PosixPath('/Users/chris.cantu/repos/ai-leadership/.claudedirector/lib/benchmark.py')]...
+
+AI Intelligence directory check:
+  AI Intel path: /Users/chris.cantu/repos/ai-leadership/.claudedirector/lib/ai_intelligence
+  AI Intel exists: True
+  AI Intel contents: [PosixPath('/Users/chris.cantu/repos/ai-leadership/.claudedirector/lib/ai_intelligence/mcp_decision_pipeline.py'), PosixPath('/Users/chris.cantu/repos/ai-leadership/.claudedirector/lib/ai_intelligence/predictive'), PosixPath('/Users/chris.cantu/repos/ai-leadership/.claudedirector/lib/ai_intelligence/context'), PosixPath('/Users/chris.cantu/repos/ai-leadership/.claudedirector/lib/ai_intelligence/predictive_engine.py'), PosixPath('/Users/chris.cantu/repos/ai-leadership/.claudedirector/lib/ai_intelligence/context_aware_intelligence.py')]...
+
+🧪 STEP-BY-STEP IMPORT TEST
+------------------------------
+Added to sys.path: /Users/chris.cantu/repos/ai-leadership/.claudedirector/lib
+✅ Step 1: import ai_intelligence - SUCCESS
+   ai_intelligence.__file__: /Users/chris.cantu/repos/ai-leadership/.claudedirector/lib/ai_intelligence/__init__.py
+✅ Step 2: from ai_intelligence import decision_orchestrator - SUCCESS
+✅ Step 3: from ai_intelligence.decision_orchestrator import DecisionIntelligenceOrchestrator - SUCCESS
+✅ Step 4: from ai_intelligence.mcp_decision_pipeline import MCPEnhancedDecisionPipeline - SUCCESS
+
+🎉 ALL IMPORTS SUCCESSFUL!
+The import issue may be in the test file setup, not the modules themselves.
