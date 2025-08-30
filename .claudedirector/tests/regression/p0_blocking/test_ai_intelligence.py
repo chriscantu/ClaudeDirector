@@ -27,6 +27,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector" / "lib"))
 
 try:
+    # First try direct import (works when PYTHONPATH is set correctly)
     from ai_intelligence.decision_orchestrator import (
         DecisionIntelligenceOrchestrator,
         DecisionComplexity,
@@ -35,17 +36,38 @@ try:
         MCPEnhancedDecisionPipeline,
     )
 except ImportError:
-    # Fallback for test environment
-    import sys
+    try:
+        # Fallback 1: Try with lib prefix
+        from lib.ai_intelligence.decision_orchestrator import (
+            DecisionIntelligenceOrchestrator,
+            DecisionComplexity,
+        )
+        from lib.ai_intelligence.mcp_decision_pipeline import (
+            MCPEnhancedDecisionPipeline,
+        )
+    except ImportError:
+        # Fallback 2: Add paths and try again
+        import sys
 
-    sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
-    from lib.ai_intelligence.decision_orchestrator import (
-        DecisionIntelligenceOrchestrator,
-        DecisionComplexity,
-    )
-    from lib.ai_intelligence.mcp_decision_pipeline import (
-        MCPEnhancedDecisionPipeline,
-    )
+        sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector" / "lib"))
+        sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
+
+        try:
+            from ai_intelligence.decision_orchestrator import (
+                DecisionIntelligenceOrchestrator,
+                DecisionComplexity,
+            )
+            from ai_intelligence.mcp_decision_pipeline import (
+                MCPEnhancedDecisionPipeline,
+            )
+        except ImportError:
+            from lib.ai_intelligence.decision_orchestrator import (
+                DecisionIntelligenceOrchestrator,
+                DecisionComplexity,
+            )
+            from lib.ai_intelligence.mcp_decision_pipeline import (
+                MCPEnhancedDecisionPipeline,
+            )
 
 
 class TestAIIntelligenceP0(unittest.TestCase):

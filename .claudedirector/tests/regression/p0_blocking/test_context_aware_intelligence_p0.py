@@ -18,33 +18,71 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 # Import components to test
 try:
-    from claudedirector.lib.ai_intelligence.context_aware_intelligence import (
+    # First try direct import (works when PYTHONPATH is set correctly)
+    from ai_intelligence.context_aware_intelligence import (
         ContextAwareIntelligence,
     )
-    from claudedirector.lib.ai_intelligence.context.context_analyzer import (
+    from ai_intelligence.context.context_analyzer import (
         ContextComplexity,
         SituationalContext,
     )
-    from claudedirector.lib.ai_intelligence.context.framework_selector import (
+    from ai_intelligence.context.framework_selector import (
         ContextualFrameworkRecommendation,
     )
-    from claudedirector.lib.ai_intelligence.context.persona_selector import (
+    from ai_intelligence.context.persona_selector import (
         PersonaActivationRecommendation,
     )
 except ImportError:
-    # Fallback for test environment
-    sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
-    from lib.ai_intelligence.context_aware_intelligence import ContextAwareIntelligence
-    from lib.ai_intelligence.context.context_analyzer import (
-        ContextComplexity,
-        SituationalContext,
-    )
-    from lib.ai_intelligence.context.framework_selector import (
-        ContextualFrameworkRecommendation,
-    )
-    from lib.ai_intelligence.context.persona_selector import (
-        PersonaActivationRecommendation,
-    )
+    try:
+        # Fallback 1: Try with lib prefix
+        from lib.ai_intelligence.context_aware_intelligence import (
+            ContextAwareIntelligence,
+        )
+        from lib.ai_intelligence.context.context_analyzer import (
+            ContextComplexity,
+            SituationalContext,
+        )
+        from lib.ai_intelligence.context.framework_selector import (
+            ContextualFrameworkRecommendation,
+        )
+        from lib.ai_intelligence.context.persona_selector import (
+            PersonaActivationRecommendation,
+        )
+    except ImportError:
+        # Fallback 2: Add paths and try again
+        import sys
+
+        sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector" / "lib"))
+        sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
+
+        try:
+            from ai_intelligence.context_aware_intelligence import (
+                ContextAwareIntelligence,
+            )
+            from ai_intelligence.context.context_analyzer import (
+                ContextComplexity,
+                SituationalContext,
+            )
+            from ai_intelligence.context.framework_selector import (
+                ContextualFrameworkRecommendation,
+            )
+            from ai_intelligence.context.persona_selector import (
+                PersonaActivationRecommendation,
+            )
+        except ImportError:
+            from lib.ai_intelligence.context_aware_intelligence import (
+                ContextAwareIntelligence,
+            )
+            from lib.ai_intelligence.context.context_analyzer import (
+                ContextComplexity,
+                SituationalContext,
+            )
+            from lib.ai_intelligence.context.framework_selector import (
+                ContextualFrameworkRecommendation,
+            )
+            from lib.ai_intelligence.context.persona_selector import (
+                PersonaActivationRecommendation,
+            )
 
 
 class TestContextAwareIntelligenceV2P0(unittest.TestCase):

@@ -18,27 +18,53 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 # Import components to test
 try:
-    from claudedirector.lib.ai_intelligence.predictive_analytics_engine import (
+    # First try direct import (works when PYTHONPATH is set correctly)
+    from ai_intelligence.predictive_analytics_engine import (
         PredictiveAnalyticsEngine,
         StrategicChallengePrediction,
     )
-    from claudedirector.lib.ai_intelligence.predictive.prediction_models import (
+    from ai_intelligence.predictive.prediction_models import (
         ChallengeType,
     )
-    from claudedirector.lib.ai_intelligence.predictive.recommendation_generator import (
+    from ai_intelligence.predictive.recommendation_generator import (
         PredictionConfidence,
     )
 except ImportError:
-    # Fallback for test environment
-    sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
-    from lib.ai_intelligence.predictive_analytics_engine import (
-        PredictiveAnalyticsEngine,
-        StrategicChallengePrediction,
-    )
-    from lib.ai_intelligence.predictive.prediction_models import ChallengeType
-    from lib.ai_intelligence.predictive.recommendation_generator import (
-        PredictionConfidence,
-    )
+    try:
+        # Fallback 1: Try with lib prefix
+        from lib.ai_intelligence.predictive_analytics_engine import (
+            PredictiveAnalyticsEngine,
+            StrategicChallengePrediction,
+        )
+        from lib.ai_intelligence.predictive.prediction_models import ChallengeType
+        from lib.ai_intelligence.predictive.recommendation_generator import (
+            PredictionConfidence,
+        )
+    except ImportError:
+        # Fallback 2: Add paths and try again
+        import sys
+
+        sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector" / "lib"))
+        sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
+
+        try:
+            from ai_intelligence.predictive_analytics_engine import (
+                PredictiveAnalyticsEngine,
+                StrategicChallengePrediction,
+            )
+            from ai_intelligence.predictive.prediction_models import ChallengeType
+            from ai_intelligence.predictive.recommendation_generator import (
+                PredictionConfidence,
+            )
+        except ImportError:
+            from lib.ai_intelligence.predictive_analytics_engine import (
+                PredictiveAnalyticsEngine,
+                StrategicChallengePrediction,
+            )
+            from lib.ai_intelligence.predictive.prediction_models import ChallengeType
+            from lib.ai_intelligence.predictive.recommendation_generator import (
+                PredictionConfidence,
+            )
 
 
 class TestPredictiveAnalyticsV2P0(unittest.TestCase):
