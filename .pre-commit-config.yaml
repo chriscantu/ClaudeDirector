@@ -38,9 +38,21 @@ repos:
         always_run: true
         verbose: true
 
+  # CODE BLOAT PREVENTION (RUNS EARLY TO CATCH DUPLICATION)
+  - repo: local
+    hooks:
+      - id: code-bloat-prevention
+        name: 🏗️ CODE BLOAT PREVENTION (MCP-Enhanced) - FIRST POLICY CHECK
+        entry: python3 .claudedirector/tools/architecture/bloat_prevention_hook.py
+        language: system
+        types: [python]
+        stages: [pre-commit]
+        verbose: true
+
   # DEVELOPMENT POLICY ENFORCEMENT
   - repo: local
     hooks:
+
       - id: documentation-size-policy
         name: 📋 DOCUMENTATION SIZE POLICY (500 lines max - aligned with code)
         entry: python3 .claudedirector/tools/quality/check_doc_size.py
