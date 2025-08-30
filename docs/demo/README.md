@@ -11,10 +11,10 @@
 3. **[Demo Visuals](./mcp-enhanced-demo-visuals.md)** - ASCII art and Mermaid diagrams for slides
 4. **ClaudeDirector repository** open and ready for live demo
 
-### **⏰ Demo Structure (20 minutes total):**
+### **⏰ Demo Structure (24 minutes total):**
 - **Problem** (2 min): Current strategic decision-making challenges
 - **Solution** (2 min): ClaudeDirector AI strategic team introduction
-- **Live Demo** (8 min): Three strategic scenarios with real AI responses
+- **Live Demo** (12 min): Four strategic scenarios including NEW persona challenge enhancement
 - **Business Impact** (3 min): ROI framework and 30-day value timeline
 - **Q&A & Next Steps** (5 min): Address concerns and pilot program
 
@@ -25,7 +25,7 @@
 ### **📖 [Executive Demo Script](./mcp-enhanced-executive-demo-script.md)**
 **Complete presentation script with:**
 - Executive-focused value propositions
-- 3 live demo scenarios (cross-team crisis, ROI presentation, industry-specific)
+- 4 live demo scenarios (strategic challenge enhancement, cross-team crisis, ROI presentation, industry-specific)
 - Business impact metrics and ROI framework
 - Common objection handling
 - Clear call to action for pilot program

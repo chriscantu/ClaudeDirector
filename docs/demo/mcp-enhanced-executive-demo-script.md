@@ -142,7 +142,83 @@
 - **Before**: Generic strategic advice requiring manual framework development
 - **After**: Complete systematic analysis ready for executive presentation
 
-### **Scenario 2: Architectural Decision Framework** *(2 minutes)*
+### **Scenario 2: Strategic Challenge Enhancement** *(2 minutes)*
+
+**Setup:** *"NEW FEATURE: Personas now challenge assumptions instead of being agreeable advisors"*
+
+**Demo Input:**
+> "We obviously need to migrate to microservices because everyone knows they're more scalable and modern."
+
+**Expected Response (Martin with Challenge Enhancement):**
+```
+🔍 **Let me challenge this thinking...**
+
+- **What assumptions are we making about microservices solving our actual problems?**
+- **Have we validated that scalability is our real constraint, not team coordination or process issues?**
+- **What evidence do we have that "modern" architecture will address our specific business challenges?**
+
+**I need to see evidence and validation before we proceed with recommendations.**
+
+That said, let me work through this systematically using proven architectural frameworks...
+
+🏗️ Architectural Decision Framework - Systematic Trade-off Analysis
+
+DECISION CRITERIA FRAMEWORK:
+• Team Autonomy Impact: Conway's Law implications
+• System Coherence Requirements: Platform consistency needs
+• Operational Complexity: Maintenance and monitoring overhead
+• Delivery Velocity: Short-term vs. long-term productivity
+
+PATTERN ANALYSIS:
+• Platform Team Pattern: Dedicated platform teams provide foundations
+• Team Topology Assessment: Communication structure optimization
+• Evolutionary Architecture: Systematic approach to architectural change
+```
+
+**Value Demonstration:**
+- **Before**: Agreeable personas that accept assumptions
+- **After**: Strategic challengers that pressure-test thinking and demand evidence
+
+### **Scenario 3: Business Strategy Challenge** *(2 minutes)*
+
+**Setup:** *"Business personas also challenge assumptions and demand evidence"*
+
+**Demo Input:**
+> "We need to increase our engineering headcount by 50% to meet our aggressive growth targets."
+
+**Expected Response (Alvaro with Challenge Enhancement):**
+```
+🔍 **Let me challenge this thinking...**
+
+- **What assumptions are we making about headcount being the constraint to growth?**
+- **Have we validated that hiring is more effective than optimizing our current team's productivity?**
+- **What evidence shows that 50% more engineers will translate to 50% more business value?**
+
+**I need to see evidence and validation before we proceed with recommendations.**
+
+Let me work through this systematically using capital allocation frameworks...
+
+💼 Strategic Investment Analysis - Resource Optimization Framework
+
+CONSTRAINT ANALYSIS:
+• True Bottlenecks: Process efficiency vs. capacity constraints
+• Productivity Multipliers: Platform investments vs. linear scaling
+• Market Timing: Speed to market vs. sustainable growth patterns
+
+CAPITAL ALLOCATION FRAMEWORK:
+• Engineering Efficiency: 3x ROI through platform improvements
+• Hiring Costs: $200K+ total cost per engineer (salary + overhead + ramp time)
+• Alternative Investments: Automation, tooling, process optimization
+
+SYSTEMATIC EVALUATION:
+[Framework-based analysis with ROI projections and alternative strategies]
+```
+
+**Value Demonstration:**
+- **Before**: Agreeable business advice that accepts resource requests
+- **After**: Strategic business partner that challenges assumptions and optimizes capital allocation
+
+### **Scenario 4: Architectural Decision Framework** *(2 minutes)*
 
 **Setup:** *"Technical decisions need systematic analysis, not just technical advice"*
 

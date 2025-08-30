@@ -379,6 +379,16 @@ p0_features:
     introduced_version: "v3.4.0"
     owner: "martin"
 
+  - name: "Persona Challenge P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_persona_challenge_p0.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 180
+    description: "Persona challenge framework must provide 80%+ challenge detection accuracy and maintain persona authenticity"
+    failure_impact: "Strategic personas become overly agreeable, lose strategic value"
+    business_impact: "Strategic guidance becomes shallow, executive decision support compromised"
+    introduced_version: "v3.4.0"
+    owner: "martin"
+
 
 # Enforcement settings
 enforcement:

@@ -579,7 +579,9 @@ class TestPlatformMaturityP0(unittest.TestCase):
             self.assertTrue(hasattr(self.workflow_engine, "get_performance_summary"))
 
             # Test factory function availability
-            from lib.platform_core.multi_tenant_manager import create_multi_tenant_manager
+            from lib.platform_core.multi_tenant_manager import (
+                create_multi_tenant_manager,
+            )
             from lib.personas.advanced_personality_engine import (
                 create_advanced_personality_engine,
             )
