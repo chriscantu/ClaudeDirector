@@ -21,11 +21,29 @@ from .advanced_personality_engine import (
     create_advanced_personality_engine,
 )
 
-from .multi_persona_coordinator import (
-    MultiPersonaCoordinator,
-    PersonaCoordination,
-    CoordinationStrategy,
-    ConflictResolution,
+# Multi-persona coordination (optional - may not be implemented yet)
+try:
+    from .multi_persona_coordinator import (
+        MultiPersonaCoordinator,
+        PersonaCoordination,
+        CoordinationStrategy,
+        ConflictResolution,
+    )
+
+    _multi_persona_available = True
+except ImportError:
+    # Graceful fallback if multi-persona coordinator not implemented
+    MultiPersonaCoordinator = None
+    PersonaCoordination = None
+    CoordinationStrategy = None
+    ConflictResolution = None
+    _multi_persona_available = False
+
+# Strategic Challenge Framework
+from .strategic_challenge_framework import (
+    StrategicChallengeFramework,
+    ChallengeType,
+    strategic_challenge_framework,
 )
 
 __all__ = [
@@ -34,8 +52,18 @@ __all__ = [
     "PersonaConsistencyMetrics",
     "StrategicThinkingDepth",
     "create_advanced_personality_engine",
-    "MultiPersonaCoordinator",
-    "PersonaCoordination",
-    "CoordinationStrategy",
-    "ConflictResolution",
+    "StrategicChallengeFramework",
+    "ChallengeType",
+    "strategic_challenge_framework",
 ]
+
+# Add multi-persona exports if available
+if _multi_persona_available:
+    __all__.extend(
+        [
+            "MultiPersonaCoordinator",
+            "PersonaCoordination",
+            "CoordinationStrategy",
+            "ConflictResolution",
+        ]
+    )
