@@ -95,6 +95,11 @@ class EnhancedSecurityScanner:
             "docs/phases/completed/",  # Completed phase documentation (planning docs, not sensitive data)
             "docs/phases/",  # All phase documentation (strategic planning docs, not sensitive data)
             ".claudedirector/lib/ai_intelligence/",  # AI Intelligence system code (contains strategic intelligence terminology)
+            ".claudedirector/lib/platform/",  # Phase 14 Platform components (contains strategic intelligence terminology)
+            ".claudedirector/lib/personas/",  # Phase 14 Persona components (contains strategic intelligence terminology)
+            ".claudedirector/lib/workflows/",  # Phase 14 Workflow components (contains strategic intelligence terminology)
+            ".claudedirector/lib/integration/",  # Phase 14 Integration components (contains strategic intelligence terminology)
+            ".claudedirector/lib/performance/",  # Phase 14 Performance components (contains strategic intelligence terminology)
             ".claudedirector/lib/claudedirector/",  # Symlink for backward compatibility
             ".claudedirector/tests/",  # Test files contain generic test data, not real sensitive data
             "SECURITY.md",
@@ -103,6 +108,7 @@ class EnhancedSecurityScanner:
             # Documentation files with generic role titles (not actual sensitive data)
             "docs/requirements/",  # User stories and requirements contain generic role examples
             "docs/development/",  # Development documentation
+            "docs/CAPABILITIES.md",  # User documentation describing generic platform capabilities
             "docs/setup/",  # Setup guides with generic examples
             "USER_STORIES.md",  # User story files contain generic role titles
             "REQUIREMENTS.md",  # Requirements documents

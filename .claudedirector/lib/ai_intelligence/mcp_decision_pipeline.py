@@ -25,15 +25,15 @@ from .decision_orchestrator import (
     DecisionComplexity,
     DecisionIntelligenceResult,
 )
-from ..transparency.real_mcp_integration import RealMCPIntegrationHelper
+from transparency.real_mcp_integration import RealMCPIntegrationHelper
 
 # Optional import - functionality consolidated into framework_detector.py
 try:
-    from ..core.enhanced_framework_engine import MultiFrameworkIntegrationEngine
+    from core.enhanced_framework_engine import MultiFrameworkIntegrationEngine
 except ImportError:
     # Graceful fallback - framework integration available in unified detector
     MultiFrameworkIntegrationEngine = None
-from ..transparency.integrated_transparency import TransparencyContext
+from transparency.integrated_transparency import TransparencyContext
 
 logger = structlog.get_logger(__name__)
 
