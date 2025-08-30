@@ -3,6 +3,11 @@ Persona Enhancement Engine with Embedded Frameworks
 Coordinates embedded strategic frameworks with persona personalities to provide enhanced capabilities
 while preserving authentic persona characteristics.
 
+ARCHITECTURAL COMPLIANCE:
+- Integrates with Strategic Challenge Framework for assumption testing
+- Compatible with Phase 12 Always-On MCP enhancement
+- Follows transparency pipeline requirements
+
 Author: Martin (Principal Platform Architect)
 """
 
@@ -26,6 +31,17 @@ from .complexity_analyzer import (
     ComplexityAnalysis,
     EnhancementStrategy,
 )
+
+# ARCHITECTURAL COMPLIANCE: Strategic Challenge Framework Integration
+try:
+    from personas.strategic_challenge_framework import (
+        StrategicChallengeFramework,
+        strategic_challenge_framework,
+    )
+except ImportError:
+    # Graceful fallback if challenge framework not available
+    StrategicChallengeFramework = None
+    strategic_challenge_framework = None
 
 # Configure logging
 logger = structlog.get_logger(__name__)
@@ -82,6 +98,14 @@ class PersonaEnhancementEngine:
             # Graceful fallback - framework functionality available in unified detector
             self.framework_engine = None
             self.persona_integrator = None
+
+        # ARCHITECTURAL COMPLIANCE: Strategic Challenge Framework Integration
+        self.challenge_framework = strategic_challenge_framework
+        self.challenge_enabled = (
+            StrategicChallengeFramework is not None
+            and strategic_challenge_framework is not None
+            and self.config.get("enable_challenge_framework", True)
+        )
 
         # Persona personality filters - preserve authentic voice
         self.persona_filters = {
@@ -238,12 +262,21 @@ class PersonaEnhancementEngine:
                 )
             )
 
+            # ARCHITECTURAL COMPLIANCE: Apply Strategic Challenge Framework
+            challenge_enhanced_response = self._apply_challenge_framework(
+                base_response, user_input, persona_name
+            )
+
             if not should_enhance:
                 processing_time = int((time.time() - start_time) * 1000)
                 return EnhancementResult(
-                    enhanced_response=base_response,
-                    enhancement_applied=False,
-                    framework_used=None,
+                    enhanced_response=challenge_enhanced_response,
+                    enhancement_applied=self.challenge_enabled,
+                    framework_used=(
+                        "Strategic Challenge Framework"
+                        if self.challenge_enabled
+                        else None
+                    ),
                     analysis_data=None,
                     processing_time_ms=processing_time,
                     fallback_reason="Below enhancement threshold or persona not suitable",
@@ -274,10 +307,19 @@ class PersonaEnhancementEngine:
                     processing_time_ms=processing_time,
                 )
 
+                # ARCHITECTURAL COMPLIANCE: Apply challenge framework to enhanced response
+                final_enhanced_response = self._apply_challenge_framework(
+                    enhanced_response, user_input, persona_name
+                )
+
                 return EnhancementResult(
-                    enhanced_response=enhanced_response,
+                    enhanced_response=final_enhanced_response,
                     enhancement_applied=True,
-                    framework_used=enhancement_type,
+                    framework_used=(
+                        f"{enhancement_type} + Strategic Challenge Framework"
+                        if self.challenge_enabled
+                        else enhancement_type
+                    ),
                     analysis_data=self._extract_analysis_metadata(complexity_analysis),
                     processing_time_ms=processing_time,
                 )
@@ -302,10 +344,19 @@ class PersonaEnhancementEngine:
                 processing_time_ms=processing_time,
             )
 
+            # ARCHITECTURAL COMPLIANCE: Apply challenge framework even on error
+            fallback_response = self._apply_challenge_framework(
+                base_response, user_input, persona_name
+            )
+
             return EnhancementResult(
-                enhanced_response=base_response,
-                enhancement_applied=False,
-                framework_used=None,
+                enhanced_response=fallback_response,
+                enhancement_applied=self.challenge_enabled,
+                framework_used=(
+                    "Strategic Challenge Framework (Fallback)"
+                    if self.challenge_enabled
+                    else None
+                ),
                 analysis_data=None,
                 processing_time_ms=processing_time,
                 fallback_reason=f"Enhancement error: {str(e)}",
@@ -456,3 +507,51 @@ class PersonaEnhancementEngine:
             "trigger_keywords": analysis.trigger_keywords,
             "reasoning": analysis.reasoning,
         }
+
+    def _apply_challenge_framework(
+        self, base_response: str, user_input: str, persona_name: str
+    ) -> str:
+        """
+        Apply Strategic Challenge Framework to enhance persona response
+
+        ARCHITECTURAL COMPLIANCE:
+        - Integrates with Strategic Challenge Framework
+        - Maintains persona authenticity while adding challenge behaviors
+        - Graceful fallback if challenge framework unavailable
+
+        Args:
+            base_response: The original or enhanced persona response
+            user_input: The user's original input
+            persona_name: The persona name (diego, camille, etc.)
+
+        Returns:
+            Response enhanced with challenge patterns or original response
+        """
+        if not self.challenge_enabled or not self.challenge_framework:
+            return base_response
+
+        try:
+            # Apply challenge enhancement
+            enhanced_response = self.challenge_framework.enhance_persona_response(
+                base_response, user_input, persona_name
+            )
+
+            logger.debug(
+                "challenge_framework_applied",
+                persona=persona_name,
+                challenge_applied=enhanced_response != base_response,
+                original_length=len(base_response),
+                enhanced_length=len(enhanced_response),
+            )
+
+            return enhanced_response
+
+        except Exception as e:
+            logger.warning(
+                "challenge_framework_error",
+                persona=persona_name,
+                error=str(e),
+                fallback_to_base=True,
+            )
+            # Graceful fallback to base response
+            return base_response

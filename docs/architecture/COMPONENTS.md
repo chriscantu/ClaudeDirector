@@ -86,24 +86,74 @@ class PersonaManager:
 
     def apply_personality_traits(self, response: str, persona: Persona) -> str:
         """Apply persona-specific communication patterns"""
+
+    def integrate_challenge_framework(self, user_input: str, persona: Persona, response: str) -> str:
+        """Integrate strategic challenge patterns with persona responses"""
 ```
 
 ### **Strategic Personas**
 
-#### **Leadership Personas**
-- **🎯 Diego | Engineering Leadership**: Organizational scaling, team coordination, platform strategy
-- **📊 Camille | Strategic Technology**: Executive communication, business alignment, strategic planning
-- **🎨 Rachel | Design Systems Strategy**: Cross-functional design, user experience, accessibility
-- **💼 Alvaro | Platform Investment Strategy**: ROI analysis, business value, stakeholder communication
+#### **Leadership Personas (Enhanced with Challenge Framework)**
+- **🎯 Diego | Engineering Leadership**: Organizational scaling, team coordination, platform strategy + **Challenge Focus**: Team dynamics, organizational assumptions, process effectiveness
+- **📊 Camille | Strategic Technology**: Executive communication, business alignment, strategic planning + **Challenge Focus**: Business alignment, executive priorities, strategic assumptions
+- **🎨 Rachel | Design Systems Strategy**: Cross-functional design, user experience, accessibility + **Challenge Focus**: User needs, accessibility assumptions, design validation
+- **💼 Alvaro | Platform Investment Strategy**: ROI analysis, business value, stakeholder communication + **Challenge Focus**: ROI assumptions, market validation, competitive analysis
 
-#### **Technical Personas**
-- **🏗️ Martin | Platform Architecture**: Technical architecture, evolutionary design, system scaling
-- **🔒 Security | Platform Security**: Security architecture, threat modeling, compliance
+#### **Technical Personas (Enhanced with Challenge Framework)**
+- **🏗️ Martin | Platform Architecture**: Technical architecture, evolutionary design, system scaling + **Challenge Focus**: Technical assumptions, architectural decisions, complexity validation
+- **🔒 Security | Platform Security**: Security architecture, threat modeling, compliance + **Challenge Focus**: Security assumptions, threat model validation, compliance evidence
 - **🤖 Berny | AI/ML Engineering**: Decision intelligence, predictive analytics, ML architecture
 
-#### **Operational Personas**
-- **🤝 Sofia | Vendor Strategy**: Technology partnerships, vendor evaluation, procurement
-- **⚖️ Elena | Compliance Strategy**: Accessibility, legal requirements, audit management
+#### **Operational Personas (Enhanced with Challenge Framework)**
+- **🤝 Sofia | Vendor Strategy**: Technology partnerships, vendor evaluation, procurement + **Challenge Focus**: Vendor assumptions, partnership validation, procurement evidence
+- **⚖️ Elena | Compliance Strategy**: Accessibility, legal requirements, audit management + **Challenge Focus**: Compliance assumptions, regulatory validation, audit evidence
+
+## 🔍 **Strategic Challenge Framework Components**
+
+### **Challenge Pattern Detection Engine**
+```python
+class ChallengePatternDetector:
+    """Detects when personas should challenge user assumptions"""
+
+    def detect_challenge_triggers(self, user_input: str) -> List[ChallengeType]:
+        """Identify challenge patterns in user input"""
+
+    def calculate_confidence_score(self, input_text: str, persona: str) -> float:
+        """Calculate confidence for challenging this input"""
+
+    def validate_challenge_appropriateness(self, context: dict) -> bool:
+        """Ensure challenge is constructive and appropriate"""
+```
+
+### **Persona Challenge Integration**
+```python
+class PersonaChallengeIntegrator:
+    """Integrates challenge patterns with persona responses"""
+
+    def blend_challenge_with_response(self, challenge: str, response: str, persona: str) -> str:
+        """Seamlessly integrate challenge content with persona expertise"""
+
+    def maintain_persona_authenticity(self, enhanced_response: str, persona: Persona) -> str:
+        """Ensure challenge patterns don't override persona personality"""
+
+    def apply_domain_specific_challenges(self, user_input: str, persona: Persona) -> List[str]:
+        """Generate challenges specific to persona's domain expertise"""
+```
+
+### **Challenge Configuration System**
+```python
+class ChallengeConfigurationManager:
+    """Manages YAML-based challenge pattern configurations"""
+
+    def load_challenge_patterns(self) -> Dict[str, ChallengePattern]:
+        """Load challenge patterns from challenge_patterns.yaml"""
+
+    def get_persona_challenge_config(self, persona: str) -> PersonaChallengeConfig:
+        """Get persona-specific challenge configuration"""
+
+    def update_challenge_thresholds(self, persona: str, thresholds: Dict) -> None:
+        """Runtime update of challenge detection thresholds"""
+```
 - **📈 Marcus | Platform Adoption**: Change management, internal marketing, adoption metrics
 
 ### **Context Analyzer**
