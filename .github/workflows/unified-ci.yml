@@ -66,6 +66,10 @@ jobs:
           python -c "import sys; print('Python path entries:'); [print(f'  {p}') for p in sys.path if 'claudedirector' in p]"
           python -c "import sys; sys.path.insert(0, '$(pwd)/.claudedirector/lib'); from ai_intelligence.decision_orchestrator import DecisionIntelligenceOrchestrator; print('✅ AI Intelligence import successful')" || echo "❌ AI Intelligence import failed"
 
+          # Run comprehensive import diagnostic
+          echo "🔍 Running comprehensive CI import diagnostic:"
+          python .claudedirector/tests/debug_ci_import.py || echo "❌ Diagnostic failed"
+
           # Set CI flag for environment detection
           export GITHUB_ACTIONS=true
           echo "GITHUB_ACTIONS=true" >> $GITHUB_ENV
