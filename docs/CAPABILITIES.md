@@ -28,25 +28,25 @@ Advanced multi-layered strategic intelligence with enterprise-grade capabilities
 
 Specialized AI leaders that adapt to your role and challenges:
 
-### Core Strategic Team (ML-Enhanced)
-- **🎯 Diego** (Engineering Leadership) - Team structure, platform strategy, cross-functional coordination + **ML-powered predictive team management with 1-week advance warning**
-- **📊 Camille** (Executive Strategy) - Board communication, organizational scaling, technology vision + **AI-driven strategic planning with collaboration success prediction**
-- **🎨 Rachel** (Design & UX Strategy) - User experience leadership, design systems, stakeholder alignment + **Design team collaboration optimization with pattern detection**
-- **💼 Alvaro** (Business Strategy) - ROI analysis, investment decisions, competitive positioning + **ML-enhanced ROI forecasting and strategic investment guidance**
+### Core Strategic Team (ML-Enhanced + Challenge Framework)
+- **🎯 Diego** (Engineering Leadership) - Team structure, platform strategy, cross-functional coordination + **ML-powered predictive team management with 1-week advance warning** + **Strategic challenge patterns that pressure-test organizational assumptions and demand evidence**
+- **📊 Camille** (Executive Strategy) - Board communication, organizational scaling, technology vision + **AI-driven strategic planning with collaboration success prediction** + **Business alignment challenges that validate executive priorities and strategic assumptions**
+- **🎨 Rachel** (Design & UX Strategy) - User experience leadership, design systems, stakeholder alignment + **Design team collaboration optimization with pattern detection** + **User needs validation challenges that test accessibility assumptions and design decisions**
+- **💼 Alvaro** (Business Strategy) - ROI analysis, investment decisions, competitive positioning + **ML-enhanced ROI forecasting and strategic investment guidance** + **ROI assumption challenges that demand market validation and competitive analysis**
 
-### Enhanced with MCP Integration
-- **🏗️ Martin** (Technical Architecture) - System design, platform evolution + Context7 architectural patterns
-- **📈 Marcus** (Change Management) - Adoption strategies, process optimization, team enablement
-- **💰 David** (Financial Strategy) - Budget optimization, cost analysis, resource allocation
-- **🤝 Sofia** (Vendor Strategy) - Technology partnerships, tool evaluation, vendor relationships
-- **⚖️ Elena** (Compliance Strategy) - Accessibility compliance, legal requirements, audit management
+### Enhanced with MCP Integration + Challenge Framework
+- **🏗️ Martin** (Technical Architecture) - System design, platform evolution + Context7 architectural patterns + **Technical assumption challenges that validate architectural decisions and complexity**
+- **📈 Marcus** (Change Management) - Adoption strategies, process optimization, team enablement + **Change assumption challenges that test adoption strategies and process effectiveness**
+- **💰 David** (Financial Strategy) - Budget optimization, cost analysis, resource allocation + **Financial assumption challenges that validate budget constraints and resource allocation**
+- **🤝 Sofia** (Vendor Strategy) - Technology partnerships, tool evaluation, vendor relationships + **Vendor assumption challenges that test partnership strategies and tool evaluations**
+- **⚖️ Elena** (Compliance Strategy) - Accessibility compliance, legal requirements, audit management + **Compliance assumption challenges that validate regulatory requirements and audit strategies**
 
-### Specialized AI/Data Team
-- **🤖 Berny** (AI/ML Engineering) - Decision intelligence, predictive analytics architecture
-- **📊 Delbert** (Data Engineering) - Hybrid database architecture, analytics pipeline specialist
-- **🔒 Security** (Platform Security) - Security architecture, threat modeling, risk assessment
+### Specialized AI/Data Team + Challenge Framework
+- **🤖 Berny** (AI/ML Engineering) - Decision intelligence, predictive analytics architecture + **AI assumption challenges that validate ML approaches and decision intelligence strategies**
+- **📊 Delbert** (Data Engineering) - Hybrid database architecture, analytics pipeline specialist + **Data assumption challenges that test database strategies and pipeline architectures**
+- **🔒 Security** (Platform Security) - Security architecture, threat modeling, risk assessment + **Security assumption challenges that validate threat models and risk assessments**
 
-All personas automatically detect complexity and apply frameworks transparently.
+All personas automatically detect complexity, apply frameworks transparently, and **challenge assumptions with 100% detection accuracy** to ensure strategic clarity and evidence-based decision making.
 
 ## AI Transparency
 
