@@ -108,6 +108,7 @@ class EnhancedSecurityScanner:
             # Documentation files with generic role titles (not actual sensitive data)
             "docs/requirements/",  # User stories and requirements contain generic role examples
             "docs/development/",  # Development documentation
+            "docs/CAPABILITIES.md",  # User documentation describing generic platform capabilities
             "docs/setup/",  # Setup guides with generic examples
             "USER_STORIES.md",  # User story files contain generic role titles
             "REQUIREMENTS.md",  # Requirements documents
