@@ -1,7 +1,8 @@
 """
-Unified Framework Detector - Phase 6.1 Architectural Consolidation
+Unified Framework Detector - Phase 14 Track 1 MCP Enhancement
 
 🏗️ Martin | Platform Architecture - Bloat Cleanup Lead
+🤖 Berny | AI/ML Engineering - MCP Sequential Integration
 
 CONSOLIDATED FROM 6 FRAMEWORK ENGINES:
 🗑️ enhanced_framework_detection.py (920 lines) - REMOVED: Base implementation consolidated
@@ -49,8 +50,14 @@ from ..transparency.integrated_transparency import (
     TransparencyContext,
 )
 
-# NOTE: MCP functionality consolidated into unified detector
-# from .mcp_enhanced_framework_engine import MCPEnhancedFrameworkEngine
+# MCP Sequential Integration - Phase 14 Track 1
+try:
+    from .mcp_enhanced_ml_pipeline import MCPSequentialCoordinator
+
+    MCP_AVAILABLE = True
+except ImportError:
+    MCPSequentialCoordinator = None
+    MCP_AVAILABLE = False
 
 # Type hint forward declarations for deprecated components
 MCPEnhancedFrameworkEngine = Any  # Deprecated - functionality consolidated
@@ -272,7 +279,7 @@ class EnhancedFrameworkDetection:
     def __init__(
         self,
         baseline_detector: FrameworkDetectionMiddleware,
-        mcp_enhanced_engine: Optional[MCPEnhancedFrameworkEngine] = None,
+        mcp_coordinator: Optional[MCPSequentialCoordinator] = None,
         memory_engine: Optional[ConversationMemoryEngine] = None,
         transparency_system: Optional[IntegratedTransparencySystem] = None,
         session_manager: Optional[SessionManager] = None,
@@ -282,14 +289,12 @@ class EnhancedFrameworkDetection:
 
         Args:
             baseline_detector: Existing FrameworkDetectionMiddleware
-            mcp_enhanced_engine: MCP enhanced framework engine
+            mcp_coordinator: MCP Sequential coordinator for enhanced analysis
             memory_engine: Conversation memory for learning
             transparency_system: Transparency tracking
         """
         self.baseline_detector = baseline_detector
-        self.mcp_enhanced_engine = (
-            mcp_enhanced_engine  # Optional - functionality consolidated
-        )
+        self.mcp_coordinator = mcp_coordinator if MCP_AVAILABLE else None
         self.memory_engine = memory_engine  # Optional - functionality consolidated
         self.transparency_system = (
             transparency_system  # Optional - functionality consolidated
@@ -919,19 +924,40 @@ class EnhancedFrameworkDetection:
         user_input: str,
         persona: str,
     ) -> List[FrameworkSuggestion]:
-        """Enhance suggestions using MCP validation"""
+        """Enhance suggestions using MCP Sequential coordination"""
         enhanced_suggestions = []
 
         for suggestion in suggestions:
             try:
-                # Use MCP enhanced engine to validate suggestion relevance
-                validation_input = (
-                    f"Validate {suggestion.framework_name} framework for: {user_input}"
-                )
+                # Use MCP Sequential coordinator for enhanced analysis
+                if self.mcp_coordinator and MCP_AVAILABLE:
+                    validation_context = {
+                        "framework_name": suggestion.framework_name,
+                        "user_input": user_input,
+                        "persona": persona,
+                        "current_confidence": suggestion.confidence_score,
+                        "business_impact": suggestion.business_impact_score,
+                    }
 
-                # This would ideally call the MCP enhanced engine
-                # For now, we'll enhance the confidence based on existing patterns
-                enhanced_confidence = min(suggestion.confidence_score * 1.1, 1.0)
+                    # Get MCP-enhanced analysis
+                    mcp_analysis = await self.mcp_coordinator.enhance_context_with_mcp(
+                        "FRAMEWORK_VALIDATION_ENHANCEMENT", validation_context
+                    )
+
+                    # Extract enhanced confidence from MCP analysis
+                    enhanced_confidence = mcp_analysis.get(
+                        "enhanced_confidence", suggestion.confidence_score
+                    )
+                    business_insights = mcp_analysis.get("business_insights", [])
+                    strategic_alignment = mcp_analysis.get(
+                        "strategic_alignment", suggestion.strategic_alignment
+                    )
+
+                else:
+                    # Fallback enhancement when MCP unavailable
+                    enhanced_confidence = min(suggestion.confidence_score * 1.05, 1.0)
+                    business_insights = []
+                    strategic_alignment = suggestion.strategic_alignment
 
                 # Create enhanced suggestion
                 enhanced_suggestion = FrameworkSuggestion(
@@ -1060,16 +1086,16 @@ class EnhancedFrameworkDetection:
 
 def create_enhanced_framework_detection(
     baseline_detector: FrameworkDetectionMiddleware,
-    mcp_enhanced_engine: Optional[MCPEnhancedFrameworkEngine] = None,
+    mcp_coordinator: Optional[MCPSequentialCoordinator] = None,
     memory_engine: Optional[ConversationMemoryEngine] = None,
     transparency_system: Optional[IntegratedTransparencySystem] = None,
 ) -> EnhancedFrameworkDetection:
     """
-    Factory function to create EnhancedFrameworkDetection with proper dependencies
+    Factory function to create EnhancedFrameworkDetection with MCP Sequential integration
 
     Args:
         baseline_detector: Existing FrameworkDetectionMiddleware
-        mcp_enhanced_engine: MCP enhanced framework engine
+        mcp_coordinator: MCP Sequential coordinator for enhanced analysis
         memory_engine: Conversation memory for learning
         transparency_system: Transparency tracking
 
@@ -1078,7 +1104,7 @@ def create_enhanced_framework_detection(
     """
     return EnhancedFrameworkDetection(
         baseline_detector=baseline_detector,
-        mcp_enhanced_engine=mcp_enhanced_engine,
+        mcp_coordinator=mcp_coordinator,
         memory_engine=memory_engine,
         transparency_system=transparency_system,
     )

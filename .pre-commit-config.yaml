@@ -52,6 +52,13 @@ repos:
   # DEVELOPMENT POLICY ENFORCEMENT
   - repo: local
     hooks:
+      - id: code-bloat-prevention
+        name: 🏗️ CODE BLOAT PREVENTION (MCP-Enhanced)
+        entry: python3 .claudedirector/tools/architecture/bloat_prevention_hook.py
+        language: system
+        types: [python]
+        stages: [pre-commit]
+        verbose: true
 
       - id: documentation-size-policy
         name: 📋 DOCUMENTATION SIZE POLICY (500 lines max - aligned with code)

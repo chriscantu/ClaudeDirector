@@ -252,7 +252,23 @@ class MCPBloatAnalyzer:
                 },
                 "architectural_violations": len(architectural_violations),
                 "severity_breakdown": self._calculate_severity_breakdown(
-                    structural_duplications + semantic_duplications
+                    structural_duplications
+                    + semantic_duplications
+                    + [
+                        ArchitecturalViolation(
+                            **{
+                                **v.__dict__,
+                                "file_path": v.file_path,
+                                "violation_type": v.violation_type,
+                                "description": v.description,
+                                "severity": v.severity,
+                                "violated_principle": v.violated_principle,
+                                "existing_implementation": v.existing_implementation,
+                                "recommended_approach": v.recommended_approach,
+                            }
+                        )
+                        for v in architectural_violations
+                    ]
                 ),
                 "consolidation_recommendations": recommendations,
                 "mcp_analysis": mcp_analysis,
@@ -402,6 +418,10 @@ class MCPBloatAnalyzer:
                 solid_violations = self._detect_solid_violations(file_path, content)
                 violations.extend(solid_violations)
 
+                # Check for architectural pattern violations
+                pattern_violations = self._detect_pattern_violations(file_path, content)
+                violations.extend(pattern_violations)
+
             except Exception as e:
                 self.logger.warning(f"Failed to check violations in {file_path}: {e}")
                 continue
@@ -467,6 +487,38 @@ class MCPBloatAnalyzer:
 
         return violations
 
+    def _detect_pattern_violations(
+        self, file_path: Path, content: str
+    ) -> List[ArchitecturalViolation]:
+        """Detect architectural pattern violations"""
+
+        violations = []
+
+        # Check for multiple similar class names (potential duplication)
+        class_names = re.findall(r"class\s+(\w+)", content)
+
+        for pattern_name, pattern_config in self.known_duplication_patterns.items():
+            matching_classes = [
+                name
+                for name in class_names
+                if re.search(pattern_config["pattern"], name)
+            ]
+
+            if len(matching_classes) > 1:
+                violations.append(
+                    ArchitecturalViolation(
+                        file_path=str(file_path),
+                        violation_type="PATTERN_DUPLICATION",
+                        description=f"Multiple classes matching pattern {pattern_name}: {matching_classes}",
+                        severity=pattern_config["severity"],
+                        violated_principle="Single Source of Truth",
+                        existing_implementation=f"Multiple classes: {', '.join(matching_classes)}",
+                        recommended_approach=f"Consolidate into {pattern_config['consolidation_target']}",
+                    )
+                )
+
+        return violations
+
     async def _apply_mcp_analysis(
         self,
         duplications: List[DuplicationInstance],
@@ -521,6 +573,12 @@ class MCPBloatAnalyzer:
 
         # Simplified similarity calculation
         # In practice, this would be more sophisticated
+
+        def count_nodes(node):
+            count = 1
+            for child in ast.iter_child_nodes(node):
+                count += count_nodes(child)
+            return count
 
         def get_node_types(node):
             types = [type(node).__name__]
