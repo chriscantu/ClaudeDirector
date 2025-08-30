@@ -49,9 +49,26 @@ jobs:
         run: |
           echo "🔧 Setting up environment to match local exactly"
 
-          # Set Python path exactly as local environment
-          export PYTHONPATH=".claudedirector/lib:.claudedirector/tests/regression:.claudedirector/tests/integration"
+          # Set Python path exactly as local environment (absolute paths + preserve existing)
+          export PYTHONPATH="${PYTHONPATH}:$(pwd)/.claudedirector/lib:$(pwd)/.claudedirector/tests/regression:$(pwd)/.claudedirector/tests/integration"
           echo "PYTHONPATH=$PYTHONPATH" >> $GITHUB_ENV
+
+          # Debug: Show actual PYTHONPATH for troubleshooting
+          echo "🔍 PYTHONPATH set to: $PYTHONPATH"
+
+          # Verify critical directories exist
+          echo "🔍 Verifying critical paths:"
+          ls -la .claudedirector/lib/ | head -5
+          ls -la .claudedirector/lib/ai_intelligence/ | head -5
+
+          # Test import resolution
+          echo "🔍 Testing import resolution:"
+          python -c "import sys; print('Python path entries:'); [print(f'  {p}') for p in sys.path if 'claudedirector' in p]"
+          python -c "import sys; sys.path.insert(0, '$(pwd)/.claudedirector/lib'); from ai_intelligence.decision_orchestrator import DecisionIntelligenceOrchestrator; print('✅ AI Intelligence import successful')" || echo "❌ AI Intelligence import failed"
+
+          # Run comprehensive import diagnostic
+          echo "🔍 Running comprehensive CI import diagnostic:"
+          python .claudedirector/tests/debug_ci_import.py || echo "❌ Diagnostic failed"
 
           # Set CI flag for environment detection
           export GITHUB_ACTIONS=true
@@ -73,12 +90,20 @@ jobs:
           echo "============================================================"
           echo "Using IDENTICAL execution path as local environment"
           echo "Command: python .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py"
+          echo "PYTHONPATH: $PYTHONPATH"
           echo "============================================================"
 
-          # Run P0 tests using EXACT same command as local
+          # Verify environment one more time before test execution
+          echo "🔍 Final environment verification:"
+          python -c "import sys; print(f'Working dir: {sys.path[0]}'); print(f'PYTHONPATH entries: {[p for p in sys.path if \"claudedirector\" in p]}')"
+
+          # Run P0 tests using EXACT same command as local with verified PYTHONPATH
           python .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py || {
-            echo "❌ P0 TESTS FAILED - Same failure would occur locally"
+            echo "❌ P0 TESTS FAILED - Environment discrepancy detected"
             echo "📋 Check test results for detailed failure information"
+            echo "🔍 Debug info:"
+            echo "  PYTHONPATH: $PYTHONPATH"
+            python -c "import sys; [print(f'  {p}') for p in sys.path]"
             exit 1
           }
 
