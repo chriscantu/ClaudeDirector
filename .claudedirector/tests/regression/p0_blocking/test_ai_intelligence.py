@@ -23,17 +23,31 @@ from pathlib import Path
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.parent
-sys.path.insert(0, str(PROJECT_ROOT))
-sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector" / "lib"))
+lib_path = str(PROJECT_ROOT / ".claudedirector" / "lib")
 
-# Simplified import strategy - direct path, no complex fallbacks
-from ai_intelligence.decision_orchestrator import (
-    DecisionIntelligenceOrchestrator,
-    DecisionComplexity,
-)
-from ai_intelligence.mcp_decision_pipeline import (
-    MCPEnhancedDecisionPipeline,
-)
+# Robust import strategy - ensure lib path is first in sys.path
+if lib_path not in sys.path:
+    sys.path.insert(0, lib_path)
+elif sys.path.index(lib_path) != 0:
+    sys.path.remove(lib_path)
+    sys.path.insert(0, lib_path)
+
+# Import with explicit error handling for CI debugging
+try:
+    from ai_intelligence.decision_orchestrator import (
+        DecisionIntelligenceOrchestrator,
+        DecisionComplexity,
+    )
+    from ai_intelligence.mcp_decision_pipeline import (
+        MCPEnhancedDecisionPipeline,
+    )
+except ImportError as e:
+    print(f"🚨 IMPORT ERROR: {e}")
+    print(f"🔍 sys.path[0]: {sys.path[0]}")
+    print(f"🔍 lib_path: {lib_path}")
+    print(f"🔍 lib_path exists: {Path(lib_path).exists()}")
+    print(f"🔍 ai_intelligence exists: {Path(lib_path, 'ai_intelligence').exists()}")
+    raise
 
 
 class TestAIIntelligenceP0(unittest.TestCase):
