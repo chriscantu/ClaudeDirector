@@ -7,344 +7,201 @@ that pressure-test assumptions and ensure clarity of thought.
 This framework implements mandatory first principles thinking and assumption testing
 for all persona responses, ensuring valuable strategic challenge rather than
 overly complimentary agreement.
+
+ARCHITECTURAL COMPLIANCE:
+- Integrates with 8-layer context engineering system
+- Compatible with Phase 12 Always-On MCP enhancement
+- Follows transparency pipeline requirements
+- Uses YAML-based configuration (no hardcoded values)
 """
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Union
 from enum import Enum
+from pathlib import Path
+import yaml
 import re
+import logging
+import time
 
 
 class ChallengeType(Enum):
-    """Types of strategic challenges personas can apply"""
+    """Types of strategic challenges personas can apply - loaded from configuration"""
 
     ASSUMPTION_TEST = "assumption_test"
     ROOT_CAUSE_PROBE = "root_cause_probe"
     ALTERNATIVE_EXPLORATION = "alternative_exploration"
     CONSTRAINT_VALIDATION = "constraint_validation"
-    STAKEHOLDER_IMPACT = "stakeholder_impact"
-    SUCCESS_CRITERIA = "success_criteria"
+    STAKEHOLDER_VALIDATION = "stakeholder_validation"
     EVIDENCE_DEMAND = "evidence_demand"
-    RISK_ASSESSMENT = "risk_assessment"
 
 
 @dataclass
 class ChallengePattern:
-    """A specific challenge pattern for persona responses"""
+    """A specific challenge pattern for persona responses - loaded from YAML configuration"""
 
     challenge_type: ChallengeType
+    name: str
+    description: str
     trigger_keywords: List[str]
-    challenge_questions: List[str]
+    generic_questions: List[str]
+    confidence_threshold: float
     persona_specific: Dict[str, List[str]] = field(default_factory=dict)
-    confidence_threshold: float = 0.7
+
+
+@dataclass
+class ChallengeConfig:
+    """Configuration loaded from YAML file"""
+
+    version: str
+    framework_name: str
+    description: str
+    global_settings: Dict[str, Any]
+    challenge_types: Dict[str, Dict[str, Any]]
+    personas: Dict[str, Dict[str, Any]]
+    activation_rules: Dict[str, Any]
+    response_blending: Dict[str, Any]
+    performance: Dict[str, Any]
 
 
 class StrategicChallengeFramework:
     """
     Framework that ensures personas challenge assumptions and pressure-test thinking
     instead of being overly agreeable and complimentary.
+
+    ARCHITECTURAL COMPLIANCE:
+    - Uses YAML configuration (no hardcoded values)
+    - Integrates with context engineering system
+    - Compatible with MCP and transparency systems
+    - Performance optimized with caching
     """
 
-    def __init__(self):
+    def __init__(self, config_path: Optional[str] = None):
+        """
+        Initialize the challenge framework with configuration
+
+        Args:
+            config_path: Path to challenge_patterns.yaml config file
+        """
+        self.logger = logging.getLogger(__name__)
+        self.config_path = config_path or self._get_default_config_path()
+        self.config = self._load_configuration()
         self.challenge_patterns = self._initialize_challenge_patterns()
-        self.persona_challenge_styles = self._initialize_persona_styles()
+        self.persona_styles = self._initialize_persona_styles()
+        self._pattern_cache = {}
+        self._cache_ttl = self.config.performance.get("cache_ttl_seconds", 3600)
+        self._last_cache_update = 0
+
+    def _get_default_config_path(self) -> str:
+        """Get default path to challenge patterns configuration"""
+        current_dir = Path(__file__).parent
+        project_root = current_dir.parent.parent  # Go up to .claudedirector/
+        config_path = project_root / "config" / "challenge_patterns.yaml"
+        return str(config_path)
+
+    def _load_configuration(self) -> ChallengeConfig:
+        """Load challenge patterns configuration from YAML file"""
+        try:
+            with open(self.config_path, "r", encoding="utf-8") as f:
+                config_data = yaml.safe_load(f)
+
+            return ChallengeConfig(
+                version=config_data["version"],
+                framework_name=config_data["framework_name"],
+                description=config_data["description"],
+                global_settings=config_data["global_settings"],
+                challenge_types=config_data["challenge_types"],
+                personas=config_data["personas"],
+                activation_rules=config_data["activation_rules"],
+                response_blending=config_data["response_blending"],
+                performance=config_data["performance"],
+            )
+        except Exception as e:
+            self.logger.error(f"Failed to load challenge configuration: {e}")
+            # Graceful fallback with minimal configuration
+            return self._get_fallback_config()
+
+    def _get_fallback_config(self) -> ChallengeConfig:
+        """Provide minimal fallback configuration if YAML loading fails"""
+        return ChallengeConfig(
+            version="1.0.0-fallback",
+            framework_name="Strategic Challenge Framework (Fallback)",
+            description="Minimal fallback configuration",
+            global_settings={
+                "default_confidence_threshold": 0.7,
+                "max_challenges_per_response": 2,
+            },
+            challenge_types={
+                "assumption_test": {
+                    "name": "Assumption Testing",
+                    "description": "Challenge underlying assumptions in user statements",
+                    "confidence_threshold": 0.7,
+                    "trigger_keywords": ["should", "obviously", "clearly"],
+                    "generic_questions": ["What assumptions are we making here?"],
+                }
+            },
+            personas={},
+            activation_rules={"activation_threshold": 0.6},
+            response_blending={"integration_style": "natural_flow"},
+            performance={"cache_patterns": True, "max_response_time_ms": 100},
+        )
 
     def _initialize_challenge_patterns(self) -> Dict[ChallengeType, ChallengePattern]:
-        """Initialize systematic challenge patterns"""
+        """Initialize challenge patterns from configuration"""
+        patterns = {}
 
-        return {
-            ChallengeType.ASSUMPTION_TEST: ChallengePattern(
-                challenge_type=ChallengeType.ASSUMPTION_TEST,
-                trigger_keywords=[
-                    "should",
-                    "need to",
-                    "we must",
-                    "obviously",
-                    "clearly",
-                    "everyone knows",
-                    "best practice",
-                    "industry standard",
-                ],
-                challenge_questions=[
-                    "What assumptions are we making here?",
-                    "How do we know this assumption is valid?",
-                    "What evidence supports this belief?",
-                    "What if this assumption is wrong?",
-                    "Have we tested this assumption in our specific context?",
-                ],
-                persona_specific={
-                    "diego": [
-                        "Hold on - what organizational assumptions are we making?",
-                        "Have we validated this with the teams who'll implement it?",
-                        "What evidence do we have this works at our scale?",
-                    ],
-                    "camille": [
-                        "What executive assumptions are we making here?",
-                        "Are we assuming alignment that might not exist?",
-                        "What strategic assumptions need validation?",
-                    ],
-                    "rachel": [
-                        "Are we assuming user needs we haven't validated?",
-                        "What accessibility assumptions might we be missing?",
-                        "Have we tested these design assumptions with real users?",
-                    ],
-                    "alvaro": [
-                        "What market assumptions are we making?",
-                        "Are we assuming ROI that we haven't calculated?",
-                        "What competitive assumptions need validation?",
-                    ],
-                    "martin": [
-                        "What technical assumptions are we making?",
-                        "Are we assuming scalability we haven't tested?",
-                        "What architectural assumptions need validation?",
-                    ],
-                },
-            ),
-            ChallengeType.ROOT_CAUSE_PROBE: ChallengePattern(
-                challenge_type=ChallengeType.ROOT_CAUSE_PROBE,
-                trigger_keywords=[
-                    "problem",
-                    "issue",
-                    "challenge",
-                    "need",
-                    "requirement",
-                    "solution",
-                    "fix",
-                    "improve",
-                    "optimize",
-                ],
-                challenge_questions=[
-                    "Are we solving the right problem?",
-                    "What's the root cause here, not just the symptoms?",
-                    "Why is this a problem worth solving?",
-                    "What happens if we don't solve this?",
-                    "Is this the most important problem to solve right now?",
-                ],
-                persona_specific={
-                    "diego": [
-                        "Are we solving an organizational symptom or the root cause?",
-                        "What's the real team coordination problem here?",
-                        "Is this a process problem or a people problem?",
-                    ],
-                    "camille": [
-                        "Are we solving a strategic problem or a tactical symptom?",
-                        "What's the real business problem we're trying to solve?",
-                        "Is this problem worth executive attention?",
-                    ],
-                    "rachel": [
-                        "Are we solving a user problem or an internal assumption?",
-                        "What's the real user experience problem here?",
-                        "Is this a design problem or a process problem?",
-                    ],
-                    "alvaro": [
-                        "Are we solving a business problem or a feature request?",
-                        "What's the real competitive problem here?",
-                        "Is this problem worth the investment?",
-                    ],
-                    "martin": [
-                        "Are we solving an architectural problem or a band-aid?",
-                        "What's the real technical debt problem here?",
-                        "Is this problem worth the engineering complexity?",
-                    ],
-                },
-            ),
-            ChallengeType.ALTERNATIVE_EXPLORATION: ChallengePattern(
-                challenge_type=ChallengeType.ALTERNATIVE_EXPLORATION,
-                trigger_keywords=[
-                    "solution",
-                    "approach",
-                    "strategy",
-                    "plan",
-                    "recommendation",
-                    "should do",
-                    "need to",
-                    "best way",
-                ],
-                challenge_questions=[
-                    "What other approaches could we consider?",
-                    "What if we did the opposite?",
-                    "What would happen if we did nothing?",
-                    "Are there simpler alternatives?",
-                    "What would our competitors do differently?",
-                ],
-                persona_specific={
-                    "diego": [
-                        "What if we reorganized the team structure instead?",
-                        "Could we solve this with process changes rather than tools?",
-                        "What would a completely different org model look like?",
-                    ],
-                    "camille": [
-                        "What would a completely different strategic approach look like?",
-                        "Could we partner instead of build?",
-                        "What if we changed the business model instead?",
-                    ],
-                    "rachel": [
-                        "What if we designed for a completely different user journey?",
-                        "Could we eliminate this need entirely through better design?",
-                        "What would a radically simpler approach look like?",
-                    ],
-                    "alvaro": [
-                        "What if we changed the business model instead?",
-                        "Could we acquire this capability rather than build it?",
-                        "What would our biggest competitor do differently?",
-                    ],
-                    "martin": [
-                        "What if we used existing tools instead of building?",
-                        "Could we eliminate this complexity entirely?",
-                        "What would a completely different architecture look like?",
-                    ],
-                },
-            ),
-            ChallengeType.EVIDENCE_DEMAND: ChallengePattern(
-                challenge_type=ChallengeType.EVIDENCE_DEMAND,
-                trigger_keywords=[
-                    "works well",
-                    "successful",
-                    "proven",
-                    "effective",
-                    "best practice",
-                    "industry standard",
-                    "everyone does",
-                ],
-                challenge_questions=[
-                    "What evidence do we have that this works?",
-                    "Where has this been successful before?",
-                    "What data supports this approach?",
-                    "How do we measure success here?",
-                    "What could prove this wrong?",
-                ],
-                persona_specific={
-                    "diego": [
-                        "What organizational evidence supports this approach?",
-                        "Where have similar teams succeeded with this?",
-                        "What metrics will prove this is working?",
-                    ],
-                    "camille": [
-                        "What strategic evidence supports this direction?",
-                        "Where have similar companies succeeded with this?",
-                        "What executive metrics will validate success?",
-                    ],
-                    "rachel": [
-                        "What user research supports this approach?",
-                        "Where have similar design systems succeeded?",
-                        "What usability metrics will prove this works?",
-                    ],
-                    "alvaro": [
-                        "What market evidence supports this strategy?",
-                        "Where have competitors succeeded with this?",
-                        "What business metrics will validate ROI?",
-                    ],
-                    "martin": [
-                        "What technical evidence supports this architecture?",
-                        "Where have similar platforms succeeded?",
-                        "What performance metrics will prove this scales?",
-                    ],
-                },
-            ),
-            ChallengeType.CONSTRAINT_VALIDATION: ChallengePattern(
-                challenge_type=ChallengeType.CONSTRAINT_VALIDATION,
-                trigger_keywords=[
-                    "budget",
-                    "timeline",
-                    "resources",
-                    "team",
-                    "capacity",
-                    "deadline",
-                    "constraints",
-                    "limitations",
-                ],
-                challenge_questions=[
-                    "Are these constraints real or assumed?",
-                    "What would it take to change these constraints?",
-                    "Which constraints are negotiable?",
-                    "What's the real cost of these constraints?",
-                    "Are we optimizing for the wrong constraints?",
-                ],
-                persona_specific={
-                    "diego": [
-                        "Are these team capacity constraints real or organizational?",
-                        "What would it take to get more engineering resources?",
-                        "Are we constrained by process or actual capability?",
-                    ],
-                    "camille": [
-                        "Are these strategic constraints real or political?",
-                        "What would it take to change executive priorities?",
-                        "Which business constraints are actually negotiable?",
-                    ],
-                    "rachel": [
-                        "Are these design constraints real or assumed?",
-                        "What would it take to change user expectations?",
-                        "Which accessibility constraints are non-negotiable?",
-                    ],
-                    "alvaro": [
-                        "Are these budget constraints real or conservative?",
-                        "What would it take to increase investment?",
-                        "Which market constraints are actually opportunities?",
-                    ],
-                    "martin": [
-                        "Are these technical constraints real or legacy?",
-                        "What would it take to change the architecture?",
-                        "Which performance constraints are actually negotiable?",
-                    ],
-                },
-            ),
-        }
+        for challenge_key, challenge_config in self.config.challenge_types.items():
+            try:
+                challenge_type = ChallengeType(challenge_key)
+
+                # Load persona-specific patterns
+                persona_specific = {}
+                for persona_name, persona_config in self.config.personas.items():
+                    if (
+                        "challenge_patterns" in persona_config
+                        and challenge_key in persona_config["challenge_patterns"]
+                    ):
+                        persona_specific[persona_name] = persona_config[
+                            "challenge_patterns"
+                        ][challenge_key]
+
+                pattern = ChallengePattern(
+                    challenge_type=challenge_type,
+                    name=challenge_config["name"],
+                    description=challenge_config["description"],
+                    trigger_keywords=challenge_config["trigger_keywords"],
+                    generic_questions=challenge_config["generic_questions"],
+                    confidence_threshold=challenge_config["confidence_threshold"],
+                    persona_specific=persona_specific,
+                )
+
+                patterns[challenge_type] = pattern
+
+            except ValueError:
+                self.logger.warning(
+                    f"Unknown challenge type in config: {challenge_key}"
+                )
+                continue
+
+        return patterns
 
     def _initialize_persona_styles(self) -> Dict[str, Dict[str, Any]]:
-        """Initialize persona-specific challenge styles"""
+        """Initialize persona-specific challenge styles from configuration"""
+        styles = {}
 
-        return {
-            "diego": {
-                "challenge_intro": [
-                    "Hold on - let me challenge this thinking...",
-                    "Before we proceed, I need to pressure-test this...",
-                    "Wait - I'm seeing some assumptions here that concern me...",
-                ],
-                "pushback_style": "collaborative_but_firm",
-                "evidence_demand": "organizational_proof",
-                "alternative_focus": "team_structure_alternatives",
-            },
-            "camille": {
-                "challenge_intro": [
-                    "I need to push back on this strategic direction...",
-                    "Before we commit, let me stress-test this thinking...",
-                    "Hold on - I'm seeing strategic assumptions that need validation...",
-                ],
-                "pushback_style": "executive_strategic",
-                "evidence_demand": "business_proof",
-                "alternative_focus": "strategic_alternatives",
-            },
-            "rachel": {
-                "challenge_intro": [
-                    "I need to challenge this from a user perspective...",
-                    "Wait - let me push back on these design assumptions...",
-                    "Before we proceed, I'm concerned about these user assumptions...",
-                ],
-                "pushback_style": "user_advocate_firm",
-                "evidence_demand": "user_research_proof",
-                "alternative_focus": "user_experience_alternatives",
-            },
-            "alvaro": {
-                "challenge_intro": [
-                    "I need to challenge the business case here...",
-                    "Hold on - let me stress-test these financial assumptions...",
-                    "Before we invest, I'm seeing ROI assumptions that concern me...",
-                ],
-                "pushback_style": "business_analytical",
-                "evidence_demand": "financial_proof",
-                "alternative_focus": "business_model_alternatives",
-            },
-            "martin": {
-                "challenge_intro": [
-                    "I need to push back on this technical approach...",
-                    "Wait - let me challenge these architectural assumptions...",
-                    "Before we build, I'm seeing technical assumptions that need validation...",
-                ],
-                "pushback_style": "technical_pragmatic",
-                "evidence_demand": "technical_proof",
-                "alternative_focus": "architectural_alternatives",
-            },
-        }
+        for persona_name, persona_config in self.config.personas.items():
+            styles[persona_name] = {
+                "name": persona_config.get("name", persona_name.title()),
+                "domain": persona_config.get("domain", "Strategic Leadership"),
+                "challenge_style": persona_config.get(
+                    "challenge_style", "professional_firm"
+                ),
+                "challenge_intros": persona_config.get(
+                    "challenge_intros", ["Let me challenge this thinking..."]
+                ),
+            }
+
+        return styles
 
     def should_challenge(self, user_input: str, persona: str) -> List[ChallengeType]:
         """
@@ -357,40 +214,120 @@ class StrategicChallengeFramework:
         Returns:
             List of challenge types that should be applied
         """
-        challenges_to_apply = []
+        start_time = time.time()
 
-        # Convert input to lowercase for pattern matching
+        # Check cache first if enabled
+        if self.config.performance.get("cache_patterns", False):
+            cache_key = f"{hash(user_input)}_{persona}"
+            if cache_key in self._pattern_cache:
+                cache_entry = self._pattern_cache[cache_key]
+                if time.time() - cache_entry["timestamp"] < self._cache_ttl:
+                    return cache_entry["result"]
+
+        challenges_to_apply = []
         input_lower = user_input.lower()
 
-        # Check each challenge pattern
+        # Check each challenge pattern with improved matching
         for challenge_type, pattern in self.challenge_patterns.items():
-            # Check if any trigger keywords are present
+            # Count keyword matches (any keyword triggers the pattern)
             keyword_matches = sum(
-                1 for keyword in pattern.trigger_keywords if keyword in input_lower
+                1
+                for keyword in pattern.trigger_keywords
+                if keyword.lower() in input_lower
             )
 
-            # Calculate confidence based on keyword density
-            confidence = keyword_matches / len(pattern.trigger_keywords)
+            # If any keywords match, calculate confidence based on pattern strength
+            if keyword_matches > 0:
+                # Improved confidence calculation:
+                # - Base confidence from keyword density
+                # - Bonus for multiple matches
+                # - Bonus for strong trigger words
 
-            if confidence >= pattern.confidence_threshold:
-                challenges_to_apply.append(challenge_type)
+                base_confidence = min(
+                    1.0, keyword_matches / max(1, len(pattern.trigger_keywords))
+                )
 
-        # Always apply assumption testing for strategic questions
-        strategic_indicators = [
-            "strategy",
-            "plan",
-            "should",
-            "recommend",
-            "approach",
-            "solution",
-            "problem",
-            "decision",
-            "investment",
-        ]
+                # Bonus for multiple keyword matches (shows stronger pattern)
+                if keyword_matches >= 2:
+                    base_confidence = min(1.0, base_confidence + 0.2)
+                if keyword_matches >= 3:
+                    base_confidence = min(1.0, base_confidence + 0.1)
 
-        if any(indicator in input_lower for indicator in strategic_indicators):
-            if ChallengeType.ASSUMPTION_TEST not in challenges_to_apply:
-                challenges_to_apply.append(ChallengeType.ASSUMPTION_TEST)
+                # Boost confidence for strong trigger words
+                strong_triggers = [
+                    "obviously",
+                    "clearly",
+                    "always",
+                    "never",
+                    "everyone",
+                    "should",
+                    "must",
+                    "problem",
+                    "need",
+                    "works",
+                    "solution",
+                    "impossible",
+                    "budget",
+                    "definitely",
+                    "want",
+                ]
+                strong_matches = sum(
+                    1 for trigger in strong_triggers if trigger in input_lower
+                )
+                if strong_matches > 0:
+                    base_confidence = min(
+                        1.0, base_confidence + (strong_matches * 0.15)
+                    )
+
+                if base_confidence >= pattern.confidence_threshold:
+                    challenges_to_apply.append(challenge_type)
+
+        # Always challenge strategic indicators if they meet activation threshold
+        strategic_indicators = self.config.activation_rules.get(
+            "strategic_indicators", []
+        )
+        activation_threshold = self.config.activation_rules.get(
+            "activation_threshold", 0.6
+        )
+
+        strategic_matches = sum(
+            1 for indicator in strategic_indicators if indicator.lower() in input_lower
+        )
+
+        if strategic_matches > 0 and len(strategic_indicators) > 0:
+            strategic_confidence = strategic_matches / len(strategic_indicators)
+            if strategic_confidence >= activation_threshold:
+                if ChallengeType.ASSUMPTION_TEST not in challenges_to_apply:
+                    challenges_to_apply.append(ChallengeType.ASSUMPTION_TEST)
+
+        # Always challenge high-confidence patterns
+        always_challenge = self.config.activation_rules.get("always_challenge", [])
+        for pattern in always_challenge:
+            if pattern.lower() in input_lower:
+                if ChallengeType.ASSUMPTION_TEST not in challenges_to_apply:
+                    challenges_to_apply.append(ChallengeType.ASSUMPTION_TEST)
+                break
+
+        # Limit number of challenges per response
+        max_challenges = self.config.global_settings.get(
+            "max_challenges_per_response", 3
+        )
+        challenges_to_apply = challenges_to_apply[:max_challenges]
+
+        # Cache result if enabled
+        if self.config.performance.get("cache_patterns", False):
+            self._pattern_cache[cache_key] = {
+                "result": challenges_to_apply,
+                "timestamp": time.time(),
+            }
+
+        # Performance monitoring
+        processing_time = (time.time() - start_time) * 1000
+        max_time = self.config.performance.get("max_response_time_ms", 100)
+        if processing_time > max_time:
+            self.logger.warning(
+                f"Challenge detection took {processing_time:.2f}ms (max: {max_time}ms)"
+            )
 
         return challenges_to_apply
 
@@ -414,31 +351,42 @@ class StrategicChallengeFramework:
         # Get persona style
         persona_style = self.persona_styles.get(persona, {})
         challenge_intros = persona_style.get(
-            "challenge_intro", ["Let me challenge this thinking..."]
+            "challenge_intros", ["Let me challenge this thinking..."]
         )
 
         # Start with challenge introduction
         response_parts = [f"**🔍 {challenge_intros[0]}**\n"]
 
         # Add specific challenges
-        for challenge_type in challenge_types[:3]:  # Limit to 3 challenges max
+        max_challenges = self.config.global_settings.get(
+            "max_challenges_per_response", 3
+        )
+        for challenge_type in challenge_types[:max_challenges]:
+            if challenge_type not in self.challenge_patterns:
+                continue
+
             pattern = self.challenge_patterns[challenge_type]
 
             # Use persona-specific questions if available
-            if persona in pattern.persona_specific:
+            if (
+                persona in pattern.persona_specific
+                and pattern.persona_specific[persona]
+            ):
                 questions = pattern.persona_specific[persona]
             else:
-                questions = pattern.challenge_questions
+                questions = pattern.generic_questions
 
-            # Select most relevant question
-            selected_question = questions[0]  # For now, use first question
+            if questions:
+                # Select most relevant question (for now, use first question)
+                selected_question = questions[0]
+                response_parts.append(f"- **{selected_question}**")
 
-            response_parts.append(f"- **{selected_question}**")
-
-        # Add demand for evidence/validation
-        response_parts.append(
-            "\n**I need to see evidence and validation before we proceed with recommendations.**"
-        )
+        # Add demand for evidence/validation based on configuration
+        blending_config = self.config.response_blending
+        if blending_config.get("include_evidence_requests", True):
+            response_parts.append(
+                "\n**I need to see evidence and validation before we proceed with recommendations.**"
+            )
 
         return "\n".join(response_parts)
 
@@ -467,10 +415,78 @@ class StrategicChallengeFramework:
             user_input, persona, challenge_types
         )
 
-        # Integrate challenge with base response
-        enhanced_response = f"{challenge_content}\n\n{base_response}"
+        # Integrate challenge with base response based on configuration
+        blending_config = self.config.response_blending
+        integration_style = blending_config.get("integration_style", "natural_flow")
+
+        if integration_style == "prefix_challenge":
+            enhanced_response = f"{challenge_content}\n\n{base_response}"
+        elif integration_style == "suffix_challenge":
+            enhanced_response = f"{base_response}\n\n{challenge_content}"
+        else:  # natural_flow (default)
+            enhanced_response = f"{challenge_content}\n\n{base_response}"
+
+        # Ensure we don't exceed maximum challenge percentage
+        max_challenge_pct = blending_config.get("max_challenge_percentage", 0.4)
+        challenge_length = len(challenge_content)
+        total_length = len(enhanced_response)
+
+        if total_length > 0 and challenge_length / total_length > max_challenge_pct:
+            # Truncate challenge content if it's too dominant
+            max_challenge_length = int(total_length * max_challenge_pct)
+            if challenge_length > max_challenge_length:
+                truncated_challenge = challenge_content[:max_challenge_length] + "..."
+                if integration_style == "prefix_challenge":
+                    enhanced_response = f"{truncated_challenge}\n\n{base_response}"
+                else:
+                    enhanced_response = f"{base_response}\n\n{truncated_challenge}"
 
         return enhanced_response
+
+    def get_challenge_analytics(self) -> Dict[str, Any]:
+        """
+        Get analytics about challenge pattern usage and effectiveness
+
+        Returns:
+            Dictionary with challenge analytics data
+        """
+        return {
+            "framework_version": self.config.version,
+            "framework_name": self.config.framework_name,
+            "total_challenge_types": len(self.challenge_patterns),
+            "configured_personas": list(self.persona_styles.keys()),
+            "cache_enabled": self.config.performance.get("cache_patterns", False),
+            "cache_size": len(self._pattern_cache),
+            "performance_target_ms": self.config.performance.get(
+                "max_response_time_ms", 100
+            ),
+            "global_settings": self.config.global_settings,
+        }
+
+    def reload_configuration(self) -> bool:
+        """
+        Reload configuration from YAML file
+
+        Returns:
+            True if reload was successful, False otherwise
+        """
+        try:
+            old_config = self.config
+            self.config = self._load_configuration()
+            self.challenge_patterns = self._initialize_challenge_patterns()
+            self.persona_styles = self._initialize_persona_styles()
+            self._pattern_cache.clear()  # Clear cache after config reload
+
+            self.logger.info(
+                f"Challenge configuration reloaded successfully from {self.config_path}"
+            )
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Failed to reload challenge configuration: {e}")
+            # Restore old configuration
+            self.config = old_config
+            return False
 
 
 # Global instance for use across the system
