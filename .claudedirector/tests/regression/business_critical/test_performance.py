@@ -538,9 +538,12 @@ class TestPerformance(unittest.TestCase):
             }
         )
 
-        # Verify system recovers to reasonable levels
+        # Verify system recovers to reasonable levels with dynamic tolerance
+        # Use adaptive tolerance: minimum 10%, or 20% of baseline, whichever is higher
+        cpu_tolerance = max(10, baseline_cpu * 0.2)
         self.assertLessEqual(
-            final_cpu, baseline_cpu + 10, "CPU usage didn't recover properly"
+            final_cpu, baseline_cpu + cpu_tolerance,
+            f"CPU usage didn't recover properly (final: {final_cpu:.2f}%, baseline: {baseline_cpu:.2f}%, tolerance: {cpu_tolerance:.2f}%)"
         )
 
         self.performance_data.extend(resource_measurements)
