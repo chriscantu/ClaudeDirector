@@ -49,9 +49,9 @@ class TestCompleteNewSetupP0(unittest.TestCase):
         for parent in current_dir.parents:
             # Look for multiple project root indicators (more reliable than just bin/claudedirector)
             if (
-                (parent / "README.md").exists() and
-                (parent / ".claudedirector").exists() and
-                (parent / "requirements.txt").exists()
+                (parent / "README.md").exists()
+                and (parent / ".claudedirector").exists()
+                and (parent / "requirements.txt").exists()
             ):
                 cls.source_project_root = parent
                 break
@@ -155,17 +155,21 @@ class TestCompleteNewSetupP0(unittest.TestCase):
 
             # Should clearly indicate this is a chat-only framework
             chat_indicators = ["cursor", "claude", "chat"]
-            found_chat_guidance = any(indicator in content for indicator in chat_indicators)
+            found_chat_guidance = any(
+                indicator in content for indicator in chat_indicators
+            )
 
             execution_time = time.time() - start_time
 
             # Must have chat guidance and be fast to read
             self.assertTrue(
                 found_chat_guidance,
-                "CRITICAL: README lacks chat interface guidance for new users"
+                "CRITICAL: README lacks chat interface guidance for new users",
             )
             self.assertLess(
-                execution_time, 3.0, f"CRITICAL: Documentation read too slow ({execution_time:.2f}s)"
+                execution_time,
+                3.0,
+                f"CRITICAL: Documentation read too slow ({execution_time:.2f}s)",
             )
 
         except Exception as e:
@@ -260,11 +264,15 @@ class TestCompleteNewSetupP0(unittest.TestCase):
 
             # Should clearly indicate this is a chat-only framework
             chat_indicators = ["cursor", "claude", "chat", "conversation"]
-            found_chat_guidance = any(indicator in content for indicator in chat_indicators)
+            found_chat_guidance = any(
+                indicator in content for indicator in chat_indicators
+            )
 
             # Should provide getting started guidance
             setup_indicators = ["getting started", "setup", "installation"]
-            found_setup_guidance = any(indicator in content for indicator in setup_indicators)
+            found_setup_guidance = any(
+                indicator in content for indicator in setup_indicators
+            )
 
             self.assertTrue(
                 found_chat_guidance,
@@ -386,7 +394,10 @@ class TestCompleteNewSetupP0(unittest.TestCase):
 
             # Verify it has essential content
             content_lower = content.lower()
-            has_guidance = any(indicator in content_lower for indicator in ["cursor", "claude", "getting started"])
+            has_guidance = any(
+                indicator in content_lower
+                for indicator in ["cursor", "claude", "getting started"]
+            )
 
             execution_time = time.time() - start_time
 
@@ -399,8 +410,7 @@ class TestCompleteNewSetupP0(unittest.TestCase):
             )
 
             self.assertTrue(
-                has_guidance,
-                "CRITICAL: README lacks essential guidance for new users"
+                has_guidance, "CRITICAL: README lacks essential guidance for new users"
             )
 
         except Exception as e:
@@ -431,7 +441,9 @@ class TestCompleteNewSetupP0(unittest.TestCase):
                     scenario["test"]()
 
                 except Exception as e:
-                    self.fail(f"CRITICAL: Error recovery failed for scenario {scenario['name']}: {e}")
+                    self.fail(
+                        f"CRITICAL: Error recovery failed for scenario {scenario['name']}: {e}"
+                    )
 
     def _test_readme_accessibility(self, workspace):
         """Test that README is accessible and readable"""
@@ -545,12 +557,14 @@ except Exception as e:
             # Should have chat interface guidance
             content_lower = content.lower()
             chat_indicators = ["cursor", "claude", "chat"]
-            has_chat_guidance = any(indicator in content_lower for indicator in chat_indicators)
+            has_chat_guidance = any(
+                indicator in content_lower for indicator in chat_indicators
+            )
 
             # Documentation should provide chat guidance even offline
             self.assertTrue(
                 has_chat_guidance,
-                "CRITICAL: Documentation lacks chat interface guidance for offline users"
+                "CRITICAL: Documentation lacks chat interface guidance for offline users",
             )
 
         except subprocess.TimeoutExpired:
@@ -570,9 +584,9 @@ class TestNewUserExperienceP0(unittest.TestCase):
         for parent in current_dir.parents:
             # Look for multiple project root indicators (more reliable than just bin/claudedirector)
             if (
-                (parent / "README.md").exists() and
-                (parent / ".claudedirector").exists() and
-                (parent / "requirements.txt").exists()
+                (parent / "README.md").exists()
+                and (parent / ".claudedirector").exists()
+                and (parent / "requirements.txt").exists()
             ):
                 cls.source_project_root = parent
                 break
@@ -707,10 +721,12 @@ class TestNewUserExperienceP0(unittest.TestCase):
                 "cursor",
                 "claude",
                 "conversation",
-                "ai assistant"
+                "ai assistant",
             ]
 
-            found_chat_guidance = any(indicator in content for indicator in chat_indicators)
+            found_chat_guidance = any(
+                indicator in content for indicator in chat_indicators
+            )
             self.assertTrue(
                 found_chat_guidance,
                 f"CRITICAL: README lacks chat interface guidance for new users: {chat_indicators}",
