@@ -26,6 +26,8 @@ from dataclasses import dataclass, asdict
 from contextlib import contextmanager
 import logging
 
+from .constants import MCPServerConstants
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -56,106 +58,55 @@ class StrategicPythonMCPServer:
     """
 
     def __init__(self):
-        self.name = "strategic-python"
-        self.version = "1.0.0"
+        self.name = MCPServerConstants.STRATEGIC_PYTHON_SERVER_NAME
+        self.version = MCPServerConstants.STRATEGIC_PYTHON_SERVER_VERSION
 
         # Strategic capabilities only
         self.capabilities = [
-            "strategic_data_analysis",
-            "roi_calculations",
-            "stakeholder_analytics",
-            "performance_metrics",
-            "executive_reporting",
+            MCPServerConstants.Capabilities.STRATEGIC_DATA_ANALYSIS,
+            MCPServerConstants.Capabilities.ROI_CALCULATIONS,
+            MCPServerConstants.Capabilities.STAKEHOLDER_ANALYTICS,
+            MCPServerConstants.Capabilities.PERFORMANCE_METRICS,
+            MCPServerConstants.Capabilities.EXECUTIVE_REPORTING,
         ]
 
         # Security constraints
-        self.security_config = {
-            "max_execution_time": 30,  # seconds
-            "max_memory_mb": 512,  # MB
-            "allowed_imports": [
-                "pandas",
-                "numpy",
-                "json",
-                "datetime",
-                "time",
-                "math",
-                "statistics",
-                "collections",
-                "itertools",
-                "functools",
-                "operator",
-                "decimal",
-                "fractions",
-            ],
-            "blocked_imports": [
-                "os",
-                "sys",
-                "subprocess",
-                "socket",
-                "urllib",
-                "requests",
-                "shutil",
-                "glob",
-                "pickle",
-                "marshal",
-                "importlib",
-                "exec",
-                "eval",
-                "__import__",
-            ],
-            "blocked_operations": [
-                "open(",
-                "file(",
-                "exec(",
-                "eval(",
-                "compile(",
-                "subprocess",
-                "__import__",
-                "globals(",
-                "locals(",
-                "vars(",
-                "dir(",
-                "getattr(",
-                "setattr(",
-                "delattr(",
-            ],
-        }
+        self.security_config = MCPServerConstants.get_security_config()
 
         # Persona-specific configurations
         self.persona_configs = {
-            "diego": {
-                "focus": "leadership_metrics",
-                "default_imports": ["pandas", "numpy"],
-                "template_vars": {"role": "Engineering Leadership"},
-            },
-            "alvaro": {
-                "focus": "business_intelligence",
+            MCPServerConstants.Personas.DIEGO: MCPServerConstants.get_default_persona_config(
+                MCPServerConstants.Personas.DIEGO
+            ),
+            MCPServerConstants.Personas.ALVARO: {
+                **MCPServerConstants.get_default_persona_config(
+                    MCPServerConstants.Personas.ALVARO
+                ),
                 "default_imports": ["pandas", "numpy", "statistics"],
-                "template_vars": {"role": "Business Strategy"},
             },
-            "martin": {
-                "focus": "architecture_analysis",
+            MCPServerConstants.Personas.MARTIN: {
+                **MCPServerConstants.get_default_persona_config(
+                    MCPServerConstants.Personas.MARTIN
+                ),
                 "default_imports": ["pandas", "numpy", "json"],
-                "template_vars": {"role": "Platform Architecture"},
             },
-            "camille": {
-                "focus": "strategic_technology",
+            MCPServerConstants.Personas.CAMILLE: {
+                **MCPServerConstants.get_default_persona_config(
+                    MCPServerConstants.Personas.CAMILLE
+                ),
                 "default_imports": ["pandas", "numpy", "statistics"],
-                "template_vars": {"role": "Strategic Technology"},
             },
-            "rachel": {
-                "focus": "design_analytics",
-                "default_imports": ["pandas", "numpy"],
-                "template_vars": {"role": "Design Systems Strategy"},
-            },
+            MCPServerConstants.Personas.RACHEL: MCPServerConstants.get_default_persona_config(
+                MCPServerConstants.Personas.RACHEL
+            ),
         }
 
         # Execution metrics
         self.execution_metrics = {
-            "total_executions": 0,
-            "successful_executions": 0,
-            "avg_execution_time": 0.0,
-            "security_violations": 0,
+            MCPServerConstants.MetricsKeys.TOTAL_EXECUTIONS: 0,
+            MCPServerConstants.MetricsKeys.SUCCESSFUL_EXECUTIONS: 0,
+            MCPServerConstants.MetricsKeys.AVG_EXECUTION_TIME: 0.0,
+            MCPServerConstants.MetricsKeys.SECURITY_VIOLATIONS: 0,
         }
 
         logger.info(f"Strategic Python MCP Server {self.version} initialized")
@@ -179,15 +130,17 @@ class StrategicPythonMCPServer:
 
         try:
             # Update metrics
-            self.execution_metrics["total_executions"] += 1
+            self.execution_metrics[MCPServerConstants.MetricsKeys.TOTAL_EXECUTIONS] += 1
 
             # Validate strategic scope
             if not self._validate_strategic_scope(code):
-                self.execution_metrics["security_violations"] += 1
+                self.execution_metrics[
+                    MCPServerConstants.MetricsKeys.SECURITY_VIOLATIONS
+                ] += 1
                 return ExecutionResult(
                     success=False,
                     output="",
-                    error="Code outside strategic scope. Only strategic analysis allowed.",
+                    error=MCPServerConstants.ErrorMessages.SCOPE_VIOLATION,
                     execution_time=0,
                     memory_usage=0,
                     persona_context=persona,
@@ -205,14 +158,20 @@ class StrategicPythonMCPServer:
 
             # Update success metrics
             if result["success"]:
-                self.execution_metrics["successful_executions"] += 1
+                self.execution_metrics[
+                    MCPServerConstants.MetricsKeys.SUCCESSFUL_EXECUTIONS
+                ] += 1
 
             # Update average execution time
-            total_execs = self.execution_metrics["total_executions"]
-            current_avg = self.execution_metrics["avg_execution_time"]
-            self.execution_metrics["avg_execution_time"] = (
-                current_avg * (total_execs - 1) + execution_time
-            ) / total_execs
+            total_execs = self.execution_metrics[
+                MCPServerConstants.MetricsKeys.TOTAL_EXECUTIONS
+            ]
+            current_avg = self.execution_metrics[
+                MCPServerConstants.MetricsKeys.AVG_EXECUTION_TIME
+            ]
+            self.execution_metrics[
+                MCPServerConstants.MetricsKeys.AVG_EXECUTION_TIME
+            ] = (current_avg * (total_execs - 1) + execution_time) / total_execs
 
             execution_result = ExecutionResult(
                 success=result["success"],
@@ -247,34 +206,37 @@ class StrategicPythonMCPServer:
         """Validate code is within strategic analysis scope"""
 
         # Check for blocked imports
-        for blocked in self.security_config["blocked_imports"]:
+        for blocked in self.security_config[
+            MCPServerConstants.Security.BLOCKED_IMPORTS_KEY
+        ]:
             if f"import {blocked}" in code or f"from {blocked}" in code:
-                logger.warning(f"Blocked import detected: {blocked}")
+                logger.warning(
+                    MCPServerConstants.ErrorMessages.BLOCKED_IMPORT_WARNING.format(
+                        import_name=blocked
+                    )
+                )
                 return False
 
         # Check for blocked operations
-        for operation in self.security_config["blocked_operations"]:
+        for operation in self.security_config[
+            MCPServerConstants.Security.BLOCKED_OPERATIONS_KEY
+        ]:
             if operation in code:
-                logger.warning(f"Blocked operation detected: {operation}")
+                logger.warning(
+                    MCPServerConstants.ErrorMessages.BLOCKED_OPERATION_WARNING.format(
+                        operation=operation
+                    )
+                )
                 return False
 
         # Additional security checks
-        dangerous_patterns = [
-            "__",
-            "exec",
-            "eval",
-            "compile",
-            "globals",
-            "locals",
-            "getattr",
-            "setattr",
-            "delattr",
-            "hasattr",
-        ]
-
-        for pattern in dangerous_patterns:
+        for pattern in MCPServerConstants.Security.DANGEROUS_PATTERNS:
             if pattern in code:
-                logger.warning(f"Potentially dangerous pattern detected: {pattern}")
+                logger.warning(
+                    MCPServerConstants.ErrorMessages.DANGEROUS_PATTERN_WARNING.format(
+                        pattern=pattern
+                    )
+                )
                 return False
 
         return True
@@ -285,7 +247,7 @@ class StrategicPythonMCPServer:
         """Prepare persona-specific execution environment"""
 
         persona_config = self.persona_configs.get(
-            persona, self.persona_configs["diego"]
+            persona, self.persona_configs[MCPServerConstants.Personas.DIEGO]
         )
 
         # Base environment with strategic data
