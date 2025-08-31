@@ -7,7 +7,7 @@ from .mcp_integration import (
     MCPRequest,
     MCPResponse,
     create_strategic_python_integration,
-    StrategicPythonMCPContext
+    StrategicPythonMCPContext,
 )
 
 __all__ = [
@@ -17,5 +17,5 @@ __all__ = [
     "MCPRequest",
     "MCPResponse",
     "create_strategic_python_integration",
-    "StrategicPythonMCPContext"
+    "StrategicPythonMCPContext",
 ]
