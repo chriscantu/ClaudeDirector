@@ -202,8 +202,11 @@ class MCPServerConstants:
         BUSINESS_METRICS = "business_metrics"
         COST_ANALYSIS = "cost_analysis"
 
-        # Martin's architecture charts
+        # Martin's architecture charts (Phase 7 Enhanced)
         ARCHITECTURE_HEALTH = "architecture_health"
+        SERVICE_PERFORMANCE = "service_performance"
+        SYSTEM_DEPENDENCY_MAP = "system_dependency_map"
+        TECHNICAL_DEBT_TRENDS = "technical_debt_trends"
         PERFORMANCE_METRICS_CHART = "performance_metrics"
         SYSTEM_DEPENDENCIES = "system_dependencies"
 
@@ -211,7 +214,12 @@ class MCPServerConstants:
         TECHNOLOGY_ROADMAP = "technology_roadmap"
         INNOVATION_METRICS = "innovation_metrics"
 
-        # Rachel's design charts
+        # Rachel's design charts (Phase 7 Enhanced)
+        COMPONENT_ADOPTION = "component_adoption"
+        DESIGN_SYSTEM_MATURITY = "design_system_maturity"
+        USAGE_TREND_ANALYSIS = "usage_trend_analysis"
+        TEAM_COMPARISON = "team_comparison"
+        DESIGN_DEBT_VISUALIZATION = "design_debt_visualization"
         DESIGN_SYSTEM_HEALTH = "design_system_health"
         ADOPTION_METRICS = "adoption_metrics"
 
