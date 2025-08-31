@@ -706,7 +706,7 @@ class ExecutiveVisualizationEngine:
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
         """Create comprehensive architecture health dashboard for Martin"""
-        
+
         # Create subplot layout for comprehensive dashboard
         fig = make_subplots(
             rows=2, cols=2,
@@ -714,11 +714,11 @@ class ExecutiveVisualizationEngine:
             specs=[[{"type": "bar"}, {"type": "indicator"}],
                    [{"type": "scatter"}, {"type": "bar"}]]
         )
-        
+
         # Service Performance (top-left)
         services = data.get('services', ['API Gateway', 'User Service', 'Data Service', 'Auth Service'])
         performance_scores = data.get('performance_scores', [95, 88, 92, 90])
-        
+
         fig.add_trace(
             go.Bar(
                 x=services,
@@ -730,7 +730,7 @@ class ExecutiveVisualizationEngine:
             ),
             row=1, col=1
         )
-        
+
         # System Health Gauge (top-right)
         overall_health = data.get('overall_health', 92)
         fig.add_trace(
@@ -756,11 +756,11 @@ class ExecutiveVisualizationEngine:
             ),
             row=1, col=2
         )
-        
+
         # Response Times Trend (bottom-left)
         timestamps = data.get('timestamps', ['00:00', '06:00', '12:00', '18:00', '24:00'])
         response_times = data.get('response_times', [120, 85, 95, 110, 100])
-        
+
         fig.add_trace(
             go.Scatter(
                 x=timestamps,
@@ -772,11 +772,11 @@ class ExecutiveVisualizationEngine:
             ),
             row=2, col=1
         )
-        
+
         # Error Rates (bottom-right)
         error_types = data.get('error_types', ['4xx Client', '5xx Server', 'Timeout', 'Network'])
         error_counts = data.get('error_counts', [12, 3, 5, 2])
-        
+
         fig.add_trace(
             go.Bar(
                 x=error_types,
@@ -788,7 +788,7 @@ class ExecutiveVisualizationEngine:
             ),
             row=2, col=2
         )
-        
+
         # Update layout with Martin's architecture styling
         fig.update_layout(
             title={
@@ -800,21 +800,21 @@ class ExecutiveVisualizationEngine:
             height=800,
             **self.layout_template
         )
-        
+
         return fig
 
     def _create_service_performance_chart(
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
         """Create service performance monitoring chart"""
-        
+
         services = data.get('services', ['API Gateway', 'User Service', 'Data Service', 'Auth Service'])
         response_times = data.get('response_times', [120, 85, 95, 110])
         throughput = data.get('throughput', [1500, 2200, 1800, 1200])
-        
+
         # Create dual-axis chart
         fig = make_subplots(specs=[[{"secondary_y": True}]])
-        
+
         # Response times (primary y-axis)
         fig.add_trace(
             go.Bar(
@@ -827,7 +827,7 @@ class ExecutiveVisualizationEngine:
             ),
             secondary_y=False,
         )
-        
+
         # Throughput (secondary y-axis)
         fig.add_trace(
             go.Scatter(
@@ -840,25 +840,25 @@ class ExecutiveVisualizationEngine:
             ),
             secondary_y=True,
         )
-        
+
         # Update axes labels
         fig.update_xaxes(title_text="Services")
         fig.update_yaxes(title_text="Response Time (ms)", secondary_y=False)
         fig.update_yaxes(title_text="Throughput (req/min)", secondary_y=True)
-        
+
         # Update layout
         fig.update_layout(
             title={'text': title, 'x': 0.5, 'font': {'size': 20}},
             **self.layout_template
         )
-        
+
         return fig
 
     def _create_system_dependency_map(
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
         """Create system dependency network visualization"""
-        
+
         # Network graph data
         nodes = data.get('nodes', [
             {'id': 'frontend', 'label': 'Frontend App', 'group': 'client'},
@@ -868,7 +868,7 @@ class ExecutiveVisualizationEngine:
             {'id': 'data', 'label': 'Data Service', 'group': 'service'},
             {'id': 'db', 'label': 'Database', 'group': 'storage'}
         ])
-        
+
         edges = data.get('edges', [
             {'source': 'frontend', 'target': 'api'},
             {'source': 'api', 'target': 'auth'},
@@ -877,7 +877,7 @@ class ExecutiveVisualizationEngine:
             {'source': 'user', 'target': 'db'},
             {'source': 'data', 'target': 'db'}
         ])
-        
+
         # Create network layout (simplified circular layout)
         import math
         positions = {}
@@ -887,7 +887,7 @@ class ExecutiveVisualizationEngine:
                 'x': math.cos(angle),
                 'y': math.sin(angle)
             }
-        
+
         # Create edge traces
         edge_x = []
         edge_y = []
@@ -896,14 +896,14 @@ class ExecutiveVisualizationEngine:
             x1, y1 = positions[edge['target']]['x'], positions[edge['target']]['y']
             edge_x.extend([x0, x1, None])
             edge_y.extend([y0, y1, None])
-        
+
         # Create node traces
         node_x = [positions[node['id']]['x'] for node in nodes]
         node_y = [positions[node['id']]['y'] for node in nodes]
         node_text = [node['label'] for node in nodes]
-        
+
         fig = go.Figure()
-        
+
         # Add edges
         fig.add_trace(go.Scatter(
             x=edge_x, y=edge_y,
@@ -912,7 +912,7 @@ class ExecutiveVisualizationEngine:
             mode='lines',
             name='Dependencies'
         ))
-        
+
         # Add nodes
         fig.add_trace(go.Scatter(
             x=node_x, y=node_y,
@@ -927,7 +927,7 @@ class ExecutiveVisualizationEngine:
             ),
             name='Services'
         ))
-        
+
         fig.update_layout(
             title={'text': title, 'x': 0.5},
             showlegend=False,
@@ -935,21 +935,21 @@ class ExecutiveVisualizationEngine:
             yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
             **self.layout_template
         )
-        
+
         return fig
 
     def _create_technical_debt_trends(
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
         """Create technical debt trend analysis"""
-        
+
         months = data.get('months', ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'])
         debt_score = data.get('debt_score', [75, 73, 78, 71, 69, 65])
         code_coverage = data.get('code_coverage', [82, 84, 83, 86, 88, 90])
         complexity_score = data.get('complexity_score', [68, 70, 65, 63, 61, 58])
-        
+
         fig = go.Figure()
-        
+
         # Technical debt score
         fig.add_trace(go.Scatter(
             x=months, y=debt_score,
@@ -958,7 +958,7 @@ class ExecutiveVisualizationEngine:
             line=dict(color=self.color_palette[2], width=3),
             marker=dict(size=8)
         ))
-        
+
         # Code coverage
         fig.add_trace(go.Scatter(
             x=months, y=code_coverage,
@@ -967,7 +967,7 @@ class ExecutiveVisualizationEngine:
             line=dict(color=self.color_palette[1], width=3),
             marker=dict(size=8)
         ))
-        
+
         # Complexity score
         fig.add_trace(go.Scatter(
             x=months, y=complexity_score,
@@ -976,7 +976,7 @@ class ExecutiveVisualizationEngine:
             line=dict(color=self.color_palette[3], width=3),
             marker=dict(size=8)
         ))
-        
+
         fig.update_layout(
             title={'text': title, 'x': 0.5},
             xaxis_title="Month",
@@ -984,7 +984,7 @@ class ExecutiveVisualizationEngine:
             yaxis=dict(range=[0, 100]),
             **self.layout_template
         )
-        
+
         return fig
 
     # ========================================
@@ -995,14 +995,14 @@ class ExecutiveVisualizationEngine:
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
         """Create component adoption tracking chart for Rachel"""
-        
+
         components = data.get('components', ['Button', 'Input', 'Card', 'Modal', 'Table'])
         adoption_rates = data.get('adoption_rates', [95, 87, 78, 65, 52])
         teams_using = data.get('teams_using', [12, 11, 9, 7, 5])
-        
+
         # Create dual-axis chart
         fig = make_subplots(specs=[[{"secondary_y": True}]])
-        
+
         # Adoption rates (primary y-axis)
         fig.add_trace(
             go.Bar(
@@ -1015,7 +1015,7 @@ class ExecutiveVisualizationEngine:
             ),
             secondary_y=False,
         )
-        
+
         # Teams using (secondary y-axis)
         fig.add_trace(
             go.Scatter(
@@ -1028,33 +1028,33 @@ class ExecutiveVisualizationEngine:
             ),
             secondary_y=True,
         )
-        
+
         # Update axes
         fig.update_xaxes(title_text="Components")
         fig.update_yaxes(title_text="Adoption Rate (%)", secondary_y=False)
         fig.update_yaxes(title_text="Number of Teams", secondary_y=True)
-        
+
         fig.update_layout(
             title={'text': title, 'x': 0.5, 'font': {'size': 20}},
             **self.layout_template
         )
-        
+
         return fig
 
     def _create_design_system_maturity(
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
         """Create design system maturity assessment"""
-        
+
         categories = data.get('categories', [
             'Component Coverage', 'Design Consistency', 'Documentation Quality',
             'Developer Experience', 'Adoption Rate', 'Maintenance Efficiency'
         ])
         current_scores = data.get('current_scores', [85, 78, 92, 75, 68, 82])
         target_scores = data.get('target_scores', [95, 90, 95, 85, 85, 90])
-        
+
         fig = go.Figure()
-        
+
         # Current scores
         fig.add_trace(go.Bar(
             x=categories,
@@ -1064,7 +1064,7 @@ class ExecutiveVisualizationEngine:
             text=[f"{score}%" for score in current_scores],
             textposition="outside"
         ))
-        
+
         # Target scores
         fig.add_trace(go.Bar(
             x=categories,
@@ -1075,7 +1075,7 @@ class ExecutiveVisualizationEngine:
             text=[f"{score}%" for score in target_scores],
             textposition="outside"
         ))
-        
+
         fig.update_layout(
             title={'text': title, 'x': 0.5},
             xaxis_title="Maturity Categories",
@@ -1084,21 +1084,21 @@ class ExecutiveVisualizationEngine:
             barmode='group',
             **self.layout_template
         )
-        
+
         return fig
 
     def _create_usage_trend_analysis(
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
         """Create design system usage trend analysis"""
-        
+
         months = data.get('months', ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'])
         component_usage = data.get('component_usage', [450, 520, 680, 750, 890, 1020])
         new_implementations = data.get('new_implementations', [25, 35, 45, 40, 55, 60])
         design_debt_reduction = data.get('design_debt_reduction', [5, 8, 12, 15, 18, 22])
-        
+
         fig = make_subplots(specs=[[{"secondary_y": True}]])
-        
+
         # Component usage (primary y-axis)
         fig.add_trace(
             go.Scatter(
@@ -1110,7 +1110,7 @@ class ExecutiveVisualizationEngine:
             ),
             secondary_y=False,
         )
-        
+
         # New implementations (secondary y-axis)
         fig.add_trace(
             go.Bar(
@@ -1122,7 +1122,7 @@ class ExecutiveVisualizationEngine:
             ),
             secondary_y=True,
         )
-        
+
         # Design debt reduction (secondary y-axis)
         fig.add_trace(
             go.Scatter(
@@ -1134,32 +1134,32 @@ class ExecutiveVisualizationEngine:
             ),
             secondary_y=True,
         )
-        
+
         # Update axes
         fig.update_xaxes(title_text="Month")
         fig.update_yaxes(title_text="Component Usage Count", secondary_y=False)
         fig.update_yaxes(title_text="New Implementations / Debt Reduction", secondary_y=True)
-        
+
         fig.update_layout(
             title={'text': title, 'x': 0.5},
             **self.layout_template
         )
-        
+
         return fig
 
     def _create_team_comparison_dashboard(
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
         """Create team comparison dashboard for design system adoption"""
-        
+
         teams = data.get('teams', ['Frontend', 'Mobile', 'Platform', 'Marketing', 'Analytics'])
         adoption_scores = data.get('adoption_scores', [92, 78, 85, 65, 71])
         components_used = data.get('components_used', [28, 22, 25, 15, 18])
         consistency_scores = data.get('consistency_scores', [88, 72, 80, 58, 65])
-        
+
         # Create radar chart for team comparison
         fig = go.Figure()
-        
+
         # Add trace for each metric
         fig.add_trace(go.Scatterpolar(
             r=adoption_scores + [adoption_scores[0]],  # Close the polygon
@@ -1168,7 +1168,7 @@ class ExecutiveVisualizationEngine:
             name='Adoption Score',
             line_color=self.color_palette[0]
         ))
-        
+
         fig.add_trace(go.Scatterpolar(
             r=[score * 3 for score in components_used] + [components_used[0] * 3],  # Scale for visibility
             theta=teams + [teams[0]],
@@ -1177,7 +1177,7 @@ class ExecutiveVisualizationEngine:
             line_color=self.color_palette[1],
             opacity=0.6
         ))
-        
+
         fig.add_trace(go.Scatterpolar(
             r=consistency_scores + [consistency_scores[0]],
             theta=teams + [teams[0]],
@@ -1186,7 +1186,7 @@ class ExecutiveVisualizationEngine:
             line_color=self.color_palette[2],
             opacity=0.6
         ))
-        
+
         fig.update_layout(
             polar=dict(
                 radialaxis=dict(
@@ -1196,17 +1196,17 @@ class ExecutiveVisualizationEngine:
             title={'text': title, 'x': 0.5},
             **self.layout_template
         )
-        
+
         return fig
 
     def _create_design_debt_visualization(
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
         """Create design debt visualization heatmap"""
-        
+
         components = data.get('components', ['Button', 'Input', 'Card', 'Modal', 'Table', 'Form'])
         teams = data.get('teams', ['Frontend', 'Mobile', 'Platform', 'Marketing'])
-        
+
         # Design debt matrix (higher values = more debt)
         debt_matrix = data.get('debt_matrix', [
             [2, 1, 0, 3],  # Button
@@ -1216,7 +1216,7 @@ class ExecutiveVisualizationEngine:
             [2, 3, 1, 4],  # Table
             [1, 2, 0, 3],  # Form
         ])
-        
+
         fig = go.Figure(data=go.Heatmap(
             z=debt_matrix,
             x=teams,
@@ -1231,14 +1231,14 @@ class ExecutiveVisualizationEngine:
             textfont={"size": 14},
             hoverongaps=False
         ))
-        
+
         fig.update_layout(
             title={'text': title, 'x': 0.5},
             xaxis_title="Teams",
             yaxis_title="Components",
             **self.layout_template
         )
-        
+
         return fig
 
     async def health_check(self) -> Dict[str, Any]:
