@@ -118,6 +118,7 @@ class EnhancedSecurityScanner:
             "phase7_demo.py",  # Demo script with generic examples
             "phase7_*.html",  # Generated demo visualizations
             "demo_*.html",  # Generated demo files
+            "docs/demo/generated/",  # All generated demo files directory
         }
 
     def comprehensive_scan(self) -> Dict[str, any]:

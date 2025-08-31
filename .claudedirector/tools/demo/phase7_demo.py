@@ -145,11 +145,11 @@ async def demo_phase7_capabilities():
 
         saved_path = save_demo_file('phase7_rachel_component_adoption.html', result.html_output)
         print(f"   💾 Saved: {saved_path}")
-    
+
     # Demo 5: Rachel's Design System Maturity
     print("\n📊 DEMO 5: Rachel's Design System Maturity")
     print("-" * 42)
-    
+
     maturity_data = {
         'categories': [
             'Component Coverage', 'Design Consistency', 'Documentation Quality',
@@ -158,25 +158,25 @@ async def demo_phase7_capabilities():
         'current_scores': [85, 78, 92, 75, 68, 82],
         'target_scores': [95, 90, 95, 85, 85, 90]
     }
-    
+
     result = await viz_engine.create_executive_visualization(
         maturity_data,
         'design_system_maturity',
         'rachel',
         'Design System Maturity Assessment - Current vs Target'
     )
-    
+
     if result.success:
         print(f"✅ Design System Maturity Generated:")
         print(f"   Comparative bar chart showing current vs target maturity")
-        
+
         saved_path = save_demo_file('phase7_rachel_maturity.html', result.html_output)
         print(f"   💾 Saved: {saved_path}")
-    
+
     # Demo 6: Rachel's Design Debt Visualization
     print("\n🔥 DEMO 6: Rachel's Design Debt Heatmap")
     print("-" * 38)
-    
+
     debt_viz_data = {
         'components': ['Button', 'Input', 'Card', 'Modal', 'Table', 'Form'],
         'teams': ['Frontend', 'Mobile', 'Platform', 'Marketing'],
@@ -189,18 +189,18 @@ async def demo_phase7_capabilities():
             [1, 2, 0, 3],  # Form
         ]
     }
-    
+
     result = await viz_engine.create_executive_visualization(
         debt_viz_data,
         'design_debt_visualization',
         'rachel',
         'Design Debt Heatmap - Component vs Team Analysis'
     )
-    
+
     if result.success:
         print(f"✅ Design Debt Heatmap Generated:")
         print(f"   Color-coded heatmap showing debt distribution across teams")
-        
+
         saved_path = save_demo_file('phase7_rachel_design_debt.html', result.html_output)
         print(f"   💾 Saved: {saved_path}")
 
