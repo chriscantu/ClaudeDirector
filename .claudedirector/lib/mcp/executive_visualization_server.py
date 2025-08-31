@@ -39,6 +39,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class VisualizationResult:
     """Result of executive visualization generation"""
+
     success: bool
     html_output: str
     chart_type: str
@@ -66,25 +67,25 @@ class ExecutiveVisualizationEngine:
 
         # Rachel's executive color palette
         self.color_palette = [
-            '#4dabf7',  # Primary blue
-            '#51cf66',  # Success green
-            '#ff6b6b',  # Alert red
-            '#ffd43b',  # Warning yellow
-            '#9775fa',  # Purple accent
-            '#20c997'   # Teal accent
+            "#4dabf7",  # Primary blue
+            "#51cf66",  # Success green
+            "#ff6b6b",  # Alert red
+            "#ffd43b",  # Warning yellow
+            "#9775fa",  # Purple accent
+            "#20c997",  # Teal accent
         ]
 
         # Executive layout template
         self.layout_template = {
-            'paper_bgcolor': 'rgba(0,0,0,0)',
-            'plot_bgcolor': 'rgba(0,0,0,0)',
-            'font': {
-                'family': 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
-                'size': 12,
-                'color': '#333'
+            "paper_bgcolor": "rgba(0,0,0,0)",
+            "plot_bgcolor": "rgba(0,0,0,0)",
+            "font": {
+                "family": "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
+                "size": 12,
+                "color": "#333",
             },
-            'colorway': self.color_palette,
-            'margin': {'l': 60, 'r': 60, 't': 80, 'b': 60}
+            "colorway": self.color_palette,
+            "margin": {"l": 60, "r": 60, "t": 80, "b": 60},
         }
 
         # Persona-specific templates
@@ -93,15 +94,15 @@ class ExecutiveVisualizationEngine:
             "alvaro": self._alvaro_business_template,
             "martin": self._martin_architecture_template,
             "camille": self._camille_technology_template,
-            "rachel": self._rachel_design_template
+            "rachel": self._rachel_design_template,
         }
 
         # Visualization capabilities
         self.capabilities = [
             "executive_dashboards",
-            "interactive_charts", 
+            "interactive_charts",
             "strategic_presentations",
-            "publication_quality_visuals"
+            "publication_quality_visuals",
         ]
 
         # Performance metrics
@@ -110,7 +111,7 @@ class ExecutiveVisualizationEngine:
             "successful_generations": 0,
             "avg_generation_time": 0.0,
             "avg_file_size": 0,
-            "interactive_features_used": 0
+            "interactive_features_used": 0,
         }
 
         # Phase 1 integration
@@ -124,10 +125,10 @@ class ExecutiveVisualizationEngine:
         chart_type: str,
         persona: str,
         title: str,
-        context: Dict[str, Any] = None
+        context: Dict[str, Any] = None,
     ) -> VisualizationResult:
         """Create executive-quality interactive visualization"""
-        
+
         start_time = time.time()
         context = context or {}
 
@@ -155,12 +156,14 @@ class ExecutiveVisualizationEngine:
 
             # Calculate metrics
             generation_time = time.time() - start_time
-            file_size = len(html_output.encode('utf-8'))
+            file_size = len(html_output.encode("utf-8"))
             interactive_elements = self._detect_interactive_elements(fig)
 
             # Update success metrics
             self.visualization_metrics["successful_generations"] += 1
-            self._update_performance_metrics(generation_time, file_size, interactive_elements)
+            self._update_performance_metrics(
+                generation_time, file_size, interactive_elements
+            )
 
             result = VisualizationResult(
                 success=True,
@@ -169,10 +172,12 @@ class ExecutiveVisualizationEngine:
                 persona=persona,
                 generation_time=generation_time,
                 file_size_bytes=file_size,
-                interactive_elements=interactive_elements
+                interactive_elements=interactive_elements,
             )
 
-            logger.info(f"Executive visualization generated: {chart_type} for {persona} ({generation_time:.2f}s)")
+            logger.info(
+                f"Executive visualization generated: {chart_type} for {persona} ({generation_time:.2f}s)"
+            )
             return result
 
         except Exception as e:
@@ -185,15 +190,11 @@ class ExecutiveVisualizationEngine:
                 generation_time=time.time() - start_time,
                 file_size_bytes=0,
                 interactive_elements=[],
-                error=f"Visualization generation error: {str(e)}"
+                error=f"Visualization generation error: {str(e)}",
             )
 
     def _diego_leadership_template(
-        self,
-        data: Dict[str, Any],
-        chart_type: str,
-        title: str,
-        context: Dict[str, Any]
+        self, data: Dict[str, Any], chart_type: str, title: str, context: Dict[str, Any]
     ) -> go.Figure:
         """Diego's leadership-focused visualization template"""
 
@@ -209,11 +210,7 @@ class ExecutiveVisualizationEngine:
             return self._create_default_chart(data, chart_type, title)
 
     def _alvaro_business_template(
-        self,
-        data: Dict[str, Any],
-        chart_type: str,
-        title: str,
-        context: Dict[str, Any]
+        self, data: Dict[str, Any], chart_type: str, title: str, context: Dict[str, Any]
     ) -> go.Figure:
         """Alvaro's business intelligence template"""
 
@@ -229,11 +226,7 @@ class ExecutiveVisualizationEngine:
             return self._create_default_chart(data, chart_type, title)
 
     def _martin_architecture_template(
-        self,
-        data: Dict[str, Any],
-        chart_type: str,
-        title: str,
-        context: Dict[str, Any]
+        self, data: Dict[str, Any], chart_type: str, title: str, context: Dict[str, Any]
     ) -> go.Figure:
         """Martin's platform architecture template"""
 
@@ -247,11 +240,7 @@ class ExecutiveVisualizationEngine:
             return self._create_default_chart(data, chart_type, title)
 
     def _camille_technology_template(
-        self,
-        data: Dict[str, Any],
-        chart_type: str,
-        title: str,
-        context: Dict[str, Any]
+        self, data: Dict[str, Any], chart_type: str, title: str, context: Dict[str, Any]
     ) -> go.Figure:
         """Camille's strategic technology template"""
 
@@ -263,11 +252,7 @@ class ExecutiveVisualizationEngine:
             return self._create_default_chart(data, chart_type, title)
 
     def _rachel_design_template(
-        self,
-        data: Dict[str, Any],
-        chart_type: str,
-        title: str,
-        context: Dict[str, Any]
+        self, data: Dict[str, Any], chart_type: str, title: str, context: Dict[str, Any]
     ) -> go.Figure:
         """Rachel's design systems template"""
 
@@ -278,92 +263,97 @@ class ExecutiveVisualizationEngine:
         else:
             return self._create_default_chart(data, chart_type, title)
 
-    def _create_leadership_dashboard(self, data: Dict[str, Any], title: str) -> go.Figure:
+    def _create_leadership_dashboard(
+        self, data: Dict[str, Any], title: str
+    ) -> go.Figure:
         """Create Diego's leadership metrics dashboard"""
 
         fig = make_subplots(
-            rows=2, cols=2,
+            rows=2,
+            cols=2,
             subplot_titles=(
-                'Team Velocity Trend',
-                'Support Volume Analysis', 
-                'Strategic Initiative Progress',
-                'Platform Health Score'
+                "Team Velocity Trend",
+                "Support Volume Analysis",
+                "Strategic Initiative Progress",
+                "Platform Health Score",
             ),
             specs=[
-                [{'type': 'scatter'}, {'type': 'bar'}],
-                [{'type': 'indicator'}, {'type': 'pie'}]
-            ]
+                [{"type": "scatter"}, {"type": "bar"}],
+                [{"type": "indicator"}, {"type": "pie"}],
+            ],
         )
 
         # Team velocity trend
-        if 'velocity_data' in data:
+        if "velocity_data" in data:
             fig.add_trace(
                 go.Scatter(
-                    x=data['velocity_data'].get('dates', []),
-                    y=data['velocity_data'].get('velocity', []),
-                    mode='lines+markers',
-                    name='Team Velocity',
+                    x=data["velocity_data"].get("dates", []),
+                    y=data["velocity_data"].get("velocity", []),
+                    mode="lines+markers",
+                    name="Team Velocity",
                     line=dict(color=self.color_palette[0], width=3),
-                    marker=dict(size=8)
+                    marker=dict(size=8),
                 ),
-                row=1, col=1
+                row=1,
+                col=1,
             )
 
         # Support volume analysis
-        if 'support_data' in data:
+        if "support_data" in data:
             fig.add_trace(
                 go.Bar(
-                    x=data['support_data'].get('months', []),
-                    y=data['support_data'].get('volume', []),
-                    name='Support Volume',
-                    marker_color=self.color_palette[1]
+                    x=data["support_data"].get("months", []),
+                    y=data["support_data"].get("volume", []),
+                    name="Support Volume",
+                    marker_color=self.color_palette[1],
                 ),
-                row=1, col=2
+                row=1,
+                col=2,
             )
 
         # Strategic initiative progress (indicator)
-        if 'initiative_progress' in data:
+        if "initiative_progress" in data:
             fig.add_trace(
                 go.Indicator(
                     mode="gauge+number+delta",
-                    value=data['initiative_progress'].get('current', 75),
-                    domain={'x': [0, 1], 'y': [0, 1]},
-                    title={'text': "Initiative Progress"},
-                    delta={'reference': data['initiative_progress'].get('target', 80)},
+                    value=data["initiative_progress"].get("current", 75),
+                    domain={"x": [0, 1], "y": [0, 1]},
+                    title={"text": "Initiative Progress"},
+                    delta={"reference": data["initiative_progress"].get("target", 80)},
                     gauge={
-                        'axis': {'range': [None, 100]},
-                        'bar': {'color': self.color_palette[0]},
-                        'steps': [
-                            {'range': [0, 50], 'color': "lightgray"},
-                            {'range': [50, 80], 'color': "gray"}
+                        "axis": {"range": [None, 100]},
+                        "bar": {"color": self.color_palette[0]},
+                        "steps": [
+                            {"range": [0, 50], "color": "lightgray"},
+                            {"range": [50, 80], "color": "gray"},
                         ],
-                        'threshold': {
-                            'line': {'color': "red", 'width': 4},
-                            'thickness': 0.75,
-                            'value': 90
-                        }
-                    }
+                        "threshold": {
+                            "line": {"color": "red", "width": 4},
+                            "thickness": 0.75,
+                            "value": 90,
+                        },
+                    },
                 ),
-                row=2, col=1
+                row=2,
+                col=1,
             )
 
         # Platform health (pie chart)
-        if 'platform_health' in data:
+        if "platform_health" in data:
             fig.add_trace(
                 go.Pie(
-                    labels=data['platform_health'].get('labels', ['Healthy', 'Warning', 'Critical']),
-                    values=data['platform_health'].get('values', [70, 25, 5]),
+                    labels=data["platform_health"].get(
+                        "labels", ["Healthy", "Warning", "Critical"]
+                    ),
+                    values=data["platform_health"].get("values", [70, 25, 5]),
                     name="Platform Health",
-                    marker_colors=self.color_palette[:3]
+                    marker_colors=self.color_palette[:3],
                 ),
-                row=2, col=2
+                row=2,
+                col=2,
             )
 
-        fig.update_layout(
-            title=title,
-            showlegend=True,
-            height=800
-        )
+        fig.update_layout(title=title, showlegend=True, height=800)
 
         return fig
 
@@ -371,79 +361,83 @@ class ExecutiveVisualizationEngine:
         """Create Alvaro's ROI analysis dashboard"""
 
         fig = make_subplots(
-            rows=2, cols=2,
+            rows=2,
+            cols=2,
             subplot_titles=(
-                'Investment ROI Trend',
-                'Cost vs Benefit Analysis',
-                'ROI by Initiative',
-                'Projected Returns'
+                "Investment ROI Trend",
+                "Cost vs Benefit Analysis",
+                "ROI by Initiative",
+                "Projected Returns",
             ),
             specs=[
-                [{'type': 'scatter'}, {'type': 'bar'}],
-                [{'type': 'bar'}, {'type': 'scatter'}]
-            ]
+                [{"type": "scatter"}, {"type": "bar"}],
+                [{"type": "bar"}, {"type": "scatter"}],
+            ],
         )
 
         # ROI trend
-        if 'roi_trend' in data:
+        if "roi_trend" in data:
             fig.add_trace(
                 go.Scatter(
-                    x=data['roi_trend'].get('months', []),
-                    y=data['roi_trend'].get('roi', []),
-                    mode='lines+markers',
-                    name='ROI %',
+                    x=data["roi_trend"].get("months", []),
+                    y=data["roi_trend"].get("roi", []),
+                    mode="lines+markers",
+                    name="ROI %",
                     line=dict(color=self.color_palette[1], width=3),
-                    marker=dict(size=8)
+                    marker=dict(size=8),
                 ),
-                row=1, col=1
+                row=1,
+                col=1,
             )
 
         # Cost vs Benefit
-        if 'cost_benefit' in data:
+        if "cost_benefit" in data:
             fig.add_trace(
                 go.Bar(
-                    x=data['cost_benefit'].get('categories', []),
-                    y=data['cost_benefit'].get('costs', []),
-                    name='Costs',
-                    marker_color=self.color_palette[2]
+                    x=data["cost_benefit"].get("categories", []),
+                    y=data["cost_benefit"].get("costs", []),
+                    name="Costs",
+                    marker_color=self.color_palette[2],
                 ),
-                row=1, col=2
+                row=1,
+                col=2,
             )
             fig.add_trace(
                 go.Bar(
-                    x=data['cost_benefit'].get('categories', []),
-                    y=data['cost_benefit'].get('benefits', []),
-                    name='Benefits',
-                    marker_color=self.color_palette[1]
+                    x=data["cost_benefit"].get("categories", []),
+                    y=data["cost_benefit"].get("benefits", []),
+                    name="Benefits",
+                    marker_color=self.color_palette[1],
                 ),
-                row=1, col=2
+                row=1,
+                col=2,
             )
 
-        fig.update_layout(
-            title=title,
-            showlegend=True,
-            height=800
-        )
+        fig.update_layout(title=title, showlegend=True, height=800)
 
         return fig
 
-    def _create_default_chart(self, data: Dict[str, Any], chart_type: str, title: str) -> go.Figure:
+    def _create_default_chart(
+        self, data: Dict[str, Any], chart_type: str, title: str
+    ) -> go.Figure:
         """Create default chart when specific template not available"""
 
         # Simple bar chart as fallback
-        if 'x' in data and 'y' in data:
-            fig = go.Figure(data=go.Bar(
-                x=data['x'],
-                y=data['y'],
-                marker_color=self.color_palette[0]
-            ))
+        if "x" in data and "y" in data:
+            fig = go.Figure(
+                data=go.Bar(
+                    x=data["x"], y=data["y"], marker_color=self.color_palette[0]
+                )
+            )
         else:
             # Sample data for demonstration
-            fig = go.Figure(data=go.Bar(
-                x=['Q1', 'Q2', 'Q3', 'Q4'],
-                y=[20, 14, 23, 25],
-                marker_color=self.color_palette[0]
-            ))
+            fig = go.Figure(
+                data=go.Bar(
+                    x=["Q1", "Q2", "Q3", "Q4"],
+                    y=[20, 14, 23, 25],
+                    marker_color=self.color_palette[0],
+                )
+            )
 
         fig.update_layout(title=title)
         return fig
@@ -457,25 +451,25 @@ class ExecutiveVisualizationEngine:
         # Persona-specific styling enhancements
         persona_styles = {
             "diego": {
-                'title': {'font': {'size': 24, 'color': '#2c3e50'}},
-                'showlegend': True
+                "title": {"font": {"size": 24, "color": "#2c3e50"}},
+                "showlegend": True,
             },
             "alvaro": {
-                'title': {'font': {'size': 24, 'color': '#27ae60'}},
-                'showlegend': True
+                "title": {"font": {"size": 24, "color": "#27ae60"}},
+                "showlegend": True,
             },
             "martin": {
-                'title': {'font': {'size': 24, 'color': '#8e44ad'}},
-                'showlegend': True
+                "title": {"font": {"size": 24, "color": "#8e44ad"}},
+                "showlegend": True,
             },
             "camille": {
-                'title': {'font': {'size': 24, 'color': '#e74c3c'}},
-                'showlegend': True
+                "title": {"font": {"size": 24, "color": "#e74c3c"}},
+                "showlegend": True,
             },
             "rachel": {
-                'title': {'font': {'size': 24, 'color': '#f39c12'}},
-                'showlegend': True
-            }
+                "title": {"font": {"size": 24, "color": "#f39c12"}},
+                "showlegend": True,
+            },
         }
 
         style = persona_styles.get(persona, persona_styles["diego"])
@@ -487,7 +481,8 @@ class ExecutiveVisualizationEngine:
         """Generate complete executive-quality HTML"""
 
         # Rachel's executive HTML template
-        html_template = Template('''
+        html_template = Template(
+            """
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -572,21 +567,21 @@ class ExecutiveVisualizationEngine:
     </div>
 </body>
 </html>
-        ''')
+        """
+        )
 
         # Generate Plotly HTML
         plotly_html = fig.to_html(
-            include_plotlyjs=False,
-            div_id="strategic-visualization"
+            include_plotlyjs=False, div_id="strategic-visualization"
         )
 
         # Persona titles
         persona_titles = {
             "diego": "Engineering Leadership",
-            "alvaro": "Business Strategy", 
+            "alvaro": "Business Strategy",
             "martin": "Platform Architecture",
             "camille": "Strategic Technology",
-            "rachel": "Design Systems Strategy"
+            "rachel": "Design Systems Strategy",
         }
 
         return html_template.render(
@@ -595,17 +590,18 @@ class ExecutiveVisualizationEngine:
             plotly_div=plotly_html,
             persona=persona,
             timestamp=time.strftime("%Y-%m-%d %H:%M:%S"),
-            version=self.version
+            version=self.version,
         )
 
     def _parse_analysis_output(self, output: str) -> Dict[str, Any]:
         """Parse strategic analysis output into visualization data"""
-        
+
         # Try to extract JSON data from output
         try:
             # Look for JSON blocks in the output
             import re
-            json_match = re.search(r'\{.*\}', output, re.DOTALL)
+
+            json_match = re.search(r"\{.*\}", output, re.DOTALL)
             if json_match:
                 return json.loads(json_match.group())
         except:
@@ -616,32 +612,34 @@ class ExecutiveVisualizationEngine:
             "sample_data": True,
             "x": ["Q1", "Q2", "Q3", "Q4"],
             "y": [20, 25, 30, 35],
-            "analysis_output": output
+            "analysis_output": output,
         }
 
     def _detect_interactive_elements(self, fig: go.Figure) -> List[str]:
         """Detect interactive elements in the figure"""
-        
+
         elements = []
-        
+
         # Check for different trace types
         for trace in fig.data:
-            if hasattr(trace, 'type'):
+            if hasattr(trace, "type"):
                 elements.append(f"{trace.type}_chart")
-        
+
         # Check for subplots
-        if hasattr(fig, 'layout') and hasattr(fig.layout, 'annotations'):
+        if hasattr(fig, "layout") and hasattr(fig.layout, "annotations"):
             if fig.layout.annotations:
                 elements.append("subplots")
-        
+
         # Default interactive features
         elements.extend(["hover", "zoom", "pan"])
-        
+
         return list(set(elements))
 
-    def _update_performance_metrics(self, generation_time: float, file_size: int, interactive_elements: List[str]):
+    def _update_performance_metrics(
+        self, generation_time: float, file_size: int, interactive_elements: List[str]
+    ):
         """Update performance metrics"""
-        
+
         # Update average generation time
         total_viz = self.visualization_metrics["total_visualizations"]
         current_avg = self.visualization_metrics["avg_generation_time"]
@@ -656,30 +654,44 @@ class ExecutiveVisualizationEngine:
         ) / total_viz
 
         # Update interactive features count
-        self.visualization_metrics["interactive_features_used"] += len(interactive_elements)
+        self.visualization_metrics["interactive_features_used"] += len(
+            interactive_elements
+        )
 
     def get_server_info(self) -> Dict[str, Any]:
         """Get executive visualization server information"""
-        
+
         return {
             "name": self.name,
             "version": self.version,
             "capabilities": self.capabilities,
             "supported_personas": list(self.persona_templates.keys()),
             "supported_chart_types": [
-                "leadership_dashboard", "team_metrics", "strategic_trends", "support_analysis",
-                "roi_analysis", "investment_tracking", "business_metrics", "cost_analysis",
-                "architecture_health", "performance_metrics", "system_dependencies",
-                "technology_roadmap", "innovation_metrics",
-                "design_system_health", "adoption_metrics"
+                "leadership_dashboard",
+                "team_metrics",
+                "strategic_trends",
+                "support_analysis",
+                "roi_analysis",
+                "investment_tracking",
+                "business_metrics",
+                "cost_analysis",
+                "architecture_health",
+                "performance_metrics",
+                "system_dependencies",
+                "technology_roadmap",
+                "innovation_metrics",
+                "design_system_health",
+                "adoption_metrics",
             ],
             "metrics": self.visualization_metrics,
-            "color_palette": self.color_palette
+            "color_palette": self.color_palette,
         }
 
-    def get_transparency_disclosure(self, capability: str, persona: str, description: str) -> str:
+    def get_transparency_disclosure(
+        self, capability: str, persona: str, description: str
+    ) -> str:
         """Generate transparency disclosure for executive visualization"""
-        
+
         return f"""
 🔧 Accessing MCP Server: executive-visualization (Executive Visualization System)
 *Generating publication-quality interactive visualization using {persona} persona...*
@@ -698,14 +710,14 @@ class ExecutiveVisualizationEngine:
 
     async def health_check(self) -> Dict[str, Any]:
         """Perform health check on Executive Visualization Engine"""
-        
+
         try:
             # Test basic visualization generation
             test_data = {"x": ["Test"], "y": [1]}
             result = await self.create_executive_visualization(
                 test_data, "default", "diego", "Health Check Test"
             )
-            
+
             return {
                 "status": "healthy" if result.success else "degraded",
                 "server_info": self.get_server_info(),
@@ -713,28 +725,28 @@ class ExecutiveVisualizationEngine:
                 "test_result": {
                     "success": result.success,
                     "generation_time": result.generation_time,
-                    "file_size": result.file_size_bytes
-                }
+                    "file_size": result.file_size_bytes,
+                },
             }
-            
+
         except Exception as e:
             logger.error(f"Health check failed: {str(e)}")
             return {
                 "status": "unhealthy",
                 "error": str(e),
-                "last_health_check": time.time()
+                "last_health_check": time.time(),
             }
 
 
 # MCP Server Integration
 class ExecutiveVisualizationMCPServer:
     """MCP Server wrapper for Executive Visualization Engine"""
-    
+
     def __init__(self):
         self.engine = ExecutiveVisualizationEngine()
         self.name = "executive-visualization"
         self.version = "1.0.0"
-        
+
         logger.info(f"Executive Visualization MCP Server {self.version} initialized")
 
     async def process_visualization_request(
@@ -743,10 +755,10 @@ class ExecutiveVisualizationMCPServer:
         chart_type: str,
         persona: str,
         title: str,
-        context: Dict[str, Any] = None
+        context: Dict[str, Any] = None,
     ) -> VisualizationResult:
         """Process MCP visualization request"""
-        
+
         return await self.engine.create_executive_visualization(
             data, chart_type, persona, title, context
         )
@@ -770,38 +782,40 @@ if __name__ == "__main__":
     # Basic functionality test
     async def test_executive_visualization():
         print("🎨 Testing Executive Visualization Engine...")
-        
+
         engine = ExecutiveVisualizationEngine()
         print(f"✅ Engine initialized: {engine.name} v{engine.version}")
-        
+
         # Test visualization generation
         test_data = {
             "velocity_data": {
                 "dates": ["2024-01", "2024-02", "2024-03", "2024-04"],
-                "velocity": [15, 18, 22, 25]
+                "velocity": [15, 18, 22, 25],
             },
             "support_data": {
                 "months": ["Jan", "Feb", "Mar", "Apr"],
-                "volume": [45, 38, 42, 35]
-            }
+                "volume": [45, 38, 42, 35],
+            },
         }
-        
+
         result = await engine.create_executive_visualization(
             test_data, "leadership_dashboard", "diego", "Executive Leadership Dashboard"
         )
-        
-        print(f"✅ Visualization generation: {'SUCCESS' if result.success else 'FAILED'}")
+
+        print(
+            f"✅ Visualization generation: {'SUCCESS' if result.success else 'FAILED'}"
+        )
         if result.success:
             print(f"   Generation time: {result.generation_time:.2f}s")
             print(f"   File size: {result.file_size_bytes:,} bytes")
             print(f"   Interactive elements: {len(result.interactive_elements)}")
         else:
             print(f"   Error: {result.error}")
-        
+
         # Test health check
         health = await engine.health_check()
         print(f"✅ Health check: {health['status']}")
-        
+
         print("🎉 Executive Visualization Engine test completed!")
         print(f"📊 Engine metrics: {engine.visualization_metrics}")
 
