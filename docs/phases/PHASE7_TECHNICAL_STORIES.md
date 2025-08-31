@@ -266,7 +266,7 @@ Technical implementation stories for Phase 7 Enhanced Visualization Capabilities
 
 #### **P0-7.2: Chart Type Constants Integrity**
 **Test Module**: `.claudedirector/tests/regression/p0_blocking/test_chart_constants_p0.py`
-**Critical Level**: BLOCKING  
+**Critical Level**: BLOCKING
 **Description**: MCPServerConstants chart types must be complete and accessible
 **Failure Impact**: Chart generation system integrity compromised
 
@@ -322,7 +322,7 @@ Technical implementation stories for Phase 7 Enhanced Visualization Capabilities
 
 ### ✅ **Week 1 Complete: Technical Foundation**
 - **9 new chart methods** implemented in ExecutiveVisualizationEngine
-- **9 new chart type constants** added to MCPServerConstants  
+- **9 new chart type constants** added to MCPServerConstants
 - **Demo script** created with proper architectural placement
 - **Performance validation** completed with all targets met
 - **Architecture compliance** verified across all three core documents
