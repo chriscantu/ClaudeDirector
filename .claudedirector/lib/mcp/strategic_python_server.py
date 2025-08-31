@@ -79,11 +79,15 @@ class StrategicPythonMCPServer:
                 MCPServerConstants.Personas.DIEGO
             ),
             MCPServerConstants.Personas.ALVARO: {
-                **MCPServerConstants.get_default_persona_config(MCPServerConstants.Personas.ALVARO),
+                **MCPServerConstants.get_default_persona_config(
+                    MCPServerConstants.Personas.ALVARO
+                ),
                 "default_imports": ["pandas", "numpy", "statistics"],
             },
             MCPServerConstants.Personas.MARTIN: {
-                **MCPServerConstants.get_default_persona_config(MCPServerConstants.Personas.MARTIN),
+                **MCPServerConstants.get_default_persona_config(
+                    MCPServerConstants.Personas.MARTIN
+                ),
                 "default_imports": ["pandas", "numpy", "json"],
             },
             MCPServerConstants.Personas.CAMILLE: {
@@ -130,7 +134,9 @@ class StrategicPythonMCPServer:
 
             # Validate strategic scope
             if not self._validate_strategic_scope(code):
-                self.execution_metrics[MCPServerConstants.MetricsKeys.SECURITY_VIOLATIONS] += 1
+                self.execution_metrics[
+                    MCPServerConstants.MetricsKeys.SECURITY_VIOLATIONS
+                ] += 1
                 return ExecutionResult(
                     success=False,
                     output="",
@@ -152,14 +158,20 @@ class StrategicPythonMCPServer:
 
             # Update success metrics
             if result["success"]:
-                self.execution_metrics[MCPServerConstants.MetricsKeys.SUCCESSFUL_EXECUTIONS] += 1
+                self.execution_metrics[
+                    MCPServerConstants.MetricsKeys.SUCCESSFUL_EXECUTIONS
+                ] += 1
 
             # Update average execution time
-            total_execs = self.execution_metrics[MCPServerConstants.MetricsKeys.TOTAL_EXECUTIONS]
-            current_avg = self.execution_metrics[MCPServerConstants.MetricsKeys.AVG_EXECUTION_TIME]
-            self.execution_metrics[MCPServerConstants.MetricsKeys.AVG_EXECUTION_TIME] = (
-                current_avg * (total_execs - 1) + execution_time
-            ) / total_execs
+            total_execs = self.execution_metrics[
+                MCPServerConstants.MetricsKeys.TOTAL_EXECUTIONS
+            ]
+            current_avg = self.execution_metrics[
+                MCPServerConstants.MetricsKeys.AVG_EXECUTION_TIME
+            ]
+            self.execution_metrics[
+                MCPServerConstants.MetricsKeys.AVG_EXECUTION_TIME
+            ] = (current_avg * (total_execs - 1) + execution_time) / total_execs
 
             execution_result = ExecutionResult(
                 success=result["success"],
@@ -194,7 +206,9 @@ class StrategicPythonMCPServer:
         """Validate code is within strategic analysis scope"""
 
         # Check for blocked imports
-        for blocked in self.security_config[MCPServerConstants.Security.BLOCKED_IMPORTS_KEY]:
+        for blocked in self.security_config[
+            MCPServerConstants.Security.BLOCKED_IMPORTS_KEY
+        ]:
             if f"import {blocked}" in code or f"from {blocked}" in code:
                 logger.warning(
                     MCPServerConstants.ErrorMessages.BLOCKED_IMPORT_WARNING.format(
@@ -204,7 +218,9 @@ class StrategicPythonMCPServer:
                 return False
 
         # Check for blocked operations
-        for operation in self.security_config[MCPServerConstants.Security.BLOCKED_OPERATIONS_KEY]:
+        for operation in self.security_config[
+            MCPServerConstants.Security.BLOCKED_OPERATIONS_KEY
+        ]:
             if operation in code:
                 logger.warning(
                     MCPServerConstants.ErrorMessages.BLOCKED_OPERATION_WARNING.format(
@@ -281,7 +297,9 @@ class StrategicPythonMCPServer:
 
         return strategic_data
 
-    async def _execute_in_sandbox(self, code: str, env: Dict[str, Any]) -> Dict[str, Any]:
+    async def _execute_in_sandbox(
+        self, code: str, env: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Execute code in sandboxed environment with resource limits"""
 
         # Create sandboxed code wrapper
@@ -394,7 +412,10 @@ except Exception as e:
             # CPU time limit (soft limit only)
             cpu_limit = self.security_config["max_execution_time"]
             current_cpu_limit = resource.getrlimit(resource.RLIMIT_CPU)[0]
-            if current_cpu_limit == resource.RLIM_INFINITY or cpu_limit < current_cpu_limit:
+            if (
+                current_cpu_limit == resource.RLIM_INFINITY
+                or cpu_limit < current_cpu_limit
+            ):
                 resource.setrlimit(resource.RLIMIT_CPU, (cpu_limit, -1))
 
         except (OSError, ValueError) as e:
@@ -442,7 +463,9 @@ except Exception as e:
             "metrics": self.execution_metrics,
         }
 
-    def get_transparency_disclosure(self, capability: str, persona: str, code_summary: str) -> str:
+    def get_transparency_disclosure(
+        self, capability: str, persona: str, code_summary: str
+    ) -> str:
         """Generate transparency disclosure for MCP integration"""
         return f"""🔧 Accessing MCP Server: {self.name} ({capability})
 *Executing strategic Python analysis for {persona} persona...*
