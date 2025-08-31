@@ -23,6 +23,7 @@ from .executive_visualization_server import (
     ExecutiveVisualizationEngine,
     VisualizationResult,
 )
+from .constants import MCPServerConstants
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -54,8 +55,8 @@ class IntegratedVisualizationWorkflow:
     """
 
     def __init__(self):
-        self.name = "integrated-visualization-workflow"
-        self.version = "1.0.0"
+        self.name = MCPServerConstants.INTEGRATED_WORKFLOW_NAME
+        self.version = MCPServerConstants.INTEGRATED_WORKFLOW_VERSION
 
         # Initialize Phase 1 and Phase 2 components
         self.strategic_python_server = StrategicPythonMCPServer()
@@ -63,19 +64,19 @@ class IntegratedVisualizationWorkflow:
 
         # Workflow capabilities
         self.capabilities = [
-            "integrated_strategic_analysis",
-            "data_driven_visualizations",
-            "executive_ready_presentations",
-            "end_to_end_intelligence",
+            MCPServerConstants.Capabilities.INTEGRATED_STRATEGIC_ANALYSIS,
+            MCPServerConstants.Capabilities.DATA_DRIVEN_VISUALIZATIONS,
+            MCPServerConstants.Capabilities.EXECUTIVE_READY_PRESENTATIONS,
+            MCPServerConstants.Capabilities.END_TO_END_INTELLIGENCE,
         ]
 
         # Workflow metrics
         self.workflow_metrics = {
-            "total_workflows": 0,
-            "successful_workflows": 0,
-            "avg_workflow_time": 0.0,
-            "analysis_success_rate": 0.0,
-            "visualization_success_rate": 0.0,
+            MCPServerConstants.MetricsKeys.TOTAL_WORKFLOWS: 0,
+            MCPServerConstants.MetricsKeys.SUCCESSFUL_WORKFLOWS: 0,
+            MCPServerConstants.MetricsKeys.AVG_WORKFLOW_TIME: 0.0,
+            MCPServerConstants.MetricsKeys.ANALYSIS_SUCCESS_RATE: 0.0,
+            MCPServerConstants.MetricsKeys.VISUALIZATION_SUCCESS_RATE: 0.0,
         }
 
         logger.info(f"Integrated Visualization Workflow {self.version} initialized")

@@ -30,6 +30,7 @@ from jinja2 import Template
 
 # Phase 1 integration
 from .strategic_python_server import StrategicPythonMCPServer, ExecutionResult
+from .constants import MCPServerConstants
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -62,56 +63,39 @@ class ExecutiveVisualizationEngine:
     """
 
     def __init__(self):
-        self.name = "executive-visualization"
-        self.version = "1.0.0"
+        self.name = MCPServerConstants.EXECUTIVE_VISUALIZATION_SERVER_NAME
+        self.version = MCPServerConstants.EXECUTIVE_VISUALIZATION_SERVER_VERSION
 
         # Rachel's executive color palette
-        self.color_palette = [
-            "#4dabf7",  # Primary blue
-            "#51cf66",  # Success green
-            "#ff6b6b",  # Alert red
-            "#ffd43b",  # Warning yellow
-            "#9775fa",  # Purple accent
-            "#20c997",  # Teal accent
-        ]
+        self.color_palette = MCPServerConstants.Colors.EXECUTIVE_PALETTE
 
         # Executive layout template
-        self.layout_template = {
-            "paper_bgcolor": "rgba(0,0,0,0)",
-            "plot_bgcolor": "rgba(0,0,0,0)",
-            "font": {
-                "family": "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
-                "size": 12,
-                "color": "#333",
-            },
-            "colorway": self.color_palette,
-            "margin": {"l": 60, "r": 60, "t": 80, "b": 60},
-        }
+        self.layout_template = MCPServerConstants.get_executive_layout_template()
 
         # Persona-specific templates
         self.persona_templates = {
-            "diego": self._diego_leadership_template,
-            "alvaro": self._alvaro_business_template,
-            "martin": self._martin_architecture_template,
-            "camille": self._camille_technology_template,
-            "rachel": self._rachel_design_template,
+            MCPServerConstants.Personas.DIEGO: self._diego_leadership_template,
+            MCPServerConstants.Personas.ALVARO: self._alvaro_business_template,
+            MCPServerConstants.Personas.MARTIN: self._martin_architecture_template,
+            MCPServerConstants.Personas.CAMILLE: self._camille_technology_template,
+            MCPServerConstants.Personas.RACHEL: self._rachel_design_template,
         }
 
         # Visualization capabilities
         self.capabilities = [
-            "executive_dashboards",
-            "interactive_charts",
-            "strategic_presentations",
-            "publication_quality_visuals",
+            MCPServerConstants.Capabilities.EXECUTIVE_DASHBOARDS,
+            MCPServerConstants.Capabilities.INTERACTIVE_CHARTS,
+            MCPServerConstants.Capabilities.STRATEGIC_PRESENTATIONS,
+            MCPServerConstants.Capabilities.PUBLICATION_QUALITY_VISUALS,
         ]
 
         # Performance metrics
         self.visualization_metrics = {
-            "total_visualizations": 0,
-            "successful_generations": 0,
-            "avg_generation_time": 0.0,
-            "avg_file_size": 0,
-            "interactive_features_used": 0,
+            MCPServerConstants.MetricsKeys.TOTAL_VISUALIZATIONS: 0,
+            MCPServerConstants.MetricsKeys.SUCCESSFUL_GENERATIONS: 0,
+            MCPServerConstants.MetricsKeys.AVG_GENERATION_TIME: 0.0,
+            MCPServerConstants.MetricsKeys.AVG_FILE_SIZE: 0,
+            MCPServerConstants.MetricsKeys.INTERACTIVE_FEATURES_USED: 0,
         }
 
         # Phase 1 integration
@@ -134,7 +118,7 @@ class ExecutiveVisualizationEngine:
 
         try:
             # Update metrics
-            self.visualization_metrics["total_visualizations"] += 1
+            self.visualization_metrics[MCPServerConstants.MetricsKeys.TOTAL_VISUALIZATIONS] += 1
 
             # Process data if it's a string (from Phase 1 analysis)
             if isinstance(data, str):
@@ -160,7 +144,7 @@ class ExecutiveVisualizationEngine:
             interactive_elements = self._detect_interactive_elements(fig)
 
             # Update success metrics
-            self.visualization_metrics["successful_generations"] += 1
+            self.visualization_metrics[MCPServerConstants.MetricsKeys.SUCCESSFUL_GENERATIONS] += 1
             self._update_performance_metrics(
                 generation_time, file_size, interactive_elements
             )
@@ -190,7 +174,7 @@ class ExecutiveVisualizationEngine:
                 generation_time=time.time() - start_time,
                 file_size_bytes=0,
                 interactive_elements=[],
-                error=f"Visualization generation error: {str(e)}",
+                error=MCPServerConstants.ErrorMessages.VISUALIZATION_GENERATION_ERROR.format(error=str(e)),
             )
 
     def _diego_leadership_template(
@@ -449,31 +433,14 @@ class ExecutiveVisualizationEngine:
         fig.update_layout(**self.layout_template)
 
         # Persona-specific styling enhancements
+        # Apply persona-specific styling
+        persona_color = MCPServerConstants.Colors.PERSONA_COLORS.get(persona, MCPServerConstants.Colors.PRIMARY_BLUE)
         persona_styles = {
-            "diego": {
-                "title": {"font": {"size": 24, "color": "#2c3e50"}},
-                "showlegend": True,
-            },
-            "alvaro": {
-                "title": {"font": {"size": 24, "color": "#27ae60"}},
-                "showlegend": True,
-            },
-            "martin": {
-                "title": {"font": {"size": 24, "color": "#8e44ad"}},
-                "showlegend": True,
-            },
-            "camille": {
-                "title": {"font": {"size": 24, "color": "#e74c3c"}},
-                "showlegend": True,
-            },
-            "rachel": {
-                "title": {"font": {"size": 24, "color": "#f39c12"}},
-                "showlegend": True,
-            },
+            "title": {"font": {"size": MCPServerConstants.Typography.TITLE_FONT_SIZE, "color": persona_color}},
+            "showlegend": True,
         }
 
-        style = persona_styles.get(persona, persona_styles["diego"])
-        fig.update_layout(**style)
+        fig.update_layout(**persona_styles)
 
         return fig
 
@@ -576,13 +543,7 @@ class ExecutiveVisualizationEngine:
         )
 
         # Persona titles
-        persona_titles = {
-            "diego": "Engineering Leadership",
-            "alvaro": "Business Strategy",
-            "martin": "Platform Architecture",
-            "camille": "Strategic Technology",
-            "rachel": "Design Systems Strategy",
-        }
+        persona_titles = MCPServerConstants.Personas.PERSONA_TITLES
 
         return html_template.render(
             title=title,
