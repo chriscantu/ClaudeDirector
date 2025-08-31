@@ -23,6 +23,17 @@ servers:
       transport: "http"
       url: "https://api.context7.ai/mcp"
 
+  strategic-python:
+    command: "python"
+    args: ["-m", "claudedirector.mcp.strategic_python_server"]
+    connection_type: "stdio"
+    capabilities: ["strategic_data_analysis", "roi_calculations", "stakeholder_analytics", "performance_metrics", "executive_reporting"]
+    personas: ["diego", "alvaro", "martin", "camille", "rachel"]
+    security: "sandboxed"
+    timeout: 30
+    cache_ttl: 1800  # 30 minutes
+    scope: "strategic_only"
+
   magic:
     command: "npx"
     args: ["-y", "@magic/mcp-server"]
@@ -39,6 +50,11 @@ enhancement_thresholds:
   business_strategy: 0.7
   organizational_scaling: 0.7
   technology_leadership: 0.7
+  strategic_data_analysis: 0.6
+  roi_calculations: 0.5
+  stakeholder_analytics: 0.6
+  performance_metrics: 0.5
+  executive_reporting: 0.6
 
 connection_config:
   default_type: "stdio"
