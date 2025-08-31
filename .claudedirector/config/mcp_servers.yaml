@@ -34,6 +34,17 @@ servers:
     cache_ttl: 1800  # 30 minutes
     scope: "strategic_only"
 
+  executive-visualization:
+    command: "python"
+    args: ["-m", "claudedirector.mcp.executive_visualization_server"]
+    connection_type: "stdio"
+    capabilities: ["executive_dashboards", "interactive_charts", "strategic_presentations", "publication_quality_visuals"]
+    personas: ["diego", "alvaro", "martin", "camille", "rachel"]
+    depends_on: ["strategic-python"]
+    timeout: 15
+    cache_ttl: 1800  # 30 minutes
+    scope: "executive_visualization"
+
   magic:
     command: "npx"
     args: ["-y", "@magic/mcp-server"]
@@ -55,6 +66,10 @@ enhancement_thresholds:
   stakeholder_analytics: 0.6
   performance_metrics: 0.5
   executive_reporting: 0.6
+  executive_dashboards: 0.6
+  interactive_charts: 0.5
+  strategic_presentations: 0.7
+  publication_quality_visuals: 0.6
 
 connection_config:
   default_type: "stdio"
