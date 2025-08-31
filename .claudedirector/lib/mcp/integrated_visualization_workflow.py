@@ -148,14 +148,12 @@ class IntegratedVisualizationWorkflow:
                 f"Step 3: Generating executive visualization - {visualization_spec.get('chart_type', 'default')}"
             )
 
-            visualization_result = (
-                await self.visualization_engine.create_executive_visualization(
-                    visualization_data,
-                    visualization_spec.get("chart_type", "default"),
-                    persona,
-                    visualization_spec.get("title", "Strategic Analysis"),
-                    context,
-                )
+            visualization_result = await self.visualization_engine.create_executive_visualization(
+                visualization_data,
+                visualization_spec.get("chart_type", "default"),
+                persona,
+                visualization_spec.get("title", "Strategic Analysis"),
+                context,
             )
 
             # Step 4: Generate integrated transparency disclosure
@@ -186,9 +184,7 @@ class IntegratedVisualizationWorkflow:
                 transparency_disclosure=transparency_disclosure,
             )
 
-            logger.info(
-                f"Integrated workflow completed: {persona} ({total_workflow_time:.2f}s)"
-            )
+            logger.info(f"Integrated workflow completed: {persona} ({total_workflow_time:.2f}s)")
             return result
 
         except Exception as e:
@@ -272,9 +268,7 @@ class IntegratedVisualizationWorkflow:
                 "values": [75, 20, 5],
             },
             "analysis_source": (
-                analysis_output[:200] + "..."
-                if len(analysis_output) > 200
-                else analysis_output
+                analysis_output[:200] + "..." if len(analysis_output) > 200 else analysis_output
             ),
         }
 
@@ -291,9 +285,7 @@ class IntegratedVisualizationWorkflow:
                 "benefits": [80000, 45000, 30000, 25000],
             },
             "analysis_source": (
-                analysis_output[:200] + "..."
-                if len(analysis_output) > 200
-                else analysis_output
+                analysis_output[:200] + "..." if len(analysis_output) > 200 else analysis_output
             ),
         }
 
@@ -314,9 +306,7 @@ class IntegratedVisualizationWorkflow:
                 "health_scores": [95, 88, 92, 90],
             },
             "analysis_source": (
-                analysis_output[:200] + "..."
-                if len(analysis_output) > 200
-                else analysis_output
+                analysis_output[:200] + "..." if len(analysis_output) > 200 else analysis_output
             ),
         }
 
@@ -326,9 +316,7 @@ class IntegratedVisualizationWorkflow:
             "x": ["Category A", "Category B", "Category C", "Category D"],
             "y": [23, 45, 56, 78],
             "analysis_source": (
-                analysis_output[:200] + "..."
-                if len(analysis_output) > 200
-                else analysis_output
+                analysis_output[:200] + "..." if len(analysis_output) > 200 else analysis_output
             ),
         }
 
@@ -553,9 +541,7 @@ print(f"Analysis result: {{result}}")
         # Query-based detection
         if any(word in query_lower for word in ["dashboard", "overview", "summary"]):
             return persona_defaults.get(persona, "leadership_dashboard")
-        elif any(
-            word in query_lower for word in ["roi", "investment", "cost", "benefit"]
-        ):
+        elif any(word in query_lower for word in ["roi", "investment", "cost", "benefit"]):
             return "roi_analysis"
         elif any(word in query_lower for word in ["team", "velocity", "performance"]):
             return "team_metrics"
@@ -571,9 +557,7 @@ print(f"Analysis result: {{result}}")
             "name": self.name,
             "version": self.version,
             "capabilities": self.capabilities,
-            "supported_personas": list(
-                self.strategic_python_server.persona_configs.keys()
-            ),
+            "supported_personas": list(self.strategic_python_server.persona_configs.keys()),
             "phase1_info": self.strategic_python_server.get_server_info(),
             "phase2_info": self.visualization_engine.get_server_info(),
             "workflow_metrics": self.workflow_metrics,
@@ -632,9 +616,7 @@ if __name__ == "__main__":
         if result.success:
             print(f"   Total workflow time: {result.total_workflow_time:.2f}s")
             print(f"   Analysis time: {result.analysis_result.execution_time:.2f}s")
-            print(
-                f"   Visualization time: {result.visualization_result.generation_time:.2f}s"
-            )
+            print(f"   Visualization time: {result.visualization_result.generation_time:.2f}s")
             print(f"   Workflow steps: {' → '.join(result.workflow_steps)}")
         else:
             print(f"   Error: {result.error}")

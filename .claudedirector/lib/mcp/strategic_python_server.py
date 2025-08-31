@@ -75,20 +75,26 @@ class StrategicPythonMCPServer:
 
         # Persona-specific configurations
         self.persona_configs = {
-            MCPServerConstants.Personas.DIEGO: MCPServerConstants.get_default_persona_config(MCPServerConstants.Personas.DIEGO),
+            MCPServerConstants.Personas.DIEGO: MCPServerConstants.get_default_persona_config(
+                MCPServerConstants.Personas.DIEGO
+            ),
             MCPServerConstants.Personas.ALVARO: {
                 **MCPServerConstants.get_default_persona_config(MCPServerConstants.Personas.ALVARO),
-                "default_imports": ["pandas", "numpy", "statistics"]
+                "default_imports": ["pandas", "numpy", "statistics"],
             },
             MCPServerConstants.Personas.MARTIN: {
                 **MCPServerConstants.get_default_persona_config(MCPServerConstants.Personas.MARTIN),
-                "default_imports": ["pandas", "numpy", "json"]
+                "default_imports": ["pandas", "numpy", "json"],
             },
             MCPServerConstants.Personas.CAMILLE: {
-                **MCPServerConstants.get_default_persona_config(MCPServerConstants.Personas.CAMILLE),
-                "default_imports": ["pandas", "numpy", "statistics"]
+                **MCPServerConstants.get_default_persona_config(
+                    MCPServerConstants.Personas.CAMILLE
+                ),
+                "default_imports": ["pandas", "numpy", "statistics"],
             },
-            MCPServerConstants.Personas.RACHEL: MCPServerConstants.get_default_persona_config(MCPServerConstants.Personas.RACHEL),
+            MCPServerConstants.Personas.RACHEL: MCPServerConstants.get_default_persona_config(
+                MCPServerConstants.Personas.RACHEL
+            ),
         }
 
         # Execution metrics
@@ -190,19 +196,31 @@ class StrategicPythonMCPServer:
         # Check for blocked imports
         for blocked in self.security_config[MCPServerConstants.Security.BLOCKED_IMPORTS_KEY]:
             if f"import {blocked}" in code or f"from {blocked}" in code:
-                logger.warning(MCPServerConstants.ErrorMessages.BLOCKED_IMPORT_WARNING.format(import_name=blocked))
+                logger.warning(
+                    MCPServerConstants.ErrorMessages.BLOCKED_IMPORT_WARNING.format(
+                        import_name=blocked
+                    )
+                )
                 return False
 
         # Check for blocked operations
         for operation in self.security_config[MCPServerConstants.Security.BLOCKED_OPERATIONS_KEY]:
             if operation in code:
-                logger.warning(MCPServerConstants.ErrorMessages.BLOCKED_OPERATION_WARNING.format(operation=operation))
+                logger.warning(
+                    MCPServerConstants.ErrorMessages.BLOCKED_OPERATION_WARNING.format(
+                        operation=operation
+                    )
+                )
                 return False
 
         # Additional security checks
         for pattern in MCPServerConstants.Security.DANGEROUS_PATTERNS:
             if pattern in code:
-                logger.warning(MCPServerConstants.ErrorMessages.DANGEROUS_PATTERN_WARNING.format(pattern=pattern))
+                logger.warning(
+                    MCPServerConstants.ErrorMessages.DANGEROUS_PATTERN_WARNING.format(
+                        pattern=pattern
+                    )
+                )
                 return False
 
         return True
@@ -263,9 +281,7 @@ class StrategicPythonMCPServer:
 
         return strategic_data
 
-    async def _execute_in_sandbox(
-        self, code: str, env: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    async def _execute_in_sandbox(self, code: str, env: Dict[str, Any]) -> Dict[str, Any]:
         """Execute code in sandboxed environment with resource limits"""
 
         # Create sandboxed code wrapper
@@ -378,10 +394,7 @@ except Exception as e:
             # CPU time limit (soft limit only)
             cpu_limit = self.security_config["max_execution_time"]
             current_cpu_limit = resource.getrlimit(resource.RLIMIT_CPU)[0]
-            if (
-                current_cpu_limit == resource.RLIM_INFINITY
-                or cpu_limit < current_cpu_limit
-            ):
+            if current_cpu_limit == resource.RLIM_INFINITY or cpu_limit < current_cpu_limit:
                 resource.setrlimit(resource.RLIMIT_CPU, (cpu_limit, -1))
 
         except (OSError, ValueError) as e:
@@ -429,9 +442,7 @@ except Exception as e:
             "metrics": self.execution_metrics,
         }
 
-    def get_transparency_disclosure(
-        self, capability: str, persona: str, code_summary: str
-    ) -> str:
+    def get_transparency_disclosure(self, capability: str, persona: str, code_summary: str) -> str:
         """Generate transparency disclosure for MCP integration"""
         return f"""🔧 Accessing MCP Server: {self.name} ({capability})
 *Executing strategic Python analysis for {persona} persona...*
