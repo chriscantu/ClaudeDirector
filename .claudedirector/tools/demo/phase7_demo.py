@@ -10,18 +10,30 @@ Built on Phase 2 Executive Visualization System
 import asyncio
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'lib'))
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "lib"))
 
 from mcp.executive_visualization_server import ExecutiveVisualizationEngine
 from mcp.strategic_python_server import StrategicPythonMCPServer
 from mcp.integrated_visualization_workflow import IntegratedVisualizationWorkflow
 
+
 def save_demo_file(filename: str, content: str) -> str:
     """Save demo file to proper docs/demo/generated/ directory"""
-    output_path = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'docs', 'demo', 'generated', filename)
-    with open(output_path, 'w') as f:
+    output_path = os.path.join(
+        os.path.dirname(__file__),
+        "..",
+        "..",
+        "..",
+        "docs",
+        "demo",
+        "generated",
+        filename,
+    )
+    with open(output_path, "w") as f:
         f.write(content)
     return f"docs/demo/generated/{filename}"
+
 
 async def demo_phase7_capabilities():
     """Demonstrate Phase 7 Enhanced Visualization Capabilities"""
@@ -44,20 +56,20 @@ async def demo_phase7_capabilities():
     print("-" * 50)
 
     martin_data = {
-        'services': ['API Gateway', 'User Service', 'Data Service', 'Auth Service'],
-        'performance_scores': [95, 88, 92, 90],
-        'overall_health': 92,
-        'timestamps': ['00:00', '06:00', '12:00', '18:00', '24:00'],
-        'response_times': [120, 85, 95, 110, 100],
-        'error_types': ['4xx Client', '5xx Server', 'Timeout', 'Network'],
-        'error_counts': [12, 3, 5, 2]
+        "services": ["API Gateway", "User Service", "Data Service", "Auth Service"],
+        "performance_scores": [95, 88, 92, 90],
+        "overall_health": 92,
+        "timestamps": ["00:00", "06:00", "12:00", "18:00", "24:00"],
+        "response_times": [120, 85, 95, 110, 100],
+        "error_types": ["4xx Client", "5xx Server", "Timeout", "Network"],
+        "error_counts": [12, 3, 5, 2],
     }
 
     result = await viz_engine.create_executive_visualization(
         martin_data,
-        'architecture_health',
-        'martin',
-        'Platform Architecture Health Dashboard - Q4 2024'
+        "architecture_health",
+        "martin",
+        "Platform Architecture Health Dashboard - Q4 2024",
     )
 
     if result.success:
@@ -67,7 +79,9 @@ async def demo_phase7_capabilities():
         print(f"   Interactive Elements: {len(result.interactive_elements)}")
 
         # Save the visualization
-        saved_path = save_demo_file('phase7_martin_architecture_health.html', result.html_output)
+        saved_path = save_demo_file(
+            "phase7_martin_architecture_health.html", result.html_output
+        )
         print(f"   💾 Saved: {saved_path}")
     else:
         print(f"❌ Failed: {result.error}")
@@ -77,16 +91,16 @@ async def demo_phase7_capabilities():
     print("-" * 45)
 
     service_data = {
-        'services': ['API Gateway', 'User Service', 'Data Service', 'Auth Service'],
-        'response_times': [120, 85, 95, 110],
-        'throughput': [1500, 2200, 1800, 1200]
+        "services": ["API Gateway", "User Service", "Data Service", "Auth Service"],
+        "response_times": [120, 85, 95, 110],
+        "throughput": [1500, 2200, 1800, 1200],
     }
 
     result = await viz_engine.create_executive_visualization(
         service_data,
-        'service_performance',
-        'martin',
-        'Service Performance Monitoring - Real-Time Metrics'
+        "service_performance",
+        "martin",
+        "Service Performance Monitoring - Real-Time Metrics",
     )
 
     if result.success:
@@ -94,7 +108,9 @@ async def demo_phase7_capabilities():
         print(f"   Generation Time: {result.generation_time:.3f}s")
         print(f"   Dual-axis visualization with response times and throughput")
 
-        saved_path = save_demo_file('phase7_martin_service_performance.html', result.html_output)
+        saved_path = save_demo_file(
+            "phase7_martin_service_performance.html", result.html_output
+        )
         print(f"   💾 Saved: {saved_path}")
 
     # Demo 3: Martin's Technical Debt Trends
@@ -102,24 +118,26 @@ async def demo_phase7_capabilities():
     print("-" * 40)
 
     debt_data = {
-        'months': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-        'debt_score': [75, 73, 78, 71, 69, 65],
-        'code_coverage': [82, 84, 83, 86, 88, 90],
-        'complexity_score': [68, 70, 65, 63, 61, 58]
+        "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+        "debt_score": [75, 73, 78, 71, 69, 65],
+        "code_coverage": [82, 84, 83, 86, 88, 90],
+        "complexity_score": [68, 70, 65, 63, 61, 58],
     }
 
     result = await viz_engine.create_executive_visualization(
         debt_data,
-        'technical_debt_trends',
-        'martin',
-        'Technical Debt Reduction Progress - 6 Month Trend'
+        "technical_debt_trends",
+        "martin",
+        "Technical Debt Reduction Progress - 6 Month Trend",
     )
 
     if result.success:
         print(f"✅ Technical Debt Trends Generated:")
         print(f"   Multi-line trend analysis showing debt reduction progress")
 
-        saved_path = save_demo_file('phase7_martin_technical_debt.html', result.html_output)
+        saved_path = save_demo_file(
+            "phase7_martin_technical_debt.html", result.html_output
+        )
         print(f"   💾 Saved: {saved_path}")
 
     # Demo 4: Rachel's Component Adoption Chart
@@ -127,23 +145,25 @@ async def demo_phase7_capabilities():
     print("-" * 45)
 
     rachel_data = {
-        'components': ['Button', 'Input', 'Card', 'Modal', 'Table'],
-        'adoption_rates': [95, 87, 78, 65, 52],
-        'teams_using': [12, 11, 9, 7, 5]
+        "components": ["Button", "Input", "Card", "Modal", "Table"],
+        "adoption_rates": [95, 87, 78, 65, 52],
+        "teams_using": [12, 11, 9, 7, 5],
     }
 
     result = await viz_engine.create_executive_visualization(
         rachel_data,
-        'component_adoption',
-        'rachel',
-        'Design System Component Adoption - Team Analysis'
+        "component_adoption",
+        "rachel",
+        "Design System Component Adoption - Team Analysis",
     )
 
     if result.success:
         print(f"✅ Component Adoption Chart Generated:")
         print(f"   Dual-axis chart showing adoption rates and team usage")
 
-        saved_path = save_demo_file('phase7_rachel_component_adoption.html', result.html_output)
+        saved_path = save_demo_file(
+            "phase7_rachel_component_adoption.html", result.html_output
+        )
         print(f"   💾 Saved: {saved_path}")
 
     # Demo 5: Rachel's Design System Maturity
@@ -151,26 +171,30 @@ async def demo_phase7_capabilities():
     print("-" * 42)
 
     maturity_data = {
-        'categories': [
-            'Component Coverage', 'Design Consistency', 'Documentation Quality',
-            'Developer Experience', 'Adoption Rate', 'Maintenance Efficiency'
+        "categories": [
+            "Component Coverage",
+            "Design Consistency",
+            "Documentation Quality",
+            "Developer Experience",
+            "Adoption Rate",
+            "Maintenance Efficiency",
         ],
-        'current_scores': [85, 78, 92, 75, 68, 82],
-        'target_scores': [95, 90, 95, 85, 85, 90]
+        "current_scores": [85, 78, 92, 75, 68, 82],
+        "target_scores": [95, 90, 95, 85, 85, 90],
     }
 
     result = await viz_engine.create_executive_visualization(
         maturity_data,
-        'design_system_maturity',
-        'rachel',
-        'Design System Maturity Assessment - Current vs Target'
+        "design_system_maturity",
+        "rachel",
+        "Design System Maturity Assessment - Current vs Target",
     )
 
     if result.success:
         print(f"✅ Design System Maturity Generated:")
         print(f"   Comparative bar chart showing current vs target maturity")
 
-        saved_path = save_demo_file('phase7_rachel_maturity.html', result.html_output)
+        saved_path = save_demo_file("phase7_rachel_maturity.html", result.html_output)
         print(f"   💾 Saved: {saved_path}")
 
     # Demo 6: Rachel's Design Debt Visualization
@@ -178,30 +202,32 @@ async def demo_phase7_capabilities():
     print("-" * 38)
 
     debt_viz_data = {
-        'components': ['Button', 'Input', 'Card', 'Modal', 'Table', 'Form'],
-        'teams': ['Frontend', 'Mobile', 'Platform', 'Marketing'],
-        'debt_matrix': [
+        "components": ["Button", "Input", "Card", "Modal", "Table", "Form"],
+        "teams": ["Frontend", "Mobile", "Platform", "Marketing"],
+        "debt_matrix": [
             [2, 1, 0, 3],  # Button
             [1, 2, 1, 2],  # Input
             [0, 1, 0, 1],  # Card
             [3, 4, 2, 5],  # Modal
             [2, 3, 1, 4],  # Table
             [1, 2, 0, 3],  # Form
-        ]
+        ],
     }
 
     result = await viz_engine.create_executive_visualization(
         debt_viz_data,
-        'design_debt_visualization',
-        'rachel',
-        'Design Debt Heatmap - Component vs Team Analysis'
+        "design_debt_visualization",
+        "rachel",
+        "Design Debt Heatmap - Component vs Team Analysis",
     )
 
     if result.success:
         print(f"✅ Design Debt Heatmap Generated:")
         print(f"   Color-coded heatmap showing debt distribution across teams")
 
-        saved_path = save_demo_file('phase7_rachel_design_debt.html', result.html_output)
+        saved_path = save_demo_file(
+            "phase7_rachel_design_debt.html", result.html_output
+        )
         print(f"   💾 Saved: {saved_path}")
 
     # Summary
@@ -226,6 +252,7 @@ async def demo_phase7_capabilities():
     print("   • phase7_rachel_design_debt.html")
 
     print("\n🚀 Ready for Week 2: Real-Time Data Integration!")
+
 
 if __name__ == "__main__":
     asyncio.run(demo_phase7_capabilities())
