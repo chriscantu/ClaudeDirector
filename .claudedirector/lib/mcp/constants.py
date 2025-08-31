@@ -160,7 +160,9 @@ class MCPServerConstants:
         """Standardized error messages"""
 
         # Strategic scope violations
-        SCOPE_VIOLATION = "Code outside strategic scope. Only strategic analysis allowed."
+        SCOPE_VIOLATION = (
+            "Code outside strategic scope. Only strategic analysis allowed."
+        )
         EXECUTION_TIMEOUT = "Execution timeout exceeded ({timeout}s)"
         INVALID_REQUEST = "Invalid MCP request: capability or persona not supported"
 
@@ -181,7 +183,9 @@ class MCPServerConstants:
 
         # Health check errors
         HEALTH_CHECK_FAILED = "Health check failed: {error}"
-        INTEGRATED_WORKFLOW_HEALTH_CHECK_FAILED = "Integrated workflow health check failed: {error}"
+        INTEGRATED_WORKFLOW_HEALTH_CHECK_FAILED = (
+            "Integrated workflow health check failed: {error}"
+        )
 
     class ChartTypes:
         """Visualization chart type constants"""
@@ -455,7 +459,9 @@ class MCPServerConstants:
 
 # Convenience aliases for backward compatibility during refactoring
 STRATEGIC_PYTHON_SERVER_NAME = MCPServerConstants.STRATEGIC_PYTHON_SERVER_NAME
-EXECUTIVE_VISUALIZATION_SERVER_NAME = MCPServerConstants.EXECUTIVE_VISUALIZATION_SERVER_NAME
+EXECUTIVE_VISUALIZATION_SERVER_NAME = (
+    MCPServerConstants.EXECUTIVE_VISUALIZATION_SERVER_NAME
+)
 
 # Export main constants class
 __all__ = ["MCPServerConstants"]

@@ -250,7 +250,9 @@ class StrategicPythonMCPContext:
 
         # Perform startup health check
         health_status = await self.integration.health_check()
-        logger.info(f"Strategic Python MCP integration startup: {health_status['status']}")
+        logger.info(
+            f"Strategic Python MCP integration startup: {health_status['status']}"
+        )
 
         return self.integration
 
