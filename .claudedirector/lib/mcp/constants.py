@@ -341,7 +341,7 @@ class MCPServerConstants:
   - Persona: {persona} (Strategic Analysis)
   - Execution: {analysis_time:.2f}s
   - Status: {analysis_status}
-  
+
 - **Phase 2**: Executive Visualization System (Publication-Quality Charts)
   - Chart Type: {chart_type}
   - Generation: {viz_time:.2f}s

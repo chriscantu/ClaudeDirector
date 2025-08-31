@@ -125,9 +125,7 @@ class ExecutiveVisualizationEngine:
                 data = self._parse_analysis_output(data)
 
             # Get persona-specific template
-            template_func = self.persona_templates.get(
-                persona, self.persona_templates["diego"]
-            )
+            template_func = self.persona_templates.get(persona, self.persona_templates["diego"])
 
             # Generate Plotly figure
             fig = template_func(data, chart_type, title, context)
@@ -145,9 +143,7 @@ class ExecutiveVisualizationEngine:
 
             # Update success metrics
             self.visualization_metrics[MCPServerConstants.MetricsKeys.SUCCESSFUL_GENERATIONS] += 1
-            self._update_performance_metrics(
-                generation_time, file_size, interactive_elements
-            )
+            self._update_performance_metrics(generation_time, file_size, interactive_elements)
 
             result = VisualizationResult(
                 success=True,
@@ -174,7 +170,9 @@ class ExecutiveVisualizationEngine:
                 generation_time=time.time() - start_time,
                 file_size_bytes=0,
                 interactive_elements=[],
-                error=MCPServerConstants.ErrorMessages.VISUALIZATION_GENERATION_ERROR.format(error=str(e)),
+                error=MCPServerConstants.ErrorMessages.VISUALIZATION_GENERATION_ERROR.format(
+                    error=str(e)
+                ),
             )
 
     def _diego_leadership_template(
@@ -247,9 +245,7 @@ class ExecutiveVisualizationEngine:
         else:
             return self._create_default_chart(data, chart_type, title)
 
-    def _create_leadership_dashboard(
-        self, data: Dict[str, Any], title: str
-    ) -> go.Figure:
+    def _create_leadership_dashboard(self, data: Dict[str, Any], title: str) -> go.Figure:
         """Create Diego's leadership metrics dashboard"""
 
         fig = make_subplots(
@@ -401,17 +397,13 @@ class ExecutiveVisualizationEngine:
 
         return fig
 
-    def _create_default_chart(
-        self, data: Dict[str, Any], chart_type: str, title: str
-    ) -> go.Figure:
+    def _create_default_chart(self, data: Dict[str, Any], chart_type: str, title: str) -> go.Figure:
         """Create default chart when specific template not available"""
 
         # Simple bar chart as fallback
         if "x" in data and "y" in data:
             fig = go.Figure(
-                data=go.Bar(
-                    x=data["x"], y=data["y"], marker_color=self.color_palette[0]
-                )
+                data=go.Bar(x=data["x"], y=data["y"], marker_color=self.color_palette[0])
             )
         else:
             # Sample data for demonstration
@@ -434,9 +426,16 @@ class ExecutiveVisualizationEngine:
 
         # Persona-specific styling enhancements
         # Apply persona-specific styling
-        persona_color = MCPServerConstants.Colors.PERSONA_COLORS.get(persona, MCPServerConstants.Colors.PRIMARY_BLUE)
+        persona_color = MCPServerConstants.Colors.PERSONA_COLORS.get(
+            persona, MCPServerConstants.Colors.PRIMARY_BLUE
+        )
         persona_styles = {
-            "title": {"font": {"size": MCPServerConstants.Typography.TITLE_FONT_SIZE, "color": persona_color}},
+            "title": {
+                "font": {
+                    "size": MCPServerConstants.Typography.TITLE_FONT_SIZE,
+                    "color": persona_color,
+                }
+            },
             "showlegend": True,
         }
 
@@ -538,9 +537,7 @@ class ExecutiveVisualizationEngine:
         )
 
         # Generate Plotly HTML
-        plotly_html = fig.to_html(
-            include_plotlyjs=False, div_id="strategic-visualization"
-        )
+        plotly_html = fig.to_html(include_plotlyjs=False, div_id="strategic-visualization")
 
         # Persona titles
         persona_titles = MCPServerConstants.Personas.PERSONA_TITLES
@@ -615,9 +612,7 @@ class ExecutiveVisualizationEngine:
         ) / total_viz
 
         # Update interactive features count
-        self.visualization_metrics["interactive_features_used"] += len(
-            interactive_elements
-        )
+        self.visualization_metrics["interactive_features_used"] += len(interactive_elements)
 
     def get_server_info(self) -> Dict[str, Any]:
         """Get executive visualization server information"""
@@ -648,9 +643,7 @@ class ExecutiveVisualizationEngine:
             "color_palette": self.color_palette,
         }
 
-    def get_transparency_disclosure(
-        self, capability: str, persona: str, description: str
-    ) -> str:
+    def get_transparency_disclosure(self, capability: str, persona: str, description: str) -> str:
         """Generate transparency disclosure for executive visualization"""
 
         return f"""
@@ -763,9 +756,7 @@ if __name__ == "__main__":
             test_data, "leadership_dashboard", "diego", "Executive Leadership Dashboard"
         )
 
-        print(
-            f"✅ Visualization generation: {'SUCCESS' if result.success else 'FAILED'}"
-        )
+        print(f"✅ Visualization generation: {'SUCCESS' if result.success else 'FAILED'}")
         if result.success:
             print(f"   Generation time: {result.generation_time:.2f}s")
             print(f"   File size: {result.file_size_bytes:,} bytes")
