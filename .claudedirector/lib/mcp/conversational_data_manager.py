@@ -104,7 +104,7 @@ class ConversationalDataManager:
                 "entities_pattern": r"(?:team|project)\s+(\w+)",
                 "time_pattern": r"(?:last|past|current)\s+(\d+)\s+(\w+)",
             },
-            r"(?i).*(?:team|squad).*(?:performance|metrics|status)": {
+            r"(?i).*(?:team|squad).*(?:performance|perform|metrics|status)": {
                 "type": QueryType.TEAM_PERFORMANCE,
                 "entities_pattern": r"(?:team|squad)\s+(\w+)",
                 "time_pattern": r"(?:last|past|current)\s+(\d+)\s+(\w+)",
@@ -131,6 +131,12 @@ class ConversationalDataManager:
             r"(?i).*(?:github|git|repository).*(?:activity|metrics|stats)": {
                 "type": QueryType.GITHUB_ACTIVITY,
                 "entities_pattern": r"(?:repo|repository)\s+(\w+)",
+                "time_pattern": r"(?:last|past|current)\s+(\d+)\s+(\w+)",
+            },
+            # Repository-specific queries (velocity, development)
+            r"(?i).*(?:velocity|development|repo/).*": {
+                "type": QueryType.GITHUB_ACTIVITY,
+                "entities_pattern": r"(?:repository|repo/\w+)",
                 "time_pattern": r"(?:last|past|current)\s+(\d+)\s+(\w+)",
             },
         }
@@ -385,15 +391,68 @@ class ConversationalDataManager:
     async def _fetch_team_performance(
         self, query: ConversationalQuery
     ) -> Dict[str, Any]:
-        """Fetch team performance metrics"""
+        """Fetch team performance metrics - Week 3: Real MCP Integration with Zero Setup Fallback"""
+
+        # Week 3: Try real MCP integration first, graceful fallback to simulation
+        try:
+            # Attempt real Jira data via MCP Integration Manager
+            mcp_result = await self.mcp_manager.fetch_jira_data(
+                "team_performance",
+                {"team": query.entities[0] if query.entities else "UI Foundation Team"},
+            )
+
+            if mcp_result.success and mcp_result.method == "mcp":
+                # Real MCP data available!
+                real_data = mcp_result.data.copy()
+                real_data.update(
+                    {
+                        "✅_REAL_DATA": {
+                            "data_source": "REAL JIRA DATA via MCP",
+                            "server_used": mcp_result.server_used,
+                            "method": "mcp_server",
+                            "latency_ms": mcp_result.latency_ms,
+                            "last_updated": "real-time",
+                        },
+                        "_data_authenticity": "REAL",
+                        "_integration_status": "connected",
+                    }
+                )
+                return real_data
+
+            elif mcp_result.success and mcp_result.method == "api_fallback":
+                # API fallback data available
+                api_data = mcp_result.data.copy()
+                api_data.update(
+                    {
+                        "⚠️_API_FALLBACK_DATA": {
+                            "data_source": "REAL JIRA DATA via REST API",
+                            "notice": "MCP server unavailable, using REST API fallback",
+                            "server_used": mcp_result.server_used,
+                            "method": "rest_api",
+                            "latency_ms": mcp_result.latency_ms,
+                        },
+                        "_data_authenticity": "REAL",
+                        "_integration_status": "api_fallback",
+                    }
+                )
+                return api_data
+
+        except Exception as e:
+            # Log but don't fail - graceful degradation
+            logger.warning(f"MCP integration failed, using simulation: {str(e)}")
+
+        # ZERO SETUP POLICY: Always works - graceful fallback to simulation
         return {
             "🚨_SIMULATION_WARNING": {
                 "data_source": "SIMULATED DATA - NOT REAL",
-                "notice": "This is realistic sample data for demonstration purposes",
-                "setup_prompt": "Connect to real Jira data for actual team metrics",
+                "notice": "Real Jira MCP server not available - using realistic sample data",
+                "setup_prompt": "Ask me: 'How do I set up real Jira integration?' to connect your account",
                 "integration_available": True,
+                "mcp_status": "unavailable",
             },
-            "team": query.entities[0] if query.entities else "Platform Team (SAMPLE)",
+            "team": (
+                query.entities[0] if query.entities else "UI Foundation Team (SAMPLE)"
+            ),
             "period": query.time_range or "last 30 days",
             "metrics": {
                 "story_completion_rate": 0.87,
@@ -408,6 +467,7 @@ class ConversationalDataManager:
             },
             "_data_authenticity": "SIMULATED",
             "_setup_integration": "Ask me: 'How do I connect to real Jira data?'",
+            "_integration_status": "simulation_fallback",
         }
 
     async def _fetch_roi_analysis(self, query: ConversationalQuery) -> Dict[str, Any]:
@@ -598,15 +658,161 @@ class ConversationalDataManager:
     async def _fetch_general_analytics(
         self, query: ConversationalQuery
     ) -> Dict[str, Any]:
-        """Fetch general analytics data"""
+        """Fetch general analytics data - Week 3: Enhanced with GitHub/Jira MCP routing"""
+
+        # Week 3: Smart routing based on query content and context
+        query_text = (
+            str(query.context.get("original_query", "")).lower()
+            if query.context
+            else ""
+        )
+        entities_text = " ".join(query.entities).lower() if query.entities else ""
+        combined_text = f"{query_text} {entities_text}".strip()
+
+        # Check if this is actually a GitHub query that was misclassified
+        github_keywords = [
+            "github",
+            "repository",
+            "repo",
+            "commit",
+            "pull request",
+            "contributor",
+            "development",
+        ]
+        if any(keyword in combined_text for keyword in github_keywords):
+            logger.info(
+                f"Routing general analytics to GitHub MCP for query: {combined_text[:50]}..."
+            )
+            try:
+                # Attempt real GitHub data via MCP Integration Manager
+                mcp_result = await self.mcp_manager.fetch_github_data(
+                    "repository_analytics",
+                    {"query": combined_text, "entities": query.entities},
+                )
+
+                if mcp_result.success and mcp_result.method == "mcp":
+                    # Real MCP data available!
+                    real_data = mcp_result.data.copy()
+                    real_data.update(
+                        {
+                            "✅_REAL_DATA": {
+                                "data_source": "REAL GITHUB DATA via MCP",
+                                "server_used": mcp_result.server_used,
+                                "method": "mcp_server",
+                                "latency_ms": mcp_result.latency_ms,
+                                "last_updated": "real-time",
+                            },
+                            "_data_authenticity": "REAL",
+                            "_integration_status": "connected",
+                        }
+                    )
+                    return real_data
+
+                elif mcp_result.success and mcp_result.method == "api_fallback":
+                    # API fallback data available
+                    api_data = mcp_result.data.copy()
+                    api_data.update(
+                        {
+                            "⚠️_API_FALLBACK_DATA": {
+                                "data_source": "REAL GITHUB DATA via REST API",
+                                "notice": "GitHub MCP server unavailable, using REST API fallback",
+                                "server_used": mcp_result.server_used,
+                                "method": "rest_api",
+                                "latency_ms": mcp_result.latency_ms,
+                            },
+                            "_data_authenticity": "REAL",
+                            "_integration_status": "api_fallback",
+                        }
+                    )
+                    return api_data
+
+            except Exception as e:
+                logger.warning(
+                    f"GitHub MCP routing failed, using general response: {str(e)}"
+                )
+
+        # Check if this is actually a Jira/team query that was misclassified
+        jira_keywords = [
+            "team",
+            "performance",
+            "sprint",
+            "velocity",
+            "jira",
+            "ui foundation",
+            "quarter",
+        ]
+        if any(keyword in combined_text for keyword in jira_keywords):
+            logger.info(
+                f"Routing general analytics to Jira MCP for query: {combined_text[:50]}..."
+            )
+            try:
+                # Attempt real Jira data via MCP Integration Manager
+                mcp_result = await self.mcp_manager.fetch_jira_data(
+                    "general_analytics",
+                    {"query": combined_text, "entities": query.entities},
+                )
+
+                if mcp_result.success and mcp_result.method == "mcp":
+                    # Real MCP data available!
+                    real_data = mcp_result.data.copy()
+                    real_data.update(
+                        {
+                            "✅_REAL_DATA": {
+                                "data_source": "REAL JIRA DATA via MCP",
+                                "server_used": mcp_result.server_used,
+                                "method": "mcp_server",
+                                "latency_ms": mcp_result.latency_ms,
+                                "last_updated": "real-time",
+                            },
+                            "_data_authenticity": "REAL",
+                            "_integration_status": "connected",
+                        }
+                    )
+                    return real_data
+
+                elif mcp_result.success and mcp_result.method == "api_fallback":
+                    # API fallback data available
+                    api_data = mcp_result.data.copy()
+                    api_data.update(
+                        {
+                            "⚠️_API_FALLBACK_DATA": {
+                                "data_source": "REAL JIRA DATA via REST API",
+                                "notice": "Jira MCP server unavailable, using REST API fallback",
+                                "server_used": mcp_result.server_used,
+                                "method": "rest_api",
+                                "latency_ms": mcp_result.latency_ms,
+                            },
+                            "_data_authenticity": "REAL",
+                            "_integration_status": "api_fallback",
+                        }
+                    )
+                    return api_data
+
+            except Exception as e:
+                logger.warning(
+                    f"Jira MCP routing failed, using general response: {str(e)}"
+                )
+
+        # Default general analytics response with enhanced suggestions
         return {
+            "🚨_SIMULATION_WARNING": {
+                "data_source": "GENERAL ANALYTICS - LIMITED DATA",
+                "notice": "This query didn't match specific data sources - try more specific requests",
+                "setup_prompt": "For real data, ask about 'GitHub activity' or 'team performance'",
+                "integration_available": True,
+                "mcp_status": "routing_available",
+            },
             "query_type": "general",
-            "message": "General analytics query processed",
+            "message": "General analytics query processed - consider more specific requests",
             "suggestions": [
-                "Try asking about sprint metrics",
-                "Ask for team performance data",
-                "Request ROI analysis",
+                "Try: 'GitHub activity for ui-service-shell'",
+                "Try: 'UI Foundation team performance this quarter'",
+                "Try: 'Show sprint metrics for our team'",
+                "Ask: 'How do I connect to real GitHub/Jira data?'",
             ],
+            "_data_authenticity": "GENERAL",
+            "_setup_integration": "Ask more specific questions about GitHub or Jira data",
+            "_integration_status": "routing_fallback",
         }
 
     def _generate_cache_key(self, query: ConversationalQuery) -> str:

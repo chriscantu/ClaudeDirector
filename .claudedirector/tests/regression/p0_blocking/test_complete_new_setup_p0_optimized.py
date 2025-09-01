@@ -57,7 +57,7 @@ class TestCompleteNewSetupP0Optimized(unittest.TestCase):
     def tearDownClass(cls):
         """Clean up shared workspace"""
         if hasattr(cls, "shared_workspace") and cls.shared_workspace.exists():
-            shutil.rmtree(cls.shared_workspace.parent, ignore_errors=True)
+            shutil.rmtree(cls.shared_workspace, ignore_errors=True)
 
     @classmethod
     def _create_optimized_workspace(cls):
