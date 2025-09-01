@@ -48,6 +48,14 @@ class MCPServerConstants:
         EXECUTIVE_READY_PRESENTATIONS = "executive_ready_presentations"
         END_TO_END_INTELLIGENCE = "end_to_end_intelligence"
 
+        # Phase 7 Week 2: Real-Time Data Capabilities
+        REAL_TIME_DATA_FEEDS = "real_time_data_feeds"
+        LIVE_CHART_UPDATES = "live_chart_updates"
+        STREAMING_ANALYTICS = "streaming_analytics"
+        DYNAMIC_DASHBOARDS = "dynamic_dashboards"
+        WEBSOCKET_INTEGRATION = "websocket_integration"
+        POLLING_DATA_SOURCES = "polling_data_sources"
+
     class Personas:
         """Strategic persona constants"""
 

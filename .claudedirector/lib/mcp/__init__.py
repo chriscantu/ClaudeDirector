@@ -22,6 +22,20 @@ from .integrated_visualization_workflow import (
     create_integrated_visualization_workflow,
 )
 
+# Phase 7 Week 2: Conversational Analytics
+from .conversational_data_manager import (
+    ConversationalDataManager,
+    ConversationalQuery,
+    DataResponse,
+    QueryType,
+    create_conversational_data_manager,
+)
+from .conversational_analytics_workflow import (
+    ConversationalAnalyticsWorkflow,
+    ConversationalAnalyticsResult,
+    create_conversational_analytics_workflow,
+)
+
 __all__ = [
     "MCPServerConstants",
     "StrategicPythonMCPServer",
@@ -38,4 +52,13 @@ __all__ = [
     "IntegratedVisualizationWorkflow",
     "IntegratedWorkflowResult",
     "create_integrated_visualization_workflow",
+    # Phase 7 Week 2: Conversational Analytics
+    "ConversationalDataManager",
+    "ConversationalQuery", 
+    "DataResponse",
+    "QueryType",
+    "create_conversational_data_manager",
+    "ConversationalAnalyticsWorkflow",
+    "ConversationalAnalyticsResult",
+    "create_conversational_analytics_workflow",
 ]
