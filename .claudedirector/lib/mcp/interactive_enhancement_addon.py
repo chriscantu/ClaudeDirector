@@ -122,6 +122,77 @@ class InteractiveEnhancementAddon:
         logger.info(f"Interactive Enhancement Addon {self.version} initialized")
         logger.info("✅ ARCHITECTURE: Extends existing systems, no duplication")
 
+    def cleanup(self):
+        """
+        Critical: Cleanup resources to prevent performance degradation
+
+        PERFORMANCE REQUIREMENT: Ensure CPU usage returns to baseline after operations
+        Required for P0 Performance test compliance
+        """
+        logger.info("🧹 Cleaning up Interactive Enhancement Addon resources...")
+
+        # Cleanup existing system resources
+        if hasattr(self.visualization_engine, "cleanup"):
+            self.visualization_engine.cleanup()
+
+        if hasattr(self.mcp_manager, "cleanup"):
+            self.mcp_manager.cleanup()
+
+        if hasattr(self.workflow_engine, "cleanup"):
+            self.workflow_engine.cleanup()
+
+        # Cleanup performance components
+        if self.cache_manager and hasattr(self.cache_manager, "cleanup"):
+            self.cache_manager.cleanup()
+
+        if self.integration_bridge and hasattr(self.integration_bridge, "cleanup"):
+            self.integration_bridge.cleanup()
+
+        # Clear metrics and config to free memory
+        self.enhancement_metrics.clear()
+        self.interaction_config.clear()
+
+        logger.info("✅ Interactive Enhancement Addon cleanup complete")
+
+    async def async_cleanup(self):
+        """
+        Async cleanup for background tasks and connections
+
+        PERFORMANCE CRITICAL: Ensure all async operations are properly closed
+        """
+        logger.info("🧹 Performing async cleanup...")
+
+        # Cancel any pending asyncio tasks
+        current_tasks = [task for task in asyncio.all_tasks() if not task.done()]
+        if current_tasks:
+            logger.info(f"Cancelling {len(current_tasks)} pending tasks...")
+            for task in current_tasks:
+                task.cancel()
+
+            # Wait for tasks to complete cancellation
+            await asyncio.gather(*current_tasks, return_exceptions=True)
+
+        # Standard cleanup
+        self.cleanup()
+
+        logger.info("✅ Async cleanup complete")
+
+    def __enter__(self):
+        """Context manager entry"""
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Context manager exit with cleanup"""
+        self.cleanup()
+
+    async def __aenter__(self):
+        """Async context manager entry"""
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        """Async context manager exit with async cleanup"""
+        await self.async_cleanup()
+
     async def enhance_existing_visualization(
         self,
         data: Union[Dict[str, Any], str],
