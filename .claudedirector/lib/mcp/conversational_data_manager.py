@@ -133,10 +133,10 @@ class ConversationalDataManager:
                 "entities_pattern": r"(?:repo|repository)\s+(\w+)",
                 "time_pattern": r"(?:last|past|current)\s+(\d+)\s+(\w+)",
             },
-            # Repository-specific queries (ui-service-shell, velocity, development)
-            r"(?i).*(?:velocity|development|ui-service-shell|procore/).*": {
+            # Repository-specific queries (velocity, development)
+            r"(?i).*(?:velocity|development|repo/).*": {
                 "type": QueryType.GITHUB_ACTIVITY,
-                "entities_pattern": r"(?:ui-service-shell|procore/\w+)",
+                "entities_pattern": r"(?:repository|repo/\w+)",
                 "time_pattern": r"(?:last|past|current)\s+(\d+)\s+(\w+)",
             },
         }
@@ -677,8 +677,7 @@ class ConversationalDataManager:
             "commit",
             "pull request",
             "contributor",
-            "ui-service-shell",
-            "procore",
+            "development",
         ]
         if any(keyword in combined_text for keyword in github_keywords):
             logger.info(
