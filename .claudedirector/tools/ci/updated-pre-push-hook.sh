@@ -272,10 +272,12 @@ print_section "PHASE 3: Additional Validations"
 run_step "Pre-commit Hook Validation" "
 echo '🔧 Running Pre-commit Hooks'
 if command -v pre-commit >/dev/null 2>&1; then
-    pre-commit run --all-files > /dev/null 2>&1 || (
-        echo '⚠️ Some pre-commit hooks failed - check manually'
-        echo 'Run: pre-commit run --all-files'
-    )
+    pre-commit run --all-files || {
+        echo '❌ PRE-COMMIT HOOKS FAILED'
+        echo '🚨 This indicates real quality issues that must be fixed'
+        echo '🔧 Fix these issues locally and re-push'
+        exit 1
+    }
 else
     echo '⚠️ pre-commit not installed - running manual validation'
     .claudedirector/tools/testing/mandatory_test_validator.py > /dev/null 2>&1
