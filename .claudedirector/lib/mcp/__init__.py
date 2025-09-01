@@ -52,6 +52,22 @@ from .interactive_enhancement_addon import (
     create_interactive_enhancement_addon,
 )
 
+# Phase 7B: Chat Integration (Configuration-Driven, DRY Compliant)
+from .conversational_interaction_manager import (
+    ConversationalInteractionManager,
+    create_conversational_interaction_manager,
+    InteractionIntent,
+    QueryIntent,
+    InteractionResponse,
+)
+from .chat_context_manager import (
+    ChatContextManager,
+    create_chat_context_manager,
+    ChartContextState,
+    ConversationContext,
+    ContextScope,
+)
+
 # Phase 7 Week 4: Deprecated components removed due to DRY violations
 # Use InteractiveEnhancementAddon which extends existing systems without duplication
 
@@ -90,4 +106,15 @@ __all__ = [
     "InteractiveEnhancementAddon",
     "InteractiveEnhancementResult",
     "create_interactive_enhancement_addon",
+    # Phase 7B: Chat Integration (Configuration-Driven, DRY Compliant)
+    "ConversationalInteractionManager",
+    "create_conversational_interaction_manager",
+    "InteractionIntent",
+    "QueryIntent",
+    "InteractionResponse",
+    "ChatContextManager",
+    "create_chat_context_manager",
+    "ChartContextState",
+    "ConversationContext",
+    "ContextScope",
 ]

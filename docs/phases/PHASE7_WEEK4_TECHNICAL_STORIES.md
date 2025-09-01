@@ -37,9 +37,9 @@ This document provides the index and overview for Week 4 Advanced Interactivity 
 
 ---
 
-### **🔗 Phase B: Chat Integration** (Days 3-4)
+### **🔗 Phase B: Chat Integration** 🚀 **ACTIVE** (Days 3-4)
 **Focus**: Natural language interaction and context preservation
-**Stories**: 3 technical stories + 1 QA story
+**Stories**: 4 technical stories (20 story points)
 **Priority**: P0-P1 (BLOCKING to HIGH)
 
 **Key Components**:

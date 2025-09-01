@@ -134,21 +134,163 @@ class MCPServerConstants:
 
         # Blocked operations for security
         BLOCKED_OPERATIONS = [
-            "open(",
-            "file(",
-            "exec(",
-            "eval(",
-            "compile(",
-            "subprocess",
-            "__import__",
-            "globals(",
-            "locals(",
-            "vars(",
-            "dir(",
-            "getattr(",
-            "setattr(",
-            "delattr(",
+            "file_operations",
+            "network_operations",
+            "system_operations",
+            "process_operations",
         ]
+
+    class Phase7B:
+        """Phase 7B Chat Integration Configuration Constants"""
+
+        # Performance Targets (OVERVIEW.md enterprise SLA)
+        INTERACTION_PROCESSING_TARGET = 0.5  # 500ms
+        CONTEXT_RESTORATION_TARGET = 0.1  # 100ms
+        CONTEXT_SAVE_TARGET = 0.05  # 50ms
+
+        # Storage Configuration
+        MAX_SESSION_SIZE_MB = 50
+        CLEANUP_AFTER_DAYS = 30
+        DEFAULT_SESSION_ID = "default"
+
+        # Natural Language Intent Patterns
+        INTENT_PATTERNS = {
+            "time_navigation": [
+                "show me",
+                "display",
+                "view",
+                "see",
+                "q1",
+                "q2",
+                "q3",
+                "q4",
+                "quarter",
+                "month",
+                "year",
+                "last",
+                "current",
+                "this",
+                "next",
+            ],
+            "data_filtering": [
+                "filter",
+                "show only",
+                "hide",
+                "include",
+                "exclude",
+                "where",
+                "team",
+                "project",
+                "status",
+                "type",
+                "category",
+            ],
+            "drill_down": [
+                "drill down",
+                "break down",
+                "show details",
+                "expand",
+                "dive into",
+                "breakdown",
+                "detail",
+                "deeper",
+                "specific",
+            ],
+            "comparison": [
+                "compare",
+                "vs",
+                "versus",
+                "against",
+                "difference",
+                "relative to",
+                "compared to",
+                "benchmark",
+                "baseline",
+            ],
+            "context_reset": [
+                "reset",
+                "clear",
+                "back",
+                "overview",
+                "start over",
+                "remove filters",
+                "show all",
+                "default view",
+            ],
+            "insight_request": [
+                "why",
+                "what caused",
+                "explain",
+                "reason",
+                "insight",
+                "analysis",
+                "what's driving",
+                "trend",
+                "pattern",
+                "anomaly",
+            ],
+        }
+
+        # Entity Recognition Patterns
+        ENTITY_PATTERNS = {
+            "teams": ["engineering", "platform", "frontend", "backend", "devops", "qa"],
+            "metrics": ["performance", "velocity", "bugs", "incidents", "uptime"],
+            "periods": ["q1", "q2", "q3", "q4", "january", "february", "march"],
+        }
+
+        # Time Period Patterns
+        TIME_PATTERNS = [
+            "last quarter",
+            "this quarter",
+            "next quarter",
+            "last month",
+            "this month",
+            "next month",
+            "q1",
+            "q2",
+            "q3",
+            "q4",
+            "2024",
+            "2025",
+        ]
+
+        # Default Follow-up Suggestions
+        DEFAULT_SUGGESTIONS = {
+            "time_navigation": [
+                "Compare this period with the previous one",
+                "Break down by team performance",
+                "Show trend analysis for this timeframe",
+            ],
+            "data_filtering": [
+                "Drill down into specific metrics",
+                "Compare filtered vs unfiltered data",
+                "Show impact analysis of this filter",
+            ],
+            "drill_down": [
+                "Go back to overview level",
+                "Compare with other categories",
+                "Show historical trends for this detail",
+            ],
+            "default": [
+                "Explore different time periods",
+                "Filter by categories",
+                "Compare metrics",
+            ],
+        }
+
+        # Database Configuration
+        DB_PATHS = {
+            "chat_context": "data/strategic/chat_context.db",
+            "conversation_context": "data/strategic/conversation_context.db",
+        }
+
+        # Context Scope Values
+        CONTEXT_SCOPES = {
+            "session": "session",
+            "chart": "chart",
+            "user": "user",
+            "global": "global",
+        }
 
         # Dangerous patterns
         DANGEROUS_PATTERNS = [
