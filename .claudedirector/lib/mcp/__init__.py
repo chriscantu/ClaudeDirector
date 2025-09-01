@@ -86,7 +86,7 @@ __all__ = [
     "MCPServerStatus",
     "MCPIntegrationResult",
     "create_mcp_integration_manager",
-        # Phase 7 Week 4: Interactive Enhancement System (DRY Compliant)
+    # Phase 7 Week 4: Interactive Enhancement System (DRY Compliant)
     "InteractiveEnhancementAddon",
     "InteractiveEnhancementResult",
     "create_interactive_enhancement_addon",
