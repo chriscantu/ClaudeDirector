@@ -54,7 +54,7 @@ __all__ = [
     "create_integrated_visualization_workflow",
     # Phase 7 Week 2: Conversational Analytics
     "ConversationalDataManager",
-    "ConversationalQuery", 
+    "ConversationalQuery",
     "DataResponse",
     "QueryType",
     "create_conversational_data_manager",

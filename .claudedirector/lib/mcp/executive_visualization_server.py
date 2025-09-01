@@ -451,52 +451,57 @@ class ExecutiveVisualizationEngine:
 
     # Phase 7 Week 2: Chat-Embedded Visualization Methods
     async def generate_chat_embedded_visualization(
-        self, query_data: Dict[str, Any], persona: str = "diego", context: Dict[str, Any] = None
+        self,
+        query_data: Dict[str, Any],
+        persona: str = "diego",
+        context: Dict[str, Any] = None,
     ) -> VisualizationResult:
         """
         Generate visualization optimized for chat embedding via Magic MCP.
-        
+
         Phase 7 Week 2: PRD-compliant chat-only interface implementation.
-        
+
         Args:
             query_data: Real-time data from ConversationalDataManager
             persona: Strategic persona for visualization style
             context: Chat conversation context
-            
+
         Returns:
             VisualizationResult: Chat-optimized visualization
         """
         start_time = time.time()
-        
+
         try:
             # Determine optimal chart type based on data structure
             chart_type = self._infer_chart_type_from_data(query_data)
-            
+
             # Generate persona-specific visualization
             title = self._generate_contextual_title(query_data, context)
-            fig = await self._create_chat_optimized_chart(query_data, chart_type, title, persona)
-            
+            fig = await self._create_chat_optimized_chart(
+                query_data, chart_type, title, persona
+            )
+
             # Generate chat-embedded HTML with compact layout
             html_output = self._generate_chat_embedded_html(fig, title, persona)
-            
+
             generation_time = time.time() - start_time
-            
+
             return VisualizationResult(
                 success=True,
                 html_output=html_output,
                 chart_type=f"chat_embedded_{chart_type}",
                 persona=persona,
                 generation_time=generation_time,
-                file_size_bytes=len(html_output.encode('utf-8')),
+                file_size_bytes=len(html_output.encode("utf-8")),
                 interactive_elements=["hover", "zoom", "pan"],
                 metadata={
                     "chat_optimized": True,
                     "magic_mcp_ready": True,
                     "context_aware": bool(context),
-                    "data_source": query_data.get("source", "unknown")
-                }
+                    "data_source": query_data.get("source", "unknown"),
+                },
             )
-            
+
         except Exception as e:
             logger.error(f"Chat visualization generation failed: {str(e)}")
             return VisualizationResult(
@@ -507,42 +512,44 @@ class ExecutiveVisualizationEngine:
                 generation_time=time.time() - start_time,
                 file_size_bytes=0,
                 interactive_elements=[],
-                metadata={"error": str(e)}
+                metadata={"error": str(e)},
             )
-    
+
     def _infer_chart_type_from_data(self, data: Dict[str, Any]) -> str:
         """Infer optimal chart type based on data structure"""
-        
+
         # Sprint metrics -> progress visualization
         if "progress" in data and "metrics" in data:
             return "sprint_dashboard"
-        
+
         # Team performance -> radar/bar chart
         if "metrics" in data and any(key in data for key in ["team", "performance"]):
             return "team_performance"
-        
+
         # ROI analysis -> financial dashboard
         if "investment" in data and "returns" in data:
             return "roi_dashboard"
-        
+
         # Architecture health -> system status
         if "services" in data or "health_score" in data:
             return "architecture_health"
-        
+
         # Design system -> adoption metrics
         if "adoption" in data or "components" in data:
             return "design_system_status"
-        
+
         # GitHub activity -> timeline/activity chart
         if "activity" in data or "contributors" in data:
             return "github_activity"
-        
+
         # Default to simple bar chart
         return "simple_metrics"
-    
-    def _generate_contextual_title(self, data: Dict[str, Any], context: Dict[str, Any] = None) -> str:
+
+    def _generate_contextual_title(
+        self, data: Dict[str, Any], context: Dict[str, Any] = None
+    ) -> str:
         """Generate contextual title based on data and conversation context"""
-        
+
         # Use data-specific titles
         if "sprint_name" in data:
             return f"{data['sprint_name']} - Current Status"
@@ -554,15 +561,15 @@ class ExecutiveVisualizationEngine:
             return f"{data['system']} Health Dashboard"
         elif "repository" in data:
             return f"{data['repository']} Activity Overview"
-        
+
         # Fallback to generic title
         return "Strategic Metrics Dashboard"
-    
+
     async def _create_chat_optimized_chart(
         self, data: Dict[str, Any], chart_type: str, title: str, persona: str
     ) -> go.Figure:
         """Create chart optimized for chat embedding"""
-        
+
         if chart_type == "sprint_dashboard":
             return self._create_sprint_dashboard_chat(data, title)
         elif chart_type == "team_performance":
@@ -577,165 +584,196 @@ class ExecutiveVisualizationEngine:
             return self._create_github_activity_chat(data, title)
         else:
             return self._create_simple_metrics_chat(data, title)
-    
-    def _create_sprint_dashboard_chat(self, data: Dict[str, Any], title: str) -> go.Figure:
+
+    def _create_sprint_dashboard_chat(
+        self, data: Dict[str, Any], title: str
+    ) -> go.Figure:
         """Create compact sprint dashboard for chat"""
-        
+
         progress = data.get("progress", {})
         metrics = data.get("metrics", {})
-        
+
         # Single row layout for chat compactness
         fig = make_subplots(
-            rows=1, cols=3,
+            rows=1,
+            cols=3,
             subplot_titles=("Progress", "Velocity", "Completion"),
-            specs=[[{"type": "pie"}, {"type": "bar"}, {"type": "indicator"}]]
+            specs=[[{"type": "pie"}, {"type": "bar"}, {"type": "indicator"}]],
         )
-        
+
         # Sprint progress pie
         fig.add_trace(
             go.Pie(
                 labels=["Done", "Active", "Todo"],
-                values=[progress.get("completed", 0), progress.get("in_progress", 0), progress.get("todo", 0)],
+                values=[
+                    progress.get("completed", 0),
+                    progress.get("in_progress", 0),
+                    progress.get("todo", 0),
+                ],
                 hole=0.4,
-                marker_colors=self.color_palette[:3]
+                marker_colors=self.color_palette[:3],
             ),
-            row=1, col=1
+            row=1,
+            col=1,
         )
-        
+
         # Velocity comparison
         fig.add_trace(
             go.Bar(
                 x=["Current", "Target"],
                 y=[metrics.get("velocity", 0), 40],
-                marker_color=self.color_palette[:2]
+                marker_color=self.color_palette[:2],
             ),
-            row=1, col=2
+            row=1,
+            col=2,
         )
-        
+
         # Completion indicator
         fig.add_trace(
             go.Indicator(
                 mode="gauge+number",
                 value=metrics.get("completion_rate", 0) * 100,
-                title={'text': "Complete %"},
-                gauge={'axis': {'range': [0, 100]}, 'bar': {'color': self.color_palette[0]}}
+                title={"text": "Complete %"},
+                gauge={
+                    "axis": {"range": [0, 100]},
+                    "bar": {"color": self.color_palette[0]},
+                },
             ),
-            row=1, col=3
+            row=1,
+            col=3,
         )
-        
-        fig.update_layout(title=title, height=300, showlegend=False, **self.layout_template)
+
+        fig.update_layout(
+            title=title, height=300, showlegend=False, **self.layout_template
+        )
         return fig
-    
-    def _create_team_performance_chat(self, data: Dict[str, Any], title: str) -> go.Figure:
+
+    def _create_team_performance_chat(
+        self, data: Dict[str, Any], title: str
+    ) -> go.Figure:
         """Create compact team performance chart for chat"""
-        
+
         metrics = data.get("metrics", {})
-        
+
         # Simple bar chart for chat
         categories = ["Completion", "Quality", "Speed"]
         values = [
             metrics.get("story_completion_rate", 0) * 100,
             (1 - metrics.get("defect_rate", 0.03)) * 100,
-            max(0, (10 - metrics.get("average_cycle_time", 5)) * 10)
+            max(0, (10 - metrics.get("average_cycle_time", 5)) * 10),
         ]
-        
+
         fig = go.Figure()
-        fig.add_trace(go.Bar(
-            x=categories,
-            y=values,
-            marker_color=self.color_palette[:3],
-            text=[f"{v:.1f}%" for v in values],
-            textposition='auto'
-        ))
-        
+        fig.add_trace(
+            go.Bar(
+                x=categories,
+                y=values,
+                marker_color=self.color_palette[:3],
+                text=[f"{v:.1f}%" for v in values],
+                textposition="auto",
+            )
+        )
+
         fig.update_layout(
-            title=title,
-            height=250,
-            yaxis_title="Score %",
-            **self.layout_template
+            title=title, height=250, yaxis_title="Score %", **self.layout_template
         )
         return fig
-    
+
     def _create_roi_dashboard_chat(self, data: Dict[str, Any], title: str) -> go.Figure:
         """Create compact ROI dashboard for chat"""
-        
+
         investment = data.get("investment", {})
         returns = data.get("returns", {})
         roi_metrics = data.get("roi_metrics", {})
-        
+
         fig = make_subplots(
-            rows=1, cols=2,
+            rows=1,
+            cols=2,
             subplot_titles=("Investment vs Returns", "ROI"),
-            specs=[[{"type": "bar"}, {"type": "indicator"}]]
+            specs=[[{"type": "bar"}, {"type": "indicator"}]],
         )
-        
+
         # Investment vs Returns
         fig.add_trace(
             go.Bar(
                 x=["Investment", "Returns"],
                 y=[investment.get("total_cost", 0), sum(returns.values())],
-                marker_color=[self.color_palette[2], self.color_palette[0]]
+                marker_color=[self.color_palette[2], self.color_palette[0]],
             ),
-            row=1, col=1
+            row=1,
+            col=1,
         )
-        
+
         # ROI Indicator
         fig.add_trace(
             go.Indicator(
                 mode="number+delta",
                 value=roi_metrics.get("roi_percentage", 0),
-                number={'suffix': "x"},
-                title={'text': "ROI Multiple"},
-                delta={'reference': 1.0}
+                number={"suffix": "x"},
+                title={"text": "ROI Multiple"},
+                delta={"reference": 1.0},
             ),
-            row=1, col=2
+            row=1,
+            col=2,
         )
-        
+
         fig.update_layout(title=title, height=250, **self.layout_template)
         return fig
-    
+
     def _create_design_system_chat(self, data: Dict[str, Any], title: str) -> go.Figure:
         """Create compact design system chart for chat"""
-        
+
         adoption = data.get("adoption", {})
         usage = data.get("usage", {})
-        
+
         fig = go.Figure()
-        fig.add_trace(go.Bar(
-            x=["Components", "Teams", "Implementations"],
-            y=[
-                adoption.get("adoption_rate", 0) * 100,
-                (usage.get("active_teams", 0) / usage.get("total_teams", 1)) * 100,
-                min(100, usage.get("implementations", 0) / 2)  # Scale for display
-            ],
-            marker_color=self.color_palette[:3]
-        ))
-        
-        fig.update_layout(title=title, height=250, yaxis_title="Adoption %", **self.layout_template)
+        fig.add_trace(
+            go.Bar(
+                x=["Components", "Teams", "Implementations"],
+                y=[
+                    adoption.get("adoption_rate", 0) * 100,
+                    (usage.get("active_teams", 0) / usage.get("total_teams", 1)) * 100,
+                    min(100, usage.get("implementations", 0) / 2),  # Scale for display
+                ],
+                marker_color=self.color_palette[:3],
+            )
+        )
+
+        fig.update_layout(
+            title=title, height=250, yaxis_title="Adoption %", **self.layout_template
+        )
         return fig
-    
-    def _create_github_activity_chat(self, data: Dict[str, Any], title: str) -> go.Figure:
+
+    def _create_github_activity_chat(
+        self, data: Dict[str, Any], title: str
+    ) -> go.Figure:
         """Create compact GitHub activity chart for chat"""
-        
+
         activity = data.get("activity", {})
-        
+
         fig = go.Figure()
-        fig.add_trace(go.Bar(
-            x=["Commits", "PRs", "Issues Closed"],
-            y=[
-                activity.get("commits", 0),
-                activity.get("pull_requests", 0),
-                activity.get("issues_closed", 0)
-            ],
-            marker_color=self.color_palette[:3]
-        ))
-        
-        fig.update_layout(title=title, height=250, yaxis_title="Count", **self.layout_template)
+        fig.add_trace(
+            go.Bar(
+                x=["Commits", "PRs", "Issues Closed"],
+                y=[
+                    activity.get("commits", 0),
+                    activity.get("pull_requests", 0),
+                    activity.get("issues_closed", 0),
+                ],
+                marker_color=self.color_palette[:3],
+            )
+        )
+
+        fig.update_layout(
+            title=title, height=250, yaxis_title="Count", **self.layout_template
+        )
         return fig
-    
-    def _create_simple_metrics_chat(self, data: Dict[str, Any], title: str) -> go.Figure:
+
+    def _create_simple_metrics_chat(
+        self, data: Dict[str, Any], title: str
+    ) -> go.Figure:
         """Create simple metrics chart for chat"""
-        
+
         # Extract numeric values
         metrics = {}
         for key, value in data.items():
@@ -745,45 +783,56 @@ class ExecutiveVisualizationEngine:
                 for subkey, subvalue in value.items():
                     if isinstance(subvalue, (int, float)):
                         metrics[f"{key}_{subkey}"] = subvalue
-        
+
         if metrics:
             fig = go.Figure()
-            fig.add_trace(go.Bar(
-                x=list(metrics.keys())[:5],  # Limit to 5 for chat
-                y=list(metrics.values())[:5],
-                marker_color=self.color_palette[0]
-            ))
+            fig.add_trace(
+                go.Bar(
+                    x=list(metrics.keys())[:5],  # Limit to 5 for chat
+                    y=list(metrics.values())[:5],
+                    marker_color=self.color_palette[0],
+                )
+            )
         else:
             fig = go.Figure()
             fig.add_annotation(
                 text="✅ Data received successfully",
-                xref="paper", yref="paper",
-                x=0.5, y=0.5, xanchor='center', yanchor='middle',
-                showarrow=False, font=dict(size=16)
+                xref="paper",
+                yref="paper",
+                x=0.5,
+                y=0.5,
+                xanchor="center",
+                yanchor="middle",
+                showarrow=False,
+                font=dict(size=16),
             )
-        
+
         fig.update_layout(title=title, height=200, **self.layout_template)
         return fig
-    
-    def _generate_chat_embedded_html(self, fig: go.Figure, title: str, persona: str) -> str:
+
+    def _generate_chat_embedded_html(
+        self, fig: go.Figure, title: str, persona: str
+    ) -> str:
         """Generate HTML optimized for chat embedding"""
-        
+
         # Convert to HTML with compact configuration
         html_div = pio.to_html(
             fig,
-            include_plotlyjs='cdn',
+            include_plotlyjs="cdn",
             div_id=f"chat_viz_{int(time.time())}",
             config={
-                'displayModeBar': True,
-                'displaylogo': False,
-                'modeBarButtonsToRemove': ['pan2d', 'lasso2d', 'select2d'],
-                'responsive': True
-            }
+                "displayModeBar": True,
+                "displaylogo": False,
+                "modeBarButtonsToRemove": ["pan2d", "lasso2d", "select2d"],
+                "responsive": True,
+            },
         )
-        
+
         # Add chat-specific styling
         from jinja2 import Template
-        chat_template = Template("""
+
+        chat_template = Template(
+            """
         <div class="claudedirector-chat-visualization" style="
             max-width: 100%;
             margin: 10px 0;
@@ -816,13 +865,10 @@ class ExecutiveVisualizationEngine:
                 Generated via ClaudeDirector • Interactive visualization
             </div>
         </div>
-        """)
-        
-        return chat_template.render(
-            title=title,
-            persona=persona,
-            html_content=html_div
+        """
         )
+
+        return chat_template.render(title=title, persona=persona, html_content=html_div)
 
     def _apply_executive_styling(self, fig: go.Figure, persona: str) -> go.Figure:
         """Apply Rachel's executive styling to figure"""
