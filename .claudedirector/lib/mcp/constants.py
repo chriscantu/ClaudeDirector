@@ -153,6 +153,9 @@ class MCPServerConstants:
         CLEANUP_AFTER_DAYS = 30
         DEFAULT_SESSION_ID = "default"
 
+        # Database Paths (ARCHITECTURE: Integrate with strategic memory infrastructure)
+        DB_PATHS = {"chat_context": "data/strategic/chat_context.db"}
+
         # Natural Language Intent Patterns
         INTENT_PATTERNS = {
             "time_navigation": [
