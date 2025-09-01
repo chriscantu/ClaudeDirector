@@ -16,13 +16,17 @@ from pathlib import Path
 from typing import List, Set
 import json
 
+# Add the tools directory to Python path for imports
+script_dir = Path(__file__).parent
+sys.path.insert(0, str(script_dir))
+
 # Import our bloat analyzer
 try:
-    from .bloat_prevention_system import create_bloat_analyzer, DuplicationSeverity
+    from bloat_prevention_system import create_bloat_analyzer, DuplicationSeverity
 
     ANALYZER_AVAILABLE = True
-except ImportError:
-    print("⚠️  Bloat analyzer not available - running in basic mode")
+except ImportError as e:
+    print(f"⚠️  Bloat analyzer not available - running in basic mode: {e}")
     ANALYZER_AVAILABLE = False
 
 

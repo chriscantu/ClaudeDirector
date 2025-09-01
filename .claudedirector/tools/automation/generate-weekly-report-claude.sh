@@ -12,7 +12,8 @@ set -e  # Exit on any error
 
 # Configuration
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-PROJECT_ROOT="$( cd "$SCRIPT_DIR/../.." &> /dev/null && pwd )"
+# Fix path calculation - script is in .claudedirector/tools/automation, so we need to go up 3 levels
+PROJECT_ROOT="$( cd "$SCRIPT_DIR/../../.." &> /dev/null && pwd )"
 WORKSPACE_DIR="${PROJECT_ROOT}/leadership-workspace"
 REPORTS_DIR="${WORKSPACE_DIR}/reports"
 CONFIG_DIR="${WORKSPACE_DIR}/configs"

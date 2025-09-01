@@ -51,6 +51,7 @@ class VisualizationResult:
     interactive_elements: List[str]
     error: Optional[str] = None
     timestamp: float = None
+    metadata: Dict[str, Any] = None
 
     def __post_init__(self):
         if self.timestamp is None:
@@ -481,8 +482,10 @@ class ExecutiveVisualizationEngine:
                 query_data, chart_type, title, persona
             )
 
-            # Generate chat-embedded HTML with compact layout
-            html_output = self._generate_chat_embedded_html(fig, title, persona)
+            # Generate chat-embedded HTML with compact layout and context
+            html_output = self._generate_chat_embedded_html(
+                fig, title, persona, context
+            )
 
             generation_time = time.time() - start_time
 
@@ -811,9 +814,9 @@ class ExecutiveVisualizationEngine:
         return fig
 
     def _generate_chat_embedded_html(
-        self, fig: go.Figure, title: str, persona: str
+        self, fig: go.Figure, title: str, persona: str, context: Dict[str, Any] = None
     ) -> str:
-        """Generate HTML optimized for chat embedding"""
+        """Generate HTML optimized for chat embedding with data authenticity"""
 
         # Convert to HTML with compact configuration
         html_div = pio.to_html(
@@ -852,7 +855,7 @@ class ExecutiveVisualizationEngine:
                 font-size: 14px;
                 text-align: center;
             ">
-                ✅ REAL DATA - LIVE METRICS ✅<br/>
+                &#x2705; REAL DATA - LIVE METRICS &#x2705;<br/>
                 <span style="font-size: 12px; font-weight: 500;">
                     Connected to {{ server_info }} • Last updated: {{ last_updated }}
                 </span>
@@ -868,7 +871,7 @@ class ExecutiveVisualizationEngine:
                 font-size: 14px;
                 text-align: center;
             ">
-                ⚠️ REAL DATA via API FALLBACK ⚠️<br/>
+                &#x26A0; REAL DATA via API FALLBACK &#x26A0;<br/>
                 <span style="font-size: 12px; font-weight: 500;">
                     MCP server unavailable, using REST API • {{ server_info }}
                 </span>
@@ -884,7 +887,7 @@ class ExecutiveVisualizationEngine:
                 font-size: 14px;
                 text-align: center;
             ">
-                🚨 SIMULATED DATA - NOT REAL METRICS 🚨<br/>
+                &#x1F6A8; SIMULATED DATA - NOT REAL METRICS &#x1F6A8;<br/>
                 <span style="font-size: 12px; font-weight: 500;">
                     This is realistic sample data for demonstration •
                     <strong>Ask me: "How do I connect to real data?"</strong>
@@ -919,13 +922,23 @@ class ExecutiveVisualizationEngine:
         """
         )
 
+        # Extract data authenticity from context
+        data_authenticity = "SIMULATED"  # Default fallback
+        server_info = "Simulation Mode"
+        last_updated = "N/A"
+
+        if context:
+            data_authenticity = context.get("data_authenticity", "SIMULATED")
+            server_info = context.get("server_info", "Simulation Mode")
+            last_updated = context.get("last_updated", "N/A")
+
         return chat_template.render(
             title=title,
             persona=persona,
             html_content=html_div,
-            data_authenticity="SIMULATED",  # Default to simulated
-            server_info="Simulation Mode",
-            last_updated="N/A",
+            data_authenticity=data_authenticity,
+            server_info=server_info,
+            last_updated=last_updated,
         )
 
     def _apply_executive_styling(self, fig: go.Figure, persona: str) -> go.Figure:
@@ -1816,6 +1829,34 @@ class ExecutiveVisualizationEngine:
                 "error": str(e),
                 "last_health_check": time.time(),
             }
+
+    def _generate_error_visualization(self, error_message: str) -> str:
+        """Generate a simple error visualization for failed chart generation"""
+        return f"""
+        <div style="
+            padding: 20px;
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            color: #856404;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+        ">
+            <h3 style="margin-top: 0; color: #856404;">⚠️ Visualization Error</h3>
+            <p><strong>Unable to generate chart:</strong></p>
+            <p style="
+                background: #fff;
+                padding: 10px;
+                border-radius: 4px;
+                border-left: 4px solid #ffc107;
+                font-family: monospace;
+                font-size: 14px;
+            ">{error_message}</p>
+            <p><em>The data was fetched successfully, but chart generation failed.
+            This is likely a temporary issue with the visualization engine.</em></p>
+        </div>
+        """
 
 
 # MCP Server Integration
