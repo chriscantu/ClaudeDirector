@@ -23,10 +23,11 @@ Phase 7 completes the visualization foundation started in Phase 2 by delivering 
 **Performance**: All charts generate in <100ms with Rachel's executive design system
 **Architecture**: Full compliance with OVERVIEW.md, PROJECT_STRUCTURE.md, TESTING_ARCHITECTURE.md
 
-### ⏳ **Week 2 PLANNED: Real-Time Data Integration** (September 7, 2025)
-**Target**: Live data feeds with <5 second update latency
-**Components**: Real-Time Data Manager, Live Chart Update Engine
-**Integration**: Jira, GitHub, analytics platforms
+### ⏳ **Week 2 PLANNED: Real-Time Conversational Analytics** (September 7, 2025)
+**Target**: Live data via chat interface with <5 second response latency
+**Components**: Conversational Data Manager, Chat-Embedded Visualization Engine
+**Integration**: Jira, GitHub, analytics platforms → Chat responses
+**PRD Compliance**: Chat-only interface (PRD Lines 158-161)
 
 ### ⏳ **Week 3 PLANNED: Advanced Interactivity** (September 14, 2025)
 **Target**: Interactive exploration with <200ms response time
@@ -136,16 +137,17 @@ Phase 7 completes the visualization foundation started in Phase 2 by delivering 
 
 ## 🎯 **Week 2-5 Implementation Roadmap**
 
-### **Week 2: Real-Time Data Integration** (September 7, 2025)
+### **Week 2: Real-Time Conversational Analytics** (September 7, 2025)
 **Components to Implement**:
-- `RealTimeDataManager` - WebSocket connections, polling, validation
-- `LiveChartUpdateEngine` - Dynamic updates with smooth transitions
-- Integration connectors for Jira, GitHub, analytics platforms
+- `ConversationalDataManager` - Chat query parsing, real-time data fetching
+- `ChatEmbeddedVisualizationEngine` - Magic MCP integration for chat visuals
+- Integration connectors for Jira, GitHub, analytics → Chat responses
 
 **Success Criteria**:
-- <5 second update latency for live data feeds
-- Automatic chart refresh with animation transitions
-- Error handling and circuit breakers for data sources
+- <5 second response latency for chat queries with live data
+- All visualizations embedded in chat responses (no standalone dashboards)
+- Context preservation across multi-turn conversations
+- PRD Compliance: Chat-only interface maintained
 
 ### **Week 3: Advanced Interactivity** (September 14, 2025)
 **Components to Implement**:

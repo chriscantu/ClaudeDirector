@@ -170,33 +170,35 @@ Technical implementation stories for Phase 7 Enhanced Visualization Capabilities
 
 ---
 
-## 🔄 **TRACK 2: REAL-TIME DATA INTEGRATION** ⏳ **WEEK 2 PLANNED**
+## 🔄 **TRACK 2: REAL-TIME CONVERSATIONAL ANALYTICS** ⏳ **WEEK 2 PLANNED**
 
-### **Epic TS-3: Real-Time Data Manager**
+### **Epic TS-3: Chat-Based Real-Time Data Integration**
 
-#### **TS-7.3.1: Real-Time Data Manager Implementation**
-**Traceability**: US-7.2.1 → Live Data Feeds for Strategic Dashboards
+#### **TS-7.3.1: Conversational Data Manager Implementation**
+**Traceability**: US-7.2.1 → Live Data Integration via Chat Interface
 **As the** IntegratedVisualizationWorkflow
-**I need** real-time data source integration with <5 second update latency
-**So that** strategic dashboards can display current data without manual refresh
+**I need** real-time data source integration that responds to chat queries
+**So that** users can ask questions and receive current data through chat interface
 
 **🏗️ Technical Implementation Plan**:
-- **Component**: `.claudedirector/lib/mcp/realtime_data_manager.py`
-- **Features**: WebSocket connections, polling mechanisms, data validation
-- **Integration**: Jira API, GitHub API, analytics platform connectors
-- **Performance**: <5s latency, automatic retry logic, circuit breakers
+- **Component**: `.claudedirector/lib/mcp/conversational_data_manager.py`
+- **Features**: Chat query parsing, real-time data fetching, natural language response generation
+- **Integration**: Jira API, GitHub API, analytics platforms → Chat responses
+- **Performance**: <5s latency for data queries, <500ms for chat response generation
+- **PRD Compliance**: All interactions through Cursor/Claude chat interface only
 
-#### **TS-7.3.2: Live Chart Update Engine**
-**Traceability**: US-7.2.1 → Live Data Feeds for Strategic Dashboards
+#### **TS-7.3.2: Chat-Embedded Visualization Engine**
+**Traceability**: US-7.2.2 → Conversational Data Exploration
 **As the** ExecutiveVisualizationEngine
-**I need** dynamic chart update capabilities with smooth transitions
-**So that** charts can refresh with new data without full regeneration
+**I need** to generate visualizations in response to chat queries via Magic MCP
+**So that** users can explore data visually without leaving the chat interface
 
 **🏗️ Technical Implementation Plan**:
-- **Component**: `.claudedirector/lib/mcp/live_chart_engine.py`
-- **Features**: Incremental data updates, animation transitions, state management
-- **Performance**: <200ms update response, minimal DOM manipulation
-- **Integration**: WebSocket event handling, data diff algorithms
+- **Component**: Enhancement to existing `executive_visualization_server.py`
+- **Features**: Chat context analysis, dynamic chart generation, Magic MCP integration
+- **Performance**: <200ms visualization generation, embedded in chat responses
+- **Integration**: Magic MCP for visual embedding, conversation context preservation
+- **PRD Compliance**: No standalone dashboards - all visuals embedded in chat
 
 ---
 
