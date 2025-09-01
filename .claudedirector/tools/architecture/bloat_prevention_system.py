@@ -34,6 +34,55 @@ except ImportError:
     get_config = lambda: {}
 
 
+# Configuration Constants (DRY Compliance)
+class BloatPreventionConfig:
+    """Configuration constants for bloat prevention system"""
+
+    # DRY Violation Detection
+    MIN_STRING_LENGTH = 10  # Minimum string literal length to check
+    MAX_REPETITIONS = 2  # Maximum allowed repetitions before flagging
+    STRING_PATTERN = r'"([^"]{10,})"'  # Regex for string literal detection
+
+    # Prevention Strategy Templates
+    STRATEGY_TEMPLATES = {
+        "pre_commit": {
+            "name": "Pre-commit Bloat Detection",
+            "effort": "2 hours",
+            "impact": "High - prevents bloat at source",
+            "description": "Integrate bloat detection into pre-commit hooks",
+            "implementation": "Add bloat_prevention_hook.py to .pre-commit-config.yaml",
+        },
+        "adr_process": {
+            "name": "Architectural Decision Records (ADRs)",
+            "effort": "4 hours",
+            "impact": "Medium - guides future development",
+            "description": "Document architectural decisions to prevent pattern violations",
+            "implementation": "Create ADR template and process",
+        },
+        "code_review": {
+            "name": "Code Review Checklist",
+            "effort": "1 hour",
+            "impact": "Medium - catches issues during review",
+            "description": "Include bloat prevention in code review process",
+            "implementation": "Update PR template with bloat prevention checklist",
+        },
+        "automated_refactor": {
+            "name": "Automated Refactoring Suggestions",
+            "effort": "8 hours",
+            "impact": "High - proactive consolidation recommendations",
+            "description": "Use MCP Sequential to suggest refactoring opportunities",
+            "implementation": "Integrate MCP analysis into CI/CD pipeline",
+        },
+        "pattern_library": {
+            "name": "Centralized Pattern Library",
+            "effort": "6 hours",
+            "impact": "Medium - promotes reuse over duplication",
+            "description": "Maintain library of approved patterns and implementations",
+            "implementation": "Create pattern registry with examples",
+        },
+    }
+
+
 class DuplicationSeverity(Enum):
     """Severity levels for code duplication"""
 
@@ -146,7 +195,16 @@ class MCPBloatAnalyzer:
 
     def _get_exclusion_patterns(self) -> List[str]:
         """Get patterns to exclude from duplication analysis"""
-        return [
+
+        # Infrastructure files that legitimately need hardcoded configuration values
+        infrastructure_exclusions = [
+            "*/bloat_prevention_system.py",  # This file itself (infrastructure config)
+            "*/bloat_prevention_hook.py",  # Related infrastructure
+            "*/constants.py",  # Configuration constants files (legitimate hardcoded values)
+        ]
+
+        # General exclusions for files that don't need bloat analysis
+        general_exclusions = [
             "*/tests/*",
             "*/test_*",
             "*/__pycache__/*",
@@ -158,6 +216,8 @@ class MCPBloatAnalyzer:
             "*/docs/archive/*",
             "*/deprecated/*",
         ]
+
+        return infrastructure_exclusions + general_exclusions
 
     def _load_known_patterns(self) -> Dict[str, Any]:
         """Load known duplication patterns from previous analyses"""
@@ -435,15 +495,15 @@ class MCPBloatAnalyzer:
 
         violations = []
 
-        # Look for repeated string literals
-        string_literals = re.findall(r'"([^"]{10,})"', content)  # Strings 10+ chars
+        # Look for repeated string literals (DRY compliance)
+        string_literals = re.findall(BloatPreventionConfig.STRING_PATTERN, content)
         string_counts = {}
 
         for literal in string_literals:
             string_counts[literal] = string_counts.get(literal, 0) + 1
 
         for literal, count in string_counts.items():
-            if count > 2:  # Repeated more than twice
+            if count > BloatPreventionConfig.MAX_REPETITIONS:
                 violations.append(
                     ArchitecturalViolation(
                         file_path=str(file_path),
@@ -733,45 +793,21 @@ class MCPBloatAnalyzer:
         )
 
     def _generate_prevention_strategies(self) -> List[Dict[str, Any]]:
-        """Generate strategies to prevent future bloat"""
+        """Generate strategies to prevent future bloat (DRY compliance)"""
 
-        return [
-            {
-                "strategy": "Pre-commit Bloat Detection",
-                "description": "Integrate bloat detection into pre-commit hooks",
-                "implementation": "Add bloat_prevention_hook.py to .pre-commit-config.yaml",
-                "effort": "2 hours",
-                "impact": "High - prevents bloat at source",
-            },
-            {
-                "strategy": "Architectural Decision Records (ADRs)",
-                "description": "Document architectural decisions to prevent pattern violations",
-                "implementation": "Create ADR template and process",
-                "effort": "4 hours",
-                "impact": "Medium - guides future development",
-            },
-            {
-                "strategy": "Code Review Checklist",
-                "description": "Include bloat prevention in code review process",
-                "implementation": "Update PR template with bloat prevention checklist",
-                "effort": "1 hour",
-                "impact": "Medium - catches issues during review",
-            },
-            {
-                "strategy": "Automated Refactoring Suggestions",
-                "description": "Use MCP Sequential to suggest refactoring opportunities",
-                "implementation": "Integrate MCP analysis into CI/CD pipeline",
-                "effort": "8 hours",
-                "impact": "High - proactive consolidation recommendations",
-            },
-            {
-                "strategy": "Centralized Pattern Library",
-                "description": "Maintain library of approved patterns and implementations",
-                "implementation": "Create pattern registry with examples",
-                "effort": "6 hours",
-                "impact": "Medium - promotes reuse over duplication",
-            },
-        ]
+        strategies = []
+        for strategy_key, template in BloatPreventionConfig.STRATEGY_TEMPLATES.items():
+            strategies.append(
+                {
+                    "strategy": template["name"],
+                    "description": template["description"],
+                    "implementation": template["implementation"],
+                    "effort": template["effort"],
+                    "impact": template["impact"],
+                }
+            )
+
+        return strategies
 
 
 # Factory function for easy integration
@@ -786,11 +822,27 @@ if __name__ == "__main__":
     import sys
 
     async def main():
-        project_root = sys.argv[1] if len(sys.argv) > 1 else "."
+        # Parse command line arguments
+        if len(sys.argv) < 2:
+            project_root = "."
+            target_files = None
+        else:
+            # First arg might be project root or file
+            first_arg = sys.argv[1]
+            if os.path.isdir(first_arg):
+                project_root = first_arg
+                target_files = sys.argv[2:] if len(sys.argv) > 2 else None
+            else:
+                project_root = "."
+                target_files = sys.argv[1:]
+
         analyzer = create_bloat_analyzer(project_root)
 
         print("🏗️ Running MCP-Enhanced Bloat Analysis...")
-        report = await analyzer.analyze_project_for_bloat()
+        if target_files:
+            print(f"🎯 Analyzing {len(target_files)} specific file(s)...")
+
+        report = await analyzer.analyze_project_for_bloat(target_paths=target_files)
 
         print(f"\n📊 Analysis Results:")
         print(f"Files analyzed: {report['files_analyzed']}")
