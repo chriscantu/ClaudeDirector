@@ -43,7 +43,7 @@ def save_demo_file(content: str, filename: str) -> str:
     demo_dir.mkdir(parents=True, exist_ok=True)
 
     filepath = demo_dir / filename
-    with open(filepath, 'w', encoding='utf-8') as f:
+    with open(filepath, "w", encoding="utf-8") as f:
         f.write(content)
 
     return str(filepath)
@@ -51,9 +51,9 @@ def save_demo_file(content: str, filename: str) -> str:
 
 async def demo_mcp_server_detection():
     """Demo 1: MCP Server Detection and Status"""
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("🔍 **DEMO 1: MCP Server Detection & Status**")
-    print("="*80)
+    print("=" * 80)
 
     mcp_manager = create_mcp_integration_manager()
 
@@ -70,7 +70,9 @@ async def demo_mcp_server_detection():
         servers = mcp_manager.mcp_servers[server_type]
         for i, server in enumerate(servers, 1):
             print(f"  {i}. {server.package_name} v{server.version}")
-            print(f"     Priority: {server.priority} | Capabilities: {', '.join(server.capabilities[:3])}...")
+            print(
+                f"     Priority: {server.priority} | Capabilities: {', '.join(server.capabilities[:3])}..."
+            )
 
         # Check availability
         status = await mcp_manager.check_mcp_server_availability(server_type)
@@ -78,7 +80,7 @@ async def demo_mcp_server_detection():
             MCPServerStatus.AVAILABLE: "✅",
             MCPServerStatus.UNAVAILABLE: "❌",
             MCPServerStatus.FALLBACK: "⚠️",
-            MCPServerStatus.ERROR: "🚫"
+            MCPServerStatus.ERROR: "🚫",
         }
 
         print(f"     Status: {status_emoji.get(status, '❓')} {status.value.upper()}")
@@ -91,15 +93,17 @@ async def demo_mcp_server_detection():
 
 async def demo_real_data_integration(mcp_manager):
     """Demo 2: Real Data Integration with Fallback"""
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("📊 **DEMO 2: Real Data Integration with Graceful Fallback**")
-    print("="*80)
+    print("=" * 80)
 
     # Demo Jira integration
     print(f"\n🎯 **Jira Sprint Metrics Integration:**")
     start_time = time.time()
 
-    jira_result = await mcp_manager.fetch_jira_data("sprint_metrics", {"team": "Platform Team"})
+    jira_result = await mcp_manager.fetch_jira_data(
+        "sprint_metrics", {"team": "Platform Team"}
+    )
     latency = (time.time() - start_time) * 1000
 
     print(f"  ⚡ Response Time: {latency:.1f}ms")
@@ -119,7 +123,9 @@ async def demo_real_data_integration(mcp_manager):
     print(f"\n🐙 **GitHub Repository Integration:**")
     start_time = time.time()
 
-    github_result = await mcp_manager.fetch_github_data("repository_activity", {"repo": "ai-leadership"})
+    github_result = await mcp_manager.fetch_github_data(
+        "repository_activity", {"repo": "ai-leadership"}
+    )
     latency = (time.time() - start_time) * 1000
 
     print(f"  ⚡ Response Time: {latency:.1f}ms")
@@ -129,7 +135,7 @@ async def demo_real_data_integration(mcp_manager):
 
     if github_result.method == "mcp":
         print(f"  🎉 **REAL MCP DATA AVAILABLE!**")
-        mcp_enhanced = github_result.data.get('mcp_enhanced', {})
+        mcp_enhanced = github_result.data.get("mcp_enhanced", {})
         if mcp_enhanced:
             print(f"     Code Quality: {mcp_enhanced.get('code_quality_metrics', {})}")
             print(f"     CI/CD Status: {mcp_enhanced.get('ci_cd_status', {})}")
@@ -141,9 +147,9 @@ async def demo_real_data_integration(mcp_manager):
 
 async def demo_conversational_analytics_integration():
     """Demo 3: Full Conversational Analytics with MCP Integration"""
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("💬 **DEMO 3: Conversational Analytics with Real MCP Integration**")
-    print("="*80)
+    print("=" * 80)
 
     workflow = create_conversational_analytics_workflow()
 
@@ -151,13 +157,13 @@ async def demo_conversational_analytics_integration():
         {
             "query": "Show me current sprint metrics for the platform team",
             "persona": "diego",
-            "description": "Diego's sprint leadership with real Jira data"
+            "description": "Diego's sprint leadership with real Jira data",
         },
         {
             "query": "What's our GitHub repository activity this week?",
             "persona": "martin",
-            "description": "Martin's repository health monitoring"
-        }
+            "description": "Martin's repository health monitoring",
+        },
     ]
 
     results = []
@@ -173,7 +179,9 @@ async def demo_conversational_analytics_integration():
 
         print(f"   ⚡ Total Pipeline Time: {total_time:.1f}ms")
         print(f"   📊 Data Fetch: {result.data_response.latency_ms}ms")
-        print(f"   🎨 Visualization: {int(result.visualization_result.generation_time * 1000)}ms")
+        print(
+            f"   🎨 Visualization: {int(result.visualization_result.generation_time * 1000)}ms"
+        )
         print(f"   ✅ Success: {result.success}")
 
         # Show data authenticity
@@ -201,9 +209,9 @@ async def demo_conversational_analytics_integration():
 
 async def demo_integration_health_monitoring():
     """Demo 4: Integration Health and Performance Monitoring"""
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("📈 **DEMO 4: Integration Health & Performance Monitoring**")
-    print("="*80)
+    print("=" * 80)
 
     mcp_manager = create_mcp_integration_manager()
 
@@ -220,7 +228,7 @@ async def demo_integration_health_monitoring():
     print(f"   Manager: {health['manager_name']} v{health['version']}")
 
     print(f"\n📊 **Performance Metrics:**")
-    metrics = health['metrics']
+    metrics = health["metrics"]
     print(f"   Total Requests: {metrics['total_requests']}")
     print(f"   MCP Requests: {metrics['mcp_requests']}")
     print(f"   Fallback Requests: {metrics['fallback_requests']}")
@@ -228,12 +236,19 @@ async def demo_integration_health_monitoring():
     print(f"   Success Rate: {metrics['success_rate']:.1%}")
 
     print(f"\n🖥️  **Server Status:**")
-    for server_type, status in health['server_status'].items():
-        status_emoji = {"available": "✅", "unavailable": "❌", "fallback": "⚠️", "error": "🚫"}
-        print(f"   {server_type.upper()}: {status_emoji.get(status, '❓')} {status.upper()}")
+    for server_type, status in health["server_status"].items():
+        status_emoji = {
+            "available": "✅",
+            "unavailable": "❌",
+            "fallback": "⚠️",
+            "error": "🚫",
+        }
+        print(
+            f"   {server_type.upper()}: {status_emoji.get(status, '❓')} {status.upper()}"
+        )
 
     print(f"\n✅ **PRD Compliance:**")
-    prd = health['prd_compliance']
+    prd = health["prd_compliance"]
     print(f"   Chat-Only Interface: {'✅' if prd['chat_only_interface'] else '❌'}")
     print(f"   Fallback Strategy: {'✅' if prd['fallback_strategy'] else '❌'}")
     print(f"   Latency Target Met: {'✅' if prd['latency_target_met'] else '❌'}")
@@ -243,9 +258,9 @@ async def demo_integration_health_monitoring():
 
 async def demo_setup_instructions():
     """Demo 5: User Setup Instructions and Guidance"""
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("🛠️  **DEMO 5: User Setup Instructions & Guidance**")
-    print("="*80)
+    print("=" * 80)
 
     mcp_manager = create_mcp_integration_manager()
 
@@ -257,11 +272,11 @@ async def demo_setup_instructions():
         print(f"   📝 Description: {instructions['description']}")
 
         print(f"\n   🔧 **Setup Steps:**")
-        for step in instructions['steps']:
+        for step in instructions["steps"]:
             print(f"      {step}")
 
         print(f"\n   🎯 **Benefits:**")
-        for benefit in instructions['benefits']:
+        for benefit in instructions["benefits"]:
             print(f"      • {benefit}")
 
         print(f"\n   🔒 **Security:** {instructions['security']}")
@@ -270,7 +285,7 @@ async def demo_setup_instructions():
 async def main():
     """Main demo orchestration"""
     print("🚀 **Phase 7 Week 3: Real MCP Integration Demo**")
-    print("="*80)
+    print("=" * 80)
     print("Demonstrates complete MCP server integration with zero-setup compliance")
     print("Created: August 31, 2025 | Martin + Sofia + Elena")
     print("Features: Real data integration, graceful fallback, transparent operation")
@@ -292,13 +307,19 @@ async def main():
         await demo_setup_instructions()
 
         # Summary
-        print("\n" + "="*80)
+        print("\n" + "=" * 80)
         print("📊 **DEMO SUMMARY: Week 3 MCP Integration Success**")
-        print("="*80)
+        print("=" * 80)
 
-        print(f"✅ **Zero Setup Compliance:** All operations work without external dependencies")
-        print(f"✅ **Graceful Fallback:** REST API fallback when MCP servers unavailable")
-        print(f"✅ **Transparent Operation:** Users always know data source (real vs simulated)")
+        print(
+            f"✅ **Zero Setup Compliance:** All operations work without external dependencies"
+        )
+        print(
+            f"✅ **Graceful Fallback:** REST API fallback when MCP servers unavailable"
+        )
+        print(
+            f"✅ **Transparent Operation:** Users always know data source (real vs simulated)"
+        )
         print(f"✅ **Performance Targets:** All operations <5s (PRD requirement)")
         print(f"✅ **Chat Integration:** Full conversational analytics with real data")
 
@@ -313,6 +334,7 @@ async def main():
     except Exception as e:
         print(f"\n❌ **Demo Error:** {str(e)}")
         import traceback
+
         traceback.print_exc()
         return False
 

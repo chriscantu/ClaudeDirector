@@ -87,22 +87,26 @@ class TestMCPIntegrationP0:
     async def test_p0_server_detection_never_blocks(self, mcp_manager):
         """P0: Server detection never blocks or fails"""
         # Detection must complete quickly and never throw
-        detection_results = await mcp_manager.check_mcp_server_availability(MCPServerType.JIRA)
+        detection_results = await mcp_manager.check_mcp_server_availability(
+            MCPServerType.JIRA
+        )
 
         assert detection_results in [
             MCPServerStatus.AVAILABLE,
             MCPServerStatus.UNAVAILABLE,
             MCPServerStatus.FALLBACK,
-            MCPServerStatus.ERROR
+            MCPServerStatus.ERROR,
         ]
 
         # GitHub detection
-        github_results = await mcp_manager.check_mcp_server_availability(MCPServerType.GITHUB)
+        github_results = await mcp_manager.check_mcp_server_availability(
+            MCPServerType.GITHUB
+        )
         assert github_results in [
             MCPServerStatus.AVAILABLE,
             MCPServerStatus.UNAVAILABLE,
             MCPServerStatus.FALLBACK,
-            MCPServerStatus.ERROR
+            MCPServerStatus.ERROR,
         ]
 
     @pytest.mark.asyncio
@@ -278,7 +282,10 @@ class TestMCPIntegrationBusinessCritical:
         if result.method == "mcp":
             assert "mcp" in result.data.get("source", "").lower()
         else:
-            assert "api" in result.data.get("source", "").lower() or "fallback" in result.data.get("source", "").lower()
+            assert (
+                "api" in result.data.get("source", "").lower()
+                or "fallback" in result.data.get("source", "").lower()
+            )
 
     def test_server_priority_ordering(self, mcp_manager):
         """Business Critical: Server priority ordering is correct"""

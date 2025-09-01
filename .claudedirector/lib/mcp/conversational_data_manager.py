@@ -92,6 +92,7 @@ class ConversationalDataManager:
 
         # Week 3: MCP Integration Manager for real data
         from .mcp_integration_manager import create_mcp_integration_manager
+
         self.mcp_manager = create_mcp_integration_manager()  # 5 minutes
 
     def _initialize_query_patterns(self) -> Dict[str, Dict[str, Any]]:
@@ -311,39 +312,43 @@ class ConversationalDataManager:
             # Attempt real Jira data via MCP Integration Manager
             mcp_result = await self.mcp_manager.fetch_jira_data(
                 "sprint_metrics",
-                {"team": query.entities[0] if query.entities else "Platform Team"}
+                {"team": query.entities[0] if query.entities else "Platform Team"},
             )
 
             if mcp_result.success and mcp_result.method == "mcp":
                 # Real MCP data available!
                 real_data = mcp_result.data.copy()
-                real_data.update({
-                    "✅_REAL_DATA": {
-                        "data_source": "REAL JIRA DATA via MCP",
-                        "server_used": mcp_result.server_used,
-                        "method": "mcp_server",
-                        "latency_ms": mcp_result.latency_ms,
-                        "last_updated": "real-time"
-                    },
-                    "_data_authenticity": "REAL",
-                    "_integration_status": "connected"
-                })
+                real_data.update(
+                    {
+                        "✅_REAL_DATA": {
+                            "data_source": "REAL JIRA DATA via MCP",
+                            "server_used": mcp_result.server_used,
+                            "method": "mcp_server",
+                            "latency_ms": mcp_result.latency_ms,
+                            "last_updated": "real-time",
+                        },
+                        "_data_authenticity": "REAL",
+                        "_integration_status": "connected",
+                    }
+                )
                 return real_data
 
             elif mcp_result.success and mcp_result.method == "api_fallback":
                 # API fallback data available
                 api_data = mcp_result.data.copy()
-                api_data.update({
-                    "⚠️_API_FALLBACK_DATA": {
-                        "data_source": "REAL JIRA DATA via REST API",
-                        "notice": "MCP server unavailable, using REST API fallback",
-                        "server_used": mcp_result.server_used,
-                        "method": "rest_api",
-                        "latency_ms": mcp_result.latency_ms
-                    },
-                    "_data_authenticity": "REAL",
-                    "_integration_status": "api_fallback"
-                })
+                api_data.update(
+                    {
+                        "⚠️_API_FALLBACK_DATA": {
+                            "data_source": "REAL JIRA DATA via REST API",
+                            "notice": "MCP server unavailable, using REST API fallback",
+                            "server_used": mcp_result.server_used,
+                            "method": "rest_api",
+                            "latency_ms": mcp_result.latency_ms,
+                        },
+                        "_data_authenticity": "REAL",
+                        "_integration_status": "api_fallback",
+                    }
+                )
                 return api_data
 
         except Exception as e:
@@ -357,7 +362,7 @@ class ConversationalDataManager:
                 "notice": "Real Jira MCP server not available - using realistic sample data",
                 "setup_prompt": "Ask me: 'How do I set up real Jira integration?' to connect your account",
                 "integration_available": True,
-                "mcp_status": "unavailable"
+                "mcp_status": "unavailable",
             },
             "sprint_name": "Sprint 42 (SIMULATED)",
             "team": query.entities[0] if query.entities else "Platform Team (SAMPLE)",
@@ -374,7 +379,7 @@ class ConversationalDataManager:
             ],
             "_data_authenticity": "SIMULATED",
             "_setup_integration": "Ask me: 'How do I connect to real Jira data?'",
-            "_integration_status": "simulation_fallback"
+            "_integration_status": "simulation_fallback",
         }
 
     async def _fetch_team_performance(
@@ -386,7 +391,7 @@ class ConversationalDataManager:
                 "data_source": "SIMULATED DATA - NOT REAL",
                 "notice": "This is realistic sample data for demonstration purposes",
                 "setup_prompt": "Connect to real Jira data for actual team metrics",
-                "integration_available": True
+                "integration_available": True,
             },
             "team": query.entities[0] if query.entities else "Platform Team (SAMPLE)",
             "period": query.time_range or "last 30 days",
@@ -402,7 +407,7 @@ class ConversationalDataManager:
                 "satisfaction": "high",
             },
             "_data_authenticity": "SIMULATED",
-            "_setup_integration": "Ask me: 'How do I connect to real Jira data?'"
+            "_setup_integration": "Ask me: 'How do I connect to real Jira data?'",
         }
 
     async def _fetch_roi_analysis(self, query: ConversationalQuery) -> Dict[str, Any]:
@@ -412,9 +417,11 @@ class ConversationalDataManager:
                 "data_source": "SIMULATED DATA - NOT REAL",
                 "notice": "This is realistic sample data for demonstration purposes",
                 "setup_prompt": "Connect to real analytics data for actual ROI metrics",
-                "integration_available": True
+                "integration_available": True,
             },
-            "project": query.entities[0] if query.entities else "Platform Investment (SAMPLE)",
+            "project": (
+                query.entities[0] if query.entities else "Platform Investment (SAMPLE)"
+            ),
             "period": query.time_range or "YTD",
             "investment": {
                 "total_cost": 450000,
@@ -432,7 +439,7 @@ class ConversationalDataManager:
                 "npv": 820000,
             },
             "_data_authenticity": "SIMULATED",
-            "_setup_integration": "Ask me: 'How do I connect to real analytics data?'"
+            "_setup_integration": "Ask me: 'How do I connect to real analytics data?'",
         }
 
     async def _fetch_architecture_health(
@@ -444,9 +451,11 @@ class ConversationalDataManager:
                 "data_source": "SIMULATED DATA - NOT REAL",
                 "notice": "This is realistic sample data for demonstration purposes",
                 "setup_prompt": "Connect to real monitoring systems for actual health metrics",
-                "integration_available": True
+                "integration_available": True,
             },
-            "system": query.entities[0] if query.entities else "Platform Services (SAMPLE)",
+            "system": (
+                query.entities[0] if query.entities else "Platform Services (SAMPLE)"
+            ),
             "health_score": 0.92,
             "services": {
                 "api_gateway": {
@@ -472,7 +481,7 @@ class ConversationalDataManager:
                 "availability": 0.997,
             },
             "_data_authenticity": "SIMULATED",
-            "_setup_integration": "Ask me: 'How do I connect to real monitoring data?'"
+            "_setup_integration": "Ask me: 'How do I connect to real monitoring data?'",
         }
 
     async def _fetch_design_system_status(
@@ -484,9 +493,11 @@ class ConversationalDataManager:
                 "data_source": "SIMULATED DATA - NOT REAL",
                 "notice": "This is realistic sample data for demonstration purposes",
                 "setup_prompt": "Connect to real design system analytics for actual metrics",
-                "integration_available": True
+                "integration_available": True,
             },
-            "component": query.entities[0] if query.entities else "Design System (SAMPLE)",
+            "component": (
+                query.entities[0] if query.entities else "Design System (SAMPLE)"
+            ),
             "adoption": {
                 "total_components": 45,
                 "adopted_components": 38,
@@ -499,7 +510,7 @@ class ConversationalDataManager:
                 "update_frequency": "weekly",
             },
             "_data_authenticity": "SIMULATED",
-            "_setup_integration": "Ask me: 'How do I connect to real design system data?'"
+            "_setup_integration": "Ask me: 'How do I connect to real design system data?'",
         }
 
     async def _fetch_github_activity(
@@ -512,39 +523,43 @@ class ConversationalDataManager:
             # Attempt real GitHub data via MCP Integration Manager
             mcp_result = await self.mcp_manager.fetch_github_data(
                 "repository_activity",
-                {"repo": query.entities[0] if query.entities else "ai-leadership"}
+                {"repo": query.entities[0] if query.entities else "ai-leadership"},
             )
 
             if mcp_result.success and mcp_result.method == "mcp":
                 # Real MCP data available!
                 real_data = mcp_result.data.copy()
-                real_data.update({
-                    "✅_REAL_DATA": {
-                        "data_source": "REAL GITHUB DATA via MCP",
-                        "server_used": mcp_result.server_used,
-                        "method": "mcp_server",
-                        "latency_ms": mcp_result.latency_ms,
-                        "last_updated": "real-time"
-                    },
-                    "_data_authenticity": "REAL",
-                    "_integration_status": "connected"
-                })
+                real_data.update(
+                    {
+                        "✅_REAL_DATA": {
+                            "data_source": "REAL GITHUB DATA via MCP",
+                            "server_used": mcp_result.server_used,
+                            "method": "mcp_server",
+                            "latency_ms": mcp_result.latency_ms,
+                            "last_updated": "real-time",
+                        },
+                        "_data_authenticity": "REAL",
+                        "_integration_status": "connected",
+                    }
+                )
                 return real_data
 
             elif mcp_result.success and mcp_result.method == "api_fallback":
                 # API fallback data available
                 api_data = mcp_result.data.copy()
-                api_data.update({
-                    "⚠️_API_FALLBACK_DATA": {
-                        "data_source": "REAL GITHUB DATA via REST API",
-                        "notice": "GitHub MCP server unavailable, using REST API fallback",
-                        "server_used": mcp_result.server_used,
-                        "method": "rest_api",
-                        "latency_ms": mcp_result.latency_ms
-                    },
-                    "_data_authenticity": "REAL",
-                    "_integration_status": "api_fallback"
-                })
+                api_data.update(
+                    {
+                        "⚠️_API_FALLBACK_DATA": {
+                            "data_source": "REAL GITHUB DATA via REST API",
+                            "notice": "GitHub MCP server unavailable, using REST API fallback",
+                            "server_used": mcp_result.server_used,
+                            "method": "rest_api",
+                            "latency_ms": mcp_result.latency_ms,
+                        },
+                        "_data_authenticity": "REAL",
+                        "_integration_status": "api_fallback",
+                    }
+                )
                 return api_data
 
         except Exception as e:
@@ -558,9 +573,11 @@ class ConversationalDataManager:
                 "notice": "Real GitHub MCP server not available - using realistic sample data",
                 "setup_prompt": "Ask me: 'How do I set up real GitHub integration?' to connect your account",
                 "integration_available": True,
-                "mcp_status": "unavailable"
+                "mcp_status": "unavailable",
             },
-            "repository": query.entities[0] if query.entities else "ai-leadership (SAMPLE)",
+            "repository": (
+                query.entities[0] if query.entities else "ai-leadership (SAMPLE)"
+            ),
             "period": query.time_range or "last 7 days",
             "activity": {
                 "commits": 23,
@@ -575,7 +592,7 @@ class ConversationalDataManager:
             },
             "_data_authenticity": "SIMULATED",
             "_setup_integration": "Ask me: 'How do I connect to real GitHub data?'",
-            "_integration_status": "simulation_fallback"
+            "_integration_status": "simulation_fallback",
         }
 
     async def _fetch_general_analytics(

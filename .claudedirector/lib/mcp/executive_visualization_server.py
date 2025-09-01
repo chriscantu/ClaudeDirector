@@ -925,7 +925,7 @@ class ExecutiveVisualizationEngine:
             html_content=html_div,
             data_authenticity="SIMULATED",  # Default to simulated
             server_info="Simulation Mode",
-            last_updated="N/A"
+            last_updated="N/A",
         )
 
     def _apply_executive_styling(self, fig: go.Figure, persona: str) -> go.Figure:

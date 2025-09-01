@@ -32,6 +32,7 @@ logger = logging.getLogger(__name__)
 
 class MCPServerType(Enum):
     """Types of MCP servers supported"""
+
     JIRA = "jira"
     GITHUB = "github"
     ANALYTICS = "analytics"
@@ -39,6 +40,7 @@ class MCPServerType(Enum):
 
 class MCPServerStatus(Enum):
     """Status of MCP server connections"""
+
     AVAILABLE = "available"
     UNAVAILABLE = "unavailable"
     FALLBACK = "fallback"
@@ -48,6 +50,7 @@ class MCPServerStatus(Enum):
 @dataclass
 class MCPServerConfig:
     """Configuration for an MCP server"""
+
     server_type: MCPServerType
     package_name: str
     version: str
@@ -60,6 +63,7 @@ class MCPServerConfig:
 @dataclass
 class MCPIntegrationResult:
     """Result of MCP server integration call"""
+
     success: bool
     data: Dict[str, Any]
     server_used: str
@@ -108,10 +112,15 @@ class MCPIntegrationManager:
                     server_type=MCPServerType.JIRA,
                     package_name="@quialorraine/jira-mcp-server",
                     version="1.0.3",
-                    capabilities=["issue_management", "jql_search", "comments", "transitions"],
+                    capabilities=[
+                        "issue_management",
+                        "jql_search",
+                        "comments",
+                        "transitions",
+                    ],
                     auth_required=True,
                     fallback_api_base="https://api.atlassian.com",
-                    priority=1
+                    priority=1,
                 ),
                 MCPServerConfig(
                     server_type=MCPServerType.JIRA,
@@ -120,28 +129,37 @@ class MCPIntegrationManager:
                     capabilities=["ai_integration", "issue_crud", "project_management"],
                     auth_required=True,
                     fallback_api_base="https://api.atlassian.com",
-                    priority=2
+                    priority=2,
                 ),
                 MCPServerConfig(
                     server_type=MCPServerType.JIRA,
                     package_name="@orengrinker/jira-mcp-server",
                     version="1.0.3",
-                    capabilities=["comprehensive_management", "time_tracking", "boards"],
+                    capabilities=[
+                        "comprehensive_management",
+                        "time_tracking",
+                        "boards",
+                    ],
                     auth_required=True,
                     fallback_api_base="https://api.atlassian.com",
-                    priority=3
+                    priority=3,
                 ),
             ],
-
             MCPServerType.GITHUB: [
                 MCPServerConfig(
                     server_type=MCPServerType.GITHUB,
                     package_name="@andrebuzeli/github-mcp-v2",
                     version="6.0.4",
-                    capabilities=["releases", "ci_cd", "issues", "security", "analytics"],
+                    capabilities=[
+                        "releases",
+                        "ci_cd",
+                        "issues",
+                        "security",
+                        "analytics",
+                    ],
                     auth_required=True,
                     fallback_api_base="https://api.github.com",
-                    priority=1
+                    priority=1,
                 ),
                 MCPServerConfig(
                     server_type=MCPServerType.GITHUB,
@@ -150,7 +168,7 @@ class MCPIntegrationManager:
                     capabilities=["git_operations", "workflows", "cli_integration"],
                     auth_required=True,
                     fallback_api_base="https://api.github.com",
-                    priority=2
+                    priority=2,
                 ),
                 MCPServerConfig(
                     server_type=MCPServerType.GITHUB,
@@ -159,12 +177,14 @@ class MCPIntegrationManager:
                     capabilities=["pull_requests", "code_review", "api_integration"],
                     auth_required=True,
                     fallback_api_base="https://api.github.com",
-                    priority=3
+                    priority=3,
                 ),
             ],
         }
 
-    async def check_mcp_server_availability(self, server_type: MCPServerType) -> MCPServerStatus:
+    async def check_mcp_server_availability(
+        self, server_type: MCPServerType
+    ) -> MCPServerStatus:
         """Check if MCP servers are available for the given type"""
 
         servers = self.mcp_servers.get(server_type, [])
@@ -181,12 +201,16 @@ class MCPIntegrationManager:
                     logger.info(f"MCP server available: {server.package_name}")
                     return MCPServerStatus.AVAILABLE
             except Exception as e:
-                logger.warning(f"MCP server check failed for {server.package_name}: {e}")
+                logger.warning(
+                    f"MCP server check failed for {server.package_name}: {e}"
+                )
                 continue
 
         # No MCP servers available, use fallback
         self.server_status[server_type] = MCPServerStatus.FALLBACK
-        logger.info(f"No MCP servers available for {server_type.value}, using API fallback")
+        logger.info(
+            f"No MCP servers available for {server_type.value}, using API fallback"
+        )
         return MCPServerStatus.FALLBACK
 
     async def _check_mcp_package_available(self, package_name: str) -> bool:
@@ -195,9 +219,12 @@ class MCPIntegrationManager:
         try:
             # Check if package exists in npm registry
             process = await asyncio.create_subprocess_exec(
-                "npm", "view", package_name, "version",
+                "npm",
+                "view",
+                package_name,
+                "version",
                 stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE
+                stderr=asyncio.subprocess.PIPE,
             )
             stdout, stderr = await process.communicate()
 
@@ -209,7 +236,9 @@ class MCPIntegrationManager:
             logger.warning(f"Package check failed for {package_name}: {e}")
             return False
 
-    async def fetch_jira_data(self, query_type: str, params: Dict[str, Any] = None) -> MCPIntegrationResult:
+    async def fetch_jira_data(
+        self, query_type: str, params: Dict[str, Any] = None
+    ) -> MCPIntegrationResult:
         """Fetch Jira data using MCP server or API fallback"""
 
         start_time = time.time()
@@ -229,7 +258,9 @@ class MCPIntegrationManager:
         self._update_metrics("api_fallback", time.time() - start_time, result.success)
         return result
 
-    async def fetch_github_data(self, query_type: str, params: Dict[str, Any] = None) -> MCPIntegrationResult:
+    async def fetch_github_data(
+        self, query_type: str, params: Dict[str, Any] = None
+    ) -> MCPIntegrationResult:
         """Fetch GitHub data using MCP server or API fallback"""
 
         start_time = time.time()
@@ -249,7 +280,9 @@ class MCPIntegrationManager:
         self._update_metrics("api_fallback", time.time() - start_time, result.success)
         return result
 
-    async def _fetch_via_jira_mcp(self, query_type: str, params: Dict[str, Any] = None) -> MCPIntegrationResult:
+    async def _fetch_via_jira_mcp(
+        self, query_type: str, params: Dict[str, Any] = None
+    ) -> MCPIntegrationResult:
         """Fetch data via Jira MCP server"""
 
         start_time = time.time()
@@ -265,7 +298,9 @@ class MCPIntegrationManager:
             elif query_type == "team_performance":
                 data = await self._simulate_jira_mcp_team_data(params)
             else:
-                data = {"message": f"Jira MCP query type '{query_type}' not implemented"}
+                data = {
+                    "message": f"Jira MCP query type '{query_type}' not implemented"
+                }
 
             latency_ms = (time.time() - start_time) * 1000
 
@@ -274,7 +309,7 @@ class MCPIntegrationManager:
                 data=data,
                 server_used=server.package_name,
                 method="mcp",
-                latency_ms=int(latency_ms)
+                latency_ms=int(latency_ms),
             )
 
         except Exception as e:
@@ -285,10 +320,12 @@ class MCPIntegrationManager:
                 server_used=server.package_name,
                 method="mcp",
                 latency_ms=int(latency_ms),
-                error_message=str(e)
+                error_message=str(e),
             )
 
-    async def _fetch_via_github_mcp(self, query_type: str, params: Dict[str, Any] = None) -> MCPIntegrationResult:
+    async def _fetch_via_github_mcp(
+        self, query_type: str, params: Dict[str, Any] = None
+    ) -> MCPIntegrationResult:
         """Fetch data via GitHub MCP server"""
 
         start_time = time.time()
@@ -304,7 +341,9 @@ class MCPIntegrationManager:
             elif query_type == "pull_requests":
                 data = await self._simulate_github_mcp_pr_data(params)
             else:
-                data = {"message": f"GitHub MCP query type '{query_type}' not implemented"}
+                data = {
+                    "message": f"GitHub MCP query type '{query_type}' not implemented"
+                }
 
             latency_ms = (time.time() - start_time) * 1000
 
@@ -313,7 +352,7 @@ class MCPIntegrationManager:
                 data=data,
                 server_used=server.package_name,
                 method="mcp",
-                latency_ms=int(latency_ms)
+                latency_ms=int(latency_ms),
             )
 
         except Exception as e:
@@ -324,10 +363,12 @@ class MCPIntegrationManager:
                 server_used=server.package_name,
                 method="mcp",
                 latency_ms=int(latency_ms),
-                error_message=str(e)
+                error_message=str(e),
             )
 
-    async def _fetch_via_jira_api(self, query_type: str, params: Dict[str, Any] = None) -> MCPIntegrationResult:
+    async def _fetch_via_jira_api(
+        self, query_type: str, params: Dict[str, Any] = None
+    ) -> MCPIntegrationResult:
         """Fallback: Fetch data via Jira REST API"""
 
         start_time = time.time()
@@ -339,7 +380,9 @@ class MCPIntegrationManager:
             elif query_type == "team_performance":
                 data = await self._simulate_jira_api_team_data(params)
             else:
-                data = {"message": f"Jira API query type '{query_type}' not implemented"}
+                data = {
+                    "message": f"Jira API query type '{query_type}' not implemented"
+                }
 
             latency_ms = (time.time() - start_time) * 1000
 
@@ -348,7 +391,7 @@ class MCPIntegrationManager:
                 data=data,
                 server_used="jira_rest_api",
                 method="api_fallback",
-                latency_ms=int(latency_ms)
+                latency_ms=int(latency_ms),
             )
 
         except Exception as e:
@@ -359,10 +402,12 @@ class MCPIntegrationManager:
                 server_used="jira_rest_api",
                 method="api_fallback",
                 latency_ms=int(latency_ms),
-                error_message=str(e)
+                error_message=str(e),
             )
 
-    async def _fetch_via_github_api(self, query_type: str, params: Dict[str, Any] = None) -> MCPIntegrationResult:
+    async def _fetch_via_github_api(
+        self, query_type: str, params: Dict[str, Any] = None
+    ) -> MCPIntegrationResult:
         """Fallback: Fetch data via GitHub REST API"""
 
         start_time = time.time()
@@ -374,7 +419,9 @@ class MCPIntegrationManager:
             elif query_type == "pull_requests":
                 data = await self._simulate_github_api_pr_data(params)
             else:
-                data = {"message": f"GitHub API query type '{query_type}' not implemented"}
+                data = {
+                    "message": f"GitHub API query type '{query_type}' not implemented"
+                }
 
             latency_ms = (time.time() - start_time) * 1000
 
@@ -383,7 +430,7 @@ class MCPIntegrationManager:
                 data=data,
                 server_used="github_rest_api",
                 method="api_fallback",
-                latency_ms=int(latency_ms)
+                latency_ms=int(latency_ms),
             )
 
         except Exception as e:
@@ -394,12 +441,14 @@ class MCPIntegrationManager:
                 server_used="github_rest_api",
                 method="api_fallback",
                 latency_ms=int(latency_ms),
-                error_message=str(e)
+                error_message=str(e),
             )
 
     # Simulation methods (replace with actual MCP/API calls in production)
 
-    async def _simulate_jira_mcp_sprint_data(self, params: Dict[str, Any] = None) -> Dict[str, Any]:
+    async def _simulate_jira_mcp_sprint_data(
+        self, params: Dict[str, Any] = None
+    ) -> Dict[str, Any]:
         """Simulate Jira MCP sprint data (enhanced with MCP capabilities)"""
         await asyncio.sleep(0.1)  # Simulate MCP call latency
         return {
@@ -410,17 +459,19 @@ class MCPIntegrationManager:
                 "velocity": 36,  # Slightly better via MCP
                 "burndown_remaining": 12,
                 "days_remaining": 3,
-                "completion_rate": 0.69
+                "completion_rate": 0.69,
             },
             "mcp_enhanced": {
                 "jql_query_used": "project = PLAT AND sprint in openSprints()",
                 "real_time_updates": True,
-                "advanced_metrics": True
+                "advanced_metrics": True,
             },
-            "source": "jira_mcp"
+            "source": "jira_mcp",
         }
 
-    async def _simulate_jira_mcp_team_data(self, params: Dict[str, Any] = None) -> Dict[str, Any]:
+    async def _simulate_jira_mcp_team_data(
+        self, params: Dict[str, Any] = None
+    ) -> Dict[str, Any]:
         """Simulate Jira MCP team performance data"""
         await asyncio.sleep(0.1)
         return {
@@ -430,37 +481,46 @@ class MCPIntegrationManager:
                 "story_completion_rate": 0.89,  # Better via MCP
                 "average_cycle_time": 3.8,
                 "defect_rate": 0.025,
-                "code_review_time": 1.6
+                "code_review_time": 1.6,
             },
             "mcp_enhanced": {
                 "workflow_analysis": True,
                 "predictive_insights": True,
-                "team_collaboration_score": 0.92
+                "team_collaboration_score": 0.92,
             },
-            "source": "jira_mcp"
+            "source": "jira_mcp",
         }
 
-    async def _simulate_github_mcp_activity_data(self, params: Dict[str, Any] = None) -> Dict[str, Any]:
+    async def _simulate_github_mcp_activity_data(
+        self, params: Dict[str, Any] = None
+    ) -> Dict[str, Any]:
         """Simulate GitHub MCP activity data"""
         await asyncio.sleep(0.1)
         return {
-            "repository": params.get("repo", "ai-leadership") if params else "ai-leadership",
+            "repository": (
+                params.get("repo", "ai-leadership") if params else "ai-leadership"
+            ),
             "period": "last 7 days",
             "activity": {
                 "commits": 28,  # Enhanced via MCP
                 "pull_requests": 12,
                 "issues_opened": 4,
-                "issues_closed": 7
+                "issues_closed": 7,
             },
             "mcp_enhanced": {
-                "code_quality_metrics": {"test_coverage": 0.87, "complexity_score": "A"},
+                "code_quality_metrics": {
+                    "test_coverage": 0.87,
+                    "complexity_score": "A",
+                },
                 "ci_cd_status": {"success_rate": 0.94, "avg_build_time": "4m 32s"},
-                "security_insights": {"vulnerabilities": 0, "last_scan": "2025-08-31"}
+                "security_insights": {"vulnerabilities": 0, "last_scan": "2025-08-31"},
             },
-            "source": "github_mcp"
+            "source": "github_mcp",
         }
 
-    async def _simulate_jira_api_sprint_data(self, params: Dict[str, Any] = None) -> Dict[str, Any]:
+    async def _simulate_jira_api_sprint_data(
+        self, params: Dict[str, Any] = None
+    ) -> Dict[str, Any]:
         """Simulate Jira REST API sprint data (fallback)"""
         await asyncio.sleep(0.2)  # Slightly slower than MCP
         return {
@@ -471,12 +531,14 @@ class MCPIntegrationManager:
                 "velocity": 34,
                 "burndown_remaining": 15,
                 "days_remaining": 3,
-                "completion_rate": 0.62
+                "completion_rate": 0.62,
             },
-            "source": "jira_api_fallback"
+            "source": "jira_api_fallback",
         }
 
-    async def _simulate_jira_api_team_data(self, params: Dict[str, Any] = None) -> Dict[str, Any]:
+    async def _simulate_jira_api_team_data(
+        self, params: Dict[str, Any] = None
+    ) -> Dict[str, Any]:
         """Simulate Jira REST API team data (fallback)"""
         await asyncio.sleep(0.2)
         return {
@@ -486,31 +548,39 @@ class MCPIntegrationManager:
                 "story_completion_rate": 0.87,
                 "average_cycle_time": 4.2,
                 "defect_rate": 0.03,
-                "code_review_time": 1.8
+                "code_review_time": 1.8,
             },
-            "source": "jira_api_fallback"
+            "source": "jira_api_fallback",
         }
 
-    async def _simulate_github_api_activity_data(self, params: Dict[str, Any] = None) -> Dict[str, Any]:
+    async def _simulate_github_api_activity_data(
+        self, params: Dict[str, Any] = None
+    ) -> Dict[str, Any]:
         """Simulate GitHub REST API activity data (fallback)"""
         await asyncio.sleep(0.2)
         return {
-            "repository": params.get("repo", "ai-leadership") if params else "ai-leadership",
+            "repository": (
+                params.get("repo", "ai-leadership") if params else "ai-leadership"
+            ),
             "period": "last 7 days",
             "activity": {
                 "commits": 23,
                 "pull_requests": 8,
                 "issues_opened": 3,
-                "issues_closed": 5
+                "issues_closed": 5,
             },
-            "source": "github_api_fallback"
+            "source": "github_api_fallback",
         }
 
-    async def _simulate_github_mcp_pr_data(self, params: Dict[str, Any] = None) -> Dict[str, Any]:
+    async def _simulate_github_mcp_pr_data(
+        self, params: Dict[str, Any] = None
+    ) -> Dict[str, Any]:
         """Simulate GitHub MCP PR data"""
         await asyncio.sleep(0.1)
         return {
-            "repository": params.get("repo", "ai-leadership") if params else "ai-leadership",
+            "repository": (
+                params.get("repo", "ai-leadership") if params else "ai-leadership"
+            ),
             "pull_requests": [
                 {
                     "number": 109,
@@ -521,28 +591,32 @@ class MCPIntegrationManager:
                     "mcp_insights": {
                         "complexity_score": "medium",
                         "review_readiness": 0.95,
-                        "estimated_review_time": "15 minutes"
-                    }
+                        "estimated_review_time": "15 minutes",
+                    },
                 }
             ],
-            "source": "github_mcp"
+            "source": "github_mcp",
         }
 
-    async def _simulate_github_api_pr_data(self, params: Dict[str, Any] = None) -> Dict[str, Any]:
+    async def _simulate_github_api_pr_data(
+        self, params: Dict[str, Any] = None
+    ) -> Dict[str, Any]:
         """Simulate GitHub REST API PR data (fallback)"""
         await asyncio.sleep(0.2)
         return {
-            "repository": params.get("repo", "ai-leadership") if params else "ai-leadership",
+            "repository": (
+                params.get("repo", "ai-leadership") if params else "ai-leadership"
+            ),
             "pull_requests": [
                 {
                     "number": 109,
                     "title": "Phase 7 Week 2: Real-Time Conversational Analytics",
                     "state": "open",
                     "author": "martin",
-                    "created_at": "2025-08-31T19:00:00Z"
+                    "created_at": "2025-08-31T19:00:00Z",
                 }
             ],
-            "source": "github_api_fallback"
+            "source": "github_api_fallback",
         }
 
     def _update_metrics(self, method: str, latency_seconds: float, success: bool):
@@ -560,15 +634,24 @@ class MCPIntegrationManager:
         latency_ms = latency_seconds * 1000
 
         self.integration_metrics["avg_latency_ms"] = (
-            (self.integration_metrics["avg_latency_ms"] * (total_requests - 1) + latency_ms) / total_requests
-        )
+            self.integration_metrics["avg_latency_ms"] * (total_requests - 1)
+            + latency_ms
+        ) / total_requests
 
         if success:
-            current_successes = self.integration_metrics["success_rate"] * (total_requests - 1)
-            self.integration_metrics["success_rate"] = (current_successes + 1) / total_requests
+            current_successes = self.integration_metrics["success_rate"] * (
+                total_requests - 1
+            )
+            self.integration_metrics["success_rate"] = (
+                current_successes + 1
+            ) / total_requests
         else:
-            current_successes = self.integration_metrics["success_rate"] * (total_requests - 1)
-            self.integration_metrics["success_rate"] = current_successes / total_requests
+            current_successes = self.integration_metrics["success_rate"] * (
+                total_requests - 1
+            )
+            self.integration_metrics["success_rate"] = (
+                current_successes / total_requests
+            )
 
     async def get_integration_health(self) -> Dict[str, Any]:
         """Get MCP integration health and metrics"""
@@ -587,7 +670,7 @@ class MCPIntegrationManager:
                         "package": server.package_name,
                         "version": server.version,
                         "priority": server.priority,
-                        "capabilities": server.capabilities
+                        "capabilities": server.capabilities,
                     }
                     for server in servers
                 ]
@@ -596,8 +679,8 @@ class MCPIntegrationManager:
             "prd_compliance": {
                 "chat_only_interface": True,
                 "fallback_strategy": True,
-                "latency_target_met": self.integration_metrics["avg_latency_ms"] < 5000
-            }
+                "latency_target_met": self.integration_metrics["avg_latency_ms"] < 5000,
+            },
         }
 
 

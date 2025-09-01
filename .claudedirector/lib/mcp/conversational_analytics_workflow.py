@@ -115,12 +115,18 @@ class ConversationalAnalyticsWorkflow:
             # Step 2: Generate chat-embedded visualization with data authenticity info
             if data_response.success:
                 viz_context = context.copy() if context else {}
-                viz_context.update({
-                    "data_authenticity": data_response.data.get("_data_authenticity", "SIMULATED"),
-                    "integration_status": data_response.data.get("_integration_status", "simulation_fallback"),
-                    "server_info": self._extract_server_info(data_response.data),
-                    "last_updated": self._extract_last_updated(data_response.data)
-                })
+                viz_context.update(
+                    {
+                        "data_authenticity": data_response.data.get(
+                            "_data_authenticity", "SIMULATED"
+                        ),
+                        "integration_status": data_response.data.get(
+                            "_integration_status", "simulation_fallback"
+                        ),
+                        "server_info": self._extract_server_info(data_response.data),
+                        "last_updated": self._extract_last_updated(data_response.data),
+                    }
+                )
 
                 visualization_result = await self.visualization_engine.generate_chat_embedded_visualization(
                     data_response.data, persona=persona, context=viz_context
@@ -157,7 +163,7 @@ class ConversationalAnalyticsWorkflow:
                     "message": "💡 **Want Real Data?** This visualization uses simulated data for demonstration.",
                     "action": "Ask me: 'How do I connect to real Jira/GitHub data?' for live metrics",
                     "benefits": "Real data provides actual insights for strategic decision-making",
-                    "setup_time": "~5 minutes to connect your accounts"
+                    "setup_time": "~5 minutes to connect your accounts",
                 }
 
             return ConversationalAnalyticsResult(
@@ -177,7 +183,11 @@ class ConversationalAnalyticsWorkflow:
                     "pipeline_version": self.version,
                     "chat_optimized": True,
                     "magic_mcp_ready": True,
-                    "data_authenticity": "SIMULATED" if "🚨_SIMULATION_WARNING" in data_response.data else "REAL",
+                    "data_authenticity": (
+                        "SIMULATED"
+                        if "🚨_SIMULATION_WARNING" in data_response.data
+                        else "REAL"
+                    ),
                     "integration_prompt": integration_prompt,
                 },
             )
