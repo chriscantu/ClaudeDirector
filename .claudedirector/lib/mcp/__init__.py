@@ -52,46 +52,8 @@ from .interactive_enhancement_addon import (
     create_interactive_enhancement_addon,
 )
 
-# DEPRECATED: Phase 7 Week 4 Components (DRY Violations - Remove Next Session)
-# These components duplicate existing ExecutiveVisualizationEngine functionality
-# and violate DRY principles. Use InteractiveEnhancementAddon instead.
-try:
-    from .interactive_chart_engine import (
-        InteractiveChartEngine,
-        InteractionType,
-        InteractionEvent,
-        InteractionResult,
-        create_interactive_chart_engine,
-    )
-    from .chart_interaction_types import (
-        ChartInteractionTypes,
-        DrillDownLevel,
-        FilterState,
-        create_chart_interaction_types,
-    )
-    from .chat_embedded_interactivity import (
-        ChatEmbeddedInteractivity,
-        ChatEmbeddedResult,
-        create_chat_embedded_interactivity,
-    )
-    from .integrated_interactive_visualization import (
-        IntegratedInteractiveVisualization,
-        IntegratedInteractiveResult,
-        create_integrated_interactive_visualization,
-    )
-
-    # Issue deprecation warning
-    import warnings
-
-    warnings.warn(
-        "Interactive Chart Engine components are DEPRECATED due to DRY violations. "
-        "Use InteractiveEnhancementAddon which extends existing systems without duplication.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-except ImportError:
-    # Components will be removed in next session
-    pass
+# Phase 7 Week 4: Deprecated components removed due to DRY violations
+# Use InteractiveEnhancementAddon which extends existing systems without duplication
 
 __all__ = [
     "MCPServerConstants",
@@ -124,24 +86,8 @@ __all__ = [
     "MCPServerStatus",
     "MCPIntegrationResult",
     "create_mcp_integration_manager",
-    # Phase 7 Week 4: Interactive Enhancement System (DRY Compliant)
+        # Phase 7 Week 4: Interactive Enhancement System (DRY Compliant)
     "InteractiveEnhancementAddon",
     "InteractiveEnhancementResult",
     "create_interactive_enhancement_addon",
-    # DEPRECATED: Phase 7 Week 4 Original Components (DRY Violations)
-    "InteractiveChartEngine",  # DEPRECATED - Use InteractiveEnhancementAddon
-    "InteractionType",  # DEPRECATED
-    "InteractionEvent",  # DEPRECATED
-    "InteractionResult",  # DEPRECATED
-    "create_interactive_chart_engine",  # DEPRECATED
-    "ChartInteractionTypes",  # DEPRECATED
-    "DrillDownLevel",  # DEPRECATED
-    "FilterState",  # DEPRECATED
-    "create_chart_interaction_types",  # DEPRECATED
-    "ChatEmbeddedInteractivity",  # DEPRECATED
-    "ChatEmbeddedResult",  # DEPRECATED
-    "create_chat_embedded_interactivity",  # DEPRECATED
-    "IntegratedInteractiveVisualization",  # DEPRECATED
-    "IntegratedInteractiveResult",  # DEPRECATED
-    "create_integrated_interactive_visualization",  # DEPRECATED
 ]
