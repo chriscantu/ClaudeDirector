@@ -841,6 +841,56 @@ class ExecutiveVisualizationEngine:
             background: #ffffff;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         ">
+            {% if data_authenticity == 'REAL' %}
+            <div class="real-data-indicator" style="
+                padding: 12px 16px;
+                background: #d4edda;
+                border: 2px solid #28a745;
+                border-radius: 6px 6px 0 0;
+                color: #155724;
+                font-weight: 700;
+                font-size: 14px;
+                text-align: center;
+            ">
+                ✅ REAL DATA - LIVE METRICS ✅<br/>
+                <span style="font-size: 12px; font-weight: 500;">
+                    Connected to {{ server_info }} • Last updated: {{ last_updated }}
+                </span>
+            </div>
+            {% elif data_authenticity == 'API_FALLBACK' %}
+            <div class="api-fallback-indicator" style="
+                padding: 12px 16px;
+                background: #fff3cd;
+                border: 2px solid #ffc107;
+                border-radius: 6px 6px 0 0;
+                color: #856404;
+                font-weight: 700;
+                font-size: 14px;
+                text-align: center;
+            ">
+                ⚠️ REAL DATA via API FALLBACK ⚠️<br/>
+                <span style="font-size: 12px; font-weight: 500;">
+                    MCP server unavailable, using REST API • {{ server_info }}
+                </span>
+            </div>
+            {% else %}
+            <div class="simulation-warning" style="
+                padding: 12px 16px;
+                background: #fff3cd;
+                border: 2px solid #ffc107;
+                border-radius: 6px 6px 0 0;
+                color: #856404;
+                font-weight: 700;
+                font-size: 14px;
+                text-align: center;
+            ">
+                🚨 SIMULATED DATA - NOT REAL METRICS 🚨<br/>
+                <span style="font-size: 12px; font-weight: 500;">
+                    This is realistic sample data for demonstration •
+                    <strong>Ask me: "How do I connect to real data?"</strong>
+                </span>
+            </div>
+            {% endif %}
             <div class="viz-header" style="
                 padding: 12px 16px;
                 border-bottom: 1px solid #e1e5e9;
@@ -862,13 +912,21 @@ class ExecutiveVisualizationEngine:
                 color: #6c757d;
                 text-align: right;
             ">
-                Generated via ClaudeDirector • Interactive visualization
+                Generated via ClaudeDirector • Interactive visualization •
+                <strong style="color: #dc3545;">SIMULATED DATA</strong>
             </div>
         </div>
         """
         )
 
-        return chat_template.render(title=title, persona=persona, html_content=html_div)
+        return chat_template.render(
+            title=title,
+            persona=persona,
+            html_content=html_div,
+            data_authenticity="SIMULATED",  # Default to simulated
+            server_info="Simulation Mode",
+            last_updated="N/A"
+        )
 
     def _apply_executive_styling(self, fig: go.Figure, persona: str) -> go.Figure:
         """Apply Rachel's executive styling to figure"""

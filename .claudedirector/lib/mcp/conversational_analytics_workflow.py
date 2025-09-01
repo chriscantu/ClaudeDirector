@@ -112,10 +112,18 @@ class ConversationalAnalyticsWorkflow:
 
             data_fetch_time = time.time()
 
-            # Step 2: Generate chat-embedded visualization
+            # Step 2: Generate chat-embedded visualization with data authenticity info
             if data_response.success:
+                viz_context = context.copy() if context else {}
+                viz_context.update({
+                    "data_authenticity": data_response.data.get("_data_authenticity", "SIMULATED"),
+                    "integration_status": data_response.data.get("_integration_status", "simulation_fallback"),
+                    "server_info": self._extract_server_info(data_response.data),
+                    "last_updated": self._extract_last_updated(data_response.data)
+                })
+
                 visualization_result = await self.visualization_engine.generate_chat_embedded_visualization(
-                    data_response.data, persona=persona, context=context
+                    data_response.data, persona=persona, context=viz_context
                 )
             else:
                 # Create error visualization
@@ -142,6 +150,16 @@ class ConversationalAnalyticsWorkflow:
                 data_response.success and visualization_result.success,
             )
 
+            # Check if this is simulated data and add integration prompt
+            integration_prompt = None
+            if "🚨_SIMULATION_WARNING" in data_response.data:
+                integration_prompt = {
+                    "message": "💡 **Want Real Data?** This visualization uses simulated data for demonstration.",
+                    "action": "Ask me: 'How do I connect to real Jira/GitHub data?' for live metrics",
+                    "benefits": "Real data provides actual insights for strategic decision-making",
+                    "setup_time": "~5 minutes to connect your accounts"
+                }
+
             return ConversationalAnalyticsResult(
                 success=data_response.success and visualization_result.success,
                 query_text=query_text,
@@ -159,6 +177,8 @@ class ConversationalAnalyticsWorkflow:
                     "pipeline_version": self.version,
                     "chat_optimized": True,
                     "magic_mcp_ready": True,
+                    "data_authenticity": "SIMULATED" if "🚨_SIMULATION_WARNING" in data_response.data else "REAL",
+                    "integration_prompt": integration_prompt,
                 },
             )
 
@@ -340,6 +360,24 @@ class ConversationalAnalyticsWorkflow:
                 "persona": "martin",
             },
         ]
+
+    def _extract_server_info(self, data: Dict[str, Any]) -> str:
+        """Extract server information from data response"""
+        if "✅_REAL_DATA" in data:
+            return data["✅_REAL_DATA"].get("server_used", "Unknown MCP Server")
+        elif "⚠️_API_FALLBACK_DATA" in data:
+            return data["⚠️_API_FALLBACK_DATA"].get("server_used", "REST API Fallback")
+        else:
+            return "Simulation Mode"
+
+    def _extract_last_updated(self, data: Dict[str, Any]) -> str:
+        """Extract last updated timestamp from data response"""
+        if "✅_REAL_DATA" in data:
+            return data["✅_REAL_DATA"].get("last_updated", "real-time")
+        elif "⚠️_API_FALLBACK_DATA" in data:
+            return "via REST API"
+        else:
+            return "N/A"
 
 
 # Factory function for integration

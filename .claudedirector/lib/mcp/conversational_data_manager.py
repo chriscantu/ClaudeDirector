@@ -88,7 +88,11 @@ class ConversationalDataManager:
         self.query_patterns = self._initialize_query_patterns()
         self.data_sources = self._initialize_data_sources()
         self.cache = {}
-        self.cache_ttl = 300  # 5 minutes
+        self.cache_ttl = 300
+
+        # Week 3: MCP Integration Manager for real data
+        from .mcp_integration_manager import create_mcp_integration_manager
+        self.mcp_manager = create_mcp_integration_manager()  # 5 minutes
 
     def _initialize_query_patterns(self) -> Dict[str, Dict[str, Any]]:
         """Initialize natural language query patterns"""
@@ -300,11 +304,63 @@ class ConversationalDataManager:
             return await self._fetch_general_analytics(query)
 
     async def _fetch_sprint_metrics(self, query: ConversationalQuery) -> Dict[str, Any]:
-        """Fetch current sprint metrics"""
-        # Simulated data - replace with actual Jira API calls
+        """Fetch current sprint metrics - Week 3: Real MCP Integration with Zero Setup Fallback"""
+
+        # Week 3: Try real MCP integration first, graceful fallback to simulation
+        try:
+            # Attempt real Jira data via MCP Integration Manager
+            mcp_result = await self.mcp_manager.fetch_jira_data(
+                "sprint_metrics",
+                {"team": query.entities[0] if query.entities else "Platform Team"}
+            )
+
+            if mcp_result.success and mcp_result.method == "mcp":
+                # Real MCP data available!
+                real_data = mcp_result.data.copy()
+                real_data.update({
+                    "✅_REAL_DATA": {
+                        "data_source": "REAL JIRA DATA via MCP",
+                        "server_used": mcp_result.server_used,
+                        "method": "mcp_server",
+                        "latency_ms": mcp_result.latency_ms,
+                        "last_updated": "real-time"
+                    },
+                    "_data_authenticity": "REAL",
+                    "_integration_status": "connected"
+                })
+                return real_data
+
+            elif mcp_result.success and mcp_result.method == "api_fallback":
+                # API fallback data available
+                api_data = mcp_result.data.copy()
+                api_data.update({
+                    "⚠️_API_FALLBACK_DATA": {
+                        "data_source": "REAL JIRA DATA via REST API",
+                        "notice": "MCP server unavailable, using REST API fallback",
+                        "server_used": mcp_result.server_used,
+                        "method": "rest_api",
+                        "latency_ms": mcp_result.latency_ms
+                    },
+                    "_data_authenticity": "REAL",
+                    "_integration_status": "api_fallback"
+                })
+                return api_data
+
+        except Exception as e:
+            # Log but don't fail - graceful degradation
+            logger.warning(f"MCP integration failed, using simulation: {str(e)}")
+
+        # ZERO SETUP POLICY: Always works - graceful fallback to simulation
         return {
-            "sprint_name": "Sprint 42",
-            "team": query.entities[0] if query.entities else "Platform Team",
+            "🚨_SIMULATION_WARNING": {
+                "data_source": "SIMULATED DATA - NOT REAL",
+                "notice": "Real Jira MCP server not available - using realistic sample data",
+                "setup_prompt": "Ask me: 'How do I set up real Jira integration?' to connect your account",
+                "integration_available": True,
+                "mcp_status": "unavailable"
+            },
+            "sprint_name": "Sprint 42 (SIMULATED)",
+            "team": query.entities[0] if query.entities else "Platform Team (SAMPLE)",
             "progress": {"completed": 8, "in_progress": 3, "todo": 2, "total": 13},
             "metrics": {
                 "velocity": 34,
@@ -316,6 +372,9 @@ class ConversationalDataManager:
                 "2 stories blocked by external dependency",
                 "1 critical bug discovered in testing",
             ],
+            "_data_authenticity": "SIMULATED",
+            "_setup_integration": "Ask me: 'How do I connect to real Jira data?'",
+            "_integration_status": "simulation_fallback"
         }
 
     async def _fetch_team_performance(
@@ -323,7 +382,13 @@ class ConversationalDataManager:
     ) -> Dict[str, Any]:
         """Fetch team performance metrics"""
         return {
-            "team": query.entities[0] if query.entities else "Platform Team",
+            "🚨_SIMULATION_WARNING": {
+                "data_source": "SIMULATED DATA - NOT REAL",
+                "notice": "This is realistic sample data for demonstration purposes",
+                "setup_prompt": "Connect to real Jira data for actual team metrics",
+                "integration_available": True
+            },
+            "team": query.entities[0] if query.entities else "Platform Team (SAMPLE)",
             "period": query.time_range or "last 30 days",
             "metrics": {
                 "story_completion_rate": 0.87,
@@ -336,12 +401,20 @@ class ConversationalDataManager:
                 "quality": "stable",
                 "satisfaction": "high",
             },
+            "_data_authenticity": "SIMULATED",
+            "_setup_integration": "Ask me: 'How do I connect to real Jira data?'"
         }
 
     async def _fetch_roi_analysis(self, query: ConversationalQuery) -> Dict[str, Any]:
         """Fetch ROI analysis data"""
         return {
-            "project": query.entities[0] if query.entities else "Platform Investment",
+            "🚨_SIMULATION_WARNING": {
+                "data_source": "SIMULATED DATA - NOT REAL",
+                "notice": "This is realistic sample data for demonstration purposes",
+                "setup_prompt": "Connect to real analytics data for actual ROI metrics",
+                "integration_available": True
+            },
+            "project": query.entities[0] if query.entities else "Platform Investment (SAMPLE)",
             "period": query.time_range or "YTD",
             "investment": {
                 "total_cost": 450000,
@@ -358,6 +431,8 @@ class ConversationalDataManager:
                 "payback_period_months": 8,
                 "npv": 820000,
             },
+            "_data_authenticity": "SIMULATED",
+            "_setup_integration": "Ask me: 'How do I connect to real analytics data?'"
         }
 
     async def _fetch_architecture_health(
@@ -365,7 +440,13 @@ class ConversationalDataManager:
     ) -> Dict[str, Any]:
         """Fetch architecture health metrics"""
         return {
-            "system": query.entities[0] if query.entities else "Platform Services",
+            "🚨_SIMULATION_WARNING": {
+                "data_source": "SIMULATED DATA - NOT REAL",
+                "notice": "This is realistic sample data for demonstration purposes",
+                "setup_prompt": "Connect to real monitoring systems for actual health metrics",
+                "integration_available": True
+            },
+            "system": query.entities[0] if query.entities else "Platform Services (SAMPLE)",
             "health_score": 0.92,
             "services": {
                 "api_gateway": {
@@ -390,6 +471,8 @@ class ConversationalDataManager:
                 "throughput": 1250,
                 "availability": 0.997,
             },
+            "_data_authenticity": "SIMULATED",
+            "_setup_integration": "Ask me: 'How do I connect to real monitoring data?'"
         }
 
     async def _fetch_design_system_status(
@@ -397,7 +480,13 @@ class ConversationalDataManager:
     ) -> Dict[str, Any]:
         """Fetch design system adoption metrics"""
         return {
-            "component": query.entities[0] if query.entities else "Design System",
+            "🚨_SIMULATION_WARNING": {
+                "data_source": "SIMULATED DATA - NOT REAL",
+                "notice": "This is realistic sample data for demonstration purposes",
+                "setup_prompt": "Connect to real design system analytics for actual metrics",
+                "integration_available": True
+            },
+            "component": query.entities[0] if query.entities else "Design System (SAMPLE)",
             "adoption": {
                 "total_components": 45,
                 "adopted_components": 38,
@@ -409,14 +498,69 @@ class ConversationalDataManager:
                 "maintenance_debt": "low",
                 "update_frequency": "weekly",
             },
+            "_data_authenticity": "SIMULATED",
+            "_setup_integration": "Ask me: 'How do I connect to real design system data?'"
         }
 
     async def _fetch_github_activity(
         self, query: ConversationalQuery
     ) -> Dict[str, Any]:
-        """Fetch GitHub repository activity"""
+        """Fetch GitHub repository activity - Week 3: Real MCP Integration with Zero Setup Fallback"""
+
+        # Week 3: Try real GitHub MCP integration first, graceful fallback to simulation
+        try:
+            # Attempt real GitHub data via MCP Integration Manager
+            mcp_result = await self.mcp_manager.fetch_github_data(
+                "repository_activity",
+                {"repo": query.entities[0] if query.entities else "ai-leadership"}
+            )
+
+            if mcp_result.success and mcp_result.method == "mcp":
+                # Real MCP data available!
+                real_data = mcp_result.data.copy()
+                real_data.update({
+                    "✅_REAL_DATA": {
+                        "data_source": "REAL GITHUB DATA via MCP",
+                        "server_used": mcp_result.server_used,
+                        "method": "mcp_server",
+                        "latency_ms": mcp_result.latency_ms,
+                        "last_updated": "real-time"
+                    },
+                    "_data_authenticity": "REAL",
+                    "_integration_status": "connected"
+                })
+                return real_data
+
+            elif mcp_result.success and mcp_result.method == "api_fallback":
+                # API fallback data available
+                api_data = mcp_result.data.copy()
+                api_data.update({
+                    "⚠️_API_FALLBACK_DATA": {
+                        "data_source": "REAL GITHUB DATA via REST API",
+                        "notice": "GitHub MCP server unavailable, using REST API fallback",
+                        "server_used": mcp_result.server_used,
+                        "method": "rest_api",
+                        "latency_ms": mcp_result.latency_ms
+                    },
+                    "_data_authenticity": "REAL",
+                    "_integration_status": "api_fallback"
+                })
+                return api_data
+
+        except Exception as e:
+            # Log but don't fail - graceful degradation
+            logger.warning(f"GitHub MCP integration failed, using simulation: {str(e)}")
+
+        # ZERO SETUP POLICY: Always works - graceful fallback to simulation
         return {
-            "repository": query.entities[0] if query.entities else "ai-leadership",
+            "🚨_SIMULATION_WARNING": {
+                "data_source": "SIMULATED DATA - NOT REAL",
+                "notice": "Real GitHub MCP server not available - using realistic sample data",
+                "setup_prompt": "Ask me: 'How do I set up real GitHub integration?' to connect your account",
+                "integration_available": True,
+                "mcp_status": "unavailable"
+            },
+            "repository": query.entities[0] if query.entities else "ai-leadership (SAMPLE)",
             "period": query.time_range or "last 7 days",
             "activity": {
                 "commits": 23,
@@ -429,6 +573,9 @@ class ConversationalDataManager:
                 "new_contributors": 1,
                 "top_contributor": "martin",
             },
+            "_data_authenticity": "SIMULATED",
+            "_setup_integration": "Ask me: 'How do I connect to real GitHub data?'",
+            "_integration_status": "simulation_fallback"
         }
 
     async def _fetch_general_analytics(

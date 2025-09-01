@@ -36,6 +36,15 @@ from .conversational_analytics_workflow import (
     create_conversational_analytics_workflow,
 )
 
+# Phase 7 Week 3: MCP Integration
+from .mcp_integration_manager import (
+    MCPIntegrationManager,
+    MCPServerType,
+    MCPServerStatus,
+    MCPIntegrationResult,
+    create_mcp_integration_manager,
+)
+
 __all__ = [
     "MCPServerConstants",
     "StrategicPythonMCPServer",
@@ -61,4 +70,10 @@ __all__ = [
     "ConversationalAnalyticsWorkflow",
     "ConversationalAnalyticsResult",
     "create_conversational_analytics_workflow",
+    # Phase 7 Week 3: MCP Integration
+    "MCPIntegrationManager",
+    "MCPServerType",
+    "MCPServerStatus",
+    "MCPIntegrationResult",
+    "create_mcp_integration_manager",
 ]
