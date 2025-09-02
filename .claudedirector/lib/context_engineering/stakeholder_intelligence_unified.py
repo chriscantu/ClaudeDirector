@@ -20,12 +20,10 @@ from .stakeholder_intelligence_types import (
     StakeholderProfile,
 )
 
-# Phase 3A.3.4: Import SOLID-compliant components
+# Phase 3A.3.5: Import consolidated components (aggressive code reduction)
 from .stakeholder_components import (
     StakeholderRepository,
-    StakeholderDetectionEngine,
-    ContentProcessor,
-    RelationshipAnalyzer,
+    StakeholderProcessor,  # Consolidated: detection + content + relationships
 )
 
 # Add project root to path for legacy imports during transition
@@ -132,25 +130,14 @@ class StakeholderIntelligenceUnified:
                 self.logger.warning(f"Performance optimization unavailable: {e}")
                 self.enable_performance = False
 
-        # Phase 3A.3.4: Initialize SOLID-compliant components
+        # Phase 3A.3.5: Initialize consolidated components (aggressive code reduction)
         self.repository = StakeholderRepository(
             cache_manager=cache_manager,
             enable_performance=self.enable_performance,
             max_stakeholders=self.max_stakeholders,
         )
 
-        self.detection_engine = StakeholderDetectionEngine(
-            cache_manager=cache_manager,
-            enable_performance=self.enable_performance,
-        )
-
-        self.content_processor = ContentProcessor(
-            detection_engine=self.detection_engine,
-            repository=self.repository,
-            enable_performance=self.enable_performance,
-        )
-
-        self.relationship_analyzer = RelationshipAnalyzer(
+        self.processor = StakeholderProcessor(
             repository=self.repository,
             cache_manager=cache_manager,
             enable_performance=self.enable_performance,
@@ -202,36 +189,36 @@ class StakeholderIntelligenceUnified:
         context: Dict[str, Any],
         outcome: Optional[str] = None,
     ) -> bool:
-        """Record stakeholder interaction - Phase 3A.3.4: Delegates to RelationshipAnalyzer component"""
-        return self.relationship_analyzer.record_interaction(
+        """Record stakeholder interaction - Phase 3A.3.5: Delegates to consolidated StakeholderProcessor"""
+        return self.processor.record_interaction(
             stakeholder_id, interaction_type, context, outcome
         )
 
     def get_relationship_context(self, query: str, limit: int = 5) -> Dict[str, Any]:
-        """Get relationship context for strategic queries - Phase 3A.3.4: Delegates to RelationshipAnalyzer component"""
-        return self.relationship_analyzer.get_relationship_context(query, limit)
+        """Get relationship context for strategic queries - Phase 3A.3.5: Delegates to consolidated StakeholderProcessor"""
+        return self.processor.get_relationship_context(query, limit)
 
     # === AI DETECTION CAPABILITIES (SOLID Component Delegation) ===
 
     def detect_stakeholders_in_content(
         self, content: str, context: Dict[str, Any]
     ) -> List[Dict[str, Any]]:
-        """AI-powered stakeholder detection - Phase 3A.3.4: Delegates to StakeholderDetectionEngine component"""
-        return self.detection_engine.detect_stakeholders_in_content(content, context)
+        """AI-powered stakeholder detection - Phase 3A.3.5: Delegates to consolidated StakeholderProcessor"""
+        return self.processor.detect_stakeholders_in_content(content, context)
 
     def process_content_for_stakeholders(
         self, content: str, context: Dict[str, Any], auto_create: bool = True
     ) -> Dict[str, Any]:
-        """Process content for stakeholders - Phase 3A.3.4: Delegates to ContentProcessor component"""
-        return self.content_processor.process_content_for_stakeholders(
+        """Process content for stakeholders - Phase 3A.3.5: Delegates to consolidated StakeholderProcessor"""
+        return self.processor.process_content_for_stakeholders(
             content, context, auto_create
         )
 
     def process_workspace_for_stakeholders(
         self, workspace_path: Optional[str] = None
     ) -> Dict[str, Any]:
-        """Process workspace for stakeholders - Phase 3A.3.4: Delegates to ContentProcessor component"""
-        return self.content_processor.process_workspace_for_stakeholders(workspace_path)
+        """Process workspace for stakeholders - Phase 3A.3.5: Delegates to consolidated StakeholderProcessor"""
+        return self.processor.process_workspace_for_stakeholders(workspace_path)
 
     # === SYSTEM METRICS AND STATISTICS ===
 
@@ -239,9 +226,7 @@ class StakeholderIntelligenceUnified:
         """Get comprehensive system statistics from all components"""
         stats = {
             "repository_stats": self.repository.get_repository_stats(),
-            "interaction_stats": self.relationship_analyzer.get_interaction_stats(),
-            "processing_stats": self.content_processor.get_processing_stats(),
-            "detection_patterns": self.detection_engine.get_detection_patterns(),
+            "processor_stats": self.processor.get_processing_stats(),
             "system_config": {
                 "max_stakeholders": self.max_stakeholders,
                 "interaction_retention_days": self.interaction_retention_days,
@@ -254,7 +239,7 @@ class StakeholderIntelligenceUnified:
         """Get memory usage statistics"""
         return {
             "stakeholder_count": self.repository.get_stakeholder_count(),
-            "interaction_count": len(self.relationship_analyzer.interactions),
+            "interaction_count": len(self.processor.interactions),
             "performance_enabled": self.enable_performance,
         }
 
