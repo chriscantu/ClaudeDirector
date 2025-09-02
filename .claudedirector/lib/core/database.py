@@ -45,7 +45,15 @@ class DatabaseManager:
             return
 
         config = get_config()
-        self.db_path = Path(db_path) if db_path else config.database_path_obj
+        if db_path:
+            self.db_path = Path(db_path)
+        else:
+            # Use the strategic_memory_db path from new config system
+            db_path_from_config = Path(config.paths.strategic_memory_db)
+            if not db_path_from_config.is_absolute():
+                self.db_path = Path.cwd() / db_path_from_config
+            else:
+                self.db_path = db_path_from_config
         self.config = config
         self._local = threading.local()
         self._schema_versions = {}
