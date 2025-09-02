@@ -40,20 +40,17 @@ class ChatVisualizationGenerator:
 
         # Chart type mappings (Phase 3B.2.2 - DRY consolidation)
         self.chart_generators = {
-            'sprint_dashboard': self._generate_sprint_dashboard,
-            'team_performance': self._generate_team_performance,
-            'roi_dashboard': self._generate_roi_dashboard,
-            'design_system': self._generate_design_system,
-            'github_activity': self._generate_github_activity,
-            'simple_metrics': self._generate_simple_metrics,
-            'default': self._generate_default_bar_chart,
+            "sprint_dashboard": self._generate_sprint_dashboard,
+            "team_performance": self._generate_team_performance,
+            "roi_dashboard": self._generate_roi_dashboard,
+            "design_system": self._generate_design_system,
+            "github_activity": self._generate_github_activity,
+            "simple_metrics": self._generate_simple_metrics,
+            "default": self._generate_default_bar_chart,
         }
 
     def create_chat_visualization(
-        self,
-        data: Dict[str, Any],
-        chart_type: str,
-        title: str
+        self, data: Dict[str, Any], chart_type: str, title: str
     ) -> go.Figure:
         """
         Unified chat visualization generator - replaces 7 duplicate chat methods
@@ -67,7 +64,9 @@ class ChatVisualizationGenerator:
             Plotly figure optimized for chat display
         """
         # Get appropriate generator function
-        generator = self.chart_generators.get(chart_type, self.chart_generators['default'])
+        generator = self.chart_generators.get(
+            chart_type, self.chart_generators["default"]
+        )
 
         # Generate chart
         fig = generator(data, title)
@@ -84,7 +83,8 @@ class ChatVisualizationGenerator:
 
         # Single row layout for chat compactness
         fig = make_subplots(
-            rows=1, cols=3,
+            rows=1,
+            cols=3,
             subplot_titles=("Progress", "Velocity", "Completion"),
             specs=[[{"type": "pie"}, {"type": "bar"}, {"type": "indicator"}]],
         )
@@ -94,8 +94,10 @@ class ChatVisualizationGenerator:
             go.Pie(
                 labels=list(progress.keys()),
                 values=list(progress.values()),
-                marker_colors=self.color_palette[:len(progress)]
-            ), row=1, col=1
+                marker_colors=self.color_palette[: len(progress)],
+            ),
+            row=1,
+            col=1,
         )
 
         # Velocity bar chart
@@ -104,8 +106,10 @@ class ChatVisualizationGenerator:
             go.Bar(
                 x=list(velocity_data.keys()),
                 y=list(velocity_data.values()),
-                marker_color=self.color_palette[0]
-            ), row=1, col=2
+                marker_color=self.color_palette[0],
+            ),
+            row=1,
+            col=2,
         )
 
         # Completion indicator
@@ -115,8 +119,10 @@ class ChatVisualizationGenerator:
                 value=metrics.get("completion_rate", 0) * 100,
                 number={"suffix": "%"},
                 title={"text": "Completion"},
-                gauge={"threshold": {"value": 80}}
-            ), row=1, col=3
+                gauge={"threshold": {"value": 80}},
+            ),
+            row=1,
+            col=3,
         )
 
         return fig
@@ -135,7 +141,8 @@ class ChatVisualizationGenerator:
         fig = go.Figure()
         fig.add_trace(
             go.Bar(
-                x=categories, y=values,
+                x=categories,
+                y=values,
                 marker_color=self.color_palette[:3],
                 text=[f"{v:.1f}%" for v in values],
                 textposition="auto",
@@ -152,7 +159,8 @@ class ChatVisualizationGenerator:
         roi_metrics = data.get("roi_metrics", {})
 
         fig = make_subplots(
-            rows=1, cols=2,
+            rows=1,
+            cols=2,
             subplot_titles=("Investment vs Returns", "ROI"),
             specs=[[{"type": "bar"}, {"type": "indicator"}]],
         )
@@ -163,7 +171,9 @@ class ChatVisualizationGenerator:
                 x=["Investment", "Returns"],
                 y=[investment.get("total_cost", 0), sum(returns.values())],
                 marker_color=[self.color_palette[2], self.color_palette[0]],
-            ), row=1, col=1
+            ),
+            row=1,
+            col=1,
         )
 
         # ROI Indicator
@@ -174,7 +184,9 @@ class ChatVisualizationGenerator:
                 number={"suffix": "x"},
                 title={"text": "ROI Multiple"},
                 delta={"reference": 1.0},
-            ), row=1, col=2
+            ),
+            row=1,
+            col=2,
         )
 
         return fig
@@ -234,14 +246,15 @@ class ChatVisualizationGenerator:
 
         if metrics:
             # Limit categories for chat display
-            items = list(metrics.items())[:self.MAX_CATEGORIES]
+            items = list(metrics.items())[: self.MAX_CATEGORIES]
             categories, values = zip(*items) if items else ([], [])
 
             fig = go.Figure()
             fig.add_trace(
                 go.Bar(
-                    x=list(categories), y=list(values),
-                    marker_color=self.color_palette[:len(categories)],
+                    x=list(categories),
+                    y=list(values),
+                    marker_color=self.color_palette[: len(categories)],
                 )
             )
         else:
@@ -249,13 +262,19 @@ class ChatVisualizationGenerator:
 
         return fig
 
-    def _generate_default_bar_chart(self, data: Dict[str, Any], title: str) -> go.Figure:
+    def _generate_default_bar_chart(
+        self, data: Dict[str, Any], title: str
+    ) -> go.Figure:
         """Generate default bar chart for unknown types"""
         fig = go.Figure()
         fig.add_annotation(
             text="No data available for visualization",
-            x=0.5, y=0.5, xref="paper", yref="paper",
-            showarrow=False, font_size=14
+            x=0.5,
+            y=0.5,
+            xref="paper",
+            yref="paper",
+            showarrow=False,
+            font_size=14,
         )
         return fig
 
@@ -266,5 +285,5 @@ class ChatVisualizationGenerator:
             height=self.CHAT_HEIGHT,
             showlegend=False,  # Save space in chat
             margin={"l": 40, "r": 40, "t": 50, "b": 40},  # Compact margins
-            **self.layout_template
+            **self.layout_template,
         )

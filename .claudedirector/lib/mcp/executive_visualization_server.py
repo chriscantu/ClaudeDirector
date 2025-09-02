@@ -69,7 +69,9 @@ class ExecutiveVisualizationEngine:
         self.template_router = VisualizationTemplateRouter(self)
 
         # Phase 3B.2.2: Consolidated chat visualization generator (DRY compliance)
-        self.chat_generator = ChatVisualizationGenerator(self.color_palette, self.layout_template)
+        self.chat_generator = ChatVisualizationGenerator(
+            self.color_palette, self.layout_template
+        )
 
         # Visualization capabilities
         self.capabilities = [
@@ -494,7 +496,9 @@ class ExecutiveVisualizationEngine:
 
         # Use consolidated chat generator (Phase 3B.2.2 - DRY compliance)
         chat_chart_type = chat_type_mapping.get(chart_type, chart_type)
-        return self.chat_generator.create_chat_visualization(data, chat_chart_type, title)
+        return self.chat_generator.create_chat_visualization(
+            data, chat_chart_type, title
+        )
 
     # Phase 3B.2.2: REMOVED _create_sprint_dashboard_chat (~60 lines)
     # Consolidated into ChatVisualizationGenerator for DRY compliance

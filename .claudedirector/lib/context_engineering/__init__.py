@@ -104,6 +104,7 @@ except (ImportError, TypeError, AttributeError) as e:
 from .strategic_layer import InitiativeStatus
 from .stakeholder_layer import StakeholderRole, CommunicationStyle
 from .learning_layer import FrameworkUsage, DecisionPattern
+
 # Phase 3B.1.1: Import organizational types from extracted module (Code Reduction)
 from .organizational_types import (
     TeamStructure,

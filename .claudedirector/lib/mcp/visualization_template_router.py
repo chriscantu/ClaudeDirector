@@ -28,38 +28,38 @@ class VisualizationTemplateRouter:
 
         # Persona template mappings (Phase 3B.2.1 - DRY consolidation)
         self.persona_mappings = {
-            'diego': {
-                'leadership_dashboard': self.engine._create_leadership_dashboard,
-                'team_metrics': self.engine._create_team_metrics_chart,
-                'strategic_trends': self.engine._create_strategic_trends_chart,
-                'support_analysis': self.engine._create_support_analysis_chart,
+            "diego": {
+                "leadership_dashboard": self.engine._create_leadership_dashboard,
+                "team_metrics": self.engine._create_team_metrics_chart,
+                "strategic_trends": self.engine._create_strategic_trends_chart,
+                "support_analysis": self.engine._create_support_analysis_chart,
             },
-            'alvaro': {
-                'roi_analysis': self.engine._create_roi_dashboard,
-                'investment_tracking': self.engine._create_investment_chart,
-                'business_metrics': self.engine._create_business_metrics_chart,
-                'cost_analysis': self.engine._create_cost_analysis_chart,
+            "alvaro": {
+                "roi_analysis": self.engine._create_roi_dashboard,
+                "investment_tracking": self.engine._create_investment_chart,
+                "business_metrics": self.engine._create_business_metrics_chart,
+                "cost_analysis": self.engine._create_cost_analysis_chart,
             },
-            'martin': {
-                'architecture_health': self.engine._create_architecture_health_dashboard,
-                'service_performance': self.engine._create_service_performance_chart,
-                'system_dependency_map': self.engine._create_system_dependency_map,
-                'technical_debt_trends': self.engine._create_technical_debt_trends,
-                'performance_metrics': self.engine._create_performance_chart,
-                'system_dependencies': self.engine._create_dependency_chart,
+            "martin": {
+                "architecture_health": self.engine._create_architecture_health_dashboard,
+                "service_performance": self.engine._create_service_performance_chart,
+                "system_dependency_map": self.engine._create_system_dependency_map,
+                "technical_debt_trends": self.engine._create_technical_debt_trends,
+                "performance_metrics": self.engine._create_performance_chart,
+                "system_dependencies": self.engine._create_dependency_chart,
             },
-            'camille': {
-                'technology_roadmap': self.engine._create_technology_roadmap,
-                'innovation_metrics': self.engine._create_innovation_chart,
+            "camille": {
+                "technology_roadmap": self.engine._create_technology_roadmap,
+                "innovation_metrics": self.engine._create_innovation_chart,
             },
-            'rachel': {
-                'component_adoption': self.engine._create_component_adoption_chart,
-                'design_system_maturity': self.engine._create_design_system_maturity,
-                'usage_trend_analysis': self.engine._create_usage_trend_analysis,
-                'team_comparison': self.engine._create_team_comparison_dashboard,
-                'design_debt_visualization': self.engine._create_design_debt_visualization,
-                'design_system_health': self.engine._create_design_system_dashboard,
-                'adoption_metrics': self.engine._create_adoption_chart,
+            "rachel": {
+                "component_adoption": self.engine._create_component_adoption_chart,
+                "design_system_maturity": self.engine._create_design_system_maturity,
+                "usage_trend_analysis": self.engine._create_usage_trend_analysis,
+                "team_comparison": self.engine._create_team_comparison_dashboard,
+                "design_debt_visualization": self.engine._create_design_debt_visualization,
+                "design_system_health": self.engine._create_design_system_dashboard,
+                "adoption_metrics": self.engine._create_adoption_chart,
             },
         }
 
@@ -84,7 +84,7 @@ class VisualizationTemplateRouter:
         data: Dict[str, Any],
         chart_type: str,
         title: str,
-        context: Dict[str, Any]
+        context: Dict[str, Any],
     ) -> go.Figure:
         """
         Unified template routing logic - replaces all duplicate if/elif chains

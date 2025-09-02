@@ -16,6 +16,7 @@ import time
 
 class OrganizationSize(Enum):
     """Organization size classification"""
+
     STARTUP = "startup"
     SMALL = "small"
     MEDIUM = "medium"
@@ -25,6 +26,7 @@ class OrganizationSize(Enum):
 
 class CulturalDimension(Enum):
     """Cultural dimension classification"""
+
     HIERARCHICAL = "hierarchical"
     COLLABORATIVE = "collaborative"
     INNOVATIVE = "innovative"
@@ -35,6 +37,7 @@ class CulturalDimension(Enum):
 
 class ChangeToleranceLevel(Enum):
     """Change tolerance level classification"""
+
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -42,6 +45,7 @@ class ChangeToleranceLevel(Enum):
 
 class CommunicationStyle(Enum):
     """Communication style classification"""
+
     FORMAL = "formal"
     INFORMAL = "informal"
     BALANCED = "balanced"
@@ -51,6 +55,7 @@ class CommunicationStyle(Enum):
 
 class DecisionMakingStyle(Enum):
     """Decision making style classification"""
+
     HIERARCHICAL = "hierarchical"
     COLLABORATIVE = "collaborative"
     CONSENSUS = "consensus"
@@ -60,6 +65,7 @@ class DecisionMakingStyle(Enum):
 
 class TeamType(Enum):
     """Team type classification"""
+
     ENGINEERING = "engineering"
     PRODUCT = "product"
     DESIGN = "design"
@@ -73,6 +79,7 @@ class TeamType(Enum):
 @dataclass
 class TeamStructure:
     """Team structure information"""
+
     team_id: str
     team_name: str
     team_type: str  # engineering, product, design, etc.
@@ -88,6 +95,7 @@ class TeamStructure:
 @dataclass
 class OrganizationalChange:
     """Organizational change tracking"""
+
     change_id: str
     change_type: str  # restructure, process, technology, cultural
     description: str
@@ -105,6 +113,7 @@ class OrganizationalChange:
 @dataclass
 class OrganizationalProfile:
     """Organizational profile data structure"""
+
     organization_name: str
     organization_size: str
     industry: str
@@ -127,6 +136,7 @@ class OrganizationalProfile:
 @dataclass
 class CulturalObservation:
     """Cultural observation data structure"""
+
     observation_id: str
     observation_type: str
     description: str
@@ -139,6 +149,7 @@ class CulturalObservation:
 @dataclass
 class KnowledgeArtifact:
     """Knowledge artifact data structure"""
+
     artifact_id: str
     title: str
     content: str
@@ -155,6 +166,7 @@ class KnowledgeArtifact:
 @dataclass
 class OrganizationalRecommendation:
     """Organizational improvement recommendation"""
+
     recommendation_id: str
     recommendation_type: str
     priority: str  # high, medium, low
@@ -170,6 +182,7 @@ class OrganizationalRecommendation:
 @dataclass
 class OrganizationalHealthMetrics:
     """Organizational health assessment metrics"""
+
     overall_health_score: float
     team_health_contribution: float
     change_effectiveness_contribution: float

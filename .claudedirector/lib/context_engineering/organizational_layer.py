@@ -50,8 +50,12 @@ class OrganizationalLayerMemory:
         self.logger = logging.getLogger(__name__)
 
         # Configuration with extracted constants (Phase 3B.1.1 - Reduce hardcoded values)
-        self.max_team_history = self.config.get("max_team_history", DEFAULT_MAX_TEAM_HISTORY)
-        self.change_retention_days = self.config.get("change_retention", DEFAULT_CHANGE_RETENTION_DAYS)
+        self.max_team_history = self.config.get(
+            "max_team_history", DEFAULT_MAX_TEAM_HISTORY
+        )
+        self.change_retention_days = self.config.get(
+            "change_retention", DEFAULT_CHANGE_RETENTION_DAYS
+        )
 
         # In-memory storage for Phase 1
         # Phase 2 will add SQLite persistent storage with cultural analytics
@@ -239,7 +243,9 @@ class OrganizationalLayerMemory:
                     key=lambda x: (x["importance_level"] == "high", x["last_accessed"]),
                     reverse=True,
                 )
-                self.knowledge_artifacts = self.knowledge_artifacts[:DEFAULT_MAX_KNOWLEDGE_ARTIFACTS]
+                self.knowledge_artifacts = self.knowledge_artifacts[
+                    :DEFAULT_MAX_KNOWLEDGE_ARTIFACTS
+                ]
 
             return True
 
@@ -315,7 +321,9 @@ class OrganizationalLayerMemory:
 
         # Limit observations using extracted constant (Phase 3B.1.1)
         if len(self.cultural_observations) > DEFAULT_MAX_CULTURAL_OBSERVATIONS:
-            self.cultural_observations = self.cultural_observations[-DEFAULT_MAX_CULTURAL_OBSERVATIONS:]
+            self.cultural_observations = self.cultural_observations[
+                -DEFAULT_MAX_CULTURAL_OBSERVATIONS:
+            ]
 
     def _cleanup_old_changes(self) -> None:
         """Remove organizational changes older than retention period"""
@@ -469,7 +477,9 @@ class OrganizationalLayerMemory:
         )[:5]
 
         # Success patterns
-        successful_changes = [c for c in changes if c.effectiveness_score > HIGH_EFFECTIVENESS_THRESHOLD]
+        successful_changes = [
+            c for c in changes if c.effectiveness_score > HIGH_EFFECTIVENESS_THRESHOLD
+        ]
         common_success_factors = []
         for change in successful_changes:
             common_success_factors.extend(change.success_factors)
@@ -623,7 +633,11 @@ class OrganizationalLayerMemory:
             "health_status": (
                 "healthy"
                 if health_score > HIGH_EFFECTIVENESS_THRESHOLD
-                else "needs_attention" if health_score > MEDIUM_EFFECTIVENESS_THRESHOLD else "at_risk"
+                else (
+                    "needs_attention"
+                    if health_score > MEDIUM_EFFECTIVENESS_THRESHOLD
+                    else "at_risk"
+                )
             ),
         }
 
