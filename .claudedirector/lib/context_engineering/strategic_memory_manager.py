@@ -40,7 +40,7 @@ try:
     UNIFIED_DB_AVAILABLE = True
 except ImportError:
     UNIFIED_DB_AVAILABLE = False
-    
+
 # Legacy import compatibility during migration
 try:
     from ..memory.optimized_db_manager import get_db_manager, OptimizedSQLiteManager
@@ -123,7 +123,7 @@ class StrategicMemoryManager:
                 return unified_coordinator.get_connection()
             except Exception as e:
                 print(f"⚠️  UnifiedDatabaseCoordinator fallback to legacy: {e}")
-        
+
         # Fallback to legacy optimized manager
         if LEGACY_DB_AVAILABLE:
             try:
@@ -131,7 +131,7 @@ class StrategicMemoryManager:
                 return db_manager.get_connection()
             except Exception as e:
                 print(f"⚠️  Legacy DB manager fallback to direct: {e}")
-        
+
         # Final fallback to direct connection
         print(f"📊 Using direct SQLite connection: {self.db_path}")
         conn = sqlite3.connect(self.db_path)

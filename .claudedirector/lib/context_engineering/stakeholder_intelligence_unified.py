@@ -29,15 +29,23 @@ sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
 # Enhanced imports for Phase 9 integration + Phase 2 Migration
 try:
     from ..core.config import get_config
-    
+
     # Phase 2 Migration: Prefer UnifiedDatabaseCoordinator
     try:
-        from ..core.unified_database import get_unified_database_coordinator as get_database_manager
-        print("📊 Phase 2: Using UnifiedDatabaseCoordinator for stakeholder intelligence")
+        from ..core.unified_database import (
+            get_unified_database_coordinator as get_database_manager,
+        )
+
+        print(
+            "📊 Phase 2: Using UnifiedDatabaseCoordinator for stakeholder intelligence"
+        )
     except ImportError:
         from ..core.database import get_database_manager
-        print("📊 Phase 2: Fallback to legacy DatabaseManager for stakeholder intelligence")
-        
+
+        print(
+            "📊 Phase 2: Fallback to legacy DatabaseManager for stakeholder intelligence"
+        )
+
     from ..core.exceptions import AIDetectionError, DatabaseError
     from ..performance.cache_manager import get_cache_manager
     from ..performance.memory_optimizer import get_memory_optimizer
