@@ -22,12 +22,17 @@ except ImportError:
 try:
     # Try new package structure first
     from ..core.config import get_config
+
     # Phase 2C: Use UnifiedDatabaseCoordinator instead of legacy DatabaseManager
     try:
-        from ..core.unified_database import get_unified_database_coordinator as get_database_manager
+        from ..core.unified_database import (
+            get_unified_database_coordinator as get_database_manager,
+        )
+
         print("🔧 Phase 2C: Cache Manager using UnifiedDatabaseCoordinator")
     except ImportError:
         from ..core.database import get_database_manager
+
         print("🔧 Phase 2C: Cache Manager fallback to legacy get_database_manager")
     from ..core.exceptions import ClaudeDirectorError
 except ImportError:

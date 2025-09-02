@@ -32,12 +32,17 @@ try:
     from ..context_engineering.stakeholder_intelligence_unified import (
         StakeholderIntelligenceUnified,
     )
+
     # Phase 2C: Use UnifiedDatabaseCoordinator instead of legacy DatabaseManager
     try:
-        from ..core.unified_database import get_unified_database_coordinator as get_database_manager
+        from ..core.unified_database import (
+            get_unified_database_coordinator as get_database_manager,
+        )
+
         print("🔧 Phase 2C: Multi-Tenant Manager using UnifiedDatabaseCoordinator")
     except ImportError:
         from ..core.database import DatabaseManager
+
         print("🔧 Phase 2C: Multi-Tenant Manager fallback to legacy DatabaseManager")
     from ..core.validation import validate_organization_id, validate_user_permissions
     from ..performance.cache_manager import CacheManager, CacheLevel
