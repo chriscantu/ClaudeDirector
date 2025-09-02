@@ -50,7 +50,7 @@ except ImportError:
 
 # Import hybrid database types for compatibility
 try:
-    from ..p0_features.shared.database_manager.db_base import (
+    from .database_types import (
         QueryType,
         WorkloadPattern,
         DatabaseConfig,
