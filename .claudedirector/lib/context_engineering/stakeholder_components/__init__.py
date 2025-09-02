@@ -11,10 +11,23 @@ Decomposed stakeholder intelligence components from stakeholder_intelligence_uni
 following Single Responsibility Principle and clean architecture patterns.
 """
 
+# Phase 3A.3.4: Core SOLID-compliant components
+from .stakeholder_detection_engine import StakeholderDetectionEngine
+from .stakeholder_repository import StakeholderRepository
+from .content_processor import ContentProcessor
+from .relationship_analyzer import RelationshipAnalyzer
+
+# Phase 3A.3.3: Legacy compatibility wrappers for extracted components
 from .stakeholder_layer_memory import StakeholderLayerMemory
 from .stakeholder_intelligence import StakeholderIntelligence
 
 __all__ = [
+    # Core SOLID components (Phase 3A.3.4)
+    "StakeholderDetectionEngine",
+    "StakeholderRepository", 
+    "ContentProcessor",
+    "RelationshipAnalyzer",
+    # Legacy compatibility wrappers (Phase 3A.3.3)
     "StakeholderLayerMemory",
     "StakeholderIntelligence",
 ]
