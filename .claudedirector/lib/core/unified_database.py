@@ -699,6 +699,7 @@ get_connection = (
     lambda db_path=None: get_unified_database_coordinator().get_connection()
 )
 
+
 # Additional compatibility functions for predictive analytics and other components
 def get_legacy_database_manager():
     """
@@ -706,6 +707,7 @@ def get_legacy_database_manager():
     Specifically ensures predictive analytics and context engines continue working.
     """
     return get_unified_database_coordinator()
+
 
 def ensure_database_compatibility():
     """

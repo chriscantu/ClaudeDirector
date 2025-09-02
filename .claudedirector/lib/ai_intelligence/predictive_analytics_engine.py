@@ -290,8 +290,13 @@ class PredictiveAnalyticsEngine:
                         query,
                     )
                 except Exception as e:
-                    self.logger.debug(f"Stakeholder layer access failed during database transition: {e}")
-                    context_data["stakeholder"] = {"fallback": True, "health_score": 0.8}
+                    self.logger.debug(
+                        f"Stakeholder layer access failed during database transition: {e}"
+                    )
+                    context_data["stakeholder"] = {
+                        "fallback": True,
+                        "health_score": 0.8,
+                    }
 
             if hasattr(self.context_engine, "strategic_layer"):
                 try:
@@ -304,7 +309,9 @@ class PredictiveAnalyticsEngine:
                         query,
                     )
                 except Exception as e:
-                    self.logger.debug(f"Strategic layer access failed during database transition: {e}")
+                    self.logger.debug(
+                        f"Strategic layer access failed during database transition: {e}"
+                    )
                     context_data["strategic"] = {"fallback": True, "health_score": 0.75}
 
             if hasattr(self.context_engine, "organizational_layer"):
@@ -318,8 +325,13 @@ class PredictiveAnalyticsEngine:
                         query,
                     )
                 except Exception as e:
-                    self.logger.debug(f"Organizational layer access failed during database transition: {e}")
-                    context_data["organizational"] = {"fallback": True, "health_score": 0.85}
+                    self.logger.debug(
+                        f"Organizational layer access failed during database transition: {e}"
+                    )
+                    context_data["organizational"] = {
+                        "fallback": True,
+                        "health_score": 0.85,
+                    }
 
             if hasattr(self.context_engine, "team_dynamics_engine"):
                 try:
@@ -331,11 +343,18 @@ class PredictiveAnalyticsEngine:
                         )
                     )
                 except Exception as e:
-                    self.logger.debug(f"Team dynamics access failed during database transition: {e}")
-                    context_data["team_dynamics"] = {"fallback": True, "health_score": 0.80}
+                    self.logger.debug(
+                        f"Team dynamics access failed during database transition: {e}"
+                    )
+                    context_data["team_dynamics"] = {
+                        "fallback": True,
+                        "health_score": 0.80,
+                    }
 
         except Exception as e:
-            self.logger.warning(f"Context gathering partial failure, using fallback data: {e}")
+            self.logger.warning(
+                f"Context gathering partial failure, using fallback data: {e}"
+            )
             # Phase 1 safety: Return complete fallback data if everything fails
             context_data = {
                 "stakeholder": {"fallback": True, "health_score": 0.8},
@@ -474,14 +493,16 @@ class PredictiveAnalyticsEngine:
         """Return default safe health metrics on error (Phase 1 database transition compatible)"""
         return OrganizationalHealthMetrics(
             overall_health_score=0.5,  # Neutral baseline during transition
-            team_velocity_trend=0.0,   # Neutral trend
-            stakeholder_satisfaction=0.5, # Baseline satisfaction
+            team_velocity_trend=0.0,  # Neutral trend
+            stakeholder_satisfaction=0.5,  # Baseline satisfaction
             technical_debt_ratio=0.3,  # Conservative estimate (better than 0.5 default)
-            communication_effectiveness=0.5, # Baseline effectiveness
-            burnout_risk_indicators=["database_transition_in_progress"], # Phase 1 context
+            communication_effectiveness=0.5,  # Baseline effectiveness
+            burnout_risk_indicators=[
+                "database_transition_in_progress"
+            ],  # Phase 1 context
             conflict_probability=0.2,  # Lower risk baseline
-            delivery_confidence=0.6,   # Moderate confidence (better than 0.5)
-            talent_retention_risk=0.3, # Lower risk baseline
+            delivery_confidence=0.6,  # Moderate confidence (better than 0.5)
+            talent_retention_risk=0.3,  # Lower risk baseline
             calculated_timestamp=datetime.now(),
             data_freshness_hours=0.0,  # Fresh calculation
         )
