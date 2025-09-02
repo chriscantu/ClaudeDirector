@@ -41,22 +41,26 @@ from .realtime_monitor import (
 
 # Optional ML Pattern Engine import for P0 compatibility
 try:
-    from .ml_pattern_engine import (
-        MLPatternEngine,
-        TeamFeatureExtractor,
-        CollaborationClassifier,
+    # Import types first (Phase 3A.1.2 - SOLID compliance)
+    from .ml_pattern_types import (
         FeatureVector,
         CollaborationPrediction,
         SuccessPattern,
         TeamCollaborationOutcome,
         CollaborationOutcome,
         FeatureType,
-        # CollaborationScorer - Epic 2 Completion Components
-        CollaborationScorer,
         EnsembleModelConfig,
         RiskAssessment,
-        RiskAssessmentEngine,
         AdvancedCollaborationPrediction,
+    )
+
+    # Import implementation classes
+    from .ml_pattern_engine import (
+        MLPatternEngine,
+        TeamFeatureExtractor,
+        CollaborationClassifier,
+        CollaborationScorer,
+        RiskAssessmentEngine,
     )
 
     ML_PATTERN_ENGINE_AVAILABLE = True
