@@ -489,7 +489,7 @@ class CollaborationClassifier:
                 "model": "fallback",
                 "training_time_seconds": time.time() - start_time,
                 "training_data_size": len(training_data),
-                "training_timestamp": datetime.now().isoformat()
+                "training_timestamp": datetime.now().isoformat(),
             }
 
         if len(training_data) < 10:
@@ -500,7 +500,7 @@ class CollaborationClassifier:
                 "error": "insufficient_data",
                 "training_time_seconds": time.time() - start_time,
                 "training_data_size": len(training_data),
-                "training_timestamp": datetime.now().isoformat()
+                "training_timestamp": datetime.now().isoformat(),
             }
 
         # Prepare training data
@@ -527,7 +527,7 @@ class CollaborationClassifier:
                 "error": "no_valid_features",
                 "training_time_seconds": time.time() - start_time,
                 "training_data_size": len(training_data),
-                "training_timestamp": datetime.now().isoformat()
+                "training_timestamp": datetime.now().isoformat(),
             }
 
         X = np.array(feature_vectors)
@@ -643,15 +643,29 @@ class CollaborationClassifier:
     def _fallback_prediction(self, features: FeatureVector) -> CollaborationPrediction:
         """Provide fallback prediction when ML models are unavailable."""
         # Simple heuristic-based prediction with proper capping (Phase 3A P0 fix)
-        comm_score = min(1.0, np.mean(list(features.communication_features.values()) or [0.5]))
-        temporal_score = min(1.0, np.mean(list(features.temporal_features.values()) or [0.5]))
-        network_score = min(1.0, np.mean(list(features.network_features.values()) or [0.5]))
-        context_score = min(1.0, np.mean(list(features.contextual_features.values()) or [0.5]))
+        comm_score = min(
+            1.0, np.mean(list(features.communication_features.values()) or [0.5])
+        )
+        temporal_score = min(
+            1.0, np.mean(list(features.temporal_features.values()) or [0.5])
+        )
+        network_score = min(
+            1.0, np.mean(list(features.network_features.values()) or [0.5])
+        )
+        context_score = min(
+            1.0, np.mean(list(features.contextual_features.values()) or [0.5])
+        )
 
         # Weighted average to ensure overall_score <= 1.0
-        overall_score = min(1.0, (
-            comm_score * 0.3 + temporal_score * 0.25 + network_score * 0.25 + context_score * 0.2
-        ))
+        overall_score = min(
+            1.0,
+            (
+                comm_score * 0.3
+                + temporal_score * 0.25
+                + network_score * 0.25
+                + context_score * 0.2
+            ),
+        )
 
         outcome = (
             CollaborationOutcome.SUCCESS

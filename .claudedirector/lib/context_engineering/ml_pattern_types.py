@@ -25,6 +25,7 @@ from abc import ABC, abstractmethod
 # ML Dependencies - graceful degradation if not available
 try:
     import numpy as np
+
     NUMPY_AVAILABLE = True
 except ImportError:
     NUMPY_AVAILABLE = False
@@ -51,6 +52,7 @@ except ImportError:
                 @staticmethod
                 def rand():
                     return 0.5
+
             return Random()
 
         @staticmethod
@@ -62,6 +64,7 @@ except ImportError:
 # Import from Real-Time Intelligence foundation
 try:
     from .realtime_monitor import TeamEvent, EventType, Alert, AlertSeverity
+
     REALTIME_AVAILABLE = True
 except ImportError:
     REALTIME_AVAILABLE = False
@@ -79,6 +82,7 @@ except ImportError:
     class AlertSeverity:
         pass
 
+
 # Configure logging
 logger = logging.getLogger(__name__)
 
@@ -86,6 +90,7 @@ logger = logging.getLogger(__name__)
 # =============================================================================
 # CORE ENUMERATIONS
 # =============================================================================
+
 
 class FeatureType(Enum):
     """Types of features extracted from team interaction data."""
@@ -109,6 +114,7 @@ class CollaborationOutcome(Enum):
 # ABSTRACT INTERFACES - DEPENDENCY INVERSION PRINCIPLE
 # =============================================================================
 
+
 class FeatureExtractor(ABC):
     """Abstract base class for feature extractors.
 
@@ -127,6 +133,7 @@ class FeatureExtractor(ABC):
 # =============================================================================
 # CORE DATA CLASSES - SINGLE RESPONSIBILITY PRINCIPLE
 # =============================================================================
+
 
 @dataclass
 class FeatureVector:
@@ -261,6 +268,7 @@ class TeamCollaborationOutcome:
 # CONFIGURATION CLASSES - SINGLE RESPONSIBILITY PRINCIPLE
 # =============================================================================
 
+
 @dataclass
 class EnsembleModelConfig:
     """Configuration for ensemble ML models in CollaborationScorer.
@@ -291,6 +299,7 @@ class EnsembleModelConfig:
 # ADVANCED PREDICTION TYPES - LISKOV SUBSTITUTION PRINCIPLE
 # =============================================================================
 
+
 @dataclass
 class RiskAssessment:
     """Risk assessment result from CollaborationScorer.
@@ -314,7 +323,9 @@ class AdvancedCollaborationPrediction(CollaborationPrediction):
     is expected, with additional ensemble-specific functionality.
     """
 
-    ensemble_predictions: Dict[str, float] = field(default_factory=dict)  # Individual model predictions
+    ensemble_predictions: Dict[str, float] = field(
+        default_factory=dict
+    )  # Individual model predictions
     risk_assessment: Optional[RiskAssessment] = None
     feature_importance: Dict[str, float] = field(default_factory=dict)
     model_confidence: Dict[str, float] = field(default_factory=dict)
@@ -340,29 +351,23 @@ __all__ = [
     # Enums
     "FeatureType",
     "CollaborationOutcome",
-
     # Abstract interfaces
     "FeatureExtractor",
-
     # Core data classes
     "FeatureVector",
     "CollaborationPrediction",
     "SuccessPattern",
     "TeamCollaborationOutcome",
-
     # Configuration
     "EnsembleModelConfig",
-
     # Advanced types
     "RiskAssessment",
     "AdvancedCollaborationPrediction",
-
     # Type aliases
     "FeatureDict",
     "PredictionDict",
     "PatternDict",
     "OutcomeDict",
-
     # Dependencies
     "TeamEvent",
     "EventType",
@@ -370,7 +375,6 @@ __all__ = [
     "AlertSeverity",
     "NUMPY_AVAILABLE",
     "REALTIME_AVAILABLE",
-
     # Version info
     "__version__",
     "__api_version__",
