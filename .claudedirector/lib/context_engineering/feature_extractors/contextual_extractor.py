@@ -14,6 +14,7 @@ from typing import Dict, List, Any
 # Import from Real-Time Intelligence foundation
 try:
     from ..realtime_monitor import TeamEvent
+
     REALTIME_AVAILABLE = True
 except ImportError:
     REALTIME_AVAILABLE = False
@@ -54,7 +55,9 @@ class ContextualFeatureExtractor(FeatureExtractor):
 
         # Team experience - normalized team experience in months
         team_experience = context.get("team_experience_months", 12)
-        features["team_experience_score"] = min(1.0, team_experience / 36.0)  # 3 years max
+        features["team_experience_score"] = min(
+            1.0, team_experience / 36.0
+        )  # 3 years max
 
         # Organizational support - direct score from context
         support_score = context.get("organizational_support_score", 0.5)

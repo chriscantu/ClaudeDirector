@@ -14,6 +14,7 @@ from typing import Dict, List, Any
 # ML Dependencies - graceful degradation if not available
 try:
     import numpy as np
+
     NUMPY_AVAILABLE = True
 except ImportError:
     NUMPY_AVAILABLE = False
@@ -33,6 +34,7 @@ except ImportError:
 # Import from Real-Time Intelligence foundation
 try:
     from ..realtime_monitor import TeamEvent
+
     REALTIME_AVAILABLE = True
 except ImportError:
     REALTIME_AVAILABLE = False

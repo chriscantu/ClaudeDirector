@@ -15,6 +15,7 @@ from typing import Dict, List, Any
 # Import from Real-Time Intelligence foundation
 try:
     from ..realtime_monitor import TeamEvent
+
     REALTIME_AVAILABLE = True
 except ImportError:
     REALTIME_AVAILABLE = False
