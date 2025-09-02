@@ -30,6 +30,17 @@ try:
 except ImportError:
     PERFORMANCE_AVAILABLE = False
 
+# Phase 2 Migration: Add UnifiedDatabaseCoordinator support
+try:
+    from ..core.unified_database import (
+        get_unified_database_coordinator,
+        UnifiedDatabaseCoordinator,
+    )
+
+    UNIFIED_DB_AVAILABLE = True
+except ImportError:
+    UNIFIED_DB_AVAILABLE = False
+    
 # Legacy import compatibility during migration
 try:
     from ..memory.optimized_db_manager import get_db_manager, OptimizedSQLiteManager
@@ -104,16 +115,28 @@ class StrategicMemoryManager:
             print(f"Database {self.db_path} will be created on first use")
 
     def get_connection(self) -> sqlite3.Connection:
-        """Get optimized database connection with JSON support"""
+        """Get database connection via UnifiedDatabaseCoordinator with intelligent fallback"""
+        # Phase 2 Migration: Prefer UnifiedDatabaseCoordinator
+        if UNIFIED_DB_AVAILABLE:
+            try:
+                unified_coordinator = get_unified_database_coordinator()
+                return unified_coordinator.get_connection()
+            except Exception as e:
+                print(f"⚠️  UnifiedDatabaseCoordinator fallback to legacy: {e}")
+        
+        # Fallback to legacy optimized manager
         if LEGACY_DB_AVAILABLE:
-            # Use optimized manager during migration period
-            db_manager = get_db_manager(self.db_path)
-            return db_manager.get_connection()
-        else:
-            # Fallback to direct connection
-            conn = sqlite3.connect(self.db_path)
-            conn.row_factory = sqlite3.Row
-            return conn
+            try:
+                db_manager = get_db_manager(self.db_path)
+                return db_manager.get_connection()
+            except Exception as e:
+                print(f"⚠️  Legacy DB manager fallback to direct: {e}")
+        
+        # Final fallback to direct connection
+        print(f"📊 Using direct SQLite connection: {self.db_path}")
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+        return conn
 
     def _ensure_session_schema(self):
         """Ensure session context tables exist"""
