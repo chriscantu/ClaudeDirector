@@ -17,15 +17,8 @@ from .stakeholder_processor import (
     StakeholderProcessor,
 )  # Consolidates detection + content + relationships
 
-# Phase 3A.3.3: Legacy compatibility wrappers for extracted components
-from .stakeholder_layer_memory import StakeholderLayerMemory
-from .stakeholder_intelligence import StakeholderIntelligence
-
 __all__ = [
     # Consolidated components (Phase 3A.3.5)
     "StakeholderRepository",
     "StakeholderProcessor",
-    # Legacy compatibility wrappers (Phase 3A.3.3)
-    "StakeholderLayerMemory",
-    "StakeholderIntelligence",
 ]
