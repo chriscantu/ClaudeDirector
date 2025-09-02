@@ -18,12 +18,16 @@ from ...shared.infrastructure.config import get_config
 # Phase 2B Migration: Use HybridToUnifiedBridge for database access
 try:
     from ....core.hybrid_compatibility import HybridToUnifiedBridge
+
     HYBRID_BRIDGE_AVAILABLE = True
     print("📊 Phase 2B: Using HybridToUnifiedBridge for BusinessValueCalculator")
 except ImportError:
     from ...shared.database_manager.analytics_pipeline import AnalyticsPipeline
+
     HYBRID_BRIDGE_AVAILABLE = False
-    print("📊 Phase 2B: Fallback to legacy AnalyticsPipeline for BusinessValueCalculator")
+    print(
+        "📊 Phase 2B: Fallback to legacy AnalyticsPipeline for BusinessValueCalculator"
+    )
 
 logger = structlog.get_logger(__name__)
 
@@ -107,20 +111,26 @@ class BusinessValueCalculator:
             # Use HybridToUnifiedBridge for database access
             self.database_bridge = HybridToUnifiedBridge()
             self.analytics_pipeline = None  # Will use bridge directly
-            self.logger.info("✅ BusinessValueCalculator initialized with HybridToUnifiedBridge")
+            self.logger.info(
+                "✅ BusinessValueCalculator initialized with HybridToUnifiedBridge"
+            )
         elif analytics_pipeline is not None:
             # Legacy mode: use provided AnalyticsPipeline
             self.analytics_pipeline = analytics_pipeline
             self.database_bridge = None
-            self.logger.info("📊 BusinessValueCalculator using legacy AnalyticsPipeline")
+            self.logger.info(
+                "📊 BusinessValueCalculator using legacy AnalyticsPipeline"
+            )
         else:
             # Fallback: create bridge or raise error
             try:
-                self.database_bridge = HybridToUnifiedBridge() if HYBRID_BRIDGE_AVAILABLE else None
+                self.database_bridge = (
+                    HybridToUnifiedBridge() if HYBRID_BRIDGE_AVAILABLE else None
+                )
                 self.analytics_pipeline = None
             except Exception as e:
                 raise RuntimeError(f"Failed to initialize database interface: {e}")
-                
+
         self.config = get_config()
         self.logger = logger.bind(component="business_value_calculator")
 
