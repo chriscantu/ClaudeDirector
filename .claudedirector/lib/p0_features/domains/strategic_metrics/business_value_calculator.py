@@ -100,11 +100,13 @@ class BusinessValueCalculator:
         # Phase 2D: Always use HybridToUnifiedBridge for database access
         self.database_bridge = HybridToUnifiedBridge()
         self.analytics_pipeline = None  # Unified bridge handles all analytics
-        
+
         self.config = get_config()
         self.logger = logger.bind(component="business_value_calculator")
-        
-        self.logger.info("✅ BusinessValueCalculator initialized with HybridToUnifiedBridge")
+
+        self.logger.info(
+            "✅ BusinessValueCalculator initialized with HybridToUnifiedBridge"
+        )
 
         # Business value calculation parameters
         self._value_parameters = {
