@@ -41,13 +41,13 @@ except ImportError:
 
 # Import existing types and configs for compatibility
 try:
-    from p0_features.shared.database_manager.db_base import (
+    from .database_types import (
         QueryType,
         WorkloadPattern,
         DatabaseConfig,
         QueryContext,
         DatabaseResult,
-        OptimizationLevel,
+        DatabaseEngineBase,
     )
 except ImportError:
     # Fallback definitions if P0 features not available
