@@ -86,150 +86,19 @@ except ImportError:
 # Configure logging
 logger = logging.getLogger(__name__)
 
-
-class FeatureType(Enum):
-    """Types of features extracted from team interaction data."""
-
-    COMMUNICATION = "communication"
-    TEMPORAL = "temporal"
-    NETWORK = "network"
-    CONTEXTUAL = "contextual"
-
-
-class CollaborationOutcome(Enum):
-    """Possible outcomes for team collaboration."""
-
-    SUCCESS = "success"
-    PARTIAL_SUCCESS = "partial_success"
-    FAILURE = "failure"
-    UNKNOWN = "unknown"
-
-
-@dataclass
-class FeatureVector:
-    """Feature vector extracted from team interaction data."""
-
-    communication_features: Dict[str, float] = field(default_factory=dict)
-    temporal_features: Dict[str, float] = field(default_factory=dict)
-    network_features: Dict[str, float] = field(default_factory=dict)
-    contextual_features: Dict[str, float] = field(default_factory=dict)
-    timestamp: datetime = field(default_factory=datetime.now)
-
-    def to_array(self) -> np.ndarray:
-        """Convert feature vector to numpy array for ML model input."""
-        if not ML_AVAILABLE:
-            return np.array([])
-
-        features = []
-        features.extend(self.communication_features.values())
-        features.extend(self.temporal_features.values())
-        features.extend(self.network_features.values())
-        features.extend(self.contextual_features.values())
-        return np.array(features)
-
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert feature vector to dictionary representation."""
-        return {
-            "communication_features": self.communication_features,
-            "temporal_features": self.temporal_features,
-            "network_features": self.network_features,
-            "contextual_features": self.contextual_features,
-            "timestamp": self.timestamp.isoformat(),
-        }
-
-
-@dataclass
-class CollaborationPrediction:
-    """Prediction result for team collaboration success."""
-
-    success_probability: float
-    outcome_prediction: CollaborationOutcome
-    confidence_score: float
-    contributing_factors: List[str]
-    risk_factors: List[str]
-    timeline_prediction: Dict[str, float]  # week -> success probability
-    recommendations: List[str]
-    timestamp: datetime = field(default_factory=datetime.now)
-
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert prediction to dictionary representation."""
-        return {
-            "success_probability": self.success_probability,
-            "outcome_prediction": self.outcome_prediction.value,
-            "confidence_score": self.confidence_score,
-            "contributing_factors": self.contributing_factors,
-            "risk_factors": self.risk_factors,
-            "timeline_prediction": self.timeline_prediction,
-            "recommendations": self.recommendations,
-            "timestamp": self.timestamp.isoformat(),
-        }
-
-
-@dataclass
-class SuccessPattern:
-    """Identified pattern that leads to successful collaboration."""
-
-    pattern_id: str
-    pattern_name: str
-    description: str
-    feature_signature: Dict[str, float]
-    success_rate: float
-    occurrence_count: int
-    confidence_score: float
-    applicable_contexts: List[str]
-    timestamp: datetime = field(default_factory=datetime.now)
-
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert success pattern to dictionary representation."""
-        return {
-            "pattern_id": self.pattern_id,
-            "pattern_name": self.pattern_name,
-            "description": self.description,
-            "feature_signature": self.feature_signature,
-            "success_rate": self.success_rate,
-            "occurrence_count": self.occurrence_count,
-            "confidence_score": self.confidence_score,
-            "applicable_contexts": self.applicable_contexts,
-            "timestamp": self.timestamp.isoformat(),
-        }
-
-
-@dataclass
-class TeamCollaborationOutcome:
-    """Historical team collaboration outcome for model training."""
-
-    team_id: str
-    participants: List[str]
-    outcome: CollaborationOutcome
-    success_score: float  # 0.0-1.0
-    duration_days: int
-    context: Dict[str, Any]
-    features: FeatureVector
-    timestamp: datetime
-
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert collaboration outcome to dictionary representation."""
-        return {
-            "team_id": self.team_id,
-            "participants": self.participants,
-            "outcome": self.outcome.value,
-            "success_score": self.success_score,
-            "duration_days": self.duration_days,
-            "context": self.context,
-            "features": self.features.to_dict(),
-            "timestamp": self.timestamp.isoformat(),
-        }
-
-
-class FeatureExtractor(ABC):
-    """Abstract base class for feature extractors."""
-
-    @abstractmethod
-    def extract_features(
-        self, interactions: List[TeamEvent], context: Dict[str, Any]
-    ) -> Dict[str, float]:
-        """Extract features from team interactions."""
-        pass
+# Phase 3A.1.2: Import core types from extracted ml_pattern_types module
+from .ml_pattern_types import (
+    FeatureType,
+    CollaborationOutcome,
+    FeatureVector,
+    CollaborationPrediction,
+    SuccessPattern,
+    TeamCollaborationOutcome,
+    EnsembleModelConfig,
+    RiskAssessment,
+    AdvancedCollaborationPrediction,
+    FeatureExtractor,
+)
 
 
 class CommunicationFeatureExtractor(FeatureExtractor):
@@ -610,13 +479,29 @@ class CollaborationClassifier:
         Returns:
             Training performance metrics
         """
+        start_time = time.time()
+
         if not ML_AVAILABLE:
             logger.warning("ML libraries not available, using fallback prediction")
-            return {"accuracy": 0.7, "model": "fallback"}
+            return {
+                "overall_accuracy": 0.7,
+                "accuracy": 0.7,  # Keep for backward compatibility
+                "model": "fallback",
+                "training_time_seconds": time.time() - start_time,
+                "training_data_size": len(training_data),
+                "training_timestamp": datetime.now().isoformat()
+            }
 
         if len(training_data) < 10:
             logger.warning(f"Insufficient training data: {len(training_data)} samples")
-            return {"accuracy": 0.0, "error": "insufficient_data"}
+            return {
+                "overall_accuracy": 0.0,
+                "accuracy": 0.0,
+                "error": "insufficient_data",
+                "training_time_seconds": time.time() - start_time,
+                "training_data_size": len(training_data),
+                "training_timestamp": datetime.now().isoformat()
+            }
 
         # Prepare training data
         feature_vectors = []
@@ -636,7 +521,14 @@ class CollaborationClassifier:
                 labels.append(label_mapping[outcome.outcome])
 
         if len(feature_vectors) == 0:
-            return {"accuracy": 0.0, "error": "no_valid_features"}
+            return {
+                "overall_accuracy": 0.0,
+                "accuracy": 0.0,
+                "error": "no_valid_features",
+                "training_time_seconds": time.time() - start_time,
+                "training_data_size": len(training_data),
+                "training_timestamp": datetime.now().isoformat()
+            }
 
         X = np.array(feature_vectors)
         y = np.array(labels)
@@ -750,15 +642,16 @@ class CollaborationClassifier:
 
     def _fallback_prediction(self, features: FeatureVector) -> CollaborationPrediction:
         """Provide fallback prediction when ML models are unavailable."""
-        # Simple heuristic-based prediction
-        comm_score = np.mean(list(features.communication_features.values()))
-        temporal_score = np.mean(list(features.temporal_features.values()))
-        network_score = np.mean(list(features.network_features.values()))
-        context_score = np.mean(list(features.contextual_features.values()))
+        # Simple heuristic-based prediction with proper capping (Phase 3A P0 fix)
+        comm_score = min(1.0, np.mean(list(features.communication_features.values()) or [0.5]))
+        temporal_score = min(1.0, np.mean(list(features.temporal_features.values()) or [0.5]))
+        network_score = min(1.0, np.mean(list(features.network_features.values()) or [0.5]))
+        context_score = min(1.0, np.mean(list(features.contextual_features.values()) or [0.5]))
 
-        overall_score = (
-            comm_score + temporal_score + network_score + context_score
-        ) / 4
+        # Weighted average to ensure overall_score <= 1.0
+        overall_score = min(1.0, (
+            comm_score * 0.3 + temporal_score * 0.25 + network_score * 0.25 + context_score * 0.2
+        ))
 
         outcome = (
             CollaborationOutcome.SUCCESS
@@ -1132,48 +1025,9 @@ class MLPatternEngine:
 # ============================================================================
 
 
-@dataclass
-class EnsembleModelConfig:
-    """Configuration for ensemble ML models in CollaborationScorer."""
-
-    # Model weights for ensemble voting
-    decision_tree_weight: float = 0.2
-    random_forest_weight: float = 0.3
-    gradient_boosting_weight: float = 0.3
-    neural_network_weight: float = 0.2
-
-    # Training parameters
-    n_estimators: int = 100
-    max_depth: int = 10
-    test_size: float = 0.2
-    random_state: int = 42
-
-    # Performance thresholds
-    min_accuracy_threshold: float = 0.85
-    confidence_threshold: float = 0.7
-    min_training_samples: int = 10
-
-
-@dataclass
-class RiskAssessment:
-    """Risk assessment result from CollaborationScorer."""
-
-    overall_risk_score: float  # 0.0 (low risk) to 1.0 (high risk)
-    risk_factors: Dict[str, float]  # Individual risk factor scores
-    mitigation_recommendations: List[str]
-    confidence_interval: Tuple[float, float]  # (lower_bound, upper_bound)
-    timeline_prediction: Optional[str] = None
-    created_at: datetime = field(default_factory=datetime.now)
-
-
-@dataclass
-class AdvancedCollaborationPrediction(CollaborationPrediction):
-    """Enhanced collaboration prediction with ensemble model results."""
-
-    ensemble_predictions: Dict[str, float]  # Individual model predictions
-    risk_assessment: Optional[RiskAssessment] = None
-    feature_importance: Dict[str, float] = field(default_factory=dict)
-    model_confidence: Dict[str, float] = field(default_factory=dict)
+# Phase 3A.1.2: Type definitions moved to ml_pattern_types.py
+# EnsembleModelConfig, RiskAssessment, and AdvancedCollaborationPrediction
+# are now imported from ml_pattern_types module for SOLID compliance
 
 
 class RiskAssessmentEngine:
