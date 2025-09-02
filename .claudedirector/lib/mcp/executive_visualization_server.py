@@ -18,7 +18,6 @@ import json
 import time
 import logging
 from typing import Dict, Any, List, Optional, Union
-from dataclasses import dataclass
 import tempfile
 import os
 
@@ -29,6 +28,12 @@ from plotly.subplots import make_subplots
 import plotly.io as pio
 from jinja2 import Template
 
+# Phase 3A.2.1: Extract type definitions for SOLID compliance
+from .visualization_types import VisualizationResult
+
+# Phase 3A.2.2: Extract persona template management for SOLID compliance
+from .visualization_components import PersonaTemplateManager
+
 # Phase 1 integration
 from .strategic_python_server import StrategicPythonMCPServer, ExecutionResult
 from .constants import MCPServerConstants
@@ -36,26 +41,6 @@ from .constants import MCPServerConstants
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-
-@dataclass
-class VisualizationResult:
-    """Result of executive visualization generation"""
-
-    success: bool
-    html_output: str
-    chart_type: str
-    persona: str
-    generation_time: float
-    file_size_bytes: int
-    interactive_elements: List[str]
-    error: Optional[str] = None
-    timestamp: float = None
-    metadata: Dict[str, Any] = None
-
-    def __post_init__(self):
-        if self.timestamp is None:
-            self.timestamp = time.time()
 
 
 class ExecutiveVisualizationEngine:
@@ -74,14 +59,8 @@ class ExecutiveVisualizationEngine:
         # Executive layout template
         self.layout_template = MCPServerConstants.get_executive_layout_template()
 
-        # Persona-specific templates
-        self.persona_templates = {
-            MCPServerConstants.Personas.DIEGO: self._diego_leadership_template,
-            MCPServerConstants.Personas.ALVARO: self._alvaro_business_template,
-            MCPServerConstants.Personas.MARTIN: self._martin_architecture_template,
-            MCPServerConstants.Personas.CAMILLE: self._camille_technology_template,
-            MCPServerConstants.Personas.RACHEL: self._rachel_design_template,
-        }
+        # Phase 3A.2.2: Persona template management extraction
+        self.persona_manager = PersonaTemplateManager()
 
         # Visualization capabilities
         self.capabilities = [
@@ -129,9 +108,7 @@ class ExecutiveVisualizationEngine:
                 data = self._parse_analysis_output(data)
 
             # Get persona-specific template
-            template_func = self.persona_templates.get(
-                persona, self.persona_templates["diego"]
-            )
+            template_func = self.persona_manager.get_template_for_persona(persona)
 
             # Generate Plotly figure
             fig = template_func(data, chart_type, title, context)
@@ -1148,7 +1125,7 @@ class ExecutiveVisualizationEngine:
             "name": self.name,
             "version": self.version,
             "capabilities": self.capabilities,
-            "supported_personas": list(self.persona_templates.keys()),
+            "supported_personas": self.persona_manager.get_supported_personas(),
             "supported_chart_types": [
                 "leadership_dashboard",
                 "team_metrics",
