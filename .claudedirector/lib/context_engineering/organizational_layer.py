@@ -8,63 +8,29 @@ Provides organizational intelligence for strategic adaptation.
 from typing import Dict, List, Any, Optional
 import time
 import logging
-from dataclasses import dataclass, asdict
-from enum import Enum
+from dataclasses import asdict
 
-
-class OrganizationSize(Enum):
-    """Organization size classification"""
-
-    STARTUP = "startup"
-    SMALL = "small"
-    MEDIUM = "medium"
-    LARGE = "large"
-    ENTERPRISE = "enterprise"
-
-
-class CulturalDimension(Enum):
-    """Cultural dimension classification"""
-
-    HIERARCHICAL = "hierarchical"
-    COLLABORATIVE = "collaborative"
-    INNOVATIVE = "innovative"
-    PROCESS_DRIVEN = "process_driven"
-    RESULTS_ORIENTED = "results_oriented"
-    CUSTOMER_FOCUSED = "customer_focused"
-
-
-@dataclass
-class TeamStructure:
-    """Team structure information"""
-
-    team_id: str
-    team_name: str
-    team_type: str  # engineering, product, design, etc.
-    size: int
-    reporting_structure: str
-    collaboration_patterns: List[str]
-    communication_frequency: str
-    decision_making_style: str
-    performance_metrics: Dict[str, float]
-    last_updated: float
-
-
-@dataclass
-class OrganizationalChange:
-    """Organizational change tracking"""
-
-    change_id: str
-    change_type: str  # restructure, process, technology, cultural
-    description: str
-    impact_areas: List[str]
-    stakeholders_affected: List[str]
-    success_metrics: Dict[str, float]
-    resistance_factors: List[str]
-    success_factors: List[str]
-    start_date: float
-    completion_date: Optional[float]
-    effectiveness_score: float
-    lessons_learned: List[str]
+# Import types from extracted module (Phase 3B.1.1 - Code Reduction)
+from .organizational_types import (
+    OrganizationSize,
+    CulturalDimension,
+    TeamStructure,
+    OrganizationalChange,
+    OrganizationalProfile,
+    CulturalObservation,
+    KnowledgeArtifact,
+    OrganizationalRecommendation,
+    OrganizationalHealthMetrics,
+    DEFAULT_TEAM_SIZE_THRESHOLD,
+    DEFAULT_CHANGE_RETENTION_DAYS,
+    DEFAULT_MAX_TEAM_HISTORY,
+    DEFAULT_MAX_CULTURAL_OBSERVATIONS,
+    DEFAULT_MAX_KNOWLEDGE_ARTIFACTS,
+    HIGH_PERFORMANCE_THRESHOLD,
+    MEDIUM_PERFORMANCE_THRESHOLD,
+    HIGH_EFFECTIVENESS_THRESHOLD,
+    MEDIUM_EFFECTIVENESS_THRESHOLD,
+)
 
 
 class OrganizationalLayerMemory:
@@ -83,9 +49,9 @@ class OrganizationalLayerMemory:
         self.config = config or {}
         self.logger = logging.getLogger(__name__)
 
-        # Configuration
-        self.max_team_history = self.config.get("max_team_history", 50)
-        self.change_retention_days = self.config.get("change_retention", 730)  # 2 years
+        # Configuration with extracted constants (Phase 3B.1.1 - Reduce hardcoded values)
+        self.max_team_history = self.config.get("max_team_history", DEFAULT_MAX_TEAM_HISTORY)
+        self.change_retention_days = self.config.get("change_retention", DEFAULT_CHANGE_RETENTION_DAYS)
 
         # In-memory storage for Phase 1
         # Phase 2 will add SQLite persistent storage with cultural analytics
@@ -266,14 +232,14 @@ class OrganizationalLayerMemory:
 
             self.knowledge_artifacts.append(artifact)
 
-            # Limit artifacts
-            if len(self.knowledge_artifacts) > 1000:
+            # Limit artifacts using extracted constant (Phase 3B.1.1)
+            if len(self.knowledge_artifacts) > DEFAULT_MAX_KNOWLEDGE_ARTIFACTS:
                 # Keep most important and recently accessed
                 self.knowledge_artifacts.sort(
                     key=lambda x: (x["importance_level"] == "high", x["last_accessed"]),
                     reverse=True,
                 )
-                self.knowledge_artifacts = self.knowledge_artifacts[:1000]
+                self.knowledge_artifacts = self.knowledge_artifacts[:DEFAULT_MAX_KNOWLEDGE_ARTIFACTS]
 
             return True
 
@@ -347,9 +313,9 @@ class OrganizationalLayerMemory:
         """Record cultural observation for pattern analysis"""
         self.cultural_observations.append(observation)
 
-        # Limit observations
-        if len(self.cultural_observations) > 1000:
-            self.cultural_observations = self.cultural_observations[-1000:]
+        # Limit observations using extracted constant (Phase 3B.1.1)
+        if len(self.cultural_observations) > DEFAULT_MAX_CULTURAL_OBSERVATIONS:
+            self.cultural_observations = self.cultural_observations[-DEFAULT_MAX_CULTURAL_OBSERVATIONS:]
 
     def _cleanup_old_changes(self) -> None:
         """Remove organizational changes older than retention period"""
@@ -503,7 +469,7 @@ class OrganizationalLayerMemory:
         )[:5]
 
         # Success patterns
-        successful_changes = [c for c in changes if c.effectiveness_score > 0.7]
+        successful_changes = [c for c in changes if c.effectiveness_score > HIGH_EFFECTIVENESS_THRESHOLD]
         common_success_factors = []
         for change in successful_changes:
             common_success_factors.extend(change.success_factors)
@@ -548,7 +514,7 @@ class OrganizationalLayerMemory:
             avg_size = sum(team.size for team in self.team_structures.values()) / len(
                 self.team_structures
             )
-            if avg_size > 10:
+            if avg_size > DEFAULT_TEAM_SIZE_THRESHOLD:
                 recommendations.append(
                     {
                         "type": "team_size",
@@ -563,7 +529,7 @@ class OrganizationalLayerMemory:
             avg_effectiveness = sum(
                 c.effectiveness_score for c in self.organizational_changes.values()
             ) / len(self.organizational_changes)
-            if avg_effectiveness < 0.6:
+            if avg_effectiveness < MEDIUM_EFFECTIVENESS_THRESHOLD:
                 recommendations.append(
                     {
                         "type": "change_effectiveness",
@@ -656,8 +622,8 @@ class OrganizationalLayerMemory:
             "cultural_alignment_score": cultural_alignment,
             "health_status": (
                 "healthy"
-                if health_score > 0.7
-                else "needs_attention" if health_score > 0.5 else "at_risk"
+                if health_score > HIGH_EFFECTIVENESS_THRESHOLD
+                else "needs_attention" if health_score > MEDIUM_EFFECTIVENESS_THRESHOLD else "at_risk"
             ),
         }
 

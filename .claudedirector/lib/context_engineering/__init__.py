@@ -2,7 +2,7 @@
 Context Engineering Module
 
 Multi-layered strategic memory architecture for ClaudeDirector.
-Provides persistent strategic intelligence across sessions.
+Provides persistent context management across sessions.
 
 Priority 1 Implementation - Q1 2025
 Investment: $380K for 3.2x ROI
@@ -104,11 +104,17 @@ except (ImportError, TypeError, AttributeError) as e:
 from .strategic_layer import InitiativeStatus
 from .stakeholder_layer import StakeholderRole, CommunicationStyle
 from .learning_layer import FrameworkUsage, DecisionPattern
-from .organizational_layer import (
+# Phase 3B.1.1: Import organizational types from extracted module (Code Reduction)
+from .organizational_types import (
     TeamStructure,
     OrganizationalChange,
     OrganizationSize,
     CulturalDimension,
+    OrganizationalProfile,
+    CulturalObservation,
+    KnowledgeArtifact,
+    OrganizationalRecommendation,
+    OrganizationalHealthMetrics,
 )
 from .context_orchestrator import ContextPriority
 
@@ -163,6 +169,11 @@ __all__ = [
     "OrganizationalChange",
     "OrganizationSize",
     "CulturalDimension",
+    "OrganizationalProfile",
+    "CulturalObservation",
+    "KnowledgeArtifact",
+    "OrganizationalRecommendation",
+    "OrganizationalHealthMetrics",
     "ContextPriority",
 ]
 
