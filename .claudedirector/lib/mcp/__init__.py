@@ -68,6 +68,22 @@ from .chat_context_manager import (
     ContextScope,
 )
 
+# Phase 7C: Advanced Features (Configuration-Driven, DRY & SOLID Compliant)
+from .cross_chart_linking_engine import (
+    CrossChartLinkingEngine,
+    create_cross_chart_linking_engine,
+    LinkType,
+    LinkageConfig,
+    ChartUpdate,
+)
+from .drilldown_navigation_engine import (
+    DrillDownNavigationEngine,
+    create_drilldown_navigation_engine,
+    NavigationType,
+    HierarchyMap,
+    NavigationResult,
+)
+
 # Phase 7 Week 4: Deprecated components removed due to DRY violations
 # Use InteractiveEnhancementAddon which extends existing systems without duplication
 
@@ -117,4 +133,15 @@ __all__ = [
     "ChartContextState",
     "ConversationContext",
     "ContextScope",
+    # Phase 7C: Advanced Features (Configuration-Driven, DRY & SOLID Compliant)
+    "CrossChartLinkingEngine",
+    "create_cross_chart_linking_engine",
+    "LinkType",
+    "LinkageConfig",
+    "ChartUpdate",
+    "DrillDownNavigationEngine",
+    "create_drilldown_navigation_engine",
+    "NavigationType",
+    "HierarchyMap",
+    "NavigationResult",
 ]

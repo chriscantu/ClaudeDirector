@@ -617,6 +617,52 @@ class MCPServerConstants:
             cls.ChartTypes.DEFAULT,
         ]
 
+    class Phase7C:
+        """Phase 7C Advanced Features Configuration Constants"""
+
+        # Cross-Chart Linking Performance Targets (OVERVIEW.md enterprise SLA)
+        CROSS_CHART_UPDATE_TARGET = 200  # 200ms cross-chart update target
+        MAX_LINKED_CHARTS = 5  # Maximum charts per linkage group
+
+        # Drill-Down Navigation Performance
+        NAVIGATION_RESPONSE_TARGET = 300  # 300ms navigation response target
+        MIN_HIERARCHY_LEVELS = 3  # Minimum hierarchy depth
+        MAX_HIERARCHY_LEVELS = 6  # Maximum hierarchy depth
+
+        # Time Series Exploration Performance
+        TIME_BRUSH_RESPONSE_TARGET = 200  # 200ms time brush selection target
+        TIME_ANALYSIS_TARGET = 500  # 500ms time analysis completion target
+
+        # Hierarchy Pattern Recognition
+        HIERARCHY_PATTERNS = {
+            "organizational": ["organization", "department", "team", "individual", "employee", "manager"],
+            "project": ["project", "epic", "story", "task", "sprint", "backlog", "milestone"],
+            "temporal": ["year", "quarter", "month", "week", "day", "hour", "date", "time"],
+            "technical": ["platform", "service", "component", "module", "function", "method"],
+            "geographic": ["region", "country", "state", "city", "office", "location"]
+        }
+
+        # Cross-Chart Link Types Configuration
+        LINK_TYPE_CONFIGS = {
+            "filter_sync": {"priority": "high", "debounce_ms": 50},
+            "zoom_sync": {"priority": "medium", "debounce_ms": 100},
+            "time_sync": {"priority": "high", "debounce_ms": 50},
+            "highlight_sync": {"priority": "low", "debounce_ms": 200}
+        }
+
+        # Navigation Transition Settings
+        NAVIGATION_TRANSITIONS = {
+            "drill_down": {"animation_ms": 250, "easing": "ease-out"},
+            "roll_up": {"animation_ms": 200, "easing": "ease-in"},
+            "jump_to": {"animation_ms": 300, "easing": "ease-in-out"},
+            "back": {"animation_ms": 150, "easing": "ease-in"}
+        }
+
+        # Advanced Features Storage Configuration
+        MAX_LINKAGE_STORAGE_MB = 25  # Maximum linkage data storage per session
+        HIERARCHY_CACHE_TTL_MINUTES = 60  # Hierarchy cache time-to-live
+        NAVIGATION_HISTORY_LIMIT = 50  # Maximum navigation history entries
+
 
 # Convenience aliases for backward compatibility during refactoring
 STRATEGIC_PYTHON_SERVER_NAME = MCPServerConstants.STRATEGIC_PYTHON_SERVER_NAME
