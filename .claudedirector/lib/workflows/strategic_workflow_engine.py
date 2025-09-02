@@ -38,7 +38,20 @@ try:
         PersonaRole,
     )
     from ..performance.cache_manager import CacheManager, CacheLevel
-    from ..core.database import DatabaseManager
+
+    # Phase 2C: Use UnifiedDatabaseCoordinator instead of legacy DatabaseManager
+    try:
+        from ..core.unified_database import (
+            get_unified_database_coordinator as get_database_manager,
+        )
+
+        print("🔧 Phase 2C: Strategic Workflow Engine using UnifiedDatabaseCoordinator")
+    except ImportError:
+        from ..core.database import DatabaseManager
+
+        print(
+            "🔧 Phase 2C: Strategic Workflow Engine fallback to legacy DatabaseManager"
+        )
     from ..transparency.integrated_transparency import TransparencyContext
 except ImportError:
     # Lightweight fallback pattern following OVERVIEW.md

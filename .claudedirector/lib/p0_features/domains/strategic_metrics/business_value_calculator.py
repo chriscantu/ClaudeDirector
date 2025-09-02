@@ -14,7 +14,11 @@ import structlog
 from decimal import Decimal, ROUND_HALF_UP
 
 from ...shared.infrastructure.config import get_config
-from ...shared.database_manager.analytics_pipeline import AnalyticsPipeline
+
+# Phase 2D: Use HybridToUnifiedBridge for database access (no legacy fallback)
+from ....core.hybrid_compatibility import HybridToUnifiedBridge
+
+print("📊 Phase 2D: Using HybridToUnifiedBridge for BusinessValueCalculator")
 
 logger = structlog.get_logger(__name__)
 
@@ -91,10 +95,18 @@ class BusinessValueCalculator:
     5. Track competitive advantage metrics
     """
 
-    def __init__(self, analytics_pipeline: AnalyticsPipeline):
-        self.analytics_pipeline = analytics_pipeline
+    def __init__(self, analytics_pipeline=None):
+        """Initialize BusinessValueCalculator with Phase 2D unified database architecture"""
+        # Phase 2D: Always use HybridToUnifiedBridge for database access
+        self.database_bridge = HybridToUnifiedBridge()
+        self.analytics_pipeline = None  # Unified bridge handles all analytics
+
         self.config = get_config()
         self.logger = logger.bind(component="business_value_calculator")
+
+        self.logger.info(
+            "✅ BusinessValueCalculator initialized with HybridToUnifiedBridge"
+        )
 
         # Business value calculation parameters
         self._value_parameters = {
