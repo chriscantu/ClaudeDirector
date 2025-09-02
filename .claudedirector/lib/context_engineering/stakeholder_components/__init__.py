@@ -24,7 +24,7 @@ from .stakeholder_intelligence import StakeholderIntelligence
 __all__ = [
     # Core SOLID components (Phase 3A.3.4)
     "StakeholderDetectionEngine",
-    "StakeholderRepository", 
+    "StakeholderRepository",
     "ContentProcessor",
     "RelationshipAnalyzer",
     # Legacy compatibility wrappers (Phase 3A.3.3)

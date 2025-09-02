@@ -22,14 +22,14 @@ from ..stakeholder_intelligence_types import (
 class StakeholderRepository:
     """
     Stakeholder data repository with CRUD operations
-    
+
     Single Responsibility: Manage stakeholder data persistence, caching,
     and filtering operations with performance optimization.
     """
 
     def __init__(
-        self, 
-        cache_manager=None, 
+        self,
+        cache_manager=None,
         enable_performance: bool = True,
         max_stakeholders: int = 500,
     ):
@@ -38,7 +38,7 @@ class StakeholderRepository:
         self.cache_manager = cache_manager
         self.enable_performance = enable_performance and cache_manager is not None
         self.max_stakeholders = max_stakeholders
-        
+
         # In-memory storage
         self.stakeholders: Dict[str, StakeholderProfile] = {}
 
@@ -50,12 +50,12 @@ class StakeholderRepository:
     ) -> bool:
         """
         Add or update stakeholder profile
-        
+
         Args:
             stakeholder_data: Comprehensive stakeholder information
             source: Source of the data (manual, ai_detection, file_analysis)
             confidence: Confidence level for AI-detected stakeholders
-            
+
         Returns:
             True if successful, False otherwise
         """
@@ -77,9 +77,11 @@ class StakeholderRepository:
             else:
                 # Check max stakeholders limit
                 if len(self.stakeholders) >= self.max_stakeholders:
-                    self.logger.warning(f"Maximum stakeholders limit reached: {self.max_stakeholders}")
+                    self.logger.warning(
+                        f"Maximum stakeholders limit reached: {self.max_stakeholders}"
+                    )
                     return False
-                    
+
                 # Create new profile
                 profile = self._create_new_profile(
                     stakeholder_data, stakeholder_id, current_time, source, confidence
@@ -102,17 +104,15 @@ class StakeholderRepository:
         return self.stakeholders.get(stakeholder_id)
 
     def list_stakeholders(
-        self, 
-        filter_by: Optional[Dict[str, Any]] = None, 
-        include_metadata: bool = False
+        self, filter_by: Optional[Dict[str, Any]] = None, include_metadata: bool = False
     ) -> List[Dict[str, Any]]:
         """
         List stakeholders with optional filtering
-        
+
         Args:
             filter_by: Optional filters (role, influence_level, platform_position, etc.)
             include_metadata: Include detection and timing metadata
-            
+
         Returns:
             List of stakeholder profiles as dictionaries
         """
@@ -164,17 +164,19 @@ class StakeholderRepository:
         try:
             if stakeholder_id in self.stakeholders:
                 del self.stakeholders[stakeholder_id]
-                
+
                 # Cache invalidation
                 if self.enable_performance:
                     self.cache_manager.delete_pattern(f"stakeholder_*")
-                
+
                 self.logger.debug(f"Removed stakeholder: {stakeholder_id}")
                 return True
             else:
-                self.logger.warning(f"Stakeholder not found for removal: {stakeholder_id}")
+                self.logger.warning(
+                    f"Stakeholder not found for removal: {stakeholder_id}"
+                )
                 return False
-                
+
         except Exception as e:
             self.logger.error(f"Failed to remove stakeholder: {e}")
             return False
@@ -270,16 +272,24 @@ class StakeholderRepository:
         if "influence_level" in filters:
             influence_filter = filters["influence_level"]
             if isinstance(influence_filter, str):
-                filtered = [s for s in filtered if s.influence_level.value == influence_filter]
+                filtered = [
+                    s for s in filtered if s.influence_level.value == influence_filter
+                ]
             elif isinstance(influence_filter, list):
-                filtered = [s for s in filtered if s.influence_level.value in influence_filter]
+                filtered = [
+                    s for s in filtered if s.influence_level.value in influence_filter
+                ]
 
         if "platform_position" in filters:
             position_filter = filters["platform_position"]
             if isinstance(position_filter, str):
-                filtered = [s for s in filtered if s.platform_position == position_filter]
+                filtered = [
+                    s for s in filtered if s.platform_position == position_filter
+                ]
             elif isinstance(position_filter, list):
-                filtered = [s for s in filtered if s.platform_position in position_filter]
+                filtered = [
+                    s for s in filtered if s.platform_position in position_filter
+                ]
 
         if "organization" in filters:
             org_filter = filters["organization"]
@@ -310,27 +320,33 @@ class StakeholderRepository:
         """Get repository statistics"""
         if not self.stakeholders:
             return {"total_stakeholders": 0, "status": "empty"}
-        
+
         stakeholder_list = list(self.stakeholders.values())
-        
+
         # Role distribution
         role_distribution = {}
         for profile in stakeholder_list:
             role = profile.role.value
             role_distribution[role] = role_distribution.get(role, 0) + 1
-        
+
         # Influence distribution
         influence_distribution = {}
         for profile in stakeholder_list:
             influence = profile.influence_level.value
-            influence_distribution[influence] = influence_distribution.get(influence, 0) + 1
-        
+            influence_distribution[influence] = (
+                influence_distribution.get(influence, 0) + 1
+            )
+
         return {
             "total_stakeholders": len(stakeholder_list),
             "role_distribution": role_distribution,
             "influence_distribution": influence_distribution,
             "auto_created_count": sum(1 for s in stakeholder_list if s.auto_created),
             "validated_count": sum(1 for s in stakeholder_list if s.validated),
-            "average_trust_level": sum(s.trust_level for s in stakeholder_list) / len(stakeholder_list),
-            "average_relationship_quality": sum(s.relationship_quality for s in stakeholder_list) / len(stakeholder_list),
+            "average_trust_level": sum(s.trust_level for s in stakeholder_list)
+            / len(stakeholder_list),
+            "average_relationship_quality": sum(
+                s.relationship_quality for s in stakeholder_list
+            )
+            / len(stakeholder_list),
         }
