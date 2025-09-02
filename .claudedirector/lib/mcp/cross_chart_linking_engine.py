@@ -21,7 +21,10 @@ from enum import Enum
 from dataclasses import dataclass
 
 from .constants import MCPServerConstants, InteractionIntent, QueryIntent
-from .interactive_enhancement_addon import InteractiveEnhancementAddon, InteractiveEnhancementResult
+from .interactive_enhancement_addon import (
+    InteractiveEnhancementAddon,
+    InteractiveEnhancementResult,
+)
 from .chat_context_manager import ChatContextManager
 
 logger = logging.getLogger(__name__)
@@ -29,6 +32,7 @@ logger = logging.getLogger(__name__)
 
 class LinkType(Enum):
     """Types of cross-chart linking synchronization"""
+
     FILTER_SYNC = "filter_sync"
     ZOOM_SYNC = "zoom_sync"
     TIME_SYNC = "time_sync"
@@ -37,6 +41,7 @@ class LinkType(Enum):
 
 class LinkageStatus(Enum):
     """Status of chart linkage"""
+
     ACTIVE = "active"
     PAUSED = "paused"
     ERROR = "error"
@@ -46,6 +51,7 @@ class LinkageStatus(Enum):
 @dataclass
 class LinkageConfig:
     """Configuration for cross-chart linkage"""
+
     linkage_id: str
     charts: List[str]
     link_type: LinkType
@@ -58,6 +64,7 @@ class LinkageConfig:
 @dataclass
 class ChartUpdate:
     """Update to be applied to a linked chart"""
+
     chart_id: str
     update_type: str
     update_data: Dict[str, Any]
@@ -90,18 +97,22 @@ class CrossChartLinkingEngine:
 
         # Internal state management
         self._linkages: Dict[str, LinkageConfig] = {}
-        self._chart_linkage_map: Dict[str, Set[str]] = {}  # chart_id -> set of linkage_ids
+        self._chart_linkage_map: Dict[str, Set[str]] = (
+            {}
+        )  # chart_id -> set of linkage_ids
         self._active_updates: Dict[str, float] = {}  # prevent update loops
 
         logger.info(f"Cross-Chart Linking Engine {self.version} initialized")
         logger.info(f"✅ ARCHITECTURE: Extends Phase 7A & 7B interactive foundation")
-        logger.info(f"⚡ PERFORMANCE: {self.update_target_ms}ms cross-chart update target")
+        logger.info(
+            f"⚡ PERFORMANCE: {self.update_target_ms}ms cross-chart update target"
+        )
 
     def create_chart_linkage(
         self,
         charts: List[str],
         link_type: LinkType,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
     ) -> LinkageConfig:
         """
         Create linkage between multiple charts.
@@ -123,7 +134,9 @@ class CrossChartLinkingEngine:
         if len(charts) < 2:
             raise ValueError("Minimum 2 charts required for linking")
         if len(charts) > self.max_linked_charts:
-            raise ValueError(f"Maximum {self.max_linked_charts} charts allowed per linkage")
+            raise ValueError(
+                f"Maximum {self.max_linked_charts} charts allowed per linkage"
+            )
 
         # Generate unique linkage ID
         linkage_id = f"linkage_{link_type.value}_{int(time.time()*1000)}"
@@ -137,7 +150,7 @@ class CrossChartLinkingEngine:
             status=LinkageStatus.ACTIVE,
             created_at=current_time,
             updated_at=current_time,
-            metadata=metadata or {}
+            metadata=metadata or {},
         )
 
         # Store linkage and update chart mapping
@@ -147,13 +160,13 @@ class CrossChartLinkingEngine:
                 self._chart_linkage_map[chart_id] = set()
             self._chart_linkage_map[chart_id].add(linkage_id)
 
-        logger.info(f"✅ Created {link_type.value} linkage: {linkage_id} for {len(charts)} charts")
+        logger.info(
+            f"✅ Created {link_type.value} linkage: {linkage_id} for {len(charts)} charts"
+        )
         return linkage_config
 
     async def propagate_interaction(
-        self,
-        source_chart: str,
-        event: Dict[str, Any]
+        self, source_chart: str, event: Dict[str, Any]
     ) -> List[ChartUpdate]:
         """
         Propagate interaction from source chart to linked charts.
@@ -183,7 +196,9 @@ class CrossChartLinkingEngine:
         update_key = f"{source_chart}_{event.get('type', 'unknown')}_{event.get('timestamp', time.time())}"
         if update_key in self._active_updates:
             current_time = time.time()
-            if current_time - self._active_updates[update_key] < 1.0:  # 1 second debounce
+            if (
+                current_time - self._active_updates[update_key] < 1.0
+            ):  # 1 second debounce
                 logger.debug(f"Skipping duplicate update: {update_key}")
                 return updates
 
@@ -212,7 +227,9 @@ class CrossChartLinkingEngine:
             # Performance monitoring
             elapsed_ms = (time.time() - start_time) * 1000
             if elapsed_ms > self.update_target_ms:
-                logger.warning(f"Cross-chart update exceeded target: {elapsed_ms:.1f}ms > {self.update_target_ms}ms")
+                logger.warning(
+                    f"Cross-chart update exceeded target: {elapsed_ms:.1f}ms > {self.update_target_ms}ms"
+                )
             else:
                 logger.debug(f"Cross-chart update completed in {elapsed_ms:.1f}ms")
 
@@ -224,10 +241,7 @@ class CrossChartLinkingEngine:
                 del self._active_updates[update_key]
 
     async def _process_linkage_event(
-        self,
-        linkage: LinkageConfig,
-        source_chart: str,
-        event: Dict[str, Any]
+        self, linkage: LinkageConfig, source_chart: str, event: Dict[str, Any]
     ) -> List[ChartUpdate]:
         """Process a specific linkage event and generate updates for target charts."""
         updates = []
@@ -238,13 +252,21 @@ class CrossChartLinkingEngine:
 
         # Generate updates based on link type and event
         if linkage.link_type == LinkType.FILTER_SYNC:
-            updates = await self._generate_filter_sync_updates(target_charts, source_chart, event)
+            updates = await self._generate_filter_sync_updates(
+                target_charts, source_chart, event
+            )
         elif linkage.link_type == LinkType.ZOOM_SYNC:
-            updates = await self._generate_zoom_sync_updates(target_charts, source_chart, event)
+            updates = await self._generate_zoom_sync_updates(
+                target_charts, source_chart, event
+            )
         elif linkage.link_type == LinkType.TIME_SYNC:
-            updates = await self._generate_time_sync_updates(target_charts, source_chart, event)
+            updates = await self._generate_time_sync_updates(
+                target_charts, source_chart, event
+            )
         elif linkage.link_type == LinkType.HIGHLIGHT_SYNC:
-            updates = await self._generate_highlight_sync_updates(target_charts, source_chart, event)
+            updates = await self._generate_highlight_sync_updates(
+                target_charts, source_chart, event
+            )
 
         return updates
 
@@ -253,7 +275,7 @@ class CrossChartLinkingEngine:
     ) -> List[ChartUpdate]:
         """Generate filter synchronization updates."""
         updates = []
-        filter_data = event.get('filter_data', {})
+        filter_data = event.get("filter_data", {})
 
         for chart_id in target_charts:
             update = ChartUpdate(
@@ -261,7 +283,7 @@ class CrossChartLinkingEngine:
                 update_type="apply_filter",
                 update_data=filter_data,
                 source_chart=source_chart,
-                timestamp=time.time()
+                timestamp=time.time(),
             )
             updates.append(update)
 
@@ -272,7 +294,7 @@ class CrossChartLinkingEngine:
     ) -> List[ChartUpdate]:
         """Generate zoom synchronization updates."""
         updates = []
-        zoom_data = event.get('zoom_data', {})
+        zoom_data = event.get("zoom_data", {})
 
         for chart_id in target_charts:
             update = ChartUpdate(
@@ -280,7 +302,7 @@ class CrossChartLinkingEngine:
                 update_type="apply_zoom",
                 update_data=zoom_data,
                 source_chart=source_chart,
-                timestamp=time.time()
+                timestamp=time.time(),
             )
             updates.append(update)
 
@@ -291,7 +313,7 @@ class CrossChartLinkingEngine:
     ) -> List[ChartUpdate]:
         """Generate time range synchronization updates."""
         updates = []
-        time_data = event.get('time_data', {})
+        time_data = event.get("time_data", {})
 
         for chart_id in target_charts:
             update = ChartUpdate(
@@ -299,7 +321,7 @@ class CrossChartLinkingEngine:
                 update_type="apply_time_range",
                 update_data=time_data,
                 source_chart=source_chart,
-                timestamp=time.time()
+                timestamp=time.time(),
             )
             updates.append(update)
 
@@ -310,7 +332,7 @@ class CrossChartLinkingEngine:
     ) -> List[ChartUpdate]:
         """Generate highlight synchronization updates."""
         updates = []
-        highlight_data = event.get('highlight_data', {})
+        highlight_data = event.get("highlight_data", {})
 
         for chart_id in target_charts:
             update = ChartUpdate(
@@ -318,7 +340,7 @@ class CrossChartLinkingEngine:
                 update_type="apply_highlight",
                 update_data=highlight_data,
                 source_chart=source_chart,
-                timestamp=time.time()
+                timestamp=time.time(),
             )
             updates.append(update)
 
@@ -362,10 +384,12 @@ class CrossChartLinkingEngine:
             "name": self.name,
             "version": self.version,
             "total_linkages": len(self._linkages),
-            "active_linkages": len([l for l in self._linkages.values() if l.status == LinkageStatus.ACTIVE]),
+            "active_linkages": len(
+                [l for l in self._linkages.values() if l.status == LinkageStatus.ACTIVE]
+            ),
             "linked_charts": len(self._chart_linkage_map),
             "performance_target_ms": self.update_target_ms,
-            "max_linked_charts": self.max_linked_charts
+            "max_linked_charts": self.max_linked_charts,
         }
 
     # Resource management and cleanup (DRY compliance with Phase 7A & 7B pattern)
@@ -375,17 +399,17 @@ class CrossChartLinkingEngine:
         self._linkages.clear()
         self._chart_linkage_map.clear()
         self._active_updates.clear()
-        if hasattr(self.interactive_addon, 'cleanup'):
+        if hasattr(self.interactive_addon, "cleanup"):
             self.interactive_addon.cleanup()
-        if hasattr(self.context_manager, 'cleanup'):
+        if hasattr(self.context_manager, "cleanup"):
             self.context_manager.cleanup()
 
     async def async_cleanup(self):
         """Async cleanup for proper resource management."""
         logger.info("Cross-Chart Linking Engine async cleanup initiated")
-        if hasattr(self.interactive_addon, 'async_cleanup'):
+        if hasattr(self.interactive_addon, "async_cleanup"):
             await self.interactive_addon.async_cleanup()
-        if hasattr(self.context_manager, 'async_cleanup'):
+        if hasattr(self.context_manager, "async_cleanup"):
             await self.context_manager.async_cleanup()
         self.cleanup()
 

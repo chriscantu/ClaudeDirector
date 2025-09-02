@@ -635,11 +635,42 @@ class MCPServerConstants:
 
         # Hierarchy Pattern Recognition
         HIERARCHY_PATTERNS = {
-            "organizational": ["organization", "department", "team", "individual", "employee", "manager"],
-            "project": ["project", "epic", "story", "task", "sprint", "backlog", "milestone"],
-            "temporal": ["year", "quarter", "month", "week", "day", "hour", "date", "time"],
-            "technical": ["platform", "service", "component", "module", "function", "method"],
-            "geographic": ["region", "country", "state", "city", "office", "location"]
+            "organizational": [
+                "organization",
+                "department",
+                "team",
+                "individual",
+                "employee",
+                "manager",
+            ],
+            "project": [
+                "project",
+                "epic",
+                "story",
+                "task",
+                "sprint",
+                "backlog",
+                "milestone",
+            ],
+            "temporal": [
+                "year",
+                "quarter",
+                "month",
+                "week",
+                "day",
+                "hour",
+                "date",
+                "time",
+            ],
+            "technical": [
+                "platform",
+                "service",
+                "component",
+                "module",
+                "function",
+                "method",
+            ],
+            "geographic": ["region", "country", "state", "city", "office", "location"],
         }
 
         # Cross-Chart Link Types Configuration
@@ -647,7 +678,7 @@ class MCPServerConstants:
             "filter_sync": {"priority": "high", "debounce_ms": 50},
             "zoom_sync": {"priority": "medium", "debounce_ms": 100},
             "time_sync": {"priority": "high", "debounce_ms": 50},
-            "highlight_sync": {"priority": "low", "debounce_ms": 200}
+            "highlight_sync": {"priority": "low", "debounce_ms": 200},
         }
 
         # Navigation Transition Settings
@@ -655,7 +686,7 @@ class MCPServerConstants:
             "drill_down": {"animation_ms": 250, "easing": "ease-out"},
             "roll_up": {"animation_ms": 200, "easing": "ease-in"},
             "jump_to": {"animation_ms": 300, "easing": "ease-in-out"},
-            "back": {"animation_ms": 150, "easing": "ease-in"}
+            "back": {"animation_ms": 150, "easing": "ease-in"},
         }
 
         # Advanced Features Storage Configuration

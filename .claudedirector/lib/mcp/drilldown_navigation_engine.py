@@ -21,7 +21,10 @@ from enum import Enum
 from dataclasses import dataclass
 
 from .constants import MCPServerConstants, InteractionIntent
-from .interactive_enhancement_addon import InteractiveEnhancementAddon, InteractiveEnhancementResult
+from .interactive_enhancement_addon import (
+    InteractiveEnhancementAddon,
+    InteractiveEnhancementResult,
+)
 from .chat_context_manager import ChatContextManager
 
 logger = logging.getLogger(__name__)
@@ -29,6 +32,7 @@ logger = logging.getLogger(__name__)
 
 class NavigationType(Enum):
     """Types of hierarchy navigation operations"""
+
     DRILL_DOWN = "drill_down"
     ROLL_UP = "roll_up"
     JUMP_TO = "jump_to"
@@ -37,6 +41,7 @@ class NavigationType(Enum):
 
 class HierarchyLevel(Enum):
     """Standard hierarchy levels for organizational data"""
+
     ORGANIZATION = "organization"
     DEPARTMENT = "department"
     TEAM = "team"
@@ -50,6 +55,7 @@ class HierarchyLevel(Enum):
 @dataclass
 class HierarchyNode:
     """Node in the hierarchy tree"""
+
     node_id: str
     level: str
     name: str
@@ -62,6 +68,7 @@ class HierarchyNode:
 @dataclass
 class HierarchyMap:
     """Complete hierarchy structure for navigation"""
+
     hierarchy_id: str
     levels: List[str]
     nodes: Dict[str, HierarchyNode]
@@ -73,6 +80,7 @@ class HierarchyMap:
 @dataclass
 class NavigationState:
     """Current navigation position and history"""
+
     current_node: str
     current_level: str
     breadcrumbs: List[Tuple[str, str]]  # [(node_id, name), ...]
@@ -83,6 +91,7 @@ class NavigationState:
 @dataclass
 class NavigationResult:
     """Result of a navigation operation"""
+
     success: bool
     new_state: Optional[NavigationState]
     data: Dict[str, Any]
@@ -111,7 +120,9 @@ class DrillDownNavigationEngine:
         self.context_manager = ChatContextManager()
 
         # Performance targets from configuration (OVERVIEW.md compliance)
-        self.navigation_target_ms = MCPServerConstants.Phase7C.NAVIGATION_RESPONSE_TARGET
+        self.navigation_target_ms = (
+            MCPServerConstants.Phase7C.NAVIGATION_RESPONSE_TARGET
+        )
         self.min_hierarchy_levels = MCPServerConstants.Phase7C.MIN_HIERARCHY_LEVELS
         self.max_hierarchy_levels = MCPServerConstants.Phase7C.MAX_HIERARCHY_LEVELS
 
@@ -125,9 +136,7 @@ class DrillDownNavigationEngine:
         logger.info(f"⚡ PERFORMANCE: {self.navigation_target_ms}ms navigation target")
 
     def create_hierarchy_map(
-        self,
-        data: Dict[str, Any],
-        hierarchy_levels: List[str]
+        self, data: Dict[str, Any], hierarchy_levels: List[str]
     ) -> HierarchyMap:
         """
         Create navigable hierarchy from data structure.
@@ -152,9 +161,13 @@ class DrillDownNavigationEngine:
         """
         # Validate hierarchy levels
         if len(hierarchy_levels) < self.min_hierarchy_levels:
-            raise ValueError(f"Minimum {self.min_hierarchy_levels} hierarchy levels required")
+            raise ValueError(
+                f"Minimum {self.min_hierarchy_levels} hierarchy levels required"
+            )
         if len(hierarchy_levels) > self.max_hierarchy_levels:
-            raise ValueError(f"Maximum {self.max_hierarchy_levels} hierarchy levels allowed")
+            raise ValueError(
+                f"Maximum {self.max_hierarchy_levels} hierarchy levels allowed"
+            )
 
         hierarchy_id = f"hierarchy_{int(time.time()*1000)}"
         nodes = {}
@@ -169,19 +182,19 @@ class DrillDownNavigationEngine:
             nodes=nodes,
             root_nodes=root_nodes,
             created_at=time.time(),
-            metadata={"source_data_size": len(str(data))}
+            metadata={"source_data_size": len(str(data))},
         )
 
         # Store hierarchy for navigation
         self._hierarchies[hierarchy_id] = hierarchy_map
 
-        logger.info(f"✅ Created hierarchy {hierarchy_id} with {len(hierarchy_levels)} levels, {len(nodes)} nodes")
+        logger.info(
+            f"✅ Created hierarchy {hierarchy_id} with {len(hierarchy_levels)} levels, {len(nodes)} nodes"
+        )
         return hierarchy_map
 
     def _build_hierarchy_nodes(
-        self,
-        data: Dict[str, Any],
-        levels: List[str]
+        self, data: Dict[str, Any], levels: List[str]
     ) -> Tuple[Dict[str, HierarchyNode], List[str]]:
         """Build hierarchy nodes from raw data."""
         nodes = {}
@@ -230,11 +243,11 @@ class DrillDownNavigationEngine:
                 node = HierarchyNode(
                     node_id=f"{level}_{item_id}",
                     level=level,
-                    name=item_data.get('name', item_id),
-                    parent_id=item_data.get('parent_id'),
-                    children=item_data.get('children', []),
+                    name=item_data.get("name", item_id),
+                    parent_id=item_data.get("parent_id"),
+                    children=item_data.get("children", []),
                     data=item_data,
-                    metadata={"level_index": level_idx}
+                    metadata={"level_index": level_idx},
                 )
                 nodes[node.node_id] = node
 
@@ -280,7 +293,7 @@ class DrillDownNavigationEngine:
                     parent_id=None if level_idx == 0 else f"node_{node_counter - 1}",
                     children=[],
                     data={"value": item},
-                    metadata={"level_index": level_idx}
+                    metadata={"level_index": level_idx},
                 )
                 nodes[node_id] = node
 
@@ -296,7 +309,7 @@ class DrillDownNavigationEngine:
         session_id: str,
         hierarchy_id: str,
         direction: NavigationType,
-        target: Optional[str] = None
+        target: Optional[str] = None,
     ) -> NavigationResult:
         """
         Navigate up/down the data hierarchy.
@@ -325,7 +338,7 @@ class DrillDownNavigationEngine:
                     data={},
                     breadcrumbs=[],
                     transition_info={},
-                    error_message=f"Hierarchy {hierarchy_id} not found"
+                    error_message=f"Hierarchy {hierarchy_id} not found",
                 )
 
             current_state = self._navigation_states.get(session_id)
@@ -338,19 +351,26 @@ class DrillDownNavigationEngine:
                         data={},
                         breadcrumbs=[],
                         transition_info={},
-                        error_message="No root nodes in hierarchy"
+                        error_message="No root nodes in hierarchy",
                     )
 
                 current_state = NavigationState(
                     current_node=hierarchy.root_nodes[0],
                     current_level=hierarchy.levels[0],
-                    breadcrumbs=[(hierarchy.root_nodes[0], hierarchy.nodes[hierarchy.root_nodes[0]].name)],
+                    breadcrumbs=[
+                        (
+                            hierarchy.root_nodes[0],
+                            hierarchy.nodes[hierarchy.root_nodes[0]].name,
+                        )
+                    ],
                     history=[],
-                    context_data={}
+                    context_data={},
                 )
 
             # Perform navigation based on direction
-            result = await self._perform_navigation(hierarchy, current_state, direction, target)
+            result = await self._perform_navigation(
+                hierarchy, current_state, direction, target
+            )
 
             # Update navigation state if successful
             if result.success and result.new_state:
@@ -361,7 +381,9 @@ class DrillDownNavigationEngine:
             result.transition_info["elapsed_ms"] = elapsed_ms
 
             if elapsed_ms > self.navigation_target_ms:
-                logger.warning(f"Navigation exceeded target: {elapsed_ms:.1f}ms > {self.navigation_target_ms}ms")
+                logger.warning(
+                    f"Navigation exceeded target: {elapsed_ms:.1f}ms > {self.navigation_target_ms}ms"
+                )
             else:
                 logger.debug(f"Navigation completed in {elapsed_ms:.1f}ms")
 
@@ -375,7 +397,7 @@ class DrillDownNavigationEngine:
                 data={},
                 breadcrumbs=[],
                 transition_info={"elapsed_ms": (time.time() - start_time) * 1000},
-                error_message=str(e)
+                error_message=str(e),
             )
 
     async def _perform_navigation(
@@ -383,7 +405,7 @@ class DrillDownNavigationEngine:
         hierarchy: HierarchyMap,
         current_state: NavigationState,
         direction: NavigationType,
-        target: Optional[str]
+        target: Optional[str],
     ) -> NavigationResult:
         """Perform the actual navigation operation."""
 
@@ -402,7 +424,7 @@ class DrillDownNavigationEngine:
                 data={},
                 breadcrumbs=[],
                 transition_info={},
-                error_message=f"Unknown navigation direction: {direction}"
+                error_message=f"Unknown navigation direction: {direction}",
             )
 
     async def _drill_down(
@@ -417,7 +439,7 @@ class DrillDownNavigationEngine:
                 data={},
                 breadcrumbs=current_state.breadcrumbs,
                 transition_info={},
-                error_message="No children available for drill-down"
+                error_message="No children available for drill-down",
             )
 
         # Navigate to first child (could be enhanced to allow child selection)
@@ -432,7 +454,7 @@ class DrillDownNavigationEngine:
             current_level=child_node.level,
             breadcrumbs=new_breadcrumbs,
             history=new_history,
-            context_data=child_node.data
+            context_data=child_node.data,
         )
 
         return NavigationResult(
@@ -440,7 +462,10 @@ class DrillDownNavigationEngine:
             new_state=new_state,
             data=child_node.data,
             breadcrumbs=new_breadcrumbs,
-            transition_info={"direction": "drill_down", "target_level": child_node.level}
+            transition_info={
+                "direction": "drill_down",
+                "target_level": child_node.level,
+            },
         )
 
     async def _roll_up(
@@ -455,7 +480,7 @@ class DrillDownNavigationEngine:
                 data={},
                 breadcrumbs=current_state.breadcrumbs,
                 transition_info={},
-                error_message="No parent available for roll-up"
+                error_message="No parent available for roll-up",
             )
 
         parent_node = hierarchy.nodes[current_node.parent_id]
@@ -467,7 +492,7 @@ class DrillDownNavigationEngine:
             current_level=parent_node.level,
             breadcrumbs=new_breadcrumbs,
             history=new_history,
-            context_data=parent_node.data
+            context_data=parent_node.data,
         )
 
         return NavigationResult(
@@ -475,11 +500,14 @@ class DrillDownNavigationEngine:
             new_state=new_state,
             data=parent_node.data,
             breadcrumbs=new_breadcrumbs,
-            transition_info={"direction": "roll_up", "target_level": parent_node.level}
+            transition_info={"direction": "roll_up", "target_level": parent_node.level},
         )
 
     async def _jump_to(
-        self, hierarchy: HierarchyMap, current_state: Optional[NavigationState], target: Optional[str]
+        self,
+        hierarchy: HierarchyMap,
+        current_state: Optional[NavigationState],
+        target: Optional[str],
     ) -> NavigationResult:
         """Jump directly to specific level or node."""
         if not target:
@@ -489,7 +517,7 @@ class DrillDownNavigationEngine:
                 data={},
                 breadcrumbs=[],
                 transition_info={},
-                error_message="Target required for jump_to navigation"
+                error_message="Target required for jump_to navigation",
             )
 
         target_node = hierarchy.nodes.get(target)
@@ -500,7 +528,7 @@ class DrillDownNavigationEngine:
                 data={},
                 breadcrumbs=[],
                 transition_info={},
-                error_message=f"Target node {target} not found"
+                error_message=f"Target node {target} not found",
             )
 
         # Build breadcrumb path to target
@@ -510,8 +538,12 @@ class DrillDownNavigationEngine:
             current_node=target,
             current_level=target_node.level,
             breadcrumbs=breadcrumbs,
-            history=[] if not current_state else current_state.history + [current_state.current_node],
-            context_data=target_node.data
+            history=(
+                []
+                if not current_state
+                else current_state.history + [current_state.current_node]
+            ),
+            context_data=target_node.data,
         )
 
         return NavigationResult(
@@ -519,7 +551,7 @@ class DrillDownNavigationEngine:
             new_state=new_state,
             data=target_node.data,
             breadcrumbs=breadcrumbs,
-            transition_info={"direction": "jump_to", "target_level": target_node.level}
+            transition_info={"direction": "jump_to", "target_level": target_node.level},
         )
 
     async def _navigate_back(
@@ -533,7 +565,7 @@ class DrillDownNavigationEngine:
                 data={},
                 breadcrumbs=current_state.breadcrumbs,
                 transition_info={},
-                error_message="No previous state in history"
+                error_message="No previous state in history",
             )
 
         previous_node_id = current_state.history[-1]
@@ -547,7 +579,7 @@ class DrillDownNavigationEngine:
             current_level=previous_node.level,
             breadcrumbs=new_breadcrumbs,
             history=new_history,
-            context_data=previous_node.data
+            context_data=previous_node.data,
         )
 
         return NavigationResult(
@@ -555,10 +587,12 @@ class DrillDownNavigationEngine:
             new_state=new_state,
             data=previous_node.data,
             breadcrumbs=new_breadcrumbs,
-            transition_info={"direction": "back", "target_level": previous_node.level}
+            transition_info={"direction": "back", "target_level": previous_node.level},
         )
 
-    def _build_breadcrumb_path(self, hierarchy: HierarchyMap, node_id: str) -> List[Tuple[str, str]]:
+    def _build_breadcrumb_path(
+        self, hierarchy: HierarchyMap, node_id: str
+    ) -> List[Tuple[str, str]]:
         """Build breadcrumb path from root to specified node."""
         path = []
         current_id = node_id
@@ -584,7 +618,7 @@ class DrillDownNavigationEngine:
             "total_hierarchies": len(self._hierarchies),
             "active_sessions": len(self._navigation_states),
             "performance_target_ms": self.navigation_target_ms,
-            "hierarchy_levels_range": f"{self.min_hierarchy_levels}-{self.max_hierarchy_levels}"
+            "hierarchy_levels_range": f"{self.min_hierarchy_levels}-{self.max_hierarchy_levels}",
         }
 
     # Resource management and cleanup (DRY compliance with Phase 7A & 7B pattern)
@@ -593,17 +627,17 @@ class DrillDownNavigationEngine:
         logger.info("Drill-Down Navigation Engine cleanup initiated")
         self._hierarchies.clear()
         self._navigation_states.clear()
-        if hasattr(self.interactive_addon, 'cleanup'):
+        if hasattr(self.interactive_addon, "cleanup"):
             self.interactive_addon.cleanup()
-        if hasattr(self.context_manager, 'cleanup'):
+        if hasattr(self.context_manager, "cleanup"):
             self.context_manager.cleanup()
 
     async def async_cleanup(self):
         """Async cleanup for proper resource management."""
         logger.info("Drill-Down Navigation Engine async cleanup initiated")
-        if hasattr(self.interactive_addon, 'async_cleanup'):
+        if hasattr(self.interactive_addon, "async_cleanup"):
             await self.interactive_addon.async_cleanup()
-        if hasattr(self.context_manager, 'async_cleanup'):
+        if hasattr(self.context_manager, "async_cleanup"):
             await self.context_manager.async_cleanup()
         self.cleanup()
 
