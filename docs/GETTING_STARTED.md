@@ -87,6 +87,51 @@ Ask questions like these to trigger the customization wizard:
 - "What metrics should we track for product-engineering success?"
 - "How do we balance feature delivery with platform investment?"
 
+## 📊 **Interactive Data Exploration Examples**
+
+**Phase 7 Interactive Charts**: Transform strategic discussions from static presentations to dynamic data exploration.
+
+### **Executive Dashboard Interactions**
+Try these commands to experience interactive chart capabilities:
+
+#### **Natural Language Chart Control**
+```
+💬 "Show me our Q3 platform adoption metrics"
+🤖 Generating interactive dashboard with drill-down capabilities...
+
+💬 "Filter by engineering teams only"
+🤖 Applying team filter across all linked charts...
+
+💬 "What's driving the spike in week 3?"
+🤖 Analyzing performance patterns and generating strategic insights...
+```
+
+#### **Dynamic Data Discovery**
+- **Click-to-Drill-Down**: Click any data point to explore underlying details
+- **Cross-Chart Linking**: Selection in one chart automatically filters related charts
+- **Time Navigation**: "Show me Q2 data" or "Compare with last quarter"
+- **Smart Filtering**: "Filter by platform teams" or "Show only high-impact initiatives"
+
+### **Mobile Executive Presentations** 📱
+**Optimized for Tablets**: Interactive charts work seamlessly on iPad/tablet for:
+- **Board Presentations**: Live data exploration during executive meetings
+- **Strategic Reviews**: Dynamic scenario analysis with stakeholders
+- **Team Retrospectives**: Interactive performance analysis and planning
+
+### **Strategic Use Cases**
+```
+🎯 "Create ROI dashboard for platform investment review"
+→ Interactive charts showing investment vs. adoption with drill-down by team
+
+📈 "Generate leadership metrics for quarterly board meeting"
+→ Executive dashboard with cross-chart filtering and mobile presentation mode
+
+🏗️ "Show architecture health trends with drill-down capabilities"
+→ Multi-level navigation from system → service → component performance
+```
+
+**Performance**: All interactions respond in <200ms for fluid exploration during strategic discussions.
+
 ## 🔄 **Reconfiguration Commands**
 
 - **`/configure`**: Restart the first-run wizard to update role and preferences
