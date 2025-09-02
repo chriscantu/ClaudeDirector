@@ -698,3 +698,25 @@ get_database_manager = get_unified_database_coordinator
 get_connection = (
     lambda db_path=None: get_unified_database_coordinator().get_connection()
 )
+
+# Additional compatibility functions for predictive analytics and other components
+def get_legacy_database_manager():
+    """
+    Provide legacy database manager interface for systems that need it.
+    Specifically ensures predictive analytics and context engines continue working.
+    """
+    return get_unified_database_coordinator()
+
+def ensure_database_compatibility():
+    """
+    Ensure database compatibility for all legacy components.
+    Called during system initialization to prevent runtime errors.
+    """
+    try:
+        coordinator = get_unified_database_coordinator()
+        # Verify basic functionality
+        coordinator.health_check()
+        return True
+    except Exception as e:
+        logger.error(f"Database compatibility check failed: {e}")
+        return False
