@@ -2,7 +2,7 @@
 Stakeholder Intelligence Unified Module - Phase 3A.3.4 SOLID Coordinator/Facade
 Transformed from monolithic implementation to SOLID-compliant component coordinator
 
-Author: Martin | Platform Architecture with Sequential7 methodology  
+Author: Martin | Platform Architecture with Sequential7 methodology
 """
 
 import sys
@@ -42,10 +42,16 @@ try:
         from ..core.unified_database import (
             get_unified_database_coordinator as get_database_manager,
         )
-        print("📊 Phase 2: Using UnifiedDatabaseCoordinator for stakeholder intelligence")
+
+        print(
+            "📊 Phase 2: Using UnifiedDatabaseCoordinator for stakeholder intelligence"
+        )
     except ImportError:
         from ..core.database import get_database_manager
-        print("📊 Phase 2: Fallback to legacy DatabaseManager for stakeholder intelligence")
+
+        print(
+            "📊 Phase 2: Fallback to legacy DatabaseManager for stakeholder intelligence"
+        )
 
     from ..core.exceptions import AIDetectionError, DatabaseError
     from ..performance.cache_manager import get_cache_manager
@@ -53,7 +59,9 @@ try:
     from ..performance.response_optimizer import get_response_optimizer
 except ImportError:
     # Graceful fallback for migration period
-    logging.warning("Phase 9 migration: Using legacy imports for stakeholder intelligence")
+    logging.warning(
+        "Phase 9 migration: Using legacy imports for stakeholder intelligence"
+    )
 
     class MinimalConfig:
         def __init__(self):
@@ -79,12 +87,12 @@ except ImportError:
 class StakeholderIntelligenceUnified:
     """
     Unified Stakeholder Intelligence System - Phase 3A.3.4 SOLID Coordinator/Facade
-    
+
     Transformed from monolithic architecture to SOLID-compliant coordinator pattern.
     Uses composition of specialized components following Single Responsibility Principle.
 
     Components:
-    - StakeholderRepository: Data persistence and CRUD operations  
+    - StakeholderRepository: Data persistence and CRUD operations
     - StakeholderDetectionEngine: AI-powered stakeholder detection
     - ContentProcessor: Content analysis and workspace processing
     - RelationshipAnalyzer: Relationship intelligence and interaction analysis
@@ -130,18 +138,18 @@ class StakeholderIntelligenceUnified:
             enable_performance=self.enable_performance,
             max_stakeholders=self.max_stakeholders,
         )
-        
+
         self.detection_engine = StakeholderDetectionEngine(
             cache_manager=cache_manager,
             enable_performance=self.enable_performance,
         )
-        
+
         self.content_processor = ContentProcessor(
             detection_engine=self.detection_engine,
             repository=self.repository,
             enable_performance=self.enable_performance,
         )
-        
+
         self.relationship_analyzer = RelationshipAnalyzer(
             repository=self.repository,
             cache_manager=cache_manager,
@@ -152,7 +160,9 @@ class StakeholderIntelligenceUnified:
         # Legacy compatibility layer for migration period
         self._init_legacy_compatibility()
 
-        print("✅ Phase 3A.3.4: StakeholderIntelligenceUnified initialized with SOLID component architecture")
+        print(
+            "✅ Phase 3A.3.4: StakeholderIntelligenceUnified initialized with SOLID component architecture"
+        )
 
     def _init_legacy_compatibility(self) -> None:
         """Initialize legacy compatibility during migration"""
@@ -186,18 +196,18 @@ class StakeholderIntelligenceUnified:
     # === INTERACTION TRACKING (SOLID Component Delegation) ===
 
     def record_interaction(
-        self, 
-        stakeholder_id: str, 
+        self,
+        stakeholder_id: str,
         interaction_type: str,
         context: Dict[str, Any],
         outcome: Optional[str] = None,
     ) -> bool:
         """Record stakeholder interaction - Phase 3A.3.4: Delegates to RelationshipAnalyzer component"""
-        return self.relationship_analyzer.record_interaction(stakeholder_id, interaction_type, context, outcome)
+        return self.relationship_analyzer.record_interaction(
+            stakeholder_id, interaction_type, context, outcome
+        )
 
-    def get_relationship_context(
-        self, query: str, limit: int = 5
-    ) -> Dict[str, Any]:
+    def get_relationship_context(self, query: str, limit: int = 5) -> Dict[str, Any]:
         """Get relationship context for strategic queries - Phase 3A.3.4: Delegates to RelationshipAnalyzer component"""
         return self.relationship_analyzer.get_relationship_context(query, limit)
 
@@ -213,7 +223,9 @@ class StakeholderIntelligenceUnified:
         self, content: str, context: Dict[str, Any], auto_create: bool = True
     ) -> Dict[str, Any]:
         """Process content for stakeholders - Phase 3A.3.4: Delegates to ContentProcessor component"""
-        return self.content_processor.process_content_for_stakeholders(content, context, auto_create)
+        return self.content_processor.process_content_for_stakeholders(
+            content, context, auto_create
+        )
 
     def process_workspace_for_stakeholders(
         self, workspace_path: Optional[str] = None
@@ -249,6 +261,7 @@ class StakeholderIntelligenceUnified:
 
 # === LEGACY COMPATIBILITY FUNCTIONS ===
 
+
 def detect_stakeholders(content: str, context: Dict[str, Any]) -> List[Dict[str, Any]]:
     """Legacy function for backward compatibility"""
     engine = StakeholderDetectionEngine()
@@ -263,6 +276,7 @@ def get_stakeholder_intelligence():
 # === LEGACY COMPATIBILITY WRAPPER CLASSES ===
 # These are imported from stakeholder_components/ but also need to be available at this module level
 
+
 class StakeholderLayerMemory:
     """Legacy compatibility wrapper for context_engineering/stakeholder_layer.py"""
 
@@ -270,6 +284,7 @@ class StakeholderLayerMemory:
         # Initialize with proper lazy loading to prevent circular imports
         def _init():
             return StakeholderIntelligenceUnified(config, enable_performance)
+
         self._unified = _init()
 
     def get_relationship_context(self, query: str) -> Dict[str, Any]:
@@ -290,6 +305,7 @@ class StakeholderIntelligence:
     ):
         def _init():
             return StakeholderIntelligenceUnified(config, enable_performance)
+
         self._unified = _init()
 
     def detect_stakeholders_in_content(

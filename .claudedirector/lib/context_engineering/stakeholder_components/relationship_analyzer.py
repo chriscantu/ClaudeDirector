@@ -18,13 +18,13 @@ from ..stakeholder_intelligence_types import StakeholderProfile
 class RelationshipAnalyzer:
     """
     Stakeholder relationship intelligence and interaction analysis
-    
+
     Single Responsibility: Analyze stakeholder relationships, record interactions,
     generate insights, and calculate relationship health metrics.
     """
 
     def __init__(
-        self, 
+        self,
         repository=None,
         cache_manager=None,
         enable_performance: bool = True,
@@ -36,7 +36,7 @@ class RelationshipAnalyzer:
         self.cache_manager = cache_manager
         self.enable_performance = enable_performance and cache_manager is not None
         self.interaction_retention_days = interaction_retention_days
-        
+
         # In-memory storage for interactions
         self.interactions: List[Dict[str, Any]] = []
 
@@ -49,13 +49,13 @@ class RelationshipAnalyzer:
     ) -> bool:
         """
         Record stakeholder interaction with outcome tracking
-        
+
         Args:
             stakeholder_id: ID of stakeholder involved
             interaction_type: Type of interaction (meeting, email, review, etc.)
             context: Context information about the interaction
             outcome: Outcome assessment (positive, negative, neutral)
-            
+
         Returns:
             True if recorded successfully, False otherwise
         """
@@ -63,11 +63,13 @@ class RelationshipAnalyzer:
             if not self.repository:
                 self.logger.error("Repository required for interaction recording")
                 return False
-                
+
             # Verify stakeholder exists
             stakeholder = self.repository.get_stakeholder(stakeholder_id)
             if not stakeholder:
-                self.logger.warning(f"Cannot record interaction for unknown stakeholder: {stakeholder_id}")
+                self.logger.warning(
+                    f"Cannot record interaction for unknown stakeholder: {stakeholder_id}"
+                )
                 return False
 
             interaction = {
@@ -93,30 +95,30 @@ class RelationshipAnalyzer:
                 self.cache_manager.delete_pattern(f"relationship_*")
                 self.cache_manager.delete_pattern(f"interaction_*")
 
-            self.logger.debug(f"Recorded interaction for {stakeholder_id}: {interaction_type}")
+            self.logger.debug(
+                f"Recorded interaction for {stakeholder_id}: {interaction_type}"
+            )
             return True
 
         except Exception as e:
             self.logger.error(f"Failed to record interaction: {e}")
             return False
 
-    def get_relationship_context(
-        self, query: str, limit: int = 5
-    ) -> Dict[str, Any]:
+    def get_relationship_context(self, query: str, limit: int = 5) -> Dict[str, Any]:
         """
         Get relationship context for strategic queries
-        
+
         Args:
             query: Query text to analyze for stakeholder context
             limit: Maximum number of stakeholders to return
-            
+
         Returns:
             Relationship context with stakeholders and insights
         """
         try:
             if not self.repository:
                 return {"error": "Repository not available"}
-                
+
             # Use caching for performance
             if self.enable_performance:
                 cache_key = f"relationship_context:{hash(query)}:{limit}"
@@ -135,13 +137,19 @@ class RelationshipAnalyzer:
                     relevant_stakeholders.append(stakeholder.to_dict())
 
             # Generate relationship insights
-            insights = self._generate_relationship_insights(query, relevant_stakeholders)
+            insights = self._generate_relationship_insights(
+                query, relevant_stakeholders
+            )
 
             # Get recent interactions
-            recent_interactions = self._get_recent_interactions(mentioned_stakeholder_ids)
+            recent_interactions = self._get_recent_interactions(
+                mentioned_stakeholder_ids
+            )
 
             # Generate strategic recommendations
-            recommendations = self._generate_strategic_recommendations(query_lower, relevant_stakeholders)
+            recommendations = self._generate_strategic_recommendations(
+                query_lower, relevant_stakeholders
+            )
 
             result = {
                 "query": query,
@@ -167,7 +175,7 @@ class RelationshipAnalyzer:
         """Extract stakeholder mentions from text"""
         if not self.repository:
             return []
-            
+
         mentioned = []
         text_lower = text.lower()
 
@@ -227,62 +235,74 @@ class RelationshipAnalyzer:
 
             # Communication style insight
             style = profile.get("communication_style", "collaborative")
-            insights.append({
-                "type": "communication_style",
-                "stakeholder": stakeholder_name,
-                "insight": f"Prefers {style} communication approach",
-                "recommendation": self._get_style_recommendation(style),
-                "priority": "medium",
-            })
+            insights.append(
+                {
+                    "type": "communication_style",
+                    "stakeholder": stakeholder_name,
+                    "insight": f"Prefers {style} communication approach",
+                    "recommendation": self._get_style_recommendation(style),
+                    "priority": "medium",
+                }
+            )
 
             # Influence level insight
             influence = profile.get("influence_level", "medium")
             if influence in ["critical", "high"]:
-                insights.append({
-                    "type": "influence",
-                    "stakeholder": stakeholder_name,
-                    "insight": f"{influence.title()} influence stakeholder - key decision maker",
-                    "recommendation": "Ensure alignment and clear communication of strategic value",
-                    "priority": "high",
-                })
+                insights.append(
+                    {
+                        "type": "influence",
+                        "stakeholder": stakeholder_name,
+                        "insight": f"{influence.title()} influence stakeholder - key decision maker",
+                        "recommendation": "Ensure alignment and clear communication of strategic value",
+                        "priority": "high",
+                    }
+                )
 
             # Platform position insight
             position = profile.get("platform_position", "unknown")
             if position == "opponent":
-                insights.append({
-                    "type": "platform_risk",
-                    "stakeholder": stakeholder_name,
-                    "insight": "Platform opponent - requires careful engagement",
-                    "recommendation": "Focus on business value and address concerns directly",
-                    "priority": "high",
-                })
+                insights.append(
+                    {
+                        "type": "platform_risk",
+                        "stakeholder": stakeholder_name,
+                        "insight": "Platform opponent - requires careful engagement",
+                        "recommendation": "Focus on business value and address concerns directly",
+                        "priority": "high",
+                    }
+                )
             elif position == "supporter":
-                insights.append({
-                    "type": "platform_opportunity",
-                    "stakeholder": stakeholder_name,
-                    "insight": "Platform supporter - leverage for advocacy",
-                    "recommendation": "Engage for testimonials and support in decisions",
-                    "priority": "medium",
-                })
+                insights.append(
+                    {
+                        "type": "platform_opportunity",
+                        "stakeholder": stakeholder_name,
+                        "insight": "Platform supporter - leverage for advocacy",
+                        "recommendation": "Engage for testimonials and support in decisions",
+                        "priority": "medium",
+                    }
+                )
 
             # Relationship quality insight
             quality = profile.get("relationship_quality", 0.7)
             if quality < 0.5:
-                insights.append({
-                    "type": "relationship_risk",
-                    "stakeholder": stakeholder_name,
-                    "insight": f"Low relationship quality ({quality:.2f})",
-                    "recommendation": "Consider relationship building activities or conflict resolution",
-                    "priority": "high",
-                })
+                insights.append(
+                    {
+                        "type": "relationship_risk",
+                        "stakeholder": stakeholder_name,
+                        "insight": f"Low relationship quality ({quality:.2f})",
+                        "recommendation": "Consider relationship building activities or conflict resolution",
+                        "priority": "high",
+                    }
+                )
             elif quality > 0.9:
-                insights.append({
-                    "type": "relationship_strength",
-                    "stakeholder": stakeholder_name,
-                    "insight": f"Strong relationship ({quality:.2f})",
-                    "recommendation": "Leverage strong relationship for strategic initiatives",
-                    "priority": "low",
-                })
+                insights.append(
+                    {
+                        "type": "relationship_strength",
+                        "stakeholder": stakeholder_name,
+                        "insight": f"Strong relationship ({quality:.2f})",
+                        "recommendation": "Leverage strong relationship for strategic initiatives",
+                        "priority": "low",
+                    }
+                )
 
         return insights
 
@@ -334,14 +354,18 @@ class RelationshipAnalyzer:
             platform_distribution[position] = platform_distribution.get(position, 0) + 1
 
         return {
-            "status": "healthy" if avg_relationship_quality > 0.7 else "needs_attention",
+            "status": (
+                "healthy" if avg_relationship_quality > 0.7 else "needs_attention"
+            ),
             "total_stakeholders": total_stakeholders,
             "average_relationship_quality": avg_relationship_quality,
             "average_trust_level": avg_trust_level,
             "influence_distribution": influence_distribution,
             "platform_distribution": platform_distribution,
             "recent_interactions": len(self.interactions),
-            "relationship_risks": sum(1 for s in stakeholder_list if s.relationship_quality < 0.5),
+            "relationship_risks": sum(
+                1 for s in stakeholder_list if s.relationship_quality < 0.5
+            ),
         }
 
     def _generate_strategic_recommendations(
@@ -351,24 +375,34 @@ class RelationshipAnalyzer:
         recommendations = []
 
         # Platform-related queries
-        if any(word in query_lower for word in ["platform", "architecture", "technical"]):
-            opponents = [p for p in profiles if p.get("platform_position") == "opponent"]
+        if any(
+            word in query_lower for word in ["platform", "architecture", "technical"]
+        ):
+            opponents = [
+                p for p in profiles if p.get("platform_position") == "opponent"
+            ]
             if opponents:
-                recommendations.append({
-                    "type": "platform_opposition",
-                    "priority": "high",
-                    "message": f"{len(opponents)} platform opponents in stakeholder set",
-                    "action": "Focus on business value, ROI, and address specific concerns with data",
-                })
+                recommendations.append(
+                    {
+                        "type": "platform_opposition",
+                        "priority": "high",
+                        "message": f"{len(opponents)} platform opponents in stakeholder set",
+                        "action": "Focus on business value, ROI, and address specific concerns with data",
+                    }
+                )
 
         # Financial decision context
-        if any(word in query_lower for word in ["budget", "cost", "investment", "resource"]):
-            recommendations.append({
-                "type": "financial_communication",
-                "priority": "medium",
-                "message": "Financial decision context detected",
-                "action": "Prepare ROI analysis, cost-benefit breakdown, and competitive comparisons",
-            })
+        if any(
+            word in query_lower for word in ["budget", "cost", "investment", "resource"]
+        ):
+            recommendations.append(
+                {
+                    "type": "financial_communication",
+                    "priority": "medium",
+                    "message": "Financial decision context detected",
+                    "action": "Prepare ROI analysis, cost-benefit breakdown, and competitive comparisons",
+                }
+            )
 
         return recommendations
 
@@ -383,22 +417,27 @@ class RelationshipAnalyzer:
         # Adjust relationship metrics based on outcome
         outcome = interaction.get("outcome", "neutral")
         if outcome == "positive":
-            stakeholder.relationship_quality = min(1.0, stakeholder.relationship_quality + 0.05)
+            stakeholder.relationship_quality = min(
+                1.0, stakeholder.relationship_quality + 0.05
+            )
             stakeholder.trust_level = min(1.0, stakeholder.trust_level + 0.03)
         elif outcome == "negative":
-            stakeholder.relationship_quality = max(0.0, stakeholder.relationship_quality - 0.1)
+            stakeholder.relationship_quality = max(
+                0.0, stakeholder.relationship_quality - 0.1
+            )
             stakeholder.trust_level = max(0.0, stakeholder.trust_level - 0.05)
 
     def _cleanup_old_interactions(self) -> None:
         """Remove interactions older than retention period"""
         cutoff_time = time.time() - (self.interaction_retention_days * 24 * 3600)
-        
+
         original_count = len(self.interactions)
         self.interactions = [
-            interaction for interaction in self.interactions
+            interaction
+            for interaction in self.interactions
             if interaction.get("timestamp", 0) > cutoff_time
         ]
-        
+
         cleaned_count = original_count - len(self.interactions)
         if cleaned_count > 0:
             self.logger.debug(f"Cleaned up {cleaned_count} old interactions")
@@ -411,11 +450,13 @@ class RelationshipAnalyzer:
         # Interaction type distribution
         type_distribution = {}
         outcome_distribution = {"positive": 0, "negative": 0, "neutral": 0}
-        
+
         for interaction in self.interactions:
             interaction_type = interaction.get("type", "unknown")
-            type_distribution[interaction_type] = type_distribution.get(interaction_type, 0) + 1
-            
+            type_distribution[interaction_type] = (
+                type_distribution.get(interaction_type, 0) + 1
+            )
+
             outcome = interaction.get("outcome", "neutral")
             if outcome in outcome_distribution:
                 outcome_distribution[outcome] += 1
@@ -423,7 +464,8 @@ class RelationshipAnalyzer:
         # Recent activity (last 30 days)
         recent_cutoff = time.time() - (30 * 24 * 3600)
         recent_interactions = sum(
-            1 for interaction in self.interactions
+            1
+            for interaction in self.interactions
             if interaction.get("timestamp", 0) > recent_cutoff
         )
 
