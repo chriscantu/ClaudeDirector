@@ -24,9 +24,9 @@ from .organizational_layer import OrganizationalLayerMemory
 from .context_orchestrator import ContextOrchestrator
 from .workspace_integration import WorkspaceMonitor, WorkspaceContext
 from .analytics_engine import AnalyticsEngine  # Phase 2.2 Analytics Integration
-from .organizational_learning_engine import (
-    OrganizationalLearningEngine,
-)  # Phase 3.1 Organizational Learning
+from .organizational_processor import (
+    OrganizationalProcessor,
+)  # Phase 3B Sequential Thinking: Consolidated organizational intelligence
 from .team_dynamics_engine import (
     TeamDynamicsEngine,
 )  # Phase 3.2 Team Dynamics
@@ -112,22 +112,17 @@ class AdvancedContextEngine:
 
         if self.org_learning_enabled:
             try:
-                self.org_learning_engine = OrganizationalLearningEngine(
-                    org_learning_config
-                )
+                self.org_learning_engine = OrganizationalProcessor(org_learning_config)
 
-                # Integrate with Analytics Engine if available
-                if self.analytics_enabled and self.analytics_engine:
-                    self.org_learning_engine.set_analytics_integration(
-                        self.analytics_engine
-                    )
+                # TODO: Analytics integration - add to OrganizationalProcessor in future iteration
+                # Skipping analytics integration for now during Sequential Thinking consolidation
 
                 self.logger.info(
-                    "Organizational Learning Engine integrated successfully"
+                    "Organizational Processor (Sequential Thinking) integrated successfully"
                 )
             except Exception as e:
                 self.logger.warning(
-                    f"Failed to initialize Organizational Learning Engine: {e}"
+                    f"Failed to initialize Organizational Processor: {e}"
                 )
                 self.org_learning_enabled = False
 
