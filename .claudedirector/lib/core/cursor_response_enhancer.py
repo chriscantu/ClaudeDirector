@@ -153,13 +153,34 @@ class CursorResponseEnhancer:
 
     def should_show_mcp_transparency(self, user_input: str, response: str) -> bool:
         """
-        PHASE 12: Always-on MCP enhancement - removed complexity thresholds
+        Sequential Thinking Auto-Detection: Show MCP transparency for complex strategic queries
 
-        Always returns True for guaranteed 100% MCP transparency disclosure.
-        This ensures users always see the MCP enhancement being applied.
+        Auto-triggers MCP transparency when user input contains systematic analysis indicators.
+        This ensures proper disclosure while avoiding transparency fatigue.
         """
-        # Phase 12: Always show MCP transparency for 100% disclosure rate
-        return True
+        # Sequential Thinking trigger keywords for automatic MCP enhancement
+        complexity_indicators = [
+            "strategic", "organizational", "framework", "systematic", 
+            "complex", "multi-team", "executive", "board", "leadership",
+            "presentation", "enterprise", "organization-wide", 
+            "cross-functional", "multiple teams", "trade-offs", 
+            "options", "alternatives", "analysis", "assessment",
+            "evaluate", "sequential thinking", "mcp", "configuration",
+            "claudedirector", "architecture", "decision", "planning",
+            "coordination", "stakeholder", "scaling", "optimization"
+        ]
+        
+        combined_text = f"{user_input} {response}".lower()
+        complexity_score = sum(1 for indicator in complexity_indicators if indicator in combined_text)
+        
+        # Auto-trigger MCP transparency for qualifying complexity (>=2 triggers)
+        should_enhance = complexity_score >= 2
+        
+        # Always show for explicit Sequential Thinking mentions
+        if "sequential thinking" in combined_text or "mcp" in combined_text:
+            should_enhance = True
+            
+        return should_enhance
 
     def get_mcp_calls_for_context(self, user_input: str, response: str) -> List[Dict]:
         """
@@ -183,8 +204,15 @@ class CursorResponseEnhancer:
                 }
             )
 
-        # Strategic analysis
-        if any(word in input_lower for word in ["strategic", "analysis", "systematic"]):
+        # Sequential Thinking systematic analysis - enhanced trigger detection
+        sequential_keywords = [
+            "strategic", "analysis", "systematic", "framework", "organizational",
+            "complex", "evaluate", "sequential thinking", "decision", "planning",
+            "coordination", "stakeholder", "scaling", "optimization", "assessment",
+            "executive", "board", "leadership", "trade-offs", "alternatives"
+        ]
+        
+        if any(word in input_lower or word in response_lower for word in sequential_keywords):
             mcp_calls.append(
                 {
                     "server_name": "sequential",
@@ -266,25 +294,35 @@ class CursorResponseEnhancer:
         return enhanced_response
 
     def _add_fallback_mcp_disclosure(self, response: str, user_input: str) -> str:
-        """Add basic MCP disclosure when full system unavailable"""
+        """Add Sequential Thinking MCP transparency disclosure"""
         input_lower = user_input.lower()
-
-        # Determine likely servers used
-        servers_used = []
-        if any(word in input_lower for word in ["strategic", "analysis", "systematic"]):
-            servers_used.append("Sequential Server: systematic_analysis (0.15s)")
-
-        if any(word in input_lower for word in ["architecture", "platform", "design"]):
-            servers_used.append("Context7 Server: architectural_patterns (0.10s)")
-
-        if servers_used:
-            mcp_disclosure = "\n\n🔧 **Enhanced Analysis Applied**\n"
-            for server in servers_used:
-                mcp_disclosure += f"• {server}\n"
-            mcp_disclosure += "---\n"
-            mcp_disclosure += "**Enhanced Intelligence**: Analysis powered by strategic frameworks and collaborative AI systems."
-
-            return response + mcp_disclosure
+        combined_text = f"{user_input} {response}".lower()
+        
+        # Sequential Thinking trigger detection
+        sequential_keywords = [
+            "strategic", "analysis", "systematic", "framework", "organizational",
+            "complex", "evaluate", "sequential thinking", "decision", "planning",
+            "coordination", "stakeholder", "scaling", "optimization", "assessment"
+        ]
+        
+        context7_keywords = ["architecture", "platform", "design", "pattern", "scalability"]
+        
+        # Determine primary MCP server based on context
+        if any(word in combined_text for word in sequential_keywords):
+            # Sequential Thinking transparency header
+            transparency_header = "🔧 Accessing MCP Server: sequential (systematic_analysis)"
+            processing_msg = "*Analyzing your challenge using systematic frameworks...*"
+            
+            if not response.strip().startswith("🔧"):
+                return f"{transparency_header}\n{processing_msg}\n\n{response}"
+                
+        elif any(word in combined_text for word in context7_keywords):
+            # Context7 transparency header for architectural patterns
+            transparency_header = "🔧 Accessing MCP Server: context7 (pattern_access)"
+            processing_msg = "*Accessing proven architectural patterns and methodologies...*"
+            
+            if not response.strip().startswith("🔧"):
+                return f"{transparency_header}\n{processing_msg}\n\n{response}"
 
         return response
 

@@ -137,6 +137,7 @@ class PreCommitBloatPrevention:
                 "predictive_processor.py",
                 "organizational_processor.py",
                 "visualization_dashboard_factory.py",
+                "cursor_response_enhancer.py",  # Sequential Thinking MCP auto-detection
             ]
 
             has_sequential_thinking = any(
