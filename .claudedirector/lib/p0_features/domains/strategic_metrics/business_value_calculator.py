@@ -78,14 +78,14 @@ class BusinessImpactReport:
     roi_percentage: Decimal
     efficiency_gains: Decimal
     risk_mitigation_value: Decimal
-    
+
     # Strategic alignment metrics
     strategic_alignment_score: float
     competitive_advantage_score: float
-    
+
     # Individual metrics breakdown
     business_metrics: List[BusinessMetric]
-    
+
     # Calculation metadata
     calculation_period_days: int
     data_quality_score: float
@@ -111,9 +111,9 @@ class BusinessValueCalculator:
         """🏗️ Sequential Thinking Phase 5.1.3: Lightweight facade initialization"""
         # Import BusinessIntelligenceProcessor for delegation
         from .business_intelligence_processor import BusinessIntelligenceProcessor
-        
+
         self.processor = BusinessIntelligenceProcessor()
-        
+
         # Preserve original interface dependencies for backward compatibility
         self.database_bridge = HybridToUnifiedBridge()
         self.analytics_pipeline = None  # Unified bridge handles all analytics
@@ -129,13 +129,15 @@ class BusinessValueCalculator:
         🏗️ Sequential Thinking Phase 5.1.3: Delegate to BusinessIntelligenceProcessor
         Calculate comprehensive business impact using processor
         """
-        return self.processor.calculate_comprehensive_business_impact(analysis_period_days)
+        return self.processor.calculate_comprehensive_business_impact(
+            analysis_period_days
+        )
 
     def calculate_roi_justification(
-        self, 
-        investment_amount: Decimal, 
+        self,
+        investment_amount: Decimal,
         time_horizon_months: int = 12,
-        risk_factor: float = 0.1
+        risk_factor: float = 0.1,
     ) -> Dict[str, Any]:
         """
         🏗️ Sequential Thinking Phase 5.1.3: Delegate to BusinessIntelligenceProcessor
@@ -188,7 +190,9 @@ class BusinessValueCalculator:
         🏗️ Sequential Thinking Phase 5.1.3: Delegate to BusinessIntelligenceProcessor
         Calculate stakeholder satisfaction business value using processor
         """
-        return self.processor.calculate_stakeholder_satisfaction_value(satisfaction_improvements)
+        return self.processor.calculate_stakeholder_satisfaction_value(
+            satisfaction_improvements
+        )
 
     def calculate_competitive_advantage_score(
         self, performance_metrics: Dict[str, Any]

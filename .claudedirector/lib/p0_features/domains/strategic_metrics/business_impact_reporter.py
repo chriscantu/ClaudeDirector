@@ -159,9 +159,9 @@ class BusinessImpactReporter:
         """🏗️ Sequential Thinking Phase 5.1.2: Lightweight facade initialization"""
         # Import BusinessIntelligenceProcessor for delegation
         from .business_intelligence_processor import BusinessIntelligenceProcessor
-        
+
         self.processor = BusinessIntelligenceProcessor()
-        
+
         # Preserve original interface for backward compatibility
         self.business_calculator = business_calculator or BusinessValueCalculator()
         self.roi_tracker = roi_tracker or ROIInvestmentTracker()
@@ -197,9 +197,7 @@ class BusinessImpactReporter:
         """
         return self.processor.generate_stakeholder_update(stakeholder_type, time_period)
 
-    def export_report(
-        self, report: BusinessImpactReport, format: str
-    ) -> str:
+    def export_report(self, report: BusinessImpactReport, format: str) -> str:
         """
         🏗️ Sequential Thinking Phase 5.1.2: Delegate to BusinessIntelligenceProcessor
         Export report in specified format using processor
