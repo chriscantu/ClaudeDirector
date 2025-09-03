@@ -49,6 +49,9 @@ from .html_template_processor import HTMLTemplateProcessor
 # Phase 4.3.1: Visualization utility processor consolidation for DRY compliance (Sequential Thinking)
 from .visualization_utility_processor import VisualizationUtilityProcessor
 
+# Phase 4.3.2: Ultimate orchestration processor consolidation for DRY compliance (Sequential Thinking)
+from .visualization_orchestration_processor import VisualizationOrchestrationProcessor
+
 # Phase 1 integration
 from .strategic_python_server import StrategicPythonMCPServer, ExecutionResult
 from .constants import MCPServerConstants
@@ -88,11 +91,6 @@ class ExecutiveVisualizationEngine:
         # Phase 4.2.1: HTML template processor consolidation (Sequential Thinking DRY consolidation)
         self.html_processor = HTMLTemplateProcessor()
 
-        # Phase 4.3.1: Visualization utility processor consolidation (Sequential Thinking DRY consolidation)
-        self.utility_processor = VisualizationUtilityProcessor(
-            self.color_palette, self.layout_template, self.visualization_metrics
-        )
-
         # Visualization capabilities
         self.capabilities = [
             MCPServerConstants.Capabilities.EXECUTIVE_DASHBOARDS,
@@ -110,6 +108,22 @@ class ExecutiveVisualizationEngine:
             MCPServerConstants.MetricsKeys.INTERACTIVE_FEATURES_USED: 0,
         }
 
+        # Phase 4.3.1: Visualization utility processor consolidation (Sequential Thinking DRY consolidation)
+        self.utility_processor = VisualizationUtilityProcessor(
+            self.color_palette, self.layout_template, self.visualization_metrics
+        )
+
+        # Phase 4.3.2: Ultimate orchestration processor consolidation (Sequential Thinking DRY consolidation)
+        self.orchestration_processor = VisualizationOrchestrationProcessor(
+            self.template_router,
+            self.dashboard_factory,
+            self.html_processor,
+            self.utility_processor,
+            self.chat_generator,
+            self.visualization_metrics,
+            self.version,
+        )
+
         # Phase 1 integration
         self.strategic_python_server = None
 
@@ -123,75 +137,10 @@ class ExecutiveVisualizationEngine:
         title: str,
         context: Dict[str, Any] = None,
     ) -> VisualizationResult:
-        """Create executive-quality interactive visualization"""
-
-        start_time = time.time()
-        context = context or {}
-
-        try:
-            # Update metrics
-            self.visualization_metrics[
-                MCPServerConstants.MetricsKeys.TOTAL_VISUALIZATIONS
-            ] += 1
-
-            # Process data if it's a string (from Phase 1 analysis)
-            if isinstance(data, str):
-                data = self._parse_analysis_output(data)
-
-            # Get persona-specific template (Phase 3B.2.1 - Consolidated router)
-            template_func = self.template_router.get_template_for_persona(persona)
-
-            # Generate Plotly figure
-            fig = template_func(data, chart_type, title, context)
-
-            # Apply executive styling
-            fig = self._apply_executive_styling(fig, persona)
-
-            # Generate complete HTML
-            html_output = self._generate_executive_html(fig, persona, title)
-
-            # Calculate metrics
-            generation_time = time.time() - start_time
-            file_size = len(html_output.encode("utf-8"))
-            interactive_elements = self._detect_interactive_elements(fig)
-
-            # Update success metrics
-            self.visualization_metrics[
-                MCPServerConstants.MetricsKeys.SUCCESSFUL_GENERATIONS
-            ] += 1
-            self._update_performance_metrics(
-                generation_time, file_size, interactive_elements
-            )
-
-            result = VisualizationResult(
-                success=True,
-                html_output=html_output,
-                chart_type=chart_type,
-                persona=persona,
-                generation_time=generation_time,
-                file_size_bytes=file_size,
-                interactive_elements=interactive_elements,
-            )
-
-            logger.info(
-                f"Executive visualization generated: {chart_type} for {persona} ({generation_time:.2f}s)"
-            )
-            return result
-
-        except Exception as e:
-            logger.error(f"Executive visualization generation error: {str(e)}")
-            return VisualizationResult(
-                success=False,
-                html_output="",
-                chart_type=chart_type,
-                persona=persona,
-                generation_time=time.time() - start_time,
-                file_size_bytes=0,
-                interactive_elements=[],
-                error=MCPServerConstants.ErrorMessages.VISUALIZATION_GENERATION_ERROR.format(
-                    error=str(e)
-                ),
-            )
+        """🏗️ Sequential Thinking Phase 4.3.2: Delegate to orchestration processor"""
+        return await self.orchestration_processor.create_executive_visualization(
+            data, chart_type, persona, title, context, MCPServerConstants
+        )
 
     # Template methods consolidated in Phase 3B.2.1 (DRY compliance)
 
@@ -241,66 +190,10 @@ class ExecutiveVisualizationEngine:
         persona: str = "diego",
         context: Dict[str, Any] = None,
     ) -> VisualizationResult:
-        """
-        Generate visualization optimized for chat embedding via Magic MCP.
-
-        Phase 7 Week 2: PRD-compliant chat-only interface implementation.
-
-        Args:
-            query_data: Real-time data from ConversationalDataManager
-            persona: Strategic persona for visualization style
-            context: Chat conversation context
-
-        Returns:
-            VisualizationResult: Chat-optimized visualization
-        """
-        start_time = time.time()
-
-        try:
-            # Determine optimal chart type based on data structure
-            chart_type = self._infer_chart_type_from_data(query_data)
-
-            # Generate persona-specific visualization
-            title = self._generate_contextual_title(query_data, context)
-            fig = await self._create_chat_optimized_chart(
-                query_data, chart_type, title, persona
-            )
-
-            # Generate chat-embedded HTML with compact layout and context
-            html_output = self._generate_chat_embedded_html(
-                fig, title, persona, context
-            )
-
-            generation_time = time.time() - start_time
-
-            return VisualizationResult(
-                success=True,
-                html_output=html_output,
-                chart_type=f"chat_embedded_{chart_type}",
-                persona=persona,
-                generation_time=generation_time,
-                file_size_bytes=len(html_output.encode("utf-8")),
-                interactive_elements=["hover", "zoom", "pan"],
-                metadata={
-                    "chat_optimized": True,
-                    "magic_mcp_ready": True,
-                    "context_aware": bool(context),
-                    "data_source": query_data.get("source", "unknown"),
-                },
-            )
-
-        except Exception as e:
-            logger.error(f"Chat visualization generation failed: {str(e)}")
-            return VisualizationResult(
-                success=False,
-                html_output=self._generate_error_visualization(str(e)),
-                chart_type="error",
-                persona=persona,
-                generation_time=time.time() - start_time,
-                file_size_bytes=0,
-                interactive_elements=[],
-                metadata={"error": str(e)},
-            )
+        """🏗️ Sequential Thinking Phase 4.3.2: Delegate to orchestration processor"""
+        return await self.orchestration_processor.generate_chat_embedded_visualization(
+            query_data, persona, context
+        )
 
     def _infer_chart_type_from_data(self, data: Dict[str, Any]) -> str:
         """🏗️ Sequential Thinking Phase 4.3.1: Delegate to utility processor"""
@@ -315,22 +208,9 @@ class ExecutiveVisualizationEngine:
     async def _create_chat_optimized_chart(
         self, data: Dict[str, Any], chart_type: str, title: str, persona: str
     ) -> go.Figure:
-        """Create chart optimized for chat embedding (Phase 3B.2.2 - Consolidated)"""
-
-        # Special handling for architecture health (not in chat generator)
-        if chart_type == "architecture_health":
-            return self._create_architecture_health_dashboard(data, title)
-
-        # Map chart types to chat generator types
-        chat_type_mapping = {
-            "design_system_status": "design_system",
-            "simple_metrics": "default",
-        }
-
-        # Use consolidated chat generator (Phase 3B.2.2 - DRY compliance)
-        chat_chart_type = chat_type_mapping.get(chart_type, chart_type)
-        return self.chat_generator.create_chat_visualization(
-            data, chat_chart_type, title
+        """🏗️ Sequential Thinking Phase 4.3.2: Delegate to orchestration processor"""
+        return await self.orchestration_processor.create_chat_optimized_chart(
+            data, chart_type, title, persona
         )
 
     # Chat methods consolidated in Phase 3B.2.2 (ChatVisualizationGenerator)
@@ -406,65 +286,30 @@ class ExecutiveVisualizationEngine:
     def _create_architecture_health_dashboard(
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
-        """
-        Create comprehensive architecture health dashboard for Martin
-        Phase 3B.3.1: Consolidated using VisualizationDashboardFactory (Sequential Thinking)
-        """
-        # Normalize data format for dashboard factory
-        normalized_data = {
-            "service_performance": {
-                "services": data.get(
-                    "services",
-                    ["API Gateway", "User Service", "Data Service", "Auth Service"],
-                ),
-                "performance_scores": data.get("performance_scores", [95, 88, 92, 90]),
-            },
-            "system_health": {"score": data.get("overall_health", 92)},
-            "response_times": {
-                "timestamps": data.get(
-                    "timestamps", ["00:00", "06:00", "12:00", "18:00", "24:00"]
-                ),
-                "times": data.get("response_times", [120, 85, 95, 110, 100]),
-            },
-            "error_rates": {
-                "services": data.get(
-                    "error_types", ["4xx Client", "5xx Server", "Timeout", "Network"]
-                ),
-                "rates": data.get("error_counts", [12, 3, 5, 2]),
-            },
-        }
-
-        return self.dashboard_factory.create_dashboard(
-            "architecture_health", normalized_data, title
+        """🏗️ Sequential Thinking Phase 4.3.2: Delegate to orchestration processor"""
+        return self.orchestration_processor.create_architecture_health_dashboard(
+            data, title
         )
 
     def _create_service_performance_chart(
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
-        """🏗️ Sequential Thinking: Delegate to consolidated dashboard factory"""
-        return self.dashboard_factory.create_dashboard(
-            "service_performance", data, title
+        """🏗️ Sequential Thinking Phase 4.3.2: Delegate to orchestration processor"""
+        return self.orchestration_processor.create_service_performance_chart(
+            data, title
         )
 
     def _create_system_dependency_map(
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
-        """Create system dependency network visualization"""
-
-        # 🏗️ Sequential Thinking: Delegate to consolidated dashboard factory
-        return self.dashboard_factory.create_dashboard(
-            "system_dependencies", data, title
-        )
+        """🏗️ Sequential Thinking Phase 4.3.2: Delegate to orchestration processor"""
+        return self.orchestration_processor.create_system_dependency_map(data, title)
 
     def _create_technical_debt_trends(
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
-        """Create technical debt trend analysis"""
-
-        # 🏗️ Sequential Thinking: Delegate to consolidated dashboard factory
-        return self.dashboard_factory.create_dashboard(
-            "technical_debt_trends", data, title
-        )
+        """🏗️ Sequential Thinking Phase 4.3.2: Delegate to orchestration processor"""
+        return self.orchestration_processor.create_technical_debt_trends(data, title)
 
     # ========================================
     # Rachel's Design System Chart Methods
@@ -473,12 +318,8 @@ class ExecutiveVisualizationEngine:
     def _create_component_adoption_chart(
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
-        """Create component adoption tracking chart for Rachel"""
-
-        # 🏗️ Sequential Thinking: Delegate to consolidated dashboard factory
-        return self.dashboard_factory.create_dashboard(
-            "component_adoption", data, title
-        )
+        """🏗️ Sequential Thinking Phase 4.3.2: Delegate to orchestration processor"""
+        return self.orchestration_processor.create_component_adoption_chart(data, title)
 
     def _create_design_system_maturity(
         self, data: Dict[str, Any], title: str
@@ -505,10 +346,10 @@ class ExecutiveVisualizationEngine:
     def _create_design_debt_visualization(
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
-        """Create design debt visualization heatmap"""
-
-        # 🏗️ Sequential Thinking: Delegate to consolidated dashboard factory
-        return self.dashboard_factory.create_dashboard("design_debt", data, title)
+        """🏗️ Sequential Thinking Phase 4.3.2: Delegate to orchestration processor"""
+        return self.orchestration_processor.create_design_debt_visualization(
+            data, title
+        )
 
     async def health_check(self) -> Dict[str, Any]:
         """Perform health check on Executive Visualization Engine"""
