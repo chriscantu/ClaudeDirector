@@ -40,6 +40,9 @@ from .visualization_template_router import VisualizationTemplateRouter
 # Phase 3B.2.2: Consolidated chat visualization generator for DRY compliance
 from .chat_visualization_generator import ChatVisualizationGenerator
 
+# Phase 3B.3.1: Consolidated dashboard factory for DRY compliance (Sequential Thinking)
+from .visualization_dashboard_factory import VisualizationDashboardFactory
+
 # Phase 1 integration
 from .strategic_python_server import StrategicPythonMCPServer, ExecutionResult
 from .constants import MCPServerConstants
@@ -72,6 +75,9 @@ class ExecutiveVisualizationEngine:
         self.chat_generator = ChatVisualizationGenerator(
             self.color_palette, self.layout_template
         )
+
+        # Phase 3B.3.1: Consolidated dashboard factory (Sequential Thinking DRY consolidation)
+        self.dashboard_factory = VisualizationDashboardFactory(self.color_palette)
 
         # Visualization capabilities
         self.capabilities = [
@@ -185,156 +191,29 @@ class ExecutiveVisualizationEngine:
     def _create_leadership_dashboard(
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
-        """Create Diego's leadership metrics dashboard"""
+        """
+        Create Diego's leadership metrics dashboard
+        Phase 3B.3.1: Consolidated using VisualizationDashboardFactory (Sequential Thinking)
+        """
+        # Normalize data for dashboard factory compatibility
+        normalized_data = {
+            "velocity_trend": data.get("velocity_data", {}),
+            "support_volume": data.get("support_data", {}),
+            "initiative_progress": data.get("initiative_progress", {}),
+            "health_scores": data.get("platform_health", {}),
+        }
 
-        fig = make_subplots(
-            rows=2,
-            cols=2,
-            subplot_titles=(
-                "Team Velocity Trend",
-                "Support Volume Analysis",
-                "Strategic Initiative Progress",
-                "Platform Health Score",
-            ),
-            specs=[
-                [{"type": "scatter"}, {"type": "bar"}],
-                [{"type": "indicator"}, {"type": "pie"}],
-            ],
+        return self.dashboard_factory.create_dashboard(
+            "leadership", normalized_data, title
         )
-
-        # Team velocity trend
-        if "velocity_data" in data:
-            fig.add_trace(
-                go.Scatter(
-                    x=data["velocity_data"].get("dates", []),
-                    y=data["velocity_data"].get("velocity", []),
-                    mode="lines+markers",
-                    name="Team Velocity",
-                    line=dict(color=self.color_palette[0], width=3),
-                    marker=dict(size=8),
-                ),
-                row=1,
-                col=1,
-            )
-
-        # Support volume analysis
-        if "support_data" in data:
-            fig.add_trace(
-                go.Bar(
-                    x=data["support_data"].get("months", []),
-                    y=data["support_data"].get("volume", []),
-                    name="Support Volume",
-                    marker_color=self.color_palette[1],
-                ),
-                row=1,
-                col=2,
-            )
-
-        # Strategic initiative progress (indicator)
-        if "initiative_progress" in data:
-            fig.add_trace(
-                go.Indicator(
-                    mode="gauge+number+delta",
-                    value=data["initiative_progress"].get("current", 75),
-                    domain={"x": [0, 1], "y": [0, 1]},
-                    title={"text": "Initiative Progress"},
-                    delta={"reference": data["initiative_progress"].get("target", 80)},
-                    gauge={
-                        "axis": {"range": [None, 100]},
-                        "bar": {"color": self.color_palette[0]},
-                        "steps": [
-                            {"range": [0, 50], "color": "lightgray"},
-                            {"range": [50, 80], "color": "gray"},
-                        ],
-                        "threshold": {
-                            "line": {"color": "red", "width": 4},
-                            "thickness": 0.75,
-                            "value": 90,
-                        },
-                    },
-                ),
-                row=2,
-                col=1,
-            )
-
-        # Platform health (pie chart)
-        if "platform_health" in data:
-            fig.add_trace(
-                go.Pie(
-                    labels=data["platform_health"].get(
-                        "labels", ["Healthy", "Warning", "Critical"]
-                    ),
-                    values=data["platform_health"].get("values", [70, 25, 5]),
-                    name="Platform Health",
-                    marker_colors=self.color_palette[:3],
-                ),
-                row=2,
-                col=2,
-            )
-
-        fig.update_layout(title=title, showlegend=True, height=800)
-
-        return fig
 
     def _create_roi_dashboard(self, data: Dict[str, Any], title: str) -> go.Figure:
-        """Create Alvaro's ROI analysis dashboard"""
-
-        fig = make_subplots(
-            rows=2,
-            cols=2,
-            subplot_titles=(
-                "Investment ROI Trend",
-                "Cost vs Benefit Analysis",
-                "ROI by Initiative",
-                "Projected Returns",
-            ),
-            specs=[
-                [{"type": "scatter"}, {"type": "bar"}],
-                [{"type": "bar"}, {"type": "scatter"}],
-            ],
-        )
-
-        # ROI trend
-        if "roi_trend" in data:
-            fig.add_trace(
-                go.Scatter(
-                    x=data["roi_trend"].get("months", []),
-                    y=data["roi_trend"].get("roi", []),
-                    mode="lines+markers",
-                    name="ROI %",
-                    line=dict(color=self.color_palette[1], width=3),
-                    marker=dict(size=8),
-                ),
-                row=1,
-                col=1,
-            )
-
-        # Cost vs Benefit
-        if "cost_benefit" in data:
-            fig.add_trace(
-                go.Bar(
-                    x=data["cost_benefit"].get("categories", []),
-                    y=data["cost_benefit"].get("costs", []),
-                    name="Costs",
-                    marker_color=self.color_palette[2],
-                ),
-                row=1,
-                col=2,
-            )
-            fig.add_trace(
-                go.Bar(
-                    x=data["cost_benefit"].get("categories", []),
-                    y=data["cost_benefit"].get("benefits", []),
-                    name="Benefits",
-                    marker_color=self.color_palette[1],
-                ),
-                row=1,
-                col=2,
-            )
-
-        fig.update_layout(title=title, showlegend=True, height=800)
-
-        return fig
+        """
+        Create Alvaro's ROI analysis dashboard
+        Phase 3B.3.1: Consolidated using VisualizationDashboardFactory (Sequential Thinking)
+        """
+        # Use consolidated dashboard factory (DRY compliance)
+        return self.dashboard_factory.create_dashboard("roi", data, title)
 
     def _create_default_chart(
         self, data: Dict[str, Any], chart_type: str, title: str
@@ -904,121 +783,37 @@ class ExecutiveVisualizationEngine:
     def _create_architecture_health_dashboard(
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
-        """Create comprehensive architecture health dashboard for Martin"""
-
-        # Create subplot layout for comprehensive dashboard
-        fig = make_subplots(
-            rows=2,
-            cols=2,
-            subplot_titles=(
-                "Service Performance",
-                "System Health",
-                "Response Times",
-                "Error Rates",
-            ),
-            specs=[
-                [{"type": "bar"}, {"type": "indicator"}],
-                [{"type": "scatter"}, {"type": "bar"}],
-            ],
-        )
-
-        # Service Performance (top-left)
-        services = data.get(
-            "services", ["API Gateway", "User Service", "Data Service", "Auth Service"]
-        )
-        performance_scores = data.get("performance_scores", [95, 88, 92, 90])
-
-        fig.add_trace(
-            go.Bar(
-                x=services,
-                y=performance_scores,
-                name="Performance Score",
-                marker_color=self.color_palette[0],
-                text=[f"{score}%" for score in performance_scores],
-                textposition="outside",
-            ),
-            row=1,
-            col=1,
-        )
-
-        # System Health Gauge (top-right)
-        overall_health = data.get("overall_health", 92)
-        fig.add_trace(
-            go.Indicator(
-                mode="gauge+number+delta",
-                value=overall_health,
-                domain={"x": [0, 1], "y": [0, 1]},
-                title={"text": "Overall Health"},
-                gauge={
-                    "axis": {"range": [None, 100]},
-                    "bar": {"color": self.color_palette[1]},
-                    "steps": [
-                        {"range": [0, 50], "color": self.color_palette[2]},
-                        {"range": [50, 80], "color": self.color_palette[3]},
-                        {"range": [80, 100], "color": self.color_palette[1]},
-                    ],
-                    "threshold": {
-                        "line": {"color": "red", "width": 4},
-                        "thickness": 0.75,
-                        "value": 85,
-                    },
-                },
-            ),
-            row=1,
-            col=2,
-        )
-
-        # Response Times Trend (bottom-left)
-        timestamps = data.get(
-            "timestamps", ["00:00", "06:00", "12:00", "18:00", "24:00"]
-        )
-        response_times = data.get("response_times", [120, 85, 95, 110, 100])
-
-        fig.add_trace(
-            go.Scatter(
-                x=timestamps,
-                y=response_times,
-                mode="lines+markers",
-                name="Response Time (ms)",
-                line=dict(color=self.color_palette[4], width=3),
-                marker=dict(size=8),
-            ),
-            row=2,
-            col=1,
-        )
-
-        # Error Rates (bottom-right)
-        error_types = data.get(
-            "error_types", ["4xx Client", "5xx Server", "Timeout", "Network"]
-        )
-        error_counts = data.get("error_counts", [12, 3, 5, 2])
-
-        fig.add_trace(
-            go.Bar(
-                x=error_types,
-                y=error_counts,
-                name="Error Count",
-                marker_color=self.color_palette[2],
-                text=error_counts,
-                textposition="outside",
-            ),
-            row=2,
-            col=2,
-        )
-
-        # Update layout with Martin's architecture styling
-        fig.update_layout(
-            title={
-                "text": title,
-                "x": 0.5,
-                "font": {"size": 24, "color": self.color_palette[0]},
+        """
+        Create comprehensive architecture health dashboard for Martin
+        Phase 3B.3.1: Consolidated using VisualizationDashboardFactory (Sequential Thinking)
+        """
+        # Normalize data format for dashboard factory
+        normalized_data = {
+            "service_performance": {
+                "services": data.get(
+                    "services",
+                    ["API Gateway", "User Service", "Data Service", "Auth Service"],
+                ),
+                "performance_scores": data.get("performance_scores", [95, 88, 92, 90]),
             },
-            showlegend=False,
-            height=800,
-            **self.layout_template,
-        )
+            "system_health": {"score": data.get("overall_health", 92)},
+            "response_times": {
+                "timestamps": data.get(
+                    "timestamps", ["00:00", "06:00", "12:00", "18:00", "24:00"]
+                ),
+                "times": data.get("response_times", [120, 85, 95, 110, 100]),
+            },
+            "error_rates": {
+                "services": data.get(
+                    "error_types", ["4xx Client", "5xx Server", "Timeout", "Network"]
+                ),
+                "rates": data.get("error_counts", [12, 3, 5, 2]),
+            },
+        }
 
-        return fig
+        return self.dashboard_factory.create_dashboard(
+            "architecture_health", normalized_data, title
+        )
 
     def _create_service_performance_chart(
         self, data: Dict[str, Any], title: str
@@ -1404,59 +1199,39 @@ class ExecutiveVisualizationEngine:
     def _create_team_comparison_dashboard(
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
-        """Create team comparison dashboard for design system adoption"""
+        """
+        Create team comparison dashboard for design system adoption
+        Phase 3B.3.1: Consolidated using VisualizationDashboardFactory (Sequential Thinking)
+        """
+        # Normalize data for dashboard factory
+        normalized_data = {
+            "team_performance": {
+                "teams": data.get(
+                    "teams",
+                    ["Frontend", "Mobile", "Platform", "Marketing", "Analytics"],
+                ),
+                "performance_scores": data.get("adoption_scores", [92, 78, 85, 65, 71]),
+            },
+            "team_velocity": {
+                "sprints": ["S1", "S2", "S3", "S4", "S5"],
+                "velocity": data.get("components_used", [28, 22, 25, 15, 18]),
+            },
+            "quality_metrics": {
+                "teams": data.get(
+                    "teams",
+                    ["Frontend", "Mobile", "Platform", "Marketing", "Analytics"],
+                ),
+                "quality_scores": data.get("consistency_scores", [88, 72, 80, 58, 65]),
+            },
+            "resource_utilization": {
+                "resources": ["High", "Medium", "Low"],
+                "utilization": [60, 30, 10],
+            },
+        }
 
-        teams = data.get(
-            "teams", ["Frontend", "Mobile", "Platform", "Marketing", "Analytics"]
+        return self.dashboard_factory.create_dashboard(
+            "team_comparison", normalized_data, title
         )
-        adoption_scores = data.get("adoption_scores", [92, 78, 85, 65, 71])
-        components_used = data.get("components_used", [28, 22, 25, 15, 18])
-        consistency_scores = data.get("consistency_scores", [88, 72, 80, 58, 65])
-
-        # Create radar chart for team comparison
-        fig = go.Figure()
-
-        # Add trace for each metric
-        fig.add_trace(
-            go.Scatterpolar(
-                r=adoption_scores + [adoption_scores[0]],  # Close the polygon
-                theta=teams + [teams[0]],
-                fill="toself",
-                name="Adoption Score",
-                line_color=self.color_palette[0],
-            )
-        )
-
-        fig.add_trace(
-            go.Scatterpolar(
-                r=[score * 3 for score in components_used]
-                + [components_used[0] * 3],  # Scale for visibility
-                theta=teams + [teams[0]],
-                fill="toself",
-                name="Components Used (x3)",
-                line_color=self.color_palette[1],
-                opacity=0.6,
-            )
-        )
-
-        fig.add_trace(
-            go.Scatterpolar(
-                r=consistency_scores + [consistency_scores[0]],
-                theta=teams + [teams[0]],
-                fill="toself",
-                name="Consistency Score",
-                line_color=self.color_palette[2],
-                opacity=0.6,
-            )
-        )
-
-        fig.update_layout(
-            polar=dict(radialaxis=dict(visible=True, range=[0, 100])),
-            title={"text": title, "x": 0.5},
-            **self.layout_template,
-        )
-
-        return fig
 
     def _create_design_debt_visualization(
         self, data: Dict[str, Any], title: str

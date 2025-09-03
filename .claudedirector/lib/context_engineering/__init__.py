@@ -14,6 +14,9 @@ from .strategic_layer import StrategicLayerMemory
 from .stakeholder_layer import StakeholderLayerMemory
 from .learning_layer import LearningLayerMemory
 from .organizational_layer import OrganizationalLayerMemory
+
+# Phase 3B.1.2: Export consolidated organizational processor
+from .organizational_processor import OrganizationalProcessor
 from .context_orchestrator import ContextOrchestrator
 from .clarity_analyzer import (
     ClarityAnalyzer,
@@ -126,6 +129,7 @@ __all__ = [
     "StakeholderLayerMemory",
     "LearningLayerMemory",
     "OrganizationalLayerMemory",
+    "OrganizationalProcessor",  # Phase 3B.1.2: Export consolidated processor
     "ContextOrchestrator",
     "ClarityAnalyzer",
     "ActionDetectionEngine",

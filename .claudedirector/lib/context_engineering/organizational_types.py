@@ -191,6 +191,11 @@ class OrganizationalHealthMetrics:
     assessment_date: float
     improvement_areas: List[str]
     strengths: List[str]
+    calculated_timestamp: float = None  # P0 Test compatibility
+
+    def __post_init__(self):
+        if self.calculated_timestamp is None:
+            self.calculated_timestamp = self.assessment_date
 
 
 # Type aliases for improved code readability
