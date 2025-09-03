@@ -46,6 +46,9 @@ from .visualization_dashboard_factory import VisualizationDashboardFactory
 # Phase 4.2.1: HTML template processor consolidation for DRY compliance (Sequential Thinking)
 from .html_template_processor import HTMLTemplateProcessor
 
+# Phase 4.3.1: Visualization utility processor consolidation for DRY compliance (Sequential Thinking)
+from .visualization_utility_processor import VisualizationUtilityProcessor
+
 # Phase 1 integration
 from .strategic_python_server import StrategicPythonMCPServer, ExecutionResult
 from .constants import MCPServerConstants
@@ -84,6 +87,11 @@ class ExecutiveVisualizationEngine:
 
         # Phase 4.2.1: HTML template processor consolidation (Sequential Thinking DRY consolidation)
         self.html_processor = HTMLTemplateProcessor()
+
+        # Phase 4.3.1: Visualization utility processor consolidation (Sequential Thinking DRY consolidation)
+        self.utility_processor = VisualizationUtilityProcessor(
+            self.color_palette, self.layout_template, self.visualization_metrics
+        )
 
         # Visualization capabilities
         self.capabilities = [
@@ -295,54 +303,14 @@ class ExecutiveVisualizationEngine:
             )
 
     def _infer_chart_type_from_data(self, data: Dict[str, Any]) -> str:
-        """Infer optimal chart type based on data structure"""
-
-        # Sprint metrics -> progress visualization
-        if "progress" in data and "metrics" in data:
-            return "sprint_dashboard"
-
-        # Team performance -> radar/bar chart
-        if "metrics" in data and any(key in data for key in ["team", "performance"]):
-            return "team_performance"
-
-        # ROI analysis -> financial dashboard
-        if "investment" in data and "returns" in data:
-            return "roi_dashboard"
-
-        # Architecture health -> system status
-        if "services" in data or "health_score" in data:
-            return "architecture_health"
-
-        # Design system -> adoption metrics
-        if "adoption" in data or "components" in data:
-            return "design_system_status"
-
-        # GitHub activity -> timeline/activity chart
-        if "activity" in data or "contributors" in data:
-            return "github_activity"
-
-        # Default to simple bar chart
-        return "simple_metrics"
+        """🏗️ Sequential Thinking Phase 4.3.1: Delegate to utility processor"""
+        return self.utility_processor.infer_chart_type_from_data(data)
 
     def _generate_contextual_title(
         self, data: Dict[str, Any], context: Dict[str, Any] = None
     ) -> str:
-        """Generate contextual title based on data and conversation context"""
-
-        # Use data-specific titles
-        if "sprint_name" in data:
-            return f"{data['sprint_name']} - Current Status"
-        elif "team" in data:
-            return f"{data['team']} Performance Metrics"
-        elif "project" in data:
-            return f"{data['project']} ROI Analysis"
-        elif "system" in data:
-            return f"{data['system']} Health Dashboard"
-        elif "repository" in data:
-            return f"{data['repository']} Activity Overview"
-
-        # Fallback to generic title
-        return "Strategic Metrics Dashboard"
+        """🏗️ Sequential Thinking Phase 4.3.1: Delegate to utility processor"""
+        return self.utility_processor.generate_contextual_title(data, context)
 
     async def _create_chat_optimized_chart(
         self, data: Dict[str, Any], chart_type: str, title: str, persona: str
@@ -376,29 +344,14 @@ class ExecutiveVisualizationEngine:
         )
 
     def _apply_executive_styling(self, fig: go.Figure, persona: str) -> go.Figure:
-        """Apply Rachel's executive styling to figure"""
-
-        # Apply base layout template
-        fig.update_layout(**self.layout_template)
-
-        # Persona-specific styling enhancements
-        # Apply persona-specific styling
-        persona_color = MCPServerConstants.Colors.PERSONA_COLORS.get(
-            persona, MCPServerConstants.Colors.PRIMARY_BLUE
+        """🏗️ Sequential Thinking Phase 4.3.1: Delegate to utility processor"""
+        return self.utility_processor.apply_executive_styling(
+            fig,
+            persona,
+            MCPServerConstants.Colors.PERSONA_COLORS,
+            MCPServerConstants.Colors.PRIMARY_BLUE,
+            MCPServerConstants.Typography.TITLE_FONT_SIZE,
         )
-        persona_styles = {
-            "title": {
-                "font": {
-                    "size": MCPServerConstants.Typography.TITLE_FONT_SIZE,
-                    "color": persona_color,
-                }
-            },
-            "showlegend": True,
-        }
-
-        fig.update_layout(**persona_styles)
-
-        return fig
 
     def _generate_executive_html(self, fig: go.Figure, persona: str, title: str) -> str:
         """🏗️ Sequential Thinking Phase 4.2.1: Delegate to HTML template processor"""
@@ -411,119 +364,40 @@ class ExecutiveVisualizationEngine:
         )
 
     def _parse_analysis_output(self, output: str) -> Dict[str, Any]:
-        """Parse strategic analysis output into visualization data"""
-
-        # Try to extract JSON data from output
-        try:
-            # Look for JSON blocks in the output
-            import re
-
-            json_match = re.search(r"\{.*\}", output, re.DOTALL)
-            if json_match:
-                return json.loads(json_match.group())
-        except:
-            pass
-
-        # Fallback: create sample data structure
-        return {
-            "sample_data": True,
-            "x": ["Q1", "Q2", "Q3", "Q4"],
-            "y": [20, 25, 30, 35],
-            "analysis_output": output,
-        }
+        """🏗️ Sequential Thinking Phase 4.3.1: Delegate to utility processor"""
+        return self.utility_processor.parse_analysis_output(output)
 
     def _detect_interactive_elements(self, fig: go.Figure) -> List[str]:
-        """Detect interactive elements in the figure"""
-
-        elements = []
-
-        # Check for different trace types
-        for trace in fig.data:
-            if hasattr(trace, "type"):
-                elements.append(f"{trace.type}_chart")
-
-        # Check for subplots
-        if hasattr(fig, "layout") and hasattr(fig.layout, "annotations"):
-            if fig.layout.annotations:
-                elements.append("subplots")
-
-        # Default interactive features
-        elements.extend(["hover", "zoom", "pan"])
-
-        return list(set(elements))
+        """🏗️ Sequential Thinking Phase 4.3.1: Delegate to utility processor"""
+        return self.utility_processor.detect_interactive_elements(fig)
 
     def _update_performance_metrics(
         self, generation_time: float, file_size: int, interactive_elements: List[str]
     ):
-        """Update performance metrics"""
-
-        # Update average generation time
-        total_viz = self.visualization_metrics["total_visualizations"]
-        current_avg = self.visualization_metrics["avg_generation_time"]
-        self.visualization_metrics["avg_generation_time"] = (
-            current_avg * (total_viz - 1) + generation_time
-        ) / total_viz
-
-        # Update average file size
-        current_size_avg = self.visualization_metrics["avg_file_size"]
-        self.visualization_metrics["avg_file_size"] = (
-            current_size_avg * (total_viz - 1) + file_size
-        ) / total_viz
-
-        # Update interactive features count
-        self.visualization_metrics["interactive_features_used"] += len(
-            interactive_elements
+        """🏗️ Sequential Thinking Phase 4.3.1: Delegate to utility processor"""
+        self.utility_processor.update_performance_metrics(
+            generation_time, file_size, interactive_elements
         )
 
     def get_server_info(self) -> Dict[str, Any]:
-        """Get executive visualization server information"""
-
-        return {
-            "name": self.name,
-            "version": self.version,
-            "capabilities": self.capabilities,
-            "supported_personas": self.persona_manager.get_supported_personas(),
-            "supported_chart_types": [
-                "leadership_dashboard",
-                "team_metrics",
-                "strategic_trends",
-                "support_analysis",
-                "roi_analysis",
-                "investment_tracking",
-                "business_metrics",
-                "cost_analysis",
-                "architecture_health",
-                "performance_metrics",
-                "system_dependencies",
-                "technology_roadmap",
-                "innovation_metrics",
-                "design_system_health",
-                "adoption_metrics",
-            ],
-            "metrics": self.visualization_metrics,
-            "color_palette": self.color_palette,
-        }
+        """🏗️ Sequential Thinking Phase 4.3.1: Delegate to utility processor"""
+        # Get supported personas from constants
+        supported_personas = list(MCPServerConstants.Personas.PERSONA_TITLES.keys())
+        return self.utility_processor.get_server_info(
+            self.name,
+            self.version,
+            self.capabilities,
+            supported_personas,
+            self.color_palette,
+        )
 
     def get_transparency_disclosure(
         self, capability: str, persona: str, description: str
     ) -> str:
-        """Generate transparency disclosure for executive visualization"""
-
-        return f"""
-🔧 Accessing MCP Server: executive-visualization (Executive Visualization System)
-*Generating publication-quality interactive visualization using {persona} persona...*
-
-**Executive Visualization Enhancement**:
-- **Capability**: {capability}
-- **Persona**: {persona} (Executive Design System)
-- **Process**: {description}
-- **Quality**: Publication-ready interactive charts
-- **Integration**: Built on Phase 1 Strategic Python MCP foundation
-
-**Rachel's Design System**: Professional color palette, executive typography, responsive layout
-**Interactive Features**: Hover states, zoom, pan, filter capabilities
-**Performance**: <3s generation, <2MB output, optimized for presentations
-"""
+        """🏗️ Sequential Thinking Phase 4.3.1: Delegate to utility processor"""
+        return self.utility_processor.get_transparency_disclosure(
+            capability, persona, description
+        )
 
     # ========================================
     # Martin's Architecture Health Chart Methods
