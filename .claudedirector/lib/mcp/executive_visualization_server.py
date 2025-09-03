@@ -43,6 +43,9 @@ from .chat_visualization_generator import ChatVisualizationGenerator
 # Phase 3B.3.1: Consolidated dashboard factory for DRY compliance (Sequential Thinking)
 from .visualization_dashboard_factory import VisualizationDashboardFactory
 
+# Phase 4.2.1: HTML template processor consolidation for DRY compliance (Sequential Thinking)
+from .html_template_processor import HTMLTemplateProcessor
+
 # Phase 1 integration
 from .strategic_python_server import StrategicPythonMCPServer, ExecutionResult
 from .constants import MCPServerConstants
@@ -78,6 +81,9 @@ class ExecutiveVisualizationEngine:
 
         # Phase 3B.3.1: Consolidated dashboard factory (Sequential Thinking DRY consolidation)
         self.dashboard_factory = VisualizationDashboardFactory(self.color_palette)
+
+        # Phase 4.2.1: HTML template processor consolidation (Sequential Thinking DRY consolidation)
+        self.html_processor = HTMLTemplateProcessor()
 
         # Visualization capabilities
         self.capabilities = [
@@ -364,129 +370,9 @@ class ExecutiveVisualizationEngine:
     def _generate_chat_embedded_html(
         self, fig: go.Figure, title: str, persona: str, context: Dict[str, Any] = None
     ) -> str:
-        """Generate HTML optimized for chat embedding with data authenticity"""
-
-        # Convert to HTML with compact configuration
-        html_div = pio.to_html(
-            fig,
-            include_plotlyjs="cdn",
-            div_id=f"chat_viz_{int(time.time())}",
-            config={
-                "displayModeBar": True,
-                "displaylogo": False,
-                "modeBarButtonsToRemove": ["pan2d", "lasso2d", "select2d"],
-                "responsive": True,
-            },
-        )
-
-        # Add chat-specific styling
-        from jinja2 import Template
-
-        chat_template = Template(
-            """
-        <div class="claudedirector-chat-visualization" style="
-            max-width: 100%;
-            margin: 10px 0;
-            border: 1px solid #e1e5e9;
-            border-radius: 8px;
-            background: #ffffff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        ">
-            {% if data_authenticity == 'REAL' %}
-            <div class="real-data-indicator" style="
-                padding: 12px 16px;
-                background: #d4edda;
-                border: 2px solid #28a745;
-                border-radius: 6px 6px 0 0;
-                color: #155724;
-                font-weight: 700;
-                font-size: 14px;
-                text-align: center;
-            ">
-                &#x2705; REAL DATA - LIVE METRICS &#x2705;<br/>
-                <span style="font-size: 12px; font-weight: 500;">
-                    Connected to {{ server_info }} • Last updated: {{ last_updated }}
-                </span>
-            </div>
-            {% elif data_authenticity == 'API_FALLBACK' %}
-            <div class="api-fallback-indicator" style="
-                padding: 12px 16px;
-                background: #fff3cd;
-                border: 2px solid #ffc107;
-                border-radius: 6px 6px 0 0;
-                color: #856404;
-                font-weight: 700;
-                font-size: 14px;
-                text-align: center;
-            ">
-                &#x26A0; REAL DATA via API FALLBACK &#x26A0;<br/>
-                <span style="font-size: 12px; font-weight: 500;">
-                    MCP server unavailable, using REST API • {{ server_info }}
-                </span>
-            </div>
-            {% else %}
-            <div class="simulation-warning" style="
-                padding: 12px 16px;
-                background: #fff3cd;
-                border: 2px solid #ffc107;
-                border-radius: 6px 6px 0 0;
-                color: #856404;
-                font-weight: 700;
-                font-size: 14px;
-                text-align: center;
-            ">
-                &#x1F6A8; SIMULATED DATA - NOT REAL METRICS &#x1F6A8;<br/>
-                <span style="font-size: 12px; font-weight: 500;">
-                    This is realistic sample data for demonstration •
-                    <strong>Ask me: "How do I connect to real data?"</strong>
-                </span>
-            </div>
-            {% endif %}
-            <div class="viz-header" style="
-                padding: 12px 16px;
-                border-bottom: 1px solid #e1e5e9;
-                background: #f8f9fa;
-                font-weight: 600;
-                color: #2c3e50;
-                font-size: 14px;
-            ">
-                📊 {{ title }} ({{ persona.title() }})
-            </div>
-            <div class="viz-content" style="padding: 8px;">
-                {{ html_content }}
-            </div>
-            <div class="viz-footer" style="
-                padding: 8px 16px;
-                border-top: 1px solid #e1e5e9;
-                background: #f8f9fa;
-                font-size: 12px;
-                color: #6c757d;
-                text-align: right;
-            ">
-                Generated via ClaudeDirector • Interactive visualization •
-                <strong style="color: #dc3545;">SIMULATED DATA</strong>
-            </div>
-        </div>
-        """
-        )
-
-        # Extract data authenticity from context
-        data_authenticity = "SIMULATED"  # Default fallback
-        server_info = "Simulation Mode"
-        last_updated = "N/A"
-
-        if context:
-            data_authenticity = context.get("data_authenticity", "SIMULATED")
-            server_info = context.get("server_info", "Simulation Mode")
-            last_updated = context.get("last_updated", "N/A")
-
-        return chat_template.render(
-            title=title,
-            persona=persona,
-            html_content=html_div,
-            data_authenticity=data_authenticity,
-            server_info=server_info,
-            last_updated=last_updated,
+        """🏗️ Sequential Thinking Phase 4.2.1: Delegate to HTML template processor"""
+        return self.html_processor.generate_chat_embedded_html(
+            fig, title, persona, context
         )
 
     def _apply_executive_styling(self, fig: go.Figure, persona: str) -> go.Figure:
@@ -515,113 +401,13 @@ class ExecutiveVisualizationEngine:
         return fig
 
     def _generate_executive_html(self, fig: go.Figure, persona: str, title: str) -> str:
-        """Generate complete executive-quality HTML"""
-
-        # Rachel's executive HTML template
-        html_template = Template(
-            """
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} - Strategic Analysis</title>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            font-weight: 300;
-        }
-
-        .header .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-
-        .chart-container {
-            padding: 40px;
-            min-height: 600px;
-        }
-
-        .footer {
-            background: #f8f9fa;
-            padding: 20px;
-            text-align: center;
-            color: #666;
-            border-top: 1px solid #dee2e6;
-        }
-
-        /* Interactive enhancements */
-        .chart-container:hover {
-            background: #fafafa;
-            transition: background 0.3s ease;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>{{ title }}</h1>
-            <div class="subtitle">Strategic Analysis by {{ persona_title }} | Generated by ClaudeDirector</div>
-        </div>
-        <div class="chart-container">
-            {{ plotly_div }}
-        </div>
-        <div class="footer">
-            <p>Executive-quality visualization • Interactive analysis • Strategic intelligence</p>
-            <p><small>Generated: {{ timestamp }} | Persona: {{ persona }} | Version: {{ version }}</small></p>
-        </div>
-    </div>
-</body>
-</html>
-        """
-        )
-
-        # Generate Plotly HTML
-        plotly_html = fig.to_html(
-            include_plotlyjs=False, div_id="strategic-visualization"
-        )
-
-        # Persona titles
-        persona_titles = MCPServerConstants.Personas.PERSONA_TITLES
-
-        return html_template.render(
-            title=title,
-            persona_title=persona_titles.get(persona, "Strategic Analysis"),
-            plotly_div=plotly_html,
-            persona=persona,
-            timestamp=time.strftime("%Y-%m-%d %H:%M:%S"),
-            version=self.version,
+        """🏗️ Sequential Thinking Phase 4.2.1: Delegate to HTML template processor"""
+        return self.html_processor.generate_executive_html(
+            fig,
+            persona,
+            title,
+            MCPServerConstants.Personas.PERSONA_TITLES,
+            self.version,
         )
 
     def _parse_analysis_output(self, output: str) -> Dict[str, Any]:
