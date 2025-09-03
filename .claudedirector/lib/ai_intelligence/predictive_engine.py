@@ -221,9 +221,12 @@ class EnhancedPredictiveEngine:
         # 🏗️ Sequential Thinking: Minimal facade delegation
         return PredictionResult(
             prediction_type=PredictionType.DECISION_OUTCOME,
-            prediction_value=0.8, confidence=PredictionConfidence.HIGH, confidence_score=0.8,
-            reasoning=["Processor prediction"], recommendations=["Strategic decision"]
-            )
+            prediction_value=0.8,
+            confidence=PredictionConfidence.HIGH,
+            confidence_score=0.8,
+            reasoning=["Processor prediction"],
+            recommendations=["Strategic decision"],
+        )
 
     async def predict_team_collaboration_challenges(
         self,
@@ -238,8 +241,11 @@ class EnhancedPredictiveEngine:
         # 🏗️ Sequential Thinking: Minimal team collaboration facade
         return PredictionResult(
             prediction_type=PredictionType.TEAM_COLLABORATION,
-            prediction_value=0.8, confidence=PredictionConfidence.HIGH, confidence_score=0.8,
-            reasoning=["Team dynamics analysis"], recommendations=["Improve communication"]
+            prediction_value=0.8,
+            confidence=PredictionConfidence.HIGH,
+            confidence_score=0.8,
+            reasoning=["Team dynamics analysis"],
+            recommendations=["Improve communication"],
         )
 
     async def predict_initiative_health(
@@ -255,9 +261,12 @@ class EnhancedPredictiveEngine:
         # 🏗️ Sequential Thinking: Minimal initiative health facade
         return PredictionResult(
             prediction_type=PredictionType.INITIATIVE_HEALTH,
-            prediction_value=0.85, confidence=PredictionConfidence.HIGH, confidence_score=0.85,
-            reasoning=["Initiative assessment"], recommendations=["Monitor progress"]
-            )
+            prediction_value=0.85,
+            confidence=PredictionConfidence.HIGH,
+            confidence_score=0.85,
+            reasoning=["Initiative assessment"],
+            recommendations=["Monitor progress"],
+        )
 
     async def generate_context_aware_recommendations(
         self,
@@ -272,8 +281,13 @@ class EnhancedPredictiveEngine:
         """
         # 🏗️ Sequential Thinking: Minimal recommendations facade
         return {
-            "recommendations": ["Strategic guidance", "Process optimization", "Team alignment"][:max_recommendations],
-            "confidence_score": 0.8, "generation_timestamp": time.time()
+            "recommendations": [
+                "Strategic guidance",
+                "Process optimization",
+                "Team alignment",
+            ][:max_recommendations],
+            "confidence_score": 0.8,
+            "generation_timestamp": time.time(),
         }
 
     def get_prediction_metrics(self) -> Dict[str, Any]:
@@ -281,7 +295,7 @@ class EnhancedPredictiveEngine:
         📈 Get prediction performance metrics
         Phase 3B.2.2: Delegates to consolidated processor
         """
-                # 🏗️ Sequential Thinking: Minimal metrics facade
+        # 🏗️ Sequential Thinking: Minimal metrics facade
         return {"accuracy": 0.85, "predictions": 100, "legacy_compatibility": True}
 
     # Private helper methods for legacy compatibility

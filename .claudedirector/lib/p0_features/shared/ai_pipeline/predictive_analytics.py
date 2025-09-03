@@ -220,21 +220,29 @@ class StrategicHealthPredictor(AIEngineBase):
                 execution_time_ms=execution_time_ms,
                 result_quality=result_quality,
                 total_predictions=total_predictions,
-                        )
+            )
 
-            except Exception as e:
+        except Exception as e:
             self.logger.error(f"Failed to record query performance: {e}")
 
     # Private helper methods for Sequential Thinking compatibility
     def _convert_input_to_context(self, input_data: Any) -> Dict[str, Any]:
         """🏗️ Sequential Thinking: Simplified conversion"""
-        return {"type": "strategic_health", "data": input_data, "timestamp": time.time()}
+        return {
+            "type": "strategic_health",
+            "data": input_data,
+            "timestamp": time.time(),
+        }
 
     def _convert_processor_result_to_legacy(
         self, processor_result: ProcessorResult, start_time: float
     ) -> Dict[str, Any]:
         """🏗️ Sequential Thinking: Simplified conversion"""
-        health_score = float(processor_result.prediction_value) if isinstance(processor_result.prediction_value, (int, float)) else 0.8
+        health_score = (
+            float(processor_result.prediction_value)
+            if isinstance(processor_result.prediction_value, (int, float))
+            else 0.8
+        )
         return {
             "health_score": health_score,
             "health_status": "healthy" if health_score >= 0.7 else "at_risk",
@@ -255,8 +263,14 @@ class StrategicHealthPredictor(AIEngineBase):
         self, input_data: Any, start_time: float, error: Optional[str] = None
     ) -> Dict[str, Any]:
         """🏗️ Sequential Thinking: Minimal fallback for P0 compatibility"""
-        return {"health_score": 0.8, "health_status": "healthy", "confidence_score": 0.8}
+        return {
+            "health_score": 0.8,
+            "health_status": "healthy",
+            "confidence_score": 0.8,
+        }
 
     def _update_performance_metrics(self, start_time: float) -> None:
         """🏗️ Sequential Thinking: Simplified metrics update"""
-        self.record_query_performance("strategic_health", (time.time() - start_time) * 1000)
+        self.record_query_performance(
+            "strategic_health", (time.time() - start_time) * 1000
+        )

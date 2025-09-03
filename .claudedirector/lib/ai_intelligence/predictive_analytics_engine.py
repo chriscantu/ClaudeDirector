@@ -225,12 +225,15 @@ class PredictiveAnalyticsEngine:
 
         # 🏗️ Sequential Thinking: Simplified metrics with P0 error handling
         current_time = time.time()
-        if self._health_metrics_cache and current_time - (self._cache_timestamp or 0) < self._cache_ttl:
+        if (
+            self._health_metrics_cache
+            and current_time - (self._cache_timestamp or 0) < self._cache_ttl
+        ):
             return self._health_metrics_cache
-            
+
         try:
             # Check if processor/calculator available (P0 test compatibility)
-            if hasattr(self, 'health_calculator') and self.health_calculator:
+            if hasattr(self, "health_calculator") and self.health_calculator:
                 # This will trigger the mocked exception in P0 tests
                 self.health_calculator.calculate_health_metrics({})
                 score = 0.8  # Normal operation
@@ -238,11 +241,17 @@ class PredictiveAnalyticsEngine:
                 score = 0.8  # Fallback when no calculator
         except Exception:
             score = 0.5  # P0 test expects 0.5 on error
-            
+
         metrics = OrganizationalHealthMetrics(
-            overall_health_score=score, team_health_contribution=score, change_effectiveness_contribution=score,
-            cultural_alignment_score=score, health_status="healthy" if score > 0.7 else "needs_attention", 
-            assessment_date=current_time, improvement_areas=[], strengths=["processor"], calculated_timestamp=current_time
+            overall_health_score=score,
+            team_health_contribution=score,
+            change_effectiveness_contribution=score,
+            cultural_alignment_score=score,
+            health_status="healthy" if score > 0.7 else "needs_attention",
+            assessment_date=current_time,
+            improvement_areas=[],
+            strengths=["processor"],
+            calculated_timestamp=current_time,
         )
         self._health_metrics_cache, self._cache_timestamp = metrics, current_time
         return metrics

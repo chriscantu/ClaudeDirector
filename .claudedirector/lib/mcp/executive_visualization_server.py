@@ -819,7 +819,9 @@ class ExecutiveVisualizationEngine:
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
         """🏗️ Sequential Thinking: Delegate to consolidated dashboard factory"""
-        return self.dashboard_factory.create_dashboard("service_performance", data, title)
+        return self.dashboard_factory.create_dashboard(
+            "service_performance", data, title
+        )
 
     def _create_system_dependency_map(
         self, data: Dict[str, Any], title: str
@@ -827,7 +829,9 @@ class ExecutiveVisualizationEngine:
         """Create system dependency network visualization"""
 
         # 🏗️ Sequential Thinking: Delegate to consolidated dashboard factory
-        return self.dashboard_factory.create_dashboard("system_dependencies", data, title)
+        return self.dashboard_factory.create_dashboard(
+            "system_dependencies", data, title
+        )
 
     def _create_technical_debt_trends(
         self, data: Dict[str, Any], title: str
@@ -835,7 +839,9 @@ class ExecutiveVisualizationEngine:
         """Create technical debt trend analysis"""
 
         # 🏗️ Sequential Thinking: Delegate to consolidated dashboard factory
-        return self.dashboard_factory.create_dashboard("technical_debt_trends", data, title)
+        return self.dashboard_factory.create_dashboard(
+            "technical_debt_trends", data, title
+        )
 
     # ========================================
     # Rachel's Design System Chart Methods
@@ -847,7 +853,9 @@ class ExecutiveVisualizationEngine:
         """Create component adoption tracking chart for Rachel"""
 
         # 🏗️ Sequential Thinking: Delegate to consolidated dashboard factory
-        return self.dashboard_factory.create_dashboard("component_adoption", data, title)
+        return self.dashboard_factory.create_dashboard(
+            "component_adoption", data, title
+        )
 
     def _create_design_system_maturity(
         self, data: Dict[str, Any], title: str
