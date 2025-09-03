@@ -158,76 +158,222 @@ class CursorResponseEnhancer:
         Auto-triggers MCP transparency when user input contains systematic analysis indicators.
         This ensures proper disclosure while avoiding transparency fatigue.
         """
-                # Sequential Thinking trigger keywords for automatic MCP enhancement
+        # Sequential Thinking trigger keywords for automatic MCP enhancement
         complexity_indicators = [
-            "strategic", "organizational", "framework", "systematic", 
-            "complex", "multi-team", "executive", "board", "leadership",
-            "presentation", "enterprise", "organization-wide", 
-            "cross-functional", "multiple teams", "trade-offs", 
-            "options", "alternatives", "analysis", "assessment",
-            "evaluate", "sequential thinking", "mcp", "configuration",
-            "claudedirector", "architecture", "decision", "planning",
-            "coordination", "stakeholder", "scaling", "optimization"
+            "strategic",
+            "organizational",
+            "framework",
+            "systematic",
+            "complex",
+            "multi-team",
+            "executive",
+            "board",
+            "leadership",
+            "presentation",
+            "enterprise",
+            "organization-wide",
+            "cross-functional",
+            "multiple teams",
+            "trade-offs",
+            "options",
+            "alternatives",
+            "analysis",
+            "assessment",
+            "evaluate",
+            "sequential thinking",
+            "mcp",
+            "configuration",
+            "claudedirector",
+            "architecture",
+            "decision",
+            "planning",
+            "coordination",
+            "stakeholder",
+            "scaling",
+            "optimization",
         ]
-        
+
         # CODING REQUEST TRIGGERS - Always enable Sequential Thinking & Context7 for coding
         coding_indicators = [
-            "code", "coding", "implement", "refactor", "debug", "fix",
-            "function", "class", "method", "variable", "file", "module",
-            "python", "javascript", "typescript", "react", "node", "api",
-            "database", "sql", "test", "testing", "bug", "error", "exception",
-            "import", "export", "async", "await", "component", "hook",
-            "build", "deploy", "package", "dependency", "library", "framework",
-            "git", "commit", "merge", "pull request", "branch", "repository",
-            "lint", "format", "typescript", "eslint", "prettier", "webpack",
-            "docker", "kubernetes", "ci/cd", "pipeline", "automation",
-            "performance", "optimization", "memory", "cpu", "latency",
-            "security", "authentication", "authorization", "encryption",
-            "logging", "monitoring", "metrics", "alerts", "debugging"
+            "code",
+            "coding",
+            "implement",
+            "refactor",
+            "debug",
+            "fix",
+            "function",
+            "class",
+            "method",
+            "variable",
+            "file",
+            "module",
+            "python",
+            "javascript",
+            "typescript",
+            "react",
+            "node",
+            "api",
+            "database",
+            "sql",
+            "test",
+            "testing",
+            "bug",
+            "error",
+            "exception",
+            "import",
+            "export",
+            "async",
+            "await",
+            "component",
+            "hook",
+            "build",
+            "deploy",
+            "package",
+            "dependency",
+            "library",
+            "framework",
+            "git",
+            "commit",
+            "merge",
+            "pull request",
+            "branch",
+            "repository",
+            "lint",
+            "format",
+            "typescript",
+            "eslint",
+            "prettier",
+            "webpack",
+            "docker",
+            "kubernetes",
+            "ci/cd",
+            "pipeline",
+            "automation",
+            "performance",
+            "optimization",
+            "memory",
+            "cpu",
+            "latency",
+            "security",
+            "authentication",
+            "authorization",
+            "encryption",
+            "logging",
+            "monitoring",
+            "metrics",
+            "alerts",
+            "debugging",
         ]
-        
+
         # DATA ANALYSIS TRIGGERS - Always enable Sequential Thinking for data work
         data_analysis_indicators = [
-            "data", "analysis", "analytics", "analyze", "dataset", "dataframe",
-            "csv", "json", "excel", "spreadsheet", "visualization", "chart",
-            "graph", "plot", "dashboard", "report", "reporting", "metrics",
-            "statistics", "statistical", "correlation", "regression", "trend",
-            "pattern", "insight", "insights", "pandas", "numpy", "matplotlib",
-            "plotly", "seaborn", "jupyter", "notebook", "model", "modeling",
-            "machine learning", "ml", "ai", "algorithm", "prediction", "forecast",
-            "cluster", "clustering", "classification", "neural network",
-            "deep learning", "feature", "features", "training", "validation",
-            "accuracy", "precision", "recall", "f1-score", "confusion matrix",
-            "cross-validation", "hyperparameter", "pipeline", "preprocessing",
-            "etl", "extract", "transform", "load", "warehouse", "lake",
-            "business intelligence", "bi", "kpi", "roi", "cohort", "segment",
-            "a/b test", "experiment", "hypothesis", "statistical significance"
+            "data",
+            "analysis",
+            "analytics",
+            "analyze",
+            "dataset",
+            "dataframe",
+            "csv",
+            "json",
+            "excel",
+            "spreadsheet",
+            "visualization",
+            "chart",
+            "graph",
+            "plot",
+            "dashboard",
+            "report",
+            "reporting",
+            "metrics",
+            "statistics",
+            "statistical",
+            "correlation",
+            "regression",
+            "trend",
+            "pattern",
+            "insight",
+            "insights",
+            "pandas",
+            "numpy",
+            "matplotlib",
+            "plotly",
+            "seaborn",
+            "jupyter",
+            "notebook",
+            "model",
+            "modeling",
+            "machine learning",
+            "ml",
+            "ai",
+            "algorithm",
+            "prediction",
+            "forecast",
+            "cluster",
+            "clustering",
+            "classification",
+            "neural network",
+            "deep learning",
+            "feature",
+            "features",
+            "training",
+            "validation",
+            "accuracy",
+            "precision",
+            "recall",
+            "f1-score",
+            "confusion matrix",
+            "cross-validation",
+            "hyperparameter",
+            "pipeline",
+            "preprocessing",
+            "etl",
+            "extract",
+            "transform",
+            "load",
+            "warehouse",
+            "lake",
+            "business intelligence",
+            "bi",
+            "kpi",
+            "roi",
+            "cohort",
+            "segment",
+            "a/b test",
+            "experiment",
+            "hypothesis",
+            "statistical significance",
         ]
 
         combined_text = f"{user_input} {response}".lower()
-        
+
         # Check strategic complexity indicators
-        complexity_score = sum(1 for indicator in complexity_indicators if indicator in combined_text)
-        
-        # Check coding request indicators  
-        coding_score = sum(1 for indicator in coding_indicators if indicator in combined_text)
-        
+        complexity_score = sum(
+            1 for indicator in complexity_indicators if indicator in combined_text
+        )
+
+        # Check coding request indicators
+        coding_score = sum(
+            1 for indicator in coding_indicators if indicator in combined_text
+        )
+
         # Check data analysis indicators
-        data_analysis_score = sum(1 for indicator in data_analysis_indicators if indicator in combined_text)
-        
+        data_analysis_score = sum(
+            1 for indicator in data_analysis_indicators if indicator in combined_text
+        )
+
         # Auto-trigger MCP transparency for:
         # 1. Strategic complexity (>=2 complexity indicators)
-        # 2. ANY coding request (>=1 coding indicator) 
+        # 2. ANY coding request (>=1 coding indicator)
         # 3. ANY data analysis request (>=1 data analysis indicator)
         # 4. Explicit Sequential Thinking mentions
         should_enhance = (
-            complexity_score >= 2 or      # Strategic queries
-            coding_score >= 1 or          # ANY coding request
-            data_analysis_score >= 1 or   # ANY data analysis request
-            "sequential thinking" in combined_text or 
-            "mcp" in combined_text
+            complexity_score >= 2  # Strategic queries
+            or coding_score >= 1  # ANY coding request
+            or data_analysis_score >= 1  # ANY data analysis request
+            or "sequential thinking" in combined_text
+            or "mcp" in combined_text
         )
-            
+
         return should_enhance
 
     def get_mcp_calls_for_context(self, user_input: str, response: str) -> List[Dict]:
@@ -254,34 +400,100 @@ class CursorResponseEnhancer:
 
         # Sequential Thinking - enhanced trigger detection for strategic + coding
         sequential_keywords = [
-            "strategic", "analysis", "systematic", "framework", "organizational",
-            "complex", "evaluate", "sequential thinking", "decision", "planning",
-            "coordination", "stakeholder", "scaling", "optimization", "assessment",
-            "executive", "board", "leadership", "trade-offs", "alternatives"
+            "strategic",
+            "analysis",
+            "systematic",
+            "framework",
+            "organizational",
+            "complex",
+            "evaluate",
+            "sequential thinking",
+            "decision",
+            "planning",
+            "coordination",
+            "stakeholder",
+            "scaling",
+            "optimization",
+            "assessment",
+            "executive",
+            "board",
+            "leadership",
+            "trade-offs",
+            "alternatives",
         ]
-        
+
         # Coding request keywords that benefit from Sequential Thinking
         coding_keywords = [
-            "code", "coding", "implement", "refactor", "debug", "fix", "function", 
-            "class", "method", "test", "testing", "bug", "error", "module", "file",
-            "python", "javascript", "typescript", "api", "database", "performance"
+            "code",
+            "coding",
+            "implement",
+            "refactor",
+            "debug",
+            "fix",
+            "function",
+            "class",
+            "method",
+            "test",
+            "testing",
+            "bug",
+            "error",
+            "module",
+            "file",
+            "python",
+            "javascript",
+            "typescript",
+            "api",
+            "database",
+            "performance",
         ]
-        
+
         # Data analysis keywords that benefit from Sequential Thinking
         data_analysis_keywords = [
-            "data", "analysis", "analytics", "analyze", "dataset", "visualization",
-            "chart", "graph", "plot", "dashboard", "statistics", "model", "modeling",
-            "machine learning", "ml", "pandas", "numpy", "matplotlib", "plotly",
-            "jupyter", "prediction", "forecast", "trend", "pattern", "insights"
+            "data",
+            "analysis",
+            "analytics",
+            "analyze",
+            "dataset",
+            "visualization",
+            "chart",
+            "graph",
+            "plot",
+            "dashboard",
+            "statistics",
+            "model",
+            "modeling",
+            "machine learning",
+            "ml",
+            "pandas",
+            "numpy",
+            "matplotlib",
+            "plotly",
+            "jupyter",
+            "prediction",
+            "forecast",
+            "trend",
+            "pattern",
+            "insights",
         ]
-        
+
         # Trigger Sequential Thinking for strategic OR coding OR data analysis requests
-        if (any(word in input_lower or word in response_lower for word in sequential_keywords) or
-            any(word in input_lower or word in response_lower for word in coding_keywords) or
-            any(word in input_lower or word in response_lower for word in data_analysis_keywords)):
+        if (
+            any(
+                word in input_lower or word in response_lower
+                for word in sequential_keywords
+            )
+            or any(
+                word in input_lower or word in response_lower
+                for word in coding_keywords
+            )
+            or any(
+                word in input_lower or word in response_lower
+                for word in data_analysis_keywords
+            )
+        ):
             mcp_calls.append(
                 {
-                    "server_name": "sequential", 
+                    "server_name": "sequential",
                     "capability": "systematic_analysis",
                     "processing_time": 0.15,
                     "success": True,
@@ -366,17 +578,37 @@ class CursorResponseEnhancer:
 
         # Sequential Thinking trigger detection
         sequential_keywords = [
-            "strategic", "analysis", "systematic", "framework", "organizational",
-            "complex", "evaluate", "sequential thinking", "decision", "planning",
-            "coordination", "stakeholder", "scaling", "optimization", "assessment"
+            "strategic",
+            "analysis",
+            "systematic",
+            "framework",
+            "organizational",
+            "complex",
+            "evaluate",
+            "sequential thinking",
+            "decision",
+            "planning",
+            "coordination",
+            "stakeholder",
+            "scaling",
+            "optimization",
+            "assessment",
         ]
 
-        context7_keywords = ["architecture", "platform", "design", "pattern", "scalability"]
+        context7_keywords = [
+            "architecture",
+            "platform",
+            "design",
+            "pattern",
+            "scalability",
+        ]
 
         # Determine primary MCP server based on context
         if any(word in combined_text for word in sequential_keywords):
             # Sequential Thinking transparency header
-            transparency_header = "🔧 Accessing MCP Server: sequential (systematic_analysis)"
+            transparency_header = (
+                "🔧 Accessing MCP Server: sequential (systematic_analysis)"
+            )
             processing_msg = "*Analyzing your challenge using systematic frameworks...*"
 
             if not response.strip().startswith("🔧"):
@@ -385,7 +617,9 @@ class CursorResponseEnhancer:
         elif any(word in combined_text for word in context7_keywords):
             # Context7 transparency header for architectural patterns
             transparency_header = "🔧 Accessing MCP Server: context7 (pattern_access)"
-            processing_msg = "*Accessing proven architectural patterns and methodologies...*"
+            processing_msg = (
+                "*Accessing proven architectural patterns and methodologies...*"
+            )
 
             if not response.strip().startswith("🔧"):
                 return f"{transparency_header}\n{processing_msg}\n\n{response}"
