@@ -2,7 +2,7 @@
 Context Engineering Module
 
 Multi-layered strategic memory architecture for ClaudeDirector.
-Provides persistent strategic intelligence across sessions.
+Provides persistent context management across sessions.
 
 Priority 1 Implementation - Q1 2025
 Investment: $380K for 3.2x ROI
@@ -14,6 +14,9 @@ from .strategic_layer import StrategicLayerMemory
 from .stakeholder_layer import StakeholderLayerMemory
 from .learning_layer import LearningLayerMemory
 from .organizational_layer import OrganizationalLayerMemory
+
+# Phase 3B.1.2: Export consolidated organizational processor
+from .organizational_processor import OrganizationalProcessor
 from .context_orchestrator import ContextOrchestrator
 from .clarity_analyzer import (
     ClarityAnalyzer,
@@ -104,11 +107,18 @@ except (ImportError, TypeError, AttributeError) as e:
 from .strategic_layer import InitiativeStatus
 from .stakeholder_layer import StakeholderRole, CommunicationStyle
 from .learning_layer import FrameworkUsage, DecisionPattern
-from .organizational_layer import (
+
+# Phase 3B.1.1: Import organizational types from extracted module (Code Reduction)
+from .organizational_types import (
     TeamStructure,
     OrganizationalChange,
     OrganizationSize,
     CulturalDimension,
+    OrganizationalProfile,
+    CulturalObservation,
+    KnowledgeArtifact,
+    OrganizationalRecommendation,
+    OrganizationalHealthMetrics,
 )
 from .context_orchestrator import ContextPriority
 
@@ -119,6 +129,7 @@ __all__ = [
     "StakeholderLayerMemory",
     "LearningLayerMemory",
     "OrganizationalLayerMemory",
+    "OrganizationalProcessor",  # Phase 3B.1.2: Export consolidated processor
     "ContextOrchestrator",
     "ClarityAnalyzer",
     "ActionDetectionEngine",
@@ -163,6 +174,11 @@ __all__ = [
     "OrganizationalChange",
     "OrganizationSize",
     "CulturalDimension",
+    "OrganizationalProfile",
+    "CulturalObservation",
+    "KnowledgeArtifact",
+    "OrganizationalRecommendation",
+    "OrganizationalHealthMetrics",
     "ContextPriority",
 ]
 
