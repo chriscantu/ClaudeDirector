@@ -10,13 +10,13 @@ repos:
       - id: check-added-large-files
         args: ['--maxkb=1000']
 
-  # Python formatting
+  # Python formatting - ALWAYS APPLIED
   - repo: https://github.com/psf/black
     rev: 24.4.2
     hooks:
       - id: black
         args: [--line-length=88]
-        files: ^lib/claudedirector/.*\.py$
+        files: ^\.claudedirector/.*\.py$
 
   # CRITICAL FILE PROTECTION (MUST RUN FIRST)
   - repo: local
