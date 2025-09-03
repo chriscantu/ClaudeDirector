@@ -179,33 +179,13 @@ class ExecutiveVisualizationEngine:
                 ),
             )
 
-    # Phase 3B.2.1: REMOVED 5 duplicate template methods (70 lines eliminated)
-    # Consolidated into VisualizationTemplateRouter for DRY compliance
-    # - _diego_leadership_template (16 lines)
-    # - _alvaro_business_template (16 lines)
-    # - _martin_architecture_template (19 lines)
-    # - _camille_technology_template (12 lines)
-    # - _rachel_design_template (21 lines)
-    # NET REDUCTION: -84 lines through DRY consolidation
+    # Template methods consolidated in Phase 3B.2.1 (DRY compliance)
 
     def _create_leadership_dashboard(
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
-        """
-        Create Diego's leadership metrics dashboard
-        Phase 3B.3.1: Consolidated using VisualizationDashboardFactory (Sequential Thinking)
-        """
-        # Normalize data for dashboard factory compatibility
-        normalized_data = {
-            "velocity_trend": data.get("velocity_data", {}),
-            "support_volume": data.get("support_data", {}),
-            "initiative_progress": data.get("initiative_progress", {}),
-            "health_scores": data.get("platform_health", {}),
-        }
-
-        return self.dashboard_factory.create_dashboard(
-            "leadership", normalized_data, title
-        )
+        """🏗️ Sequential Thinking Phase 4: Delegate to consolidated dashboard factory"""
+        return self.dashboard_factory.create_dashboard("leadership", data, title)
 
     def _create_roi_dashboard(self, data: Dict[str, Any], title: str) -> go.Figure:
         """
@@ -379,24 +359,7 @@ class ExecutiveVisualizationEngine:
             data, chat_chart_type, title
         )
 
-    # Phase 3B.2.2: REMOVED _create_sprint_dashboard_chat (~60 lines)
-    # Consolidated into ChatVisualizationGenerator for DRY compliance
-
-    # Phase 3B.2.2: REMOVED _create_team_performance_chat (~32 lines)
-    # Consolidated into ChatVisualizationGenerator for DRY compliance
-
-    # Phase 3B.2.2: REMOVED _create_roi_dashboard_chat (~41 lines)
-    # Consolidated into ChatVisualizationGenerator for DRY compliance
-
-    # Phase 3B.2.2: REMOVED _create_design_system_chat (~25 lines)
-    # Consolidated into ChatVisualizationGenerator for DRY compliance
-
-    # Phase 3B.2.2: REMOVED _create_github_activity_chat (~24 lines)
-    # Consolidated into ChatVisualizationGenerator for DRY compliance
-
-    # Phase 3B.2.2: REMOVED _create_simple_metrics_chat (~45 lines)
-    # Consolidated into ChatVisualizationGenerator for DRY compliance
-    # TOTAL CHAT METHOD REDUCTION: ~227 lines eliminated
+    # Chat methods consolidated in Phase 3B.2.2 (ChatVisualizationGenerator)
 
     def _generate_chat_embedded_html(
         self, fig: go.Figure, title: str, persona: str, context: Dict[str, Any] = None
@@ -860,159 +823,24 @@ class ExecutiveVisualizationEngine:
     def _create_design_system_maturity(
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
-        """Create design system maturity assessment"""
-
-        categories = data.get(
-            "categories",
-            [
-                "Component Coverage",
-                "Design Consistency",
-                "Documentation Quality",
-                "Developer Experience",
-                "Adoption Rate",
-                "Maintenance Efficiency",
-            ],
+        """🏗️ Sequential Thinking Phase 4: Delegate to consolidated dashboard factory"""
+        return self.dashboard_factory.create_dashboard(
+            "design_system_maturity", data, title
         )
-        current_scores = data.get("current_scores", [85, 78, 92, 75, 68, 82])
-        target_scores = data.get("target_scores", [95, 90, 95, 85, 85, 90])
-
-        fig = go.Figure()
-
-        # Current scores
-        fig.add_trace(
-            go.Bar(
-                x=categories,
-                y=current_scores,
-                name="Current Score",
-                marker_color=self.color_palette[0],
-                text=[f"{score}%" for score in current_scores],
-                textposition="outside",
-            )
-        )
-
-        # Target scores
-        fig.add_trace(
-            go.Bar(
-                x=categories,
-                y=target_scores,
-                name="Target Score",
-                marker_color=self.color_palette[1],
-                opacity=0.6,
-                text=[f"{score}%" for score in target_scores],
-                textposition="outside",
-            )
-        )
-
-        fig.update_layout(
-            title={"text": title, "x": 0.5},
-            xaxis_title="Maturity Categories",
-            yaxis_title="Score (%)",
-            yaxis=dict(range=[0, 100]),
-            barmode="group",
-            **self.layout_template,
-        )
-
-        return fig
 
     def _create_usage_trend_analysis(
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
-        """Create design system usage trend analysis"""
-
-        months = data.get("months", ["Jan", "Feb", "Mar", "Apr", "May", "Jun"])
-        component_usage = data.get("component_usage", [450, 520, 680, 750, 890, 1020])
-        new_implementations = data.get("new_implementations", [25, 35, 45, 40, 55, 60])
-        design_debt_reduction = data.get(
-            "design_debt_reduction", [5, 8, 12, 15, 18, 22]
+        """🏗️ Sequential Thinking Phase 4: Delegate to consolidated dashboard factory"""
+        return self.dashboard_factory.create_dashboard(
+            "usage_trend_analysis", data, title
         )
-
-        fig = make_subplots(specs=[[{"secondary_y": True}]])
-
-        # Component usage (primary y-axis)
-        fig.add_trace(
-            go.Scatter(
-                x=months,
-                y=component_usage,
-                mode="lines+markers",
-                name="Total Component Usage",
-                line=dict(color=self.color_palette[0], width=3),
-                marker=dict(size=8),
-            ),
-            secondary_y=False,
-        )
-
-        # New implementations (secondary y-axis)
-        fig.add_trace(
-            go.Bar(
-                x=months,
-                y=new_implementations,
-                name="New Implementations",
-                marker_color=self.color_palette[1],
-                opacity=0.7,
-            ),
-            secondary_y=True,
-        )
-
-        # Design debt reduction (secondary y-axis)
-        fig.add_trace(
-            go.Scatter(
-                x=months,
-                y=design_debt_reduction,
-                mode="lines+markers",
-                name="Design Debt Reduction",
-                line=dict(color=self.color_palette[2], width=3),
-                marker=dict(size=8),
-            ),
-            secondary_y=True,
-        )
-
-        # Update axes
-        fig.update_xaxes(title_text="Month")
-        fig.update_yaxes(title_text="Component Usage Count", secondary_y=False)
-        fig.update_yaxes(
-            title_text="New Implementations / Debt Reduction", secondary_y=True
-        )
-
-        fig.update_layout(title={"text": title, "x": 0.5}, **self.layout_template)
-
-        return fig
 
     def _create_team_comparison_dashboard(
         self, data: Dict[str, Any], title: str
     ) -> go.Figure:
-        """
-        Create team comparison dashboard for design system adoption
-        Phase 3B.3.1: Consolidated using VisualizationDashboardFactory (Sequential Thinking)
-        """
-        # Normalize data for dashboard factory
-        normalized_data = {
-            "team_performance": {
-                "teams": data.get(
-                    "teams",
-                    ["Frontend", "Mobile", "Platform", "Marketing", "Analytics"],
-                ),
-                "performance_scores": data.get("adoption_scores", [92, 78, 85, 65, 71]),
-            },
-            "team_velocity": {
-                "sprints": ["S1", "S2", "S3", "S4", "S5"],
-                "velocity": data.get("components_used", [28, 22, 25, 15, 18]),
-            },
-            "quality_metrics": {
-                "teams": data.get(
-                    "teams",
-                    ["Frontend", "Mobile", "Platform", "Marketing", "Analytics"],
-                ),
-                "quality_scores": data.get("consistency_scores", [88, 72, 80, 58, 65]),
-            },
-            "resource_utilization": {
-                "resources": ["High", "Medium", "Low"],
-                "utilization": [60, 30, 10],
-            },
-        }
-
-        return self.dashboard_factory.create_dashboard(
-            "team_comparison", normalized_data, title
-        )
+        """🏗️ Sequential Thinking Phase 4: Delegate to consolidated dashboard factory"""
+        return self.dashboard_factory.create_dashboard("team_comparison", data, title)
 
     def _create_design_debt_visualization(
         self, data: Dict[str, Any], title: str
