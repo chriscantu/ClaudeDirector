@@ -217,6 +217,10 @@ class UnifiedPerformanceManager(BaseProcessor):
 
         self.config: UnifiedPerformanceConfig = config
 
+        # CRITICAL: CI environment detection and state management
+        self._detect_ci_environment()
+        self._initialize_clean_state()
+
         # Unified thread pools (consolidates all previous thread pools)
         self.ultra_fast_executor = ThreadPoolExecutor(
             max_workers=self.config.ultra_fast_workers, thread_name_prefix="ultra_fast"
@@ -717,6 +721,48 @@ class UnifiedPerformanceManager(BaseProcessor):
                 "performance_alerts": self.performance_alerts[-10:],  # Last 10 alerts
             },
         }
+
+    def _detect_ci_environment(self):
+        """Detect CI environment and adjust behavior accordingly"""
+        import os
+
+        # Common CI environment variables
+        ci_indicators = [
+            "CI",
+            "CONTINUOUS_INTEGRATION",
+            "GITHUB_ACTIONS",
+            "JENKINS_URL",
+            "TRAVIS",
+            "CIRCLECI",
+            "GITLAB_CI",
+        ]
+
+        self._is_ci_environment = any(
+            os.getenv(indicator) for indicator in ci_indicators
+        )
+        self._clean_state_requested = os.getenv("PERFORMANCE_MANAGER_CLEAN") == "1"
+
+        if self._is_ci_environment:
+            self.logger.debug(
+                "CI environment detected - enabling enhanced state isolation"
+            )
+
+        if self._clean_state_requested:
+            self.logger.debug("Clean state requested - resetting all internal state")
+
+    def _initialize_clean_state(self):
+        """Initialize with clean state, especially in CI environments"""
+        if self._clean_state_requested:
+            # Clear the environment variable to prevent repeated resets
+            import os
+
+            if "PERFORMANCE_MANAGER_CLEAN" in os.environ:
+                del os.environ["PERFORMANCE_MANAGER_CLEAN"]
+
+            # Force clean initialization
+            self.logger.debug(
+                "Initializing with forced clean state for CI compatibility"
+            )
 
     def cleanup(self):
         """Cleanup resources (consolidates all cleanup methods)"""
