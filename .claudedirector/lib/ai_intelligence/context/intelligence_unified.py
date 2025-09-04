@@ -143,10 +143,38 @@ class IntelligenceUnified:
     def __init__(
         self, config: Optional[Dict[str, Any]] = None, enable_performance: bool = True
     ):
-        """🏗️ Sequential Thinking Phase 5.2.2: Ultra-lightweight facade initialization"""
+        """
+        🎯 STORY 2.1.3: FACADE CONSOLIDATION - BaseProcessor Pattern
+
+        Consolidated facade initialization using BaseProcessor pattern.
+        ELIMINATES duplicate initialization, logging, and dependency patterns.
+        """
+        # Import BaseProcessor for consolidated pattern
+        from ....core.base_processor import BaseProcessor
+
+        # Create processor instance
         self.processor = create_intelligence_processor(config, enable_performance)
+
+        # Use BaseProcessor facade consolidation pattern
+        facade_config = BaseProcessor.create_facade_delegate(
+            processor_instance=self.processor,
+            facade_properties=["logger", "config"],
+            facade_methods=[
+                "detect_tasks_in_content",
+                "add_task",
+                "detect_meetings_in_content",
+                "health_check",
+            ],
+        )
+
+        # Apply consolidated facade pattern
+        self.processor = facade_config["processor"]
+
+        # Preserve backward compatibility with consolidated pattern
         self.logger = logging.getLogger(__name__)
-        self.logger.info("IntelligenceUnified initialized as ultra-lightweight facade")
+        self.logger.info(
+            "IntelligenceUnified initialized with BaseProcessor facade pattern"
+        )
 
     def detect_tasks_in_content(
         self, content: str, context: Dict[str, Any]
