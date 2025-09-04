@@ -100,11 +100,46 @@ class StrategicChallengeFramework:
         return str(config_path)
 
     def _load_configuration(self) -> ChallengeConfig:
-        """Load challenge patterns configuration from YAML file"""
+        """
+        🏗️ STORY 2.2: UNIFIED CONFIG LOADER INTEGRATION
+        Eliminates ~25 lines of duplicate YAML loading logic
+        """
+        # Handle import with fallback for test contexts
         try:
-            with open(self.config_path, "r", encoding="utf-8") as f:
-                config_data = yaml.safe_load(f)
+            from ..core.unified_config_loader import UnifiedConfigLoader
+        except ImportError:
+            # Fallback for test contexts and standalone execution
+            import sys
+            from pathlib import Path
 
+            lib_path = Path(__file__).parent.parent
+            sys.path.insert(0, str(lib_path))
+            from core.unified_config_loader import UnifiedConfigLoader
+
+        loader = UnifiedConfigLoader(
+            default_config_dir=Path(self.config_path).parent,
+            enable_templates=False,
+            enable_env_vars=False,
+        )
+
+        result = loader.load_config(
+            config_name=Path(self.config_path).stem,
+            config_path=Path(self.config_path),
+            defaults={
+                "version": "1.0.0-fallback",
+                "framework_name": "Strategic Challenge Framework",
+                "description": "Default framework configuration",
+                "global_settings": {},
+                "challenge_types": {},
+                "personas": {},
+                "activation_rules": {},
+                "response_blending": {},
+                "performance": {},
+            },
+        )
+
+        if result.success:
+            config_data = result.data
             return ChallengeConfig(
                 version=config_data["version"],
                 framework_name=config_data["framework_name"],
@@ -116,8 +151,8 @@ class StrategicChallengeFramework:
                 response_blending=config_data["response_blending"],
                 performance=config_data["performance"],
             )
-        except Exception as e:
-            self.logger.error(f"Failed to load challenge configuration: {e}")
+        else:
+            self.logger.error(f"Failed to load challenge configuration: {result.error}")
             # Graceful fallback with minimal configuration
             return self._get_fallback_config()
 

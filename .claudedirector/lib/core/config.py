@@ -188,43 +188,58 @@ class ClaudeDirectorConfig:
         self._create_lookup_dict()
 
     def _load_config(self):
-        """Load configuration from YAML file if it exists"""
-        if self.config_file.exists():
-            try:
-                with open(self.config_file, "r", encoding="utf-8") as f:
-                    config_data = yaml.safe_load(f) or {}
+        """
+        🏗️ STORY 2.2: UNIFIED CONFIG LOADER INTEGRATION
+        Eliminates ~35 lines of duplicate YAML loading and error handling
+        """
+        from .unified_config_loader import UnifiedConfigLoader
 
-                # Update thresholds
-                if "thresholds" in config_data:
-                    for key, value in config_data["thresholds"].items():
-                        if hasattr(self.thresholds, key):
-                            setattr(self.thresholds, key, value)
+        loader = UnifiedConfigLoader(
+            default_config_dir=self.config_file.parent,
+            enable_templates=False,
+            enable_env_vars=True,
+        )
 
-                # Update enums
-                if "enums" in config_data:
-                    for key, value in config_data["enums"].items():
-                        if hasattr(self.enums, key):
-                            setattr(self.enums, key, value)
+        result = loader.load_config(
+            config_name=self.config_file.stem,
+            config_path=self.config_file,
+            defaults={"thresholds": {}, "enums": {}, "messages": {}, "paths": {}},
+        )
 
-                # Update messages
-                if "messages" in config_data:
-                    for key, value in config_data["messages"].items():
-                        if hasattr(self.messages, key):
-                            setattr(self.messages, key, value)
+        if result.success:
+            config_data = result.data
 
-                # Update paths
-                if "paths" in config_data:
-                    for key, value in config_data["paths"].items():
-                        if hasattr(self.paths, key):
-                            setattr(self.paths, key, value)
+            # Update thresholds
+            if "thresholds" in config_data:
+                for key, value in config_data["thresholds"].items():
+                    if hasattr(self.thresholds, key):
+                        setattr(self.thresholds, key, value)
 
-                logger.info(f"Configuration loaded from {self.config_file}")
+            # Update enums
+            if "enums" in config_data:
+                for key, value in config_data["enums"].items():
+                    if hasattr(self.enums, key):
+                        setattr(self.enums, key, value)
 
-            except Exception as e:
-                logger.warning(
-                    f"Failed to load configuration from {self.config_file}: {e}"
-                )
-                logger.info("Using default configuration")
+            # Update messages
+            if "messages" in config_data:
+                for key, value in config_data["messages"].items():
+                    if hasattr(self.messages, key):
+                        setattr(self.messages, key, value)
+
+            # Update paths
+            if "paths" in config_data:
+                for key, value in config_data["paths"].items():
+                    if hasattr(self.paths, key):
+                        setattr(self.paths, key, value)
+
+            logger.info(
+                f"Configuration loaded from {self.config_file} via UnifiedConfigLoader"
+            )
+        else:
+            if result.error:
+                logger.warning(f"Failed to load configuration: {result.error}")
+            logger.info("Using default configuration")
 
     def _create_lookup_dict(self):
         """Create lookup dictionary for backwards compatibility"""
