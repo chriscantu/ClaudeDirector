@@ -1,5 +1,9 @@
-# TRUE CODE ELIMINATION PLAN
-**Elimination-First Methodology - Never Again Net Additions**
+# CODE ELIMINATION POLICY
+**Elimination-First Methodology - Architectural Policy for DRY Initiatives**
+
+> **Policy Status**: ACTIVE - Enforced on all commits via pre-commit hooks
+> **Scope**: All DRY initiatives, code consolidation, and architectural cleanup
+> **Enforcement**: `tools/validate_net_reduction.py` - blocks commits with net additions
 
 ## 🚨 LESSONS LEARNED FROM FAILURE
 

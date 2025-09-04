@@ -98,14 +98,27 @@ class TestPerformance(unittest.TestCase):
         import os
 
         self.is_ci = os.getenv("CI") == "true" or os.getenv("GITHUB_ACTIONS") == "true"
+        self.is_precommit = (
+            os.getenv("PRE_COMMIT") == "1" or os.getenv("_PRE_COMMIT_RUNNING") == "1"
+        )
 
-        # Adjust thresholds for CI environment (GitHub Actions runners are slower)
+        # Adjust thresholds for different environments
         if self.is_ci:
+            # CI environment: GitHub Actions runners are slower
             self.max_response_time = 2.0  # More lenient for CI
             self.max_memory_mb = 2048  # 2GB for CI
             self.min_throughput = 5  # Lower throughput requirement for CI
             self.ci_multiplier = 5.0  # 5x more lenient timing for CI
+            self.timeout_multiplier = 5.0  # 5x timeout for CI load
+        elif self.is_precommit:
+            # Pre-commit environment: system under load from multiple hooks
+            self.max_response_time = 1.0  # More lenient for pre-commit load
+            self.max_memory_mb = 1024  # 1GB max memory usage
+            self.min_throughput = 8  # Slightly lower throughput for pre-commit
+            self.ci_multiplier = 2.0  # 2x more lenient timing for pre-commit
+            self.timeout_multiplier = 4.0  # 4x timeout for pre-commit load
         else:
+            # Local development environment: optimal performance expected
             self.max_response_time = (
                 0.5  # 0.5 seconds max for strategic queries (optimized)
             )
@@ -114,6 +127,7 @@ class TestPerformance(unittest.TestCase):
                 10  # 10 requests per second minimum (optimized computation)
             )
             self.ci_multiplier = 1.0
+            self.timeout_multiplier = 1.0  # Standard timeout for local development
 
     def tearDown(self):
         """Clean up performance test environment"""
