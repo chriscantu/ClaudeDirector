@@ -23,9 +23,12 @@ try:
         MemoryOptimizer,
         ObjectPool,
     )
-    from claudedirector.lib.performance.response_optimizer import (
-        ResponseOptimizer,
-        ResponsePriority,
+
+    # Updated import for unified performance manager
+    from claudedirector.lib.core.unified_performance_manager import (
+        UnifiedPerformanceManager,
+        PerformanceTarget,
+        create_response_optimizer,  # Legacy compatibility
     )
     from claudedirector.lib.performance.performance_monitor import PerformanceMonitor
 except ImportError:
@@ -33,8 +36,18 @@ except ImportError:
     sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
     from lib.performance.cache_manager import CacheManager, CacheLevel
     from lib.performance.memory_optimizer import MemoryOptimizer, ObjectPool
-    from lib.performance.response_optimizer import ResponseOptimizer, ResponsePriority
+
+    # Updated import for unified performance manager
+    from lib.core.unified_performance_manager import (
+        UnifiedPerformanceManager,
+        PerformanceTarget,
+        create_response_optimizer,  # Legacy compatibility
+    )
     from lib.performance.performance_monitor import PerformanceMonitor
+
+# Legacy compatibility aliases for existing tests
+ResponseOptimizer = create_response_optimizer
+ResponsePriority = PerformanceTarget
 
 
 class TestPhase8PerformanceP0(unittest.TestCase):
@@ -55,6 +68,21 @@ class TestPhase8PerformanceP0(unittest.TestCase):
         self.performance_monitor = PerformanceMonitor(
             retention_hours=1, alert_cooldown_seconds=10
         )
+
+    def tearDown(self):
+        """Clean up test fixtures - CRITICAL for CI stability"""
+        # Clear all performance manager caches to prevent state pollution
+        if hasattr(self.response_optimizer, "clear_caches"):
+            self.response_optimizer.clear_caches()
+
+        # Clear cache manager state
+        if hasattr(self.cache_manager, "clear"):
+            asyncio.run(self.cache_manager.clear())
+
+        # Force garbage collection to clean up any lingering objects
+        import gc
+
+        gc.collect()
 
     def test_p0_cache_performance_targets(self):
         """P0: Cache operations must meet <50ms performance targets"""
