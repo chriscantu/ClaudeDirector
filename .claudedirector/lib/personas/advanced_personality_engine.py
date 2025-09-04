@@ -99,9 +99,20 @@ class AdvancedPersonalityEngine:
         consistency_target: float = 0.95,
     ):
         """
-        🏗️ ULTRA-LIGHTWEIGHT INITIALIZATION
-        All complex initialization logic delegated to PersonalityProcessor
+        🎯 STORY 2.1.3: FACADE CONSOLIDATION - BaseProcessor Pattern
+
+        Consolidated facade initialization using BaseProcessor pattern.
+        ELIMINATES duplicate initialization, logging, and dependency patterns.
         """
+        # Import BaseProcessor for consolidated pattern
+        try:
+            from ..core.base_processor import BaseProcessor
+        except ImportError:
+            import sys
+
+            sys.path.insert(0, ".claudedirector/lib")
+            from core.base_processor import BaseProcessor
+
         # Create centralized processor with all dependencies
         self.processor = PersonalityProcessor(
             context_engine=context_engine,
@@ -110,6 +121,27 @@ class AdvancedPersonalityEngine:
             cache_manager=cache_manager,
             consistency_target=consistency_target,
         )
+
+        # Use BaseProcessor facade consolidation pattern
+        facade_config = BaseProcessor.create_facade_delegate(
+            processor_instance=self.processor,
+            facade_properties=[
+                "logger",
+                "context_engine",
+                "stakeholder_intelligence",
+                "framework_detector",
+                "cache_manager",
+            ],
+            facade_methods=[
+                "analyze_personality_consistency",
+                "generate_strategic_response",
+                "update_persona_behavior",
+                "health_check",
+            ],
+        )
+
+        # Apply consolidated facade pattern
+        self.processor = facade_config["processor"]
 
         # Keep minimal facade properties for API compatibility
         self.logger = self.processor.logger

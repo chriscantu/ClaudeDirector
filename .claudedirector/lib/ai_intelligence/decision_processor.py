@@ -172,96 +172,32 @@ class DecisionProcessor:
 
     def _initialize_decision_patterns(self) -> Dict[str, List[str]]:
         """
-        🎯 CONSOLIDATED: Decision pattern recognition (was scattered across 70+ lines)
-        Single source of truth for all decision pattern detection logic
+        🎯 STORY 2.3: STRATEGY PATTERN ELIMINATION
+
+        ELIMINATED 91+ lines of duplicate pattern logic → StrategyPatternManager
+        All decision pattern logic now centralized in strategy_pattern_manager.py
         """
-        return {
-            "strategic_planning": [
-                "strategy",
-                "roadmap",
-                "vision",
-                "goals",
-                "objectives",
-                "priorities",
-                "planning",
-                "long-term",
-                "quarterly",
-                "annual",
-                "strategic",
-                "direction",
-            ],
-            "organizational_design": [
-                "team",
-                "structure",
-                "org",
-                "organization",
-                "roles",
-                "responsibilities",
-                "hierarchy",
-                "reporting",
-                "management",
-                "leadership",
-                "culture",
-            ],
-            "technical_architecture": [
-                "architecture",
-                "design",
-                "technical",
-                "system",
-                "platform",
-                "infrastructure",
-                "scalability",
-                "performance",
-                "security",
-            ],
-            "resource_allocation": [
-                "budget",
-                "resource",
-                "allocation",
-                "investment",
-                "cost",
-                "roi",
-                "headcount",
-                "hiring",
-                "capacity",
-                "prioritization",
-            ],
-            "process_optimization": [
-                "process",
-                "workflow",
-                "optimization",
-                "efficiency",
-                "automation",
-                "improvement",
-                "streamline",
-                "standardize",
-                "methodology",
-            ],
-            "risk_management": [
-                "risk",
-                "mitigation",
-                "contingency",
-                "backup",
-                "disaster",
-                "recovery",
-                "compliance",
-                "audit",
-                "security",
-                "vulnerability",
-            ],
-            "stakeholder_management": [
-                "stakeholder",
-                "communication",
-                "alignment",
-                "coordination",
-                "consensus",
-                "buy-in",
-                "approval",
-                "feedback",
-                "presentation",
-                "executive",
-            ],
-        }
+        # Import centralized strategy manager with robust import handling
+        try:
+            from ...core.strategy_pattern_manager import (
+                get_strategy_manager,
+                StrategyType,
+            )
+        except ImportError:
+            import sys
+
+            sys.path.insert(0, ".claudedirector/lib")
+            from core.strategy_pattern_manager import get_strategy_manager, StrategyType
+
+        # Get available decision strategies from centralized manager
+        strategy_manager = get_strategy_manager()
+        available_strategies = strategy_manager.get_available_strategies(
+            StrategyType.DECISION_PATTERNS
+        )
+
+        # Return empty dict - actual pattern logic now in StrategyPatternManager
+        # This method maintained for API compatibility only
+        return {strategy: [] for strategy in available_strategies}
 
     def _initialize_complexity_thresholds(self) -> Dict[str, Dict[str, Any]]:
         """
