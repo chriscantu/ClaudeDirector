@@ -15,8 +15,20 @@ from jinja2 import Template
 import plotly.graph_objects as go
 import plotly.io as pio
 
+# Import BaseProcessor for massive code elimination
+try:
+    from ..core.base_processor import BaseProcessor
+except ImportError:
+    # Fallback for test contexts and standalone execution
+    import sys
+    from pathlib import Path
 
-class HTMLTemplateProcessor:
+    lib_path = Path(__file__).parent.parent
+    sys.path.insert(0, str(lib_path))
+    from core.base_processor import BaseProcessor
+
+
+class HTMLTemplateProcessor(BaseProcessor):
     """🏗️ Sequential Thinking Phase 4: Centralized HTML template processor"""
 
     def __init__(self):
