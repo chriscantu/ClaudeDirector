@@ -4,6 +4,7 @@ Initialize strategic memory database for CI environment
 Ensures the database exists with proper schema for P0 conversation tracking tests
 """
 
+import argparse
 import sqlite3
 import sys
 from pathlib import Path
@@ -113,16 +114,31 @@ def create_strategic_database(db_path: str):
 
 def main():
     """Initialize database for CI environment"""
+    parser = argparse.ArgumentParser(
+        description="Initialize strategic memory database for CI environment"
+    )
+    parser.add_argument(
+        "--db-path",
+        default="data/strategic/strategic_memory.db",
+        help="Path to the database file (default: data/strategic/strategic_memory.db)",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Show what would be done without creating the database",
+    )
 
-    # Default path that tests expect
-    db_path = "data/strategic/strategic_memory.db"
+    args = parser.parse_args()
 
-    if len(sys.argv) > 1:
-        db_path = sys.argv[1]
+    if args.dry_run:
+        print(f"🧪 DRY-RUN: Would create strategic memory database at {args.db_path}")
+        print("✅ dry-run mode - no database created")
+        return 0
 
     try:
-        create_strategic_database(db_path)
-        print("✅ Database initialization successful")
+        create_strategic_database(args.db_path)
+        print(f"✅ strategic memory database initialized at {args.db_path}")
+        print("✅ database initialization successful")
         return 0
     except Exception as e:
         print(f"❌ Database initialization failed: {e}")
