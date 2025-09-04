@@ -75,6 +75,10 @@ class TestPhase8PerformanceP0(unittest.TestCase):
         if hasattr(self.response_optimizer, "clear_caches"):
             self.response_optimizer.clear_caches()
 
+        # CRITICAL: Shutdown thread pool executors to prevent state pollution
+        if hasattr(self.response_optimizer, "cleanup"):
+            self.response_optimizer.cleanup()
+
         # Clear cache manager state
         if hasattr(self.cache_manager, "clear"):
             asyncio.run(self.cache_manager.clear())
@@ -83,6 +87,14 @@ class TestPhase8PerformanceP0(unittest.TestCase):
         import gc
 
         gc.collect()
+
+        # CRITICAL: Recreate response optimizer to ensure clean state for next test
+        self.response_optimizer = ResponseOptimizer(
+            max_workers=2, target_response_ms=400
+        )
+        self.response_optimizer._test_mode = (
+            True  # Enable test mode for direct execution
+        )
 
     def test_p0_cache_performance_targets(self):
         """P0: Cache operations must meet <50ms performance targets"""
