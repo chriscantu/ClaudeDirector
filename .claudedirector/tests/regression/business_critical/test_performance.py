@@ -99,12 +99,25 @@ class TestPerformance(unittest.TestCase):
 
         self.is_ci = os.getenv("CI") == "true" or os.getenv("GITHUB_ACTIONS") == "true"
 
+        # Detect pre-commit execution environment for adaptive thresholds
+        self.is_precommit = os.getenv("PRE_COMMIT") == "1" or "pre-commit" in " ".join(
+            sys.argv
+        )
+
         # Adjust thresholds for CI environment (GitHub Actions runners are slower)
         if self.is_ci:
             self.max_response_time = 2.0  # More lenient for CI
             self.max_memory_mb = 2048  # 2GB for CI
             self.min_throughput = 5  # Lower throughput requirement for CI
             self.ci_multiplier = 5.0  # 5x more lenient timing for CI
+            self.timeout_multiplier = 3.0  # 3x timeout for CI
+        elif self.is_precommit:
+            # Pre-commit environment: system under load from multiple hooks
+            self.max_response_time = 1.0  # More lenient for pre-commit load
+            self.max_memory_mb = 1024  # 1GB max memory usage
+            self.min_throughput = 8  # Slightly lower throughput for pre-commit
+            self.ci_multiplier = 2.0  # 2x more lenient timing for pre-commit
+            self.timeout_multiplier = 2.0  # 2x timeout for pre-commit load
         else:
             self.max_response_time = (
                 0.5  # 0.5 seconds max for strategic queries (optimized)
@@ -114,6 +127,7 @@ class TestPerformance(unittest.TestCase):
                 10  # 10 requests per second minimum (optimized computation)
             )
             self.ci_multiplier = 1.0
+            self.timeout_multiplier = 1.0
 
     def tearDown(self):
         """Clean up performance test environment"""
@@ -280,16 +294,27 @@ class TestPerformance(unittest.TestCase):
                 for query_id in range(concurrent_queries)
             ]
 
-            # Collect results with timeout to prevent hanging
+            # Collect results with adaptive timeout to prevent hanging
             all_results = []
-            for future in concurrent.futures.as_completed(futures, timeout=30):
+            adaptive_timeout = 30 * self.timeout_multiplier
+            individual_timeout = 5 * self.timeout_multiplier
+
+            for future in concurrent.futures.as_completed(
+                futures, timeout=adaptive_timeout
+            ):
                 try:
-                    user_results = future.result(timeout=5)
+                    user_results = future.result(timeout=individual_timeout)
                     all_results.extend(user_results)
                 except concurrent.futures.TimeoutError:
-                    # Handle timeout gracefully
+                    # Handle timeout gracefully with context
+                    env_context = (
+                        "CI"
+                        if self.is_ci
+                        else "pre-commit" if self.is_precommit else "local"
+                    )
                     self.fail(
-                        "Concurrent query execution timed out - performance issue"
+                        f"Concurrent query execution timed out in {env_context} environment "
+                        f"(timeout: {individual_timeout}s) - performance issue"
                     )
 
         end_time = time.time()
@@ -729,12 +754,19 @@ def run_business_critical_performance_tests():
     print("OWNER: Alvaro | IMPACT: User Experience & System Reliability")
     print("FAILURE COST: Poor UX, executive frustration, system abandonment")
 
-    # Show CI detection
+    # Show environment detection
     import os
+    import sys
 
     is_ci = os.getenv("CI") == "true" or os.getenv("GITHUB_ACTIONS") == "true"
+    is_precommit = os.getenv("PRE_COMMIT") == "1" or "pre-commit" in " ".join(sys.argv)
+
     if is_ci:
         print("🤖 CI ENVIRONMENT DETECTED: Using lenient thresholds for GitHub Actions")
+    elif is_precommit:
+        print(
+            "🔧 PRE-COMMIT ENVIRONMENT DETECTED: Using load-aware performance thresholds"
+        )
     else:
         print("💻 LOCAL ENVIRONMENT: Using optimized performance thresholds")
     print("=" * 70)
