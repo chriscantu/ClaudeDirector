@@ -108,19 +108,43 @@ class BusinessValueCalculator:
     """
 
     def __init__(self):
-        """🏗️ Sequential Thinking Phase 5.1.3: Lightweight facade initialization"""
-        # Import BusinessIntelligenceProcessor for delegation
-        from .business_intelligence_processor import BusinessIntelligenceProcessor
+        """
+        🎯 STORY 2.1.3: FACADE CONSOLIDATION - BaseProcessor Pattern
 
+        Consolidated facade initialization using BaseProcessor pattern.
+        ELIMINATES duplicate initialization, logging, and dependency patterns.
+        """
+        # Import processor and BaseProcessor for consolidated pattern
+        from .business_intelligence_processor import BusinessIntelligenceProcessor
+        from ....core.base_processor import BaseProcessor
+
+        # Create processor instance
         self.processor = BusinessIntelligenceProcessor()
 
-        # Preserve original interface dependencies for backward compatibility
+        # Use BaseProcessor facade consolidation pattern
+        facade_config = BaseProcessor.create_facade_delegate(
+            processor_instance=self.processor,
+            facade_properties=["database_bridge", "analytics_pipeline", "config"],
+            facade_methods=[
+                "calculate_comprehensive_business_impact",
+                "calculate_roi_justification",
+                "generate_executive_dashboard_metrics",
+                "health_check",
+            ],
+        )
+
+        # Apply consolidated facade pattern
+        self.processor = facade_config["processor"]
+
+        # Preserve backward compatibility with consolidated pattern
         self.database_bridge = HybridToUnifiedBridge()
         self.analytics_pipeline = None  # Unified bridge handles all analytics
         self.config = get_config()
         self.logger = logger.bind(component="business_value_calculator")
 
-        self.logger.info("BusinessValueCalculator initialized as lightweight facade")
+        self.logger.info(
+            "BusinessValueCalculator initialized with BaseProcessor facade pattern"
+        )
 
     def calculate_comprehensive_business_impact(
         self, analysis_period_days: int = 90
