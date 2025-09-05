@@ -150,9 +150,20 @@ class DecisionIntelligenceOrchestrator:
         enable_ml_predictions: bool = True,
     ):
         """
-        🏗️ ULTRA-LIGHTWEIGHT INITIALIZATION
-        All complex initialization logic delegated to DecisionProcessor
+        🎯 STORY 2.1.3: FACADE CONSOLIDATION - BaseProcessor Pattern
+
+        Consolidated facade initialization using BaseProcessor pattern.
+        ELIMINATES duplicate initialization, logging, and dependency patterns.
         """
+        # Import BaseProcessor for consolidated pattern
+        try:
+            from ...core.base_processor import BaseProcessor
+        except ImportError:
+            import sys
+
+            sys.path.insert(0, ".claudedirector/lib")
+            from core.base_processor import BaseProcessor
+
         # Create centralized processor with all dependencies
         self.processor = DecisionProcessor(
             mcp_integration_helper=mcp_integration_helper,
@@ -162,6 +173,27 @@ class DecisionIntelligenceOrchestrator:
             ml_prediction_router=ml_prediction_router,
             enable_ml_predictions=enable_ml_predictions,
         )
+
+        # Use BaseProcessor facade consolidation pattern
+        facade_config = BaseProcessor.create_facade_delegate(
+            processor_instance=self.processor,
+            facade_properties=[
+                "mcp_helper",
+                "framework_engine",
+                "transparency_system",
+                "persona_manager",
+                "ml_prediction_router",
+            ],
+            facade_methods=[
+                "orchestrate_strategic_decision",
+                "analyze_decision_complexity",
+                "coordinate_mcp_enhancement",
+                "health_check",
+            ],
+        )
+
+        # Apply consolidated facade pattern
+        self.processor = facade_config["processor"]
 
         # Keep minimal facade properties for API compatibility
         self.mcp_helper = self.processor.mcp_helper

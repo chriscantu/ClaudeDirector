@@ -79,11 +79,38 @@ class SmartFileOrganizer:
 
     def __init__(self, lifecycle_manager: FileLifecycleManager):
         """
-        🏗️ ULTRA-LIGHTWEIGHT INITIALIZATION
-        All complex initialization logic delegated to FileOrganizerProcessor
+        🎯 STORY 2.1.3: FACADE CONSOLIDATION - BaseProcessor Pattern
+
+        Consolidated facade initialization using BaseProcessor pattern.
+        ELIMINATES duplicate initialization, logging, and dependency patterns.
         """
+        # Import BaseProcessor for consolidated pattern
+        from .base_processor import BaseProcessor
+
         # Create centralized processor with all dependencies
         self.processor = FileOrganizerProcessor(lifecycle_manager)
+
+        # Use BaseProcessor facade consolidation pattern
+        facade_config = BaseProcessor.create_facade_delegate(
+            processor_instance=self.processor,
+            facade_properties=[
+                "lifecycle_manager",
+                "workspace_path",
+                "patterns_file",
+                "insights_file",
+                "advanced_archiving",
+                "pattern_engine",
+            ],
+            facade_methods=[
+                "generate_outcome_focused_filename",
+                "organize_workspace_files",
+                "analyze_session_patterns",
+                "health_check",
+            ],
+        )
+
+        # Apply consolidated facade pattern
+        self.processor = facade_config["processor"]
 
         # Keep minimal facade properties for API compatibility
         self.lifecycle_manager = self.processor.lifecycle_manager

@@ -85,7 +85,15 @@ class UnifiedBridge:
         config: BridgeConfig,
         context_engine: Optional[AdvancedContextEngine] = None,
     ):
-        """🏗️ Sequential Thinking Phase 5.2.1: Ultra-lightweight facade initialization"""
+        """
+        🎯 STORY 2.1.3: FACADE CONSOLIDATION - BaseProcessor Pattern
+
+        Consolidated facade initialization using BaseProcessor pattern.
+        ELIMINATES duplicate initialization, logging, and dependency patterns.
+        """
+        # Import BaseProcessor for consolidated pattern
+        from ..core.base_processor import BaseProcessor
+
         self.logger = logging.getLogger(__name__)
         self.config = config
 
@@ -102,13 +110,27 @@ class UnifiedBridge:
         # Initialize processor for delegation (DRY: single processor instance)
         self.processor = UnifiedIntegrationProcessor(processor_config)
 
+        # Use BaseProcessor facade consolidation pattern
+        facade_config = BaseProcessor.create_facade_delegate(
+            processor_instance=self.processor,
+            facade_properties=["enhanced_mode", "context_engine", "legacy_data_store"],
+            facade_methods=[
+                "process_bridge_migration",
+                "get_legacy_data",
+                "health_check",
+            ],
+        )
+
+        # Apply consolidated facade pattern
+        self.processor = facade_config["processor"]
+
         # Preserve original interface for backward compatibility
         self.enhanced_mode = self.processor.enhanced_mode
         self.context_engine = self.processor.context_engine
         self.legacy_data = self.processor.legacy_data_store
 
         self.logger.info(
-            f"UnifiedBridge initialized as ultra-lightweight facade - Type: {config.bridge_type.value}, "
+            f"UnifiedBridge initialized with BaseProcessor facade pattern - Type: {config.bridge_type.value}, "
             f"Enhanced: {self.enhanced_mode}"
         )
 

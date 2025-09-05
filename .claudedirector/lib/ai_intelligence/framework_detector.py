@@ -215,11 +215,40 @@ class EnhancedFrameworkDetection:
         transparency_system: Optional[IntegratedTransparencySystem] = None,
         session_manager: Optional[SessionManager] = None,
     ):
-        """🏗️ Sequential Thinking Phase 5.2.3: Ultra-lightweight facade initialization"""
+        """
+        🎯 STORY 2.1.3: FACADE CONSOLIDATION - BaseProcessor Pattern
+
+        Consolidated facade initialization using BaseProcessor pattern.
+        ELIMINATES duplicate initialization, logging, and dependency patterns.
+        """
+        # Import BaseProcessor for consolidated pattern
+        try:
+            from ...core.base_processor import BaseProcessor
+        except ImportError:
+            import sys
+
+            sys.path.insert(0, ".claudedirector/lib")
+            from core.base_processor import BaseProcessor
+
         # Initialize processor for delegation
         self.processor = create_framework_processor(
             baseline_detector, transparency_system
         )
+
+        # Use BaseProcessor facade consolidation pattern
+        facade_config = BaseProcessor.create_facade_delegate(
+            processor_instance=self.processor,
+            facade_properties=["baseline_detector", "transparency_system", "logger"],
+            facade_methods=[
+                "analyze_with_enhancement",
+                "detect_frameworks_enhanced",
+                "generate_systematic_response",
+                "get_enhancement_metrics",
+            ],
+        )
+
+        # Apply consolidated facade pattern
+        self.processor = facade_config["processor"]
 
         # Preserve original interface components
         self.baseline_detector = baseline_detector
@@ -234,7 +263,7 @@ class EnhancedFrameworkDetection:
 
         self.logger = structlog.get_logger(__name__)
         self.logger.info(
-            "EnhancedFrameworkDetection initialized as ultra-lightweight facade"
+            "EnhancedFrameworkDetection initialized with BaseProcessor facade pattern"
         )
 
     async def analyze_with_enhancement(
