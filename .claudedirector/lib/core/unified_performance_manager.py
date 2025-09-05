@@ -35,6 +35,15 @@ import json
 # Import shared base processor (eliminates duplicate patterns)
 from .base_processor import BaseProcessor, BaseProcessorConfig
 
+
+class PerformanceTarget(Enum):
+    """Performance optimization targets for legacy compatibility"""
+    ULTRA_FAST = "ultra_fast"
+    FAST = "fast"
+    NORMAL = "normal"
+    BACKGROUND = "background"
+    CRITICAL = "critical"  # Alias for ULTRA_FAST
+
 try:
     from ..ai_intelligence.decision_orchestrator import DecisionIntelligenceOrchestrator
     from ..ai_intelligence.predictive_engine import (
@@ -783,31 +792,59 @@ class UnifiedPerformanceManager(BaseProcessor):
 
         self.logger.info("UnifiedPerformanceManager cleanup completed")
 
-
-def create_response_optimizer(max_workers: int = 4, target_response_ms: int = 500):
-    """Create a ResponseOptimizer instance for backward compatibility
-    
-    This function provides backward compatibility for tests and code that expect
-    the old ResponseOptimizer class. It returns a UnifiedPerformanceManager
-    configured with response optimization settings.
-    
-    Args:
-        max_workers: Maximum number of worker threads
-        target_response_ms: Target response time in milliseconds
+    async def optimize_call(self, func, *args, priority=None, **kwargs):
+        """Legacy compatibility method for optimize_call
         
-    Returns:
-        UnifiedPerformanceManager: Configured performance manager instance
-    """
-    from .unified_performance_manager import UnifiedPerformanceConfig, UnifiedPerformanceManager
-    
-    config = UnifiedPerformanceConfig(
-        ultra_fast_workers=max(1, max_workers // 4),
-        fast_workers=max(1, max_workers // 2), 
-        normal_workers=max_workers,
-        background_workers=max(1, max_workers // 2)
-    )
-    
-    return UnifiedPerformanceManager(config)
+        This method provides backward compatibility for tests and code that expect
+        the old ResponseOptimizer.optimize_call interface.
+        
+        Args:
+            func: Function to optimize
+            *args: Positional arguments for the function
+            priority: Performance priority (legacy parameter, ignored for now)
+            **kwargs: Keyword arguments for the function
+            
+        Returns:
+            Result of the optimized function call
+        """
+        # Create a wrapper function that calls the original with the provided args
+        async def wrapper_func(*ctx_args, **ctx_kwargs):
+            if asyncio.iscoroutinefunction(func):
+                return await func(*args, **kwargs)
+            else:
+                return func(*args, **kwargs)
+        
+        # Create context for the function call
+        context = {
+            "args": (),  # Args already captured in wrapper
+            "kwargs": {},  # Kwargs already captured in wrapper
+            "function_name": getattr(func, "__name__", "anonymous"),
+        }
+        
+        # Map priority to PerformanceTarget for backward compatibility
+        if priority is None:
+            target = PerformanceTarget.NORMAL
+        else:
+            # Map various priority values to PerformanceTarget
+            if hasattr(priority, 'value'):
+                target = priority  # Already a PerformanceTarget
+            elif str(priority).upper() in ['CRITICAL', 'ULTRA_FAST']:
+                target = PerformanceTarget.ULTRA_FAST
+            elif str(priority).upper() == 'FAST':
+                target = PerformanceTarget.FAST
+            elif str(priority).upper() == 'BACKGROUND':
+                target = PerformanceTarget.BACKGROUND
+            else:
+                target = PerformanceTarget.NORMAL
+        
+        # Call optimize_request with proper parameters and return just the result
+        result, metrics = await self.optimize_request(
+            request_func=wrapper_func,
+            target=target,
+            context=context,
+            enable_cache=True,
+        )
+        return result
 
     def clear_caches(self):
         """Clear all caches and reset performance metrics - CRITICAL for test isolation"""
