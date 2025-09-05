@@ -19,7 +19,7 @@ except ImportError:
 
 from .core.config import get_config
 from .performance.cache_manager import CacheManager
-from .utils.memory import MemoryOptimizer
+from .performance.memory_optimizer import MemoryOptimizer
 from .utils.parallel import ParallelProcessor
 
 
