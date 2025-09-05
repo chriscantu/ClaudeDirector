@@ -29,20 +29,39 @@ from enum import Enum
 import logging
 import json
 
-# Core ClaudeDirector integration
+# Core ClaudeDirector integration - Phase 2.4 consolidated architecture
 try:
-    from .performance_optimized_ml_pipeline import (
-        PerformanceOptimizedMLPipeline,
-        MLPipelineConfig,
-        PerformanceMetrics,
+    from ..core.unified_performance_manager import (
+        UnifiedPerformanceManager as PerformanceOptimizedMLPipeline,
+        UnifiedPerformanceConfig as MLPipelineConfig,
+        UnifiedPerformanceMetrics as PerformanceMetrics,
     )
     from ..transparency.mcp_transparency import MCPTransparencyManager
     from ..mcp.mcp_server_manager import MCPServerManager, MCPServerType
 except ImportError:
-    # Fallback for development
-    PerformanceOptimizedMLPipeline = object
-    MCPTransparencyManager = object
-    MCPServerManager = object
+    # Fallback for development - Phase 2.4 compatibility
+    class PerformanceOptimizedMLPipeline:
+        def __init__(self, config=None):
+            self.config = config
+            self.logger = logging.getLogger(__name__)
+
+    class MLPipelineConfig:
+        def __init__(self, **kwargs):
+            # Accept any keyword arguments for compatibility
+            for key, value in kwargs.items():
+                setattr(self, key, value)
+
+    class PerformanceMetrics:
+        def __init__(self):
+            pass
+
+    class MCPTransparencyManager:
+        def __init__(self):
+            pass
+
+    class MCPServerManager:
+        def __init__(self):
+            pass
 
 
 class MCPEnhancementLevel(Enum):
