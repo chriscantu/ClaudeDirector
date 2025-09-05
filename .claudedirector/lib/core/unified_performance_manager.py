@@ -38,11 +38,13 @@ from .base_processor import BaseProcessor, BaseProcessorConfig
 
 class PerformanceTarget(Enum):
     """Performance optimization targets for legacy compatibility"""
+
     ULTRA_FAST = "ultra_fast"
     FAST = "fast"
     NORMAL = "normal"
     BACKGROUND = "background"
     CRITICAL = "critical"  # Alias for ULTRA_FAST
+
 
 try:
     from ..ai_intelligence.decision_orchestrator import DecisionIntelligenceOrchestrator
@@ -794,22 +796,22 @@ class UnifiedPerformanceManager(BaseProcessor):
 
     async def optimize_call(self, func, *args, priority=None, **kwargs):
         """Legacy compatibility method for optimize_call - ULTRA-FAST DIRECT EXECUTION
-        
+
         This method provides maximum performance for legacy test compatibility.
         Always uses direct execution path for <100ms response time requirements.
-        
+
         Args:
             func: Function to optimize
             *args: Positional arguments for the function
             priority: Performance priority (legacy parameter)
             **kwargs: Keyword arguments for the function
-            
+
         Returns:
             Result of the optimized function call
         """
         # ULTRA-FAST DIRECT EXECUTION: Always use fastest path for legacy compatibility
         # This method is only used by tests that require <100ms response times
-        
+
         try:
             if asyncio.iscoroutinefunction(func):
                 # Async functions: Direct await with no overhead
@@ -817,7 +819,7 @@ class UnifiedPerformanceManager(BaseProcessor):
             else:
                 # Sync functions: Direct call with no overhead
                 return func(*args, **kwargs)
-                    
+
         except Exception as e:
             # Preserve error propagation for test compatibility
             raise e
