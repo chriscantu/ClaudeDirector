@@ -783,6 +783,32 @@ class UnifiedPerformanceManager(BaseProcessor):
 
         self.logger.info("UnifiedPerformanceManager cleanup completed")
 
+
+def create_response_optimizer(max_workers: int = 4, target_response_ms: int = 500):
+    """Create a ResponseOptimizer instance for backward compatibility
+    
+    This function provides backward compatibility for tests and code that expect
+    the old ResponseOptimizer class. It returns a UnifiedPerformanceManager
+    configured with response optimization settings.
+    
+    Args:
+        max_workers: Maximum number of worker threads
+        target_response_ms: Target response time in milliseconds
+        
+    Returns:
+        UnifiedPerformanceManager: Configured performance manager instance
+    """
+    from .unified_performance_manager import UnifiedPerformanceConfig, UnifiedPerformanceManager
+    
+    config = UnifiedPerformanceConfig(
+        ultra_fast_workers=max(1, max_workers // 4),
+        fast_workers=max(1, max_workers // 2), 
+        normal_workers=max_workers,
+        background_workers=max(1, max_workers // 2)
+    )
+    
+    return UnifiedPerformanceManager(config)
+
     def clear_caches(self):
         """Clear all caches and reset performance metrics - CRITICAL for test isolation"""
         self.memory_cache.clear()
