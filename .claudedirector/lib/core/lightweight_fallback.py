@@ -388,3 +388,4 @@ def create_lightweight_fallback_system() -> (
     logger.info("Lightweight fallback system initialized - OVERVIEW.md pattern active")
 
     return persona_fallback, dependency_checker
+

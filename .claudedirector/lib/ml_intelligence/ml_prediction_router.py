@@ -506,3 +506,4 @@ def create_ml_prediction_router(enable_ml: bool = True) -> Optional[MLPrediction
     except Exception as e:
         logger.error("ml_prediction_router_creation_failed", error=str(e))
         return None
+
