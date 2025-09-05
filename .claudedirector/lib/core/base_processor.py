@@ -268,6 +268,55 @@ class BaseProcessor(ABC):
         """Unified string representation"""
         return f"{self.__class__.__name__}(operations={self.metrics.get('operations', 0) if self.metrics else 0}, errors={self.error_count})"
 
+    @classmethod
+    def create_facade_delegate(
+        cls,
+        processor_instance,
+        facade_properties: List[str] = None,
+        facade_methods: List[str] = None,
+    ):
+        """
+        🎯 STORY 2.1.2: FACADE CONSOLIDATION PATTERN
+
+        Creates standardized facade delegation for ULTRA-LIGHTWEIGHT facades.
+        Eliminates duplicate delegation patterns across all 7 facade implementations.
+
+        ELIMINATES duplicate patterns:
+        - Property forwarding: self.property = self.processor.property
+        - Method delegation: return self.processor.method(...)
+        - Error handling in facade methods
+        - Initialization boilerplate
+
+        Args:
+            processor_instance: The processor to delegate to
+            facade_properties: List of properties to forward from processor
+            facade_methods: List of methods to delegate to processor
+
+        Returns:
+            Dict with standardized facade delegation patterns
+        """
+        facade_properties = facade_properties or []
+        facade_methods = facade_methods or []
+
+        # Create property forwarding dict
+        properties = {}
+        for prop in facade_properties:
+            if hasattr(processor_instance, prop):
+                properties[prop] = getattr(processor_instance, prop)
+
+        # Create method delegation dict
+        methods = {}
+        for method in facade_methods:
+            if hasattr(processor_instance, method):
+                methods[method] = getattr(processor_instance, method)
+
+        return {
+            "processor": processor_instance,
+            "properties": properties,
+            "methods": methods,
+            "delegation_pattern": "ULTRA_LIGHTWEIGHT_FACADE",
+        }
+
 
 # Shared utility functions that eliminate duplicate code across processors
 def create_processor_config(

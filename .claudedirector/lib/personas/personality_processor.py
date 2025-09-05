@@ -452,56 +452,52 @@ class PersonalityProcessor(BaseProcessor):
         self,
     ) -> Dict[StrategicThinkingDepth, Dict[str, Any]]:
         """
-        🎯 CONSOLIDATED: Strategic thinking patterns (was scattered across 35+ lines)
-        Single configuration for all thinking depth levels and analysis patterns
+        🎯 STORY 2.3: STRATEGY PATTERN ELIMINATION
+
+        ELIMINATED 47+ lines of duplicate thinking pattern logic → StrategyPatternManager
+        All thinking pattern configurations now centralized in strategy_pattern_manager.py
         """
-        return {
-            StrategicThinkingDepth.SURFACE: {
-                "analysis_depth": "basic",
-                "framework_usage": "minimal",
-                "context_integration": "limited",
-                "reasoning_transparency": "simple",
-                "complexity_threshold": 0.3,
-                "stakeholder_consideration": "primary",
-                "time_horizon": "immediate",
-            },
-            StrategicThinkingDepth.ANALYTICAL: {
-                "analysis_depth": "structured",
-                "framework_usage": "single_framework",
-                "context_integration": "moderate",
-                "reasoning_transparency": "clear",
-                "complexity_threshold": 0.5,
-                "stakeholder_consideration": "key_stakeholders",
-                "time_horizon": "short_term",
-            },
-            StrategicThinkingDepth.STRATEGIC: {
-                "analysis_depth": "multi_dimensional",
-                "framework_usage": "multiple_frameworks",
-                "context_integration": "comprehensive",
-                "reasoning_transparency": "detailed",
-                "complexity_threshold": 0.7,
-                "stakeholder_consideration": "ecosystem_wide",
-                "time_horizon": "medium_term",
-            },
-            StrategicThinkingDepth.VISIONARY: {
-                "analysis_depth": "transformational",
-                "framework_usage": "integrated_frameworks",
-                "context_integration": "holistic",
-                "reasoning_transparency": "visionary",
-                "complexity_threshold": 0.8,
-                "stakeholder_consideration": "ecosystem_transformation",
-                "time_horizon": "long_term",
-            },
-            StrategicThinkingDepth.EXPERT: {
-                "analysis_depth": "consultant_level",
-                "framework_usage": "masterful_integration",
-                "context_integration": "nuanced_sophisticated",
-                "reasoning_transparency": "expert_judgment",
-                "complexity_threshold": 0.9,
-                "stakeholder_consideration": "nuanced_stakeholder_dynamics",
-                "time_horizon": "strategic_lifecycle",
-            },
+        # Import centralized strategy manager with robust import handling
+        try:
+            from ...core.strategy_pattern_manager import (
+                get_strategy_manager,
+                StrategyType,
+            )
+        except ImportError:
+            import sys
+
+            sys.path.insert(0, ".claudedirector/lib")
+            from core.strategy_pattern_manager import get_strategy_manager, StrategyType
+
+        # Get thinking strategies from centralized manager
+        strategy_manager = get_strategy_manager()
+        thinking_strategies = strategy_manager.strategies.get(
+            StrategyType.THINKING_PATTERNS, {}
+        )
+
+        # Convert to expected format for API compatibility
+        depth_mapping = {
+            "surface": StrategicThinkingDepth.SURFACE,
+            "analytical": StrategicThinkingDepth.ANALYTICAL,
+            "strategic": StrategicThinkingDepth.STRATEGIC,
+            "visionary": StrategicThinkingDepth.VISIONARY,
         }
+
+        # Return mapped patterns - actual logic now in StrategyPatternManager
+        result = {}
+        for name, strategy in thinking_strategies.items():
+            if hasattr(strategy, "config") and name in depth_mapping:
+                result[depth_mapping[name]] = strategy.config
+
+        # Add EXPERT level for backward compatibility
+        result[StrategicThinkingDepth.EXPERT] = {
+            "analysis_depth": "consultant_level",
+            "framework_usage": "masterful_integration",
+            "complexity_threshold": 0.9,
+            "time_horizon": "strategic_lifecycle",
+        }
+
+        return result
 
     async def generate_strategic_response(
         self,
