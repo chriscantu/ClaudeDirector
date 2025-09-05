@@ -531,7 +531,27 @@ class TestPhase8PerformanceP0(unittest.TestCase):
             except Exception as e:
                 self.fail(f"Performance monitor crashed on invalid metrics: {e}")
 
-        asyncio.run(run_error_resilience_test())
+        # Handle asyncio event loop robustly for CI environment
+        try:
+            # Try to get existing event loop
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                # If loop is already running, create a task
+                import concurrent.futures
+                with concurrent.futures.ThreadPoolExecutor() as executor:
+                    future = executor.submit(asyncio.run, run_error_resilience_test())
+                    future.result()
+            else:
+                # If no loop is running, use asyncio.run
+                asyncio.run(run_error_resilience_test())
+        except RuntimeError:
+            # Fallback: create new event loop
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                loop.run_until_complete(run_error_resilience_test())
+            finally:
+                loop.close()
 
     def tearDown(self):
         """Clean up test resources"""
