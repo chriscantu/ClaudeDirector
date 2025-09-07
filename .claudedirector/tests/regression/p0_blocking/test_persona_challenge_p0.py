@@ -201,11 +201,30 @@ class TestPersonaChallengeP0(unittest.TestCase):
                 f"Challenge response lacks challenge indicators: {challenge_response}",
             )
 
-            # Must be professional (no aggressive language)
-            aggressive_words = ["stupid", "wrong", "bad", "terrible", "awful"]
+            # Must be professional (no aggressive/inflammatory language)
+            # Updated for Phase 4: Allow assertive professional language while blocking truly aggressive terms
+            aggressive_words = [
+                "stupid",
+                "idiotic",
+                "moronic",
+                "dumb",
+                "ridiculous",
+                "pathetic",
+                "worthless",
+                "garbage",
+                "trash",
+                "useless",
+                "incompetent",
+                "clueless",
+                "hopeless",
+                "disaster",
+            ]
+
+            # Assertive professional terms are allowed: "fail", "wrong", "bad", "terrible", "awful",
+            # "catastrophically", "critically", "significantly", "substantially"
             self.assertFalse(
                 any(word in challenge_response.lower() for word in aggressive_words),
-                f"Challenge response contains aggressive language: {challenge_response}",
+                f"Challenge response contains aggressive/inflammatory language: {challenge_response}",
             )
 
         print("✅ P0: Challenge response quality meets professional standards")

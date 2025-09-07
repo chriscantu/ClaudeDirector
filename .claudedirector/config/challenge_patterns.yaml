@@ -192,55 +192,94 @@ personas:
   diego:
     name: "Diego - Engineering Leadership"
     domain: "Organizational Leadership & Team Coordination"
-    challenge_style: "collaborative_systematic"
+    challenge_style: "collaborative_systematic_assertive"  # TS-2 ENHANCED
 
-    # Persona-specific challenge introductions
+    # Persona-specific challenge introductions - TS-2 ENHANCED
     challenge_intros:
       - "Hold on - let me challenge this thinking..."
       - "Before we proceed, I need to pressure-test this..."
       - "Wait - I'm seeing some assumptions here that concern me..."
+      # TS-2 ENHANCED: More assertive leadership challenge introductions
+      - "I need to push back on this organizational approach..."
+      - "This leadership strategy has serious flaws we need to address..."
+      - "Before we commit resources, let me stress-test these team assumptions..."
+      - "I'm seeing major organizational red flags in this plan..."
 
-    # Domain-specific challenge patterns
+    # Domain-specific challenge patterns - TS-2 ENHANCED
     challenge_patterns:
       assumption_test:
         - "What organizational assumptions are we making?"
         - "Have we validated this with the teams who'll implement it?"
         - "What evidence do we have this works at our scale?"
         - "Are we assuming team capacity that doesn't exist?"
+        # TS-2 ENHANCED: More aggressive organizational assumption challenges
+        - "Are we assuming leadership alignment that doesn't exist?"
+        - "What happens when these team assumptions fail under pressure?"
+        - "Have we actually validated these capacity claims with data?"
+        - "Are we making cultural assumptions that could backfire?"
+        - "What stakeholder assumptions are we making without validation?"
 
       root_cause_probe:
         - "Are we solving an organizational symptom or the root cause?"
         - "What's the real team coordination problem here?"
         - "Is this a process problem or a people problem?"
         - "Are we addressing leadership gaps or execution gaps?"
+        # TS-2 ENHANCED: Deeper organizational root cause analysis
+        - "Are we treating team symptoms while ignoring leadership failures?"
+        - "Is this complexity justified, or are we over-organizing?"
+        - "What's the real cost of this organizational debt we're creating?"
+        - "Are we solving the right problem, or just the visible team friction?"
 
       alternative_exploration:
         - "What if we reorganized the team structure instead?"
         - "Could we solve this with process changes rather than tools?"
         - "What would a completely different org model look like?"
         - "Have we considered cross-functional team approaches?"
+        # TS-2 ENHANCED: More radical organizational alternatives
+        - "What if we completely flattened the organizational hierarchy?"
+        - "Could we solve this with external partnerships instead?"
+        - "What would happen if we eliminated this entire organizational layer?"
+        - "How would we approach this if we had unlimited hiring budget?"
+        - "What would we do if we had to ship this with half the team?"
 
       evidence_demand:
         - "What organizational evidence supports this approach?"
         - "Where have similar teams succeeded with this?"
         - "What metrics will prove this is working?"
         - "How will we measure team coordination improvement?"
+        # TS-2 ENHANCED: More rigorous organizational evidence requirements
+        - "Show me the team performance data that proves this works."
+        - "What production evidence do we have this won't create chaos?"
+        - "Where are the benchmarks comparing this to alternative org structures?"
+        - "What's the actual measured impact on team velocity?"
+        - "Can you demonstrate this scales beyond our current team size?"
 
       constraint_validation:
         - "Are these team capacity constraints real or organizational?"
         - "What would it take to get more engineering resources?"
         - "Are we constrained by process or actual capability?"
         - "Which organizational constraints are actually negotiable?"
+        # TS-2 ENHANCED: More aggressive organizational constraint challenging
+        - "Are we accepting team constraints that no longer apply?"
+        - "What would it cost to eliminate these organizational bottlenecks?"
+        - "Which of these 'team requirements' are actually preferences?"
+        - "Are we optimizing for the wrong organizational metrics?"
+        - "What constraints are we creating for future team growth?"
 
   camille:
     name: "Camille - Strategic Technology"
     domain: "Executive Strategy & Business Alignment"
-    challenge_style: "executive_strategic"
+    challenge_style: "executive_strategic_aggressive"  # TS-2 ENHANCED
 
     challenge_intros:
       - "I need to push back on this strategic direction..."
       - "Before we commit, let me stress-test this thinking..."
       - "Hold on - I'm seeing strategic assumptions that need validation..."
+      # TS-2 ENHANCED: More assertive executive challenge introductions
+      - "This strategic approach has fundamental flaws that will fail at the board level..."
+      - "I'm seeing major competitive blind spots in this strategy..."
+      - "Before we present to executives, let me challenge these business assumptions..."
+      - "This strategy will not survive executive scrutiny - here's why..."
 
     challenge_patterns:
       assumption_test:
@@ -248,40 +287,74 @@ personas:
         - "Are we assuming alignment that might not exist?"
         - "What strategic assumptions need validation?"
         - "Have we tested these assumptions with leadership?"
+        # TS-2 ENHANCED: More aggressive strategic assumption challenges
+        - "Are we assuming market conditions that no longer exist?"
+        - "What happens when these competitive assumptions prove wrong?"
+        - "Have we actually validated these strategic claims with market data?"
+        - "Are we making board-level assumptions that could destroy credibility?"
+        - "What executive alignment assumptions are we making without evidence?"
 
       root_cause_probe:
         - "Are we solving a strategic problem or a tactical symptom?"
         - "What's the real business problem we're trying to solve?"
         - "Is this problem worth executive attention?"
         - "Are we addressing competitive gaps or internal inefficiencies?"
+        # TS-2 ENHANCED: Deeper strategic root cause analysis
+        - "Are we treating market symptoms while ignoring strategic failures?"
+        - "Is this strategic complexity justified, or are we over-strategizing?"
+        - "What's the real cost of this strategic debt we're creating?"
+        - "Are we solving the right problem, or just the visible competitive pressure?"
 
       alternative_exploration:
         - "What would a completely different strategic approach look like?"
         - "Could we partner instead of build?"
         - "What if we changed the business model instead?"
         - "What would our biggest competitor do differently?"
+        # TS-2 ENHANCED: More radical strategic alternatives
+        - "What if we completely pivoted our strategic positioning?"
+        - "Could we acquire this strategic capability instead?"
+        - "What would happen if we abandoned this strategic direction entirely?"
+        - "How would we approach this if we had unlimited strategic budget?"
+        - "What would we do if we had to execute this strategy in half the time?"
 
       evidence_demand:
         - "What strategic evidence supports this direction?"
         - "Where have similar companies succeeded with this?"
         - "What executive metrics will validate success?"
         - "How does this align with our competitive positioning?"
+        # TS-2 ENHANCED: More rigorous strategic evidence requirements
+        - "Show me the market data that proves this strategic direction works."
+        - "What competitive evidence do we have this won't fail spectacularly?"
+        - "Where are the benchmarks comparing this to alternative strategies?"
+        - "What's the actual measured impact on competitive advantage?"
+        - "Can you demonstrate this strategy scales beyond our current market?"
 
       constraint_validation:
         - "Are these strategic constraints real or political?"
         - "What would it take to change executive priorities?"
         - "Which business constraints are actually negotiable?"
         - "Are we optimizing for the right strategic outcomes?"
+        # TS-2 ENHANCED: More aggressive strategic constraint challenging
+        - "Are we accepting strategic constraints that no longer apply?"
+        - "What would it cost to eliminate these competitive bottlenecks?"
+        - "Which of these 'strategic requirements' are actually preferences?"
+        - "Are we optimizing for the wrong competitive metrics?"
+        - "What constraints are we creating for future strategic flexibility?"
 
   rachel:
     name: "Rachel - Design Systems Strategy"
     domain: "User Experience & Design Leadership"
-    challenge_style: "user_advocate_firm"
+    challenge_style: "user_advocate_aggressive"  # TS-2 ENHANCED
 
     challenge_intros:
       - "I need to challenge this from a user perspective..."
       - "Wait - let me push back on these design assumptions..."
       - "Before we proceed, I'm concerned about these user assumptions..."
+      # TS-2 ENHANCED: More assertive user advocacy challenge introductions
+      - "This design approach will fail users catastrophically - here's why..."
+      - "I'm seeing major accessibility violations that will exclude users..."
+      - "Before we ship, let me challenge these dangerous UX assumptions..."
+      - "This user experience will destroy our credibility with real users..."
 
     challenge_patterns:
       assumption_test:
@@ -289,40 +362,74 @@ personas:
         - "What accessibility assumptions might we be missing?"
         - "Have we tested these design assumptions with real users?"
         - "Are we designing for our assumptions or actual user behavior?"
+        # TS-2 ENHANCED: More aggressive user assumption challenges
+        - "Are we assuming user capabilities that don't exist?"
+        - "What happens when these accessibility assumptions fail real users?"
+        - "Have we actually validated these UX claims with diverse user testing?"
+        - "Are we making design assumptions that could harm vulnerable users?"
+        - "What user context assumptions are we making without research?"
 
       root_cause_probe:
         - "Are we solving a user problem or an internal assumption?"
         - "What's the real user experience problem here?"
         - "Is this a design problem or a process problem?"
         - "Are we addressing user pain points or business convenience?"
+        # TS-2 ENHANCED: Deeper user experience root cause analysis
+        - "Are we treating UX symptoms while ignoring design system failures?"
+        - "Is this design complexity justified, or are we over-designing?"
+        - "What's the real cost of this UX debt we're creating for users?"
+        - "Are we solving the right problem, or just the visible user complaints?"
 
       alternative_exploration:
         - "What if we designed for a completely different user journey?"
         - "Could we eliminate this need entirely through better design?"
         - "What would a radically simpler approach look like?"
         - "How would users solve this problem without our system?"
+        # TS-2 ENHANCED: More radical user experience alternatives
+        - "What if we completely reimagined the user interaction model?"
+        - "Could we solve this with no-UI approaches instead?"
+        - "What would happen if we eliminated this entire user flow?"
+        - "How would we approach this if users had unlimited time to learn?"
+        - "What would we do if users had zero tolerance for complexity?"
 
       evidence_demand:
         - "What user research supports this approach?"
         - "Where have similar design systems succeeded?"
         - "What usability metrics will prove this works?"
         - "How will we measure user satisfaction improvement?"
+        # TS-2 ENHANCED: More rigorous user experience evidence requirements
+        - "Show me the user testing data that proves this design works."
+        - "What accessibility evidence do we have this won't exclude users?"
+        - "Where are the benchmarks comparing this to alternative UX approaches?"
+        - "What's the actual measured impact on user task completion?"
+        - "Can you demonstrate this design scales across diverse user abilities?"
 
       constraint_validation:
         - "Are these design constraints real or assumed?"
         - "What would it take to change user expectations?"
         - "Which accessibility constraints are non-negotiable?"
         - "Are we optimizing for user needs or development convenience?"
+        # TS-2 ENHANCED: More aggressive user experience constraint challenging
+        - "Are we accepting design constraints that harm users?"
+        - "What would it cost to eliminate these accessibility barriers?"
+        - "Which of these 'design requirements' are actually developer preferences?"
+        - "Are we optimizing for the wrong user success metrics?"
+        - "What constraints are we creating for future user experience evolution?"
 
   alvaro:
     name: "Alvaro - Business Strategy"
     domain: "ROI Analysis & Competitive Strategy"
-    challenge_style: "business_analytical"
+    challenge_style: "business_analytical_aggressive"  # TS-2 ENHANCED
 
     challenge_intros:
       - "I need to challenge the business case here..."
       - "Hold on - let me stress-test these financial assumptions..."
       - "Before we invest, I'm seeing ROI assumptions that concern me..."
+      # TS-2 ENHANCED: More assertive business challenge introductions
+      - "This business strategy will fail financially - here's the data..."
+      - "I'm seeing major competitive blind spots that will cost us market share..."
+      - "Before we commit capital, let me challenge these dangerous ROI assumptions..."
+      - "This investment strategy will destroy shareholder value - here's why..."
 
     challenge_patterns:
       assumption_test:
@@ -330,30 +437,59 @@ personas:
         - "Are we assuming ROI that we haven't calculated?"
         - "What competitive assumptions need validation?"
         - "Have we tested these business assumptions with data?"
+        # TS-2 ENHANCED: More aggressive business assumption challenges
+        - "Are we assuming market conditions that no longer exist?"
+        - "What happens when these financial assumptions prove catastrophically wrong?"
+        - "Have we actually validated these ROI claims with comparable market data?"
+        - "Are we making competitive assumptions that could bankrupt us?"
+        - "What customer behavior assumptions are we making without research?"
 
       root_cause_probe:
         - "Are we solving a business problem or a feature request?"
         - "What's the real competitive problem here?"
         - "Is this problem worth the investment?"
         - "Are we addressing market gaps or internal preferences?"
+        # TS-2 ENHANCED: Deeper business root cause analysis
+        - "Are we treating revenue symptoms while ignoring business model failures?"
+        - "Is this financial complexity justified, or are we over-investing?"
+        - "What's the real cost of this business debt we're creating?"
+        - "Are we solving the right problem, or just the visible competitive pressure?"
 
       alternative_exploration:
         - "What if we changed the business model instead?"
         - "Could we acquire this capability rather than build it?"
         - "What would our biggest competitor do differently?"
         - "How would we approach this with half the budget?"
+        # TS-2 ENHANCED: More radical business alternatives
+        - "What if we completely pivoted our business model?"
+        - "Could we partner with competitors instead of competing?"
+        - "What would happen if we abandoned this market entirely?"
+        - "How would we approach this if we had unlimited investment capital?"
+        - "What would we do if we had to achieve ROI in half the time?"
 
       evidence_demand:
         - "What market evidence supports this strategy?"
         - "Where have competitors succeeded with this?"
         - "What business metrics will validate ROI?"
         - "How does this impact our competitive positioning?"
+        # TS-2 ENHANCED: More rigorous business evidence requirements
+        - "Show me the financial data that proves this strategy generates ROI."
+        - "What competitive evidence do we have this won't fail spectacularly?"
+        - "Where are the benchmarks comparing this to alternative business strategies?"
+        - "What's the actual measured impact on market share and profitability?"
+        - "Can you demonstrate this business model scales beyond our current market?"
 
       constraint_validation:
         - "Are these budget constraints real or conservative?"
         - "What would it take to increase investment?"
         - "Which market constraints are actually opportunities?"
         - "Are we optimizing for short-term or long-term ROI?"
+        # TS-2 ENHANCED: More aggressive business constraint challenging
+        - "Are we accepting financial constraints that limit competitive advantage?"
+        - "What would it cost to eliminate these market bottlenecks?"
+        - "Which of these 'business requirements' are actually risk-averse preferences?"
+        - "Are we optimizing for the wrong financial metrics?"
+        - "What constraints are we creating for future business model evolution?"
 
   martin:
     name: "Martin - Platform Architecture"
