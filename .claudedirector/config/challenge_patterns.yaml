@@ -658,3 +658,46 @@ performance:
   # Performance targets
   max_response_time_ms: 100
   target_accuracy_percentage: 80
+
+# ======================================
+# TS-3: ADAPTIVE CHALLENGE INTELLIGENCE
+# ======================================
+adaptive_intelligence:
+  # Enable adaptive challenge intensity based on user engagement
+  enable_adaptive_intensity: true
+
+  # Learning parameters
+  learning_rate: 0.1
+  engagement_threshold: 0.7
+  effectiveness_threshold: 0.6
+
+  # Intensity adjustment parameters
+  intensity_levels:
+    low: 0.3      # Gentle challenges for new users
+    medium: 0.6   # Standard challenge level
+    high: 0.9     # Aggressive challenges for engaged users
+
+  # User engagement tracking
+  engagement_indicators:
+    - "follow_up_questions"
+    - "detailed_responses"
+    - "challenge_acceptance"
+    - "evidence_provided"
+    - "alternative_exploration"
+
+  # Challenge effectiveness metrics
+  effectiveness_indicators:
+    - "assumption_revision"
+    - "deeper_analysis"
+    - "strategic_pivot"
+    - "evidence_gathering"
+    - "stakeholder_consideration"
+
+  # Adaptive pattern selection
+  pattern_adaptation:
+    # Increase challenge complexity for engaged users
+    complexity_scaling: true
+    # Reduce challenges for overwhelmed users
+    overwhelm_detection: true
+    # Learn from successful challenge patterns
+    pattern_reinforcement: true
