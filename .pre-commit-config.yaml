@@ -41,6 +41,15 @@ repos:
   # CODE BLOAT PREVENTION (RUNS EARLY TO CATCH DUPLICATION)
   - repo: local
     hooks:
+      # TEMPORARILY DISABLED: Installing the prevention system itself
+      # - id: enhanced-duplication-detection
+      #   name: 🛡️ ENHANCED DUPLICATION DETECTION (TS-4 Prevention System)
+      #   entry: python3 .claudedirector/tools/architecture/enhanced_duplication_detector.py --scan-repository
+      #   language: system
+      #   pass_filenames: false
+      #   stages: [pre-commit]
+      #   verbose: true
+
       - id: code-bloat-prevention
         name: 🏗️ CODE BLOAT PREVENTION (MCP-Enhanced) - FIRST POLICY CHECK
         entry: python3 .claudedirector/tools/architecture/bloat_prevention_hook.py

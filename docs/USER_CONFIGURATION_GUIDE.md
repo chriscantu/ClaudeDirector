@@ -76,7 +76,7 @@ user:
 ### **System Messages**
 - All error messages and notifications use configured name
 - Attribution in documentation and reports
-- Personalized command-line output
+- Personalized chat interface output
 
 ### **Documentation Generation**
 - Strategic documents use configured name and role
