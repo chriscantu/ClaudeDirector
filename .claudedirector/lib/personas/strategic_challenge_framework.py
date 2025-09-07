@@ -30,6 +30,7 @@ try:
 except ImportError:
     FrameworkMCPCoordinator = None
 
+
 # DRY COMPLIANCE: Load configuration constants at module level
 def _load_module_constants():
     """Load configuration constants to eliminate hard-coded values"""
@@ -38,7 +39,7 @@ def _load_module_constants():
         config_path = current_dir.parent / "config" / "challenge_patterns.yaml"
         with open(config_path, "r", encoding="utf-8") as f:
             config_data = yaml.safe_load(f)
-        
+
         thresholds = config_data.get("thresholds", {})
         return {
             "CONFIDENCE_HIGH": thresholds.get("confidence_high", 0.7),
@@ -62,6 +63,7 @@ def _load_module_constants():
             "ACTIVATION": 0.6,
             "BASELINE": 0.0,
         }
+
 
 # Load constants at module level
 _CONSTANTS = _load_module_constants()
@@ -359,10 +361,7 @@ class StrategicChallengeFramework:
                     base_confidence = min(
                         1.0,
                         base_confidence
-                        + (
-                            strong_matches
-                            * _CONSTANTS["PATTERN_MATCH"]
-                        ),
+                        + (strong_matches * _CONSTANTS["PATTERN_MATCH"]),
                     )
 
                 if base_confidence >= pattern.confidence_threshold:
