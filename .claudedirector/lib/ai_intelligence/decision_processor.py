@@ -69,10 +69,13 @@ except ImportError:
 class DecisionComplexity(Enum):
     """Decision complexity levels for MCP routing"""
 
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
-    STRATEGIC = "strategic"
+    SIMPLE = "simple"  # Basic decisions, minimal processing
+    LOW = "low"  # Simple decisions with light processing
+    MODERATE = "moderate"  # Moderate complexity decisions
+    MEDIUM = "medium"  # Medium complexity decisions
+    HIGH = "high"  # High complexity decisions
+    COMPLEX = "complex"  # Complex multi-faceted decisions
+    STRATEGIC = "strategic"  # Strategic decisions requiring full analysis
 
 
 @dataclass

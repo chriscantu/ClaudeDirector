@@ -18,8 +18,8 @@ except ImportError:
     logger = logging.getLogger(__name__)
 
 from .core.config import get_config
-from .utils.cache import CacheManager
-from .utils.memory import MemoryOptimizer
+from .performance.cache_manager import CacheManager
+from .performance.memory_optimizer import MemoryOptimizer
 from .utils.parallel import ParallelProcessor
 
 

@@ -14,6 +14,13 @@ from dataclasses import dataclass
 
 from .strategic_python_server import StrategicPythonMCPServer, ExecutionResult
 
+# TS-4: Import unified response handler (eliminates duplicate MCPResponse pattern)
+from ..performance.unified_response_handler import (
+    create_mcp_response,
+    UnifiedResponse,
+    ResponseStatus,
+)
+
 logger = logging.getLogger(__name__)
 
 
@@ -28,15 +35,9 @@ class MCPRequest:
     priority: str = "normal"
 
 
-@dataclass
-class MCPResponse:
-    """MCP response structure with transparency information"""
-
-    success: bool
-    result: Any
-    transparency_disclosure: str
-    execution_metrics: Dict[str, Any]
-    error: Optional[str] = None
+# TS-4: MCPResponse class ELIMINATED - replaced with UnifiedResponse
+# This eliminates 40+ lines of duplicate response handling logic
+# All MCPResponse functionality now handled by create_mcp_response() from unified_response_handler
 
 
 class StrategicPythonMCPIntegration:
@@ -59,7 +60,7 @@ class StrategicPythonMCPIntegration:
 
         logger.info("Strategic Python MCP Integration initialized")
 
-    async def process_mcp_request(self, request: MCPRequest) -> MCPResponse:
+    async def process_mcp_request(self, request: MCPRequest) -> UnifiedResponse:
         """
         Process MCP request through Strategic Python server
 
@@ -77,12 +78,17 @@ class StrategicPythonMCPIntegration:
 
             # Validate request
             if not self._validate_request(request):
-                return MCPResponse(
+                return await create_mcp_response(
+                    content="Invalid MCP request: capability or persona not supported",
+                    status=ResponseStatus.ERROR,
+                    mcp_server="strategic_python",
                     success=False,
-                    result=None,
-                    transparency_disclosure="",
-                    execution_metrics={},
                     error="Invalid MCP request: capability or persona not supported",
+                    metadata={
+                        "result": None,
+                        "transparency_disclosure": "",
+                        "execution_metrics": {},
+                    },
                 )
 
             # Generate transparency disclosure
@@ -121,22 +127,37 @@ class StrategicPythonMCPIntegration:
                 "timestamp": execution_result.timestamp,
             }
 
-            return MCPResponse(
+            return await create_mcp_response(
+                content=str(execution_result.output) if execution_result.output else "",
+                status=(
+                    ResponseStatus.SUCCESS
+                    if execution_result.success
+                    else ResponseStatus.ERROR
+                ),
+                mcp_server="strategic_python",
                 success=execution_result.success,
-                result=execution_result.output,
-                transparency_disclosure=transparency_disclosure,
-                execution_metrics=execution_metrics,
                 error=execution_result.error,
+                transparency_message=transparency_disclosure,
+                metadata={
+                    "result": execution_result.output,
+                    "transparency_disclosure": transparency_disclosure,
+                    "execution_metrics": execution_metrics,
+                },
             )
 
         except Exception as e:
             logger.error(f"MCP request processing error: {str(e)}")
-            return MCPResponse(
+            return await create_mcp_response(
+                content=f"MCP integration error: {str(e)}",
+                status=ResponseStatus.ERROR,
+                mcp_server="strategic_python",
                 success=False,
-                result=None,
-                transparency_disclosure="",
-                execution_metrics={},
                 error=f"MCP integration error: {str(e)}",
+                metadata={
+                    "result": None,
+                    "transparency_disclosure": "",
+                    "execution_metrics": {},
+                },
             )
 
     def _validate_request(self, request: MCPRequest) -> bool:

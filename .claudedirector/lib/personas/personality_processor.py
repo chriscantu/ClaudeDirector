@@ -33,7 +33,16 @@ except ImportError:
 
     lib_path = Path(__file__).parent.parent
     sys.path.insert(0, str(lib_path))
-    from core.base_processor import BaseProcessor
+
+    try:
+        from core.base_processor import BaseProcessor
+    except ImportError:
+        # Final fallback - create minimal BaseProcessor
+        class BaseProcessor:
+            def __init__(self, config=None):
+                self.config = config or {}
+                self.logger = None
+
 
 # Import essential components for personality processing
 try:

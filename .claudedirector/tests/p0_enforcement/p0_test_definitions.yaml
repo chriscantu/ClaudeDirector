@@ -389,6 +389,27 @@ p0_features:
     introduced_version: "v3.4.0"
     owner: "martin"
 
+  # P0 CRITICAL FEATURES: Sequential Thinking + Context7 Utilization
+  - name: "Sequential Thinking Methodology P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_sequential_thinking_p0.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 60
+    description: "Sequential Thinking methodology must be applied to ALL development and analysis activities"
+    failure_impact: "Development becomes ad-hoc, loses systematic approach, technical debt increases"
+    business_impact: "Engineering productivity degrades, solution quality decreases, strategic value compromised"
+    introduced_version: "v3.7.0"
+    owner: "martin"
+
+  - name: "Context7 MCP Utilization P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_context7_utilization_p0.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 90
+    description: "Context7 MCP server must be utilized for all strategic framework applications and architectural patterns"
+    failure_impact: "Strategic frameworks lose Context7 intelligence, architectural patterns become generic"
+    business_impact: "Strategic guidance quality degrades, loses context-aware intelligence capabilities"
+    introduced_version: "v3.7.0"
+    owner: "martin"
+
 
 # Enforcement settings
 enforcement:

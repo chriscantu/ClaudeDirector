@@ -25,6 +25,13 @@ from datetime import datetime, timedelta
 
 from .constants import MCPServerConstants
 
+# TS-4: Import unified response handler (eliminates duplicate DataResponse pattern)
+from ..performance.unified_response_handler import (
+    create_data_response,
+    UnifiedResponse,
+    ResponseStatus,
+)
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -56,22 +63,9 @@ class ConversationalQuery:
         return asdict(self)
 
 
-@dataclass
-class DataResponse:
-    """Response from real-time data sources"""
-
-    query_id: str
-    data: Dict[str, Any]
-    source: str
-    timestamp: datetime
-    latency_ms: int
-    success: bool
-    error_message: Optional[str] = None
-
-    def to_dict(self) -> Dict[str, Any]:
-        result = asdict(self)
-        result["timestamp"] = self.timestamp.isoformat()
-        return result
+# TS-4: DataResponse class ELIMINATED - replaced with UnifiedResponse
+# This eliminates 30+ lines of duplicate response handling logic
+# All DataResponse functionality now handled by create_data_response() from unified_response_handler
 
 
 class ConversationalDataManager:
@@ -230,7 +224,7 @@ class ConversationalDataManager:
             context=context or {},
         )
 
-    async def fetch_real_time_data(self, query: ConversationalQuery) -> DataResponse:
+    async def fetch_real_time_data(self, query: ConversationalQuery) -> UnifiedResponse:
         """
         Fetch real-time data based on parsed query.
 
@@ -251,13 +245,17 @@ class ConversationalDataManager:
                 if time.time() - cached_data["timestamp"] < self.cache_ttl:
                     latency_ms = (time.time() - start_time) * 1000
                     logger.info(f"Cache hit for {query_id}: {latency_ms:.2f}ms")
-                    return DataResponse(
-                        query_id=query_id,
-                        data=cached_data["data"],
-                        source="cache",
-                        timestamp=datetime.now(),
-                        latency_ms=int(latency_ms),
+                    return await create_data_response(
+                        content=json.dumps(cached_data["data"]),
+                        status=ResponseStatus.CACHED,
                         success=True,
+                        metadata={
+                            "query_id": query_id,
+                            "data": cached_data["data"],
+                            "source": "cache",
+                            "timestamp": datetime.now().isoformat(),
+                            "latency_ms": int(latency_ms),
+                        },
                     )
 
             # Fetch fresh data based on query type
@@ -269,27 +267,36 @@ class ConversationalDataManager:
             latency_ms = (time.time() - start_time) * 1000
             logger.info(f"Data fetched for {query_id}: {latency_ms:.2f}ms")
 
-            return DataResponse(
-                query_id=query_id,
-                data=data,
-                source=self._get_primary_source(query.query_type),
-                timestamp=datetime.now(),
-                latency_ms=int(latency_ms),
+            return await create_data_response(
+                content=json.dumps(data),
+                status=ResponseStatus.SUCCESS,
                 success=True,
+                metadata={
+                    "query_id": query_id,
+                    "data": data,
+                    "source": self._get_primary_source(query.query_type),
+                    "timestamp": datetime.now().isoformat(),
+                    "latency_ms": int(latency_ms),
+                },
             )
 
         except Exception as e:
             latency_ms = (time.time() - start_time) * 1000
             logger.error(f"Data fetch failed for {query_id}: {str(e)}")
 
-            return DataResponse(
-                query_id=query_id,
-                data={},
-                source="error",
-                timestamp=datetime.now(),
-                latency_ms=int(latency_ms),
+            return await create_data_response(
+                content="{}",
+                status=ResponseStatus.ERROR,
                 success=False,
-                error_message=str(e),
+                error=str(e),
+                metadata={
+                    "query_id": query_id,
+                    "data": {},
+                    "source": "error",
+                    "timestamp": datetime.now().isoformat(),
+                    "latency_ms": int(latency_ms),
+                    "error_message": str(e),
+                },
             )
 
     async def _fetch_by_query_type(self, query: ConversationalQuery) -> Dict[str, Any]:

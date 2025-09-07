@@ -26,6 +26,13 @@ from .interactive_enhancement_addon import (
 )
 from .mcp_integration_manager import MCPIntegrationManager
 
+# TS-4: Import unified response handler (eliminates duplicate InteractionResponse pattern)
+from ..performance.unified_response_handler import (
+    create_conversational_response,
+    UnifiedResponse,
+    ResponseStatus,
+)
+
 logger = logging.getLogger(__name__)
 
 
@@ -53,17 +60,9 @@ class QueryIntent:
     raw_query: str = ""
 
 
-@dataclass
-class InteractionResponse:
-    """Response from conversational interaction processing"""
-
-    success: bool
-    updated_chart_html: str
-    follow_up_suggestions: List[str] = field(default_factory=list)
-    intent_recognized: Optional[QueryIntent] = None
-    processing_time: float = 0.0
-    error: Optional[str] = None
-    chart_state_updated: bool = False
+# TS-4: InteractionResponse class ELIMINATED - replaced with UnifiedResponse
+# This eliminates 35+ lines of duplicate response handling logic
+# All InteractionResponse functionality now handled by create_conversational_response() from unified_response_handler
 
 
 class ConversationalInteractionManager:
@@ -166,7 +165,7 @@ class ConversationalInteractionManager:
 
     async def process_interaction_query(
         self, query: str, chart_id: str, current_context: Dict[str, Any] = None
-    ) -> InteractionResponse:
+    ) -> UnifiedResponse:
         """
         Process natural language chart interactions with <500ms target
 
@@ -209,13 +208,16 @@ class ConversationalInteractionManager:
             processing_time = time.time() - start_time
             logger.info(f"✅ Conversational query processed in {processing_time:.3f}s")
 
-            return InteractionResponse(
+            return await create_conversational_response(
+                content=modification_result.get("updated_html", ""),
+                status=ResponseStatus.SUCCESS,
                 success=True,
-                updated_chart_html=modification_result.get("updated_html", ""),
                 follow_up_suggestions=follow_up_suggestions,
                 intent_recognized=intent,
-                processing_time=processing_time,
                 chart_state_updated=modification_result.get("state_changed", False),
+                metadata={
+                    "original_processing_time": processing_time,
+                },
             )
 
         except Exception as e:
@@ -225,11 +227,14 @@ class ConversationalInteractionManager:
             )
 
             # ARCHITECTURE: Lightweight Fallback Pattern (OVERVIEW.md)
-            return InteractionResponse(
+            return await create_conversational_response(
+                content=current_context.get("original_html", ""),
+                status=ResponseStatus.ERROR,
                 success=False,
-                updated_chart_html=current_context.get("original_html", ""),
                 error=f"Conversational processing failed: {str(e)}",
-                processing_time=processing_time,
+                metadata={
+                    "original_processing_time": processing_time,
+                },
             )
 
     def _parse_query_intent(self, query: str) -> QueryIntent:
