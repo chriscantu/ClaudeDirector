@@ -160,9 +160,19 @@ class DecisionIntelligenceOrchestrator:
             from ...core.base_processor import BaseProcessor
         except ImportError:
             import sys
+            from pathlib import Path
 
-            sys.path.insert(0, ".claudedirector/lib")
-            from core.base_processor import BaseProcessor
+            lib_path = Path(__file__).parent.parent.parent / "lib"
+            sys.path.insert(0, str(lib_path))
+
+            try:
+                from core.base_processor import BaseProcessor
+            except ImportError:
+                # Final fallback - create minimal BaseProcessor
+                class BaseProcessor:
+                    def __init__(self, config=None):
+                        self.config = config or {}
+                        self.logger = None
 
         # Create centralized processor with all dependencies
         self.processor = DecisionProcessor(

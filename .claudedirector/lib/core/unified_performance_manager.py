@@ -268,12 +268,12 @@ class UnifiedPerformanceManager(BaseProcessor):
         self.legacy_response_optimizer: Optional[Any] = None
 
         self.logger.info(
-            "unified_performance_manager_initialized",
-            ultra_fast_target_ms=self.config.ultra_fast_target_ms,
-            fast_target_ms=self.config.fast_target_ms,
-            normal_target_ms=self.config.normal_target_ms,
-            caching_enabled=self.config.enable_predictive_caching,
-            async_enabled=self.config.enable_async_processing,
+            f"unified_performance_manager_initialized - "
+            f"ultra_fast_target_ms={self.config.ultra_fast_target_ms}, "
+            f"fast_target_ms={self.config.fast_target_ms}, "
+            f"normal_target_ms={self.config.normal_target_ms}, "
+            f"caching_enabled={self.config.enable_predictive_caching}, "
+            f"async_enabled={self.config.enable_async_processing}"
         )
 
         # Legacy compatibility attributes for tests

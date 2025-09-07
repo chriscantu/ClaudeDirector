@@ -9,6 +9,22 @@ from .cache_manager import CacheManager
 from .memory_optimizer import MemoryOptimizer
 from .performance_monitor import PerformanceMonitor
 
+# TS-4: Import unified response handler (eliminates 298+ lines of duplicate response patterns)
+from .unified_response_handler import (
+    UnifiedResponseHandler,
+    UnifiedResponse,
+    ResponseStatus,
+    ResponseType,
+    get_unified_response_handler,
+    create_mcp_response,
+    create_persona_response,
+    create_fallback_response,
+    create_conversational_response,
+    create_ml_response,
+    create_data_response,
+    create_systematic_response,
+)
+
 # Import unified performance manager for legacy compatibility
 try:
     from ..core.unified_performance_manager import create_response_optimizer
@@ -26,4 +42,17 @@ __all__ = [
     "MemoryOptimizer",
     "ResponseOptimizer",
     "PerformanceMonitor",
+    # TS-4: Unified Response Handler exports
+    "UnifiedResponseHandler",
+    "UnifiedResponse",
+    "ResponseStatus",
+    "ResponseType",
+    "get_unified_response_handler",
+    "create_mcp_response",
+    "create_persona_response",
+    "create_fallback_response",
+    "create_conversational_response",
+    "create_ml_response",
+    "create_data_response",
+    "create_systematic_response",
 ]

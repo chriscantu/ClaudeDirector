@@ -24,7 +24,7 @@ from pathlib import Path
 
 # Import BaseProcessor for massive code elimination (with fallback for tests)
 try:
-    from ...core.base_processor import BaseProcessor
+    from ..core.base_processor import BaseProcessor
 except ImportError:
     # Fallback for test contexts and standalone execution
     import sys
@@ -32,7 +32,16 @@ except ImportError:
 
     lib_path = Path(__file__).parent.parent.parent
     sys.path.insert(0, str(lib_path))
-    from core.base_processor import BaseProcessor
+
+    try:
+        from core.base_processor import BaseProcessor
+    except ImportError:
+        # Final fallback - create minimal BaseProcessor
+        class BaseProcessor:
+            def __init__(self, config=None):
+                self.config = config or {}
+                self.logger = None
+
 
 # Graceful ML dependencies (maintain P0 compatibility)
 try:

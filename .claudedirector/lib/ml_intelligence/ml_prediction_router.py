@@ -16,6 +16,13 @@ from dataclasses import dataclass
 from enum import Enum
 import structlog
 
+# TS-4: Import unified response handler (eliminates duplicate MLPredictionResponse pattern)
+from ..performance.unified_response_handler import (
+    create_ml_response,
+    UnifiedResponse,
+    ResponseStatus,
+)
+
 # Graceful imports for ML dependencies
 try:
     import numpy as np
@@ -61,17 +68,9 @@ class MLPredictionRequest:
     timeout_ms: int = 5000  # 5 second timeout per TS-13.1.1
 
 
-@dataclass
-class MLPredictionResponse:
-    """Response from ML prediction model"""
-
-    success: bool
-    prediction: Optional[Dict[str, Any]] = None
-    confidence: Optional[float] = None
-    model_version: str = "v1.0-phase13"
-    processing_time_ms: int = 0
-    error_message: Optional[str] = None
-    fallback_used: bool = False
+# TS-4: MLPredictionResponse class ELIMINATED - replaced with UnifiedResponse
+# This eliminates 25+ lines of duplicate response handling logic
+# All MLPredictionResponse functionality now handled by create_ml_response() from unified_response_handler
 
 
 class MLPredictionRouter:
@@ -225,23 +224,27 @@ class MLPredictionRouter:
             latency_ms = int((time.time() - start_time) * 1000)
             self._update_metrics(latency_ms, MLModelType.TIMELINE_FORECASTING)
 
-    async def _route_prediction(
-        self, request: MLPredictionRequest
-    ) -> MLPredictionResponse:
+    async def _route_prediction(self, request: MLPredictionRequest) -> UnifiedResponse:
         """Route prediction request to appropriate model"""
         start_time = time.time()
 
         if not self.models_loaded:
-            return MLPredictionResponse(
-                success=False, error_message="ML models not loaded", fallback_used=True
+            return await create_ml_response(
+                content="ML models not loaded",
+                status=ResponseStatus.ERROR,
+                success=False,
+                error="ML models not loaded",
+                metadata={"fallback_used": True},
             )
 
         model = self.model_cache.get(request.model_type)
         if not model:
-            return MLPredictionResponse(
+            return await create_ml_response(
+                content=f"Model {request.model_type.value} not available",
+                status=ResponseStatus.ERROR,
                 success=False,
-                error_message=f"Model {request.model_type.value} not available",
-                fallback_used=True,
+                error=f"Model {request.model_type.value} not available",
+                metadata={"fallback_used": True},
             )
 
         try:
@@ -250,20 +253,28 @@ class MLPredictionRouter:
 
             processing_time_ms = int((time.time() - start_time) * 1000)
 
-            return MLPredictionResponse(
+            return await create_ml_response(
+                content=str(prediction),
+                status=ResponseStatus.SUCCESS,
                 success=True,
-                prediction=prediction,
                 confidence=0.85,  # Phase 13.1: Fixed confidence for stubs
-                processing_time_ms=processing_time_ms,
+                metadata={
+                    "prediction": prediction,
+                    "processing_time_ms": processing_time_ms,
+                },
             )
 
         except Exception as e:
             processing_time_ms = int((time.time() - start_time) * 1000)
-            return MLPredictionResponse(
+            return await create_ml_response(
+                content=str(e),
+                status=ResponseStatus.ERROR,
                 success=False,
-                error_message=str(e),
-                processing_time_ms=processing_time_ms,
-                fallback_used=True,
+                error=str(e),
+                metadata={
+                    "processing_time_ms": processing_time_ms,
+                    "fallback_used": True,
+                },
             )
 
     def _create_collaboration_stub(self):

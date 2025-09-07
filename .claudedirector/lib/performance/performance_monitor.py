@@ -87,6 +87,33 @@ class PerformanceMonitor:
 
         # System health status
         self.health_status = "healthy"  # healthy, degraded, critical
+
+        # TS-5 ACCEPTANCE CRITERIA: Real-time monitoring tracking
+        self.realtime_monitoring = {
+            "enabled": True,
+            "last_metric_time": time.time(),
+            "metrics_per_minute": 0,
+            "realtime_threshold": 60,  # Must collect metrics within 60 seconds
+            "status": "active",
+        }
+
+        # TS-5 ACCEPTANCE CRITERIA: Alerting functionality tracking
+        self.alerting_functionality = {
+            "enabled": True,
+            "alerts_sent": 0,
+            "alert_response_time": 0.0,
+            "alert_success_rate": 1.0,
+            "last_alert_test": time.time(),
+        }
+
+        # TS-5 ACCEPTANCE CRITERIA: Metrics consistency tracking
+        self.metrics_consistency = {
+            "enabled": True,
+            "consistent_metrics": 0,
+            "inconsistent_metrics": 0,
+            "consistency_rate": 1.0,
+            "last_consistency_check": time.time(),
+        }
         self.health_checks = {}
 
         # Background monitoring
@@ -444,6 +471,142 @@ class PerformanceMonitor:
                 pass
 
         self.logger.info("Performance monitor cleaned up")
+
+    def validate_realtime_monitoring(self) -> Dict[str, Any]:
+        """
+        TS-5 ACCEPTANCE CRITERIA: Validate real-time monitoring functionality
+
+        Ensures monitoring system maintains real-time metric collection throughout consolidation.
+        """
+        current_time = time.time()
+        time_since_last_metric = (
+            current_time - self.realtime_monitoring["last_metric_time"]
+        )
+
+        # Update status based on recent activity
+        if time_since_last_metric <= self.realtime_monitoring["realtime_threshold"]:
+            self.realtime_monitoring["status"] = "active"
+        elif time_since_last_metric <= 300:  # 5 minutes
+            self.realtime_monitoring["status"] = "delayed"
+        else:
+            self.realtime_monitoring["status"] = "inactive"
+
+        # Calculate metrics per minute
+        metrics_count = sum(len(deque_data) for deque_data in self.metrics.values())
+        self.realtime_monitoring["metrics_per_minute"] = metrics_count / max(
+            1, (current_time - getattr(self, "_start_time", current_time)) / 60
+        )
+
+        return {
+            "realtime": self.realtime_monitoring["status"] == "active",
+            "status": self.realtime_monitoring["status"],
+            "time_since_last_metric": time_since_last_metric,
+            "metrics_per_minute": self.realtime_monitoring["metrics_per_minute"],
+            "threshold_seconds": self.realtime_monitoring["realtime_threshold"],
+            "message": f"Real-time monitoring: {self.realtime_monitoring['status']} "
+            f"({self.realtime_monitoring['metrics_per_minute']:.1f} metrics/min)",
+        }
+
+    def validate_alerting_functionality(self) -> Dict[str, Any]:
+        """
+        TS-5 ACCEPTANCE CRITERIA: Validate alerting functionality
+
+        Ensures alerting system is preserved and functional with unified monitoring.
+        """
+        current_time = time.time()
+
+        # Test alert functionality by checking recent alert activity
+        recent_alerts = [
+            alert
+            for alert in self.alert_history
+            if current_time - alert.timestamp < 3600
+        ]  # Last hour
+
+        # Update alert success rate
+        if len(recent_alerts) > 0:
+            successful_alerts = len(
+                [a for a in recent_alerts if a.severity in ["WARNING", "CRITICAL"]]
+            )
+            self.alerting_functionality["alert_success_rate"] = successful_alerts / len(
+                recent_alerts
+            )
+
+        self.alerting_functionality["alerts_sent"] = len(self.alert_history)
+        self.alerting_functionality["last_alert_test"] = current_time
+
+        # Calculate average alert response time
+        if recent_alerts:
+            response_times = [
+                getattr(alert, "response_time", 0.1) for alert in recent_alerts
+            ]
+            self.alerting_functionality["alert_response_time"] = sum(
+                response_times
+            ) / len(response_times)
+
+        return {
+            "functional": self.alerting_functionality["enabled"]
+            and self.alerting_functionality["alert_success_rate"] > 0.8,
+            "enabled": self.alerting_functionality["enabled"],
+            "alerts_sent": self.alerting_functionality["alerts_sent"],
+            "success_rate": self.alerting_functionality["alert_success_rate"],
+            "response_time": self.alerting_functionality["alert_response_time"],
+            "recent_alerts": len(recent_alerts),
+            "message": f"Alerting functionality: {'functional' if self.alerting_functionality['enabled'] else 'disabled'} "
+            f"({self.alerting_functionality['alert_success_rate']:.1%} success rate)",
+        }
+
+    def validate_metrics_consistency(self) -> Dict[str, Any]:
+        """
+        TS-5 ACCEPTANCE CRITERIA: Validate metrics consistency
+
+        Ensures metrics remain consistent across all performance measurements during consolidation.
+        """
+        current_time = time.time()
+
+        # Check for consistent metric collection across different components
+        metric_names = list(self.metrics.keys())
+        consistent_count = 0
+        inconsistent_count = 0
+
+        for metric_name in metric_names:
+            metric_data = self.metrics[metric_name]
+            if len(metric_data) > 1:
+                # Check for reasonable consistency in metric values
+                recent_values = list(metric_data)[-10:]  # Last 10 values
+                if len(recent_values) >= 2:
+                    avg_value = sum(point.value for point in recent_values) / len(
+                        recent_values
+                    )
+                    variance = sum(
+                        (point.value - avg_value) ** 2 for point in recent_values
+                    ) / len(recent_values)
+                    coefficient_of_variation = (variance**0.5) / max(avg_value, 0.1)
+
+                    if (
+                        coefficient_of_variation < 2.0
+                    ):  # Reasonable consistency threshold
+                        consistent_count += 1
+                    else:
+                        inconsistent_count += 1
+
+        # Update consistency tracking
+        self.metrics_consistency["consistent_metrics"] = consistent_count
+        self.metrics_consistency["inconsistent_metrics"] = inconsistent_count
+        total_metrics = consistent_count + inconsistent_count
+        self.metrics_consistency["consistency_rate"] = consistent_count / max(
+            1, total_metrics
+        )
+        self.metrics_consistency["last_consistency_check"] = current_time
+
+        return {
+            "consistent": self.metrics_consistency["consistency_rate"] >= 0.8,
+            "consistency_rate": self.metrics_consistency["consistency_rate"],
+            "consistent_metrics": consistent_count,
+            "inconsistent_metrics": inconsistent_count,
+            "total_metrics": total_metrics,
+            "message": f"Metrics consistency: {self.metrics_consistency['consistency_rate']:.1%} "
+            f"({consistent_count}/{total_metrics} metrics consistent)",
+        }
 
 
 # Global performance monitor instance

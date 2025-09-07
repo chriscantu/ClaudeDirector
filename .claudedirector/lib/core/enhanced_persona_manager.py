@@ -10,6 +10,14 @@ from typing import Dict, Any, Optional
 from dataclasses import dataclass
 from enum import Enum
 
+# TS-4: Import unified response handler (eliminates duplicate EnhancedResponse pattern)
+from ..performance.unified_response_handler import (
+    create_persona_response,
+    create_fallback_response,
+    UnifiedResponse,
+    ResponseStatus,
+)
+
 # Import with fallback for consolidated integration
 try:
     from ..integration.unified_bridge import MCPUseClient
@@ -47,18 +55,9 @@ class EnhancementStatus(Enum):
     ERROR = "error"
 
 
-@dataclass
-class EnhancedResponse:
-    """Response from enhanced persona system"""
-
-    content: str
-    persona: str
-    enhancement_status: EnhancementStatus
-    processing_time: float
-    mcp_server_used: Optional[str] = None
-    complexity_score: float = 0.0
-    transparency_message: Optional[str] = None
-    fallback_reason: Optional[str] = None
+# TS-4: EnhancedResponse class ELIMINATED - replaced with UnifiedResponse
+# This eliminates 30+ lines of duplicate response handling logic
+# All EnhancedResponse functionality now handled by create_persona_response() from unified_response_handler
 
 
 class TransparencyManager:
@@ -209,7 +208,7 @@ class EnhancedPersonaManager:
 
     async def get_enhanced_response(
         self, persona: str, user_input: str, context: Optional[Dict[str, Any]] = None
-    ) -> EnhancedResponse:
+    ) -> UnifiedResponse:
         """
         Get enhanced response for specified persona
 
@@ -253,13 +252,15 @@ class EnhancedPersonaManager:
                     )
                 )
 
-                return EnhancedResponse(
+                return await create_fallback_response(
                     content=fallback_response.content,
+                    reason=fallback_response.fallback_reason,
                     persona=persona,
-                    enhancement_status=EnhancementStatus.FALLBACK,
-                    processing_time=fallback_response.processing_time,
-                    complexity_score=complexity_analysis.confidence,
-                    fallback_reason=fallback_response.fallback_reason,
+                    metadata={
+                        "enhancement_status": EnhancementStatus.FALLBACK.value,
+                        "complexity_score": complexity_analysis.confidence,
+                        "original_processing_time": fallback_response.processing_time,
+                    },
                 )
 
         except Exception as e:
@@ -271,13 +272,16 @@ class EnhancedPersonaManager:
                 )
             )
 
-            return EnhancedResponse(
+            return await create_fallback_response(
                 content=essential_response.content,
+                reason=f"System error: {str(e)}",
                 persona=persona,
-                enhancement_status=EnhancementStatus.ERROR,
-                processing_time=essential_response.processing_time,
-                complexity_score=0.0,
-                fallback_reason=f"System error: {str(e)}",
+                status=ResponseStatus.ERROR,
+                metadata={
+                    "enhancement_status": EnhancementStatus.ERROR.value,
+                    "complexity_score": 0.0,
+                    "original_processing_time": essential_response.processing_time,
+                },
             )
 
     def _should_enhance(
@@ -409,14 +413,17 @@ class EnhancedPersonaManager:
                 persona, primary_server, processing_time
             )
 
-            return EnhancedResponse(
+            return await create_persona_response(
                 content=enhanced_content,
                 persona=persona,
-                enhancement_status=EnhancementStatus.SUCCESS,
-                processing_time=processing_time,
+                status=ResponseStatus.SUCCESS,
                 mcp_server_used=primary_server,
-                complexity_score=complexity_analysis.confidence,
                 transparency_message=transparency_message,
+                metadata={
+                    "enhancement_status": EnhancementStatus.SUCCESS.value,
+                    "complexity_score": complexity_analysis.confidence,
+                    "original_processing_time": processing_time,
+                },
             )
 
         except asyncio.TimeoutError:

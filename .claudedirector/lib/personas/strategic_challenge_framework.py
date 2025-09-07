@@ -24,6 +24,12 @@ import re
 import logging
 import time
 
+# P0 CRITICAL: Context7 MCP Integration
+try:
+    from ..mcp.framework_mcp_coordinator import FrameworkMCPCoordinator
+except ImportError:
+    FrameworkMCPCoordinator = None
+
 
 class ChallengeType(Enum):
     """Types of strategic challenges personas can apply - loaded from configuration"""
@@ -91,6 +97,11 @@ class StrategicChallengeFramework:
         self._pattern_cache = {}
         self._cache_ttl = self.config.performance.get("cache_ttl_seconds", 3600)
         self._last_cache_update = 0
+
+        # P0 CRITICAL: Context7 MCP Integration
+        self.mcp_coordinator = (
+            FrameworkMCPCoordinator() if FrameworkMCPCoordinator else None
+        )
 
     def _get_default_config_path(self) -> str:
         """Get default path to challenge patterns configuration"""
@@ -487,6 +498,42 @@ class StrategicChallengeFramework:
             # Restore old configuration
             self.config = old_config
             return False
+
+    async def enhance_with_context7(
+        self, challenge_data: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        P0 CRITICAL: Context7 MCP Enhancement for Strategic Challenge Framework
+
+        Enhances challenge patterns with Context7 strategic intelligence and best practices.
+        Required for P0 compliance - 80%+ strategic framework utilization rate.
+        """
+        if not self.mcp_coordinator:
+            # Graceful fallback when Context7 unavailable
+            self.logger.warning("Context7 MCP coordinator unavailable - using fallback")
+            return challenge_data
+
+        try:
+            # Context7 transparency disclosure
+            self.logger.info(
+                "🔧 Accessing MCP Server: context7 (strategic_challenge_patterns)"
+            )
+
+            # Enhance challenge data with Context7 patterns
+            enhanced_data = await self.mcp_coordinator.enhance_with_context7(
+                challenge_data, capability="strategic_challenge_patterns"
+            )
+
+            # Add Context7 attribution
+            enhanced_data["context7_enhanced"] = True
+            enhanced_data["context7_patterns"] = "strategic_challenge_patterns"
+
+            return enhanced_data
+
+        except Exception as e:
+            # Graceful fallback on Context7 failure
+            self.logger.warning(f"Context7 enhancement failed: {e} - using fallback")
+            return challenge_data
 
 
 # Global instance for use across the system

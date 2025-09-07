@@ -18,6 +18,14 @@ from enum import Enum
 from datetime import datetime
 import logging
 
+# TS-4: Import unified response handler (eliminates duplicate ChatResponse + PersonaResponse patterns)
+from ..performance.unified_response_handler import (
+    create_persona_response,
+    create_conversational_response,
+    UnifiedResponse,
+    ResponseStatus,
+)
+
 # Core ClaudeDirector imports
 try:
     from .config import ClaudeDirectorConfig, get_config
@@ -133,28 +141,10 @@ class ChatRequest:
             self.timestamp = datetime.now()
 
 
-@dataclass
-class ChatResponse:
-    """Structured response from persona chat processing."""
-
-    message: str
-    persona: PersonaType
-    request_type: RequestType
-    confidence: float
-    technical_details: Optional[Dict[str, Any]] = None
-    follow_up_suggestions: Optional[List[str]] = None
-    metadata: Optional[Dict[str, Any]] = None
-
-
-@dataclass
-class PersonaResponse:
-    """Enhanced persona response with P2.1 integration."""
-
-    response_text: str
-    persona_used: PersonaType
-    p2_data_included: bool
-    follow_up_suggestions: List[str]
-    metadata: Dict[str, Any]
+# TS-4: ChatResponse + PersonaResponse classes ELIMINATED - replaced with UnifiedResponse
+# This eliminates 33+ lines of duplicate response handling logic
+# All ChatResponse functionality now handled by create_conversational_response()
+# All PersonaResponse functionality now handled by create_persona_response()
 
 
 # === CONVERSATION FORMATTER ===

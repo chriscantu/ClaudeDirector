@@ -151,10 +151,12 @@ class PreCommitBloatPrevention:
                     "✅ Sequential Thinking DRY consolidation detected",
                     "✅ Facade + Processor pattern: Legitimate architectural consolidation",
                     "✅ Net line reduction achieved through intelligent code reuse",
+                    "🚨 P0 CRITICAL: Sequential Thinking methodology validated",
                 ]
             else:
                 return False, [
-                    "✅ SOLID refactoring detected - architectural patterns excluded from bloat analysis"
+                    "✅ SOLID refactoring detected - architectural patterns excluded from bloat analysis",
+                    "⚠️  NOTE: Sequential Thinking is P0 CRITICAL - ensure methodology is applied",
                 ]
 
         # Check severity breakdown
