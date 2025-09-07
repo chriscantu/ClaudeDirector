@@ -795,7 +795,7 @@ class StrategicRecommendationEngine:
 
 # Factory function for creating Code-Strategic Mapper
 def create_code_strategic_mapper(
-    config: Optional[Dict[str, Any]] = None
+    config: Optional[Dict[str, Any]] = None,
 ) -> CodeStrategicMapper:
     """
     Factory function to create Code-Strategic Mapper
