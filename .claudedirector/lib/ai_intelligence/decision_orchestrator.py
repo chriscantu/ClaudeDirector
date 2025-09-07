@@ -117,6 +117,8 @@ class DecisionIntelligenceResult:
     # PHASE 13: ML Enhancement results
     ml_predictions: Optional[MLPredictionResult] = None
     ml_enhancement_used: bool = False
+    # P0: Error handling support
+    error_message: Optional[str] = None
 
 
 class DecisionIntelligenceOrchestrator:
@@ -340,7 +342,7 @@ class DecisionIntelligenceOrchestrator:
                     user_input=user_input,
                     session_id=session_id,
                     persona=persona,
-                    complexity=DecisionComplexity.LOW,
+                    complexity=DecisionComplexity.SIMPLE,
                     domain="general",
                     stakeholder_scope=["team"],
                     time_sensitivity="normal",
@@ -355,6 +357,7 @@ class DecisionIntelligenceOrchestrator:
                 transparency_trail=[f"⚡ Essential Mode: {str(e)}"],
                 next_actions=["Analyze the situation systematically"],
                 success=False,
+                error_message=str(e),
             )
 
     # 🎯 DELEGATION METHODS: All complex logic delegated to processor
