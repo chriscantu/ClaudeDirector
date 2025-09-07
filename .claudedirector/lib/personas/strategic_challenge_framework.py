@@ -68,6 +68,7 @@ class ChallengeConfig:
     activation_rules: Dict[str, Any]
     response_blending: Dict[str, Any]
     performance: Dict[str, Any]
+    adaptive_intelligence: Optional[Dict[str, Any]] = None
 
 
 class StrategicChallengeFramework:
@@ -103,6 +104,9 @@ class StrategicChallengeFramework:
             FrameworkMCPCoordinator() if FrameworkMCPCoordinator else None
         )
 
+        # TS-3: Adaptive Challenge Intelligence System
+        self._initialize_adaptive_intelligence()
+
     def _get_default_config_path(self) -> str:
         """Get default path to challenge patterns configuration"""
         current_dir = Path(__file__).parent
@@ -126,6 +130,7 @@ class StrategicChallengeFramework:
                 activation_rules=config_data["activation_rules"],
                 response_blending=config_data["response_blending"],
                 performance=config_data["performance"],
+                adaptive_intelligence=config_data.get("adaptive_intelligence"),
             )
         except Exception as e:
             self.logger.error(f"Failed to load challenge configuration: {e}")
@@ -325,6 +330,15 @@ class StrategicChallengeFramework:
         )
         challenges_to_apply = challenges_to_apply[:max_challenges]
 
+        # TS-3: Apply Adaptive Challenge Intelligence
+        if self.adaptive_enabled and challenges_to_apply:
+            adapted_challenges, intensity_multiplier = (
+                self._calculate_adaptive_intensity(
+                    user_input, persona, challenges_to_apply
+                )
+            )
+            challenges_to_apply = adapted_challenges
+
         # Cache result if enabled
         if self.config.performance.get("cache_patterns", False):
             self._pattern_cache[cache_key] = {
@@ -454,6 +468,38 @@ class StrategicChallengeFramework:
 
         return enhanced_response
 
+    def track_challenge_effectiveness(
+        self, user_response: str, challenge_types: List[ChallengeType]
+    ) -> None:
+        """
+        Public method to track challenge effectiveness based on user response
+
+        This should be called after the user responds to a challenge to improve
+        adaptive intelligence learning.
+
+        Args:
+            user_response: The user's response to the challenge
+            challenge_types: The challenge types that were applied
+        """
+        self._update_effectiveness_tracking(user_response, challenge_types)
+
+    def get_adaptive_intelligence_status(self) -> Dict[str, Any]:
+        """Get current adaptive intelligence status and metrics"""
+        if not self.adaptive_enabled:
+            return {"enabled": False}
+
+        return {
+            "enabled": True,
+            "current_intensity": self.current_intensity,
+            "user_engagement_score": round(self.user_engagement_score, 3),
+            "user_effectiveness_score": round(self.user_effectiveness_score, 3),
+            "challenge_history_length": len(self.challenge_history),
+            "intensity_levels": self.intensity_levels,
+            "learning_rate": self.learning_rate,
+            "engagement_threshold": self.engagement_threshold,
+            "effectiveness_threshold": self.effectiveness_threshold,
+        }
+
     def get_challenge_analytics(self) -> Dict[str, Any]:
         """
         Get analytics about challenge pattern usage and effectiveness
@@ -498,6 +544,280 @@ class StrategicChallengeFramework:
             # Restore old configuration
             self.config = old_config
             return False
+
+    # ======================================
+    # TS-3: ADAPTIVE CHALLENGE INTELLIGENCE
+    # ======================================
+
+    def _initialize_adaptive_intelligence(self) -> None:
+        """Initialize adaptive intelligence system for dynamic challenge behavior"""
+        if not self.config.adaptive_intelligence:
+            # Adaptive intelligence disabled - use static behavior
+            self.adaptive_enabled = False
+            return
+
+        self.adaptive_enabled = self.config.adaptive_intelligence.get(
+            "enable_adaptive_intensity", False
+        )
+
+        if not self.adaptive_enabled:
+            return
+
+        # Initialize adaptive intelligence state
+        self.learning_rate = self.config.adaptive_intelligence.get("learning_rate", 0.1)
+        self.engagement_threshold = self.config.adaptive_intelligence.get(
+            "engagement_threshold", 0.7
+        )
+        self.effectiveness_threshold = self.config.adaptive_intelligence.get(
+            "effectiveness_threshold", 0.6
+        )
+
+        # Initialize intensity levels
+        intensity_config = self.config.adaptive_intelligence.get("intensity_levels", {})
+        self.intensity_levels = {
+            "low": intensity_config.get("low", 0.3),
+            "medium": intensity_config.get("medium", 0.6),
+            "high": intensity_config.get("high", 0.9),
+        }
+
+        # Initialize tracking indicators
+        self.engagement_indicators = set(
+            self.config.adaptive_intelligence.get(
+                "engagement_indicators",
+                [
+                    "follow_up_questions",
+                    "detailed_responses",
+                    "challenge_acceptance",
+                    "evidence_provided",
+                    "alternative_exploration",
+                ],
+            )
+        )
+
+        self.effectiveness_indicators = set(
+            self.config.adaptive_intelligence.get(
+                "effectiveness_indicators",
+                [
+                    "assumption_revision",
+                    "deeper_analysis",
+                    "strategic_pivot",
+                    "evidence_gathering",
+                    "stakeholder_consideration",
+                ],
+            )
+        )
+
+        # Initialize adaptive pattern configuration
+        pattern_config = self.config.adaptive_intelligence.get("pattern_adaptation", {})
+        self.complexity_scaling = pattern_config.get("complexity_scaling", True)
+        self.overwhelm_detection = pattern_config.get("overwhelm_detection", True)
+        self.pattern_reinforcement = pattern_config.get("pattern_reinforcement", True)
+
+        # Initialize user state tracking (in-memory for now)
+        self.user_engagement_score = 0.5  # Start at medium engagement
+        self.user_effectiveness_score = 0.5  # Start at medium effectiveness
+        self.current_intensity = "medium"  # Start at medium intensity
+        self.challenge_history = []  # Track recent challenge patterns
+
+        self.logger.info("✅ Adaptive Challenge Intelligence initialized")
+
+    def _calculate_adaptive_intensity(
+        self, user_input: str, persona: str, base_challenge_types: List[ChallengeType]
+    ) -> tuple[List[ChallengeType], float]:
+        """
+        Calculate adaptive challenge intensity based on user engagement and effectiveness
+
+        Returns:
+            Tuple of (adapted_challenge_types, intensity_multiplier)
+        """
+        if not self.adaptive_enabled:
+            return base_challenge_types, 1.0
+
+        # Analyze user engagement from input
+        engagement_score = self._analyze_user_engagement(user_input)
+
+        # Update running engagement score with learning rate
+        self.user_engagement_score = (
+            1 - self.learning_rate
+        ) * self.user_engagement_score + self.learning_rate * engagement_score
+
+        # Determine intensity level based on engagement
+        if self.user_engagement_score >= self.engagement_threshold:
+            target_intensity = "high"
+        elif self.user_engagement_score >= 0.4:
+            target_intensity = "medium"
+        else:
+            target_intensity = "low"
+
+        # Apply overwhelm detection
+        if self.overwhelm_detection and self._detect_user_overwhelm(user_input):
+            target_intensity = "low"
+            self.logger.debug(
+                "🔄 Adaptive Intelligence: Overwhelm detected, reducing intensity"
+            )
+
+        # Update current intensity
+        self.current_intensity = target_intensity
+        intensity_multiplier = self.intensity_levels[target_intensity]
+
+        # Adapt challenge types based on intensity
+        adapted_challenges = self._adapt_challenge_complexity(
+            base_challenge_types, target_intensity
+        )
+
+        # Log adaptive decision for transparency
+        self.logger.debug(
+            f"🧠 Adaptive Intelligence: Engagement={self.user_engagement_score:.2f}, "
+            f"Intensity={target_intensity}, Challenges={len(adapted_challenges)}"
+        )
+
+        return adapted_challenges, intensity_multiplier
+
+    def _analyze_user_engagement(self, user_input: str) -> float:
+        """Analyze user engagement level from their input"""
+        engagement_score = 0.5  # Base score
+
+        # Check for engagement indicators
+        input_lower = user_input.lower()
+
+        # Positive engagement indicators
+        if any(
+            indicator in input_lower
+            for indicator in ["why", "how", "what if", "explain"]
+        ):
+            engagement_score += 0.2
+
+        if len(user_input.split()) > 20:  # Detailed response
+            engagement_score += 0.1
+
+        if any(
+            word in input_lower for word in ["evidence", "data", "proof", "validate"]
+        ):
+            engagement_score += 0.2
+
+        if any(
+            word in input_lower
+            for word in ["alternative", "option", "consider", "explore"]
+        ):
+            engagement_score += 0.1
+
+        # Negative engagement indicators
+        if any(
+            word in input_lower for word in ["just", "simply", "obviously", "clearly"]
+        ):
+            engagement_score -= 0.1
+
+        if len(user_input.split()) < 5:  # Very short response
+            engagement_score -= 0.2
+
+        return max(0.0, min(1.0, engagement_score))
+
+    def _detect_user_overwhelm(self, user_input: str) -> bool:
+        """Detect if user is overwhelmed by challenges"""
+        overwhelm_indicators = [
+            "too much",
+            "overwhelming",
+            "confused",
+            "don't understand",
+            "too complex",
+            "simpler",
+            "basic",
+        ]
+
+        input_lower = user_input.lower()
+        return any(indicator in input_lower for indicator in overwhelm_indicators)
+
+    def _adapt_challenge_complexity(
+        self, base_challenges: List[ChallengeType], intensity: str
+    ) -> List[ChallengeType]:
+        """Adapt challenge complexity based on intensity level"""
+        if not self.complexity_scaling:
+            return base_challenges
+
+        if intensity == "low":
+            # Use only basic challenges
+            basic_challenges = [
+                ChallengeType.ASSUMPTION_TEST,
+                ChallengeType.EVIDENCE_DEMAND,
+            ]
+            return [c for c in base_challenges if c in basic_challenges][:1]
+
+        elif intensity == "medium":
+            # Use moderate complexity
+            return base_challenges[:2]
+
+        else:  # high intensity
+            # Use all challenges with potential for additional complexity
+            return base_challenges[:3]
+
+    def _update_effectiveness_tracking(
+        self, user_response: str, challenge_applied: List[ChallengeType]
+    ) -> None:
+        """Update effectiveness tracking based on user response to challenges"""
+        if not self.adaptive_enabled:
+            return
+
+        # Analyze effectiveness from user response
+        effectiveness_score = self._analyze_challenge_effectiveness(user_response)
+
+        # Update running effectiveness score
+        self.user_effectiveness_score = (
+            1 - self.learning_rate
+        ) * self.user_effectiveness_score + self.learning_rate * effectiveness_score
+
+        # Store challenge history for pattern reinforcement
+        if self.pattern_reinforcement:
+            self.challenge_history.append(
+                {
+                    "challenges": challenge_applied,
+                    "effectiveness": effectiveness_score,
+                    "timestamp": time.time(),
+                }
+            )
+
+            # Keep only recent history (last 10 interactions)
+            self.challenge_history = self.challenge_history[-10:]
+
+        self.logger.debug(
+            f"🎯 Effectiveness Update: Score={self.user_effectiveness_score:.2f}, "
+            f"Recent={effectiveness_score:.2f}"
+        )
+
+    def _analyze_challenge_effectiveness(self, user_response: str) -> float:
+        """Analyze how effectively the user responded to challenges"""
+        effectiveness_score = 0.5  # Base score
+
+        response_lower = user_response.lower()
+
+        # Check for effectiveness indicators
+        if any(
+            indicator in response_lower
+            for indicator in [
+                "you're right",
+                "good point",
+                "didn't consider",
+                "assumption",
+            ]
+        ):
+            effectiveness_score += 0.3
+
+        if any(
+            indicator in response_lower
+            for indicator in ["evidence", "data", "research", "validate"]
+        ):
+            effectiveness_score += 0.2
+
+        if any(
+            indicator in response_lower
+            for indicator in ["stakeholder", "impact", "consider", "perspective"]
+        ):
+            effectiveness_score += 0.1
+
+        # Check for deeper analysis
+        if len(user_response.split()) > 30:  # Detailed analysis
+            effectiveness_score += 0.1
+
+        return max(0.0, min(1.0, effectiveness_score))
 
     async def enhance_with_context7(
         self, challenge_data: Dict[str, Any]
