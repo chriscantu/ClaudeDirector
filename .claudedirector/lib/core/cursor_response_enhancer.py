@@ -646,6 +646,17 @@ class CursorResponseEnhancer:
             "async",
             "await",
             "component",
+            "proceed",
+            "ts-",
+            "technical story",
+            "phase",
+            "development",
+            "build",
+            "create",
+            "add",
+            "update",
+            "modify",
+            "change",
             "hook",
             "build",
             "deploy",
@@ -782,15 +793,55 @@ class CursorResponseEnhancer:
             1 for indicator in data_analysis_indicators if indicator in combined_text
         )
 
-        # Auto-trigger MCP transparency for:
+        # ENHANCED: Detect coding/analysis activities more comprehensively
+        # Check for broader coding/development patterns
+        development_patterns = [
+            # File operations
+            r"\b\w+\.(py|js|ts|tsx|jsx|html|css|json|yaml|yml|md)\b",
+            # Code-like syntax
+            r"def\s+\w+|function\s+\w+|class\s+\w+|import\s+\w+|from\s+\w+",
+            r"git\s+(add|commit|push|pull|merge|branch)",
+            r"npm\s+(install|run|build|test)|pip\s+(install|upgrade)",
+            # Technical discussions
+            r"\b(algorithm|optimization|refactor|debug|deploy)\b",
+            # Development actions
+            r"\b(let\'s|we should|need to|going to)\s+(build|create|implement|fix|update|modify|add|remove|change)\b",
+        ]
+
+        # Check for development patterns using regex
+        development_pattern_matches = sum(
+            1
+            for pattern in development_patterns
+            if re.search(pattern, combined_text, re.IGNORECASE)
+        )
+
+        # Check for analysis activities
+        analysis_patterns = [
+            r"\b(analyze|analysis|examine|investigate|explore|study|review)\b",
+            r"\b(problem|issue|bug|error|solution|approach|strategy)\b",
+            r"\b(how does|how can|what if|why does|where is|when should)\b",
+            r"\b(performance|optimization|efficiency|scalability)\b",
+        ]
+
+        analysis_pattern_matches = sum(
+            1
+            for pattern in analysis_patterns
+            if re.search(pattern, combined_text, re.IGNORECASE)
+        )
+
+        # Auto-trigger Sequential Thinking for:
         # 1. Strategic complexity (>=2 complexity indicators)
         # 2. ANY coding request (>=1 coding indicator)
         # 3. ANY data analysis request (>=1 data analysis indicator)
-        # 4. Explicit Sequential Thinking mentions
+        # 4. Development patterns detected (>=1 pattern match)
+        # 5. Analysis activities detected (>=1 analysis pattern - more inclusive)
+        # 6. Explicit Sequential Thinking mentions
         should_enhance = (
             complexity_score >= 2  # Strategic queries
             or coding_score >= 1  # ANY coding request
             or data_analysis_score >= 1  # ANY data analysis request
+            or development_pattern_matches >= 1  # Development activities
+            or analysis_pattern_matches >= 1  # Analysis activities (more inclusive)
             or "sequential thinking" in combined_text
             or "mcp" in combined_text
         )
