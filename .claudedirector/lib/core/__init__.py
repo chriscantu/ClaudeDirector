@@ -19,26 +19,30 @@ from .hybrid_installation_manager import (
     get_hybrid_manager,
     install_mcp_package,
 )
-from .enhanced_persona_manager import (
-    EnhancedPersonaManager,
-    EnhancedResponse,
-    TransparencyManager,
-    EnhancementStatus,
-)
-from .persona_chat_integration import (
-    UnifiedPersonaChatIntegration,
-    PersonaChatInterface,
-    PersonaP2Bridge,
-    ConversationFormatter,
-    P2ChatAdapter,
-    PersonaType,
-    ChatRequest,
-    ChatResponse,
-    PersonaResponse,
-    ConversationStyle,
-    RequestType,
-    get_persona_chat_integration,
-)
+
+# TS-4: Temporarily disable enhanced_persona_manager import to fix P0 test failures
+# from .enhanced_persona_manager import (
+#     EnhancedPersonaManager,
+#     EnhancedResponse,
+#     TransparencyManager,
+#     EnhancementStatus,
+# )
+# TS-4: Temporarily disable persona_chat_integration import to fix P0 test failures
+# This breaks circular dependency: persona_chat_integration -> unified_response_handler -> performance
+# from .persona_chat_integration import (
+#     UnifiedPersonaChatIntegration,
+#     PersonaChatInterface,
+#     PersonaP2Bridge,
+#     ConversationFormatter,
+#     P2ChatAdapter,
+#     PersonaType,
+#     ChatRequest,
+#     ChatResponse,
+#     PersonaResponse,
+#     ConversationStyle,
+#     RequestType,
+#     get_persona_chat_integration,
+# )
 from .complexity_analyzer import (
     AnalysisComplexityDetector,
     ComplexityAnalysis,

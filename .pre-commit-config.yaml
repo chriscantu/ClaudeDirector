@@ -1,6 +1,14 @@
 # Pre-commit configuration for ClaudeDirector
 repos:
-  # Basic code quality
+  # Python formatting - RUNS FIRST TO FIX FORMATTING BEFORE OTHER CHECKS
+  - repo: https://github.com/psf/black
+    rev: 24.4.2
+    hooks:
+      - id: black
+        args: [--line-length=88]
+        files: ^\.claudedirector/.*\.py$
+
+  # Basic code quality - RUNS AFTER FORMATTING
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
@@ -9,14 +17,6 @@ repos:
       - id: check-yaml
       - id: check-added-large-files
         args: ['--maxkb=1000']
-
-  # Python formatting - ALWAYS APPLIED
-  - repo: https://github.com/psf/black
-    rev: 24.4.2
-    hooks:
-      - id: black
-        args: [--line-length=88]
-        files: ^\.claudedirector/.*\.py$
 
   # CRITICAL FILE PROTECTION (MUST RUN FIRST)
   - repo: local

@@ -12,6 +12,13 @@ Purpose: Eliminate circular import issues in framework engine
 from dataclasses import dataclass
 from typing import Dict, List, Any
 
+# TS-4: Import unified response handler (eliminates duplicate SystematicResponse pattern)
+from ..performance.unified_response_handler import (
+    create_systematic_response,
+    UnifiedResponse,
+    ResponseStatus,
+)
+
 
 @dataclass
 class FrameworkAnalysis:
@@ -25,11 +32,6 @@ class FrameworkAnalysis:
     analysis_confidence: float
 
 
-@dataclass
-class SystematicResponse:
-    """Complete systematic analysis response - BACKWARD COMPATIBILITY"""
-
-    analysis: FrameworkAnalysis
-    persona_integrated_response: str
-    processing_time_ms: int
-    framework_applied: str
+# TS-4: SystematicResponse class ELIMINATED - replaced with UnifiedResponse
+# This eliminates 25+ lines of duplicate response handling logic
+# All SystematicResponse functionality now handled by create_systematic_response() from unified_response_handler

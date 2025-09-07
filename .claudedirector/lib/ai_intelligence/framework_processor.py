@@ -42,6 +42,12 @@ except ImportError:
     IntegratedTransparencySystem = None
     TransparencyContext = None
 
+# P0 CRITICAL: Context7 MCP Integration
+try:
+    from ..mcp.framework_mcp_coordinator import FrameworkMCPCoordinator
+except ImportError:
+    FrameworkMCPCoordinator = None
+
 logger = structlog.get_logger(__name__)
 
 
@@ -119,6 +125,11 @@ class FrameworkProcessor:
         self.logger = structlog.get_logger(__name__ + ".FrameworkProcessor")
         self.baseline_detector = baseline_detector
         self.transparency_system = transparency_system
+
+        # P0 CRITICAL: Context7 MCP Integration
+        self.mcp_coordinator = (
+            FrameworkMCPCoordinator() if FrameworkMCPCoordinator else None
+        )
 
         # Initialize consolidated patterns
         self.context_patterns = self._initialize_context_patterns()
@@ -662,6 +673,40 @@ class FrameworkProcessor:
             return f"High business impact potential with {high_impact_count} strategic framework(s)"
         else:
             return "Moderate framework application opportunities identified"
+
+    async def enhance_with_context7(
+        self, framework_data: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        P0 CRITICAL: Context7 MCP Enhancement for Strategic Frameworks
+
+        Enhances framework processing with Context7 architectural patterns and best practices.
+        Required for P0 compliance - 80%+ strategic framework utilization rate.
+        """
+        if not self.mcp_coordinator:
+            # Graceful fallback when Context7 unavailable
+            self.logger.warning("Context7 MCP coordinator unavailable - using fallback")
+            return framework_data
+
+        try:
+            # Context7 transparency disclosure
+            self.logger.info("🔧 Accessing MCP Server: context7 (strategic_frameworks)")
+
+            # Enhance framework data with Context7 patterns
+            enhanced_data = await self.mcp_coordinator.enhance_with_context7(
+                framework_data, capability="strategic_frameworks"
+            )
+
+            # Add Context7 attribution
+            enhanced_data["context7_enhanced"] = True
+            enhanced_data["context7_patterns"] = "strategic_frameworks"
+
+            return enhanced_data
+
+        except Exception as e:
+            # Graceful fallback on Context7 failure
+            self.logger.warning(f"Context7 enhancement failed: {e} - using fallback")
+            return framework_data
 
 
 # Factory function for backward compatibility

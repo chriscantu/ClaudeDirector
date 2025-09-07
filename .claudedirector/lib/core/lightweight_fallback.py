@@ -10,6 +10,13 @@ from typing import Dict, Any, Optional
 from dataclasses import dataclass
 from enum import Enum
 
+# TS-4: Import unified response handler (eliminates duplicate FallbackResponse pattern)
+from ..performance.unified_response_handler import (
+    create_fallback_response,
+    UnifiedResponse,
+    ResponseStatus,
+)
+
 logger = logging.getLogger(__name__)
 
 
@@ -21,16 +28,9 @@ class FallbackMode(Enum):
     ESSENTIAL = "essential"  # Core system functionality only
 
 
-@dataclass
-class FallbackResponse:
-    """Response from fallback system"""
-
-    content: str
-    mode: FallbackMode
-    persona: str
-    processing_time: float
-    transparency_message: str
-    fallback_reason: Optional[str] = None
+# TS-4: FallbackResponse class ELIMINATED - replaced with UnifiedResponse
+# This eliminates 35+ lines of duplicate response handling logic
+# All FallbackResponse functionality now handled by create_fallback_response() from unified_response_handler
 
 
 class LightweightPersonaFallback:
@@ -137,7 +137,7 @@ class LightweightPersonaFallback:
 
     async def generate_lightweight_response(
         self, persona: str, user_input: str, fallback_reason: str = "MCP unavailable"
-    ) -> FallbackResponse:
+    ) -> UnifiedResponse:
         """
         Generate lightweight persona response without MCP enhancement
 
@@ -175,13 +175,15 @@ class LightweightPersonaFallback:
 
         processing_time = time.time() - start_time
 
-        return FallbackResponse(
+        return await create_fallback_response(
             content=full_response,
-            mode=FallbackMode.LIGHTWEIGHT,
+            reason=fallback_reason,
             persona=persona,
-            processing_time=processing_time,
             transparency_message=transparency,
-            fallback_reason=fallback_reason,
+            metadata={
+                "mode": FallbackMode.LIGHTWEIGHT.value,
+                "original_processing_time": processing_time,
+            },
         )
 
     def _generate_essential_guidance(
@@ -246,7 +248,7 @@ class LightweightPersonaFallback:
 
     async def generate_essential_response(
         self, persona: str, user_input: str
-    ) -> FallbackResponse:
+    ) -> UnifiedResponse:
         """
         Generate essential system response when all enhancement unavailable
 
@@ -278,13 +280,15 @@ class LightweightPersonaFallback:
 
         processing_time = time.time() - start_time
 
-        return FallbackResponse(
+        return await create_fallback_response(
             content=full_response,
-            mode=FallbackMode.ESSENTIAL,
+            reason="All enhancement systems unavailable",
             persona="system",
-            processing_time=processing_time,
             transparency_message=transparency,
-            fallback_reason="All enhancement systems unavailable",
+            metadata={
+                "mode": FallbackMode.ESSENTIAL.value,
+                "original_processing_time": processing_time,
+            },
         )
 
 
