@@ -26,12 +26,12 @@ project_root = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 try:
-    from tools.architecture.sequential_thinking_validator import (
-        SequentialThinkingValidator,
+    from tools.architecture.p0_enforcement_suite import (
+        P0EnforcementSuite,
     )
 except ImportError:
     # Fallback for test execution
-    SequentialThinkingValidator = None
+    P0EnforcementSuite = None
 
 
 class TestSequentialThinkingP0(unittest.TestCase):
@@ -48,9 +48,7 @@ class TestSequentialThinkingP0(unittest.TestCase):
     def setUp(self):
         """Set up P0 Sequential Thinking validation"""
         self.project_root = self._find_project_root()
-        self.validator = (
-            SequentialThinkingValidator() if SequentialThinkingValidator else None
-        )
+        self.validator = P0EnforcementSuite() if P0EnforcementSuite else None
 
         # P0 Critical thresholds
         self.min_compliance_rate = 95.0  # 95% minimum compliance
@@ -74,12 +72,13 @@ class TestSequentialThinkingP0(unittest.TestCase):
 
         # Validate validator can execute basic functions
         try:
-            staged_files = self.validator.get_staged_files()
+            result = self.validator.validate_sequential_thinking()
             self.assertIsInstance(
-                staged_files,
-                list,
-                "Sequential Thinking validator must return file list",
+                result,
+                dict,
+                "Sequential Thinking validator must return validation result",
             )
+            self.assertIn("status", result, "Validation result must include status")
         except Exception as e:
             self.fail(
                 f"BLOCKING FAILURE: Sequential Thinking validator execution failed: {e}"
@@ -143,11 +142,11 @@ class TestSequentialThinkingP0(unittest.TestCase):
             / ".claudedirector"
             / "tools"
             / "architecture"
-            / "sequential_thinking_validator.py"
+            / "p0_enforcement_suite.py"
         )
         self.assertTrue(
             validator_path.exists(),
-            "BLOCKING FAILURE: Sequential Thinking validator tool missing",
+            "BLOCKING FAILURE: P0 Enforcement Suite tool missing",
         )
 
         # Check Sequential Thinking enforcement documentation exists
@@ -258,15 +257,12 @@ class TestSequentialThinkingP0(unittest.TestCase):
 
         import time
 
-        # Test validation performance on a small set of files
-        test_files = ["tools/architecture/sequential_thinking_validator.py"]
-
+        # Test validation performance using the consolidated enforcement suite
         start_time = time.time()
 
-        for file_path in test_files:
-            if (self.project_root / file_path).exists():
-                is_compliant, issues = self.validator.validate_file_content(file_path)
-                # Performance validation should complete quickly
+        # Run Sequential Thinking validation
+        result = self.validator.validate_sequential_thinking()
+        # Performance validation should complete quickly
 
         validation_time = time.time() - start_time
 
