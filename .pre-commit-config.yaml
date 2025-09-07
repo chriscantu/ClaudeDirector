@@ -41,24 +41,37 @@ repos:
   # CODE BLOAT PREVENTION (RUNS EARLY TO CATCH DUPLICATION)
   - repo: local
     hooks:
+      # TEMPORARILY DISABLED: Method not fully implemented yet
+      # - id: enhanced-duplication-detection
+      #   name: 🛡️ ENHANCED DUPLICATION DETECTION (TS-4 Prevention System)
+      #   entry: python3 .claudedirector/tools/architecture/enhanced_duplication_detector.py --scan-repository
+      #   language: system
+      #   pass_filenames: false
+      #   stages: [pre-commit]
+      #   verbose: true
+
       - id: code-bloat-prevention
-        name: 🏗️ CODE BLOAT PREVENTION (MCP-Enhanced) - FIRST POLICY CHECK
-        entry: python3 .claudedirector/tools/architecture/bloat_prevention_hook.py
+        name: 🏗️ CODE BLOAT PREVENTION (MCP-Enhanced) - STRICT ENFORCEMENT
+        entry: python3 .claudedirector/tools/architecture/bloat_prevention_hook.py --threshold=8
         language: system
         types: [python]
         stages: [pre-commit]
+        pass_filenames: false
         verbose: true
+        # NOTE: Reverted to strict threshold=8 after TS-4 completion
 
   # DEVELOPMENT POLICY ENFORCEMENT
   - repo: local
     hooks:
-      - id: code-bloat-prevention
-        name: 🏗️ CODE BLOAT PREVENTION (MCP-Enhanced)
-        entry: python3 .claudedirector/tools/architecture/bloat_prevention_hook.py
+      - id: code-bloat-prevention-secondary
+        name: 🏗️ CODE BLOAT PREVENTION (MCP-Enhanced) - SECONDARY CHECK
+        entry: python3 .claudedirector/tools/architecture/bloat_prevention_hook.py --threshold=8
         language: system
         types: [python]
         stages: [pre-commit]
+        pass_filenames: false
         verbose: true
+        # NOTE: Reverted to strict threshold=8 after TS-4 completion
 
       - id: documentation-size-policy
         name: 📋 DOCUMENTATION SIZE POLICY (500 lines max - aligned with code)

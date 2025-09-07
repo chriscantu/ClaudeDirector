@@ -12,6 +12,7 @@ Enforcement: Blocks commits that introduce significant duplication or architectu
 import sys
 import asyncio
 import subprocess
+import argparse
 from pathlib import Path
 from typing import List, Set
 import json
@@ -44,11 +45,12 @@ class PreCommitBloatPrevention:
     5. Provide actionable feedback for resolution
     """
 
-    def __init__(self, project_root: str = "."):
+    def __init__(self, project_root: str = ".", custom_threshold: int = None):
         self.project_root = Path(project_root).resolve()
         self.severity_threshold = (
             DuplicationSeverity.HIGH if ANALYZER_AVAILABLE else None
         )
+        self.custom_threshold = custom_threshold
 
     def get_staged_python_files(self) -> List[str]:
         """Get list of staged Python files"""
@@ -181,10 +183,13 @@ class PreCommitBloatPrevention:
         # Check for specific architectural violations (higher threshold for SOLID work)
         violations_count = report.get("architectural_violations", 0)
 
-        # Dynamic threshold based on Sequential Thinking patterns
-        violation_threshold = (
-            20 if self._is_solid_refactoring_work(staged_files, report) else 8
-        )
+        # Dynamic threshold based on Sequential Thinking patterns or custom override
+        if self.custom_threshold is not None:
+            violation_threshold = self.custom_threshold
+        else:
+            violation_threshold = (
+                20 if self._is_solid_refactoring_work(staged_files, report) else 8
+            )
 
         if violations_count > violation_threshold:
             should_block = True
@@ -382,6 +387,15 @@ class PreCommitBloatPrevention:
 async def main():
     """Main entry point for pre-commit hook"""
 
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description="Pre-commit bloat prevention hook")
+    parser.add_argument(
+        "--threshold",
+        type=int,
+        help="Custom threshold for architectural violations (default: 8, or 20 for SOLID work)",
+    )
+    args = parser.parse_args()
+
     # Determine project root (look for .git directory)
     current_dir = Path.cwd()
     project_root = current_dir
@@ -391,8 +405,8 @@ async def main():
             break
         project_root = project_root.parent
 
-    # Run the hook
-    hook = PreCommitBloatPrevention(str(project_root))
+    # Run the hook with custom threshold if provided
+    hook = PreCommitBloatPrevention(str(project_root), custom_threshold=args.threshold)
     exit_code = await hook.run_hook()
 
     sys.exit(exit_code)

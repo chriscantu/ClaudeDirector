@@ -529,7 +529,10 @@ class DecisionProcessor:
         Single method for all transparency disclosure with consistent formatting
         """
         trail = [
-            f"🎯 Decision Context: {decision_context.complexity.value.title()} complexity in {decision_context.domain}",
+            "🧠 Decision Intelligence: Advanced AI analysis with strategic framework integration",
+            f"🎯 Complexity: {decision_context.complexity.value.title()} level decision in {decision_context.domain}",
+            f"👤 Persona: {decision_context.persona} strategic leadership analysis",
+            f"💼 Business Impact: {decision_context.business_impact} level organizational effect",
             f"🔧 MCP Servers: {', '.join(mcp_servers)} activated for enhanced analysis",
             f"📚 Frameworks: {len(frameworks)} strategic frameworks identified",
             f"🎪 Stakeholder Scope: {len(decision_context.stakeholder_scope)} stakeholders identified",
@@ -648,6 +651,55 @@ class DecisionProcessor:
             return "medium"
         else:
             return "low"
+
+    def _determine_complexity_level(
+        self, detected_patterns: List[str], user_input: str
+    ) -> DecisionComplexity:
+        """Determine decision complexity level based on patterns and input"""
+        # Strategic patterns indicate high complexity
+        strategic_patterns = [
+            "strategic_planning",
+            "organizational_design",
+            "executive_decision",
+        ]
+        if any(pattern in detected_patterns for pattern in strategic_patterns):
+            return DecisionComplexity.STRATEGIC
+
+        # Complex technical or multi-domain patterns
+        complex_patterns = [
+            "technical_architecture",
+            "resource_allocation",
+            "risk_management",
+        ]
+        if any(pattern in detected_patterns for pattern in complex_patterns):
+            return DecisionComplexity.COMPLEX
+
+        # Moderate complexity patterns
+        moderate_patterns = [
+            "team_coordination",
+            "process_improvement",
+            "stakeholder_management",
+        ]
+        if any(pattern in detected_patterns for pattern in moderate_patterns):
+            return DecisionComplexity.MODERATE
+
+        # Check input length and complexity indicators
+        word_count = len(user_input.split())
+        complexity_indicators = [
+            "strategy",
+            "framework",
+            "architecture",
+            "organization",
+            "complex",
+        ]
+
+        if word_count > 20 or any(
+            indicator in user_input.lower() for indicator in complexity_indicators
+        ):
+            return DecisionComplexity.MODERATE
+
+        # Default to simple for basic inputs
+        return DecisionComplexity.SIMPLE
 
 
 # Factory function for backward compatibility

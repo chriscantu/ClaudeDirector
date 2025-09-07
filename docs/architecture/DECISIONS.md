@@ -333,18 +333,18 @@ Design extensible AI enhancement pipeline for future advanced capabilities.
 
 ### **ADR-015: Real-Time Collaboration (Planned)**
 
-**Status**: Proposed
+**Status**: Rejected - Scope Violation
 **Date**: 2024-12-29
-**Context**: Multi-user strategic collaboration requirements
+**Context**: Multi-user strategic collaboration requirements (REJECTED - violates PRD single-user scope)
 
 #### **Proposal**
-Implement real-time collaboration features for shared strategic sessions.
+~~Implement real-time collaboration features for shared strategic sessions.~~ **REJECTED**
 
-#### **Rationale**
-- **Team Strategy**: Multiple stakeholders collaborating on strategic decisions
-- **Real-Time Insights**: Shared context and persona coordination
-- **Enterprise Features**: Advanced collaboration for enterprise teams
-- **Competitive Advantage**: Unique collaborative AI strategic guidance
+#### **Rationale for Rejection**
+- **Scope Violation**: ClaudeDirector is designed as a "local single-user framework" per PRD
+- **Architecture Mismatch**: No server infrastructure for multi-user coordination
+- **PRD Compliance**: Violates core "single-user focus" requirement
+- **Corrected Direction**: Enhanced single-user strategic capabilities instead
 
 ## 🎯 **Decision Impact Summary**
 
