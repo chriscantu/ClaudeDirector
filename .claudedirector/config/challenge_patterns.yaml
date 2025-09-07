@@ -660,6 +660,102 @@ performance:
   target_accuracy_percentage: 80
 
 # ======================================
+# TS-4: ENHANCED INTEGRATION CONFIGURATION
+# ======================================
+enhanced_integration:
+  # Natural flow integration patterns
+  integration_patterns:
+    assertive_assumption_lead: true  # Lead with challenge for assertive personas on assumptions
+    collaborative_weave: true       # Weave challenges into response flow for collaborative personas
+
+  # Constructive alternatives configuration
+  constructive_alternatives:
+    enable: true
+    max_alternatives: 2  # Limit to avoid overwhelming
+    alternative_types:
+      - "exploring parallel approaches"
+      - "validating assumptions about constraints"
+      - "investigating underlying root causes"
+
+    # Patterns for constructive alternatives (moved from hard-coded strings)
+    patterns:
+      - "Consider exploring: {alternative_approach}"
+      - "Alternative perspective: {alternative_viewpoint}"
+      - "What if we tried: {alternative_solution}"
+
+  # Challenge balance optimization
+  balance_optimization:
+    enable_intelligent_truncation: true
+    preserve_key_elements: true
+    truncation_indicator: "..."
+
+# ======================================
+# DRY COMPLIANCE: THRESHOLD CONFIGURATION
+# ======================================
+thresholds:
+  # Adaptive intelligence thresholds
+  engagement_threshold: 0.7
+  effectiveness_threshold: 0.6
+  learning_rate: 0.1
+
+  # Intensity levels
+  intensity_low: 0.3
+  intensity_medium: 0.6
+  intensity_high: 0.9
+
+  # Challenge balance thresholds
+  max_challenge_percentage: 0.4
+
+  # Performance thresholds
+  performance_baseline: 0.0
+
+  # Confidence thresholds
+  confidence_low: 0.2
+  confidence_medium: 0.5
+  confidence_high: 0.7
+  confidence_very_high: 0.8
+
+  # Pattern matching thresholds
+  pattern_match_threshold: 0.15
+
+  # Fallback configuration thresholds
+  fallback_confidence: 0.7
+  fallback_activation: 0.6
+
+# ======================================
+# DRY COMPLIANCE: DOMAIN STRINGS
+# ======================================
+domain_strings:
+  # Challenge types
+  challenge_types:
+    - "stakeholder_validation"
+    - "stakeholder_consideration"
+
+  # Severity levels
+  severity_levels:
+    - "low"
+    - "medium"
+    - "high"
+
+  # Domain categories
+  domains:
+    - "strategic"
+    - "organizational"
+    - "technical"
+    - "stakeholder"
+
+  # Enum values (moved from hard-coded)
+  challenge_type_enum:
+    stakeholder_validation: "stakeholder_validation"
+    stakeholder_consideration: "stakeholder_consideration"
+
+  # Intensity level strings
+  intensity_levels:
+    low: "low"
+    medium: "medium"
+    high: "high"
+
+# ======================================
 # TS-3: ADAPTIVE CHALLENGE INTELLIGENCE
 # ======================================
 adaptive_intelligence:
