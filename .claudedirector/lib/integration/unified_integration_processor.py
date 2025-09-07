@@ -1,5 +1,5 @@
 """
-Unified Integration Processor - Sequential Thinking Phase 5.2.1
+Unified Integration Processor - Sequential Thinking Phase 5.2.1 (TS-4 Enhanced)
 
 🏗️ DRY Principle Consolidation: All integration and bridge logic consolidated into single processor.
 Eliminates duplicate code patterns across UnifiedBridge, MCPUseClient, and CLIContextBridge classes.
@@ -8,6 +8,12 @@ This processor consolidates 1,205 lines from unified_bridge.py:
 - UnifiedBridge integration logic (~728 lines)
 - MCPUseClient functionality (~166 lines)
 - CLIContextBridge operations (~200 lines)
+
+TS-4 Enhancements:
+- Strategic context processing and workflow optimization
+- Code-strategic mapping integration for enhanced analysis
+- Workflow efficiency tracking and optimization suggestions
+- Enhanced persona detection with strategic context awareness
 
 Following proven Sequential Thinking patterns from Story 5.1 success.
 Author: Martin | Platform Architecture with DRY principle enforcement
@@ -37,6 +43,24 @@ except ImportError:
     CONTEXT_ENGINEERING_AVAILABLE = False
     AdvancedContextEngine = None
 
+# TS-4: Strategic analysis capabilities
+try:
+    from .code_strategic_mapper import CodeStrategicMapper, StrategicRecommendation
+    from ..core.cursor_response_enhancer import CursorResponseEnhancer
+
+    TS4_STRATEGIC_ANALYSIS_AVAILABLE = True
+except ImportError:
+    TS4_STRATEGIC_ANALYSIS_AVAILABLE = False
+
+    # Lightweight fallback for graceful degradation
+    class CodeStrategicMapper:
+        def __init__(self):
+            pass
+
+    class CursorResponseEnhancer:
+        def __init__(self):
+            pass
+
 
 @dataclass
 class IntegrationProcessingResult:
@@ -49,6 +73,32 @@ class IntegrationProcessingResult:
     errors: List[str]
     processing_time: float
     cache_key: Optional[str] = None
+
+
+@dataclass
+class TS4ProcessingMetrics:
+    """TS-4: Enhanced processing metrics for strategic analysis"""
+
+    strategic_analysis_time: float
+    workflow_optimization_suggestions: List[str]
+    persona_enhancement_applied: bool
+    code_strategic_mapping_time: float
+    efficiency_score: float  # 0-1
+    framework_recommendations: List[str]
+    total_enhancements: int
+
+
+@dataclass
+class TS4IntegrationContext:
+    """TS-4: Enhanced integration context with strategic awareness"""
+
+    user_input: str
+    detected_persona: Optional[str]
+    strategic_domain: Optional[str]
+    complexity_level: str  # 'low', 'medium', 'high'
+    stakeholder_impact: str  # 'low', 'medium', 'high'
+    workflow_stage: str  # 'planning', 'execution', 'review'
+    optimization_opportunities: List[str]
 
 
 @dataclass
@@ -102,6 +152,24 @@ class UnifiedIntegrationProcessor:
             self.context_engine = None
             self.enhanced_mode = False
 
+        # TS-4: Enhanced strategic analysis capabilities
+        if TS4_STRATEGIC_ANALYSIS_AVAILABLE:
+            self.strategic_mapper = CodeStrategicMapper()
+            self.cursor_enhancer = CursorResponseEnhancer()
+            self.ts4_enabled = True
+            self.logger.info("TS-4 strategic analysis capabilities enabled")
+        else:
+            self.strategic_mapper = None
+            self.cursor_enhancer = None
+            self.ts4_enabled = False
+            self.logger.info(
+                "TS-4 strategic analysis not available - using lightweight fallback"
+            )
+
+        # TS-4: Processing metrics and context tracking
+        self.ts4_metrics_cache: Dict[str, TS4ProcessingMetrics] = {}
+        self.ts4_context_history: List[TS4IntegrationContext] = []
+
         # Consolidated processing metrics (DRY: unified metrics collection)
         self.processing_metrics = {
             "bridge_operations": 0,
@@ -153,6 +221,358 @@ class UnifiedIntegrationProcessor:
             enable_memory_persistence=True,
         )
         return engine
+
+    # ========================================
+    # TS-4: ENHANCED STRATEGIC PROCESSING METHODS
+    # ========================================
+
+    def process_with_ts4_enhancement(
+        self,
+        user_input: str,
+        operation_type: str = "general",
+        context: Optional[Dict[str, Any]] = None,
+    ) -> IntegrationProcessingResult:
+        """
+        TS-4: Process user input with enhanced strategic analysis
+
+        Follows SOLID principles:
+        - Single Responsibility: Strategic processing only
+        - Open/Closed: Extensible through composition
+        - Dependency Inversion: Uses strategic analysis abstractions
+        """
+        start_time = time.time()
+
+        try:
+            # Create TS-4 integration context
+            ts4_context = self._create_ts4_context(user_input, context or {})
+
+            # Perform strategic analysis if available
+            strategic_analysis = None
+            if self.ts4_enabled and self.strategic_mapper:
+                strategic_analysis = self._perform_strategic_analysis(
+                    user_input, ts4_context
+                )
+
+            # Enhanced persona detection
+            persona_info = self._detect_enhanced_persona(user_input, strategic_analysis)
+
+            # Generate workflow optimizations
+            optimizations = self._generate_workflow_optimizations(
+                ts4_context, strategic_analysis
+            )
+
+            # Create processing metrics
+            processing_time = time.time() - start_time
+            ts4_metrics = self._create_ts4_metrics(
+                strategic_analysis, persona_info, optimizations, processing_time
+            )
+
+            # Store metrics for analysis (DRY: reuse caching pattern)
+            cache_key = f"ts4_{hash(user_input)}_{int(time.time())}"
+            self.ts4_metrics_cache[cache_key] = ts4_metrics
+
+            # Add to context history
+            self.ts4_context_history.append(ts4_context)
+            if len(self.ts4_context_history) > 100:  # Keep last 100 contexts
+                self.ts4_context_history.pop(0)
+
+            return IntegrationProcessingResult(
+                success=True,
+                operation=f"ts4_enhanced_{operation_type}",
+                data={
+                    "original_input": user_input,
+                    "ts4_context": asdict(ts4_context),
+                    "strategic_analysis": strategic_analysis,
+                    "persona_info": persona_info,
+                    "optimizations": optimizations,
+                    "ts4_metrics": asdict(ts4_metrics),
+                },
+                metrics={
+                    "processing_time": processing_time,
+                    "strategic_analysis_time": ts4_metrics.strategic_analysis_time,
+                    "efficiency_score": ts4_metrics.efficiency_score,
+                },
+                errors=[],
+                processing_time=processing_time,
+                cache_key=cache_key,
+            )
+
+        except Exception as e:
+            self.logger.error(f"TS-4 enhanced processing failed: {e}")
+            processing_time = time.time() - start_time
+
+            return IntegrationProcessingResult(
+                success=False,
+                operation=f"ts4_enhanced_{operation_type}",
+                data={"original_input": user_input},
+                metrics={"processing_time": processing_time},
+                errors=[str(e)],
+                processing_time=processing_time,
+            )
+
+    def get_ts4_processing_summary(self) -> Dict[str, Any]:
+        """Get comprehensive TS-4 processing summary"""
+        if not self.ts4_metrics_cache:
+            return {"ts4_enabled": self.ts4_enabled, "total_processed": 0}
+
+        metrics_list = list(self.ts4_metrics_cache.values())
+
+        return {
+            "ts4_enabled": self.ts4_enabled,
+            "total_processed": len(metrics_list),
+            "average_efficiency_score": sum(m.efficiency_score for m in metrics_list)
+            / len(metrics_list),
+            "total_optimizations": sum(
+                len(m.workflow_optimization_suggestions) for m in metrics_list
+            ),
+            "persona_enhancements": sum(
+                1 for m in metrics_list if m.persona_enhancement_applied
+            ),
+            "framework_recommendations": sum(
+                len(m.framework_recommendations) for m in metrics_list
+            ),
+            "average_processing_time": sum(
+                m.strategic_analysis_time for m in metrics_list
+            )
+            / len(metrics_list),
+            "context_history_size": len(self.ts4_context_history),
+        }
+
+    # TS-4: Helper methods (following DRY principle - reusable analysis components)
+    def _create_ts4_context(
+        self, user_input: str, context: Dict[str, Any]
+    ) -> TS4IntegrationContext:
+        """Create TS-4 integration context from user input"""
+        return TS4IntegrationContext(
+            user_input=user_input,
+            detected_persona=context.get("persona"),
+            strategic_domain=self._detect_strategic_domain(user_input),
+            complexity_level=self._assess_complexity_level(user_input),
+            stakeholder_impact=self._assess_stakeholder_impact(user_input),
+            workflow_stage=self._detect_workflow_stage(user_input),
+            optimization_opportunities=[],
+        )
+
+    def _perform_strategic_analysis(
+        self, user_input: str, ts4_context: TS4IntegrationContext
+    ) -> Optional[Dict[str, Any]]:
+        """Perform strategic analysis using TS-4 capabilities"""
+        if not self.strategic_mapper:
+            return None
+
+        try:
+            analysis_start = time.time()
+
+            # Use strategic mapper for analysis
+            strategic_context = self.strategic_mapper.analyze_strategic_context(
+                user_input,
+                {
+                    "context_type": "integration",
+                    "workflow_stage": ts4_context.workflow_stage,
+                },
+            )
+
+            analysis_time = time.time() - analysis_start
+
+            if strategic_context:
+                return {
+                    "strategic_domain": strategic_context.strategic_domain,
+                    "decision_complexity": strategic_context.decision_complexity,
+                    "stakeholder_impact": strategic_context.stakeholder_impact,
+                    "recommended_frameworks": strategic_context.recommended_frameworks,
+                    "priority_actions": strategic_context.priority_actions,
+                    "efficiency_opportunities": strategic_context.efficiency_opportunities,
+                    "analysis_time": analysis_time,
+                }
+
+        except Exception as e:
+            self.logger.warning(f"Strategic analysis failed: {e}")
+
+        return None
+
+    def _detect_enhanced_persona(
+        self, user_input: str, strategic_analysis: Optional[Dict[str, Any]]
+    ) -> Dict[str, Any]:
+        """Enhanced persona detection using strategic context"""
+        if not self.cursor_enhancer:
+            return {"persona": "default", "confidence": 0.5}
+
+        try:
+            # Use cursor enhancer for persona detection
+            enhanced_response = self.cursor_enhancer.enhance_response_for_cursor(
+                user_input, {"include_persona_detection": True}
+            )
+
+            return {
+                "persona": enhanced_response.get("detected_persona", "default"),
+                "confidence": enhanced_response.get("persona_confidence", 0.5),
+                "strategic_context": strategic_analysis is not None,
+            }
+
+        except Exception as e:
+            self.logger.warning(f"Enhanced persona detection failed: {e}")
+            return {"persona": "default", "confidence": 0.5}
+
+    def _generate_workflow_optimizations(
+        self,
+        ts4_context: TS4IntegrationContext,
+        strategic_analysis: Optional[Dict[str, Any]],
+    ) -> List[str]:
+        """Generate workflow optimization suggestions"""
+        optimizations = []
+
+        # Complexity-based optimizations
+        if ts4_context.complexity_level == "high":
+            optimizations.append("Consider breaking down into smaller, focused tasks")
+
+        # Strategic analysis-based optimizations
+        if strategic_analysis:
+            if strategic_analysis.get("efficiency_opportunities"):
+                optimizations.extend(strategic_analysis["efficiency_opportunities"][:3])
+
+            if strategic_analysis.get("recommended_frameworks"):
+                frameworks = strategic_analysis["recommended_frameworks"][:2]
+                optimizations.append(
+                    f"Consider applying {', '.join(frameworks)} framework(s)"
+                )
+
+        # Workflow stage optimizations
+        if ts4_context.workflow_stage == "planning":
+            optimizations.append("Ensure stakeholder alignment before proceeding")
+        elif ts4_context.workflow_stage == "execution":
+            optimizations.append("Monitor progress against defined success criteria")
+
+        return optimizations
+
+    def _create_ts4_metrics(
+        self,
+        strategic_analysis: Optional[Dict[str, Any]],
+        persona_info: Dict[str, Any],
+        optimizations: List[str],
+        total_processing_time: float,
+    ) -> TS4ProcessingMetrics:
+        """Create TS-4 processing metrics"""
+        return TS4ProcessingMetrics(
+            strategic_analysis_time=(
+                strategic_analysis.get("analysis_time", 0.0)
+                if strategic_analysis
+                else 0.0
+            ),
+            workflow_optimization_suggestions=optimizations,
+            persona_enhancement_applied=persona_info.get("strategic_context", False),
+            code_strategic_mapping_time=(
+                strategic_analysis.get("analysis_time", 0.0)
+                if strategic_analysis
+                else 0.0
+            ),
+            efficiency_score=self._calculate_efficiency_score(
+                strategic_analysis, optimizations
+            ),
+            framework_recommendations=(
+                strategic_analysis.get("recommended_frameworks", [])
+                if strategic_analysis
+                else []
+            ),
+            total_enhancements=len(optimizations) + (1 if strategic_analysis else 0),
+        )
+
+    # TS-4: Analysis helper methods (DRY: reusable analysis logic)
+    def _detect_strategic_domain(self, user_input: str) -> Optional[str]:
+        """Detect strategic domain from user input"""
+        input_lower = user_input.lower()
+
+        if any(word in input_lower for word in ["team", "organization", "people"]):
+            return "organizational"
+        elif any(
+            word in input_lower for word in ["technical", "architecture", "system"]
+        ):
+            return "technical"
+        elif any(word in input_lower for word in ["strategy", "planning", "roadmap"]):
+            return "strategic"
+        elif any(word in input_lower for word in ["process", "workflow", "efficiency"]):
+            return "operational"
+
+        return None
+
+    def _assess_complexity_level(self, user_input: str) -> str:
+        """Assess complexity level of user input"""
+        # Simple heuristics for complexity assessment
+        word_count = len(user_input.split())
+        question_marks = user_input.count("?")
+        complex_words = [
+            "integrate",
+            "optimize",
+            "strategic",
+            "framework",
+            "architecture",
+        ]
+
+        complexity_score = 0
+        complexity_score += min(word_count / 20, 1.0)  # Length factor
+        complexity_score += min(question_marks / 3, 0.5)  # Question complexity
+        complexity_score += sum(
+            0.2 for word in complex_words if word in user_input.lower()
+        )
+
+        if complexity_score > 1.5:
+            return "high"
+        elif complexity_score > 0.8:
+            return "medium"
+        else:
+            return "low"
+
+    def _assess_stakeholder_impact(self, user_input: str) -> str:
+        """Assess stakeholder impact level"""
+        input_lower = user_input.lower()
+
+        high_impact_words = [
+            "team",
+            "organization",
+            "company",
+            "stakeholder",
+            "executive",
+        ]
+        medium_impact_words = ["project", "process", "workflow", "system"]
+
+        if any(word in input_lower for word in high_impact_words):
+            return "high"
+        elif any(word in input_lower for word in medium_impact_words):
+            return "medium"
+        else:
+            return "low"
+
+    def _detect_workflow_stage(self, user_input: str) -> str:
+        """Detect workflow stage from user input"""
+        input_lower = user_input.lower()
+
+        if any(
+            word in input_lower for word in ["plan", "design", "strategy", "prepare"]
+        ):
+            return "planning"
+        elif any(
+            word in input_lower for word in ["implement", "execute", "build", "develop"]
+        ):
+            return "execution"
+        elif any(
+            word in input_lower for word in ["review", "analyze", "evaluate", "assess"]
+        ):
+            return "review"
+        else:
+            return "execution"  # default
+
+    def _calculate_efficiency_score(
+        self, strategic_analysis: Optional[Dict[str, Any]], optimizations: List[str]
+    ) -> float:
+        """Calculate efficiency score based on analysis and optimizations"""
+        score = 0.5  # base score
+
+        if strategic_analysis:
+            score += 0.3  # bonus for strategic analysis
+
+        if optimizations:
+            score += min(len(optimizations) * 0.1, 0.2)  # bonus for optimizations
+
+        return min(score, 1.0)
 
     # ========================================
     # UNIFIED BRIDGE OPERATIONS (DRY: Consolidated from UnifiedBridge class)

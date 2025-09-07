@@ -51,28 +51,27 @@ repos:
       #   verbose: true
 
       - id: code-bloat-prevention
-        name: 🏗️ CODE BLOAT PREVENTION (MCP-Enhanced) - TS-4 ADJUSTED THRESHOLD
-        entry: python3 .claudedirector/tools/architecture/bloat_prevention_hook.py --threshold=35
+        name: 🏗️ CODE BLOAT PREVENTION (MCP-Enhanced) - STRICT ENFORCEMENT
+        entry: python3 .claudedirector/tools/architecture/bloat_prevention_hook.py --threshold=8
         language: system
         types: [python]
         stages: [pre-commit]
         pass_filenames: false
         verbose: true
-        # NOTE: Threshold temporarily raised from 8 to 35 for TS-4 completion
-        # Will revert to --threshold=8 after TS-4 remaining 30% is complete
+        # NOTE: Reverted to strict threshold=8 after TS-4 completion
 
   # DEVELOPMENT POLICY ENFORCEMENT
   - repo: local
     hooks:
       - id: code-bloat-prevention-secondary
         name: 🏗️ CODE BLOAT PREVENTION (MCP-Enhanced) - SECONDARY CHECK
-        entry: python3 .claudedirector/tools/architecture/bloat_prevention_hook.py --threshold=35
+        entry: python3 .claudedirector/tools/architecture/bloat_prevention_hook.py --threshold=8
         language: system
         types: [python]
         stages: [pre-commit]
         pass_filenames: false
         verbose: true
-        # NOTE: Threshold temporarily raised from 8 to 35 for TS-4 completion
+        # NOTE: Reverted to strict threshold=8 after TS-4 completion
 
       - id: documentation-size-policy
         name: 📋 DOCUMENTATION SIZE POLICY (500 lines max - aligned with code)

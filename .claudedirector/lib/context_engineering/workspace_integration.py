@@ -1,5 +1,5 @@
 """
-Context Engineering Phase 2.1: Workspace Integration
+Context Engineering Phase 2.1: Workspace Integration (TS-4 Enhanced)
 
 This module provides intelligent workspace monitoring and strategic document
 integration for ClaudeDirector's Context Engineering system.
@@ -9,6 +9,9 @@ Capabilities:
 - Automatic context extraction from workspace files
 - Cross-session context persistence
 - Strategic initiative detection from documents
+- TS-4: Enhanced strategic context analysis and code-strategic mapping
+- TS-4: Workflow optimization suggestions and efficiency tracking
+- TS-4: Advanced document analysis with framework recommendations
 """
 
 import os
@@ -20,6 +23,23 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any, Set
 from dataclasses import dataclass, asdict
+
+# TS-4: Import strategic analysis capabilities
+try:
+    from ..integration.code_strategic_mapper import (
+        CodeStrategicMapper,
+        StrategicRecommendation,
+    )
+
+    TS4_STRATEGIC_ANALYSIS_AVAILABLE = True
+except ImportError:
+    TS4_STRATEGIC_ANALYSIS_AVAILABLE = False
+
+    # Lightweight fallback for graceful degradation
+    class StrategicRecommendation:
+        def __init__(self, **kwargs):
+            pass
+
 
 try:
     from watchdog.observers import Observer
@@ -81,6 +101,294 @@ FILE_TYPES = {
     "REPORT": "report",
     "GENERAL": "general",
 }
+
+
+# TS-4: Enhanced Strategic Analysis Data Models
+@dataclass
+class TS4StrategicInsight:
+    """TS-4: Enhanced strategic insight from workspace analysis"""
+
+    file_path: str
+    insight_type: (
+        str  # 'framework_recommendation', 'workflow_optimization', 'strategic_pattern'
+    )
+    confidence_score: float
+    recommendation: str
+    strategic_frameworks: List[str]
+    efficiency_opportunities: List[str]
+    stakeholder_impact: str
+    priority_level: str  # 'high', 'medium', 'low'
+    timestamp: datetime
+
+
+@dataclass
+class TS4WorkflowMetrics:
+    """TS-4: Workflow efficiency metrics and optimization suggestions"""
+
+    document_velocity: float  # docs/hour
+    strategic_alignment_score: float  # 0-1
+    framework_utilization_rate: float  # 0-1
+    efficiency_opportunities: List[str]
+    bottleneck_indicators: List[str]
+    optimization_suggestions: List[str]
+    last_calculated: datetime
+
+
+class TS4StrategicAnalyzer:
+    """
+    TS-4: Enhanced strategic analysis for workspace integration
+
+    Follows SOLID principles:
+    - Single Responsibility: Strategic analysis only
+    - Open/Closed: Extensible through composition
+    - Liskov Substitution: Implements consistent interface
+    - Interface Segregation: Focused strategic analysis interface
+    - Dependency Inversion: Depends on abstractions (CodeStrategicMapper)
+    """
+
+    def __init__(self):
+        self.strategic_mapper = (
+            CodeStrategicMapper() if TS4_STRATEGIC_ANALYSIS_AVAILABLE else None
+        )
+        self.insights_cache: Dict[str, TS4StrategicInsight] = {}
+        self.workflow_metrics: Optional[TS4WorkflowMetrics] = None
+
+    def analyze_strategic_document(
+        self, file_path: str, content: str
+    ) -> Optional[TS4StrategicInsight]:
+        """Analyze document for strategic insights using TS-4 capabilities"""
+        if not self.strategic_mapper:
+            return None
+
+        try:
+            # Use code-strategic mapper for document analysis
+            strategic_context = self.strategic_mapper.analyze_strategic_context(
+                content, {"file_path": file_path, "content_type": "document"}
+            )
+
+            if not strategic_context:
+                return None
+
+            insight = TS4StrategicInsight(
+                file_path=file_path,
+                insight_type=self._determine_insight_type(content),
+                confidence_score=strategic_context.confidence_score,
+                recommendation=self._generate_document_recommendation(
+                    strategic_context
+                ),
+                strategic_frameworks=strategic_context.recommended_frameworks,
+                efficiency_opportunities=strategic_context.efficiency_opportunities,
+                stakeholder_impact=self._assess_stakeholder_impact(strategic_context),
+                priority_level=self._determine_priority_level(strategic_context),
+                timestamp=datetime.now(),
+            )
+
+            # Cache for performance (DRY: reuse cached results)
+            self.insights_cache[file_path] = insight
+            return insight
+
+        except Exception as e:
+            logger.warning(f"TS-4 strategic analysis failed for {file_path}: {e}")
+            return None
+
+    def calculate_workflow_metrics(
+        self, strategic_files: Dict[str, Any]
+    ) -> TS4WorkflowMetrics:
+        """Calculate workflow efficiency metrics"""
+        if not strategic_files:
+            return self._create_empty_metrics()
+
+        # Calculate document velocity (simplified)
+        recent_files = self._get_recent_files(strategic_files)
+        document_velocity = len(recent_files) / 24.0  # docs per hour
+
+        # Calculate strategic alignment score
+        alignment_score = self._calculate_alignment_score(strategic_files)
+
+        # Framework utilization rate
+        utilization_rate = self._calculate_utilization_rate()
+
+        return TS4WorkflowMetrics(
+            document_velocity=document_velocity,
+            strategic_alignment_score=alignment_score,
+            framework_utilization_rate=utilization_rate,
+            efficiency_opportunities=self._identify_efficiency_opportunities(
+                strategic_files
+            ),
+            bottleneck_indicators=self._identify_bottlenecks(strategic_files),
+            optimization_suggestions=self._generate_optimization_suggestions(
+                strategic_files
+            ),
+            last_calculated=datetime.now(),
+        )
+
+    def _create_empty_metrics(self) -> TS4WorkflowMetrics:
+        """Create empty metrics for graceful handling"""
+        return TS4WorkflowMetrics(
+            document_velocity=0.0,
+            strategic_alignment_score=0.0,
+            framework_utilization_rate=0.0,
+            efficiency_opportunities=[],
+            bottleneck_indicators=[],
+            optimization_suggestions=[],
+            last_calculated=datetime.now(),
+        )
+
+    def _get_recent_files(self, strategic_files: Dict[str, Any]) -> List[Any]:
+        """Get files modified in last 24 hours"""
+        return [
+            f
+            for f in strategic_files.values()
+            if hasattr(f, "last_modified")
+            and f.last_modified > datetime.now() - timedelta(hours=24)
+        ]
+
+    def _calculate_alignment_score(self, strategic_files: Dict[str, Any]) -> float:
+        """Calculate strategic alignment score"""
+        framework_mentions = sum(
+            1
+            for f in strategic_files.values()
+            if hasattr(f, "strategic_topics") and f.strategic_topics
+        )
+        return min(framework_mentions / max(len(strategic_files), 1), 1.0)
+
+    def _calculate_utilization_rate(self) -> float:
+        """Calculate framework utilization rate"""
+        if not self.insights_cache:
+            return 0.0
+        files_with_frameworks = sum(
+            1
+            for insight in self.insights_cache.values()
+            if insight.strategic_frameworks
+        )
+        return files_with_frameworks / len(self.insights_cache)
+
+    def _determine_insight_type(self, content: str) -> str:
+        """Determine the type of strategic insight from content"""
+        content_lower = content.lower()
+        if any(fw in content_lower for fw in ["framework", "methodology", "approach"]):
+            return "framework_recommendation"
+        elif any(opt in content_lower for opt in ["optimize", "improve", "efficiency"]):
+            return "workflow_optimization"
+        else:
+            return "strategic_pattern"
+
+    def _generate_document_recommendation(self, strategic_context) -> str:
+        """Generate actionable recommendation from strategic context"""
+        if (
+            hasattr(strategic_context, "priority_actions")
+            and strategic_context.priority_actions
+        ):
+            return f"Priority action: {strategic_context.priority_actions[0]}"
+        elif (
+            hasattr(strategic_context, "recommended_frameworks")
+            and strategic_context.recommended_frameworks
+        ):
+            return f"Consider applying {strategic_context.recommended_frameworks[0]} framework"
+        else:
+            return "Review for strategic alignment opportunities"
+
+    def _assess_stakeholder_impact(self, strategic_context) -> str:
+        """Assess stakeholder impact level"""
+        if hasattr(strategic_context, "stakeholder_impact"):
+            impact_score = strategic_context.stakeholder_impact
+            if impact_score > 0.8:
+                return "high"
+            elif impact_score > 0.5:
+                return "medium"
+            else:
+                return "low"
+        return "medium"  # default
+
+    def _determine_priority_level(self, strategic_context) -> str:
+        """Determine priority level based on strategic context"""
+        if hasattr(strategic_context, "decision_complexity"):
+            complexity = strategic_context.decision_complexity
+            if complexity > 0.7:
+                return "high"
+            elif complexity > 0.4:
+                return "medium"
+            else:
+                return "low"
+        return "medium"  # default
+
+    def _identify_efficiency_opportunities(
+        self, strategic_files: Dict[str, Any]
+    ) -> List[str]:
+        """Identify workflow efficiency opportunities"""
+        opportunities = []
+
+        # Check for duplicate strategic themes (DRY principle)
+        duplicates = self._find_duplicate_themes(strategic_files)
+        if duplicates:
+            opportunities.append(
+                f"Consolidate duplicate strategic themes: {', '.join(duplicates[:3])}"
+            )
+
+        # Check for missing framework applications
+        if self._has_missing_frameworks(strategic_files):
+            opportunities.append(
+                "Apply strategic frameworks to increase decision quality"
+            )
+
+        return opportunities
+
+    def _find_duplicate_themes(self, strategic_files: Dict[str, Any]) -> List[str]:
+        """Find duplicate strategic themes across files"""
+        all_topics = []
+        for file_data in strategic_files.values():
+            if hasattr(file_data, "strategic_topics"):
+                all_topics.extend(file_data.strategic_topics)
+
+        topic_counts = {}
+        for topic in all_topics:
+            topic_counts[topic] = topic_counts.get(topic, 0) + 1
+
+        return [topic for topic, count in topic_counts.items() if count > 3]
+
+    def _has_missing_frameworks(self, strategic_files: Dict[str, Any]) -> bool:
+        """Check if many files lack framework applications"""
+        files_without_frameworks = sum(
+            1
+            for f in strategic_files.values()
+            if hasattr(f, "strategic_topics")
+            and not any("framework" in topic.lower() for topic in f.strategic_topics)
+        )
+        return files_without_frameworks > len(strategic_files) * 0.5
+
+    def _identify_bottlenecks(self, strategic_files: Dict[str, Any]) -> List[str]:
+        """Identify workflow bottlenecks"""
+        bottlenecks = []
+
+        # Check for stale documents
+        stale_threshold = datetime.now() - timedelta(days=7)
+        stale_files = [
+            f
+            for f in strategic_files.values()
+            if hasattr(f, "last_modified") and f.last_modified < stale_threshold
+        ]
+
+        if len(stale_files) > len(strategic_files) * 0.3:
+            bottlenecks.append("High number of stale strategic documents")
+
+        return bottlenecks
+
+    def _generate_optimization_suggestions(
+        self, strategic_files: Dict[str, Any]
+    ) -> List[str]:
+        """Generate workflow optimization suggestions"""
+        suggestions = []
+
+        # Suggest framework standardization
+        if len(strategic_files) > 5:
+            suggestions.append(
+                "Standardize strategic framework application across documents"
+            )
+
+        # Suggest automation opportunities
+        suggestions.append("Consider automated strategic theme extraction")
+
+        return suggestions
 
 
 @dataclass
@@ -189,7 +497,14 @@ class WorkspaceMonitor:
         self.current_context: Optional[WorkspaceContext] = None
         self.strategic_files: Dict[str, StrategyFile] = {}
 
-        logger.info(f"WorkspaceMonitor initialized for {workspace_path}")
+        # TS-4: Enhanced strategic analysis capabilities
+        self.ts4_analyzer = TS4StrategicAnalyzer()
+        self.ts4_insights: Dict[str, TS4StrategicInsight] = {}
+        self.ts4_metrics: Optional[TS4WorkflowMetrics] = None
+
+        logger.info(
+            f"WorkspaceMonitor initialized for {workspace_path} with TS-4 enhancements"
+        )
 
     def _init_database(self):
         """Initialize SQLite database for context cache"""
@@ -305,6 +620,9 @@ class WorkspaceMonitor:
             if strategy_file:
                 self.strategic_files[file_path] = strategy_file
                 self._save_strategic_file(strategy_file)
+
+                # TS-4: Enhanced strategic analysis
+                self._perform_ts4_analysis(file_path, strategy_file)
 
                 # Update workspace context
                 self._update_workspace_context()
@@ -680,6 +998,113 @@ class WorkspaceMonitor:
                 return WorkspaceContext(**context_data)
 
         return None
+
+    # TS-4: Enhanced Strategic Analysis Methods
+    def _perform_ts4_analysis(self, file_path: str, strategy_file: StrategyFile):
+        """Perform TS-4 enhanced strategic analysis on a file"""
+        try:
+            # Read file content for analysis
+            with open(file_path, "r", encoding="utf-8") as f:
+                content = f.read()
+
+            # Generate strategic insights
+            insight = self.ts4_analyzer.analyze_strategic_document(file_path, content)
+            if insight:
+                self.ts4_insights[file_path] = insight
+                logger.info(
+                    f"TS-4 strategic insight generated for {file_path}: {insight.insight_type}"
+                )
+
+            # Update workflow metrics
+            self.ts4_metrics = self.ts4_analyzer.calculate_workflow_metrics(
+                self.strategic_files
+            )
+
+        except Exception as e:
+            logger.warning(f"TS-4 analysis failed for {file_path}: {e}")
+
+    def get_ts4_strategic_insights(
+        self, file_type: str = None
+    ) -> List[TS4StrategicInsight]:
+        """Get TS-4 strategic insights, optionally filtered by file type"""
+        insights = list(self.ts4_insights.values())
+
+        if file_type:
+            # Filter by file type if specified
+            filtered_insights = []
+            for insight in insights:
+                if file_path := insight.file_path:
+                    if strategy_file := self.strategic_files.get(file_path):
+                        if strategy_file.file_type == file_type:
+                            filtered_insights.append(insight)
+            return filtered_insights
+
+        return insights
+
+    def get_ts4_workflow_metrics(self) -> Optional[TS4WorkflowMetrics]:
+        """Get current TS-4 workflow metrics"""
+        return self.ts4_metrics
+
+    def get_ts4_efficiency_recommendations(self) -> List[str]:
+        """Get TS-4 efficiency recommendations"""
+        if not self.ts4_metrics:
+            return []
+
+        recommendations = []
+        recommendations.extend(self.ts4_metrics.efficiency_opportunities)
+        recommendations.extend(self.ts4_metrics.optimization_suggestions)
+
+        # Add insight-based recommendations
+        high_priority_insights = [
+            insight
+            for insight in self.ts4_insights.values()
+            if insight.priority_level == "high"
+        ]
+
+        for insight in high_priority_insights[:3]:  # Top 3 high-priority insights
+            recommendations.append(f"High priority: {insight.recommendation}")
+
+        return recommendations
+
+    def get_ts4_strategic_summary(self) -> Dict[str, Any]:
+        """Get comprehensive TS-4 strategic summary"""
+        return {
+            "total_insights": len(self.ts4_insights),
+            "insights_by_type": self._group_insights_by_type(),
+            "workflow_metrics": asdict(self.ts4_metrics) if self.ts4_metrics else None,
+            "efficiency_recommendations": self.get_ts4_efficiency_recommendations(),
+            "high_priority_files": self._get_high_priority_files(),
+            "framework_utilization": self._calculate_framework_utilization(),
+            "last_updated": datetime.now().isoformat(),
+        }
+
+    def _group_insights_by_type(self) -> Dict[str, int]:
+        """Group insights by type for summary"""
+        type_counts = {}
+        for insight in self.ts4_insights.values():
+            type_counts[insight.insight_type] = (
+                type_counts.get(insight.insight_type, 0) + 1
+            )
+        return type_counts
+
+    def _get_high_priority_files(self) -> List[str]:
+        """Get list of high-priority files based on TS-4 analysis"""
+        return [
+            insight.file_path
+            for insight in self.ts4_insights.values()
+            if insight.priority_level == "high"
+        ]
+
+    def _calculate_framework_utilization(self) -> float:
+        """Calculate framework utilization rate"""
+        if not self.ts4_insights:
+            return 0.0
+
+        files_with_frameworks = sum(
+            1 for insight in self.ts4_insights.values() if insight.strategic_frameworks
+        )
+
+        return files_with_frameworks / len(self.ts4_insights)
 
     def __enter__(self):
         """Context manager entry"""
