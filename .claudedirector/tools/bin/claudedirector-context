@@ -13,12 +13,15 @@ lib_path = Path(__file__).parent.parent / "lib"
 sys.path.insert(0, str(lib_path))
 
 from claudedirector.bridges.cli_context_bridge import CLIContextBridge
-from claudedirector.core.integrated_conversation_manager import IntegratedConversationManager
+from claudedirector.core.integrated_conversation_manager import (
+    IntegratedConversationManager,
+)
 
 
 def print_help():
     """Print CLI usage help"""
-    print("""
+    print(
+        """
 ClaudeDirector Context Management CLI
 ====================================
 
@@ -56,7 +59,8 @@ CONTEXT SHARING:
     with Claude CLI or other AI interfaces:
 
     claude chat --context ~/claude-context.md "Continue strategic work..."
-""")
+"""
+    )
 
 
 def main():
@@ -119,7 +123,7 @@ def main():
             print("=" * 20)
             print(f"Status: {status['status']}")
 
-            if status['status'] == 'active':
+            if status["status"] == "active":
                 print(f"Session ID: {status['session_id'][:12]}...")
                 print(f"Conversation turns: {status['conversation_turns']}")
                 print(f"Time since backup: {status['time_since_backup']}s")

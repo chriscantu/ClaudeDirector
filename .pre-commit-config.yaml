@@ -6,7 +6,8 @@ repos:
     hooks:
       - id: black
         args: [--line-length=88]
-        files: ^\.claudedirector/.*\.py$
+        types: [python]
+        exclude: ^(venv/|\.git/|\.claudedirector/backups/|leadership-workspace/)
 
   # Basic code quality - RUNS AFTER FORMATTING
   - repo: https://github.com/pre-commit/pre-commit-hooks
