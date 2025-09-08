@@ -58,7 +58,7 @@ class WorkflowProcessor(BaseProcessor):
     - Configuration management (~25 lines) → inherited from BaseProcessor
     - Error handling patterns (~20 lines) → inherited from BaseProcessor
     - Metrics tracking (~15 lines) → inherited from BaseProcessor
-    
+
     TOTAL ELIMINATED: ~75+ lines of duplicate infrastructure code!
     REMAINING: Only workflow-specific business logic
 
@@ -78,16 +78,15 @@ class WorkflowProcessor(BaseProcessor):
         """Initialize workflow processor with BaseProcessor infrastructure"""
         # Initialize BaseProcessor (eliminates duplicate infrastructure patterns)
         processor_config = config or {}
-        processor_config.update({
-            "processor_type": "workflow",
-            "enable_performance": True
-        })
-        
+        processor_config.update(
+            {"processor_type": "workflow", "enable_performance": True}
+        )
+
         super().__init__(
             config=processor_config,
             enable_cache=True,
             enable_metrics=True,
-            logger_name=f"{__name__}.WorkflowProcessor"
+            logger_name=f"{__name__}.WorkflowProcessor",
         )
 
         # ONLY workflow-specific initialization remains (unique logic only)
@@ -103,13 +102,15 @@ class WorkflowProcessor(BaseProcessor):
 
         # Workflow-specific metrics (using BaseProcessor metrics system)
         if self.metrics:
-            self.metrics.update({
-                "workflows_created": 0,
-                "workflows_completed": 0,
-                "average_completion_time": 0.0,
-                "success_rate": 1.0,
-                "active_workflow_count": 0,
-            })
+            self.metrics.update(
+                {
+                    "workflows_created": 0,
+                    "workflows_completed": 0,
+                    "average_completion_time": 0.0,
+                    "success_rate": 1.0,
+                    "active_workflow_count": 0,
+                }
+            )
 
         # Initialize strategic workflow templates
         self._initialize_strategic_templates()
@@ -669,23 +670,24 @@ class WorkflowProcessor(BaseProcessor):
         if self.metrics:
             self.metrics["workflows_completed"] += 1
             self.metrics["active_workflow_count"] -= 1
-            
+
             total_time = (execution.completed_at - execution.created_at).total_seconds()
-            
+
             # Update BaseProcessor's average_processing_time with workflow-specific calculation
             completed_count = self.metrics["workflows_completed"]
             if completed_count > 1:
                 current_avg = self.metrics.get("average_processing_time", 0.0)
                 self.metrics["average_processing_time"] = (
-                    (current_avg * (completed_count - 1) + total_time) / completed_count
-                )
+                    current_avg * (completed_count - 1) + total_time
+                ) / completed_count
             else:
                 self.metrics["average_processing_time"] = total_time
-            
+
             # Calculate success rate
             if self.metrics["workflows_created"] > 0:
                 self.metrics["success_rate"] = (
-                    self.metrics["workflows_completed"] / self.metrics["workflows_created"]
+                    self.metrics["workflows_completed"]
+                    / self.metrics["workflows_created"]
                 )
 
         self.logger.info(

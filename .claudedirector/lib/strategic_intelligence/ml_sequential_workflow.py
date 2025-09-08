@@ -34,15 +34,15 @@ from datetime import datetime
 
 # Import existing infrastructure (no duplication)
 try:
-    from ..ai_intelligence.ml_decision_engine import (
+    from ai_intelligence.ml_decision_engine import (
         EnhancedMLDecisionEngine,
         MLModelType,
         MLDecisionContext,
         MLDecisionResult,
         create_ml_decision_engine,
     )
-    from ..ai_intelligence.decision_orchestrator import DecisionIntelligenceOrchestrator
-    from ..context_engineering.strategic_memory_manager import StrategicMemoryManager
+    from ai_intelligence.decision_orchestrator import DecisionIntelligenceOrchestrator
+    from context_engineering.strategic_memory_manager import StrategicMemoryManager
 except ImportError:
     # Fallback for test environments
     import sys
@@ -50,10 +50,10 @@ except ImportError:
     from dataclasses import dataclass
     from typing import Any, Dict
     from enum import Enum
-    
+
     lib_path = Path(__file__).parent.parent
     sys.path.insert(0, str(lib_path))
-    
+
     try:
         from ai_intelligence.ml_decision_engine import (
             EnhancedMLDecisionEngine,
@@ -62,41 +62,45 @@ except ImportError:
             MLDecisionResult,
             create_ml_decision_engine,
         )
-        from ai_intelligence.decision_orchestrator import DecisionIntelligenceOrchestrator
+        from ai_intelligence.decision_orchestrator import (
+            DecisionIntelligenceOrchestrator,
+        )
         from context_engineering.strategic_memory_manager import StrategicMemoryManager
     except ImportError:
         # Mock classes for test environments
         class MLModelType(Enum):
             DECISION_OUTCOME = "decision_outcome"
-            
+
         @dataclass
         class MLDecisionContext:
             decision_type: str = "test"
             context_data: Dict[str, Any] = None
-            
+
         @dataclass
         class MLDecisionResult:
             decision: str = "test"
             confidence: float = 1.0
             reasoning: str = "test"
-            
+
         class EnhancedMLDecisionEngine:
             def __init__(self, **kwargs):
                 pass
-                
+
             def predict(self, context):
                 return MLDecisionResult()
-                
+
         class DecisionIntelligenceOrchestrator:
             def __init__(self, **kwargs):
                 pass
-                
+
         class StrategicMemoryManager:
             def __init__(self, **kwargs):
                 pass
-                
+
         def create_ml_decision_engine(**kwargs):
             return EnhancedMLDecisionEngine()
+
+
 from ..transparency import TransparencyContext
 
 # Configure logging

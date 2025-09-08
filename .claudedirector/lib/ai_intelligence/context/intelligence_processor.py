@@ -93,18 +93,17 @@ class IntelligenceProcessor(BaseProcessor):
         """Initialize intelligence processor with BaseProcessor infrastructure"""
         # Initialize BaseProcessor (eliminates all duplicate infrastructure patterns)
         processor_config = config or get_config()
-        processor_config.update({
-            "processor_type": "intelligence",
-            "enable_performance": enable_performance
-        })
-        
+        processor_config.update(
+            {"processor_type": "intelligence", "enable_performance": enable_performance}
+        )
+
         super().__init__(
             config=processor_config,
             enable_cache=True,
             enable_metrics=True,
-            logger_name=f"{__name__}.IntelligenceProcessor"
+            logger_name=f"{__name__}.IntelligenceProcessor",
         )
-        
+
         # ONLY intelligence-specific initialization remains (unique logic only)
         self.enable_performance = enable_performance
 
@@ -134,12 +133,14 @@ class IntelligenceProcessor(BaseProcessor):
 
         # Intelligence-specific metrics (using BaseProcessor metrics system)
         if self.metrics:
-            self.metrics.update({
-                "tasks_detected": 0,
-                "meetings_analyzed": 0,
-                "cache_hits": 0,
-                "cache_misses": 0,
-            })
+            self.metrics.update(
+                {
+                    "tasks_detected": 0,
+                    "meetings_analyzed": 0,
+                    "cache_hits": 0,
+                    "cache_misses": 0,
+                }
+            )
 
         self.logger.info(
             "IntelligenceProcessor initialized with consolidated AI intelligence logic"
@@ -311,8 +312,10 @@ class IntelligenceProcessor(BaseProcessor):
             "cache_performance": {
                 "hit_rate": self._calculate_cache_hit_rate(),
                 "total_operations": (
-                    self.metrics.get("cache_hits", 0) + self.metrics.get("cache_misses", 0)
-                    if self.metrics else 0
+                    self.metrics.get("cache_hits", 0)
+                    + self.metrics.get("cache_misses", 0)
+                    if self.metrics
+                    else 0
                 ),
             },
             "timestamp": datetime.utcnow().isoformat(),
@@ -522,10 +525,10 @@ class IntelligenceProcessor(BaseProcessor):
         """Update rolling average processing time using BaseProcessor metrics"""
         if not self.metrics:
             return
-            
+
         current_avg = self.metrics.get("average_processing_time", 0.0)
-        total_operations = (
-            self.metrics.get("tasks_detected", 0) + self.metrics.get("meetings_analyzed", 0)
+        total_operations = self.metrics.get("tasks_detected", 0) + self.metrics.get(
+            "meetings_analyzed", 0
         )
 
         if total_operations > 0:
@@ -537,9 +540,9 @@ class IntelligenceProcessor(BaseProcessor):
         """Calculate cache hit rate using BaseProcessor metrics"""
         if not self.metrics:
             return 0.0
-            
-        total_ops = (
-            self.metrics.get("cache_hits", 0) + self.metrics.get("cache_misses", 0)
+
+        total_ops = self.metrics.get("cache_hits", 0) + self.metrics.get(
+            "cache_misses", 0
         )
         if total_ops == 0:
             return 0.0

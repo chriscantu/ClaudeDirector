@@ -36,8 +36,8 @@ from .predictive_processor import (
     PredictionType,
     PredictionConfidence,
 )
-from ..context_engineering.strategic_memory_manager import StrategicMemoryManager
-from ..transparency import TransparencyContext
+from context_engineering.strategic_memory_manager import StrategicMemoryManager
+from transparency.integrated_transparency import TransparencyContext
 
 # Configure logging
 try:

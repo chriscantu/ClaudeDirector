@@ -20,10 +20,10 @@ except ImportError:
     # Fallback for test environments
     import sys
     from pathlib import Path
-    
+
     lib_path = Path(__file__).parent.parent
     sys.path.insert(0, str(lib_path))
-    
+
     try:
         from core.models import StrategicContext
     except ImportError:
@@ -32,6 +32,8 @@ except ImportError:
             def __init__(self, **kwargs):
                 for k, v in kwargs.items():
                     setattr(self, k, v)
+
+
 from ..context_engineering import (
     AdvancedContextEngine,
     StrategicLayerMemory,

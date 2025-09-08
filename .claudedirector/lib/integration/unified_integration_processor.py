@@ -143,17 +143,17 @@ class UnifiedIntegrationProcessor(BaseProcessor):
         processor_config = {
             "processor_type": "integration",
             "bridge_type": bridge_config.bridge_type,
-            "enable_performance": True
+            "enable_performance": True,
         }
-        
+
         # Initialize BaseProcessor (eliminates all duplicate infrastructure patterns)
         super().__init__(
             config=processor_config,
             enable_cache=True,
             enable_metrics=True,
-            logger_name=f"{__name__}.UnifiedIntegrationProcessor"
+            logger_name=f"{__name__}.UnifiedIntegrationProcessor",
         )
-        
+
         # ONLY integration-specific initialization remains (unique logic only)
         self.bridge_config = bridge_config
 
@@ -942,12 +942,14 @@ class UnifiedIntegrationProcessor(BaseProcessor):
             if self.config.enable_caching:
                 total_cache_ops = (
                     self.cache_stats.get("hits", 0) + self.cache_stats.get("misses", 0)
-                    if self.cache_stats else 0
+                    if self.cache_stats
+                    else 0
                 )
                 if total_cache_ops > 0:
                     self.processing_metrics["cache_hit_rate"] = (
                         self.cache_stats.get("hits", 0) / total_cache_ops
-                        if self.cache_stats else 0.0
+                        if self.cache_stats
+                        else 0.0
                     )
 
     def get_comprehensive_status(self) -> Dict[str, Any]:
