@@ -2,6 +2,7 @@
 Performance Monitor for Real-Time Metrics
 
 Prometheus-compatible metrics collection and enterprise monitoring.
+Refactored to inherit from BaseManager for DRY compliance.
 """
 
 import time
@@ -13,6 +14,17 @@ from datetime import datetime, timedelta
 from collections import defaultdict, deque
 import logging
 import threading
+from pathlib import Path
+import sys
+
+# Import BaseManager infrastructure
+try:
+    from ..core.base_manager import BaseManager, BaseManagerConfig, ManagerType
+    from ..core.manager_factory import register_manager_type
+except ImportError:
+    sys.path.insert(0, str(Path(__file__).parent.parent))
+    from core.base_manager import BaseManager, BaseManagerConfig, ManagerType
+    from core.manager_factory import register_manager_type
 
 
 @dataclass
@@ -39,7 +51,7 @@ class MetricPoint:
     unit: str = "ms"
 
 
-class PerformanceMonitor:
+class PerformanceMonitor(BaseManager):
     """
     Enterprise-grade performance monitoring for ClaudeDirector
 
@@ -50,15 +62,46 @@ class PerformanceMonitor:
     - Performance trend analysis
     - Health check endpoints
     - <5 minute issue detection
+
+    Refactored to inherit from BaseManager for DRY compliance.
+    Eliminates duplicate logging, metrics, and configuration patterns.
     """
 
-    def __init__(self, retention_hours: int = 24, alert_cooldown_seconds: int = 300):
-        self.retention_hours = retention_hours
-        self.alert_cooldown_seconds = alert_cooldown_seconds
-        self.logger = logging.getLogger(__name__)
+    def __init__(
+        self,
+        config: Optional[BaseManagerConfig] = None,
+        retention_hours: int = 24,
+        alert_cooldown_seconds: int = 300,
+        cache: Optional[Dict[str, Any]] = None,
+        metrics: Optional[Dict[str, Any]] = None,
+        **kwargs,
+    ):
+        if config is None:
+            config = BaseManagerConfig(
+                manager_name="performance_monitor",
+                manager_type=ManagerType.PERFORMANCE,
+                enable_metrics=True,
+                enable_caching=True,
+                enable_logging=True,
+                performance_tracking=True,
+                custom_config={
+                    "retention_hours": retention_hours,
+                    "alert_cooldown_seconds": alert_cooldown_seconds,
+                },
+            )
 
-        # Metrics storage (time-series data)
-        self.metrics: Dict[str, deque] = defaultdict(lambda: deque(maxlen=10000))
+        super().__init__(config, cache, metrics, logger_name="PerformanceMonitor")
+
+        # Get configuration values from BaseManager config
+        self.retention_hours = self.config.custom_config.get(
+            "retention_hours", retention_hours
+        )
+        self.alert_cooldown_seconds = self.config.custom_config.get(
+            "alert_cooldown_seconds", alert_cooldown_seconds
+        )
+
+        # Metrics storage (time-series data) - renamed to avoid conflict with BaseManager.metrics
+        self.metric_storage: Dict[str, deque] = defaultdict(lambda: deque(maxlen=10000))
 
         # Performance thresholds
         self.thresholds = {
@@ -119,6 +162,46 @@ class PerformanceMonitor:
         # Background monitoring
         self._monitoring_tasks = []
         self._start_monitoring()
+
+    def manage(self, operation: str, *args, **kwargs) -> Any:
+        """
+        Implement BaseManager abstract method for performance monitoring operations
+        """
+        start_time = time.time()
+
+        try:
+            if operation == "record_metric":
+                result = self.record_metric(*args, **kwargs)
+            elif operation == "get_metrics":
+                result = self.get_current_metrics()
+            elif operation == "get_health":
+                result = self.get_health_status()
+            elif operation == "check_alerts":
+                result = self.check_thresholds()
+            elif operation == "get_prometheus_metrics":
+                result = self.get_prometheus_metrics()
+            elif operation == "cleanup_old_metrics":
+                result = self.cleanup_old_metrics()
+            else:
+                raise ValueError(f"Unknown performance monitor operation: {operation}")
+
+            duration = time.time() - start_time
+            self._update_metrics(operation, duration, True)
+
+            return result
+
+        except Exception as e:
+            duration = time.time() - start_time
+            self._update_metrics(operation, duration, False)
+
+            self.logger.error(
+                "Performance monitor operation failed",
+                operation=operation,
+                error=str(e),
+                args=args,
+                kwargs=kwargs,
+            )
+            raise
 
     def _start_monitoring(self):
         """Start background monitoring tasks"""
@@ -225,7 +308,7 @@ class PerformanceMonitor:
             name=name, value=value, labels=labels, timestamp=time.time(), unit=unit
         )
 
-        self.metrics[name].append(metric_point)
+        self.metric_storage[name].append(metric_point)
 
         # Check for alerts
         self._check_metric_thresholds(name, value)
@@ -299,21 +382,21 @@ class PerformanceMonitor:
 
     def get_latest_metric(self, metric_name: str) -> Optional[float]:
         """Get the latest value for a metric"""
-        if metric_name in self.metrics and self.metrics[metric_name]:
-            return self.metrics[metric_name][-1].value
+        if metric_name in self.metric_storage and self.metric_storage[metric_name]:
+            return self.metric_storage[metric_name][-1].value
         return None
 
     def get_average_metric(
         self, metric_name: str, window_seconds: int = 300
     ) -> Optional[float]:
         """Get average metric value over time window"""
-        if metric_name not in self.metrics:
+        if metric_name not in self.metric_storage:
             return None
 
         cutoff_time = time.time() - window_seconds
         recent_points = [
             point.value
-            for point in self.metrics[metric_name]
+            for point in self.metric_storage[metric_name]
             if point.timestamp >= cutoff_time
         ]
 
@@ -325,13 +408,13 @@ class PerformanceMonitor:
         self, metric_name: str, percentile: float, window_seconds: int = 300
     ) -> Optional[float]:
         """Get percentile value for a metric over time window"""
-        if metric_name not in self.metrics:
+        if metric_name not in self.metric_storage:
             return None
 
         cutoff_time = time.time() - window_seconds
         recent_values = [
             point.value
-            for point in self.metrics[metric_name]
+            for point in self.metric_storage[metric_name]
             if point.timestamp >= cutoff_time
         ]
 
@@ -564,12 +647,12 @@ class PerformanceMonitor:
         current_time = time.time()
 
         # Check for consistent metric collection across different components
-        metric_names = list(self.metrics.keys())
+        metric_names = list(self.metric_storage.keys())
         consistent_count = 0
         inconsistent_count = 0
 
         for metric_name in metric_names:
-            metric_data = self.metrics[metric_name]
+            metric_data = self.metric_storage[metric_name]
             if len(metric_data) > 1:
                 # Check for reasonable consistency in metric values
                 recent_values = list(metric_data)[-10:]  # Last 10 values
@@ -673,3 +756,14 @@ def monitor_performance(metric_name: str = None):
             return sync_wrapper
 
     return decorator
+
+
+# Register PerformanceMonitor with the factory system
+try:
+    register_manager_type(
+        manager_type=ManagerType.PERFORMANCE,
+        manager_class=PerformanceMonitor,
+        description="Enterprise-grade performance monitoring with real-time metrics collection",
+    )
+except Exception:
+    pass
