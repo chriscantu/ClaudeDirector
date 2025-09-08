@@ -77,6 +77,7 @@ class ManagerType(Enum):
     CACHE = "cache"
     MEMORY = "memory"
     CONFIGURATION = "configuration"
+    USER_CONFIG = "user_config"
     SECURITY = "security"
     LOGGING = "logging"
     METRICS = "metrics"
