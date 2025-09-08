@@ -321,5 +321,13 @@ workspace-backup-*/
 .claudedirector/config/user_identity.yaml
 **/user_identity.yaml
 
+# ======================================
+# SPEC-DRIVEN DEVELOPMENT ARTIFACTS
+# ======================================
+# Specification working files are development artifacts (final specs go in docs/phases/)
+**/working-specs/
+*_working_spec.md
+*_draft_spec.md
+
 # Migration backups (temporary safety)
 .claudedirector/.migration-backup-*
