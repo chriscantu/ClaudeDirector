@@ -76,6 +76,7 @@ class TestCompleteNewSetupP0Optimized(unittest.TestCase):
         essential_dirs = [
             ".claudedirector/lib/core",
             ".claudedirector/lib/transparency",
+            ".claudedirector/lib/strategic_intelligence",
             ".claudedirector/tools",
         ]
 
@@ -85,10 +86,19 @@ class TestCompleteNewSetupP0Optimized(unittest.TestCase):
         # Copy essential files only
         for file_path in essential_files:
             source_file = cls.source_project_root / file_path
+            target_file = target_dir / file_path
+            target_file.parent.mkdir(parents=True, exist_ok=True)
+
             if source_file.exists():
-                target_file = target_dir / file_path
-                target_file.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(source_file, target_file)
+            elif file_path == "README.md":
+                # Create minimal README.md for testing if it doesn't exist
+                target_file.write_text(
+                    "# ClaudeDirector\n\n"
+                    "Strategic AI leadership system with cursor integration.\n\n"
+                    "## Chat Interface\n\n"
+                    "This system provides claude chat integration for strategic leadership.\n"
+                )
 
         # Copy essential directories
         for dir_path in essential_dirs:

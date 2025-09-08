@@ -28,14 +28,14 @@
 Transform ClaudeDirector from reactive strategic advisor to proactive intelligence platform with ML-powered decision support, enhanced organizational memory, and predictive analytics capabilities. Build on existing persona and framework architecture while adding strategic intelligence layer compatible with GitHub Spec-Kit methodology.
 
 ## Technical Context
-**Language/Version**: Python 3.11 (existing ClaudeDirector stack)  
-**Primary Dependencies**: scikit-learn, pandas, numpy (ML), existing ClaudeDirector libs  
-**Storage**: SQLite + DuckDB + Faiss (existing hybrid architecture)  
-**Testing**: pytest + existing P0 test framework  
-**Target Platform**: macOS/Linux development, Cursor integration  
-**Project Type**: Strategic Intelligence Enhancement (extends existing platform)  
-**Performance Goals**: ≤2000ms strategic analysis, ≥85% ML accuracy, ≥98% memory retention  
-**Constraints**: Single-user privacy, enterprise compliance, real-time performance  
+**Language/Version**: Python 3.11 (existing ClaudeDirector stack)
+**Primary Dependencies**: scikit-learn, pandas, numpy (ML), existing ClaudeDirector libs
+**Storage**: SQLite + DuckDB + Faiss (existing hybrid architecture)
+**Testing**: pytest + existing P0 test framework
+**Target Platform**: macOS/Linux development, Cursor integration
+**Project Type**: Strategic Intelligence Enhancement (extends existing platform)
+**Performance Goals**: ≤2000ms strategic analysis, ≥85% ML accuracy, ≥98% memory retention
+**Constraints**: Single-user privacy, enterprise compliance, real-time performance
 **Scale/Scope**: Strategic intelligence for engineering leadership, executive decision support
 
 ## Constitution Check
@@ -49,7 +49,7 @@ Transform ClaudeDirector from reactive strategic advisor to proactive intelligen
 
 **Architecture**:
 - EVERY feature as library? (extends .claudedirector/lib/ structure)
-- Libraries listed: 
+- Libraries listed:
   - strategic_intelligence/ (ML decision support)
   - enhanced_memory/ (organizational context engine)
   - predictive_analytics/ (strategic outcome prediction)
@@ -197,8 +197,8 @@ specs/005-strategic-ai-intelligence/
 ## Phase 3+: Future Implementation
 *These phases are beyond the scope of the /plan command*
 
-**Phase 3**: Task execution (/tasks command creates tasks.md)  
-**Phase 4**: Strategic intelligence implementation (execute tasks.md following constitutional principles)  
+**Phase 3**: Task execution (/tasks command creates tasks.md)
+**Phase 4**: Strategic intelligence implementation (execute tasks.md following constitutional principles)
 **Phase 5**: Validation (run P0 tests, execute quickstart.md, strategic performance validation)
 
 ## Complexity Tracking

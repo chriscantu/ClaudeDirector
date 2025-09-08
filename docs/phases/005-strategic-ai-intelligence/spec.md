@@ -1,8 +1,8 @@
 # Feature Specification: Strategic AI Intelligence Platform
 
-**Feature Branch**: `005-strategic-ai-intelligence`  
-**Created**: January 2025  
-**Status**: Draft  
+**Feature Branch**: `005-strategic-ai-intelligence`
+**Created**: January 2025
+**Status**: Draft
 **Input**: User description: "Transform ClaudeDirector from reactive advisor to proactive strategic intelligence system with ML-powered decision support, enhanced memory, and predictive analytics"
 
 ## Execution Flow (main)
