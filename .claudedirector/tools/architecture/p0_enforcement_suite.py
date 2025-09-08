@@ -94,34 +94,59 @@ class P0EnforcementSuite:
         return Path.cwd()
 
     def validate_sequential_thinking(self) -> Dict[str, Any]:
-        """Validate Sequential Thinking compliance across staged files."""
+        """Validate Sequential Thinking compliance across ALL development files."""
         try:
-            # Get staged files
-            result = subprocess.run(
-                ["git", "diff", "--cached", "--name-only"],
-                capture_output=True,
-                text=True,
-                cwd=self.project_root,
-            )
+            # P0 CRITICAL: Validate ALL development files, not just staged files
+            # Sequential Thinking must be applied to ALL development and analysis activities
 
-            if result.returncode != 0:
-                return {"status": "error", "details": ["Failed to get staged files"]}
+            # Get all Python files in .claudedirector (core development area)
+            development_files = []
+            claudedirector_path = self.project_root / ".claudedirector"
 
-            staged_files = [
-                f for f in result.stdout.strip().split("\n") if f and f.endswith(".py")
-            ]
+            if claudedirector_path.exists():
+                for py_file in claudedirector_path.rglob("*.py"):
+                    # Skip test files and __init__.py files
+                    if (
+                        not py_file.name.startswith("test_")
+                        and py_file.name != "__init__.py"
+                    ):
+                        # Skip backup directories, legacy files, and utility files
+                        skip_patterns = [
+                            "backups/",
+                            "__pycache__",
+                            "setup.py",
+                            "conftest.py",
+                            "demo_",
+                            "simple_test.py",
+                            "regression_test.py",
+                        ]
+                        if not any(skip in str(py_file) for skip in skip_patterns):
+                            # Focus on core development areas
+                            if any(
+                                core_area in str(py_file)
+                                for core_area in [
+                                    "lib/core/",
+                                    "lib/personas/",
+                                    "lib/ai_intelligence/",
+                                    "lib/context_engineering/",
+                                    "tools/architecture/",
+                                ]
+                            ):
+                                development_files.append(
+                                    str(py_file.relative_to(self.project_root))
+                                )
 
-            if not staged_files:
+            if not development_files:
                 return {
                     "status": "pass",
-                    "details": ["No Python files staged"],
+                    "details": ["No development files found"],
                     "compliance_rate": 100.0,
                 }
 
             compliant_files = []
             non_compliant_files = []
 
-            for file_path in staged_files:
+            for file_path in development_files:
                 full_path = self.project_root / file_path
                 if full_path.exists():
                     if self._check_sequential_thinking_compliance(full_path):
@@ -129,7 +154,7 @@ class P0EnforcementSuite:
                     else:
                         non_compliant_files.append(file_path)
 
-            total_files = len(staged_files)
+            total_files = len(development_files)
             compliance_rate = (
                 (len(compliant_files) / total_files * 100) if total_files > 0 else 100.0
             )

@@ -6,7 +6,8 @@ repos:
     hooks:
       - id: black
         args: [--line-length=88]
-        files: ^\.claudedirector/.*\.py$
+        types: [python]
+        exclude: ^(venv/|\.git/|\.claudedirector/backups/|leadership-workspace/)
 
   # Basic code quality - RUNS AFTER FORMATTING
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -18,29 +19,18 @@ repos:
       - id: check-added-large-files
         args: ['--maxkb=1000']
 
-  # CRITICAL FILE PROTECTION (MUST RUN FIRST)
-  - repo: local
-    hooks:
-      - id: readme-pre-stash-protection
-        name: 🛡️ README.md PRE-STASH PROTECTION
-        entry: .claudedirector/tools/ci/readme-pre-stash-protection.sh
-        language: system
-        pass_filenames: false
-        stages: [pre-commit]
-        always_run: true
-        verbose: true
-      - id: readme-protection
-        name: 🛡️ README.md PROTECTION SYSTEM
-        entry: .claudedirector/tools/ci/readme-protection.sh
-        language: system
-        pass_filenames: false
-        stages: [pre-commit]
-        always_run: true
-        verbose: true
-
   # CODE BLOAT PREVENTION (RUNS EARLY TO CATCH DUPLICATION)
   - repo: local
     hooks:
+      # README CONTENT PROTECTION (FIXED APPROACH)
+      - id: readme-content-protection
+        name: 🛡️ README CONTENT PROTECTION (Content-Aware)
+        entry: python3 .claudedirector/tools/ci/readme_content_protection.py
+        language: system
+        files: '^README\.md$'
+        pass_filenames: true
+        stages: [pre-commit]
+        verbose: true
       # TEMPORARILY DISABLED: Method not fully implemented yet
       # - id: enhanced-duplication-detection
       #   name: 🛡️ ENHANCED DUPLICATION DETECTION (TS-4 Prevention System)
@@ -58,7 +48,7 @@ repos:
         stages: [pre-commit]
         pass_filenames: false
         verbose: true
-        # NOTE: Reverted to strict threshold=8 after TS-4 completion
+        # NOTE: Reverted to strict threshold=8 after fixing Phase 4 architectural violations
 
   # DEVELOPMENT POLICY ENFORCEMENT
   - repo: local
@@ -71,7 +61,7 @@ repos:
         stages: [pre-commit]
         pass_filenames: false
         verbose: true
-        # NOTE: Reverted to strict threshold=8 after TS-4 completion
+        # NOTE: Reverted to strict threshold=8 after fixing Phase 4 architectural violations
 
       - id: documentation-size-policy
         name: 📋 DOCUMENTATION SIZE POLICY (500 lines max - aligned with code)

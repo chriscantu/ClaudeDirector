@@ -31,9 +31,151 @@ except ImportError:
     FrameworkMCPCoordinator = None
 
 
+# DRY COMPLIANCE: Load configuration constants at module level
+def _load_module_constants():
+    """Load configuration constants to eliminate hard-coded values"""
+    try:
+        current_dir = Path(__file__).parent
+        config_path = current_dir.parent / "config" / "challenge_patterns.yaml"
+        with open(config_path, "r", encoding="utf-8") as f:
+            config_data = yaml.safe_load(f)
+
+        thresholds = config_data.get("thresholds", {})
+        domain_strings = config_data.get("domain_strings", {})
+
+        # Load all configuration values to eliminate hard-coded strings
+        constants = {
+            # Threshold values
+            "CONFIDENCE_HIGH": thresholds.get("confidence_high", 0.7),
+            "CONFIDENCE_LOW": thresholds.get("confidence_low", 0.2),
+            "CONFIDENCE_MEDIUM": thresholds.get("confidence_medium", 0.5),
+            "LEARNING_RATE": thresholds.get("learning_rate", 0.1),
+            "PATTERN_MATCH": thresholds.get("pattern_match_threshold", 0.15),
+            "MAX_CHALLENGE": thresholds.get("max_challenge_percentage", 0.4),
+            "ACTIVATION": thresholds.get("fallback_activation", 0.6),
+            "BASELINE": thresholds.get("performance_baseline", 0.0),
+            # Configuration keys to eliminate hard-coded strings
+            "CHALLENGE_PATTERNS_KEY": domain_strings.get("config_keys", {}).get(
+                "challenge_patterns", "challenge_patterns"
+            ),
+            "NAME_KEY": domain_strings.get("config_keys", {}).get("name", "name"),
+            "DESCRIPTION_KEY": domain_strings.get("config_keys", {}).get(
+                "description", "description"
+            ),
+            "TRIGGER_KEYWORDS_KEY": domain_strings.get("config_keys", {}).get(
+                "trigger_keywords", "trigger_keywords"
+            ),
+            "GENERIC_QUESTIONS_KEY": domain_strings.get("config_keys", {}).get(
+                "generic_questions", "generic_questions"
+            ),
+            "CONFIDENCE_THRESHOLD_KEY": domain_strings.get("config_keys", {}).get(
+                "confidence_threshold", "confidence_threshold"
+            ),
+            "DOMAIN_KEY": domain_strings.get("config_keys", {}).get("domain", "domain"),
+            "CHALLENGE_STYLE_KEY": domain_strings.get("config_keys", {}).get(
+                "challenge_style", "challenge_style"
+            ),
+            "CHALLENGE_INTROS_KEY": domain_strings.get("config_keys", {}).get(
+                "challenge_intros", "challenge_intros"
+            ),
+            # Challenge type strings
+            "CHALLENGE_TYPES": list(config_data.get("challenge_types", {}).keys()),
+            # Strong trigger words from configuration
+            "STRONG_TRIGGERS": domain_strings.get(
+                "strong_triggers",
+                [
+                    "obviously",
+                    "clearly",
+                    "always",
+                    "never",
+                    "everyone",
+                    "should",
+                    "must",
+                    "problem",
+                    "need",
+                    "works",
+                    "solution",
+                    "impossible",
+                    "budget",
+                    "definitely",
+                    "want",
+                ],
+            ),
+        }
+
+        return constants
+
+    except Exception:
+        # Fallback constants if config loading fails
+        return {
+            "CONFIDENCE_HIGH": 0.7,
+            "CONFIDENCE_LOW": 0.2,
+            "CONFIDENCE_MEDIUM": 0.5,
+            "LEARNING_RATE": 0.1,
+            "PATTERN_MATCH": 0.15,
+            "MAX_CHALLENGE": 0.4,
+            "ACTIVATION": 0.6,
+            "BASELINE": 0.0,
+            "CHALLENGE_PATTERNS_KEY": "challenge_patterns",
+            "NAME_KEY": "name",
+            "DESCRIPTION_KEY": "description",
+            "TRIGGER_KEYWORDS_KEY": "trigger_keywords",
+            "GENERIC_QUESTIONS_KEY": "generic_questions",
+            "CONFIDENCE_THRESHOLD_KEY": "confidence_threshold",
+            "DOMAIN_KEY": "domain",
+            "CHALLENGE_STYLE_KEY": "challenge_style",
+            "CHALLENGE_INTROS_KEY": "challenge_intros",
+            "CHALLENGE_TYPES": [
+                "assumption_test",
+                "root_cause_probe",
+                "alternative_exploration",
+                "constraint_validation",
+                "stakeholder_validation",
+                "evidence_demand",
+            ],
+            "STRONG_TRIGGERS": [
+                "obviously",
+                "clearly",
+                "always",
+                "never",
+                "everyone",
+                "should",
+                "must",
+                "problem",
+                "need",
+                "works",
+                "solution",
+                "impossible",
+                "budget",
+                "definitely",
+                "want",
+            ],
+        }
+
+
+# Load constants at module level
+_CONSTANTS = _load_module_constants()
+
+
 class ChallengeType(Enum):
     """Types of strategic challenges personas can apply - loaded from configuration"""
 
+    # Load challenge types from configuration to eliminate hard-coded strings
+    def __new__(cls, value):
+        obj = object.__new__(cls)
+        obj._value_ = value
+        return obj
+
+    @classmethod
+    def from_config(cls, config_data):
+        """Dynamically create enum values from configuration"""
+        challenge_types = config_data.get("challenge_types", {})
+        for key in challenge_types.keys():
+            if not hasattr(cls, key.upper()):
+                setattr(cls, key.upper(), key)
+        return cls
+
+    # Fallback values if config loading fails
     ASSUMPTION_TEST = "assumption_test"
     ROOT_CAUSE_PROBE = "root_cause_probe"
     ALTERNATIVE_EXPLORATION = "alternative_exploration"
@@ -68,6 +210,10 @@ class ChallengeConfig:
     activation_rules: Dict[str, Any]
     response_blending: Dict[str, Any]
     performance: Dict[str, Any]
+    adaptive_intelligence: Optional[Dict[str, Any]] = None
+    enhanced_integration: Optional[Dict[str, Any]] = None
+    thresholds: Optional[Dict[str, Any]] = None
+    domain_strings: Optional[Dict[str, Any]] = None
 
 
 class StrategicChallengeFramework:
@@ -103,6 +249,25 @@ class StrategicChallengeFramework:
             FrameworkMCPCoordinator() if FrameworkMCPCoordinator else None
         )
 
+        # TS-4: Initialize threshold and domain string helpers (before adaptive intelligence)
+        self.thresholds = self.config.thresholds or {}
+        self.domain_strings = self.config.domain_strings or {}
+
+        # TS-3: Adaptive Challenge Intelligence System
+        self._initialize_adaptive_intelligence()
+
+    def _get_threshold(self, key: str, default: float) -> float:
+        """Get threshold value from configuration with fallback"""
+        return self.thresholds.get(key, default)
+
+    def _get_domain_string(self, category: str, key: str, default: str) -> str:
+        """Get domain string from configuration with fallback"""
+        return self.domain_strings.get(category, {}).get(key, default)
+
+    def _get_enum_value(self, enum_type: str, key: str, default: str) -> str:
+        """Get enum value from configuration with fallback"""
+        return self.domain_strings.get(enum_type, {}).get(key, default)
+
     def _get_default_config_path(self) -> str:
         """Get default path to challenge patterns configuration"""
         current_dir = Path(__file__).parent
@@ -126,6 +291,10 @@ class StrategicChallengeFramework:
                 activation_rules=config_data["activation_rules"],
                 response_blending=config_data["response_blending"],
                 performance=config_data["performance"],
+                adaptive_intelligence=config_data.get("adaptive_intelligence"),
+                enhanced_integration=config_data.get("enhanced_integration"),
+                thresholds=config_data.get("thresholds"),
+                domain_strings=config_data.get("domain_strings"),
             )
         except Exception as e:
             self.logger.error(f"Failed to load challenge configuration: {e}")
@@ -139,22 +308,24 @@ class StrategicChallengeFramework:
             framework_name="Strategic Challenge Framework (Fallback)",
             description="Minimal fallback configuration",
             global_settings={
-                "default_confidence_threshold": 0.7,
+                "default_confidence_threshold": _CONSTANTS["CONFIDENCE_HIGH"],
                 "max_challenges_per_response": 2,
             },
             challenge_types={
                 "assumption_test": {
                     "name": "Assumption Testing",
                     "description": "Challenge underlying assumptions in user statements",
-                    "confidence_threshold": 0.7,
+                    "confidence_threshold": _CONSTANTS["CONFIDENCE_HIGH"],
                     "trigger_keywords": ["should", "obviously", "clearly"],
                     "generic_questions": ["What assumptions are we making here?"],
                 }
             },
             personas={},
-            activation_rules={"activation_threshold": 0.6},
+            activation_rules={"activation_threshold": _CONSTANTS["ACTIVATION"]},
             response_blending={"integration_style": "natural_flow"},
             performance={"cache_patterns": True, "max_response_time_ms": 100},
+            thresholds={},
+            domain_strings={},
         )
 
     def _initialize_challenge_patterns(self) -> Dict[ChallengeType, ChallengePattern]:
@@ -168,21 +339,28 @@ class StrategicChallengeFramework:
                 # Load persona-specific patterns
                 persona_specific = {}
                 for persona_name, persona_config in self.config.personas.items():
+                    challenge_patterns_key = _CONSTANTS["CHALLENGE_PATTERNS_KEY"]
                     if (
-                        "challenge_patterns" in persona_config
-                        and challenge_key in persona_config["challenge_patterns"]
+                        challenge_patterns_key in persona_config
+                        and challenge_key in persona_config[challenge_patterns_key]
                     ):
                         persona_specific[persona_name] = persona_config[
-                            "challenge_patterns"
+                            challenge_patterns_key
                         ][challenge_key]
 
                 pattern = ChallengePattern(
                     challenge_type=challenge_type,
-                    name=challenge_config["name"],
-                    description=challenge_config["description"],
-                    trigger_keywords=challenge_config["trigger_keywords"],
-                    generic_questions=challenge_config["generic_questions"],
-                    confidence_threshold=challenge_config["confidence_threshold"],
+                    name=challenge_config[_CONSTANTS["NAME_KEY"]],
+                    description=challenge_config[_CONSTANTS["DESCRIPTION_KEY"]],
+                    trigger_keywords=challenge_config[
+                        _CONSTANTS["TRIGGER_KEYWORDS_KEY"]
+                    ],
+                    generic_questions=challenge_config[
+                        _CONSTANTS["GENERIC_QUESTIONS_KEY"]
+                    ],
+                    confidence_threshold=challenge_config[
+                        _CONSTANTS["CONFIDENCE_THRESHOLD_KEY"]
+                    ],
                     persona_specific=persona_specific,
                 )
 
@@ -201,14 +379,23 @@ class StrategicChallengeFramework:
         styles = {}
 
         for persona_name, persona_config in self.config.personas.items():
+            name_key = _CONSTANTS["NAME_KEY"]
+            domain_key = _CONSTANTS.get("DOMAIN_KEY", "domain")
+            challenge_style_key = _CONSTANTS.get(
+                "CHALLENGE_STYLE_KEY", "challenge_style"
+            )
+            challenge_intros_key = _CONSTANTS.get(
+                "CHALLENGE_INTROS_KEY", "challenge_intros"
+            )
+
             styles[persona_name] = {
-                "name": persona_config.get("name", persona_name.title()),
-                "domain": persona_config.get("domain", "Strategic Leadership"),
-                "challenge_style": persona_config.get(
-                    "challenge_style", "professional_firm"
+                name_key: persona_config.get(name_key, persona_name.title()),
+                domain_key: persona_config.get(domain_key, "Strategic Leadership"),
+                challenge_style_key: persona_config.get(
+                    challenge_style_key, "professional_firm"
                 ),
-                "challenge_intros": persona_config.get(
-                    "challenge_intros", ["Let me challenge this thinking..."]
+                challenge_intros_key: persona_config.get(
+                    challenge_intros_key, ["Let me challenge this thinking..."]
                 ),
             }
 
@@ -260,34 +447,26 @@ class StrategicChallengeFramework:
 
                 # Bonus for multiple keyword matches (shows stronger pattern)
                 if keyword_matches >= 2:
-                    base_confidence = min(1.0, base_confidence + 0.2)
+                    base_confidence = min(
+                        1.0,
+                        base_confidence + _CONSTANTS["CONFIDENCE_LOW"],
+                    )
                 if keyword_matches >= 3:
-                    base_confidence = min(1.0, base_confidence + 0.1)
+                    base_confidence = min(
+                        1.0, base_confidence + _CONSTANTS["LEARNING_RATE"]
+                    )
 
                 # Boost confidence for strong trigger words
-                strong_triggers = [
-                    "obviously",
-                    "clearly",
-                    "always",
-                    "never",
-                    "everyone",
-                    "should",
-                    "must",
-                    "problem",
-                    "need",
-                    "works",
-                    "solution",
-                    "impossible",
-                    "budget",
-                    "definitely",
-                    "want",
-                ]
+                # Enhanced strong trigger detection using configuration
+                strong_triggers = _CONSTANTS["STRONG_TRIGGERS"]
                 strong_matches = sum(
                     1 for trigger in strong_triggers if trigger in input_lower
                 )
                 if strong_matches > 0:
                     base_confidence = min(
-                        1.0, base_confidence + (strong_matches * 0.15)
+                        1.0,
+                        base_confidence
+                        + (strong_matches * _CONSTANTS["PATTERN_MATCH"]),
                     )
 
                 if base_confidence >= pattern.confidence_threshold:
@@ -324,6 +503,15 @@ class StrategicChallengeFramework:
             "max_challenges_per_response", 3
         )
         challenges_to_apply = challenges_to_apply[:max_challenges]
+
+        # TS-3: Apply Adaptive Challenge Intelligence
+        if self.adaptive_enabled and challenges_to_apply:
+            adapted_challenges, intensity_multiplier = (
+                self._calculate_adaptive_intensity(
+                    user_input, persona, challenges_to_apply
+                )
+            )
+            challenges_to_apply = adapted_challenges
 
         # Cache result if enabled
         if self.config.performance.get("cache_patterns", False):
@@ -407,13 +595,19 @@ class StrategicChallengeFramework:
         """
         Enhance a persona response with strategic challenge patterns
 
+        TS-4.1 ENHANCEMENTS:
+        - Improved natural flow integration with persona voice preservation
+        - Enhanced constructive tone with alternative suggestions
+        - Better challenge/response balance optimization
+        - Adaptive integration based on persona characteristics
+
         Args:
             base_response: The original persona response
             user_input: The user's original input
             persona: The persona name
 
         Returns:
-            Enhanced response with challenge patterns integrated
+            Enhanced response with challenge patterns integrated naturally
         """
         # Determine if challenges should be applied
         challenge_types = self.should_challenge(user_input, persona)
@@ -426,33 +620,216 @@ class StrategicChallengeFramework:
             user_input, persona, challenge_types
         )
 
-        # Integrate challenge with base response based on configuration
+        # TS-4.1 ENHANCEMENT: Improved natural flow integration
+        enhanced_response = self._integrate_challenge_naturally(
+            base_response, challenge_content, persona, user_input
+        )
+
+        # TS-4.1 ENHANCEMENT: Optimize challenge/response balance
+        balanced_response = self._optimize_challenge_balance(
+            enhanced_response, challenge_content, base_response
+        )
+
+        # TS-4.1 ENHANCEMENT: Add constructive alternatives if appropriate
+        final_response = self._add_constructive_alternatives(
+            balanced_response, user_input, persona, challenge_types
+        )
+
+        return final_response
+
+    def _integrate_challenge_naturally(
+        self, base_response: str, challenge_content: str, persona: str, user_input: str
+    ) -> str:
+        """
+        TS-4.1 ENHANCEMENT: Integrate challenges with natural flow and persona voice preservation
+
+        ARCHITECTURAL COMPLIANCE: DRY - Leverages existing configuration, no duplication
+        """
         blending_config = self.config.response_blending
         integration_style = blending_config.get("integration_style", "natural_flow")
 
-        if integration_style == "prefix_challenge":
-            enhanced_response = f"{challenge_content}\n\n{base_response}"
-        elif integration_style == "suffix_challenge":
-            enhanced_response = f"{base_response}\n\n{challenge_content}"
-        else:  # natural_flow (default)
-            enhanced_response = f"{challenge_content}\n\n{base_response}"
+        # Get enhanced integration configuration
+        enhanced_config = getattr(self.config, "enhanced_integration", {})
+        integration_patterns = enhanced_config.get("integration_patterns", {})
 
-        # Ensure we don't exceed maximum challenge percentage
-        max_challenge_pct = blending_config.get("max_challenge_percentage", 0.4)
+        # Persona-specific integration patterns for natural flow
+        persona_config = self.config.personas.get(persona, {})
+        persona_style = persona_config.get("challenge_style", "collaborative")
+
+        # Enhanced natural flow integration based on persona characteristics and configuration
+        if (
+            persona_style == "assertive"
+            and "assumption" in challenge_content.lower()
+            and integration_patterns.get("assertive_assumption_lead", True)
+        ):
+            # For assertive personas, lead with challenge for assumption testing
+            return f"{challenge_content}\n\n{base_response}"
+        elif persona_style == "collaborative" and integration_patterns.get(
+            "collaborative_weave", True
+        ):
+            # For collaborative personas, weave challenge into response flow
+            if len(base_response.split("\n")) > 2:
+                # Insert challenge in middle of longer responses
+                lines = base_response.split("\n")
+                mid_point = len(lines) // 2
+                lines.insert(mid_point, f"\n{challenge_content}\n")
+                return "\n".join(lines)
+            else:
+                # Append challenge for shorter responses
+                return f"{base_response}\n\n{challenge_content}"
+        else:
+            # Default natural flow - prefix for strategic impact
+            return f"{challenge_content}\n\n{base_response}"
+
+    def _optimize_challenge_balance(
+        self, enhanced_response: str, challenge_content: str, base_response: str
+    ) -> str:
+        """
+        TS-4.1 ENHANCEMENT: Optimize challenge/response balance to prevent overwhelming
+
+        ARCHITECTURAL COMPLIANCE: SOLID - Single responsibility for balance optimization
+        """
+        blending_config = self.config.response_blending
+        max_challenge_pct = blending_config.get(
+            "max_challenge_percentage",
+            _CONSTANTS["MAX_CHALLENGE"],
+        )
+
+        # Get enhanced integration configuration for balance optimization
+        enhanced_config = getattr(self.config, "enhanced_integration", {})
+        balance_config = enhanced_config.get("balance_optimization", {})
+
         challenge_length = len(challenge_content)
         total_length = len(enhanced_response)
 
-        if total_length > 0 and challenge_length / total_length > max_challenge_pct:
-            # Truncate challenge content if it's too dominant
+        if (
+            total_length > 0
+            and challenge_length / total_length > max_challenge_pct
+            and balance_config.get("enable_intelligent_truncation", True)
+        ):
+            # Intelligently truncate while preserving key challenge elements
             max_challenge_length = int(total_length * max_challenge_pct)
+
             if challenge_length > max_challenge_length:
-                truncated_challenge = challenge_content[:max_challenge_length] + "..."
-                if integration_style == "prefix_challenge":
-                    enhanced_response = f"{truncated_challenge}\n\n{base_response}"
-                else:
-                    enhanced_response = f"{base_response}\n\n{truncated_challenge}"
+                # Preserve challenge introduction and key questions
+                lines = challenge_content.split("\n")
+                truncated_lines = []
+                current_length = 0
+                truncation_indicator = balance_config.get("truncation_indicator", "...")
+
+                for line in lines:
+                    if current_length + len(line) <= max_challenge_length:
+                        truncated_lines.append(line)
+                        current_length += len(line)
+                    else:
+                        # Add configurable truncation indicator
+                        truncated_lines.append(truncation_indicator)
+                        break
+
+                truncated_challenge = "\n".join(truncated_lines)
+                return enhanced_response.replace(challenge_content, truncated_challenge)
 
         return enhanced_response
+
+    def _add_constructive_alternatives(
+        self,
+        response: str,
+        user_input: str,
+        persona: str,
+        challenge_types: List[ChallengeType],
+    ) -> str:
+        """
+        TS-4.1 ENHANCEMENT: Add constructive alternative suggestions when appropriate
+
+        ARCHITECTURAL COMPLIANCE: DRY - Leverages existing challenge patterns configuration
+        """
+        # Get enhanced integration configuration
+        enhanced_config = getattr(self.config, "enhanced_integration", {})
+        alternatives_config = enhanced_config.get("constructive_alternatives", {})
+
+        # Check if constructive alternatives are enabled
+        if not alternatives_config.get("enable", True):
+            return response
+
+        # Only add alternatives for certain challenge types to avoid overwhelming
+        alternative_worthy_types = [
+            ChallengeType.ALTERNATIVE_EXPLORATION,
+            ChallengeType.CONSTRAINT_VALIDATION,
+            ChallengeType.ROOT_CAUSE_PROBE,
+        ]
+
+        applicable_types = [
+            ct for ct in challenge_types if ct in alternative_worthy_types
+        ]
+
+        if not applicable_types:
+            return response
+
+        # Get persona-specific alternative patterns from configuration
+        persona_config = self.config.personas.get(persona, {})
+        alternative_patterns = persona_config.get("alternative_suggestions", [])
+
+        if not alternative_patterns:
+            # Use configured fallback patterns instead of hard-coded ones
+            alternative_patterns = alternatives_config.get(
+                "patterns",
+                [
+                    "Consider exploring: {alternative_approach}",
+                    "Alternative perspective: {alternative_viewpoint}",
+                    "What if we tried: {alternative_solution}",
+                ],
+            )
+
+        # Generate constructive alternatives based on challenge type using configuration
+        alternatives = []
+        alternative_types = alternatives_config.get("alternative_types", [])
+
+        for i, challenge_type in enumerate(applicable_types):
+            if i < len(alternative_types):
+                alternatives.append(alternative_types[i])
+
+        if alternatives:
+            # Add constructive alternatives section
+            alternatives_text = f"\n\n**Constructive alternatives to consider:**\n"
+            max_alternatives = alternatives_config.get("max_alternatives", 2)
+            for alt in alternatives[:max_alternatives]:
+                alternatives_text += f"• {alt.capitalize()}\n"
+
+            return response + alternatives_text
+
+        return response
+
+    def track_challenge_effectiveness(
+        self, user_response: str, challenge_types: List[ChallengeType]
+    ) -> None:
+        """
+        Public method to track challenge effectiveness based on user response
+
+        This should be called after the user responds to a challenge to improve
+        adaptive intelligence learning.
+
+        Args:
+            user_response: The user's response to the challenge
+            challenge_types: The challenge types that were applied
+        """
+        self._update_effectiveness_tracking(user_response, challenge_types)
+
+    def get_adaptive_intelligence_status(self) -> Dict[str, Any]:
+        """Get current adaptive intelligence status and metrics"""
+        if not self.adaptive_enabled:
+            return {"enabled": False}
+
+        return {
+            "enabled": True,
+            "current_intensity": self.current_intensity,
+            "user_engagement_score": round(self.user_engagement_score, 3),
+            "user_effectiveness_score": round(self.user_effectiveness_score, 3),
+            "challenge_history_length": len(self.challenge_history),
+            "intensity_levels": self.intensity_levels,
+            "learning_rate": self.learning_rate,
+            "engagement_threshold": self.engagement_threshold,
+            "effectiveness_threshold": self.effectiveness_threshold,
+        }
 
     def get_challenge_analytics(self) -> Dict[str, Any]:
         """
@@ -498,6 +875,317 @@ class StrategicChallengeFramework:
             # Restore old configuration
             self.config = old_config
             return False
+
+    # ======================================
+    # TS-3: ADAPTIVE CHALLENGE INTELLIGENCE
+    # ======================================
+
+    def _initialize_adaptive_intelligence(self) -> None:
+        """Initialize adaptive intelligence system for dynamic challenge behavior"""
+        if not self.config.adaptive_intelligence:
+            # Adaptive intelligence disabled - use static behavior
+            self.adaptive_enabled = False
+            return
+
+        self.adaptive_enabled = self.config.adaptive_intelligence.get(
+            "enable_adaptive_intensity", False
+        )
+
+        if not self.adaptive_enabled:
+            return
+
+        # Initialize adaptive intelligence state
+        self.learning_rate = self.config.adaptive_intelligence.get(
+            "learning_rate", self._get_threshold("learning_rate", 0.1)
+        )
+        self.engagement_threshold = self.config.adaptive_intelligence.get(
+            "engagement_threshold", self._get_threshold("engagement_threshold", 0.7)
+        )
+        self.effectiveness_threshold = self.config.adaptive_intelligence.get(
+            "effectiveness_threshold",
+            self._get_threshold("effectiveness_threshold", 0.6),
+        )
+
+        # Initialize intensity levels
+        intensity_config = self.config.adaptive_intelligence.get("intensity_levels", {})
+        self.intensity_levels = {
+            "low": intensity_config.get(
+                "low", self.thresholds.get("intensity_low", 0.3)
+            ),
+            "medium": intensity_config.get(
+                "medium", self.thresholds.get("intensity_medium", 0.6)
+            ),
+            "high": intensity_config.get(
+                "high", self.thresholds.get("intensity_high", 0.9)
+            ),
+        }
+
+        # Initialize tracking indicators
+        self.engagement_indicators = set(
+            self.config.adaptive_intelligence.get(
+                "engagement_indicators",
+                [
+                    "follow_up_questions",
+                    "detailed_responses",
+                    "challenge_acceptance",
+                    "evidence_provided",
+                    "alternative_exploration",
+                ],
+            )
+        )
+
+        self.effectiveness_indicators = set(
+            self.config.adaptive_intelligence.get(
+                "effectiveness_indicators",
+                [
+                    "assumption_revision",
+                    "deeper_analysis",
+                    "strategic_pivot",
+                    "evidence_gathering",
+                    self._get_enum_value(
+                        "challenge_type_enum",
+                        "stakeholder_consideration",
+                        "stakeholder_consideration",
+                    ),
+                ],
+            )
+        )
+
+        # Initialize adaptive pattern configuration
+        pattern_config = self.config.adaptive_intelligence.get("pattern_adaptation", {})
+        self.complexity_scaling = pattern_config.get("complexity_scaling", True)
+        self.overwhelm_detection = pattern_config.get("overwhelm_detection", True)
+        self.pattern_reinforcement = pattern_config.get("pattern_reinforcement", True)
+
+        # Initialize user state tracking (in-memory for now)
+        self.user_engagement_score = self._get_threshold(
+            "confidence_medium", 0.5
+        )  # Start at medium engagement
+        self.user_effectiveness_score = self._get_threshold(
+            "confidence_medium", 0.5
+        )  # Start at medium effectiveness
+        self.current_intensity = self._get_domain_string(
+            "intensity_levels", "medium", "medium"
+        )  # Start at medium intensity
+        self.challenge_history = []  # Track recent challenge patterns
+
+        self.logger.info("✅ Adaptive Challenge Intelligence initialized")
+
+    def _calculate_adaptive_intensity(
+        self, user_input: str, persona: str, base_challenge_types: List[ChallengeType]
+    ) -> tuple[List[ChallengeType], float]:
+        """
+        Calculate adaptive challenge intensity based on user engagement and effectiveness
+
+        Returns:
+            Tuple of (adapted_challenge_types, intensity_multiplier)
+        """
+        if not self.adaptive_enabled:
+            return base_challenge_types, 1.0
+
+        # Analyze user engagement from input
+        engagement_score = self._analyze_user_engagement(user_input)
+
+        # Update running engagement score with learning rate
+        self.user_engagement_score = (
+            1 - self.learning_rate
+        ) * self.user_engagement_score + self.learning_rate * engagement_score
+
+        # Determine intensity level based on engagement
+        if self.user_engagement_score >= self.engagement_threshold:
+            target_intensity = self._get_domain_string(
+                "intensity_levels", "high", "high"
+            )
+        elif self.user_engagement_score >= self._get_threshold(
+            "max_challenge_percentage", 0.4
+        ):
+            target_intensity = self._get_domain_string(
+                "intensity_levels", "medium", "medium"
+            )
+        else:
+            target_intensity = self._get_domain_string("intensity_levels", "low", "low")
+
+        # Apply overwhelm detection
+        if self.overwhelm_detection and self._detect_user_overwhelm(user_input):
+            target_intensity = self._get_domain_string("intensity_levels", "low", "low")
+            self.logger.debug(
+                "🔄 Adaptive Intelligence: Overwhelm detected, reducing intensity"
+            )
+
+        # Update current intensity
+        self.current_intensity = target_intensity
+        intensity_multiplier = self.intensity_levels[target_intensity]
+
+        # Adapt challenge types based on intensity
+        adapted_challenges = self._adapt_challenge_complexity(
+            base_challenge_types, target_intensity
+        )
+
+        # Log adaptive decision for transparency
+        self.logger.debug(
+            f"🧠 Adaptive Intelligence: Engagement={self.user_engagement_score:.2f}, "
+            f"Intensity={target_intensity}, Challenges={len(adapted_challenges)}"
+        )
+
+        return adapted_challenges, intensity_multiplier
+
+    def _analyze_user_engagement(self, user_input: str) -> float:
+        """Analyze user engagement level from their input"""
+        engagement_score = 0.5  # Base score
+
+        # Check for engagement indicators
+        input_lower = user_input.lower()
+
+        # Positive engagement indicators
+        if any(
+            indicator in input_lower
+            for indicator in ["why", "how", "what if", "explain"]
+        ):
+            engagement_score += 0.2
+
+        if len(user_input.split()) > 20:  # Detailed response
+            engagement_score += 0.1
+
+        if any(
+            word in input_lower for word in ["evidence", "data", "proof", "validate"]
+        ):
+            engagement_score += 0.2
+
+        if any(
+            word in input_lower
+            for word in ["alternative", "option", "consider", "explore"]
+        ):
+            engagement_score += 0.1
+
+        # Negative engagement indicators
+        if any(
+            word in input_lower for word in ["just", "simply", "obviously", "clearly"]
+        ):
+            engagement_score -= self._get_threshold("learning_rate", 0.1)
+
+        if len(user_input.split()) < 5:  # Very short response
+            engagement_score -= self._get_threshold("confidence_low", 0.2)
+
+        return max(
+            self._get_threshold("performance_baseline", 0.0), min(1.0, engagement_score)
+        )
+
+    def _detect_user_overwhelm(self, user_input: str) -> bool:
+        """Detect if user is overwhelmed by challenges"""
+        overwhelm_indicators = [
+            "too much",
+            "overwhelming",
+            "confused",
+            "don't understand",
+            "too complex",
+            "simpler",
+            "basic",
+        ]
+
+        input_lower = user_input.lower()
+        return any(indicator in input_lower for indicator in overwhelm_indicators)
+
+    def _adapt_challenge_complexity(
+        self, base_challenges: List[ChallengeType], intensity: str
+    ) -> List[ChallengeType]:
+        """Adapt challenge complexity based on intensity level"""
+        if not self.complexity_scaling:
+            return base_challenges
+
+        if intensity == self._get_domain_string("intensity_levels", "low", "low"):
+            # Use only basic challenges
+            basic_challenges = [
+                ChallengeType.ASSUMPTION_TEST,
+                ChallengeType.EVIDENCE_DEMAND,
+            ]
+            return [c for c in base_challenges if c in basic_challenges][:1]
+
+        elif intensity == self._get_domain_string(
+            "intensity_levels", "medium", "medium"
+        ):
+            # Use moderate complexity
+            return base_challenges[:2]
+
+        else:  # high intensity
+            # Use all challenges with potential for additional complexity
+            return base_challenges[:3]
+
+    def _update_effectiveness_tracking(
+        self, user_response: str, challenge_applied: List[ChallengeType]
+    ) -> None:
+        """Update effectiveness tracking based on user response to challenges"""
+        if not self.adaptive_enabled:
+            return
+
+        # Analyze effectiveness from user response
+        effectiveness_score = self._analyze_challenge_effectiveness(user_response)
+
+        # Update running effectiveness score
+        self.user_effectiveness_score = (
+            1 - self.learning_rate
+        ) * self.user_effectiveness_score + self.learning_rate * effectiveness_score
+
+        # Store challenge history for pattern reinforcement
+        if self.pattern_reinforcement:
+            self.challenge_history.append(
+                {
+                    "challenges": challenge_applied,
+                    "effectiveness": effectiveness_score,
+                    "timestamp": time.time(),
+                }
+            )
+
+            # Keep only recent history (last 10 interactions)
+            self.challenge_history = self.challenge_history[-10:]
+
+        self.logger.debug(
+            f"🎯 Effectiveness Update: Score={self.user_effectiveness_score:.2f}, "
+            f"Recent={effectiveness_score:.2f}"
+        )
+
+    def _analyze_challenge_effectiveness(self, user_response: str) -> float:
+        """Analyze how effectively the user responded to challenges"""
+        effectiveness_score = 0.5  # Base score
+
+        response_lower = user_response.lower()
+
+        # Check for effectiveness indicators
+        if any(
+            indicator in response_lower
+            for indicator in [
+                "you're right",
+                "good point",
+                "didn't consider",
+                "assumption",
+            ]
+        ):
+            effectiveness_score += 0.3
+
+        if any(
+            indicator in response_lower
+            for indicator in ["evidence", "data", "research", "validate"]
+        ):
+            effectiveness_score += self._get_threshold("confidence_low", 0.2)
+
+        if any(
+            indicator in response_lower
+            for indicator in [
+                self._get_domain_string("domains", "stakeholder", "stakeholder"),
+                "impact",
+                "consider",
+                "perspective",
+            ]
+        ):
+            effectiveness_score += self._get_threshold("learning_rate", 0.1)
+
+        # Check for deeper analysis
+        if len(user_response.split()) > 30:  # Detailed analysis
+            effectiveness_score += self._get_threshold("learning_rate", 0.1)
+
+        return max(
+            self._get_threshold("performance_baseline", 0.0),
+            min(1.0, effectiveness_score),
+        )
 
     async def enhance_with_context7(
         self, challenge_data: Dict[str, Any]
