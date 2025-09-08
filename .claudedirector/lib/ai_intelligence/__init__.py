@@ -49,6 +49,17 @@ from .predictive_analytics_engine import (
     StrategicChallengePrediction,
 )
 
+# Phase 5.1 ML-Powered Strategic Decision Support
+from .ml_decision_engine import (
+    MLModelType,
+    MLDecisionContext,
+    MLDecisionResult,
+    MLDecisionModel,
+    PredictiveDecisionModel,
+    EnhancedMLDecisionEngine,
+    create_ml_decision_engine,
+)
+
 from .context_aware_intelligence import (
     ContextAwareIntelligence,
 )

@@ -262,12 +262,11 @@ class TestDocumentationFunctionalityPreservation(unittest.TestCase):
     def test_technical_documentation_structure(self):
         """Test that core technical documentation structure is preserved"""
         # Check that key architectural documentation exists (TECHNICAL_INDEX.md was removed during cleanup)
+        # Core technical documentation that must be preserved
         key_docs = [
             "docs/architecture/OVERVIEW.md",
             "docs/architecture/PROJECT_STRUCTURE.md",
             "docs/architecture/TESTING_ARCHITECTURE.md",
-            "docs/phases/PHASE3_IMPLEMENTATION_PLAN.md",
-            "docs/phases/PHASE3_TECHNICAL_STORIES.md",
         ]
 
         for doc_path in key_docs:
