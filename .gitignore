@@ -306,6 +306,15 @@ workspace-backup-*/
 **/p0_test_results_*.json
 
 # ======================================
+# ENFORCEMENT RESULTS PROTECTION
+# ======================================
+# Runtime enforcement results are temporary artifacts and should not be committed
+.claudedirector/enforcement_results/
+**/enforcement_results/
+**/p0_enforcement_results_*.json
+**/p0_critical_enforcement_*.json
+
+# ======================================
 # USER CONFIGURATION PROTECTION
 # ======================================
 # User identity configuration contains personal information and should not be committed

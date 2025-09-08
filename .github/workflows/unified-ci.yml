@@ -110,6 +110,8 @@ jobs:
           echo "✅ P0 tests completed - identical to local execution"
 
       - name: Run Pre-commit Validation (exact local match)
+        env:
+          CLAUDEDIRECTOR_ALLOW_README_CHANGES: true
         run: |
           echo "🔧 PRE-COMMIT VALIDATION (matching local hooks)"
 

@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import List, Dict, Set, Tuple
 import json
 
+
 class AICleanupEnforcer:
     """Enforce cleanup discipline for AI-generated code"""
 
@@ -28,22 +29,35 @@ class AICleanupEnforcer:
         self.config = self._load_config()
 
         # Use configuration or fallback to defaults
-        self.excessive_patterns = self.config.get('excessive_patterns', self._default_patterns())
-        self.size_thresholds = self.config.get('size_thresholds', self._default_thresholds())
-        self.cleanup_rules = self.config.get('cleanup_rules', self._default_cleanup_rules())
-        self.exemptions = self.config.get('exemptions', {'files': [], 'patterns': [], 'directories': []})
+        self.excessive_patterns = self.config.get(
+            "excessive_patterns", self._default_patterns()
+        )
+        self.size_thresholds = self.config.get(
+            "size_thresholds", self._default_thresholds()
+        )
+        self.cleanup_rules = self.config.get(
+            "cleanup_rules", self._default_cleanup_rules()
+        )
+        self.exemptions = self.config.get(
+            "exemptions", {"files": [], "patterns": [], "directories": []}
+        )
 
     def _load_config(self) -> Dict:
         """Load configuration from yaml file"""
-        config_path = self.repo_root / ".claudedirector" / "config" / "ai_cleanup_config.yaml"
+        config_path = (
+            self.repo_root / ".claudedirector" / "config" / "ai_cleanup_config.yaml"
+        )
 
         if config_path.exists():
             try:
                 import yaml
-                with open(config_path, 'r') as f:
+
+                with open(config_path, "r") as f:
                     return yaml.safe_load(f)
             except ImportError:
-                print("⚠️ PyYAML not available, using relaxed defaults for documentation")
+                print(
+                    "⚠️ PyYAML not available, using relaxed defaults for documentation"
+                )
                 # Return relaxed config for docs when YAML not available
                 return self._get_relaxed_config()
             except Exception as e:
@@ -54,100 +68,99 @@ class AICleanupEnforcer:
     def _get_relaxed_config(self) -> Dict:
         """Relaxed configuration when YAML not available"""
         return {
-            'size_thresholds': {
-                'documentation': 300,  # More lenient for docs
-                'test_files': 300,
-                'implementation': 500,
-                'configuration': 100
+            "size_thresholds": {
+                "documentation": 300,  # More lenient for docs
+                "test_files": 300,
+                "implementation": 500,
+                "configuration": 100,
             },
-            'exemptions': {
-                'files': [
-                    'README.md',
-                    '.claudedirector/tools/ai-cleanup/README.md',
-                    'docs/ARCHITECTURE.md',
-                    'docs/IMPLEMENTATION_GUIDE.md'
+            "exemptions": {
+                "files": [
+                    "README.md",
+                    ".claudedirector/tools/ai-cleanup/README.md",
+                    "docs/ARCHITECTURE.md",
+                    "docs/IMPLEMENTATION_GUIDE.md",
                 ],
-                'patterns': [
-                    r'.*_COMPLETE\.md$',
-                    r'.claudedirector/tests/.*'
+                "patterns": [r".*_COMPLETE\.md$", r".claudedirector/tests/.*"],
+                "directories": [
+                    "docs/",
+                    ".claudedirector/framework/",
+                    ".claudedirector/integration-protection/",
                 ],
-                'directories': [
-                    'docs/',
-                    '.claudedirector/framework/',
-                    '.claudedirector/integration-protection/'
-                ]
-            }
+            },
         }
 
     def _default_patterns(self) -> Dict:
         """Default patterns if config not available"""
         return {
-            'redundant_docs': [
-                r'## Implementation Details',
-                r'### Technical Specifications',
-                r'#### Code Examples',
-                r'##### Usage Instructions',
-                r'###### Advanced Configuration'
+            "redundant_docs": [
+                r"## Implementation Details",
+                r"### Technical Specifications",
+                r"#### Code Examples",
+                r"##### Usage Instructions",
+                r"###### Advanced Configuration",
             ],
-            'temporary_artifacts': [
-                r'test_.*\.py$',
-                r'.*_temp\..*$',
-                r'.*_backup\..*$',
-                r'.*\.tmp$',
-                r'scratch_.*',
-                r'debug_.*',
-                r'experiment_.*'
+            "temporary_artifacts": [
+                r"test_.*\.py$",
+                r".*_temp\..*$",
+                r".*_backup\..*$",
+                r".*\.tmp$",
+                r"scratch_.*",
+                r"debug_.*",
+                r"experiment_.*",
             ],
-            'ai_verbosity_markers': [
-                r'comprehensive.*implementation',
-                r'detailed.*analysis',
-                r'complete.*system',
-                r'fully.*documented',
-                r'extensive.*testing',
-                r'thorough.*validation'
+            "ai_verbosity_markers": [
+                r"comprehensive.*implementation",
+                r"detailed.*analysis",
+                r"complete.*system",
+                r"fully.*documented",
+                r"extensive.*testing",
+                r"thorough.*validation",
             ],
-            'redundant_code': [
-                r'# TODO:.*implement',
-                r'# FIXME:.*placeholder',
-                r'pass  # placeholder',
-                r'raise NotImplementedError',
-                r'# Example usage:'
-            ]
+            "redundant_code": [
+                r"# TODO:.*implement",
+                r"# FIXME:.*placeholder",
+                r"pass  # placeholder",
+                r"raise NotImplementedError",
+                r"# Example usage:",
+            ],
         }
 
     def _default_thresholds(self) -> Dict:
         """Default size thresholds"""
         return {
-            'documentation': 200,
-            'test_files': 300,
-            'implementation': 500,
-            'configuration': 100
+            "documentation": 200,
+            "test_files": 300,
+            "implementation": 500,
+            "configuration": 100,
         }
 
     def _default_cleanup_rules(self) -> Dict:
         """Default cleanup rules"""
         return {
-            'max_new_files_without_justification': 3,
-            'max_total_additions_without_review': 1000,
-            'required_cleanup_ratio': 0.1,
-            'max_consecutive_ai_commits': 5
+            "max_new_files_without_justification": 3,
+            "max_total_additions_without_review": 1000,
+            "required_cleanup_ratio": 0.1,
+            "max_consecutive_ai_commits": 5,
         }
 
     def _get_repo_root(self) -> Path:
         """Get repository root directory"""
-        result = subprocess.run(['git', 'rev-parse', '--show-toplevel'],
-                              capture_output=True, text=True)
+        result = subprocess.run(
+            ["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True
+        )
         return Path(result.stdout.strip())
 
     def _get_staged_files(self) -> Dict[str, str]:
         """Get staged files with their status"""
-        result = subprocess.run(['git', 'diff', '--cached', '--name-status'],
-                              capture_output=True, text=True)
+        result = subprocess.run(
+            ["git", "diff", "--cached", "--name-status"], capture_output=True, text=True
+        )
 
         staged = {}
-        for line in result.stdout.strip().split('\n'):
+        for line in result.stdout.strip().split("\n"):
             if line:
-                parts = line.split('\t')
+                parts = line.split("\t")
                 if len(parts) >= 2:
                     status, filepath = parts[0], parts[1]
                     staged[filepath] = status
@@ -157,26 +170,34 @@ class AICleanupEnforcer:
     def _get_file_stats(self, filepath: str) -> Dict:
         """Get file statistics for analysis"""
         try:
-            result = subprocess.run(['git', 'diff', '--cached', '--numstat', filepath],
-                                  capture_output=True, text=True)
+            result = subprocess.run(
+                ["git", "diff", "--cached", "--numstat", filepath],
+                capture_output=True,
+                text=True,
+            )
 
             if result.stdout.strip():
-                additions, deletions, _ = result.stdout.strip().split('\t')
+                additions, deletions, _ = result.stdout.strip().split("\t")
                 return {
-                    'additions': int(additions) if additions != '-' else 0,
-                    'deletions': int(deletions) if deletions != '-' else 0,
-                    'net_change': int(additions) - int(deletions) if additions != '-' and deletions != '-' else 0
+                    "additions": int(additions) if additions != "-" else 0,
+                    "deletions": int(deletions) if deletions != "-" else 0,
+                    "net_change": (
+                        int(additions) - int(deletions)
+                        if additions != "-" and deletions != "-"
+                        else 0
+                    ),
                 }
         except:
             pass
 
-        return {'additions': 0, 'deletions': 0, 'net_change': 0}
+        return {"additions": 0, "deletions": 0, "net_change": 0}
 
     def _read_staged_content(self, filepath: str) -> str:
         """Read staged content of a file"""
         try:
-            result = subprocess.run(['git', 'show', f':{filepath}'],
-                                  capture_output=True, text=True)
+            result = subprocess.run(
+                ["git", "show", f":{filepath}"], capture_output=True, text=True
+            )
             return result.stdout
         except:
             return ""
@@ -184,16 +205,16 @@ class AICleanupEnforcer:
     def _is_exempt(self, filepath: str) -> bool:
         """Check if file is exempt from cleanup enforcement"""
         # Check exact file matches
-        if filepath in self.exemptions.get('files', []):
+        if filepath in self.exemptions.get("files", []):
             return True
 
         # Check pattern matches
-        for pattern in self.exemptions.get('patterns', []):
+        for pattern in self.exemptions.get("patterns", []):
             if re.search(pattern, filepath):
                 return True
 
         # Check directory matches
-        for directory in self.exemptions.get('directories', []):
+        for directory in self.exemptions.get("directories", []):
             if filepath.startswith(directory):
                 return True
 
@@ -203,7 +224,7 @@ class AICleanupEnforcer:
         """Check for excessive or redundant documentation"""
         violations = []
 
-        doc_files = [f for f in self.staged_files.keys() if f.endswith('.md')]
+        doc_files = [f for f in self.staged_files.keys() if f.endswith(".md")]
 
         for doc_file in doc_files:
             # Skip exempt files
@@ -213,22 +234,22 @@ class AICleanupEnforcer:
             content = self._read_staged_content(doc_file)
 
             # Check file size
-            lines = len(content.split('\n'))
-            if lines > self.size_thresholds['documentation']:
+            lines = len(content.split("\n"))
+            if lines > self.size_thresholds["documentation"]:
                 violations.append(
                     f"📄 EXCESSIVE DOCS: {doc_file} ({lines} lines) exceeds threshold "
                     f"({self.size_thresholds['documentation']} lines)"
                 )
 
             # Check for AI verbosity patterns
-            for pattern in self.excessive_patterns['ai_verbosity_markers']:
+            for pattern in self.excessive_patterns["ai_verbosity_markers"]:
                 if re.search(pattern, content, re.IGNORECASE):
                     violations.append(
                         f"🤖 AI VERBOSITY: {doc_file} contains excessive AI language pattern: '{pattern}'"
                     )
 
             # Check for redundant documentation sections
-            section_count = len(re.findall(r'^#{2,6}\s', content, re.MULTILINE))
+            section_count = len(re.findall(r"^#{2,6}\s", content, re.MULTILINE))
             if section_count > 15:
                 violations.append(
                     f"📋 REDUNDANT SECTIONS: {doc_file} has {section_count} subsections (excessive nesting)"
@@ -242,14 +263,14 @@ class AICleanupEnforcer:
 
         for filepath in self.staged_files.keys():
             # Check against temporary file patterns
-            for pattern in self.excessive_patterns['temporary_artifacts']:
+            for pattern in self.excessive_patterns["temporary_artifacts"]:
                 if re.search(pattern, filepath):
                     violations.append(
                         f"🗑️ TEMPORARY ARTIFACT: {filepath} appears to be a temporary file that should be cleaned up"
                     )
 
             # Check for backup/duplicate files
-            if filepath.endswith(('.bak', '.backup', '.orig', '.copy')):
+            if filepath.endswith((".bak", ".backup", ".orig", ".copy")):
                 violations.append(
                     f"💾 BACKUP FILE: {filepath} is a backup file that should not be committed"
                 )
@@ -260,14 +281,14 @@ class AICleanupEnforcer:
         """Check for low-quality or placeholder code"""
         violations = []
 
-        py_files = [f for f in self.staged_files.keys() if f.endswith('.py')]
+        py_files = [f for f in self.staged_files.keys() if f.endswith(".py")]
 
         for py_file in py_files:
             content = self._read_staged_content(py_file)
             stats = self._get_file_stats(py_file)
 
             # Check for placeholder code
-            for pattern in self.excessive_patterns['redundant_code']:
+            for pattern in self.excessive_patterns["redundant_code"]:
                 matches = re.findall(pattern, content, re.IGNORECASE)
                 if matches:
                     violations.append(
@@ -275,14 +296,17 @@ class AICleanupEnforcer:
                     )
 
             # Check for excessive test files
-            if py_file.startswith('test_') and len(content.split('\n')) > self.size_thresholds['test_files']:
+            if (
+                py_file.startswith("test_")
+                and len(content.split("\n")) > self.size_thresholds["test_files"]
+            ):
                 violations.append(
                     f"🧪 EXCESSIVE TEST: {py_file} ({len(content.split('\n'))} lines) exceeds test threshold"
                 )
 
             # Check for comment-to-code ratio (too many comments = AI verbosity)
-            comment_lines = len(re.findall(r'^\s*#', content, re.MULTILINE))
-            total_lines = len(content.split('\n'))
+            comment_lines = len(re.findall(r"^\s*#", content, re.MULTILINE))
+            total_lines = len(content.split("\n"))
             if total_lines > 50 and comment_lines / total_lines > 0.4:
                 violations.append(
                     f"💬 EXCESSIVE COMMENTS: {py_file} has {comment_lines}/{total_lines} comment lines (>40%)"
@@ -294,11 +318,17 @@ class AICleanupEnforcer:
         """Check if enough cleanup is happening relative to additions"""
         violations = []
 
-        total_additions = sum(self._get_file_stats(f)['additions'] for f in self.staged_files.keys())
-        total_deletions = sum(self._get_file_stats(f)['deletions'] for f in self.staged_files.keys())
+        total_additions = sum(
+            self._get_file_stats(f)["additions"] for f in self.staged_files.keys()
+        )
+        total_deletions = sum(
+            self._get_file_stats(f)["deletions"] for f in self.staged_files.keys()
+        )
 
-        if total_additions > self.cleanup_rules['max_total_additions_without_review']:
-            required_cleanup = total_additions * self.cleanup_rules['required_cleanup_ratio']
+        if total_additions > self.cleanup_rules["max_total_additions_without_review"]:
+            required_cleanup = (
+                total_additions * self.cleanup_rules["required_cleanup_ratio"]
+            )
             if total_deletions < required_cleanup:
                 violations.append(
                     f"⚖️ INSUFFICIENT CLEANUP: {total_additions} additions require {required_cleanup:.0f} deletions "
@@ -312,12 +342,17 @@ class AICleanupEnforcer:
         violations = []
 
         # Get recent commits to check for AI patterns
-        result = subprocess.run(['git', 'log', '--oneline', '-10', '--author=Claude'],
-                              capture_output=True, text=True)
+        result = subprocess.run(
+            ["git", "log", "--oneline", "-10", "--author=Claude"],
+            capture_output=True,
+            text=True,
+        )
 
-        ai_commits = len(result.stdout.strip().split('\n')) if result.stdout.strip() else 0
+        ai_commits = (
+            len(result.stdout.strip().split("\n")) if result.stdout.strip() else 0
+        )
 
-        if ai_commits >= self.cleanup_rules['max_consecutive_ai_commits']:
+        if ai_commits >= self.cleanup_rules["max_consecutive_ai_commits"]:
             violations.append(
                 f"🤖 EXCESSIVE AI COMMITS: {ai_commits} consecutive AI commits detected. "
                 f"Consider consolidating or manual cleanup."
@@ -330,10 +365,10 @@ class AICleanupEnforcer:
         suggestions = []
 
         # Analyze file additions
-        new_files = [f for f, status in self.staged_files.items() if status == 'A']
+        new_files = [f for f, status in self.staged_files.items() if status == "A"]
 
-        if len(new_files) > self.cleanup_rules['max_new_files_without_justification']:
-            newline = '\n'
+        if len(new_files) > self.cleanup_rules["max_new_files_without_justification"]:
+            newline = "\n"
             suggestions.append(
                 f"🧹 CLEANUP SUGGESTION: {len(new_files)} new files added. Consider:{newline}"
                 f"  • Consolidating similar functionality{newline}"
@@ -342,7 +377,7 @@ class AICleanupEnforcer:
             )
 
         # Check for potential file consolidation
-        doc_files = [f for f in new_files if f.endswith('.md')]
+        doc_files = [f for f in new_files if f.endswith(".md")]
         if len(doc_files) > 2:
             suggestions.append(
                 f"📚 DOC CONSOLIDATION: {len(doc_files)} documentation files added. "
@@ -357,13 +392,13 @@ class AICleanupEnforcer:
             "#!/bin/bash",
             "# AI-Generated Cleanup Script",
             "# Run this script to clean up detected issues\n",
-            "echo '🧹 Starting AI artifact cleanup...'\n"
+            "echo '🧹 Starting AI artifact cleanup...'\n",
         ]
 
         # Add removal commands for temporary files
         temp_files = []
         for filepath in self.staged_files.keys():
-            for pattern in self.excessive_patterns['temporary_artifacts']:
+            for pattern in self.excessive_patterns["temporary_artifacts"]:
                 if re.search(pattern, filepath):
                     temp_files.append(filepath)
 
@@ -374,12 +409,14 @@ class AICleanupEnforcer:
                 script_lines.append(f"rm -f {temp_file}")
             script_lines.append("")
 
-        script_lines.extend([
-            "echo '✅ Cleanup complete'",
-            "echo 'Review changes and re-commit with justification'"
-        ])
+        script_lines.extend(
+            [
+                "echo '✅ Cleanup complete'",
+                "echo 'Review changes and re-commit with justification'",
+            ]
+        )
 
-        return '\n'.join(script_lines)
+        return "\n".join(script_lines)
 
     def run_enforcement(self) -> bool:
         """Run all enforcement checks"""
@@ -393,8 +430,13 @@ class AICleanupEnforcer:
         cleanup_violations = self.check_cleanup_ratio()
         commit_violations = self.check_commit_patterns()
 
-        all_violations = (doc_violations + temp_violations + code_violations +
-                         cleanup_violations + commit_violations)
+        all_violations = (
+            doc_violations
+            + temp_violations
+            + code_violations
+            + cleanup_violations
+            + commit_violations
+        )
 
         # Show violations
         if all_violations:
@@ -416,7 +458,7 @@ class AICleanupEnforcer:
             cleanup_script = self.generate_cleanup_script()
             script_path = self.repo_root / ".git" / "ai_cleanup.sh"
 
-            with open(script_path, 'w') as f:
+            with open(script_path, "w") as f:
                 f.write(cleanup_script)
             os.chmod(script_path, 0o755)
 
@@ -425,7 +467,9 @@ class AICleanupEnforcer:
             print()
 
         # Decision logic
-        critical_violations = [v for v in all_violations if 'EXCESSIVE' in v or 'PLACEHOLDER' in v]
+        critical_violations = [
+            v for v in all_violations if "EXCESSIVE" in v or "PLACEHOLDER" in v
+        ]
 
         if critical_violations:
             print("🚨 CRITICAL VIOLATIONS - COMMIT BLOCKED")

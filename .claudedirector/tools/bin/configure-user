@@ -11,6 +11,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
 
+
 def main():
     """Main entry point for user configuration"""
     try:
@@ -29,7 +30,9 @@ def main():
 
     except ImportError as e:
         print(f"❌ Error: Could not import user configuration module: {e}")
-        print("Make sure you're running this from the ClaudeDirector project directory.")
+        print(
+            "Make sure you're running this from the ClaudeDirector project directory."
+        )
         sys.exit(1)
     except KeyboardInterrupt:
         print("\n\n⚠️ Configuration cancelled by user.")
@@ -37,6 +40,7 @@ def main():
     except Exception as e:
         print(f"❌ Unexpected error: {e}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

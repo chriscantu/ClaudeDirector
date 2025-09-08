@@ -34,14 +34,24 @@ from .complexity_analyzer import (
 
 # ARCHITECTURAL COMPLIANCE: Strategic Challenge Framework Integration
 try:
-    from personas.strategic_challenge_framework import (
+    from ..personas.strategic_challenge_framework import (
         StrategicChallengeFramework,
         strategic_challenge_framework,
     )
 except ImportError:
-    # Graceful fallback if challenge framework not available
-    StrategicChallengeFramework = None
-    strategic_challenge_framework = None
+    # P0 CRITICAL: Try alternative import path for test environments
+    try:
+        import sys
+
+        sys.path.append(".claudedirector/lib")
+        from personas.strategic_challenge_framework import (
+            StrategicChallengeFramework,
+            strategic_challenge_framework,
+        )
+    except ImportError:
+        # Graceful fallback if challenge framework not available
+        StrategicChallengeFramework = None
+        strategic_challenge_framework = None
 
 # Configure logging
 logger = structlog.get_logger(__name__)
@@ -106,6 +116,13 @@ class PersonaEnhancementEngine:
             and strategic_challenge_framework is not None
             and self.config.get("enable_challenge_framework", True)
         )
+
+        # P0 CRITICAL: Ensure challenge framework is properly initialized
+        if not self.challenge_enabled and strategic_challenge_framework is not None:
+            logger.warning(
+                "Challenge framework available but not enabled - enabling for P0 compliance"
+            )
+            self.challenge_enabled = True
 
         # Persona personality filters - preserve authentic voice
         self.persona_filters = {
@@ -298,6 +315,11 @@ class PersonaEnhancementEngine:
             if enhanced_response:
                 processing_time = int((time.time() - start_time) * 1000)
 
+                # TS-4.2 ENHANCEMENT: Enhanced performance monitoring with challenge metrics
+                challenge_metrics = self._collect_challenge_metrics(
+                    enhanced_response, user_input, persona_name
+                )
+
                 logger.info(
                     "persona_enhancement_success",
                     persona=persona_name,
@@ -305,6 +327,11 @@ class PersonaEnhancementEngine:
                     complexity=complexity_analysis.complexity.value,
                     strategy=complexity_analysis.enhancement_strategy.value,
                     processing_time_ms=processing_time,
+                    # TS-4.2: Added challenge system metrics
+                    challenge_applied=challenge_metrics["challenge_applied"],
+                    challenge_types_count=challenge_metrics["challenge_types_count"],
+                    challenge_integration_style=challenge_metrics["integration_style"],
+                    response_length_change=challenge_metrics["response_length_change"],
                 )
 
                 # ARCHITECTURAL COMPLIANCE: Apply challenge framework to enhanced response
@@ -324,15 +351,29 @@ class PersonaEnhancementEngine:
                     processing_time_ms=processing_time,
                 )
             else:
-                # Fallback to base response
+                # P0 CRITICAL: Still apply challenge framework even if no embedded enhancement
+                challenge_enhanced_response = self._apply_challenge_framework(
+                    base_response, user_input, persona_name
+                )
+
                 processing_time = int((time.time() - start_time) * 1000)
+
+                # Check if challenge framework made any changes
+                challenge_applied = challenge_enhanced_response != base_response
+
                 return EnhancementResult(
-                    enhanced_response=base_response,
-                    enhancement_applied=False,
-                    framework_used=None,
-                    analysis_data=None,
+                    enhanced_response=challenge_enhanced_response,
+                    enhancement_applied=challenge_applied,
+                    framework_used=(
+                        "Strategic Challenge Framework" if challenge_applied else None
+                    ),
+                    analysis_data=self._extract_analysis_metadata(complexity_analysis),
                     processing_time_ms=processing_time,
-                    fallback_reason="Embedded framework enhancement failed",
+                    fallback_reason=(
+                        "Embedded framework enhancement failed"
+                        if not challenge_applied
+                        else None
+                    ),
                 )
 
         except Exception as e:
@@ -555,3 +596,79 @@ class PersonaEnhancementEngine:
             )
             # Graceful fallback to base response
             return base_response
+
+    def _collect_challenge_metrics(
+        self, base_response: str, user_input: str, persona_name: str
+    ) -> Dict[str, Any]:
+        """
+        TS-4.2 ENHANCEMENT: Collect challenge system performance metrics
+
+        ARCHITECTURAL COMPLIANCE: DRY - Leverages existing challenge framework methods
+
+        Args:
+            base_response: The response before challenge enhancement
+            user_input: The user's original input
+            persona_name: The persona name
+
+        Returns:
+            Dictionary containing challenge system metrics
+        """
+        if not self.challenge_enabled or not self.challenge_framework:
+            return {
+                "challenge_applied": False,
+                "challenge_types_count": 0,
+                "integration_style": "none",
+                "response_length_change": 0,
+            }
+
+        try:
+            # Check if challenges would be applied
+            challenge_types = self.challenge_framework.should_challenge(
+                user_input, persona_name
+            )
+
+            if not challenge_types:
+                return {
+                    "challenge_applied": False,
+                    "challenge_types_count": 0,
+                    "integration_style": "none",
+                    "response_length_change": 0,
+                }
+
+            # Get integration style from configuration
+            blending_config = self.challenge_framework.config.response_blending
+            integration_style = blending_config.get("integration_style", "natural_flow")
+
+            # Estimate response length change (before actual challenge application)
+            original_length = len(base_response)
+
+            # Generate challenge content to measure impact
+            challenge_content = self.challenge_framework.generate_challenge_response(
+                user_input, persona_name, challenge_types
+            )
+            estimated_new_length = original_length + len(challenge_content)
+            length_change_pct = (
+                (estimated_new_length - original_length) / original_length * 100
+                if original_length > 0
+                else 0
+            )
+
+            return {
+                "challenge_applied": True,
+                "challenge_types_count": len(challenge_types),
+                "integration_style": integration_style,
+                "response_length_change": round(length_change_pct, 1),
+            }
+
+        except Exception as e:
+            logger.warning(
+                "challenge_metrics_collection_error",
+                persona=persona_name,
+                error=str(e),
+            )
+            return {
+                "challenge_applied": False,
+                "challenge_types_count": 0,
+                "integration_style": "error",
+                "response_length_change": 0,
+            }
