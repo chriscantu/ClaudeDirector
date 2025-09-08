@@ -13,6 +13,7 @@ from .spec_kit_integrator import SpecKitIntegrator
 from .strategic_spec_enhancer import StrategicSpecEnhancer
 from .context_intelligence_bridge import ContextIntelligenceBridge
 from .external_tool_coordinator import ExternalToolCoordinator
+from .sequential_spec_workflow import SequentialSpecCreator, SequentialSpecWorkflow
 
 # Future Phase 5.1+ Components (not yet implemented)
 # from .ml_decision_engine import MLDecisionEngine
@@ -24,6 +25,8 @@ __all__ = [
     "StrategicSpecEnhancer",
     "ContextIntelligenceBridge",
     "ExternalToolCoordinator",
+    "SequentialSpecCreator",
+    "SequentialSpecWorkflow",
     # Future components will be added in Phase 5.1+
     # "MLDecisionEngine",
     # "PredictiveAnalyticsEngine",
