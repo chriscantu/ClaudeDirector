@@ -67,20 +67,29 @@ def check_explicit_readme_intent() -> bool:
     # Check git commit message for explicit README intent
     try:
         import subprocess
-        result = subprocess.run(['git', 'log', '--format=%B', '-n', '1', '--staged'], 
-                              capture_output=True, text=True, timeout=5)
+
+        result = subprocess.run(
+            ["git", "log", "--format=%B", "-n", "1", "--staged"],
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
         if result.returncode == 0:
             commit_msg = result.stdout.lower()
             readme_intent_markers = [
-                'readme', 'documentation update', 'update readme', 
-                'fix readme', 'improve readme', 'enhance readme'
+                "readme",
+                "documentation update",
+                "update readme",
+                "fix readme",
+                "improve readme",
+                "enhance readme",
             ]
             return any(marker in commit_msg for marker in readme_intent_markers)
     except:
         pass
-    
+
     # Check for environment variable override
-    return os.getenv('CLAUDEDIRECTOR_ALLOW_README_CHANGES', '').lower() == 'true'
+    return os.getenv("CLAUDEDIRECTOR_ALLOW_README_CHANGES", "").lower() == "true"
 
 
 def main():

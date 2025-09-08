@@ -52,7 +52,6 @@ except ImportError:
     UnifiedIntegrationProcessor = None
 
 
-
 # TS-4 Strategic Analysis Data Structures
 @dataclass
 class CodeContext:
@@ -462,7 +461,6 @@ class CursorResponseEnhancer:
             "efficiency_improvements_suggested": 0,
             "average_analysis_time": 0.0,
         }
-
 
         self.persona_headers = {
             "martin": "🏗️ Martin | Platform Architecture",
@@ -1004,7 +1002,6 @@ class CursorResponseEnhancer:
 
         return mcp_calls
 
-
     def enhance_response_for_cursor(self, response: str, user_input: str = "") -> str:
         """
         Enhance response to comply with .cursorrules transparency requirements
@@ -1025,7 +1022,6 @@ class CursorResponseEnhancer:
             user_input, strategic_context
         )
         header = self.persona_headers.get(persona, self.persona_headers["martin"])
-
 
         if not enhanced_response.strip().startswith(
             ("🏗️", "🎯", "📊", "🎨", "💼", "📈", "💰", "🤝", "⚖️")

@@ -42,7 +42,8 @@ except ImportError:
     # P0 CRITICAL: Try alternative import path for test environments
     try:
         import sys
-        sys.path.append('.claudedirector/lib')
+
+        sys.path.append(".claudedirector/lib")
         from personas.strategic_challenge_framework import (
             StrategicChallengeFramework,
             strategic_challenge_framework,
