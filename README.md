@@ -1,39 +1,59 @@
-# ClaudeDirector - AI Strategic Leadership System
+# ClaudeDirector
+> **The AI strategic advisor that challenges your thinking instead of just agreeing with you**
 
-> **Transform your engineering leadership with AI advisors that challenge your thinking, not just agree with it.**
+**🚀 Zero Setup • 🎯 Works in 30 seconds • 🧠 25+ Strategic Frameworks • 🔍 Complete Transparency**
 
-ClaudeDirector is the industry's first transparent AI strategic leadership system featuring **intelligent personas that pressure-test your assumptions** and provide genuine strategic pushback when you need it most.
+---
 
-## 🎯 Value Proposition
+## ⚡ **Try It Now** (30 seconds)
 
-**Stop getting "yes-person" AI responses.** Get strategic thinking partners that:
-- **Challenge your assumptions** with intelligent pushback
-- **Apply 25+ proven frameworks** (Team Topologies, Good Strategy Bad Strategy, etc.)
-- **Customize for your role** (VP/CTO/Director/Manager/Staff/Product Lead)
-- **Provide complete transparency** of AI enhancements and reasoning
+```bash
+git clone https://github.com/chriscantu/ClaudeDirector.git && cd ClaudeDirector && cursor .
+```
 
-## 🚀 Quick Start
+**Then ask**: *"How should we structure our engineering teams for better scalability?"*
 
-1. **Install & Initialize**:
-   ```bash
-   pip install -r requirements.txt
-   python -m claudedirector.setup
-   ```
+**Watch ClaudeDirector**:
+- ❓ Challenge your assumptions with intelligent pushback
+- 🎯 Apply proven frameworks (Team Topologies, Good Strategy Bad Strategy)
+- 🔍 Show complete transparency of AI reasoning
+- 🎭 Customize for your leadership role (VP/CTO/Director/Manager/Staff)
 
-2. **Start Strategic Session**:
-   - Open Cursor IDE
-   - Ask any strategic question
-   - Complete 60-second role customization
-   - Experience intelligent challenge and strategic guidance
+---
 
-## ✨ Key Capabilities
+## 🎯 **Why ClaudeDirector?**
 
-- 🎭 **Strategic Challenge System**: Personas that question assumptions and probe deeper
-- 🧠 **Framework Intelligence**: Automatic detection and application of proven methodologies
-- 🎯 **Role-Based Customization**: Specialized for VP/CTO/Director/Manager/Staff/Product roles
-- 📊 **Executive Communication**: Optimized for board presentations and SLT interactions
-- 🏗️ **Platform Strategy**: Cross-team coordination and organizational scaling expertise
-- 🔍 **Complete Transparency**: Real-time disclosure of AI enhancements and framework usage
+**Problem**: Most AI gives you "yes-person" responses that don't improve your strategic thinking.
+
+**Solution**: Strategic AI personas that **pressure-test your assumptions** and provide genuine pushback when you need it most.
+
+### **Immediate Value**
+- 🧠 **Strategic Challenge**: Get intelligent pushback, not just agreement
+- ⚡ **Zero Setup**: Works immediately - no installations, no dependencies
+- 🎯 **Role-Specific**: Customized for VP/CTO/Director/Manager/Staff/Product roles
+- 🔍 **Complete Transparency**: See exactly how AI enhances your thinking
+- 📊 **Executive Ready**: Optimized for board presentations and SLT communication
+
+### **Proven Frameworks Built-In**
+- Team Topologies • Good Strategy Bad Strategy • WRAP Decision Framework
+- Crucial Conversations • Scaling Up Excellence • Technical Strategy Framework
+- **25+ methodologies** with automatic detection and application
+
+---
+
+## 🚀 **Get Started** (Choose Your Path)
+
+### **Cursor Users** (Recommended)
+```bash
+git clone https://github.com/chriscantu/ClaudeDirector.git
+cd ClaudeDirector && cursor .
+# Ask any strategic question - that's it!
+```
+
+### **Claude Chat Users**
+1. Share this repo: `https://github.com/chriscantu/ClaudeDirector`
+2. Ask your first strategic question
+3. Experience intelligent challenge and complete transparency
 
 ## Documentation
 
