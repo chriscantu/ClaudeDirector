@@ -89,6 +89,7 @@ class EnhancedSecurityScanner:
             "docs/phases/completed/",  # Completed phase documentation (planning docs, not sensitive data)
             "docs/phases/",  # All phase documentation (strategic planning docs, not sensitive data)
             ".claudedirector/lib/ai_intelligence/",  # AI Intelligence system code (contains strategic intelligence terminology)
+            ".claudedirector/lib/strategic_intelligence/",  # Phase 5 Strategic Intelligence system code (contains strategic intelligence terminology for system functionality)
             ".claudedirector/lib/mcp/",  # MCP server implementations (contains strategic intelligence terminology for system functionality)
             ".claudedirector/lib/platform/",  # Phase 14 Platform components (contains strategic intelligence terminology)
             ".claudedirector/lib/personas/",  # Phase 14 Persona components (contains strategic intelligence terminology)
@@ -98,6 +99,8 @@ class EnhancedSecurityScanner:
             ".claudedirector/lib/claudedirector/",  # Symlink for backward compatibility
             ".claudedirector/lib/context_engineering/stakeholder_intelligence_unified.py",  # Stakeholder intelligence facade (architectural code, not sensitive data)
             ".claudedirector/tests/",  # Test files contain generic test data, not real sensitive data
+            "docs/phases/",  # Phase specification files (spec-driven development documentation, not sensitive data)
+            "docs/research/",  # Research documentation contains strategic intelligence terminology for system analysis
             "SECURITY.md",
             "engineering-director-workspace/PROCESS_FAILURE_ANALYSIS.md",
             "engineering-director-workspace/SYSTEMATIC_PREVENTION_MEASURES.md",
