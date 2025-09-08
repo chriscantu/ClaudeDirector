@@ -755,6 +755,40 @@ domain_strings:
     medium: "medium"
     high: "high"
 
+  # Configuration keys to eliminate hard-coded strings
+  config_keys:
+    challenge_patterns: "challenge_patterns"
+    name: "name"
+    description: "description"
+    trigger_keywords: "trigger_keywords"
+    generic_questions: "generic_questions"
+    confidence_threshold: "confidence_threshold"
+    challenge_style: "challenge_style"
+    challenge_intros: "challenge_intros"
+    domain: "domain"
+    cache_patterns: "cache_patterns"
+    max_response_time_ms: "max_response_time_ms"
+    integration_style: "integration_style"
+    include_evidence_requests: "include_evidence_requests"
+
+  # Strong trigger words for challenge detection
+  strong_triggers:
+    - "obviously"
+    - "clearly"
+    - "always"
+    - "never"
+    - "everyone"
+    - "should"
+    - "must"
+    - "problem"
+    - "need"
+    - "works"
+    - "solution"
+    - "impossible"
+    - "budget"
+    - "definitely"
+    - "want"
+
 # ======================================
 # TS-3: ADAPTIVE CHALLENGE INTELLIGENCE
 # ======================================

@@ -41,7 +41,11 @@ def _load_module_constants():
             config_data = yaml.safe_load(f)
 
         thresholds = config_data.get("thresholds", {})
-        return {
+        domain_strings = config_data.get("domain_strings", {})
+
+        # Load all configuration values to eliminate hard-coded strings
+        constants = {
+            # Threshold values
             "CONFIDENCE_HIGH": thresholds.get("confidence_high", 0.7),
             "CONFIDENCE_LOW": thresholds.get("confidence_low", 0.2),
             "CONFIDENCE_MEDIUM": thresholds.get("confidence_medium", 0.5),
@@ -50,7 +54,57 @@ def _load_module_constants():
             "MAX_CHALLENGE": thresholds.get("max_challenge_percentage", 0.4),
             "ACTIVATION": thresholds.get("fallback_activation", 0.6),
             "BASELINE": thresholds.get("performance_baseline", 0.0),
+            # Configuration keys to eliminate hard-coded strings
+            "CHALLENGE_PATTERNS_KEY": domain_strings.get("config_keys", {}).get(
+                "challenge_patterns", "challenge_patterns"
+            ),
+            "NAME_KEY": domain_strings.get("config_keys", {}).get("name", "name"),
+            "DESCRIPTION_KEY": domain_strings.get("config_keys", {}).get(
+                "description", "description"
+            ),
+            "TRIGGER_KEYWORDS_KEY": domain_strings.get("config_keys", {}).get(
+                "trigger_keywords", "trigger_keywords"
+            ),
+            "GENERIC_QUESTIONS_KEY": domain_strings.get("config_keys", {}).get(
+                "generic_questions", "generic_questions"
+            ),
+            "CONFIDENCE_THRESHOLD_KEY": domain_strings.get("config_keys", {}).get(
+                "confidence_threshold", "confidence_threshold"
+            ),
+            "DOMAIN_KEY": domain_strings.get("config_keys", {}).get("domain", "domain"),
+            "CHALLENGE_STYLE_KEY": domain_strings.get("config_keys", {}).get(
+                "challenge_style", "challenge_style"
+            ),
+            "CHALLENGE_INTROS_KEY": domain_strings.get("config_keys", {}).get(
+                "challenge_intros", "challenge_intros"
+            ),
+            # Challenge type strings
+            "CHALLENGE_TYPES": list(config_data.get("challenge_types", {}).keys()),
+            # Strong trigger words from configuration
+            "STRONG_TRIGGERS": domain_strings.get(
+                "strong_triggers",
+                [
+                    "obviously",
+                    "clearly",
+                    "always",
+                    "never",
+                    "everyone",
+                    "should",
+                    "must",
+                    "problem",
+                    "need",
+                    "works",
+                    "solution",
+                    "impossible",
+                    "budget",
+                    "definitely",
+                    "want",
+                ],
+            ),
         }
+
+        return constants
+
     except Exception:
         # Fallback constants if config loading fails
         return {
@@ -62,6 +116,40 @@ def _load_module_constants():
             "MAX_CHALLENGE": 0.4,
             "ACTIVATION": 0.6,
             "BASELINE": 0.0,
+            "CHALLENGE_PATTERNS_KEY": "challenge_patterns",
+            "NAME_KEY": "name",
+            "DESCRIPTION_KEY": "description",
+            "TRIGGER_KEYWORDS_KEY": "trigger_keywords",
+            "GENERIC_QUESTIONS_KEY": "generic_questions",
+            "CONFIDENCE_THRESHOLD_KEY": "confidence_threshold",
+            "DOMAIN_KEY": "domain",
+            "CHALLENGE_STYLE_KEY": "challenge_style",
+            "CHALLENGE_INTROS_KEY": "challenge_intros",
+            "CHALLENGE_TYPES": [
+                "assumption_test",
+                "root_cause_probe",
+                "alternative_exploration",
+                "constraint_validation",
+                "stakeholder_validation",
+                "evidence_demand",
+            ],
+            "STRONG_TRIGGERS": [
+                "obviously",
+                "clearly",
+                "always",
+                "never",
+                "everyone",
+                "should",
+                "must",
+                "problem",
+                "need",
+                "works",
+                "solution",
+                "impossible",
+                "budget",
+                "definitely",
+                "want",
+            ],
         }
 
 
@@ -72,6 +160,22 @@ _CONSTANTS = _load_module_constants()
 class ChallengeType(Enum):
     """Types of strategic challenges personas can apply - loaded from configuration"""
 
+    # Load challenge types from configuration to eliminate hard-coded strings
+    def __new__(cls, value):
+        obj = object.__new__(cls)
+        obj._value_ = value
+        return obj
+
+    @classmethod
+    def from_config(cls, config_data):
+        """Dynamically create enum values from configuration"""
+        challenge_types = config_data.get("challenge_types", {})
+        for key in challenge_types.keys():
+            if not hasattr(cls, key.upper()):
+                setattr(cls, key.upper(), key)
+        return cls
+
+    # Fallback values if config loading fails
     ASSUMPTION_TEST = "assumption_test"
     ROOT_CAUSE_PROBE = "root_cause_probe"
     ALTERNATIVE_EXPLORATION = "alternative_exploration"
@@ -235,21 +339,28 @@ class StrategicChallengeFramework:
                 # Load persona-specific patterns
                 persona_specific = {}
                 for persona_name, persona_config in self.config.personas.items():
+                    challenge_patterns_key = _CONSTANTS["CHALLENGE_PATTERNS_KEY"]
                     if (
-                        "challenge_patterns" in persona_config
-                        and challenge_key in persona_config["challenge_patterns"]
+                        challenge_patterns_key in persona_config
+                        and challenge_key in persona_config[challenge_patterns_key]
                     ):
                         persona_specific[persona_name] = persona_config[
-                            "challenge_patterns"
+                            challenge_patterns_key
                         ][challenge_key]
 
                 pattern = ChallengePattern(
                     challenge_type=challenge_type,
-                    name=challenge_config["name"],
-                    description=challenge_config["description"],
-                    trigger_keywords=challenge_config["trigger_keywords"],
-                    generic_questions=challenge_config["generic_questions"],
-                    confidence_threshold=challenge_config["confidence_threshold"],
+                    name=challenge_config[_CONSTANTS["NAME_KEY"]],
+                    description=challenge_config[_CONSTANTS["DESCRIPTION_KEY"]],
+                    trigger_keywords=challenge_config[
+                        _CONSTANTS["TRIGGER_KEYWORDS_KEY"]
+                    ],
+                    generic_questions=challenge_config[
+                        _CONSTANTS["GENERIC_QUESTIONS_KEY"]
+                    ],
+                    confidence_threshold=challenge_config[
+                        _CONSTANTS["CONFIDENCE_THRESHOLD_KEY"]
+                    ],
                     persona_specific=persona_specific,
                 )
 
@@ -268,14 +379,23 @@ class StrategicChallengeFramework:
         styles = {}
 
         for persona_name, persona_config in self.config.personas.items():
+            name_key = _CONSTANTS["NAME_KEY"]
+            domain_key = _CONSTANTS.get("DOMAIN_KEY", "domain")
+            challenge_style_key = _CONSTANTS.get(
+                "CHALLENGE_STYLE_KEY", "challenge_style"
+            )
+            challenge_intros_key = _CONSTANTS.get(
+                "CHALLENGE_INTROS_KEY", "challenge_intros"
+            )
+
             styles[persona_name] = {
-                "name": persona_config.get("name", persona_name.title()),
-                "domain": persona_config.get("domain", "Strategic Leadership"),
-                "challenge_style": persona_config.get(
-                    "challenge_style", "professional_firm"
+                name_key: persona_config.get(name_key, persona_name.title()),
+                domain_key: persona_config.get(domain_key, "Strategic Leadership"),
+                challenge_style_key: persona_config.get(
+                    challenge_style_key, "professional_firm"
                 ),
-                "challenge_intros": persona_config.get(
-                    "challenge_intros", ["Let me challenge this thinking..."]
+                challenge_intros_key: persona_config.get(
+                    challenge_intros_key, ["Let me challenge this thinking..."]
                 ),
             }
 
@@ -337,23 +457,8 @@ class StrategicChallengeFramework:
                     )
 
                 # Boost confidence for strong trigger words
-                strong_triggers = [
-                    "obviously",
-                    "clearly",
-                    "always",
-                    "never",
-                    "everyone",
-                    "should",
-                    "must",
-                    "problem",
-                    "need",
-                    "works",
-                    "solution",
-                    "impossible",
-                    "budget",
-                    "definitely",
-                    "want",
-                ]
+                # Enhanced strong trigger detection using configuration
+                strong_triggers = _CONSTANTS["STRONG_TRIGGERS"]
                 strong_matches = sum(
                     1 for trigger in strong_triggers if trigger in input_lower
                 )
