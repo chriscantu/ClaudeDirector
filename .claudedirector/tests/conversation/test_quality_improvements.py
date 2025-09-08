@@ -19,7 +19,7 @@ def test_conversation_quality_improvements():
 
     try:
         # Import the enhanced managers
-        from core.integrated_conversation_manager import IntegratedConversationManager
+        from core.enhanced_persona_manager import IntegratedConversationManager
 
         print("✅ Successfully imported enhanced conversation managers")
 

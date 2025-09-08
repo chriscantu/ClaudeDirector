@@ -59,11 +59,14 @@ fetch_jira_data() {
     # Encode the JQL query for URL
     local encoded_jql=$(printf '%s' "$jql_query" | jq -sRr @uri)
 
-    # Make API call to Jira
+    # Make API call to Jira using the new search/jql endpoint
     local response=$(curl -s \
         -u "${JIRA_EMAIL}:${JIRA_API_TOKEN}" \
         -H "Accept: application/json" \
-        "${JIRA_BASE_URL}/rest/api/3/search?jql=${encoded_jql}&maxResults=${max_results}&fields=key,summary,status,assignee,project,priority,updated,parent,description,duedate")
+        -G --data-urlencode "jql=${jql_query}" \
+        --data-urlencode "maxResults=${max_results}" \
+        --data-urlencode "fields=key,summary,status,assignee,project,priority,updated,parent,description,duedate" \
+        "${JIRA_BASE_URL}/rest/api/3/search/jql")
 
     if [[ $? -eq 0 ]]; then
         echo "$response" > /tmp/jira_data.json

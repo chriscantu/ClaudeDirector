@@ -112,7 +112,7 @@ class TestConfigurationIntegrity(unittest.TestCase):
             critical_modules = [
                 "config",
                 "core.complexity_analyzer",
-                "core.integrated_conversation_manager",
+                "core.enhanced_persona_manager",  # PHASE 8.4: Consolidated into enhanced_persona_manager
             ]
 
             import_results = {}

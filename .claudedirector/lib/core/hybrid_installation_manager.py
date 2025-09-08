@@ -11,6 +11,9 @@ from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
 from datetime import datetime
 
+# PHASE 8.4: BaseManager consolidation imports
+from .base_manager import BaseManager, BaseManagerConfig, ManagerType
+
 
 @dataclass
 class InstallationCommand:
@@ -97,9 +100,10 @@ class UsageStats:
         self.temporary_uses = value
 
 
-class HybridInstallationManager:
+class HybridInstallationManager(BaseManager):
     """
     Manages hybrid installation strategy for MCP servers
+    PHASE 8.4: Consolidated with BaseManager to eliminate infrastructure duplication
 
     Strategy:
     1. Try permanent installation first (fastest)
@@ -107,17 +111,46 @@ class HybridInstallationManager:
     3. Track usage and suggest optimization when beneficial
     """
 
-    def __init__(self, config_path: Optional[Path] = None):
-        if config_path is None:
+    def __init__(self, config: Optional[BaseManagerConfig] = None):
+        # PHASE 8.4: BaseManager initialization eliminates duplicate infrastructure
+        if config is None:
             config_path = (
                 Path(__file__).parent.parent.parent / "config" / "mcp_servers.yaml"
             )
+            config = BaseManagerConfig(
+                manager_name="hybrid_installation_manager",
+                manager_type=ManagerType.PERFORMANCE,
+                enable_metrics=True,
+                enable_caching=True,
+                enable_logging=True,
+                custom_config={"config_path": str(config_path)},
+            )
 
-        self.config_path = config_path
+        super().__init__(config)
+
+        # Initialize installation-specific components
+        self.config_path = Path(self.config.custom_config.get("config_path"))
         self.config = self._load_config()
         # For backwards compatibility, start with empty stats
         # Tests expect fresh managers to have zero usage
         self._usage_stats = {}
+
+    async def manage(self, operation: str, *args, **kwargs) -> Any:
+        """
+        BaseManager abstract method implementation
+        Delegates to installation management operations
+        """
+        if operation == "install_server":
+            return await self.install_server(*args, **kwargs)
+        elif operation == "get_usage_stats":
+            return self.get_usage_stats()
+        elif operation == "suggest_optimization":
+            return self.suggest_optimization(*args, **kwargs)
+        elif operation == "cleanup_temporary":
+            return self.cleanup_temporary_installations()
+        else:
+            self.logger.warning(f"Unknown installation operation: {operation}")
+            return None
 
     def _load_config(self) -> Dict[str, Any]:
         """Load MCP server configuration"""
@@ -413,7 +446,9 @@ class HybridInstallationManager:
             msg = messages.get(
                 "permanent_found", "⚡ Using optimized MCP server: {server} ({benefit})"
             )
-            print(msg.format(server=server_name, benefit=result.performance_benefit))
+            self.logger.info(
+                msg.format(server=server_name, benefit=result.performance_benefit)
+            )
         elif result.installation_type == "temporary":
             # This message is handled by the transparency bridge for consistency
             pass
@@ -462,14 +497,10 @@ class HybridInstallationManager:
             "💡 Install {server} permanently for {benefit}? Use: npm install -g {package}",
         )
 
-        print(
-            f"\n{hint_msg.format(server=server_name, benefit=permanent_cmd.performance_benefit or '58% faster startup', package=package_name)}"
-        )
-        print(
-            f"   You've used {server_name} {stats.temporary_uses} times - permanent installation saves ~{stats.total_startup_time_saved:.1f}s total"
-        )
-        print(
-            "   Zero setup is maintained - this optimization is completely optional\n"
+        self.logger.info(
+            f"\n{hint_msg.format(server=server_name, benefit=permanent_cmd.performance_benefit or '58% faster startup', package=package_name)}. "
+            f"You've used {server_name} {stats.temporary_uses} times - permanent installation saves ~{stats.total_startup_time_saved:.1f}s total. "
+            "Zero setup is maintained - this optimization is completely optional"
         )
 
     def get_server_status(self, server_name: str) -> Dict[str, Any]:
@@ -696,19 +727,32 @@ class HybridInstallationManager:
             return "No installation method available"
 
 
-# Backwards compatibility functions
-_global_manager = None
+# PHASE 8.4: ELIMINATED global manager pattern - use ManagerFactory instead
+# This eliminates ~15 lines of duplicate factory patterns
+# Use: from .manager_factory import create_manager, ManagerType
+# create_manager(ManagerType.PERFORMANCE, BaseManagerConfig(manager_name="hybrid_installation_manager"))
 
 
-def get_hybrid_manager() -> HybridInstallationManager:
-    """Get global hybrid installation manager instance"""
-    global _global_manager
-    if _global_manager is None:
-        _global_manager = HybridInstallationManager()
-    return _global_manager
+def create_hybrid_installation_manager(
+    config_path: Optional[str] = None,
+) -> HybridInstallationManager:
+    """Factory function for creating HybridInstallationManager with BaseManager patterns"""
+    config = BaseManagerConfig(
+        manager_name="hybrid_installation_manager",
+        manager_type=ManagerType.PERFORMANCE,
+        enable_metrics=True,
+        enable_caching=True,
+        enable_logging=True,
+        custom_config={"config_path": config_path} if config_path else {},
+    )
+    return HybridInstallationManager(config)
+
+
+# Legacy compatibility aliases
+get_hybrid_manager = create_hybrid_installation_manager
 
 
 def install_mcp_package(package_name: str) -> InstallationResult:
-    """Backwards compatibility function for install_mcp_package"""
-    manager = get_hybrid_manager()
+    """Legacy compatibility function for install_mcp_package"""
+    manager = create_hybrid_installation_manager()
     return manager.install_mcp_package(package_name)
