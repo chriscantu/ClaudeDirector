@@ -20,9 +20,17 @@ repos:
         args: ['--maxkb=1000']
 
   # CODE BLOAT PREVENTION (RUNS EARLY TO CATCH DUPLICATION)
-  # NOTE: README protection hooks disabled - they were overwriting content instead of protecting it
   - repo: local
     hooks:
+      # README CONTENT PROTECTION (FIXED APPROACH)
+      - id: readme-content-protection
+        name: 🛡️ README CONTENT PROTECTION (Content-Aware)
+        entry: python3 .claudedirector/tools/ci/readme_content_protection.py
+        language: system
+        files: '^README\.md$'
+        pass_filenames: true
+        stages: [pre-commit]
+        verbose: true
       # TEMPORARILY DISABLED: Method not fully implemented yet
       # - id: enhanced-duplication-detection
       #   name: 🛡️ ENHANCED DUPLICATION DETECTION (TS-4 Prevention System)
@@ -40,7 +48,7 @@ repos:
         stages: [pre-commit]
         pass_filenames: false
         verbose: true
-        # NOTE: Reverted to strict threshold=8 after TS-4 completion
+        # NOTE: Reverted to strict threshold=8 after fixing Phase 4 architectural violations
 
   # DEVELOPMENT POLICY ENFORCEMENT
   - repo: local
@@ -53,7 +61,7 @@ repos:
         stages: [pre-commit]
         pass_filenames: false
         verbose: true
-        # NOTE: Reverted to strict threshold=8 after TS-4 completion
+        # NOTE: Reverted to strict threshold=8 after fixing Phase 4 architectural violations
 
       - id: documentation-size-policy
         name: 📋 DOCUMENTATION SIZE POLICY (500 lines max - aligned with code)

@@ -34,14 +34,23 @@ from .complexity_analyzer import (
 
 # ARCHITECTURAL COMPLIANCE: Strategic Challenge Framework Integration
 try:
-    from personas.strategic_challenge_framework import (
+    from ..personas.strategic_challenge_framework import (
         StrategicChallengeFramework,
         strategic_challenge_framework,
     )
 except ImportError:
-    # Graceful fallback if challenge framework not available
-    StrategicChallengeFramework = None
-    strategic_challenge_framework = None
+    # P0 CRITICAL: Try alternative import path for test environments
+    try:
+        import sys
+        sys.path.append('.claudedirector/lib')
+        from personas.strategic_challenge_framework import (
+            StrategicChallengeFramework,
+            strategic_challenge_framework,
+        )
+    except ImportError:
+        # Graceful fallback if challenge framework not available
+        StrategicChallengeFramework = None
+        strategic_challenge_framework = None
 
 # Configure logging
 logger = structlog.get_logger(__name__)
@@ -106,6 +115,13 @@ class PersonaEnhancementEngine:
             and strategic_challenge_framework is not None
             and self.config.get("enable_challenge_framework", True)
         )
+
+        # P0 CRITICAL: Ensure challenge framework is properly initialized
+        if not self.challenge_enabled and strategic_challenge_framework is not None:
+            logger.warning(
+                "Challenge framework available but not enabled - enabling for P0 compliance"
+            )
+            self.challenge_enabled = True
 
         # Persona personality filters - preserve authentic voice
         self.persona_filters = {
@@ -334,15 +350,29 @@ class PersonaEnhancementEngine:
                     processing_time_ms=processing_time,
                 )
             else:
-                # Fallback to base response
+                # P0 CRITICAL: Still apply challenge framework even if no embedded enhancement
+                challenge_enhanced_response = self._apply_challenge_framework(
+                    base_response, user_input, persona_name
+                )
+
                 processing_time = int((time.time() - start_time) * 1000)
+
+                # Check if challenge framework made any changes
+                challenge_applied = challenge_enhanced_response != base_response
+
                 return EnhancementResult(
-                    enhanced_response=base_response,
-                    enhancement_applied=False,
-                    framework_used=None,
-                    analysis_data=None,
+                    enhanced_response=challenge_enhanced_response,
+                    enhancement_applied=challenge_applied,
+                    framework_used=(
+                        "Strategic Challenge Framework" if challenge_applied else None
+                    ),
+                    analysis_data=self._extract_analysis_metadata(complexity_analysis),
                     processing_time_ms=processing_time,
-                    fallback_reason="Embedded framework enhancement failed",
+                    fallback_reason=(
+                        "Embedded framework enhancement failed"
+                        if not challenge_applied
+                        else None
+                    ),
                 )
 
         except Exception as e:
