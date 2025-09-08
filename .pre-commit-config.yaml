@@ -19,27 +19,8 @@ repos:
       - id: check-added-large-files
         args: ['--maxkb=1000']
 
-  # CRITICAL FILE PROTECTION (MUST RUN FIRST)
-  - repo: local
-    hooks:
-      - id: readme-pre-stash-protection
-        name: 🛡️ README.md PRE-STASH PROTECTION
-        entry: .claudedirector/tools/ci/readme-pre-stash-protection.sh
-        language: system
-        pass_filenames: false
-        stages: [pre-commit]
-        always_run: true
-        verbose: true
-      - id: readme-protection
-        name: 🛡️ README.md PROTECTION SYSTEM
-        entry: .claudedirector/tools/ci/readme-protection.sh
-        language: system
-        pass_filenames: false
-        stages: [pre-commit]
-        always_run: true
-        verbose: true
-
   # CODE BLOAT PREVENTION (RUNS EARLY TO CATCH DUPLICATION)
+  # NOTE: README protection hooks disabled - they were overwriting content instead of protecting it
   - repo: local
     hooks:
       # TEMPORARILY DISABLED: Method not fully implemented yet
