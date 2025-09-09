@@ -17,13 +17,23 @@ from pathlib import Path
 from typing import List, Set
 import json
 
-# Add the tools directory to Python path for imports
-script_dir = Path(__file__).parent
-sys.path.insert(0, str(script_dir))
+# Add the lib directory to Python path for imports
+lib_path = Path(__file__).parent.parent.parent / ".claudedirector" / "lib"
+sys.path.insert(0, str(lib_path))
 
-# Import our bloat analyzer
+# Import our bloat analyzer from migrated business logic
 try:
-    from bloat_prevention_system import create_bloat_analyzer, DuplicationSeverity
+    from core.analysis.bloat_analyzer import MCPBloatAnalyzer
+    # For backward compatibility, create the expected functions
+    def create_bloat_analyzer(project_root):
+        return MCPBloatAnalyzer(project_root)
+    
+    # Import severity enum - may need to be defined locally if not available
+    class DuplicationSeverity:
+        LOW = "low"
+        MODERATE = "moderate"
+        HIGH = "high"
+        CRITICAL = "critical"
 
     ANALYZER_AVAILABLE = True
 except ImportError as e:
