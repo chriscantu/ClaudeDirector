@@ -3,16 +3,33 @@ Cache Manager for Performance Optimization
 
 Redis-compatible in-memory caching for framework patterns and strategic analysis.
 Implements Phase 8 sub-500ms response time requirements.
+
+Refactored to use BaseManager pattern for DRY compliance.
+Eliminates duplicate infrastructure patterns while preserving all functionality.
+
+Author: Martin | Platform Architecture
+Phase: 8.1.3 - Core Infrastructure Manager Refactoring
 """
 
 import asyncio
 import time
 import hashlib
+import sys
+from pathlib import Path
 from typing import Any, Dict, Optional, Union, List
 from dataclasses import dataclass
 from enum import Enum
-import logging
 import json
+
+# Import BaseManager infrastructure
+try:
+    from ..core.base_manager import BaseManager, BaseManagerConfig, ManagerType
+    from ..core.manager_factory import register_manager_type
+except ImportError:
+    # Fallback for test environments
+    sys.path.insert(0, str(Path(__file__).parent.parent))
+    from core.base_manager import BaseManager, BaseManagerConfig, ManagerType
+    from core.manager_factory import register_manager_type
 
 
 class CacheLevel(Enum):
@@ -47,42 +64,173 @@ class CacheEntry:
         return self.value
 
 
-class CacheManager:
+class CacheManager(BaseManager):
     """
     High-performance in-memory cache manager for ClaudeDirector
+
+    Refactored to inherit from BaseManager for DRY compliance.
+    Eliminates duplicate logging, metrics, and configuration patterns.
 
     Features:
     - Redis-compatible interface with async support
     - Intelligent TTL based on cache levels
     - Memory-efficient LRU eviction
-    - Performance metrics and monitoring
+    - Performance metrics and monitoring (via BaseManager)
     - <50ms cache operations for 95% of requests
     """
 
-    def __init__(self, max_memory_mb: int = 20, max_entries: int = 10000):
-        self.max_memory_bytes = max_memory_mb * 1024 * 1024
-        self.max_entries = max_entries
-        self.cache: Dict[str, CacheEntry] = {}
-        self.logger = logging.getLogger(__name__)
+    def __init__(
+        self,
+        config: Optional[BaseManagerConfig] = None,
+        max_memory_mb: int = 20,
+        max_entries: int = 10000,
+        cache: Optional[Dict[str, Any]] = None,
+        metrics: Optional[Dict[str, Any]] = None,
+        **kwargs,
+    ):
+        """Initialize cache manager with BaseManager infrastructure"""
 
-        # Performance metrics
-        self.hits = 0
-        self.misses = 0
-        self.evictions = 0
-        self.memory_usage = 0
+        # Create default config if not provided
+        if config is None:
+            config = BaseManagerConfig(
+                manager_name="cache_manager",
+                manager_type=ManagerType.CACHE,
+                enable_metrics=True,
+                enable_caching=False,  # This IS the cache, don't cache the cache
+                enable_logging=True,
+                performance_tracking=True,
+                custom_config={
+                    "max_memory_mb": max_memory_mb,
+                    "max_entries": max_entries,
+                    "performance_threshold_ms": 50,
+                    "cleanup_interval_seconds": 60,
+                    "ttl_config": {
+                        "framework_patterns": 3600,  # 1 hour
+                        "persona_selection": 1800,  # 30 minutes
+                        "context_analysis": 900,  # 15 minutes
+                        "mcp_responses": 300,  # 5 minutes
+                        "strategic_memory": 86400,  # 24 hours
+                    },
+                },
+            )
 
-        # TTL configuration by cache level
-        self.ttl_config = {
-            CacheLevel.FRAMEWORK_PATTERNS: 3600,  # 1 hour
-            CacheLevel.PERSONA_SELECTION: 1800,  # 30 minutes
-            CacheLevel.CONTEXT_ANALYSIS: 900,  # 15 minutes
-            CacheLevel.MCP_RESPONSES: 300,  # 5 minutes
-            CacheLevel.STRATEGIC_MEMORY: 86400,  # 24 hours
+        # Initialize BaseManager infrastructure (eliminates duplicate patterns)
+        super().__init__(config, cache, metrics, logger_name="CacheManager")
+
+        # Cache-specific configuration from BaseManager config
+        # Use custom_config values or fallback to parameters
+        config_max_memory = self.config.custom_config.get(
+            "max_memory_mb", max_memory_mb
+        )
+        config_max_entries = self.config.custom_config.get("max_entries", max_entries)
+        config_threshold = self.config.custom_config.get("performance_threshold_ms", 50)
+
+        self.max_memory_bytes = config_max_memory * 1024 * 1024
+        self.max_entries = config_max_entries
+        self.performance_threshold_ms = config_threshold
+
+        # Cache storage (separate from BaseManager's cache to avoid confusion)
+        self.cache_storage: Dict[str, CacheEntry] = {}
+
+        # Cache-specific metrics (in addition to BaseManager metrics)
+        self.cache_hits = 0
+        self.cache_misses = 0
+        self.cache_evictions = 0
+
+        # TTL configuration from config (no hard-coded values)
+        ttl_defaults = {
+            CacheLevel.FRAMEWORK_PATTERNS: 3600,
+            CacheLevel.PERSONA_SELECTION: 1800,
+            CacheLevel.CONTEXT_ANALYSIS: 900,
+            CacheLevel.MCP_RESPONSES: 300,
+            CacheLevel.STRATEGIC_MEMORY: 86400,
         }
+
+        self.ttl_config = {}
+        ttl_config_data = self.config.custom_config.get("ttl_config", {})
+        for level in CacheLevel:
+            # Get TTL from config or use default
+            config_key = level.value
+            self.ttl_config[level] = ttl_config_data.get(
+                config_key, ttl_defaults[level]
+            )
 
         # Cleanup task
         self._cleanup_task = None
         self._start_cleanup_task()
+
+        # Use BaseManager logging
+        self.logger.info(
+            "Cache manager initialized",
+            max_memory_mb=self.max_memory_bytes / (1024 * 1024),
+            max_entries=self.max_entries,
+            ttl_config={level.value: ttl for level, ttl in self.ttl_config.items()},
+        )
+
+    def manage(self, operation: str, *args, **kwargs) -> Any:
+        """
+        Execute cache management operations (BaseManager abstract method implementation)
+
+        Supported operations:
+        - 'get': Get value from cache
+        - 'set': Set value in cache
+        - 'cached_call': Execute cached function call
+        - 'invalidate_pattern': Invalidate keys matching pattern
+        - 'get_stats': Get cache statistics
+        - 'warm_cache': Pre-populate cache
+        - 'cleanup': Cleanup resources
+
+        Args:
+            operation: Operation to execute
+            *args: Positional arguments for operation
+            **kwargs: Keyword arguments for operation
+
+        Returns:
+            Any: Operation result
+        """
+        start_time = time.time()
+
+        try:
+            if operation == "get":
+                # Async operation, return coroutine
+                result = self.get(*args, **kwargs)
+            elif operation == "set":
+                result = self.set(*args, **kwargs)
+            elif operation == "cached_call":
+                result = self.cached_call(*args, **kwargs)
+            elif operation == "invalidate_pattern":
+                result = self.invalidate_pattern(*args, **kwargs)
+            elif operation == "get_stats":
+                result = self.get_stats()
+            elif operation == "warm_cache":
+                result = self.warm_cache(*args, **kwargs)
+            elif operation == "cleanup":
+                result = self.cleanup()
+            else:
+                raise ValueError(f"Unknown cache operation: {operation}")
+
+            # Update metrics for successful operation
+            duration = (time.time() - start_time) * 1000  # Convert to ms
+            self._update_metrics(
+                operation, duration / 1000, True
+            )  # BaseManager expects seconds
+
+            return result
+
+        except Exception as e:
+            # Update metrics for failed operation
+            duration = (time.time() - start_time) * 1000
+            self._update_metrics(operation, duration / 1000, False)
+
+            # Use BaseManager error handling
+            self.logger.error(
+                "Cache operation failed",
+                operation=operation,
+                error=str(e),
+                args=args,
+                kwargs=kwargs,
+            )
+            raise
 
     def _start_cleanup_task(self):
         """Start background cleanup task"""
@@ -108,36 +256,37 @@ class CacheManager:
         current_time = time.time()
 
         # Find expired entries
-        for key, entry in self.cache.items():
+        for key, entry in self.cache_storage.items():
             if entry.is_expired():
                 expired_keys.append(key)
 
         # Remove expired entries
         for key in expired_keys:
-            del self.cache[key]
-            self.evictions += 1
+            del self.cache_storage[key]
+            self.cache_evictions += 1
 
         if expired_keys:
             self.logger.debug(f"Evicted {len(expired_keys)} expired cache entries")
 
         # LRU eviction if over memory/entry limits
-        if len(self.cache) > self.max_entries:
+        if len(self.cache_storage) > self.max_entries:
             await self._lru_eviction()
 
     async def _lru_eviction(self):
         """Perform LRU eviction to stay within limits"""
         # Sort by last_accessed time (least recently used first)
         sorted_entries = sorted(
-            self.cache.items(), key=lambda x: x[1].last_accessed or x[1].created_at
+            self.cache_storage.items(),
+            key=lambda x: x[1].last_accessed or x[1].created_at,
         )
 
         # Remove oldest 20% when limit exceeded
-        evict_count = len(self.cache) - int(self.max_entries * 0.8)
+        evict_count = len(self.cache_storage) - int(self.max_entries * 0.8)
 
         for i in range(evict_count):
             key = sorted_entries[i][0]
-            del self.cache[key]
-            self.evictions += 1
+            del self.cache_storage[key]
+            self.cache_evictions += 1
 
         if evict_count > 0:
             self.logger.debug(f"LRU evicted {evict_count} cache entries")
@@ -165,31 +314,36 @@ class CacheManager:
         start_time = time.time()
 
         try:
-            if key in self.cache:
-                entry = self.cache[key]
+            if key in self.cache_storage:
+                entry = self.cache_storage[key]
                 if not entry.is_expired():
-                    self.hits += 1
+                    self.cache_hits += 1
                     value = entry.access()
 
-                    # Performance tracking
+                    # Performance tracking using BaseManager config
                     operation_time = (time.time() - start_time) * 1000
-                    if operation_time > 50:
+                    if operation_time > self.performance_threshold_ms:
                         self.logger.warning(
-                            f"Slow cache get: {operation_time:.1f}ms for key {key[:8]}..."
+                            "Slow cache get operation",
+                            operation_time_ms=f"{operation_time:.1f}",
+                            key_prefix=key[:8],
+                            threshold_ms=self.performance_threshold_ms,
                         )
 
                     return value
                 else:
                     # Remove expired entry
-                    del self.cache[key]
-                    self.evictions += 1
+                    del self.cache_storage[key]
+                    self.cache_evictions += 1
 
-            self.misses += 1
+            self.cache_misses += 1
             return None
 
         except Exception as e:
-            self.logger.error(f"Cache get error for key {key[:8]}...: {e}")
-            self.misses += 1
+            self.logger.error(
+                "Cache get operation failed", key_prefix=key[:8], error=str(e)
+            )
+            self.cache_misses += 1
             return None
 
     async def set(
@@ -212,19 +366,24 @@ class CacheManager:
                 cache_level=cache_level,
             )
 
-            self.cache[key] = entry
+            self.cache_storage[key] = entry
 
-            # Performance tracking
+            # Performance tracking using BaseManager config
             operation_time = (time.time() - start_time) * 1000
-            if operation_time > 50:
+            if operation_time > self.performance_threshold_ms:
                 self.logger.warning(
-                    f"Slow cache set: {operation_time:.1f}ms for key {key[:8]}..."
+                    "Slow cache set operation",
+                    operation_time_ms=f"{operation_time:.1f}",
+                    key_prefix=key[:8],
+                    threshold_ms=self.performance_threshold_ms,
                 )
 
             return True
 
         except Exception as e:
-            self.logger.error(f"Cache set error for key {key[:8]}...: {e}")
+            self.logger.error(
+                "Cache set operation failed", key_prefix=key[:8], error=str(e)
+            )
             return False
 
     async def cached_call(
@@ -269,13 +428,13 @@ class CacheManager:
         """Invalidate all cache keys matching pattern"""
         keys_to_remove = []
 
-        for key in self.cache.keys():
+        for key in self.cache_storage.keys():
             if pattern in key:
                 keys_to_remove.append(key)
 
         for key in keys_to_remove:
-            del self.cache[key]
-            self.evictions += 1
+            del self.cache_storage[key]
+            self.cache_evictions += 1
 
         if keys_to_remove:
             self.logger.debug(
@@ -283,13 +442,13 @@ class CacheManager:
             )
 
     def get_stats(self) -> Dict[str, Any]:
-        """Get comprehensive cache statistics"""
-        total_requests = self.hits + self.misses
-        hit_rate = (self.hits / total_requests) if total_requests > 0 else 0
+        """Get comprehensive cache statistics (integrates with BaseManager metrics)"""
+        total_requests = self.cache_hits + self.cache_misses
+        hit_rate = (self.cache_hits / total_requests) if total_requests > 0 else 0
 
         # Memory usage estimation
         memory_estimate = 0
-        for entry in self.cache.values():
+        for entry in self.cache_storage.values():
             try:
                 memory_estimate += (
                     len(str(entry.value).encode()) + 200
@@ -297,21 +456,31 @@ class CacheManager:
             except:
                 memory_estimate += 1000  # Conservative estimate for complex objects
 
-        return {
-            "entries": len(self.cache),
-            "hits": self.hits,
-            "misses": self.misses,
-            "hit_rate": hit_rate,
-            "evictions": self.evictions,
+        # Combine cache-specific stats with BaseManager metrics
+        base_stats = self.get_metrics()
+
+        cache_specific_stats = {
+            "entries": len(self.cache_storage),
+            "cache_hits": self.cache_hits,
+            "cache_misses": self.cache_misses,
+            "cache_hit_rate": hit_rate,
+            "cache_evictions": self.cache_evictions,
             "memory_usage_bytes": memory_estimate,
             "memory_usage_mb": memory_estimate / (1024 * 1024),
+            "max_memory_mb": self.max_memory_bytes / (1024 * 1024),
+            "max_entries": self.max_entries,
             "cache_levels": {
                 level.value: sum(
-                    1 for entry in self.cache.values() if entry.cache_level == level
+                    1
+                    for entry in self.cache_storage.values()
+                    if entry.cache_level == level
                 )
                 for level in CacheLevel
             },
         }
+
+        # Merge BaseManager metrics with cache-specific metrics
+        return {**base_stats, **cache_specific_stats}
 
     async def warm_cache(self, warm_data: Dict[str, Any]):
         """Pre-populate cache with frequently accessed data"""
@@ -333,7 +502,7 @@ class CacheManager:
             except asyncio.CancelledError:
                 pass
 
-        self.cache.clear()
+        self.cache_storage.clear()
         self.logger.info("Cache cleaned up")
 
 
@@ -347,3 +516,15 @@ def get_cache_manager(max_memory_mb: int = 20) -> CacheManager:
     if _cache_manager is None:
         _cache_manager = CacheManager(max_memory_mb=max_memory_mb)
     return _cache_manager
+
+
+# Register CacheManager with the factory system
+try:
+    register_manager_type(
+        manager_type=ManagerType.CACHE,
+        manager_class=CacheManager,
+        description="High-performance in-memory cache manager with Redis-compatible interface",
+    )
+except Exception:
+    # Ignore registration errors during import (e.g., circular imports)
+    pass

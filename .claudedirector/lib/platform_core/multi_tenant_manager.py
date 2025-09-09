@@ -1,19 +1,16 @@
 """
-Multi-Tenant Manager - Phase 14 Track 2: Enterprise Scalability
+PHASE 8.4: MASSIVE CONSOLIDATION - Multi-Tenant Manager
+BaseManager consolidation for NET code reduction
 
-🔒 Elena | Security & Platform Infrastructure
+ELIMINATED: Manual logging infrastructure
+CONSOLIDATED: MultiTenantManager → MultiTenantManager(BaseManager)
+NET REDUCTION TARGET: 100+ lines through BaseManager adoption
 
-Technical Story: TS-14.2.1 Multi-Tenant Organization Support
-User Story: US-14.2.1 Multi-Organization Platform Support (Platform Administrator)
-
-Architecture Integration:
-- Extends context_engineering 8-layer architecture for org-level isolation
-- Integrates with existing stakeholder_intelligence_unified.py patterns
-- Maintains existing security scanner and user config protection
-- Builds on PROJECT_STRUCTURE.md mandatory principles
-
-Performance Target: <5ms org context switching overhead
-Security Requirement: 100% data isolation between organizations
+Original enterprise scalability capabilities maintained:
+- Multi-tenant organization support
+- Enterprise security and platform infrastructure
+- Context engineering 8-layer architecture integration
+- 100% data isolation between organizations
 """
 
 import asyncio
@@ -22,9 +19,11 @@ from typing import Dict, List, Any, Optional, Set
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-import logging
 import json
 import hashlib
+
+# PHASE 8.4: BaseManager consolidation imports
+from ..core.base_manager import BaseManager, BaseManagerConfig, ManagerType
 
 # Core ClaudeDirector integration following PROJECT_STRUCTURE.md
 try:
@@ -169,9 +168,9 @@ class OrganizationConfig:
     )
 
 
-class MultiTenantManager:
+class MultiTenantManager(BaseManager):
     """
-    🏢 Enterprise Multi-Tenant Organization Manager
+    PHASE 8.4: Enterprise Multi-Tenant Organization Manager with BaseManager consolidation
 
     Elena | Security & Platform Infrastructure
 
@@ -199,9 +198,26 @@ class MultiTenantManager:
         context_engine: Optional[AdvancedContextEngine] = None,
         config_manager: Optional[UserConfigManager] = None,
     ):
-        """Initialize multi-tenant manager with existing infrastructure integration"""
-        self.logger = logging.getLogger(__name__)
+        """
+        PHASE 8.4: BaseManager consolidation - eliminates manual logging and infrastructure
+        """
+        # PHASE 8.4: BaseManager initialization eliminates duplicate infrastructure
+        config = BaseManagerConfig(
+            manager_name="multi_tenant_manager",
+            manager_type=ManagerType.PLATFORM_CORE,
+            enable_metrics=True,
+            enable_caching=True,
+            enable_logging=True,
+            custom_config={
+                "database_manager": database_manager,
+                "cache_manager": cache_manager,
+                "context_engine": context_engine,
+                "config_manager": config_manager,
+            },
+        )
+        super().__init__(config)
 
+        # PHASE 8.4: ELIMINATED manual logging - now uses self.logger from BaseManager
         # Core infrastructure integration
         self.db_manager = database_manager
         self.cache_manager = cache_manager
@@ -215,13 +231,36 @@ class MultiTenantManager:
         # Active tenant contexts
         self.active_contexts: Dict[str, TenantContext] = {}
 
-        # Performance tracking
+        # Performance tracking (now integrated with BaseManager metrics)
         self.context_switches = 0
         self.total_switch_time_ms = 0
+
+        self.logger.info(
+            "MultiTenantManager initialized with BaseManager infrastructure"
+        )
         self.security_validations = 0
 
         # Security enforcement
         self.isolation_validator = self._create_isolation_validator()
+
+    async def manage(self, operation: str, *args, **kwargs) -> Any:
+        """
+        BaseManager abstract method implementation
+        Delegates to multi-tenant operations
+        """
+        if operation == "create_organization":
+            return await self.create_organization(*args, **kwargs)
+        elif operation == "switch_tenant_context":
+            return await self.switch_tenant_context(*args, **kwargs)
+        elif operation == "get_organization":
+            return self.get_organization(*args, **kwargs)
+        elif operation == "validate_isolation":
+            return await self.validate_data_isolation(*args, **kwargs)
+        elif operation == "get_performance_metrics":
+            return self.get_performance_metrics()
+        else:
+            self.logger.warning(f"Unknown multi-tenant operation: {operation}")
+            return None
 
         self.logger.info("MultiTenantManager initialized with enterprise security")
 

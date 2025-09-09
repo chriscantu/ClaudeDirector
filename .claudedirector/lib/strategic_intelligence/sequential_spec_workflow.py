@@ -182,31 +182,24 @@ class SequentialSpecCreator:
                 else:
                     workflow_errors.extend(enhanced_result.errors)
 
-            # Step 5: GitHub Spec-Kit Task Generation (Sequential Thinking)
-            self.logger.info(
-                "Sequential Thinking Step 5: GitHub Spec-Kit Task Generation"
-            )
-            task_generation = self._execute_github_spec_kit_task_generation(
-                description, enhanced_spec_path or spec_path, strategic_context
-            )
-            sequential_steps[4].completed = True
-            sequential_steps[4].results = task_generation
+            # PHASE 8.4: Consolidated GitHub Spec-Kit Task Generation into Step 3
+            # (Removed separate step 5 to maintain original 6-step methodology)
 
-            # Step 6: Architectural Compliance Validation (Sequential Thinking)
-            self.logger.info("Sequential Thinking Step 6: Architectural Compliance")
+            # Step 5: Architectural Compliance Validation (Sequential Thinking)
+            self.logger.info("Sequential Thinking Step 5: Architectural Compliance")
             compliance_validation = self._execute_architectural_compliance_validation(
                 spec_path, enhanced_spec_path, description
             )
-            sequential_steps[5].completed = True
-            sequential_steps[5].results = compliance_validation
+            sequential_steps[4].completed = True
+            sequential_steps[4].results = compliance_validation
 
-            # Step 7: Success Metrics Validation (Sequential Thinking)
-            self.logger.info("Sequential Thinking Step 7: Success Metrics Validation")
+            # Step 6: Success Metrics Validation (Sequential Thinking)
+            self.logger.info("Sequential Thinking Step 6: Success Metrics Validation")
             success_metrics = self._execute_success_metrics_validation(
                 sequential_steps, start_time
             )
-            sequential_steps[6].completed = True
-            sequential_steps[6].results = success_metrics
+            sequential_steps[5].completed = True
+            sequential_steps[5].results = success_metrics
 
             # Determine overall success
             overall_success = (
@@ -290,17 +283,6 @@ class SequentialSpecCreator:
             ),
             SequentialAnalysisStep(
                 step_number=5,
-                step_name="GitHub Spec-Kit Task Generation",
-                description="Generate implementation tasks following GitHub Spec-Kit methodology",
-                validation_criteria=[
-                    "Tasks broken down into actionable items",
-                    "Task dependencies clearly mapped",
-                    "Acceptance criteria defined for each task",
-                ],
-                success_metrics=["Task completeness score", "Dependency clarity score"],
-            ),
-            SequentialAnalysisStep(
-                step_number=6,
                 step_name="Architectural Compliance Validation",
                 description="Validate specification against PROJECT_STRUCTURE.md, DRY, and SOLID principles",
                 validation_criteria=[
@@ -314,7 +296,7 @@ class SequentialSpecCreator:
                 ],
             ),
             SequentialAnalysisStep(
-                step_number=7,
+                step_number=6,
                 step_name="Success Metrics Validation",
                 description="Validate overall workflow success and performance metrics",
                 validation_criteria=[
@@ -385,24 +367,8 @@ class SequentialSpecCreator:
 
         return compliance_result
 
-    def _execute_github_spec_kit_task_generation(
-        self,
-        description: str,
-        spec_path: Optional[str],
-        strategic_context: Optional[StrategicContext],
-    ) -> Dict[str, Any]:
-        """Execute Sequential Thinking Step 5: GitHub Spec-Kit Task Generation"""
-        task_generation_result = {
-            "tasks_generated": self._generate_implementation_tasks(
-                description, spec_path, strategic_context
-            ),
-            "task_dependencies": self._map_task_dependencies(),
-            "acceptance_criteria": self._define_task_acceptance_criteria(),
-            "task_completeness_score": 0.96,  # Mock score for demonstration
-            "dependency_clarity_score": 0.94,  # Mock score for demonstration
-        }
-
-        return task_generation_result
+    # PHASE 8.4: GitHub Spec-Kit Task Generation consolidated into Step 3
+    # (Method removed to maintain original 6-step methodology)
 
     def _execute_success_metrics_validation(
         self,

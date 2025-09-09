@@ -22,7 +22,10 @@ from .stakeholder_layer import StakeholderLayerMemory
 from .learning_layer import LearningLayerMemory
 from .organizational_layer import OrganizationalLayerMemory
 from .context_orchestrator import ContextOrchestrator
-from .workspace_integration import WorkspaceMonitor, WorkspaceContext
+from .workspace_integration import (
+    WorkspaceIntegrationManager as WorkspaceMonitor,
+    WorkspaceContext,
+)
 from .analytics_engine import AnalyticsEngine  # Phase 2.2 Analytics Integration
 from .organizational_processor import (
     OrganizationalProcessor,

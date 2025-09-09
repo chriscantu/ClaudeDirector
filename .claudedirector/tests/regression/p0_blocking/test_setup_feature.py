@@ -32,18 +32,24 @@ class TestSetupP0(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Set up test environment with proper project root detection"""
-        # Find project root by looking for .claudedirector directory
+        # Find project root by looking for .claudedirector directory with expected structure
         current_dir = Path(__file__).parent
         project_root = None
 
         for parent in current_dir.parents:
-            if (parent / ".claudedirector").is_dir():
+            claudedir = parent / ".claudedirector"
+            # Check if this is the real project root by verifying expected structure
+            if (
+                claudedir.is_dir()
+                and (claudedir / "lib").is_dir()
+                and (claudedir / "tools").is_dir()
+            ):
                 project_root = parent
                 break
 
         if not project_root:
             raise RuntimeError(
-                "Cannot find project root - .claudedirector directory not found"
+                "Cannot find project root - .claudedirector directory with lib and tools not found"
             )
 
         cls.project_root = project_root

@@ -43,7 +43,13 @@ class TestCompleteNewSetupP0Optimized(unittest.TestCase):
         cls.source_project_root = None
 
         for parent in current_dir.parents:
-            if (parent / ".claudedirector").exists():
+            claudedir = parent / ".claudedirector"
+            # Check if this is the real project root by verifying expected structure
+            if (
+                claudedir.exists()
+                and (claudedir / "lib").exists()
+                and (claudedir / "tools").exists()
+            ):
                 cls.source_project_root = parent
                 break
 
@@ -265,20 +271,33 @@ else:
             # Test that core imports don't crash with missing dependencies
             robustness_test = """
 import sys
-sys.path.insert(0, ".claudedirector/lib")
+from pathlib import Path
 
 try:
-    from pathlib import Path
+    # Find the .claudedirector directory wherever it is in the workspace
+    cwd = Path.cwd()
+    claudedirector_path = None
 
-    # Test basic path operations work
-    core_path = Path(".claudedirector/lib/core")
-    transparency_path = Path(".claudedirector/lib/transparency")
+    for item in cwd.rglob(".claudedirector"):
+        if item.is_dir() and (item / "lib").exists():
+            claudedirector_path = item
+            break
 
-    if core_path.exists() and transparency_path.exists():
-        print("CHAT_INTERFACE_ROBUST")
-        sys.exit(0)
+    if claudedirector_path:
+        sys.path.insert(0, str(claudedirector_path / "lib"))
+
+        # Test basic path operations work
+        core_path = claudedirector_path / "lib" / "core"
+        transparency_path = claudedirector_path / "lib" / "transparency"
+
+        if core_path.exists() and transparency_path.exists():
+            print("CHAT_INTERFACE_ROBUST")
+            sys.exit(0)
+        else:
+            print("MISSING_COMPONENTS")
+            sys.exit(1)
     else:
-        print("MISSING_COMPONENTS")
+        print("NO_CLAUDEDIRECTOR_FOUND")
         sys.exit(1)
 
 except Exception as e:

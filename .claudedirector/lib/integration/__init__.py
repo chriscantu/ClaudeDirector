@@ -36,6 +36,12 @@ from .unified_bridge import (
     create_complete_integration_suite,
 )
 
+# PHASE 8.4: MASSIVE CONSOLIDATION - Redirect to consolidated implementation
+from ..core.enhanced_persona_manager import (
+    create_unified_integration_processor,
+    UnifiedIntegrationProcessor,
+)
+
 __all__ = [
     "UnifiedBridge",
     "BridgeType",
@@ -53,4 +59,7 @@ __all__ = [
     "create_mcp_client",
     "create_cli_bridge",
     "create_complete_integration_suite",
+    # PHASE 8.4: Consolidated integration processor
+    "UnifiedIntegrationProcessor",
+    "create_unified_integration_processor",
 ]

@@ -22,7 +22,7 @@ class TestP0QualityTarget(unittest.TestCase):
         print("=" * 60)
 
         try:
-            from core.integrated_conversation_manager import (
+            from core.enhanced_persona_manager import (
                 IntegratedConversationManager,
             )
 

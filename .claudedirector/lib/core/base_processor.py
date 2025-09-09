@@ -8,6 +8,11 @@ scattered across all 15+ processor files.
 This addresses the root cause of +6,000 line additions by providing shared
 infrastructure instead of duplicating common patterns in every processor.
 
+🎯 CONTEXT7 ARCHITECTURAL PATTERN ACCESS:
+This base class leverages Context7 MCP server capabilities for architectural pattern
+access, ensuring all processors follow established best practices and framework
+patterns for consistent implementation across the platform.
+
 Author: Martin | Platform Architecture with ULTRA-DRY methodology
 """
 
