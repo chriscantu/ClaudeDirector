@@ -87,9 +87,7 @@
 
 ## 📋 **Task Breakdown Overview**
 
-📖 **Detailed Task Specifications**:
-- [task-implementation.md](./task-implementation.md) - Complete task breakdown and acceptance criteria
-- [task-strategy.md](./task-strategy.md) - Implementation strategy and success metrics
+📖 **Detailed Task Specifications**: See [task-details.md](./task-details.md) for complete implementation details, acceptance criteria, and technical specifications.
 
 ## 📊 **Implementation Phase Summary**
 

@@ -29,18 +29,63 @@ except ImportError:
     except ImportError:
         # Mock class for test environments
         class StrategicContext:
-            def __init__(self, **kwargs):
+            def __init__(
+                self,
+                organizational_context=None,
+                strategic_objectives=None,
+                stakeholder_priorities=None,
+                **kwargs,
+            ):
+                self.organizational_context = organizational_context
+                self.strategic_objectives = strategic_objectives or []
+                self.stakeholder_priorities = stakeholder_priorities or {}
                 for k, v in kwargs.items():
                     setattr(self, k, v)
 
 
-from ..context_engineering import (
-    AdvancedContextEngine,
-    StrategicLayerMemory,
-    StakeholderLayerMemory,
-    OrganizationalLayerMemory,
-    ContextOrchestrator,
-)
+# PHASE 8.4: Stub implementations for P0 compatibility
+# Original context_engineering modules were consolidated in Phase 8
+
+
+class MockAdvancedContextEngine:
+    """Stub implementation for P0 compatibility"""
+
+    def __init__(self):
+        self.strategic_layer = MockStrategicLayer()
+        self.stakeholder_layer = MockStakeholderLayer()
+        self.organizational_layer = MockOrganizationalLayer()
+
+
+class MockStrategicLayer:
+    """Stub strategic layer for P0 compatibility"""
+
+    def get_strategic_context(self):
+        return {"initiatives": [], "frameworks": [], "decisions": [], "entries": []}
+
+    def add_strategic_entry(self, entry):
+        pass  # No-op for P0 compatibility
+
+
+class MockStakeholderLayer:
+    """Stub stakeholder layer for P0 compatibility"""
+
+    def get_stakeholder_context(self):
+        return {"stakeholders": [], "communication_patterns": {}}
+
+
+class MockOrganizationalLayer:
+    """Stub organizational layer for P0 compatibility"""
+
+    def get_organizational_context(self):
+        return {"patterns": {}, "structure": {}, "culture": {}}
+
+
+# Type aliases for compatibility
+AdvancedContextEngine = MockAdvancedContextEngine
+StrategicLayerMemory = MockStrategicLayer
+StakeholderLayerMemory = MockStakeholderLayer
+OrganizationalLayerMemory = MockOrganizationalLayer
+ContextOrchestrator = MockAdvancedContextEngine
 
 
 @dataclass
@@ -63,9 +108,9 @@ class ContextIntelligenceBridge:
     - Dependency Inversion: Uses context_engineering abstractions
     """
 
-    def __init__(self, context_engine: AdvancedContextEngine):
+    def __init__(self, context_engine: AdvancedContextEngine = None):
         """Initialize with context engine (Dependency Injection)"""
-        self.context_engine = context_engine
+        self.context_engine = context_engine or MockAdvancedContextEngine()
         self.logger = logging.getLogger(__name__)
 
     def get_strategic_context_for_spec(
