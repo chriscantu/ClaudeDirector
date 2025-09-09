@@ -14,7 +14,6 @@ import psutil
 import gc
 from typing import Dict, Any, Optional, List, Callable, Tuple
 from dataclasses import dataclass
-from enum import Enum
 from pathlib import Path
 import sys
 
@@ -324,7 +323,7 @@ class StrategicPerformanceManager(BaseManager):
                         target_achieved=execution_time_ms <= target.target_ms,
                         cache_hit=True,
                         optimization_applied=optimization_applied,
-                        memory_usage_mb=self._get_memory_usage_mb(),
+                        memory_usage_mb=memory_before,
                         timestamp=time.time(),
                     )
 
@@ -700,6 +699,8 @@ class StrategicPerformanceManager(BaseManager):
                 {"test": f"data_{i}"}
                 for i in range(PERFORMANCE_CONSTANTS.BASELINE_TEST_ITERATIONS * 100)
             ]
+            # Force memory allocation
+            _ = len(test_data)  # Use test_data to avoid F841
 
             memory_after = self._get_memory_usage_mb()
             memory_growth = memory_after - memory_before
@@ -759,7 +760,7 @@ class StrategicPerformanceManager(BaseManager):
             return (
                 memory_info.rss / PERFORMANCE_CONSTANTS.BYTES_TO_MB
             )  # Convert bytes to MB
-        except:
+        except Exception:
             return 0.0
 
     def _update_sla_metrics(self, query_type: QueryType, target_achieved: bool):
@@ -838,7 +839,7 @@ class StrategicPerformanceManager(BaseManager):
 
         if memory_report.get("baseline_exceeded", False):
             recommendations.append(
-                f"Memory usage exceeds baseline - optimization or scaling recommended."
+                "Memory usage exceeds baseline - optimization or scaling recommended."
             )
 
         if (
