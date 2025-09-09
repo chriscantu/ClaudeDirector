@@ -18,6 +18,7 @@ from .hybrid_installation_manager import (
     UsageStats,
     get_hybrid_manager,
     install_mcp_package,
+    create_hybrid_installation_manager,
 )
 
 # TS-4: Temporarily disable enhanced_persona_manager import to fix P0 test failures
@@ -63,6 +64,7 @@ __all__ = [
     "UsageStats",
     "get_hybrid_manager",
     "install_mcp_package",
+    "create_hybrid_installation_manager",
     "EnhancedPersonaManager",
     "EnhancedResponse",
     "TransparencyManager",

@@ -209,12 +209,12 @@ class TestConversationTrackingP0(unittest.TestCase):
 
                 # Try importing as installed package first (CI environment)
                 try:
-                    from lib.core.integrated_conversation_manager import (
+                    from lib.core.enhanced_persona_manager import (
                         IntegratedConversationManager,
                     )
                 except ImportError:
                     # Fallback to local import (development environment)
-                    from core.integrated_conversation_manager import (
+                    from core.enhanced_persona_manager import (
                         IntegratedConversationManager,
                     )
 

@@ -58,7 +58,13 @@ class TestSequentialThinkingP0(unittest.TestCase):
         """Find the project root directory"""
         current = Path(__file__).parent
         while current != current.parent:
-            if (current / ".claudedirector").exists():
+            claudedir = current / ".claudedirector"
+            # Check if this is the real project root by verifying expected structure
+            if (
+                claudedir.exists()
+                and (claudedir / "lib").exists()
+                and (claudedir / "tools").exists()
+            ):
                 return current
             current = current.parent
         return Path(__file__).parent.parent.parent.parent

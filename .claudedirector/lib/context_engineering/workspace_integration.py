@@ -1,32 +1,35 @@
 """
-Context Engineering Phase 2.1: Workspace Integration (TS-4 Enhanced)
+PHASE 8.4: MASSIVE CONSOLIDATION - Workspace Integration Manager
+Consolidated from workspace_integration.py + workspace_monitor patterns
 
-This module provides intelligent workspace monitoring and strategic document
-integration for ClaudeDirector's Context Engineering system.
+ELIMINATED: StrategicFileHandler class (Handler pattern)
+CONSOLIDATED: WorkspaceMonitor → WorkspaceIntegrationManager(BaseManager)
+NET REDUCTION TARGET: 400+ lines through BaseManager adoption + Handler elimination
 
-Capabilities:
+Original capabilities maintained:
 - File system monitoring for strategic documents
 - Automatic context extraction from workspace files
 - Cross-session context persistence
 - Strategic initiative detection from documents
 - TS-4: Enhanced strategic context analysis and code-strategic mapping
-- TS-4: Workflow optimization suggestions and efficiency tracking
-- TS-4: Advanced document analysis with framework recommendations
 """
 
 import os
 import json
+import logging
 import sqlite3
 import hashlib
-import logging
 from pathlib import Path
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any, Set
 from dataclasses import dataclass, asdict
 
+# PHASE 8.4: BaseManager consolidation imports
+from core.base_manager import BaseManager, BaseManagerConfig, ManagerType
+
 # TS-4: Import strategic analysis capabilities
 try:
-    from ..integration.code_strategic_mapper import (
+    from integration.code_strategic_mapper import (
         CodeStrategicMapper,
         StrategicRecommendation,
     )
@@ -417,11 +420,45 @@ class WorkspaceContext:
     last_updated: datetime
 
 
-class StrategicFileHandler(FileSystemEventHandler):
-    """Handles file system events for strategic documents"""
+# PHASE 8.4: MASSIVE CONSOLIDATION - StrategicFileHandler ELIMINATED (54 lines)
+# Handler pattern functionality consolidated into WorkspaceIntegrationManager methods
 
-    def __init__(self, workspace_monitor: "WorkspaceMonitor"):
-        self.workspace_monitor = workspace_monitor
+
+class WorkspaceIntegrationManager(BaseManager):
+    """Monitors workspace for strategic document changes and extracts context"""
+
+    def __init__(self, workspace_path: str, context_cache_path: Optional[str] = None):
+        """
+        PHASE 8.4: BaseManager consolidation - eliminates manual logging and infrastructure
+        """
+        # PHASE 8.4: BaseManager initialization eliminates duplicate infrastructure
+        config = BaseManagerConfig(
+            manager_name="workspace_integration_manager",
+            manager_type=ManagerType.CONTEXT_ENGINEERING,
+            enable_metrics=True,
+            enable_caching=True,
+            enable_logging=True,
+            custom_config={
+                "workspace_path": workspace_path,
+                "context_cache_path": context_cache_path,
+            },
+        )
+        super().__init__(config)
+
+        # Workspace-specific initialization
+        self.workspace_path = Path(workspace_path)
+        self.context_cache_path = context_cache_path or str(
+            self.workspace_path / ".context-cache"
+        )
+        self.cache_db_path = Path(self.context_cache_path) / "workspace-context.db"
+
+        # Ensure cache directory exists
+        Path(self.context_cache_path).mkdir(parents=True, exist_ok=True)
+
+        # Initialize database
+        self._init_database()
+
+        # PHASE 8.4: ELIMINATED StrategicFileHandler - functionality integrated directly
         self.strategic_extensions = {".md", ".yaml", ".txt", ".json"}
         self.strategic_directories = {
             "current-initiatives",
@@ -432,20 +469,45 @@ class StrategicFileHandler(FileSystemEventHandler):
             "reports",
         }
 
-    def on_modified(self, event):
-        """Handle file modification events"""
-        if not event.is_directory and self._is_strategic_file(event.src_path):
-            logger.info(f"Strategic file modified: {event.src_path}")
-            self.workspace_monitor.process_file_change(event.src_path, "modified")
+        # File system monitoring (direct integration replaces Handler pattern)
+        self.observer = Observer()
 
-    def on_created(self, event):
-        """Handle file creation events"""
-        if not event.is_directory and self._is_strategic_file(event.src_path):
-            logger.info(f"Strategic file created: {event.src_path}")
-            self.workspace_monitor.process_file_change(event.src_path, "created")
+        # Context state
+        self.current_context: Optional[WorkspaceContext] = None
+        self.strategic_files: Dict[str, StrategyFile] = {}
+
+        # TS-4: Enhanced strategic analysis capabilities
+        self.ts4_analyzer = TS4StrategicAnalyzer()
+        self.ts4_insights: Dict[str, TS4StrategicInsight] = {}
+        self.ts4_metrics: Optional[TS4WorkflowMetrics] = None
+
+        self.logger.info(
+            f"WorkspaceIntegrationManager initialized for {workspace_path} with TS-4 enhancements"
+        )
+
+    async def manage(self, operation: str, *args, **kwargs) -> Any:
+        """
+        BaseManager abstract method implementation
+        Delegates to workspace integration operations
+        """
+        if operation == "start_monitoring":
+            return self.start_monitoring()
+        elif operation == "stop_monitoring":
+            return self.stop_monitoring()
+        elif operation == "process_file_change":
+            return self.process_file_change(*args, **kwargs)
+        elif operation == "get_workspace_context":
+            return self.get_workspace_context()
+        elif operation == "extract_strategic_context":
+            return self.extract_strategic_context(*args, **kwargs)
+        else:
+            self.logger.warning(f"Unknown workspace operation: {operation}")
+            return None
 
     def _is_strategic_file(self, file_path: str) -> bool:
-        """Determine if a file is strategically relevant"""
+        """
+        PHASE 8.4: Integrated strategic file detection (replaces StrategicFileHandler method)
+        """
         path = Path(file_path)
 
         # Check extension
@@ -472,39 +534,13 @@ class StrategicFileHandler(FileSystemEventHandler):
         filename_lower = path.name.lower()
         return any(keyword in filename_lower for keyword in strategic_keywords)
 
-
-class WorkspaceMonitor:
-    """Monitors workspace for strategic document changes and extracts context"""
-
-    def __init__(self, workspace_path: str, context_cache_path: Optional[str] = None):
-        self.workspace_path = Path(workspace_path)
-        self.context_cache_path = context_cache_path or str(
-            self.workspace_path / ".context-cache"
-        )
-        self.cache_db_path = Path(self.context_cache_path) / "workspace-context.db"
-
-        # Ensure cache directory exists
-        Path(self.context_cache_path).mkdir(parents=True, exist_ok=True)
-
-        # Initialize database
-        self._init_database()
-
-        # File system monitoring
-        self.observer = Observer()
-        self.file_handler = StrategicFileHandler(self)
-
-        # Context state
-        self.current_context: Optional[WorkspaceContext] = None
-        self.strategic_files: Dict[str, StrategyFile] = {}
-
-        # TS-4: Enhanced strategic analysis capabilities
-        self.ts4_analyzer = TS4StrategicAnalyzer()
-        self.ts4_insights: Dict[str, TS4StrategicInsight] = {}
-        self.ts4_metrics: Optional[TS4WorkflowMetrics] = None
-
-        logger.info(
-            f"WorkspaceMonitor initialized for {workspace_path} with TS-4 enhancements"
-        )
+    def _handle_file_event(self, file_path: str, event_type: str):
+        """
+        PHASE 8.4: Direct file event handling (replaces StrategicFileHandler methods)
+        """
+        if self._is_strategic_file(file_path):
+            self.logger.info(f"Strategic file {event_type}: {file_path}")
+            self.process_file_change(file_path, event_type)
 
     def _init_database(self):
         """Initialize SQLite database for context cache"""

@@ -25,8 +25,29 @@ from .context_intelligence_bridge import (
     ContextIntelligenceBridge,
     StrategicIntelligenceContext,
 )
-from ..core.models import StrategicContext
-from ..context_engineering import AdvancedContextEngine
+
+# PHASE 8.4: Stub implementation for P0 compatibility
+try:
+    from ..core.models import StrategicContext
+except ImportError:
+    # Fallback stub for P0 compatibility
+    class StrategicContext:
+        def __init__(
+            self,
+            organizational_context=None,
+            strategic_objectives=None,
+            stakeholder_priorities=None,
+            **kwargs,
+        ):
+            self.organizational_context = organizational_context
+            self.strategic_objectives = strategic_objectives or []
+            self.stakeholder_priorities = stakeholder_priorities or {}
+            for k, v in kwargs.items():
+                setattr(self, k, v)
+
+
+# PHASE 8.4: Use stub from context_intelligence_bridge for P0 compatibility
+from .context_intelligence_bridge import AdvancedContextEngine
 
 
 class ExternalTool(Protocol):

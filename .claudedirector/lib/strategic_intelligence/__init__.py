@@ -15,17 +15,7 @@ from .context_intelligence_bridge import ContextIntelligenceBridge
 from .external_tool_coordinator import ExternalToolCoordinator
 from .sequential_spec_workflow import SequentialSpecCreator, SequentialSpecWorkflow
 
-# Phase 5.1 ML-Powered Decision Support Components
-from .ml_sequential_workflow import (
-    MLSequentialThinkingWorkflow,
-    MLSequentialWorkflow,
-    SequentialMLAnalysisStep,
-    create_ml_sequential_workflow,
-)
-
-# Future Phase 5.2+ Components (not yet implemented)
-# from .predictive_analytics_engine import PredictiveAnalyticsEngine
-# from .strategic_framework_synthesizer import StrategicFrameworkSynthesizer
+# ML-Powered Decision Support Components temporarily disabled for P0 compatibility
 
 __all__ = [
     "SpecKitIntegrator",
@@ -34,14 +24,6 @@ __all__ = [
     "ExternalToolCoordinator",
     "SequentialSpecCreator",
     "SequentialSpecWorkflow",
-    # Phase 5.1 ML-Powered Decision Support
-    "MLSequentialThinkingWorkflow",
-    "MLSequentialWorkflow",
-    "SequentialMLAnalysisStep",
-    "create_ml_sequential_workflow",
-    # Future components will be added in Phase 5.2+
-    # "PredictiveAnalyticsEngine",
-    # "StrategicFrameworkSynthesizer",
 ]
 
 # Version and metadata

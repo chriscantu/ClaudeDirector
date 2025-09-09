@@ -2,13 +2,24 @@
 """
 User Configuration Management for ClaudeDirector
 Centralizes user identity and preferences with environment variable support.
+Refactored to inherit from BaseManager for DRY compliance.
 """
 
 import os
 import json
+import sys
 from pathlib import Path
 from typing import Dict, Optional, Any
 from dataclasses import dataclass, asdict
+
+# Import BaseManager infrastructure
+try:
+    from ..core.base_manager import BaseManager, BaseManagerConfig, ManagerType
+    from ..core.manager_factory import register_manager_type
+except ImportError:
+    sys.path.insert(0, str(Path(__file__).parent.parent))
+    from core.base_manager import BaseManager, BaseManagerConfig, ManagerType
+    from core.manager_factory import register_manager_type
 
 # Try to import yaml, fall back to json if not available
 try:
@@ -58,7 +69,7 @@ class UserIdentity:
         return f"{name}'s" if not name.endswith("s") else f"{name}'"
 
 
-class UserConfigManager:
+class UserConfigManager(BaseManager):
     """
     Manages user configuration with multiple sources and fallbacks
 
@@ -66,23 +77,91 @@ class UserConfigManager:
     1. Environment variables
     2. Configuration file
     3. Defaults
+
+    Refactored to inherit from BaseManager for DRY compliance.
+    Eliminates duplicate logging, metrics, and configuration patterns.
     """
 
-    def __init__(self, config_path: Optional[Path] = None):
-        """
-        Initialize user configuration manager
-
-        Args:
-            config_path: Optional path to config file, defaults to standard location
-        """
-        if config_path is None:
-            config_path = (
-                Path(__file__).parent.parent.parent / "config" / "user_identity.yaml"
+    def __init__(
+        self,
+        config: Optional[BaseManagerConfig] = None,
+        config_path: Optional[Path] = None,
+        cache: Optional[Dict[str, Any]] = None,
+        metrics: Optional[Dict[str, Any]] = None,
+        **kwargs,
+    ):
+        if config is None:
+            config = BaseManagerConfig(
+                manager_name="user_config_manager",
+                manager_type=ManagerType.USER_CONFIG,
+                enable_metrics=True,
+                enable_caching=True,
+                enable_logging=True,
+                performance_tracking=True,
+                custom_config={
+                    "config_path": str(config_path) if config_path else None,
+                },
             )
+
+        super().__init__(config, cache, metrics, logger_name="UserConfigManager")
+
+        # Get configuration path from BaseManager config or use default
+        if config_path is None:
+            config_path_str = self.config.custom_config.get("config_path")
+            if config_path_str:
+                config_path = Path(config_path_str)
+            else:
+                config_path = (
+                    Path(__file__).parent.parent.parent
+                    / "config"
+                    / "user_identity.yaml"
+                )
 
         self.config_path = config_path
         self.template_path = config_path.parent / "user_identity.yaml.template"
         self._user_identity: Optional[UserIdentity] = None
+
+    def manage(self, operation: str, *args, **kwargs) -> Any:
+        """
+        Implement BaseManager abstract method for user configuration operations
+        """
+        import time
+
+        start_time = time.time()
+
+        try:
+            if operation == "get_user_identity":
+                result = self.get_user_identity()
+            elif operation == "load_config":
+                result = self._load_from_file()
+            elif operation == "save_config":
+                result = self.save_user_config(*args, **kwargs)
+            elif operation == "configure_interactive":
+                result = self.configure_user_interactive()
+            elif operation == "get_config":
+                result = self.get_config(*args, **kwargs)
+            elif operation == "update_config":
+                result = self.update_config(*args, **kwargs)
+            else:
+                raise ValueError(f"Unknown user config operation: {operation}")
+
+            duration = time.time() - start_time
+            self._update_metrics(operation, duration, True)
+
+            return result
+
+        except Exception as e:
+            duration = time.time() - start_time
+            self._update_metrics(operation, duration, False)
+
+            self.logger.error(
+                "User config operation failed",
+                operation=operation,
+                error=str(e),
+                args=args,
+                kwargs=kwargs,
+            )
+            raise
 
     def _load_from_file(self) -> Dict[str, Any]:
         """Load configuration from YAML or JSON file"""
@@ -311,6 +390,17 @@ def get_user_name(context: str = "default") -> str:
 def get_user_attribution() -> str:
     """Get user attribution string (e.g., 'Cantu's requirement')"""
     return get_user_identity().get_attribution()
+
+
+# Register UserConfigManager with the factory system
+try:
+    register_manager_type(
+        manager_type=ManagerType.USER_CONFIG,
+        manager_class=UserConfigManager,
+        description="User configuration management with environment variable support and interactive setup",
+    )
+except Exception:
+    pass
 
 
 if __name__ == "__main__":
