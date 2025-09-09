@@ -23,10 +23,10 @@ try:
     from ..core.base_manager import BaseManager, BaseManagerConfig, ManagerType
     from ..core.manager_factory import register_manager_type
     from ..core.constants.performance_constants import (
-        UnifiedQueryType, 
+        UnifiedQueryType,
         PERFORMANCE_CONSTANTS,
         get_performance_target,
-        get_memory_thresholds
+        get_memory_thresholds,
     )
     from .cache_manager import CacheManager, CacheLevel
     from .performance_monitor import PerformanceMonitor
@@ -185,20 +185,30 @@ class StrategicPerformanceManager(BaseManager):
             target_config = get_performance_target(query_type)
             self.performance_targets[query_type] = PerformanceTarget(
                 query_type=query_type,
-                target_ms=self.get_config(f"{query_type.value}_target_ms", target_config["target_ms"]),
+                target_ms=self.get_config(
+                    f"{query_type.value}_target_ms", target_config["target_ms"]
+                ),
                 warning_threshold_ms=target_config["warning_ms"],
                 critical_threshold_ms=target_config["target_ms"],
-                sla_percentage=self.get_config("sla_target_percentage", target_config["sla_percentage"]),
+                sla_percentage=self.get_config(
+                    "sla_target_percentage", target_config["sla_percentage"]
+                ),
             )
 
         # Initialize performance infrastructure with constants
-        self.cache_manager = CacheManager(max_memory_mb=PERFORMANCE_CONSTANTS.DEFAULT_CACHE_MEMORY_MB)
-        self.performance_monitor = PerformanceMonitor(retention_hours=PERFORMANCE_CONSTANTS.DEFAULT_RETENTION_HOURS)
+        self.cache_manager = CacheManager(
+            max_memory_mb=PERFORMANCE_CONSTANTS.DEFAULT_CACHE_MEMORY_MB
+        )
+        self.performance_monitor = PerformanceMonitor(
+            retention_hours=PERFORMANCE_CONSTANTS.DEFAULT_RETENTION_HOURS
+        )
 
         # Performance tracking for User Stories acceptance criteria
         self.query_results: List[QueryPerformanceResult] = []
-        self.memory_baseline_mb = self.get_config("memory_baseline_mb", PERFORMANCE_CONSTANTS.MEMORY_BASELINE_MB)
-        
+        self.memory_baseline_mb = self.get_config(
+            "memory_baseline_mb", PERFORMANCE_CONSTANTS.MEMORY_BASELINE_MB
+        )
+
         # Get memory thresholds from centralized constants
         self.memory_thresholds = get_memory_thresholds()
         self.optimization_enabled = self.get_config("optimization_enabled", True)
@@ -303,7 +313,9 @@ class StrategicPerformanceManager(BaseManager):
                 if cached_result is not None:
                     cache_hit = True
                     optimization_applied = "cache_hit"
-                    execution_time_ms = (time.time() - start_time) * PERFORMANCE_CONSTANTS.MS_TO_SECONDS
+                    execution_time_ms = (
+                        time.time() - start_time
+                    ) * PERFORMANCE_CONSTANTS.MS_TO_SECONDS
 
                     # Record performance result
                     result = QueryPerformanceResult(
@@ -345,7 +357,9 @@ class StrategicPerformanceManager(BaseManager):
                 optimization_applied = f"{optimization_applied},caching"
 
             # Calculate performance metrics
-            execution_time_ms = (time.time() - start_time) * PERFORMANCE_CONSTANTS.MS_TO_SECONDS
+            execution_time_ms = (
+                time.time() - start_time
+            ) * PERFORMANCE_CONSTANTS.MS_TO_SECONDS
             memory_after = self._get_memory_usage_mb()
 
             # Create performance result
@@ -378,7 +392,9 @@ class StrategicPerformanceManager(BaseManager):
             return query_result, result
 
         except Exception as e:
-            execution_time_ms = (time.time() - start_time) * PERFORMANCE_CONSTANTS.MS_TO_SECONDS
+            execution_time_ms = (
+                time.time() - start_time
+            ) * PERFORMANCE_CONSTANTS.MS_TO_SECONDS
             self.record_error(e)
             self.logger.error(f"Strategic query optimization failed: {e}")
 
@@ -492,7 +508,9 @@ class StrategicPerformanceManager(BaseManager):
 
             # Clear cache if memory pressure is high
             cache_cleared = False
-            if memory_before > (self.memory_baseline_mb * self.memory_thresholds["pressure_multiplier"]):  # Pressure threshold from constants
+            if memory_before > (
+                self.memory_baseline_mb * self.memory_thresholds["pressure_multiplier"]
+            ):  # Pressure threshold from constants
                 if self.cache_manager:
                     # Clear least recently used cache entries
                     asyncio.create_task(self.cache_manager.manage("cleanup"))
@@ -544,7 +562,10 @@ class StrategicPerformanceManager(BaseManager):
 
             # Calculate recent performance (last hour)
             recent_results = [
-                r for r in self.query_results if current_time - r.timestamp <= (PERFORMANCE_CONSTANTS.PERFORMANCE_HISTORY_HOURS * 3600)
+                r
+                for r in self.query_results
+                if current_time - r.timestamp
+                <= (PERFORMANCE_CONSTANTS.PERFORMANCE_HISTORY_HOURS * 3600)
             ]
 
             # Overall SLA compliance
@@ -562,7 +583,9 @@ class StrategicPerformanceManager(BaseManager):
                     "overall_percentage": overall_sla,
                     "target_percentage": PERFORMANCE_CONSTANTS.STRATEGIC_SLA_PERCENTAGE,
                     "status": (
-                        "meeting_target" if overall_sla >= PERFORMANCE_CONSTANTS.STRATEGIC_SLA_PERCENTAGE else "below_target"
+                        "meeting_target"
+                        if overall_sla >= PERFORMANCE_CONSTANTS.STRATEGIC_SLA_PERCENTAGE
+                        else "below_target"
                     ),
                     "by_query_type": {
                         qt.value: {
@@ -586,7 +609,8 @@ class StrategicPerformanceManager(BaseManager):
                 },
                 "performance_trends": performance_trends,
                 "business_impact": {
-                    "meeting_efficiency_target": overall_sla >= PERFORMANCE_CONSTANTS.STRATEGIC_SLA_PERCENTAGE,
+                    "meeting_efficiency_target": overall_sla
+                    >= PERFORMANCE_CONSTANTS.STRATEGIC_SLA_PERCENTAGE,
                     "executive_credibility_maintained": self.sla_metrics[
                         QueryType.EXECUTIVE_CRITICAL
                     ]["rate"]
@@ -637,13 +661,19 @@ class StrategicPerformanceManager(BaseManager):
 
                 # Run sample queries
                 query_times = []
-                for i in range(PERFORMANCE_CONSTANTS.BASELINE_TEST_ITERATIONS):  # Test queries per type
+                for i in range(
+                    PERFORMANCE_CONSTANTS.BASELINE_TEST_ITERATIONS
+                ):  # Test queries per type
                     start_time = time.time()
 
                     # Simulate query execution
-                    await asyncio.sleep(PERFORMANCE_CONSTANTS.BASELINE_TEST_SLEEP_MS)  # Minimal processing time
+                    await asyncio.sleep(
+                        PERFORMANCE_CONSTANTS.BASELINE_TEST_SLEEP_MS
+                    )  # Minimal processing time
 
-                    execution_time_ms = (time.time() - start_time) * PERFORMANCE_CONSTANTS.MS_TO_SECONDS
+                    execution_time_ms = (
+                        time.time() - start_time
+                    ) * PERFORMANCE_CONSTANTS.MS_TO_SECONDS
                     query_times.append(execution_time_ms)
 
                 # Calculate statistics
@@ -666,7 +696,10 @@ class StrategicPerformanceManager(BaseManager):
             memory_before = self._get_memory_usage_mb()
 
             # Simulate memory usage
-            test_data = [{"test": f"data_{i}"} for i in range(PERFORMANCE_CONSTANTS.BASELINE_TEST_ITERATIONS * 100)]
+            test_data = [
+                {"test": f"data_{i}"}
+                for i in range(PERFORMANCE_CONSTANTS.BASELINE_TEST_ITERATIONS * 100)
+            ]
 
             memory_after = self._get_memory_usage_mb()
             memory_growth = memory_after - memory_before
@@ -723,7 +756,9 @@ class StrategicPerformanceManager(BaseManager):
         try:
             process = psutil.Process()
             memory_info = process.memory_info()
-            return memory_info.rss / PERFORMANCE_CONSTANTS.BYTES_TO_MB  # Convert bytes to MB
+            return (
+                memory_info.rss / PERFORMANCE_CONSTANTS.BYTES_TO_MB
+            )  # Convert bytes to MB
         except:
             return 0.0
 
@@ -806,7 +841,10 @@ class StrategicPerformanceManager(BaseManager):
                 f"Memory usage exceeds baseline - optimization or scaling recommended."
             )
 
-        if memory_report.get("efficiency_rating", 100.0) < self.memory_thresholds["efficiency_threshold"]:
+        if (
+            memory_report.get("efficiency_rating", 100.0)
+            < self.memory_thresholds["efficiency_threshold"]
+        ):
             recommendations.append(
                 "Memory efficiency below 80% - investigate memory leaks or optimize algorithms."
             )

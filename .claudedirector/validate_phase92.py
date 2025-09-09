@@ -53,9 +53,9 @@ def validate_phase92_implementation():
         "monitor_memory_usage",
         "get_executive_dashboard",
         "BaseManager",
-        'PERFORMANCE_CONSTANTS.EXECUTIVE_TARGET_MS',  # Executive target from constants
-        'PERFORMANCE_CONSTANTS.STRATEGIC_TARGET_MS',  # Strategic target from constants  
-        'PERFORMANCE_CONSTANTS.MEMORY_BASELINE_MB',  # Memory baseline from constants
+        "PERFORMANCE_CONSTANTS.EXECUTIVE_TARGET_MS",  # Executive target from constants
+        "PERFORMANCE_CONSTANTS.STRATEGIC_TARGET_MS",  # Strategic target from constants
+        "PERFORMANCE_CONSTANTS.MEMORY_BASELINE_MB",  # Memory baseline from constants
     ]
 
     missing_components = []
@@ -72,26 +72,30 @@ def validate_phase92_implementation():
     print("\n🎯 User Story Requirements Validation:")
 
     # User Story 9.2.1 validation - Updated for constants-based approach
-    if 'PERFORMANCE_CONSTANTS.STRATEGIC_TARGET_MS' in content:
-        print("✅ User Story 9.2.1: <200ms strategic query target configured via constants")
+    if "PERFORMANCE_CONSTANTS.STRATEGIC_TARGET_MS" in content:
+        print(
+            "✅ User Story 9.2.1: <200ms strategic query target configured via constants"
+        )
     else:
         print("❌ User Story 9.2.1: Strategic query target not found")
         return False
 
-    if 'PERFORMANCE_CONSTANTS.EXECUTIVE_TARGET_MS' in content:
-        print("✅ User Story 9.2.1: <100ms executive query target configured via constants")
+    if "PERFORMANCE_CONSTANTS.EXECUTIVE_TARGET_MS" in content:
+        print(
+            "✅ User Story 9.2.1: <100ms executive query target configured via constants"
+        )
     else:
         print("❌ User Story 9.2.1: Executive query target not found")
         return False
 
-    if 'PERFORMANCE_CONSTANTS.STRATEGIC_SLA_PERCENTAGE' in content:
+    if "PERFORMANCE_CONSTANTS.STRATEGIC_SLA_PERCENTAGE" in content:
         print("✅ User Story 9.2.1: 95% SLA target configured via constants")
     else:
         print("❌ User Story 9.2.1: SLA target not configured")
         return False
 
     # User Story 9.2.2 validation - Updated for constants-based approach
-    if 'PERFORMANCE_CONSTANTS.MEMORY_BASELINE_MB' in content:
+    if "PERFORMANCE_CONSTANTS.MEMORY_BASELINE_MB" in content:
         print("✅ User Story 9.2.2: <100MB memory baseline configured via constants")
     else:
         print("❌ User Story 9.2.2: Memory baseline not configured")
