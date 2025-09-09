@@ -2,6 +2,7 @@
 Memory Optimizer for Phase 8 Performance
 
 Implements <50MB memory usage with object pooling and efficient resource management.
+Refactored to inherit from BaseManager for DRY compliance.
 """
 
 import gc
@@ -12,6 +13,17 @@ from dataclasses import dataclass
 from collections import defaultdict
 import logging
 import threading
+from pathlib import Path
+import sys
+
+# Import BaseManager infrastructure
+try:
+    from ..core.base_manager import BaseManager, BaseManagerConfig, ManagerType
+    from ..core.manager_factory import register_manager_type
+except ImportError:
+    sys.path.insert(0, str(Path(__file__).parent.parent))
+    from core.base_manager import BaseManager, BaseManagerConfig, ManagerType
+    from core.manager_factory import register_manager_type
 
 
 T = TypeVar("T")
@@ -80,7 +92,7 @@ class ObjectPool(Generic[T]):
         }
 
 
-class MemoryOptimizer:
+class MemoryOptimizer(BaseManager):
     """
     Enterprise-grade memory optimization for ClaudeDirector
 
@@ -90,12 +102,43 @@ class MemoryOptimizer:
     - Memory usage monitoring and alerting
     - Automatic memory pressure relief
     - <50MB target memory usage
+
+    Refactored to inherit from BaseManager for DRY compliance.
+    Eliminates duplicate logging, metrics, and configuration patterns.
     """
 
-    def __init__(self, target_memory_mb: int = 40, alert_threshold_mb: int = 45):
-        self.target_memory_mb = target_memory_mb
-        self.alert_threshold_mb = alert_threshold_mb
-        self.logger = logging.getLogger(__name__)
+    def __init__(
+        self,
+        config: Optional[BaseManagerConfig] = None,
+        target_memory_mb: int = 40,
+        alert_threshold_mb: int = 45,
+        cache: Optional[Dict[str, Any]] = None,
+        metrics: Optional[Dict[str, Any]] = None,
+        **kwargs,
+    ):
+        if config is None:
+            config = BaseManagerConfig(
+                manager_name="memory_optimizer",
+                manager_type=ManagerType.MEMORY,
+                enable_metrics=True,
+                enable_caching=True,
+                enable_logging=True,
+                performance_tracking=True,
+                custom_config={
+                    "target_memory_mb": target_memory_mb,
+                    "alert_threshold_mb": alert_threshold_mb,
+                },
+            )
+
+        super().__init__(config, cache, metrics, logger_name="MemoryOptimizer")
+
+        # Get configuration values from BaseManager config
+        self.target_memory_mb = self.config.custom_config.get(
+            "target_memory_mb", target_memory_mb
+        )
+        self.alert_threshold_mb = self.config.custom_config.get(
+            "alert_threshold_mb", alert_threshold_mb
+        )
 
         # Object pools for common expensive objects
         self.pools: Dict[str, ObjectPool] = {}
@@ -115,6 +158,48 @@ class MemoryOptimizer:
 
         # Initialize garbage collection optimization
         self._optimize_gc_settings()
+
+    def manage(self, operation: str, *args, **kwargs) -> Any:
+        """
+        Implement BaseManager abstract method for memory optimization operations
+        """
+        start_time = time.time()
+
+        try:
+            if operation == "create_pool":
+                result = self.create_object_pool(*args, **kwargs)
+            elif operation == "get_pool":
+                result = self.get_pool(*args, **kwargs)
+            elif operation == "force_gc":
+                result = self.force_gc(*args, **kwargs)
+            elif operation == "get_memory_usage":
+                result = self.get_memory_usage()
+            elif operation == "get_stats":
+                result = self.get_stats()
+            elif operation == "cleanup_memory":
+                result = self.cleanup_memory()
+            elif operation == "optimize_memory":
+                result = self.optimize_memory()
+            else:
+                raise ValueError(f"Unknown memory optimizer operation: {operation}")
+
+            duration = time.time() - start_time
+            self._update_metrics(operation, duration, True)
+
+            return result
+
+        except Exception as e:
+            duration = time.time() - start_time
+            self._update_metrics(operation, duration, False)
+
+            self.logger.error(
+                "Memory optimizer operation failed",
+                operation=operation,
+                error=str(e),
+                args=args,
+                kwargs=kwargs,
+            )
+            raise
 
     def _optimize_gc_settings(self):
         """Optimize garbage collection for performance"""
@@ -348,3 +433,14 @@ def create_list_pool(pool_name: str = "list_pool", max_size: int = 50) -> Object
 
     optimizer = get_memory_optimizer()
     return optimizer.create_object_pool(pool_name, list_factory, max_size)
+
+
+# Register MemoryOptimizer with the factory system
+try:
+    register_manager_type(
+        manager_type=ManagerType.MEMORY,
+        manager_class=MemoryOptimizer,
+        description="Enterprise-grade memory optimization with object pooling and GC management",
+    )
+except Exception:
+    pass

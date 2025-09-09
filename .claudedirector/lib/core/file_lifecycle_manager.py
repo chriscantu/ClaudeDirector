@@ -1,15 +1,27 @@
 """
-ClaudeDirector File Lifecycle Management System
-Provides user control over file generation, retention, and archiving in engineering-director-workspace
+PHASE 8.4: MASSIVE CONSOLIDATION - File Lifecycle Manager
+BaseManager consolidation for NET code reduction
+
+ELIMINATED: Manual logging and infrastructure patterns
+CONSOLIDATED: FileLifecycleManager → FileLifecycleManager(BaseManager)
+NET REDUCTION TARGET: 50+ lines through BaseManager adoption
+
+Original file lifecycle capabilities maintained:
+- User control over file generation, retention, and archiving
+- Engineering director workspace management
+- Strategic file lifecycle automation
 """
 
 import yaml
 import json
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass
 from enum import Enum
+
+# PHASE 8.4: BaseManager consolidation imports
+from .base_manager import BaseManager, BaseManagerConfig, ManagerType
 
 
 class GenerationMode(Enum):
@@ -58,10 +70,27 @@ class WorkspaceConfig:
     max_session_files: int = 5  # Trigger consolidation prompt
 
 
-class FileLifecycleManager:
-    """Manages file creation, retention, and archiving in engineering-director-workspace"""
+class FileLifecycleManager(BaseManager):
+    """
+    PHASE 8.4: File Lifecycle Manager with BaseManager consolidation
+    Manages file creation, retention, and archiving in engineering-director-workspace
+    """
 
     def __init__(self, workspace_path: str) -> None:
+        """
+        PHASE 8.4: BaseManager consolidation - eliminates manual logging and infrastructure
+        """
+        # PHASE 8.4: BaseManager initialization eliminates duplicate infrastructure
+        config = BaseManagerConfig(
+            manager_name="file_lifecycle_manager",
+            manager_type=ManagerType.CORE,
+            enable_metrics=True,
+            enable_caching=True,
+            enable_logging=True,
+            custom_config={"workspace_path": workspace_path},
+        )
+        super().__init__(config)
+
         self.workspace_path = Path(workspace_path)
         self.config_file = self.workspace_path / "config" / "file_lifecycle.yaml"
         self.metadata_file = (
@@ -69,6 +98,29 @@ class FileLifecycleManager:
         )
         self.config = self._load_config()
         self.metadata_store = self._load_metadata()
+
+        self.logger.info(
+            f"FileLifecycleManager initialized for workspace: {workspace_path}"
+        )
+
+    async def manage(self, operation: str, *args, **kwargs) -> Any:
+        """
+        BaseManager abstract method implementation
+        Delegates to file lifecycle operations
+        """
+        if operation == "create_file":
+            return self.create_file(*args, **kwargs)
+        elif operation == "archive_files":
+            return self.archive_old_files(*args, **kwargs)
+        elif operation == "retain_file":
+            return self.mark_for_retention(*args, **kwargs)
+        elif operation == "cleanup_workspace":
+            return self.cleanup_workspace(*args, **kwargs)
+        elif operation == "get_workspace_stats":
+            return self.get_workspace_statistics()
+        else:
+            self.logger.warning(f"Unknown file lifecycle operation: {operation}")
+            return None
 
         # Ensure required directories exist
         self._ensure_directories()

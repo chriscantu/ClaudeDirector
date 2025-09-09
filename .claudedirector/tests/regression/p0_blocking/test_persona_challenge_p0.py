@@ -36,7 +36,9 @@ try:
         ChallengeType,
         strategic_challenge_framework,
     )
-    from core.persona_enhancement_engine import PersonaEnhancementEngine
+    from core.enhanced_persona_manager import (
+        create_persona_enhancement_engine as PersonaEnhancementEngine,
+    )
     from core.complexity_analyzer import AnalysisComplexityDetector
 except ImportError as e:
     print(f"🚨 IMPORT ERROR: {e}")

@@ -25,9 +25,9 @@ try:
         ObjectPool,
     )
 
-    # Updated import for unified performance manager
-    from claudedirector.lib.core.unified_performance_manager import (
-        UnifiedPerformanceManager,
+    # Updated import for unified data performance manager (Phase 8.4 consolidation)
+    from claudedirector.lib.core.unified_data_performance_manager import (
+        UnifiedDataPerformanceManager as UnifiedPerformanceManager,
         PerformanceTarget,
         create_response_optimizer,  # Legacy compatibility
     )
@@ -38,9 +38,9 @@ except ImportError:
     from lib.performance.cache_manager import CacheManager, CacheLevel
     from lib.performance.memory_optimizer import MemoryOptimizer, ObjectPool
 
-    # Updated import for unified performance manager
-    from lib.core.unified_performance_manager import (
-        UnifiedPerformanceManager,
+    # Updated import for unified data performance manager (Phase 8.4 consolidation)
+    from lib.core.unified_data_performance_manager import (
+        UnifiedDataPerformanceManager as UnifiedPerformanceManager,
         PerformanceTarget,
         create_response_optimizer,  # Legacy compatibility
     )
