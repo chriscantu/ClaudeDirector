@@ -25,6 +25,7 @@ from enum import Enum
 
 class FrameworkCategory(Enum):
     """Framework categorization for enhanced detection"""
+
     ORGANIZATIONAL = "organizational"
     STRATEGIC = "strategic"
     DECISION_MAKING = "decision_making"
@@ -35,6 +36,7 @@ class FrameworkCategory(Enum):
 @dataclass
 class FrameworkPatternConfig:
     """Centralized framework pattern configuration"""
+
     patterns: List[str]
     weight: float
     context_boost_terms: List[str]
@@ -47,101 +49,161 @@ class FrameworkPatternConfig:
 class FrameworkDetectionConstants:
     """
     🏗️ DRY PRINCIPLE: Single Source of Truth for Framework Detection
-    
+
     Eliminates duplicate pattern definitions across:
-    - _pattern_based_detection() 
+    - _pattern_based_detection()
     - _semantic_detection()
     - _extract_strategic_elements()
     """
-    
+
     # === CENTRALIZED FRAMEWORK PATTERNS ===
-    
+
     FRAMEWORK_PATTERNS: Dict[str, FrameworkPatternConfig] = {
         "Team Topologies": FrameworkPatternConfig(
-            patterns=["team topology", "cognitive load", "stream-aligned", "platform team", "enabling team"],
+            patterns=[
+                "team topology",
+                "cognitive load",
+                "stream-aligned",
+                "platform team",
+                "enabling team",
+            ],
             weight=0.9,
             context_boost_terms=["organizational", "teams", "structure"],
             category=FrameworkCategory.ORGANIZATIONAL,
-            semantic_concepts=["team", "organization", "structure", "responsibility", "boundary"]
+            semantic_concepts=[
+                "team",
+                "organization",
+                "structure",
+                "responsibility",
+                "boundary",
+            ],
         ),
-        
         "Good Strategy Bad Strategy": FrameworkPatternConfig(
-            patterns=["strategy kernel", "coherent action", "strategic", "competitive advantage"],
+            patterns=[
+                "strategy kernel",
+                "coherent action",
+                "strategic",
+                "competitive advantage",
+            ],
             weight=0.85,
             context_boost_terms=["strategy", "planning", "business"],
             category=FrameworkCategory.STRATEGIC,
-            semantic_concepts=["strategy", "goal", "objective", "competitive", "advantage", "position"]
+            semantic_concepts=[
+                "strategy",
+                "goal",
+                "objective",
+                "competitive",
+                "advantage",
+                "position",
+            ],
         ),
-        
         "Capital Allocation Framework": FrameworkPatternConfig(
-            patterns=["capital allocation", "investment", "roi", "resource allocation", "budget"],
+            patterns=[
+                "capital allocation",
+                "investment",
+                "roi",
+                "resource allocation",
+                "budget",
+            ],
             weight=0.8,
             context_boost_terms=["financial", "investment", "resource"],
             category=FrameworkCategory.STRATEGIC,
-            semantic_concepts=["resource", "investment", "allocation", "priority", "budget", "return"]
+            semantic_concepts=[
+                "resource",
+                "investment",
+                "allocation",
+                "priority",
+                "budget",
+                "return",
+            ],
         ),
-        
         "WRAP Framework": FrameworkPatternConfig(
-            patterns=["wrap framework", "decision making", "widen options", "reality test"],
+            patterns=[
+                "wrap framework",
+                "decision making",
+                "widen options",
+                "reality test",
+            ],
             weight=0.85,
             context_boost_terms=["decision", "choice", "options"],
             category=FrameworkCategory.DECISION_MAKING,
-            semantic_concepts=["decision", "option", "alternative", "choice", "evaluate", "test"]
+            semantic_concepts=[
+                "decision",
+                "option",
+                "alternative",
+                "choice",
+                "evaluate",
+                "test",
+            ],
         ),
-        
         "Crucial Conversations": FrameworkPatternConfig(
-            patterns=["crucial conversation", "difficult conversation", "dialogue", "mutual respect"],
+            patterns=[
+                "crucial conversation",
+                "difficult conversation",
+                "dialogue",
+                "mutual respect",
+            ],
             weight=0.8,
             context_boost_terms=["communication", "conflict", "stakeholder"],
             category=FrameworkCategory.COMMUNICATION,
-            semantic_concepts=["communication", "dialogue", "conversation", "conflict", "stakeholder", "agreement"]
-        )
+            semantic_concepts=[
+                "communication",
+                "dialogue",
+                "conversation",
+                "conflict",
+                "stakeholder",
+                "agreement",
+            ],
+        ),
     }
-    
+
     # === STRATEGIC CONTEXT INDICATORS ===
-    
+
     STRATEGIC_CONTEXT_INDICATORS: Dict[str, List[str]] = {
         "organizational": ["team", "organization", "structure", "people"],
         "financial": ["budget", "cost", "investment", "roi", "revenue"],
         "operational": ["process", "efficiency", "performance", "quality"],
         "strategic": ["strategy", "vision", "goal", "objective", "competitive"],
-        "technical": ["technology", "platform", "architecture", "system"]
+        "technical": ["technology", "platform", "architecture", "system"],
     }
-    
+
     # === DETECTION CONFIGURATION ===
-    
+
     DETECTION_CONFIG = {
         "confidence_weights": {
             "pattern_match": 0.4,
             "semantic_match": 0.25,
             "context_relevance": 0.2,
             "historical_accuracy": 0.1,
-            "complexity_bonus": 0.05
+            "complexity_bonus": 0.05,
         },
         "bonus_thresholds": {
             "method_diversity_max": 0.15,
             "evidence_accumulation_max": 0.10,
-            "complexity_bonus_max": 0.10
+            "complexity_bonus_max": 0.10,
         },
         "quality_scoring": {
             "comprehensiveness": 0.25,
             "strategic_depth": 0.25,
             "actionability": 0.2,
             "evidence_quality": 0.15,
-            "executive_readiness": 0.15
-        }
+            "executive_readiness": 0.15,
+        },
     }
-    
+
     # === UTILITY METHODS ===
-    
+
     @classmethod
-    def get_framework_by_category(cls, category: FrameworkCategory) -> Dict[str, FrameworkPatternConfig]:
+    def get_framework_by_category(
+        cls, category: FrameworkCategory
+    ) -> Dict[str, FrameworkPatternConfig]:
         """Get frameworks filtered by category"""
         return {
-            name: config for name, config in cls.FRAMEWORK_PATTERNS.items()
+            name: config
+            for name, config in cls.FRAMEWORK_PATTERNS.items()
             if config.category == category
         }
-    
+
     @classmethod
     def get_all_patterns(cls) -> List[str]:
         """Get all framework patterns for validation"""
@@ -149,7 +211,7 @@ class FrameworkDetectionConstants:
         for config in cls.FRAMEWORK_PATTERNS.values():
             all_patterns.extend(config.patterns)
         return all_patterns
-    
+
     @classmethod
     def get_all_semantic_concepts(cls) -> List[str]:
         """Get all semantic concepts for validation"""
@@ -157,46 +219,53 @@ class FrameworkDetectionConstants:
         for config in cls.FRAMEWORK_PATTERNS.values():
             all_concepts.extend(config.semantic_concepts)
         return list(set(all_concepts))  # Remove duplicates
-    
+
     @classmethod
     def validate_framework_coverage(cls, content: str) -> Dict[str, Any]:
         """Validate framework pattern coverage for testing"""
         content_lower = content.lower()
-        
+
         coverage_stats = {
             "total_frameworks": len(cls.FRAMEWORK_PATTERNS),
             "patterns_found": 0,
             "concepts_found": 0,
             "context_indicators_found": 0,
-            "coverage_percentage": 0.0
+            "coverage_percentage": 0.0,
         }
-        
+
         # Count pattern matches
         for pattern in cls.get_all_patterns():
             if pattern in content_lower:
                 coverage_stats["patterns_found"] += 1
-        
-        # Count concept matches  
+
+        # Count concept matches
         for concept in cls.get_all_semantic_concepts():
             if concept in content_lower:
                 coverage_stats["concepts_found"] += 1
-        
+
         # Count context indicators
         for indicators in cls.STRATEGIC_CONTEXT_INDICATORS.values():
             for indicator in indicators:
                 if indicator in content_lower:
                     coverage_stats["context_indicators_found"] += 1
                     break  # Only count once per category
-        
+
         # Calculate coverage percentage
-        total_possible = len(cls.get_all_patterns()) + len(cls.get_all_semantic_concepts())
-        total_found = coverage_stats["patterns_found"] + coverage_stats["concepts_found"]
-        coverage_stats["coverage_percentage"] = (total_found / total_possible) * 100 if total_possible > 0 else 0
-        
+        total_possible = len(cls.get_all_patterns()) + len(
+            cls.get_all_semantic_concepts()
+        )
+        total_found = (
+            coverage_stats["patterns_found"] + coverage_stats["concepts_found"]
+        )
+        coverage_stats["coverage_percentage"] = (
+            (total_found / total_possible) * 100 if total_possible > 0 else 0
+        )
+
         return coverage_stats
 
 
 # === FACTORY FUNCTIONS ===
+
 
 def get_framework_patterns() -> Dict[str, FrameworkPatternConfig]:
     """Factory function to get framework patterns"""
