@@ -33,6 +33,7 @@ try:
 except ImportError:
     # Fallback for test environments
     import sys
+
     sys.path.insert(0, str(Path(__file__).parent.parent))
     try:
         from core.base_processor import BaseProcessor, BaseProcessorConfig
@@ -44,10 +45,11 @@ except ImportError:
                 self.logger = logging.getLogger(__name__)
                 self.cache = {}
                 self.metrics = {}
-        
+
         class BaseProcessorConfig:
             def __init__(self, config=None):
                 self.config = config or {}
+
             def get(self, key, default=None):
                 return self.config.get(key, default)
 
@@ -615,14 +617,14 @@ class RealTimeBottleneckDetector:
 class RealTimeMonitor(BaseProcessor):
     """
     🏗️ PHASE 9.1: Real-time monitoring system with BaseProcessor inheritance
-    
+
     Main real-time monitoring system for team interactions following
     PROJECT_STRUCTURE.md architectural compliance and BLOAT_PREVENTION_SYSTEM.md
     DRY principles.
 
     Coordinates event processing, alert generation, and notification delivery
     to provide proactive team coordination issue detection with <5min latency.
-    
+
     ARCHITECTURAL COMPLIANCE:
     - ✅ Inherits from BaseProcessor (eliminates ~200 lines of duplicate code)
     - ✅ Follows DRY principles (no duplication with existing processors)
@@ -633,7 +635,7 @@ class RealTimeMonitor(BaseProcessor):
     def __init__(self, config: Optional[Dict[str, Any]] = None, **kwargs):
         """
         🎯 PHASE 9.1: Initialize with BaseProcessor pattern compliance
-        
+
         Eliminates duplicate initialization patterns using BaseProcessor
         inheritance, following PROJECT_STRUCTURE.md requirements.
 
@@ -647,13 +649,17 @@ class RealTimeMonitor(BaseProcessor):
             enable_cache=True,  # Enable caching for performance optimization
             enable_metrics=True,  # Enable metrics for <5min latency tracking
             logger_name=f"{__name__}.RealTimeMonitor",
-            **kwargs
+            **kwargs,
         )
-        
+
         # Phase 9.1 specific configuration with performance targets
-        self.detection_latency_target = self.get_config("detection_latency_seconds", 300)  # 5 minutes
-        self.performance_monitoring_enabled = self.get_config("performance_monitoring", True)
-        
+        self.detection_latency_target = self.get_config(
+            "detection_latency_seconds", 300
+        )  # 5 minutes
+        self.performance_monitoring_enabled = self.get_config(
+            "performance_monitoring", True
+        )
+
         # Initialize monitoring components
         config_dict = config or {}
         self.event_processor = EventProcessor(config_dict)
@@ -673,31 +679,33 @@ class RealTimeMonitor(BaseProcessor):
         self.latency_violations = 0  # Track <5min SLA violations
 
         self.logger.info("🏗️ RealTimeMonitor initialized with BaseProcessor compliance")
-    
-    def process_event_with_latency_tracking(self, event: TeamEvent) -> Optional[List[Alert]]:
+
+    def process_event_with_latency_tracking(
+        self, event: TeamEvent
+    ) -> Optional[List[Alert]]:
         """
         🎯 PHASE 9.1: Process event with <5min latency tracking
-        
+
         Core processing method that implements the <5 minute detection latency
         requirement from User Story 9.1.1: Executive Bottleneck Visibility.
-        
+
         PERFORMANCE TARGETS:
         - Detection latency: <5 minutes (300 seconds)
         - SLA compliance: 95% of events processed within target
         - Latency violation tracking for continuous improvement
-        
+
         Args:
             event: TeamEvent to process for bottleneck detection
-            
+
         Returns:
             List of alerts generated, None if no alerts
         """
         start_time = time.time()
-        
+
         try:
             # Use BaseProcessor caching for performance optimization
             cache_key = f"event_{event.event_id}_{event.event_type.value}"
-            
+
             # Check cache first (BaseProcessor pattern)
             if self.cache and cache_key in self.cache:
                 self.record_cache_hit()
@@ -705,73 +713,79 @@ class RealTimeMonitor(BaseProcessor):
                 processing_time = time.time() - start_time
                 self._update_latency_metrics(processing_time)
                 return cached_result
-            
+
             # Process event through bottleneck detector
             alerts = self.bottleneck_detector.detect_bottlenecks([event])
-            
+
             # Cache result for performance (BaseProcessor pattern)
             if self.cache:
                 self.cache[cache_key] = alerts
                 self.record_cache_miss()
-            
+
             # Track processing latency
             processing_time = time.time() - start_time
             self._update_latency_metrics(processing_time)
-            
+
             # Update BaseProcessor metrics
             if self.metrics:
                 self.metrics["operations"] += 1
                 self.metrics["average_processing_time"] = (
-                    (self.metrics["average_processing_time"] * (self.metrics["operations"] - 1) 
-                     + processing_time) / self.metrics["operations"]
-                )
+                    self.metrics["average_processing_time"]
+                    * (self.metrics["operations"] - 1)
+                    + processing_time
+                ) / self.metrics["operations"]
                 self.metrics["last_updated"] = datetime.now()
-            
+
             self.events_processed += 1
             if alerts:
                 self.alerts_generated += len(alerts)
-            
+
             return alerts
-            
+
         except Exception as e:
             self.record_error(e)
             processing_time = time.time() - start_time
             self._update_latency_metrics(processing_time)
             self.logger.error(f"Error processing event {event.event_id}: {e}")
             return None
-    
+
     def _update_latency_metrics(self, processing_time: float) -> None:
         """Update latency metrics and track SLA violations"""
         # Update average detection latency
         if self.events_processed > 0:
             self.average_detection_latency = (
-                (self.average_detection_latency * (self.events_processed - 1) 
-                 + processing_time) / self.events_processed
-            )
+                self.average_detection_latency * (self.events_processed - 1)
+                + processing_time
+            ) / self.events_processed
         else:
             self.average_detection_latency = processing_time
-        
+
         # Track SLA violations (>5 minutes)
         if processing_time > self.detection_latency_target:
             self.latency_violations += 1
             self.logger.warning(
                 f"⚠️ Latency SLA violation: {processing_time:.2f}s > {self.detection_latency_target}s"
             )
-    
+
     def get_performance_metrics(self) -> Dict[str, Any]:
         """
         🎯 PHASE 9.1: Get performance metrics for executive dashboard
-        
+
         Returns comprehensive performance metrics including latency tracking
         for User Story 9.1.1 executive visibility requirements.
         """
-        base_metrics = super().get_metrics() if hasattr(super(), 'get_metrics') else {}
-        
+        base_metrics = super().get_metrics() if hasattr(super(), "get_metrics") else {}
+
         sla_compliance_rate = (
-            ((self.events_processed - self.latency_violations) / self.events_processed * 100)
-            if self.events_processed > 0 else 100.0
+            (
+                (self.events_processed - self.latency_violations)
+                / self.events_processed
+                * 100
+            )
+            if self.events_processed > 0
+            else 100.0
         )
-        
+
         return {
             **base_metrics,
             "detection_latency_target_seconds": self.detection_latency_target,

@@ -22,6 +22,7 @@ except ImportError:
     # Fallback for test environments
     import sys
     from pathlib import Path
+
     sys.path.insert(0, str(Path(__file__).parent.parent.parent))
     try:
         from core.base_processor import BaseProcessor, BaseProcessorConfig
@@ -33,12 +34,14 @@ except ImportError:
                 self.logger = logging.getLogger(__name__)
                 self.cache = {}
                 self.metrics = {}
-        
+
         class BaseProcessorConfig:
             def __init__(self, config=None):
                 self.config = config or {}
+
             def get(self, key, default=None):
                 return self.config.get(key, default)
+
 
 # Import from Real-Time Intelligence foundation
 try:
@@ -76,14 +79,14 @@ logger = logging.getLogger(__name__)
 class MLPatternEngine(BaseProcessor):
     """
     🏗️ PHASE 9.1: ML Pattern Engine with BaseProcessor inheritance
-    
+
     Advanced machine learning engine for team collaboration pattern detection following
     PROJECT_STRUCTURE.md architectural compliance and BLOAT_PREVENTION_SYSTEM.md
     DRY principles.
 
     Uses supervised learning with historical data to predict collaboration outcomes
     with 85%+ accuracy target from User Story 9.1.3: Predictive Team Success Analytics.
-    
+
     ARCHITECTURAL COMPLIANCE:
     - ✅ Inherits from BaseProcessor (eliminates ~150 lines of duplicate code)
     - ✅ Follows DRY principles (no duplication with existing ML components)
@@ -94,7 +97,7 @@ class MLPatternEngine(BaseProcessor):
     def __init__(self, config: Optional[Dict[str, Any]] = None, **kwargs):
         """
         🎯 PHASE 9.1: Initialize with BaseProcessor pattern compliance
-        
+
         Eliminates duplicate initialization patterns using BaseProcessor
         inheritance, following PROJECT_STRUCTURE.md requirements.
 
@@ -108,14 +111,18 @@ class MLPatternEngine(BaseProcessor):
             enable_cache=True,  # Enable caching for ML model performance
             enable_metrics=True,  # Enable metrics for 85%+ accuracy tracking
             logger_name=f"{__name__}.MLPatternEngine",
-            **kwargs
+            **kwargs,
         )
-        
+
         # Phase 9.1 specific configuration with accuracy targets
         self.accuracy_target = self.get_config("accuracy_target", 0.85)  # 85% minimum
-        self.prediction_timeout_seconds = self.get_config("prediction_timeout", 5)  # <5s response
-        self.model_retraining_threshold = self.get_config("retraining_threshold", 0.8)  # Retrain if accuracy drops below 80%
-        
+        self.prediction_timeout_seconds = self.get_config(
+            "prediction_timeout", 5
+        )  # <5s response
+        self.model_retraining_threshold = self.get_config(
+            "retraining_threshold", 0.8
+        )  # Retrain if accuracy drops below 80%
+
         # Initialize ML components
         config_dict = config or {}
         self.feature_extractor = TeamFeatureExtractor(config_dict)
@@ -132,17 +139,17 @@ class MLPatternEngine(BaseProcessor):
         self.prediction_successes = 0
 
         self.logger.info("🏗️ MLPatternEngine initialized with BaseProcessor compliance")
-    
+
     def process(self, data: Any) -> Any:
         """
         🏗️ PHASE 9.1: BaseProcessor abstract method implementation
-        
+
         Required abstract method from BaseProcessor. Routes processing requests
         to the appropriate ML prediction methods based on data type.
-        
+
         Args:
             data: Input data for processing (team composition + context)
-            
+
         Returns:
             CollaborationPrediction result
         """
@@ -155,10 +162,14 @@ class MLPatternEngine(BaseProcessor):
                     team_composition, initiative_context
                 )
             elif isinstance(data, (list, tuple)) and len(data) >= 2:
-                return self.predict_collaboration_with_accuracy_tracking(data[0], data[1])
+                return self.predict_collaboration_with_accuracy_tracking(
+                    data[0], data[1]
+                )
             else:
                 # Fallback for unexpected input
-                self.logger.warning(f"Unexpected input format for process(): {type(data)}")
+                self.logger.warning(
+                    f"Unexpected input format for process(): {type(data)}"
+                )
                 return self.predict_collaboration_with_accuracy_tracking([], {})
         except Exception as e:
             self.record_error(e)
@@ -168,36 +179,36 @@ class MLPatternEngine(BaseProcessor):
                 confidence_score=0.0,
                 risk_factors=["processing_error"],
                 recommendations=["Manual assessment recommended"],
-                prediction_metadata={"error": str(e)}
+                prediction_metadata={"error": str(e)},
             )
-    
+
     def predict_collaboration_with_accuracy_tracking(
         self, team_composition: List[str], initiative_context: Dict[str, Any]
     ) -> CollaborationPrediction:
         """
         🎯 PHASE 9.1: Predict collaboration with 85%+ accuracy tracking
-        
+
         Enhanced prediction method that implements the 85%+ accuracy requirement
         from User Story 9.1.3: Predictive Team Success Analytics.
-        
+
         PERFORMANCE TARGETS:
         - Prediction accuracy: 85%+ (minimum threshold)
         - Response time: <5 seconds for prediction
         - Model retraining: Triggered if accuracy drops below 80%
-        
+
         Args:
             team_composition: List of team member identifiers
             initiative_context: Context information about the initiative
-            
+
         Returns:
             CollaborationPrediction with accuracy tracking and confidence metrics
         """
         start_time = time.time()
-        
+
         try:
             # Use BaseProcessor caching for performance optimization
             cache_key = f"prediction_{hash(str(team_composition))}_{hash(str(initiative_context))}"
-            
+
             # Check cache first (BaseProcessor pattern)
             if self.cache and cache_key in self.cache:
                 self.record_cache_hit()
@@ -205,125 +216,149 @@ class MLPatternEngine(BaseProcessor):
                 processing_time = time.time() - start_time
                 self._update_accuracy_metrics(cached_result, processing_time)
                 return cached_result
-            
+
             # Generate prediction using existing logic
-            prediction = self.predict_collaboration_success(team_composition, initiative_context)
-            
+            prediction = self.predict_collaboration_success(
+                team_composition, initiative_context
+            )
+
             # Enhance prediction with accuracy tracking
-            enhanced_prediction = self._enhance_prediction_with_accuracy_metrics(prediction)
-            
+            enhanced_prediction = self._enhance_prediction_with_accuracy_metrics(
+                prediction
+            )
+
             # Cache result for performance (BaseProcessor pattern)
             if self.cache:
                 self.cache[cache_key] = enhanced_prediction
                 self.record_cache_miss()
-            
+
             # Track processing time and accuracy
             processing_time = time.time() - start_time
             self._update_accuracy_metrics(enhanced_prediction, processing_time)
-            
+
             # Update BaseProcessor metrics
             if self.metrics:
                 self.metrics["operations"] += 1
                 self.metrics["average_processing_time"] = (
-                    (self.metrics["average_processing_time"] * (self.metrics["operations"] - 1) 
-                     + processing_time) / self.metrics["operations"]
-                )
+                    self.metrics["average_processing_time"]
+                    * (self.metrics["operations"] - 1)
+                    + processing_time
+                ) / self.metrics["operations"]
                 self.metrics["last_updated"] = datetime.now()
-            
+
             # Check if retraining is needed
             if self.current_accuracy < self.model_retraining_threshold:
                 self.logger.warning(
                     f"⚠️ Model accuracy ({self.current_accuracy:.3f}) below threshold "
                     f"({self.model_retraining_threshold}). Retraining recommended."
                 )
-            
+
             self.prediction_count += 1
             return enhanced_prediction
-            
+
         except Exception as e:
             self.record_error(e)
             processing_time = time.time() - start_time
             self.logger.error(f"Error in ML prediction: {e}")
-            
+
             # Return fallback prediction
             fallback_prediction = CollaborationPrediction(
                 success_probability=0.5,  # Neutral fallback
                 confidence_score=0.0,
                 risk_factors=["prediction_error"],
-                recommendations=["Manual assessment recommended due to prediction error"],
-                prediction_metadata={"error": str(e), "processing_time": processing_time}
+                recommendations=[
+                    "Manual assessment recommended due to prediction error"
+                ],
+                prediction_metadata={
+                    "error": str(e),
+                    "processing_time": processing_time,
+                },
             )
             return fallback_prediction
-    
-    def _enhance_prediction_with_accuracy_metrics(self, prediction: CollaborationPrediction) -> CollaborationPrediction:
+
+    def _enhance_prediction_with_accuracy_metrics(
+        self, prediction: CollaborationPrediction
+    ) -> CollaborationPrediction:
         """Enhance prediction with accuracy and confidence metrics"""
         # Add accuracy tracking to metadata
         enhanced_metadata = prediction.prediction_metadata.copy()
-        enhanced_metadata.update({
-            "model_accuracy": self.current_accuracy,
-            "accuracy_target": self.accuracy_target,
-            "meets_accuracy_target": self.current_accuracy >= self.accuracy_target,
-            "prediction_count": self.prediction_count,
-            "model_last_trained": self.last_training_time.isoformat() if self.last_training_time else None,
-        })
-        
+        enhanced_metadata.update(
+            {
+                "model_accuracy": self.current_accuracy,
+                "accuracy_target": self.accuracy_target,
+                "meets_accuracy_target": self.current_accuracy >= self.accuracy_target,
+                "prediction_count": self.prediction_count,
+                "model_last_trained": (
+                    self.last_training_time.isoformat()
+                    if self.last_training_time
+                    else None
+                ),
+            }
+        )
+
         # Adjust confidence based on model accuracy
         accuracy_adjustment = min(1.0, self.current_accuracy / self.accuracy_target)
         adjusted_confidence = prediction.confidence_score * accuracy_adjustment
-        
+
         return CollaborationPrediction(
             success_probability=prediction.success_probability,
             confidence_score=adjusted_confidence,
             risk_factors=prediction.risk_factors,
             recommendations=prediction.recommendations,
-            prediction_metadata=enhanced_metadata
+            prediction_metadata=enhanced_metadata,
         )
-    
-    def _update_accuracy_metrics(self, prediction: CollaborationPrediction, processing_time: float) -> None:
+
+    def _update_accuracy_metrics(
+        self, prediction: CollaborationPrediction, processing_time: float
+    ) -> None:
         """Update accuracy metrics and performance tracking"""
         # Simulate accuracy calculation (in production, this would use actual outcomes)
         # For Phase 9.1, we'll use confidence score as a proxy for accuracy
         simulated_accuracy = min(0.95, 0.8 + (prediction.confidence_score * 0.15))
-        
+
         # Update running accuracy average
         if self.prediction_count > 0:
             self.current_accuracy = (
-                (self.current_accuracy * self.prediction_count + simulated_accuracy) 
-                / (self.prediction_count + 1)
-            )
+                self.current_accuracy * self.prediction_count + simulated_accuracy
+            ) / (self.prediction_count + 1)
         else:
             self.current_accuracy = simulated_accuracy
-        
+
         # Track accuracy history
-        self.accuracy_history.append({
-            "timestamp": datetime.now(),
-            "accuracy": simulated_accuracy,
-            "processing_time": processing_time
-        })
-        
+        self.accuracy_history.append(
+            {
+                "timestamp": datetime.now(),
+                "accuracy": simulated_accuracy,
+                "processing_time": processing_time,
+            }
+        )
+
         # Keep only last 100 accuracy measurements
         if len(self.accuracy_history) > 100:
             self.accuracy_history = self.accuracy_history[-100:]
-    
+
     def get_accuracy_metrics(self) -> Dict[str, Any]:
         """
         🎯 PHASE 9.1: Get accuracy metrics for executive dashboard
-        
+
         Returns comprehensive accuracy metrics for User Story 9.1.3
         executive visibility requirements.
         """
-        base_metrics = super().get_metrics() if hasattr(super(), 'get_metrics') else {}
-        
+        base_metrics = super().get_metrics() if hasattr(super(), "get_metrics") else {}
+
         accuracy_compliance_rate = (
             (self.current_accuracy / self.accuracy_target * 100)
-            if self.accuracy_target > 0 else 100.0
+            if self.accuracy_target > 0
+            else 100.0
         )
-        
+
         recent_accuracy = (
-            sum(h["accuracy"] for h in self.accuracy_history[-10:]) / min(10, len(self.accuracy_history))
-            if self.accuracy_history else self.current_accuracy
+            sum(h["accuracy"] for h in self.accuracy_history[-10:])
+            / min(10, len(self.accuracy_history))
+            if self.accuracy_history
+            else self.current_accuracy
         )
-        
+
         return {
             **base_metrics,
             "accuracy_target": self.accuracy_target,
@@ -333,8 +368,11 @@ class MLPatternEngine(BaseProcessor):
             "meets_accuracy_target": self.current_accuracy >= self.accuracy_target,
             "predictions_made": self.prediction_count,
             "training_sessions": self.training_count,
-            "last_training": self.last_training_time.isoformat() if self.last_training_time else None,
-            "retraining_needed": self.current_accuracy < self.model_retraining_threshold,
+            "last_training": (
+                self.last_training_time.isoformat() if self.last_training_time else None
+            ),
+            "retraining_needed": self.current_accuracy
+            < self.model_retraining_threshold,
         }
 
     def predict_collaboration_success(
