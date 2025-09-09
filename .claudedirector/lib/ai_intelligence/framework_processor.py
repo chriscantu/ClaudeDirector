@@ -740,9 +740,9 @@ class FrameworkProcessor:
         # Method 2: Enhanced pattern matching using centralized constants and utilities
         try:
             from ..core.constants import ML_CONFIG, FRAMEWORK_REGISTRY  # Use existing centralized constants
-            from ..utils.pattern_utils import (
+            from ..utils.formatting import (
                 match_patterns_in_content,
-            )  # Use existing utils directory
+            )  # Use consolidated formatting utilities
 
             # Use existing framework registry instead of duplicate constants
             framework_patterns = FRAMEWORK_REGISTRY.get_all_frameworks()
@@ -808,7 +808,7 @@ class FrameworkProcessor:
         """
         try:
             from ..core.constants import ML_CONFIG, FRAMEWORK_REGISTRY
-            from ..utils.pattern_utils import calculate_semantic_matches
+            from ..utils.formatting import calculate_semantic_matches
 
             # Use existing framework registry instead of duplicating constants
             framework_patterns = FRAMEWORK_REGISTRY.get_all_frameworks()
