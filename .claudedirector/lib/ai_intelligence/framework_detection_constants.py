@@ -169,27 +169,62 @@ class FrameworkDetectionConstants:
 
     # === DETECTION CONFIGURATION ===
 
-    DETECTION_CONFIG = {
-        "confidence_weights": {
-            "pattern_match": 0.4,
-            "semantic_match": 0.25,
-            "context_relevance": 0.2,
-            "historical_accuracy": 0.1,
-            "complexity_bonus": 0.05,
-        },
-        "bonus_thresholds": {
-            "method_diversity_max": 0.15,
-            "evidence_accumulation_max": 0.10,
-            "complexity_bonus_max": 0.10,
-        },
-        "quality_scoring": {
-            "comprehensiveness": 0.25,
-            "strategic_depth": 0.25,
-            "actionability": 0.2,
-            "evidence_quality": 0.15,
-            "executive_readiness": 0.15,
-        },
-    }
+    # 🧠 Sequential Thinking Step 3: Replace hard-coded values with centralized constants
+    @classmethod
+    def get_detection_config(cls) -> Dict[str, Any]:
+        """Get detection configuration using centralized Phase 9.3 constants"""
+        try:
+            from ..core.constants.phase93_constants import Phase93ConfigurationManager
+
+            config_manager = Phase93ConfigurationManager()
+            confidence_weights = config_manager.get_confidence_weights()
+
+            return {
+                "confidence_weights": confidence_weights,
+                "bonus_thresholds": {
+                    "method_diversity_max": 0.15,  # TODO: Move to Phase93Constants
+                    "evidence_accumulation_max": 0.10,  # TODO: Move to Phase93Constants
+                    "complexity_bonus_max": 0.10,  # TODO: Move to Phase93Constants
+                },
+                "quality_scoring": {
+                    "comprehensiveness": 0.25,  # TODO: Move to Phase93Constants
+                    "strategic_depth": 0.25,  # TODO: Move to Phase93Constants
+                    "actionability": 0.2,  # TODO: Move to Phase93Constants
+                    "evidence_quality": 0.15,  # TODO: Move to Phase93Constants
+                    "executive_readiness": 0.15,  # TODO: Move to Phase93Constants
+                },
+            }
+        except ImportError:
+            # Fallback for environments without Phase93Constants
+            return cls._get_fallback_detection_config()
+
+    @classmethod
+    def _get_fallback_detection_config(cls) -> Dict[str, Any]:
+        """Fallback detection config when Phase93Constants unavailable"""
+        return {
+            "confidence_weights": {
+                "pattern_match": 0.4,
+                "semantic_match": 0.25,
+                "context_relevance": 0.2,
+                "historical_accuracy": 0.1,
+                "complexity_bonus": 0.05,
+            },
+            "bonus_thresholds": {
+                "method_diversity_max": 0.15,
+                "evidence_accumulation_max": 0.10,
+                "complexity_bonus_max": 0.10,
+            },
+            "quality_scoring": {
+                "comprehensiveness": 0.25,
+                "strategic_depth": 0.25,
+                "actionability": 0.2,
+                "evidence_quality": 0.15,
+                "executive_readiness": 0.15,
+            },
+        }
+
+    # Backward compatibility - use get_detection_config() instead
+    DETECTION_CONFIG = {}
 
     # === UTILITY METHODS ===
 

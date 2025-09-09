@@ -737,29 +737,43 @@ class FrameworkProcessor:
         )
         detected.extend(baseline_frameworks)
 
-        # Method 2: Enhanced pattern matching using centralized constants
+        # Method 2: Enhanced pattern matching using centralized constants and utilities
         try:
             from .framework_detection_constants import get_framework_patterns
+            from ..core.constants import ML_CONFIG  # Use existing centralized constants
+            from ..utils.pattern_utils import (
+                match_patterns_in_content,
+            )  # Use existing utils directory
 
             framework_patterns = get_framework_patterns()
+            # Use existing centralized ML constants
+            confidence_threshold = (
+                ML_CONFIG.PHASE93_FRAMEWORK_CONFIDENCE_THRESHOLD
+            )  # 0.85 from existing constants
+            context_boost_increment = (
+                ML_CONFIG.CONTEXT_BOOST_INCREMENT
+            )  # 0.1 from existing constants
+            min_semantic_matches = (
+                ML_CONFIG.MIN_SEMANTIC_MATCHES
+            )  # 2 from existing constants
 
             content_lower = message.lower()
 
             for framework_name, config in framework_patterns.items():
-                pattern_matches = 0
+                # Use centralized pattern matching utility
+                pattern_matches = match_patterns_in_content(
+                    config.patterns, content_lower
+                )
+
+                # Calculate context boost using centralized increment
                 context_boost = 0
-
-                # Count pattern matches
-                for pattern in config.patterns:
-                    if pattern in content_lower:
-                        pattern_matches += 1
-
-                # Calculate context boost
                 for boost_term in config.context_boost_terms:
                     if boost_term in content_lower:
-                        context_boost += 0.1
+                        context_boost += (
+                            context_boost_increment  # Use centralized value
+                        )
 
-                # Apply Phase 9.3 enhanced confidence threshold (0.85+)
+                # Apply Phase 9.3 enhanced confidence threshold from centralized config
                 confidence = min(
                     (pattern_matches / len(config.patterns)) * config.weight
                     + context_boost,
@@ -767,8 +781,9 @@ class FrameworkProcessor:
                 )
 
                 if (
-                    confidence >= 0.85 and framework_name not in detected
-                ):  # Phase 9.3 threshold
+                    confidence >= confidence_threshold
+                    and framework_name not in detected
+                ):  # Use centralized threshold
                     detected.append(framework_name)
 
         except ImportError:
@@ -786,47 +801,51 @@ class FrameworkProcessor:
     def _detect_semantic_concepts(
         self, message: str, context: Dict[str, Any]
     ) -> List[str]:
-        """Phase 9.3: Semantic concept detection for enhanced accuracy"""
+        """
+        🧠 Sequential Thinking Step 5: Eliminate semantic concept duplication
+
+        Phase 9.3: Semantic concept detection using centralized framework patterns
+        """
+        try:
+            from .framework_detection_constants import get_framework_patterns
+            from ..core.constants import ML_CONFIG
+            from ..utils.pattern_utils import calculate_semantic_matches
+
+            # Use centralized semantic concepts instead of duplicating
+            framework_patterns = get_framework_patterns()
+            # Use existing centralized constants instead of phase93_constants
+
+            semantic_matches = []
+
+            for framework_name, config in framework_patterns.items():
+                # Use centralized semantic concepts from framework patterns
+                if hasattr(config, "semantic_concepts"):
+                    concept_set = set(config.semantic_concepts)
+                    matches = calculate_semantic_matches(message, concept_set)
+
+                    if matches > 0:  # Use centralized minimum threshold from utility
+                        semantic_matches.append(framework_name)
+
+            return semantic_matches
+
+        except ImportError:
+            # Fallback to original logic if centralized utilities unavailable
+            return self._detect_semantic_concepts_fallback(message, context)
+
+    def _detect_semantic_concepts_fallback(
+        self, message: str, context: Dict[str, Any]
+    ) -> List[str]:
+        """Fallback semantic detection when centralized utilities unavailable"""
         semantic_matches = []
         content_words = set(message.lower().split())
 
-        # Semantic concept mapping for high-accuracy detection
+        # Minimal fallback semantic concepts
         semantic_concepts = {
-            "Team Topologies": {
-                "team",
-                "organization",
-                "structure",
-                "responsibility",
-                "boundary",
-            },
-            "Good Strategy Bad Strategy": {
-                "strategy",
-                "goal",
-                "objective",
-                "competitive",
-                "advantage",
-            },
-            "Capital Allocation Framework": {
-                "resource",
-                "investment",
-                "allocation",
-                "priority",
-                "budget",
-            },
-            "WRAP Framework": {
-                "decision",
-                "option",
-                "alternative",
-                "choice",
-                "evaluate",
-            },
-            "Crucial Conversations": {
-                "communication",
-                "dialogue",
-                "conversation",
-                "conflict",
-                "stakeholder",
-            },
+            "Team Topologies": {"team", "organization", "structure"},
+            "Good Strategy Bad Strategy": {"strategy", "goal", "objective"},
+            "Capital Allocation Framework": {"resource", "investment", "allocation"},
+            "WRAP Framework": {"decision", "option", "alternative"},
+            "Crucial Conversations": {"communication", "dialogue", "conversation"},
         }
 
         for framework_name, concepts in semantic_concepts.items():

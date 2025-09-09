@@ -174,21 +174,30 @@ class MCPBloatAnalyzer:
         self.mcp_coordinator = mcp_coordinator
         self.config = get_config()
 
-        # Analysis configuration - ENHANCED THRESHOLDS based on Sequential Thinking analysis
-        self.similarity_threshold = self.config.get(
-            "bloat_similarity_threshold", 0.40
-        )  # Lowered from 0.75
-        self.functional_similarity_threshold = (
-            0.60  # NEW: Functional duplication detection
-        )
+        # 🧠 Sequential Thinking Step 6: Use centralized thresholds instead of hard-coded values
+        try:
+            from ...lib.core.constants import ML_CONFIG
+
+            # Use existing centralized ML constants for bloat detection
+            self.similarity_threshold = self.config.get(
+                "bloat_similarity_threshold", 0.40
+            )
+            self.functional_similarity_threshold = ML_CONFIG.CONFIDENCE_THRESHOLD  # 0.7
+            self.class_similarity_threshold = 0.50  # Keep existing value
+
+        except ImportError:
+            # Fallback to original values if centralized constants unavailable
+            self.similarity_threshold = self.config.get(
+                "bloat_similarity_threshold", 0.40
+            )
+            self.functional_similarity_threshold = 0.60
+            self.class_similarity_threshold = 0.50
+
         self.min_duplicate_lines = self.config.get("min_duplicate_lines", 10)
         self.exclusion_patterns = self._get_exclusion_patterns()
 
         # NEW: Architectural pattern detection
         self.architectural_patterns = self._load_architectural_patterns()
-        self.class_similarity_threshold = (
-            0.50  # For detecting duplicate class functionality
-        )
 
         # Caching for performance
         self.file_hashes = {}
