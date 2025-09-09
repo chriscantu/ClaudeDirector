@@ -350,10 +350,48 @@ class PreCommitBloatPrevention:
 
         return "\n".join(message_parts)
 
+    def _detect_no_verify_usage(self) -> bool:
+        """
+        Detect if --no-verify was used to bypass pre-commit hooks
+
+        This addresses the Sequential Thinking finding that human override
+        of automated safeguards led to architectural violations.
+        """
+        import os
+        import sys
+
+        # Check environment variables that indicate hook bypass
+        if os.environ.get("PRE_COMMIT_ALLOW_NO_CONFIG"):
+            return True
+
+        # Check if we're running in a context that suggests bypass
+        # (This is a heuristic - actual detection is complex)
+        git_command_line = os.environ.get("GIT_COMMAND_LINE", "")
+        if "--no-verify" in git_command_line:
+            return True
+
+        # Check process arguments for bypass indicators
+        for arg in sys.argv:
+            if "--no-verify" in arg or "bypass" in arg.lower():
+                return True
+
+        return False
+
     async def run_hook(self) -> int:
         """Run the pre-commit bloat prevention hook"""
 
-        print("🏗️ Running Code Bloat Prevention Hook...")
+        print("🏗️ Running Enhanced Code Bloat Prevention Hook...")
+
+        # NEW: Check if --no-verify was used to bypass hooks
+        if self._detect_no_verify_usage():
+            print("🚫 CRITICAL: --no-verify usage detected!")
+            print(
+                "🚫 This bypasses architectural safeguards and violates our DRY/SOLID policies."
+            )
+            print(
+                "🚫 If you must bypass hooks, document the reason in your commit message."
+            )
+            return 1  # Block commit
 
         # Get staged files
         staged_files = self.get_staged_python_files()

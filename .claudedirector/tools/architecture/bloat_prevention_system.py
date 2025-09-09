@@ -174,10 +174,21 @@ class MCPBloatAnalyzer:
         self.mcp_coordinator = mcp_coordinator
         self.config = get_config()
 
-        # Analysis configuration
-        self.similarity_threshold = self.config.get("bloat_similarity_threshold", 0.75)
+        # Analysis configuration - ENHANCED THRESHOLDS based on Sequential Thinking analysis
+        self.similarity_threshold = self.config.get(
+            "bloat_similarity_threshold", 0.40
+        )  # Lowered from 0.75
+        self.functional_similarity_threshold = (
+            0.60  # NEW: Functional duplication detection
+        )
         self.min_duplicate_lines = self.config.get("min_duplicate_lines", 10)
         self.exclusion_patterns = self._get_exclusion_patterns()
+
+        # NEW: Architectural pattern detection
+        self.architectural_patterns = self._load_architectural_patterns()
+        self.class_similarity_threshold = (
+            0.50  # For detecting duplicate class functionality
+        )
 
         # Caching for performance
         self.file_hashes = {}
@@ -185,6 +196,9 @@ class MCPBloatAnalyzer:
 
         # Known patterns from previous consolidations
         self.known_duplication_patterns = self._load_known_patterns()
+
+        # NEW: Functional duplication detection patterns
+        self.functional_patterns = self._load_functional_patterns()
 
         self.logger.info(
             "mcp_bloat_analyzer_initialized",
@@ -283,6 +297,12 @@ class MCPBloatAnalyzer:
             architectural_violations = await self._detect_architectural_violations(
                 python_files
             )
+
+            # Step 4.5: NEW - Functional duplication detection (addresses Sequential Thinking findings)
+            functional_violations = await self.detect_functional_duplication(
+                python_files
+            )
+            architectural_violations.extend(functional_violations)
 
             # Step 5: MCP Sequential analysis for complex cases
             mcp_analysis = {}
@@ -899,6 +919,246 @@ class MCPBloatAnalyzer:
             )
 
         return strategies
+
+    def _load_architectural_patterns(self) -> Dict[str, Any]:
+        """Load architectural patterns for detecting functional duplication"""
+        return {
+            "framework_detection": {
+                "class_patterns": [
+                    "FrameworkDetection",
+                    "FrameworkEngine",
+                    "FrameworkProcessor",
+                ],
+                "method_patterns": [
+                    "detect_frameworks",
+                    "pattern_based_detection",
+                    "calculate_confidence",
+                ],
+                "functionality": "framework detection and analysis",
+            },
+            "confidence_calculation": {
+                "class_patterns": [
+                    "ConfidenceCalculation",
+                    "ConfidenceService",
+                    "ConfidenceEngine",
+                ],
+                "method_patterns": [
+                    "calculate_confidence",
+                    "confidence_score",
+                    "_calculate_.*_confidence",
+                ],
+                "functionality": "confidence scoring and calculation",
+            },
+            "pattern_matching": {
+                "class_patterns": [
+                    "PatternMatcher",
+                    "PatternDetector",
+                    "PatternEngine",
+                ],
+                "method_patterns": [
+                    "match_pattern",
+                    "detect_pattern",
+                    "pattern_analysis",
+                ],
+                "functionality": "pattern matching and detection",
+            },
+            "strategic_analysis": {
+                "class_patterns": [
+                    "StrategicAnalysis",
+                    "StrategicEngine",
+                    "AnalysisEngine",
+                ],
+                "method_patterns": [
+                    "analyze",
+                    "strategic_analysis",
+                    "generate_analysis",
+                ],
+                "functionality": "strategic analysis and insights",
+            },
+        }
+
+    def _load_functional_patterns(self) -> Dict[str, Any]:
+        """Load functional patterns for detecting reimplementation of existing functionality"""
+        return {
+            "content_lower_pattern": {
+                "pattern": r"content_lower\s*=\s*content\.lower\(\)",
+                "description": "Text normalization for pattern matching",
+                "existing_implementations": [
+                    ".claudedirector/lib/transparency/framework_detection.py",
+                    ".claudedirector/lib/ai_intelligence/framework_processor.py",
+                ],
+            },
+            "pattern_iteration": {
+                "pattern": r"for\s+\w+\s+in\s+.*patterns.*:",
+                "description": "Iterating over patterns for matching",
+                "existing_implementations": [
+                    ".claudedirector/lib/transparency/framework_detection.py",
+                    ".claudedirector/lib/ai_intelligence/framework_processor.py",
+                ],
+            },
+            "confidence_calculation": {
+                "pattern": r"confidence.*=.*\+.*\*",
+                "description": "Weighted confidence score calculation",
+                "existing_implementations": [
+                    ".claudedirector/lib/core/services/confidence_calculation_service.py",
+                    ".claudedirector/lib/ai_intelligence/decision_processor.py",
+                ],
+            },
+        }
+
+    async def detect_functional_duplication(
+        self, files: List[Path]
+    ) -> List[ArchitecturalViolation]:
+        """
+        ENHANCED: Detect functional duplication (reimplementation of existing functionality)
+
+        This addresses the root cause identified in Sequential Thinking analysis:
+        - Detects when new classes reimplement existing functionality
+        - Identifies architectural pattern violations
+        - Catches functional similarity even with different code structure
+        """
+        violations = []
+
+        for file_path in files:
+            try:
+                with open(file_path, "r", encoding="utf-8") as f:
+                    content = f.read()
+
+                # Check for functional pattern duplication
+                functional_violations = (
+                    await self._detect_functional_pattern_duplication(
+                        file_path, content
+                    )
+                )
+                violations.extend(functional_violations)
+
+                # Check for architectural pattern reimplementation
+                architectural_violations = (
+                    await self._detect_architectural_reimplementation(
+                        file_path, content
+                    )
+                )
+                violations.extend(architectural_violations)
+
+            except Exception as e:
+                self.logger.warning(
+                    f"Error analyzing {file_path} for functional duplication: {e}"
+                )
+
+        return violations
+
+    async def _detect_functional_pattern_duplication(
+        self, file_path: Path, content: str
+    ) -> List[ArchitecturalViolation]:
+        """Detect when new code reimplements existing functional patterns"""
+        violations = []
+
+        for pattern_name, pattern_info in self.functional_patterns.items():
+            matches = re.findall(pattern_info["pattern"], content, re.MULTILINE)
+
+            if matches:
+                # Check if this functionality already exists
+                existing_files = pattern_info.get("existing_implementations", [])
+                if existing_files and str(file_path) not in existing_files:
+                    violations.append(
+                        ArchitecturalViolation(
+                            file_path=str(file_path),
+                            violation_type="FUNCTIONAL_DUPLICATION",
+                            description=f"Reimplements {pattern_info['description']} - functionality already exists",
+                            severity=DuplicationSeverity.HIGH,
+                            violated_principle="DRY",
+                            existing_implementation=f"Already implemented in: {', '.join(existing_files)}",
+                            recommended_approach=f"Use existing implementation or extend existing classes",
+                            technical_debt_score=0.8,
+                        )
+                    )
+
+        return violations
+
+    async def _detect_architectural_reimplementation(
+        self, file_path: Path, content: str
+    ) -> List[ArchitecturalViolation]:
+        """Detect when new classes reimplement existing architectural patterns"""
+        violations = []
+
+        # Extract class names from the file
+        class_matches = re.findall(r"class\s+(\w+)", content)
+
+        for class_name in class_matches:
+            for pattern_name, pattern_info in self.architectural_patterns.items():
+                # Check if this class matches a known architectural pattern
+                for class_pattern in pattern_info["class_patterns"]:
+                    if class_pattern.lower() in class_name.lower():
+                        # Check if this functionality already exists
+                        existing_classes = (
+                            await self._find_existing_classes_with_functionality(
+                                pattern_info["functionality"]
+                            )
+                        )
+
+                        if existing_classes and str(file_path) not in [
+                            cls["file"] for cls in existing_classes
+                        ]:
+                            violations.append(
+                                ArchitecturalViolation(
+                                    file_path=str(file_path),
+                                    violation_type="ARCHITECTURAL_REIMPLEMENTATION",
+                                    description=f"Class '{class_name}' reimplements {pattern_info['functionality']}",
+                                    severity=DuplicationSeverity.CRITICAL,
+                                    violated_principle="DRY",
+                                    existing_implementation=f"Existing classes: {', '.join([cls['name'] for cls in existing_classes])}",
+                                    recommended_approach=f"Extend existing {pattern_info['functionality']} classes or consolidate functionality",
+                                    technical_debt_score=0.9,
+                                )
+                            )
+
+        return violations
+
+    async def _find_existing_classes_with_functionality(
+        self, functionality: str
+    ) -> List[Dict[str, str]]:
+        """Find existing classes that provide the specified functionality"""
+        existing_classes = []
+
+        # Hardcoded mapping based on our codebase analysis
+        functionality_mapping = {
+            "framework detection and analysis": [
+                {
+                    "name": "FrameworkDetectionMiddleware",
+                    "file": ".claudedirector/lib/transparency/framework_detection.py",
+                },
+                {
+                    "name": "FrameworkProcessor",
+                    "file": ".claudedirector/lib/ai_intelligence/framework_processor.py",
+                },
+                {
+                    "name": "EnhancedFrameworkDetection",
+                    "file": ".claudedirector/lib/ai_intelligence/framework_detector.py",
+                },
+            ],
+            "confidence scoring and calculation": [
+                {
+                    "name": "ConfidenceCalculationService",
+                    "file": ".claudedirector/lib/core/services/confidence_calculation_service.py",
+                },
+                {
+                    "name": "ActionDetectionEngine",
+                    "file": ".claudedirector/lib/context_engineering/clarity_analyzer.py",
+                },
+            ],
+            "strategic analysis and insights": [
+                {
+                    "name": "StrategicAnalysisEngine",
+                    "file": ".claudedirector/lib/core/cursor_response_enhancer.py",
+                },
+                {
+                    "name": "DecisionProcessor",
+                    "file": ".claudedirector/lib/ai_intelligence/decision_processor.py",
+                },
+            ],
+        }
+
+        return functionality_mapping.get(functionality, [])
 
 
 # Factory function for easy integration

@@ -31,11 +31,12 @@ except ImportError:
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "lib"))
 
 try:
-    from ai_intelligence.enhanced_framework_engine import (
-        EnhancedFrameworkEngine,
-        create_enhanced_framework_engine,
-        FrameworkConfidenceLevel,
-        AnalysisQualityLevel,
+    from ai_intelligence.framework_processor import (
+        FrameworkProcessor,
+        create_framework_processor,
+        ContextualFrameworkAnalysis,
+        FrameworkSuggestion,
+        FrameworkRelevance,
     )
     from ai_intelligence.framework_detection_constants import (
         FrameworkDetectionConstants,
@@ -43,16 +44,18 @@ try:
     )
 except ImportError:
     # Mock for test environment
-    class EnhancedFrameworkEngine:
-        def __init__(self, config=None):
+    class FrameworkProcessor:
+        def __init__(self, baseline_detector=None, transparency_system=None):
             self.accuracy_target = 0.95
             self.confidence_threshold = 0.85
 
-        async def process(self, input_data):
-            return {"frameworks": []}
+        def analyze_contextual_frameworks(
+            self, message, conversation_context, session_context=None
+        ):
+            return {"frameworks_detected": []}
 
-    def create_enhanced_framework_engine(config=None):
-        return EnhancedFrameworkEngine(config)
+    def create_framework_processor(baseline_detector=None, transparency_system=None):
+        return FrameworkProcessor(baseline_detector, transparency_system)
 
     def get_framework_patterns():
         return {"Test": {"patterns": ["test"]}}
@@ -64,35 +67,34 @@ except ImportError:
 
 
 class TestPhase93EnhancedFrameworkEngineP0:
-    """P0 blocking tests for Enhanced Framework Engine"""
+    """P0 blocking tests for Enhanced Framework Detection (using existing FrameworkProcessor)"""
 
     def setup_method(self):
         """Setup test environment"""
-        self.engine = create_enhanced_framework_engine()
+        self.processor = create_framework_processor()
 
     def test_p0_initialization_success(self):
-        """P0: Enhanced Framework Engine initializes successfully"""
-        assert self.engine is not None
-        assert hasattr(self.engine, "accuracy_target")
-        assert hasattr(self.engine, "confidence_threshold")
+        """P0: Framework Processor initializes successfully"""
+        assert self.processor is not None
+        assert hasattr(self.processor, "accuracy_target")
+        assert hasattr(self.processor, "confidence_threshold")
 
     def test_p0_phase93_requirements_configuration(self):
-        """P0: Engine meets Phase 9.3 requirements configuration"""
+        """P0: Processor meets Phase 9.3 requirements configuration"""
         # User Story 9.3.1: 95%+ accuracy target
-        assert self.engine.accuracy_target >= 0.95
+        assert self.processor.accuracy_target >= 0.95
 
         # User Story 9.3.1: 0.85+ confidence threshold
-        assert self.engine.confidence_threshold >= 0.85
+        assert self.processor.confidence_threshold >= 0.85
 
-    @pytest.mark.asyncio
-    async def test_p0_framework_detection_processing(self):
+    def test_p0_framework_detection_processing(self):
         """P0: Framework detection processing works"""
-        test_input = {
-            "content": "We need to improve our team organization",
-            "type": "framework_detection",
-        }
+        test_message = "We need to improve our team organization"
+        test_context = {"strategic_context": True}
 
-        result = await self.engine.process(test_input)
+        result = self.processor.analyze_contextual_frameworks(
+            test_message, test_context
+        )
         assert isinstance(result, dict)
 
     def test_p0_centralized_constants_integration(self):
@@ -109,10 +111,12 @@ class TestPhase93EnhancedFrameworkEngineP0:
 
 
 if __name__ == "__main__":
-    print("🧪 P0 TESTS: Phase 9.3 Enhanced Framework Engine")
+    print(
+        "🧪 P0 TESTS: Phase 9.3 Enhanced Framework Detection (using FrameworkProcessor)"
+    )
     try:
-        engine = create_enhanced_framework_engine()
-        print("✅ P0 Test: Engine initialization successful")
+        processor = create_framework_processor()
+        print("✅ P0 Test: Framework processor initialization successful")
         print("🎯 ALL P0 TESTS PASSED")
     except Exception as e:
         print(f"❌ P0 TEST FAILED: {e}")
