@@ -1,10 +1,10 @@
 # Phase 9.4: Architectural Cleanup Specification
 
-**Status**: DRAFT  
-**Priority**: CRITICAL  
-**Sequential Thinking Phase**: Problem Definition Complete  
-**Estimated Effort**: 2-3 days  
-**Author**: Martin | Platform Architecture  
+**Status**: DRAFT
+**Priority**: CRITICAL
+**Sequential Thinking Phase**: Problem Definition Complete
+**Estimated Effort**: 2-3 days
+**Author**: Martin | Platform Architecture
 
 ## **🎯 Objective**
 
@@ -46,9 +46,9 @@ Resolve architectural violations identified in Phase 9.3 analysis where business
 ## **🎯 User Stories**
 
 ### **Story 9.4.1: Business Logic Migration**
-**As a** platform architect  
-**I want** all business logic moved from tools/ to lib/  
-**So that** the architecture complies with PROJECT_STRUCTURE.md  
+**As a** platform architect
+**I want** all business logic moved from tools/ to lib/
+**So that** the architecture complies with PROJECT_STRUCTURE.md
 
 **Acceptance Criteria**:
 - [ ] All analysis engines moved to `.claudedirector/lib/core/analysis/`
@@ -59,9 +59,9 @@ Resolve architectural violations identified in Phase 9.3 analysis where business
 - [ ] All P0 tests continue passing
 
 ### **Story 9.4.2: Tool Interface Refactoring**
-**As a** developer using CLI tools  
-**I want** tools to provide clean interfaces to lib/ business logic  
-**So that** functionality is preserved while architecture is correct  
+**As a** developer using CLI tools
+**I want** tools to provide clean interfaces to lib/ business logic
+**So that** functionality is preserved while architecture is correct
 
 **Acceptance Criteria**:
 - [ ] CLI tools are lightweight interfaces only
