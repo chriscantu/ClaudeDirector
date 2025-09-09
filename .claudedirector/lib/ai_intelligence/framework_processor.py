@@ -739,13 +739,13 @@ class FrameworkProcessor:
 
         # Method 2: Enhanced pattern matching using centralized constants and utilities
         try:
-            from .framework_detection_constants import get_framework_patterns
-            from ..core.constants import ML_CONFIG  # Use existing centralized constants
+            from ..core.constants import ML_CONFIG, FRAMEWORK_REGISTRY  # Use existing centralized constants
             from ..utils.pattern_utils import (
                 match_patterns_in_content,
             )  # Use existing utils directory
 
-            framework_patterns = get_framework_patterns()
+            # Use existing framework registry instead of duplicate constants
+            framework_patterns = FRAMEWORK_REGISTRY.get_all_frameworks()
             # Use existing centralized ML constants
             confidence_threshold = (
                 ML_CONFIG.PHASE93_FRAMEWORK_CONFIDENCE_THRESHOLD
@@ -807,12 +807,11 @@ class FrameworkProcessor:
         Phase 9.3: Semantic concept detection using centralized framework patterns
         """
         try:
-            from .framework_detection_constants import get_framework_patterns
-            from ..core.constants import ML_CONFIG
+            from ..core.constants import ML_CONFIG, FRAMEWORK_REGISTRY
             from ..utils.pattern_utils import calculate_semantic_matches
 
-            # Use centralized semantic concepts instead of duplicating
-            framework_patterns = get_framework_patterns()
+            # Use existing framework registry instead of duplicating constants
+            framework_patterns = FRAMEWORK_REGISTRY.get_all_frameworks()
             # Use existing centralized constants instead of phase93_constants
 
             semantic_matches = []
