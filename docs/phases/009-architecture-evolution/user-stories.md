@@ -4,6 +4,12 @@
 
 **Target Stakeholders**: VP Engineering, Engineering Directors, Team Leads, Product Managers, Executive Leadership
 
+**🏗️ Architectural Compliance**: All user stories must adhere to:
+- **@PROJECT_STRUCTURE.md**: Mandatory project structure and BaseManager/BaseProcessor patterns
+- **@BLOAT_PREVENTION_SYSTEM.md**: DRY/SOLID principle enforcement and duplication prevention
+- **P0 Test Protection**: Maintain 39/39 P0 tests passing (100% success rate)
+- **Phase 8 DRY Consolidation**: Build upon successful BaseManager/BaseProcessor architecture
+
 ---
 
 ## 🏗️ **Phase 9.1: Context Engineering Completion User Stories**
@@ -30,6 +36,10 @@ Acceptance Criteria:
 
 Technical Implementation: Task 9.1.1-9.1.5
 Dependencies: Storage architecture, alert routing system
+Architectural Compliance:
+- MUST inherit from BaseProcessor pattern (@PROJECT_STRUCTURE.md)
+- MUST pass BLOAT_PREVENTION_SYSTEM validation for DRY compliance
+- MUST maintain P0 test coverage and 100% pass rate
 ```
 
 #### **Story 9.1.2: Team Lead Coordination Dashboard**
@@ -74,6 +84,10 @@ Acceptance Criteria:
 
 Technical Implementation: Task 9.1.6-9.1.10
 Dependencies: Layer 8 ML pattern detection, historical collaboration data
+Architectural Compliance:
+- MUST implement BaseProcessor pattern for MLPatternEngine (@PROJECT_STRUCTURE.md)
+- MUST avoid duplication with existing ML components (@BLOAT_PREVENTION_SYSTEM.md)
+- MUST integrate with context_engineering/ primary system architecture
 ```
 
 ---
@@ -102,6 +116,10 @@ Acceptance Criteria:
 
 Technical Implementation: Task 9.2.1-9.2.5
 Dependencies: Caching strategy, query optimization, connection pooling
+Architectural Compliance:
+- MUST follow BaseManager pattern for CacheManager (@PROJECT_STRUCTURE.md)
+- MUST prevent performance optimization duplication (@BLOAT_PREVENTION_SYSTEM.md)
+- MUST maintain P0 performance test coverage
 ```
 
 #### **Story 9.2.2: Resource-Efficient Operations**
