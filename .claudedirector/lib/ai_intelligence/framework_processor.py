@@ -739,7 +739,10 @@ class FrameworkProcessor:
 
         # Method 2: Enhanced pattern matching using centralized constants and utilities
         try:
-            from ..core.constants import ML_CONFIG, FRAMEWORK_REGISTRY  # Use existing centralized constants
+            from ..core.constants import (
+                ML_CONFIG,
+                FRAMEWORK_REGISTRY,
+            )  # Use existing centralized constants
             from ..utils.formatting import (
                 match_patterns_in_content,
             )  # Use consolidated formatting utilities
