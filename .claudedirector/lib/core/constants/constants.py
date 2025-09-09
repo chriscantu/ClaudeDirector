@@ -128,6 +128,21 @@ class MLConstants:
     MIN_ACCURACY_THRESHOLD = 0.85
     CONFIDENCE_THRESHOLD = 0.7
 
+    # 🧠 Sequential Thinking: Phase 9.3 Enhanced AI Constants
+    # Phase 9.3 requirement: 0.85+ confidence threshold for framework detection
+    PHASE93_FRAMEWORK_CONFIDENCE_THRESHOLD = 0.85
+
+    # Context boost increment for pattern matching
+    CONTEXT_BOOST_INCREMENT = 0.1
+
+    # Minimum semantic concept matches required
+    MIN_SEMANTIC_MATCHES = 2
+
+    # Phase 9.3 performance requirements
+    FRAMEWORK_DETECTION_ACCURACY_TARGET = 0.95  # 95%+ accuracy requirement
+    STRATEGIC_ANALYSIS_QUALITY_TARGET = 0.8  # >0.8 quality score
+    DECISION_SUPPORT_ACCURACY_TARGET = 0.90  # 90%+ decision support
+
     # Feature Categories
     COMMUNICATION_FEATURES = "communication_features"
     TEMPORAL_FEATURES = "temporal_features"
