@@ -204,6 +204,34 @@ class P0EnforcementSuite:
         except Exception:
             return False
 
+    def validate_file_content(self, file_path: str) -> Tuple[bool, List[str]]:
+        """Validate file content for Sequential Thinking compliance.
+
+        Args:
+            file_path: Path to file to validate (relative to project root)
+
+        Returns:
+            Tuple of (is_compliant, list_of_issues)
+        """
+        try:
+            full_path = self.project_root / file_path
+            if not full_path.exists():
+                return False, [f"File not found: {file_path}"]
+
+            is_compliant = self._check_sequential_thinking_compliance(full_path)
+
+            if is_compliant:
+                return True, []
+            else:
+                issues = [
+                    "Missing Sequential Thinking documentation patterns",
+                    "File should contain references to systematic approach or methodology",
+                ]
+                return False, issues
+
+        except Exception as e:
+            return False, [f"Error validating file: {str(e)}"]
+
     def validate_context7_utilization(self) -> Dict[str, Any]:
         """Validate Context7 MCP utilization across the codebase."""
         try:
