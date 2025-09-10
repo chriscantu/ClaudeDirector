@@ -27,11 +27,12 @@ import logging
 
 # Core imports
 try:
-    from ..quality.enhanced_security_scanner import EnhancedSecurityScanner
-    from ...lib.core.config import get_config
+    from ...security.scanners.enhanced_security_scanner import EnhancedSecurityScanner
+    from ..constants import ML_CONFIG
 except ImportError:
     # Fallback for standalone usage
-    get_config = lambda: {}
+    ML_CONFIG = None
+    EnhancedSecurityScanner = None
 
 
 # Configuration Constants (DRY Compliance)
