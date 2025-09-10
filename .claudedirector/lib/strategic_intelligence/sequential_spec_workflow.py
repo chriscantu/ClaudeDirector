@@ -24,11 +24,16 @@ from dataclasses import dataclass
 from abc import ABC, abstractmethod
 
 from .spec_kit_integrator import SpecKitIntegrator, SpecificationResult
-from .strategic_spec_enhancer import StrategicSpecEnhancer, EnhancedSpecification
+from ..ai_intelligence.framework_processor import (
+    FrameworkProcessor,
+    EnhancedSpecification,
+    StrategicContext,
+)
 from ..context_engineering import AdvancedContextEngine
 
 try:
-    from ..core.models import StrategicContext
+    # Use StrategicContext from framework_processor instead
+    pass
 except ImportError:
     # Fallback for test environments
     import sys
@@ -94,7 +99,7 @@ class SequentialSpecCreator:
     def __init__(
         self,
         spec_kit_integrator: SpecKitIntegrator,
-        strategic_enhancer: StrategicSpecEnhancer,
+        strategic_enhancer: FrameworkProcessor,
         context_engine: AdvancedContextEngine,
         config: Optional[Dict[str, Any]] = None,
     ):
