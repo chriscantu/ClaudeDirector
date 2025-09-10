@@ -20,7 +20,11 @@ from abc import ABC, abstractmethod
 import logging
 
 from .spec_kit_integrator import SpecKitIntegrator, SpecificationResult
-from .strategic_spec_enhancer import StrategicSpecEnhancer, EnhancedSpecification
+from ..ai_intelligence.framework_processor import (
+    FrameworkProcessor,
+    EnhancedSpecification,
+    StrategicEnhancement,
+)
 from ..context_engineering import AdvancedContextEngine
 
 
@@ -317,7 +321,7 @@ class ExternalToolCoordinator:
 
     def _create_empty_enhanced_result(self) -> EnhancedSpecification:
         """Create empty enhanced specification result for error cases"""
-        from .strategic_spec_enhancer import StrategicEnhancement
+        # StrategicEnhancement already imported from framework_processor
 
         return EnhancedSpecification(
             original_spec_path="",
