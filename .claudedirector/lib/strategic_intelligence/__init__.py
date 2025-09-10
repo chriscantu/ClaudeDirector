@@ -10,7 +10,8 @@ Investment: $1.0M for 4.9x ROI
 
 # Core Strategic Analysis Components (Phase 5.0)
 from .spec_kit_integrator import SpecKitIntegrator
-from .strategic_spec_enhancer import StrategicSpecEnhancer
+
+# Strategic enhancement now provided by ai_intelligence.framework_processor
 
 # Context intelligence now provided by context_engineering module
 from .external_tool_coordinator import ExternalToolCoordinator
@@ -20,7 +21,6 @@ from .sequential_spec_workflow import SequentialSpecCreator, SequentialSpecWorkf
 
 __all__ = [
     "SpecKitIntegrator",
-    "StrategicSpecEnhancer",
     "ExternalToolCoordinator",
     "SequentialSpecCreator",
     "SequentialSpecWorkflow",
