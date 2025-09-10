@@ -71,48 +71,65 @@ class IntelligentBackupCleaner:
     def apply_retention_policy(
         self, files: List[Path], keep_latest: int = 5
     ) -> List[Path]:
-        """Apply intelligent retention policy"""
+        """Apply intelligent retention policy with aggressive cleanup for bloat prevention"""
         if len(files) <= keep_latest:
             return []  # Keep all files
 
         # Sort by timestamp (newest first)
         files_with_time = [(f, self.parse_backup_timestamp(f.name)) for f in files]
+        files_with_time = [(f, t) for f, t in files_with_time if t is not None]
         files_with_time.sort(key=lambda x: x[1], reverse=True)
 
-        files_to_delete = []
+        files_to_keep = []
         now = datetime.now()
+        
+        # Track what we've kept by day/week/month to avoid duplicates
+        kept_days = set()
+        kept_weeks = set()
+        kept_months = set()
 
-        # Keep latest N files
-        keep_latest_files = [f for f, _ in files_with_time[:keep_latest]]
-
-        # Apply time-based retention to older files
-        for file_path, timestamp in files_with_time[keep_latest:]:
+        # Process all files to determine what to keep
+        for file_path, timestamp in files_with_time:
             age = now - timestamp
-
-            # Keep one per day for last 7 days
-            if age <= timedelta(days=7):
-                # Check if we already have a backup for this day
+            should_keep = False
+            
+            # Always keep the latest N files
+            if len(files_to_keep) < keep_latest:
+                should_keep = True
+                
+            # Keep one per day for last 3 days (reduced from 7 for aggressive cleanup)
+            elif age <= timedelta(days=3):
                 day_key = timestamp.strftime("%Y-%m-%d")
-                if not any(
-                    self.parse_backup_timestamp(f.name).strftime("%Y-%m-%d") == day_key
-                    for f in keep_latest_files
-                ):
-                    keep_latest_files.append(file_path)
-                    continue
-
-            # Keep one per week for last 4 weeks
-            elif age <= timedelta(weeks=4):
+                if day_key not in kept_days:
+                    should_keep = True
+                    kept_days.add(day_key)
+                    
+            # Keep one per week for last 2 weeks (reduced from 4 for aggressive cleanup)
+            elif age <= timedelta(weeks=2):
                 week_key = timestamp.strftime("%Y-W%U")
-                if not any(
-                    self.parse_backup_timestamp(f.name).strftime("%Y-W%U") == week_key
-                    for f in keep_latest_files
-                ):
-                    keep_latest_files.append(file_path)
-                    continue
+                if week_key not in kept_weeks:
+                    should_keep = True
+                    kept_weeks.add(week_key)
+                    
+            # Keep one per month for last 2 months (reduced from 6 for aggressive cleanup)
+            elif age <= timedelta(days=60):
+                month_key = timestamp.strftime("%Y-%m")
+                if month_key not in kept_months:
+                    should_keep = True
+                    kept_months.add(month_key)
+            
+            # Everything older than 2 months gets deleted
+            
+            if should_keep:
+                files_to_keep.append(file_path)
+                # Track days/weeks/months for files we're keeping
+                kept_days.add(timestamp.strftime("%Y-%m-%d"))
+                kept_weeks.add(timestamp.strftime("%Y-W%U"))
+                kept_months.add(timestamp.strftime("%Y-%m"))
 
-            # Delete older files
-            files_to_delete.append(file_path)
-
+        # Files to delete are those not in the keep list
+        files_to_delete = [f for f, _ in files_with_time if f not in files_to_keep]
+        
         return files_to_delete
 
     def cleanup_category(self, category: str, files: List[Path]) -> None:
@@ -122,13 +139,14 @@ class IntelligentBackupCleaner:
 
         print(f"\n🧹 Cleaning up {category} backups ({len(files)} files)...")
 
-        # Apply retention policy
+        # Apply retention policy - more aggressive for workspace backups
         if category == "readme":
             files_to_delete = self.apply_retention_policy(files, keep_latest=3)
         elif category == "workspace":
-            files_to_delete = self.apply_retention_policy(files, keep_latest=2)
+            # Very aggressive cleanup for workspace backups due to bloat (464 files!)
+            files_to_delete = self.apply_retention_policy(files, keep_latest=5)
         else:
-            files_to_delete = self.apply_retention_policy(files, keep_latest=1)
+            files_to_delete = self.apply_retention_policy(files, keep_latest=2)
 
         # Remove files
         for file_path in files_to_delete:
@@ -149,6 +167,40 @@ class IntelligentBackupCleaner:
         kept_count = len(files) - len(files_to_delete)
         self.stats["files_kept"] += kept_count
         print(f"   ✅ Kept {kept_count} files, removed {len(files_to_delete)} files")
+
+    def simulate_cleanup_category(self, category: str, files: List[Path]) -> None:
+        """Simulate cleanup for dry run mode"""
+        if not files:
+            return
+
+        print(f"\n🧹 Would clean up {category} backups ({len(files)} files)...")
+
+        # Apply retention policy - more aggressive for workspace backups
+        if category == "readme":
+            files_to_delete = self.apply_retention_policy(files, keep_latest=3)
+        elif category == "workspace":
+            # Very aggressive cleanup for workspace backups due to bloat (464 files!)
+            files_to_delete = self.apply_retention_policy(files, keep_latest=5)
+        else:
+            files_to_delete = self.apply_retention_policy(files, keep_latest=2)
+
+        # Calculate what would be removed
+        total_size_to_delete = 0
+        for file_path in files_to_delete:
+            try:
+                file_size = self.get_file_size(file_path)
+                total_size_to_delete += file_size
+                print(f"   🗑️ Would remove: {file_path.name} ({file_size // 1024}KB)")
+            except Exception as e:
+                print(f"   ❌ Could not access {file_path.name}: {e}")
+
+        # Update stats for dry run
+        self.stats["files_removed"] += len(files_to_delete)
+        self.stats["space_freed"] += total_size_to_delete
+        
+        kept_count = len(files) - len(files_to_delete)
+        self.stats["files_kept"] += kept_count
+        print(f"   ✅ Would keep {kept_count} files, remove {len(files_to_delete)} files")
 
     def run_cleanup(self, dry_run: bool = False) -> None:
         """Run the intelligent backup cleanup"""
@@ -179,9 +231,11 @@ class IntelligentBackupCleaner:
         print(f"📊 Total backup size: {total_size_before // (1024 * 1024)}MB")
         print()
 
-        if not dry_run:
-            # Clean each category
-            for category, files in categories.items():
+        # Clean each category (or calculate what would be cleaned in dry run)
+        for category, files in categories.items():
+            if dry_run:
+                self.simulate_cleanup_category(category, files)
+            else:
                 self.cleanup_category(category, files)
 
         # Print summary
