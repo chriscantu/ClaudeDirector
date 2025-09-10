@@ -40,7 +40,7 @@ Consolidate the undocumented `strategic_intelligence` directory (2,328 lines) in
 ```
 strategic_intelligence/ (2,328 total lines):
 ├── strategic_spec_enhancer.py      (614 lines) - Strategic enhancement logic
-├── sequential_spec_workflow.py     (536 lines) - Sequential workflow patterns  
+├── sequential_spec_workflow.py     (536 lines) - Sequential workflow patterns
 ├── external_tool_coordinator.py    (416 lines) - Tool coordination
 ├── spec_kit_integrator.py          (334 lines) - External integration
 ├── context_intelligence_bridge.py  (334 lines) - Context bridging (DUPLICATE)
