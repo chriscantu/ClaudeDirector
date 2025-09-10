@@ -19,7 +19,7 @@ def main():
     """Lightweight CLI interface to Consolidated Stakeholder Manager"""
     try:
         manager = ConsolidatedStakeholderManager()
-        
+
         if len(sys.argv) < 2:
             print("Usage: stakeholder_cli.py <command> [args]")
             print("Commands:")
@@ -29,18 +29,20 @@ def main():
             print("  report - Generate stakeholder report")
             print("  recommendations - Get AI recommendations")
             return
-        
+
         command = sys.argv[1]
-        
+
         if command == "add":
             manager.add_stakeholder_interactive()
-            
+
         elif command == "list":
             stakeholders = manager.list_stakeholders()
             print(f"\n📋 Found {len(stakeholders)} stakeholders:")
             for stakeholder in stakeholders:
-                print(f"  • {stakeholder.get('name', 'Unknown')} ({stakeholder.get('role', 'Unknown role')})")
-                
+                print(
+                    f"  • {stakeholder.get('name', 'Unknown')} ({stakeholder.get('role', 'Unknown role')})"
+                )
+
         elif command == "scan":
             print("🧠 Scanning workspace for stakeholder mentions...")
             result = manager.process_workspace_automatically()
@@ -48,7 +50,7 @@ def main():
                 print(f"✅ Detected {result['detected_count']} potential stakeholders")
             else:
                 print(f"❌ Error: {result['message']}")
-                
+
         elif command == "report":
             print("📊 Generating stakeholder report...")
             report = manager.generate_stakeholder_report()
@@ -58,16 +60,16 @@ def main():
                 print(f"Roles: {list(report['stakeholders_by_role'].keys())}")
             else:
                 print(f"Error: {report['error']}")
-                
+
         elif command == "recommendations":
             recommendations = manager.get_recommendations()
             print(f"📈 Found {len(recommendations)} recommendations:")
             for i, rec in enumerate(recommendations[:5], 1):  # Show top 5
                 print(f"  {i}. {rec.get('title', 'No title')}")
-                
+
         else:
             print(f"Unknown command: {command}")
-            
+
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)

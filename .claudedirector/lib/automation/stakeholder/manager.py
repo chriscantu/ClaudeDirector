@@ -30,11 +30,11 @@ class ConsolidatedStakeholderManager:
         """Add stakeholder with validation"""
         try:
             # Validate required fields
-            required_fields = ['name', 'role', 'priorities']
+            required_fields = ["name", "role", "priorities"]
             for field in required_fields:
                 if field not in stakeholder_data:
                     raise ValueError(f"Missing required field: {field}")
-            
+
             # Add stakeholder through engine
             return self.engine.add_stakeholder(stakeholder_key, stakeholder_data)
         except Exception as e:
@@ -66,25 +66,30 @@ class ConsolidatedStakeholderManager:
             return []
 
     # AI-powered stakeholder detection methods
-    def process_workspace_automatically(self, workspace_dir: Optional[Path] = None) -> Dict:
+    def process_workspace_automatically(
+        self, workspace_dir: Optional[Path] = None
+    ) -> Dict:
         """Process workspace for automatic stakeholder detection"""
         if workspace_dir is None:
             workspace_dir = Path.cwd() / "workspace" / "meeting-prep"
 
         try:
             if not workspace_dir.exists():
-                return {"status": "error", "message": f"Workspace directory not found: {workspace_dir}"}
+                return {
+                    "status": "error",
+                    "message": f"Workspace directory not found: {workspace_dir}",
+                }
 
             # Scan workspace for stakeholder mentions
             detected_stakeholders = self._scan_workspace_files(workspace_dir)
-            
+
             # Process with AI engine
             results = self.engine.process_detected_stakeholders(detected_stakeholders)
-            
+
             return {
                 "status": "success",
                 "detected_count": len(detected_stakeholders),
-                "processed_results": results
+                "processed_results": results,
             }
         except Exception as e:
             return {"status": "error", "message": str(e)}
@@ -92,33 +97,36 @@ class ConsolidatedStakeholderManager:
     def _scan_workspace_files(self, workspace_dir: Path) -> List[Dict]:
         """Scan workspace files for stakeholder mentions"""
         detected = []
-        
+
         for file_path in workspace_dir.rglob("*.md"):
             try:
-                with open(file_path, 'r', encoding='utf-8') as f:
+                with open(file_path, "r", encoding="utf-8") as f:
                     content = f.read()
-                    
+
                 # Simple stakeholder detection patterns
                 stakeholder_patterns = [
-                    r'@(\w+)',  # @mentions
-                    r'([A-Z][a-z]+ [A-Z][a-z]+)',  # Names
-                    r'VP[^a-z]*([A-Z][a-z]+)',  # VP titles
-                    r'Director[^a-z]*([A-Z][a-z]+)',  # Director titles
+                    r"@(\w+)",  # @mentions
+                    r"([A-Z][a-z]+ [A-Z][a-z]+)",  # Names
+                    r"VP[^a-z]*([A-Z][a-z]+)",  # VP titles
+                    r"Director[^a-z]*([A-Z][a-z]+)",  # Director titles
                 ]
-                
+
                 import re
+
                 for pattern in stakeholder_patterns:
                     matches = re.findall(pattern, content)
                     for match in matches:
-                        detected.append({
-                            "name": match,
-                            "source_file": str(file_path),
-                            "detection_method": "pattern_match",
-                            "confidence": 0.7
-                        })
+                        detected.append(
+                            {
+                                "name": match,
+                                "source_file": str(file_path),
+                                "detection_method": "pattern_match",
+                                "confidence": 0.7,
+                            }
+                        )
             except Exception as e:
                 continue
-                
+
         return detected
 
     # Consolidated utility methods
@@ -126,26 +134,26 @@ class ConsolidatedStakeholderManager:
         """Generate comprehensive stakeholder report"""
         try:
             stakeholders = self.list_stakeholders()
-            
+
             report = {
                 "total_stakeholders": len(stakeholders),
                 "last_updated": datetime.now().isoformat(),
                 "stakeholders_by_role": {},
                 "high_priority_stakeholders": [],
-                "recent_interactions": []
+                "recent_interactions": [],
             }
-            
+
             # Categorize by role
             for stakeholder in stakeholders:
-                role = stakeholder.get('role', 'Unknown')
+                role = stakeholder.get("role", "Unknown")
                 if role not in report["stakeholders_by_role"]:
                     report["stakeholders_by_role"][role] = 0
                 report["stakeholders_by_role"][role] += 1
-                
+
                 # Identify high priority
-                if stakeholder.get('priority', 'medium') == 'high':
-                    report["high_priority_stakeholders"].append(stakeholder['name'])
-            
+                if stakeholder.get("priority", "medium") == "high":
+                    report["high_priority_stakeholders"].append(stakeholder["name"])
+
             return report
         except Exception as e:
             return {"error": str(e)}
@@ -178,7 +186,7 @@ class ConsolidatedStakeholderManager:
             "role": role,
             "priorities": [p.strip() for p in priorities.split(",") if p.strip()],
             "added_date": datetime.now().isoformat(),
-            "status": "active"
+            "status": "active",
         }
 
         success = self.add_stakeholder(stakeholder_key, stakeholder_data)
@@ -186,5 +194,5 @@ class ConsolidatedStakeholderManager:
             print(f"✅ Successfully added stakeholder: {name}")
         else:
             print(f"❌ Failed to add stakeholder: {name}")
-        
+
         return success

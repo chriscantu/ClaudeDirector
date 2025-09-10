@@ -24,10 +24,11 @@ sys.path.insert(0, str(lib_path))
 # Import our bloat analyzer from migrated business logic
 try:
     from core.analysis.bloat_analyzer import MCPBloatAnalyzer
+
     # For backward compatibility, create the expected functions
     def create_bloat_analyzer(project_root):
         return MCPBloatAnalyzer(project_root)
-    
+
     # Import severity enum - may need to be defined locally if not available
     class DuplicationSeverity:
         LOW = "low"

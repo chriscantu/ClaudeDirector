@@ -176,7 +176,7 @@ class MCPBloatAnalyzer:
 
         # 🧠 Sequential Thinking Step 6: Use centralized thresholds instead of hard-coded values
         try:
-            from ...core.constants import ML_CONFIG
+            from ..constants import ML_CONFIG
 
             # Use existing centralized ML constants for bloat detection
             self.similarity_threshold = self.config.get(

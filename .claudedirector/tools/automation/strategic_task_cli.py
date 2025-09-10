@@ -18,26 +18,26 @@ def main():
     """Lightweight CLI interface to Strategic Task Manager business logic"""
     try:
         manager = StrategicTaskManager()
-        
+
         if len(sys.argv) < 2:
             print("Usage: strategic_task_cli.py <command> [args]")
             print("Commands: scan, create, list, update, delete")
             return
-        
+
         command = sys.argv[1]
-        
+
         if command == "scan":
             results = manager.scan_workspace_for_tasks()
             print(f"Scanned workspace, found {len(results)} potential tasks")
-            
+
         elif command == "list":
             tasks = manager.list_tasks()
             for task in tasks:
                 print(f"- {task['title']} ({task['status']})")
-                
+
         else:
             print(f"Unknown command: {command}")
-            
+
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)

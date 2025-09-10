@@ -18,14 +18,14 @@ def main():
     """Lightweight CLI interface to P0 Enforcement Suite"""
     try:
         enforcer = P0EnforcementSuite()
-        
+
         if len(sys.argv) < 2:
             print("Usage: p0_enforcement_cli.py <command> [args]")
             print("Commands: validate, report, check")
             return
-        
+
         command = sys.argv[1]
-        
+
         if command == "validate":
             print("🚨 Running P0 validation...")
             result = enforcer.validate_all_p0_features()
@@ -34,16 +34,16 @@ def main():
             else:
                 print("❌ P0 validation failures detected")
                 sys.exit(1)
-                
+
         elif command == "report":
             print("📊 Generating P0 compliance report...")
             report = enforcer.generate_compliance_report()
             print(f"P0 Features: {report.get('total_features', 0)}")
             print(f"Passing: {report.get('passing_features', 0)}")
-            
+
         else:
             print(f"Unknown command: {command}")
-            
+
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)

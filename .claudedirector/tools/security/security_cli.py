@@ -18,14 +18,14 @@ def main():
     """Lightweight CLI interface to Security Scanners"""
     try:
         scanner = EnhancedSecurityScanner()
-        
+
         if len(sys.argv) < 2:
             print("Usage: security_cli.py <command> [args]")
             print("Commands: scan, validate, report")
             return
-        
+
         command = sys.argv[1]
-        
+
         if command == "scan":
             print("🔒 Running security scan...")
             results = scanner.scan_project()
@@ -34,7 +34,7 @@ def main():
                 print("✅ No security threats detected")
             else:
                 print(f"⚠️  {threats} security threats found")
-                
+
         elif command == "validate":
             print("🛡️  Validating security compliance...")
             is_compliant = scanner.validate_compliance()
@@ -43,10 +43,10 @@ def main():
             else:
                 print("❌ Security compliance issues found")
                 sys.exit(1)
-                
+
         else:
             print(f"Unknown command: {command}")
-            
+
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
