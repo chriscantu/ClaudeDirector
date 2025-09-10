@@ -1,1 +1,0 @@
-../automation/setup_smart_git.py
