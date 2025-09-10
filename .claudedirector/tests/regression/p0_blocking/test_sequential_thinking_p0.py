@@ -26,12 +26,12 @@ project_root = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 try:
-    from lib.core.validation.p0_enforcer import (
-        P0EnforcementSuite,
+    from lib.core.validation.unified_prevention_engine import (
+        P0Module,
     )
 except ImportError:
     # Fallback for test execution
-    P0EnforcementSuite = None
+    P0Module = None
 
 
 class TestSequentialThinkingP0(unittest.TestCase):
@@ -48,7 +48,7 @@ class TestSequentialThinkingP0(unittest.TestCase):
     def setUp(self):
         """Set up P0 Sequential Thinking validation"""
         self.project_root = self._find_project_root()
-        self.validator = P0EnforcementSuite() if P0EnforcementSuite else None
+        self.validator = P0Module() if P0Module else None
 
         # P0 Critical thresholds
         self.min_compliance_rate = 95.0  # 95% minimum compliance
@@ -149,11 +149,11 @@ class TestSequentialThinkingP0(unittest.TestCase):
             / "lib"
             / "core"
             / "validation"
-            / "p0_enforcer.py"
+            / "unified_prevention_engine.py"
         )
         self.assertTrue(
             validator_path.exists(),
-            "BLOCKING FAILURE: P0 Enforcement Suite tool missing",
+            "BLOCKING FAILURE: Unified Prevention Engine tool missing",
         )
 
         # Check Sequential Thinking enforcement documentation exists
