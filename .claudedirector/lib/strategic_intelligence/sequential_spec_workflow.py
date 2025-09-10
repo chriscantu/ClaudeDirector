@@ -25,7 +25,7 @@ from abc import ABC, abstractmethod
 
 from .spec_kit_integrator import SpecKitIntegrator, SpecificationResult
 from .strategic_spec_enhancer import StrategicSpecEnhancer, EnhancedSpecification
-from .context_intelligence_bridge import ContextIntelligenceBridge
+from ..context_engineering import AdvancedContextEngine
 
 try:
     from ..core.models import StrategicContext
@@ -95,13 +95,13 @@ class SequentialSpecCreator:
         self,
         spec_kit_integrator: SpecKitIntegrator,
         strategic_enhancer: StrategicSpecEnhancer,
-        context_bridge: ContextIntelligenceBridge,
+        context_engine: AdvancedContextEngine,
         config: Optional[Dict[str, Any]] = None,
     ):
         """Initialize with dependency injection (Dependency Inversion)"""
         self.spec_kit_integrator = spec_kit_integrator
         self.strategic_enhancer = strategic_enhancer
-        self.context_bridge = context_bridge
+        self.context_engine = context_engine
         self.config = config or {}
         self.logger = logging.getLogger(__name__)
 

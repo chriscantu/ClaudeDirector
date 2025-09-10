@@ -21,10 +21,19 @@ import logging
 
 from .spec_kit_integrator import SpecKitIntegrator, SpecificationResult
 from .strategic_spec_enhancer import StrategicSpecEnhancer, EnhancedSpecification
-from .context_intelligence_bridge import (
-    ContextIntelligenceBridge,
-    StrategicIntelligenceContext,
-)
+from ..context_engineering import AdvancedContextEngine
+
+
+@dataclass
+class StrategicIntelligenceContext:
+    """Strategic intelligence context for specifications"""
+
+    organizational_patterns: Dict[str, Any]
+    stakeholder_relationships: Dict[str, Any]
+    strategic_initiatives: List[Dict[str, Any]]
+    framework_history: List[str]
+    decision_outcomes: List[Dict[str, Any]]
+
 
 # PHASE 8.4: Stub implementation for P0 compatibility
 try:
@@ -120,7 +129,7 @@ class ExternalToolCoordinator:
             config=self.config.get("enhancement", {}),
         )
 
-        self.context_bridge = ContextIntelligenceBridge(context_engine)
+        self.context_engine = context_engine
 
         # Tool registry
         self.supported_tools = {

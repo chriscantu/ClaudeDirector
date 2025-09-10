@@ -49,8 +49,8 @@ try:
                 for k, v in kwargs.items():
                     setattr(self, k, v)
 
-    # PHASE 8.4: Use stub from context_intelligence_bridge for P0 compatibility
-    from .context_intelligence_bridge import AdvancedContextEngine
+    # Use real context_engineering components
+    from ..context_engineering import AdvancedContextEngine
 except ImportError:
     # Fallback for test environments
     import sys
