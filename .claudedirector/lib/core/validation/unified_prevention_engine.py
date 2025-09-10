@@ -333,14 +333,14 @@ class P0Module:
         try:
             if not Path(file_path).exists():
                 return False, ["File not found"]
-            
+
             content = Path(file_path).read_text()
             result = ValidationResult("P0Module", str(file_path))
             self._validate_sequential_thinking(content, result)
-            
+
             is_compliant = len(result.violations) == 0
             issues = [v["message"] for v in result.violations]
-            
+
             return is_compliant, issues
         except Exception as e:
             return False, [f"Validation error: {e}"]
