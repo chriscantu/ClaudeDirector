@@ -27,11 +27,12 @@ import logging
 
 # Core imports
 try:
-    from ..quality.enhanced_security_scanner import EnhancedSecurityScanner
-    from ...lib.core.config import get_config
+    from ...security.scanners.enhanced_security_scanner import EnhancedSecurityScanner
+    from ..constants import ML_CONFIG
 except ImportError:
     # Fallback for standalone usage
-    get_config = lambda: {}
+    ML_CONFIG = None
+    EnhancedSecurityScanner = None
 
 
 # Configuration Constants (DRY Compliance)
@@ -176,7 +177,7 @@ class MCPBloatAnalyzer:
 
         # 🧠 Sequential Thinking Step 6: Use centralized thresholds instead of hard-coded values
         try:
-            from ...lib.core.constants import ML_CONFIG
+            from ..constants import ML_CONFIG
 
             # Use existing centralized ML constants for bloat detection
             self.similarity_threshold = self.config.get(

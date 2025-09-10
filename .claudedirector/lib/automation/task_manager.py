@@ -13,7 +13,7 @@ from typing import Dict, Optional
 
 import structlog
 
-from ai_intelligence.context.intelligence_unified import (
+from ..ai_intelligence.context.intelligence_unified import (
     TaskIntelligence as IntelligentTaskDetector,
 )
 

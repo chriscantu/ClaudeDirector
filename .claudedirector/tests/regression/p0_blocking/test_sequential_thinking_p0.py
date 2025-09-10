@@ -26,7 +26,7 @@ project_root = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 try:
-    from tools.architecture.p0_enforcement_suite import (
+    from lib.core.validation.p0_enforcer import (
         P0EnforcementSuite,
     )
 except ImportError:
@@ -146,9 +146,10 @@ class TestSequentialThinkingP0(unittest.TestCase):
         validator_path = (
             self.project_root
             / ".claudedirector"
-            / "tools"
-            / "architecture"
-            / "p0_enforcement_suite.py"
+            / "lib"
+            / "core"
+            / "validation"
+            / "p0_enforcer.py"
         )
         self.assertTrue(
             validator_path.exists(),
