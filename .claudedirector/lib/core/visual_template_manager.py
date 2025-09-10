@@ -1,11 +1,18 @@
 """
 Visual Template Manager - Phase 12 Magic MCP Enhancement
 Persona-specific visual enhancement templates for always-on Magic MCP integration
+
+🎯 STORY 9.5.3: VISUAL TEMPLATE MANAGER - BaseManager Enhanced
+PHASE 3 CONSOLIDATION: Converted to BaseManager for DRY compliance
+ELIMINATES duplicate infrastructure patterns while maintaining visual template functionality
 """
 
 from typing import Dict, Any, Optional, List
 from dataclasses import dataclass
 from enum import Enum
+
+# STORY 9.5.3: BaseManager import for consolidation
+from .base_manager import BaseManager, BaseManagerConfig, ManagerType
 
 
 class VisualType(Enum):
@@ -32,17 +39,47 @@ class VisualTemplate:
     description: str
 
 
-class VisualTemplateManager:
+class VisualTemplateManager(BaseManager):
     """
+    🎯 STORY 9.5.3: VISUAL TEMPLATE MANAGER - BaseManager Enhanced
+
+    PHASE 3 CONSOLIDATION: Converted to BaseManager for DRY compliance
+    ELIMINATES duplicate infrastructure patterns while maintaining visual template functionality
+
     PHASE 12: Persona-specific visual template manager for Magic MCP
 
     Maps personas to their specialized visual enhancement templates,
     ensuring automatic Magic MCP routing with domain-optimized outputs.
+
+    ARCHITECTURAL BENEFITS:
+    - BaseManager infrastructure eliminates duplicate logging/caching/metrics
+    - Unified configuration and error handling patterns
+    - Performance optimized with BaseManager caching
     """
 
     def __init__(self):
+        """Initialize with BaseManager consolidation"""
+        # STORY 9.5.3: BaseManager initialization eliminates duplicate infrastructure
+        config = BaseManagerConfig(
+            manager_name="visual_template_manager",
+            manager_type=ManagerType.CONFIGURATION,
+            enable_metrics=True,
+            enable_caching=True,
+            enable_logging=True,
+        )
+        super().__init__(config)
+
         self.persona_templates = self._initialize_persona_templates()
         self.visual_keywords = self._initialize_visual_keywords()
+
+        self.logger.info(
+            "VisualTemplateManager initialized with BaseManager consolidation",
+            persona_count=len(self.persona_templates),
+            template_count=sum(
+                len(templates) for templates in self.persona_templates.values()
+            ),
+            visual_types=len(self.visual_keywords),
+        )
 
     def _initialize_persona_templates(self) -> Dict[str, List[VisualTemplate]]:
         """Initialize persona-specific visual templates"""
@@ -331,3 +368,20 @@ class VisualTemplateManager:
     def get_supported_visual_types(self) -> List[VisualType]:
         """Get all supported visual types"""
         return list(VisualType)
+
+    async def manage(self, operation: str, *args, **kwargs) -> Any:
+        """
+        BaseManager abstract method implementation
+        Delegates to visual template operations
+        """
+        if operation == "get_template":
+            return self.get_template_for_context(*args, **kwargs)
+        elif operation == "detect_visual_intent":
+            return self.detect_visual_intent(*args, **kwargs)
+        elif operation == "get_persona_templates":
+            return self.get_available_templates_for_persona(*args, **kwargs)
+        elif operation == "get_visual_types":
+            return self.get_supported_visual_types(*args, **kwargs)
+        else:
+            self.logger.warning(f"Unknown visual template operation: {operation}")
+            return None

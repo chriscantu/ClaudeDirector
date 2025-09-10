@@ -2,6 +2,10 @@
 """
 Enhanced ClaudeDirector Framework Manager
 Automatic session context preservation and recovery system
+
+🎯 STORY 9.5.3: ENHANCED FRAMEWORK MANAGER - BaseManager Enhanced
+PHASE 3 CONSOLIDATION: Converted to BaseManager for DRY compliance
+ELIMINATES duplicate infrastructure patterns while maintaining framework functionality
 """
 
 import json
@@ -18,15 +22,39 @@ if lib_dir not in sys.path:
 
 from context_engineering.strategic_memory_manager import get_strategic_memory_manager
 
+# STORY 9.5.3: BaseManager import for consolidation
+from .base_manager import BaseManager, BaseManagerConfig, ManagerType
 
-class EnhancedFrameworkManager:
+
+class EnhancedFrameworkManager(BaseManager):
     """
+    🎯 STORY 9.5.3: ENHANCED FRAMEWORK MANAGER - BaseManager Enhanced
+
+    PHASE 3 CONSOLIDATION: Converted to BaseManager for DRY compliance
+    ELIMINATES duplicate infrastructure patterns while maintaining framework functionality
+
     Enhanced ClaudeDirector framework with automatic session context preservation
     Ensures critical context survives session restarts and provides recovery mechanisms
+
+    ARCHITECTURAL BENEFITS:
+    - BaseManager infrastructure eliminates duplicate logging/caching/metrics
+    - Unified configuration and error handling patterns
+    - Performance optimized with BaseManager caching
     """
 
     def __init__(self, db_path: str = None):
-        """Initialize enhanced framework with session management"""
+        """Initialize with BaseManager consolidation"""
+        # STORY 9.5.3: BaseManager initialization eliminates duplicate infrastructure
+        config = BaseManagerConfig(
+            manager_name="enhanced_framework_manager",
+            manager_type=ManagerType.CONFIGURATION,
+            enable_metrics=True,
+            enable_caching=True,
+            enable_logging=True,
+            custom_config={"db_path": db_path},
+        )
+        super().__init__(config)
+
         self.session_manager = SessionContextManager(db_path)
         self.current_session = None
         self.context_validated = False
@@ -34,6 +62,13 @@ class EnhancedFrameworkManager:
 
         # Initialize session on startup
         self._initialize_session()
+
+        self.logger.info(
+            "EnhancedFrameworkManager initialized with BaseManager consolidation",
+            db_path=db_path,
+            session_manager=type(self.session_manager).__name__,
+            recovery_required=self.recovery_required,
+        )
 
     def _initialize_session(self):
         """Initialize session with automatic recovery detection"""
@@ -261,6 +296,27 @@ class EnhancedFrameworkManager:
             return f"✅ Strategic session ready (Context quality: {quality_str})"
 
         return "🔄 Context validation in progress"
+
+    async def manage(self, operation: str, *args, **kwargs) -> Any:
+        """
+        BaseManager abstract method implementation
+        Delegates to enhanced framework operations
+        """
+        if operation == "validate_context":
+            return self.validate_context_before_strategic_work(*args, **kwargs)
+        elif operation == "backup_context":
+            return self.backup_current_context(*args, **kwargs)
+        elif operation == "get_status":
+            return self.get_context_status(*args, **kwargs)
+        elif operation == "store_context":
+            return self.store_strategic_context(*args, **kwargs)
+        elif operation == "end_session":
+            return self.end_session(*args, **kwargs)
+        elif operation == "get_framework_status":
+            return self.get_framework_status(*args, **kwargs)
+        else:
+            self.logger.warning(f"Unknown framework operation: {operation}")
+            return None
 
 
 # Global framework instance for easy access

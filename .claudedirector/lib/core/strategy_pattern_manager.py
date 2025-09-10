@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """
-🎯 STORY 2.3: STRATEGY PATTERN CONSOLIDATION - Elimination-First Architecture
+🎯 STORY 9.5.3: STRATEGY PATTERN MANAGER - BaseManager Consolidation
+
+PHASE 3 ENHANCEMENT: Converted to BaseManager pattern for DRY compliance
+ELIMINATES duplicate infrastructure patterns while maintaining strategy functionality
 
 CONSOLIDATES all duplicate strategy pattern logic across processors:
 - Decision pattern recognition (DecisionProcessor)
@@ -16,9 +19,9 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, List, Any, Optional, Union, Callable
-import structlog
 
-logger = structlog.get_logger(__name__)
+# STORY 9.5.3: BaseManager import for consolidation
+from .base_manager import BaseManager, BaseManagerConfig, ManagerType
 
 
 class StrategyType(Enum):
@@ -108,9 +111,12 @@ class ThinkingPatternStrategy(StrategyPattern):
         }
 
 
-class StrategyPatternManager:
+class StrategyPatternManager(BaseManager):
     """
-    🎯 STORY 2.3: CENTRALIZED STRATEGY PATTERN MANAGER
+    🎯 STORY 9.5.3: CENTRALIZED STRATEGY PATTERN MANAGER - BaseManager Enhanced
+
+    PHASE 3 CONSOLIDATION: Converted to BaseManager for DRY compliance
+    ELIMINATES duplicate infrastructure patterns while maintaining strategy functionality
 
     ELIMINATES duplicate strategy logic across all processors:
     - Replaces _initialize_decision_patterns() in DecisionProcessor
@@ -118,16 +124,29 @@ class StrategyPatternManager:
     - Replaces _initialize_context_patterns() in FrameworkProcessor
     - Replaces similar pattern logic in AnalyticsProcessor
 
-    Provides unified strategy selection, pattern matching, and execution.
+    ARCHITECTURAL BENEFITS:
+    - BaseManager infrastructure eliminates duplicate logging/caching/metrics
+    - Unified strategy selection, pattern matching, and execution
+    - Performance optimized with BaseManager caching
     """
 
     def __init__(self):
-        self.logger = logger.bind(component="strategy_pattern_manager")
+        """Initialize with BaseManager consolidation"""
+        # STORY 9.5.3: BaseManager initialization eliminates duplicate infrastructure
+        config = BaseManagerConfig(
+            manager_name="strategy_pattern_manager",
+            manager_type=ManagerType.CONFIGURATION,
+            enable_metrics=True,
+            enable_caching=True,
+            enable_logging=True,
+        )
+        super().__init__(config)
+
         self.strategies: Dict[StrategyType, Dict[str, StrategyPattern]] = {}
         self._initialize_all_strategies()
 
         self.logger.info(
-            "StrategyPatternManager initialized",
+            "StrategyPatternManager initialized with BaseManager consolidation",
             strategy_types=len(self.strategies),
             total_strategies=sum(
                 len(strategies) for strategies in self.strategies.values()
@@ -356,6 +375,23 @@ class StrategyPatternManager:
             return strategy.execute(input_data)
         except Exception as e:
             self.logger.error(f"Strategy execution failed: {e}")
+            return None
+
+    async def manage(self, operation: str, *args, **kwargs) -> Any:
+        """
+        BaseManager abstract method implementation
+        Delegates to strategy pattern operations
+        """
+        if operation == "select_strategy":
+            return self.select_best_strategy(*args, **kwargs)
+        elif operation == "execute_strategy":
+            return self.execute_strategy(*args, **kwargs)
+        elif operation == "get_strategies":
+            return self.get_available_strategies(*args, **kwargs)
+        elif operation == "analyze_performance":
+            return self.analyze_strategy_performance(*args, **kwargs)
+        else:
+            self.logger.warning(f"Unknown strategy operation: {operation}")
             return None
 
 

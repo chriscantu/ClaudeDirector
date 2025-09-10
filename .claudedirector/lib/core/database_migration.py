@@ -24,6 +24,9 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
 from dataclasses import dataclass
 
+# STORY 9.5.3: BaseManager import for consolidation
+from .base_manager import BaseManager, BaseManagerConfig, ManagerType
+
 try:
     import structlog
 
@@ -384,8 +387,13 @@ class DatabaseMigrationValidator:
         return result
 
 
-class DatabaseMigrationManager:
+class DatabaseMigrationManager(BaseManager):
     """
+    🎯 STORY 9.5.3: DATABASE MIGRATION MANAGER - BaseManager Enhanced
+
+    PHASE 3 CONSOLIDATION: Converted to BaseManager for DRY compliance
+    ELIMINATES duplicate infrastructure patterns while maintaining migration functionality
+
     Manages the complete database migration process with rollback capability.
 
     Migration Process:
@@ -395,10 +403,25 @@ class DatabaseMigrationManager:
     4. Performance benchmarking
     5. P0 test execution
     6. Migration completion or rollback
+
+    ARCHITECTURAL BENEFITS:
+    - BaseManager infrastructure eliminates duplicate logging/caching/metrics
+    - Unified configuration and error handling patterns
+    - Performance optimized with BaseManager caching
     """
 
     def __init__(self):
-        self.logger = structlog.get_logger("DatabaseMigrationManager")
+        """Initialize with BaseManager consolidation"""
+        # STORY 9.5.3: BaseManager initialization eliminates duplicate infrastructure
+        config = BaseManagerConfig(
+            manager_name="database_migration_manager",
+            manager_type=ManagerType.DATABASE,
+            enable_metrics=True,
+            enable_caching=True,
+            enable_logging=True,
+        )
+        super().__init__(config)
+
         self.validator = DatabaseMigrationValidator()
         self.migration_timestamp = int(time.time())
 
@@ -543,6 +566,23 @@ echo "Please restart ClaudeDirector and verify data integrity"
         rollback_file.chmod(0o755)
 
         return str(rollback_file)
+
+    async def manage(self, operation: str, *args, **kwargs) -> Any:
+        """
+        BaseManager abstract method implementation
+        Delegates to database migration operations
+        """
+        if operation == "execute_migration":
+            return self.execute_migration(*args, **kwargs)
+        elif operation == "create_backup":
+            return self._create_migration_backup(*args, **kwargs)
+        elif operation == "create_rollback":
+            return self.create_rollback_script(*args, **kwargs)
+        elif operation == "validate_safety":
+            return validate_migration_safety(*args, **kwargs)
+        else:
+            self.logger.warning(f"Unknown migration operation: {operation}")
+            return None
 
 
 # Convenience functions for migration execution
