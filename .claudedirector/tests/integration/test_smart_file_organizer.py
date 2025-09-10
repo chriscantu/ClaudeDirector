@@ -8,14 +8,11 @@ import tempfile
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from lib.core.file_lifecycle_manager import (
-    FileLifecycleManager,
+from lib.core.unified_file_manager import (
+    UnifiedFileManager,
     FileMetadata,
     FileRetentionStatus,
     GenerationMode,
-)
-from lib.core.smart_file_organizer import (
-    SmartFileOrganizer,
     ConsolidationOpportunity,
 )
 from lib.core.advanced_archiving import AdvancedArchivingSystem
@@ -32,14 +29,14 @@ class TestSmartFileOrganizer:
             yield temp_dir
 
     @pytest.fixture
-    def lifecycle_manager(self, temp_workspace):
-        """Create lifecycle manager for testing"""
-        return FileLifecycleManager(temp_workspace)
+    def unified_manager(self, temp_workspace):
+        """Create unified file manager for testing"""
+        return UnifiedFileManager(str(temp_workspace))
 
     @pytest.fixture
-    def smart_organizer(self, lifecycle_manager):
-        """Create smart organizer for testing"""
-        return SmartFileOrganizer(lifecycle_manager)
+    def smart_organizer(self, unified_manager):
+        """Create smart organizer for testing - using unified manager"""
+        return unified_manager  # UnifiedFileManager includes all smart organizer functionality
 
     def test_outcome_focused_filename_generation(self, smart_organizer):
         """Test outcome-focused filename generation"""
