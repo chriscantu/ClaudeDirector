@@ -42,7 +42,7 @@ repos:
 
       - id: code-bloat-prevention
         name: 🏗️ CODE BLOAT PREVENTION (MCP-Enhanced) - STRICT ENFORCEMENT
-        entry: python3 .claudedirector/tools/architecture/bloat_prevention_hook.py --threshold=8
+        entry: python3 .claudedirector/tools/validate.py --modules bloat .
         language: system
         types: [python]
         stages: [pre-commit]
@@ -55,7 +55,7 @@ repos:
     hooks:
       - id: code-bloat-prevention-secondary
         name: 🏗️ CODE BLOAT PREVENTION (MCP-Enhanced) - SECONDARY CHECK
-        entry: python3 .claudedirector/tools/architecture/bloat_prevention_hook.py --threshold=8
+        entry: python3 .claudedirector/tools/validate.py --modules bloat .
         language: system
         types: [python]
         stages: [pre-commit]
@@ -96,7 +96,7 @@ repos:
     hooks:
       - id: enhanced-security-scanner
         name: 🛡️ ENHANCED SECURITY SCAN
-        entry: python3 .claudedirector/tools/validate.py --modules security
+        entry: python3 .claudedirector/tools/validate.py --modules security .
         language: system
         pass_filenames: false
         stages: [pre-commit]
