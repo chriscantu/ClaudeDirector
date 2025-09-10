@@ -1,1 +1,0 @@
-../automation/setup_meeting_intelligence.py
