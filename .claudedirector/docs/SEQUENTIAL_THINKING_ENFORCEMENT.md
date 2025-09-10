@@ -64,7 +64,7 @@
 
 ---
 
-**Enforcement Owner**: Martin | Platform Architecture  
-**Last Updated**: September 10, 2025  
-**Policy Version**: 1.0  
+**Enforcement Owner**: Martin | Platform Architecture
+**Last Updated**: September 10, 2025
+**Policy Version**: 1.0
 **Compliance Requirement**: 100% (Zero Tolerance)
