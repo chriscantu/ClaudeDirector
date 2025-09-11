@@ -8,13 +8,21 @@ BLOAT ELIMINATION: Original 725-line file consolidated into UnifiedAIEngine
 COMPATIBILITY: Maintains P0 test compatibility during transition
 """
 
-from .unified_ai_engine import UnifiedAIEngine, DecisionRecommendation, AIProcessingResult
+from .unified_ai_engine import (
+    UnifiedAIEngine,
+    DecisionRecommendation,
+    AIProcessingResult,
+)
 from typing import Dict, Any, List, Optional
 from enum import Enum
 
 # 🎯 CONTEXT7: Import missing classes for P0 compatibility
 try:
-    from .decision_orchestrator import DecisionComplexity, DecisionContext, DecisionIntelligenceResult
+    from .decision_orchestrator import (
+        DecisionComplexity,
+        DecisionContext,
+        DecisionIntelligenceResult,
+    )
 except ImportError:
     # Fallback definitions for P0 compatibility
     class DecisionComplexity(Enum):
@@ -22,13 +30,14 @@ except ImportError:
         MEDIUM = "medium"
         COMPLEX = "complex"
 
-class DecisionContext:
+    class DecisionContext:
         def __init__(self, *args, **kwargs):
             self.complexity = "medium"
 
     class DecisionIntelligenceResult:
         def __init__(self, *args, **kwargs):
             self.success = True
+
 
 # Backward compatibility class
 class DecisionProcessor(UnifiedAIEngine):
@@ -54,4 +63,9 @@ class DecisionProcessor(UnifiedAIEngine):
 
 
 # Compatibility exports
-__all__ = ["DecisionProcessor", "DecisionComplexity", "DecisionContext", "DecisionIntelligenceResult"]
+__all__ = [
+    "DecisionProcessor",
+    "DecisionComplexity",
+    "DecisionContext",
+    "DecisionIntelligenceResult",
+]

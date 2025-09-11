@@ -16,18 +16,33 @@ Author: Martin | Platform Architecture
 Sequential Thinking Phase 9.6.1 - Persona system consolidation
 """
 
-# CONSOLIDATION: Import from unified persona engine
+# SOLID DECOMPOSITION: Import from specialized components
 from .unified_persona_engine import (
     UnifiedPersonaEngine,
-    PersonaType,
-    ChallengeType,
-    StrategicThinkingDepth,
-    PersonaBehavior,
-    ChallengePattern,
-    PersonaConsistencyMetrics,
     create_unified_persona_engine,
     get_default_persona_engine,
     get_persona_engine,
+)
+
+from .persona_manager import (
+    PersonaType,
+    PersonaBehavior,
+)
+
+from .challenge_framework import (
+    ChallengeType,
+    ChallengePattern,
+)
+
+from .response_generator import (
+    StrategicThinkingDepth,
+    EnhancedResponseResult,
+)
+
+from .conversation_manager import (
+    PersonaConsistencyMetrics,
+    ConversationManager,
+    IntegratedConversationManager,
 )
 
 # CONSOLIDATION: Backward compatibility aliases

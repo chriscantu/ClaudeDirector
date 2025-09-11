@@ -18,7 +18,7 @@ Author: Martin | Platform Architecture
 """
 
 import logging
-from typing import Dict, Any, Optional, List, Union
+from typing import Dict, Any, Optional, List
 from dataclasses import dataclass
 
 try:
@@ -41,24 +41,14 @@ class UnifiedPersonaEngine(BaseManager):
     Maintains API compatibility while eliminating 86% of bloat.
     """
 
-    def __init__(self, config: Optional[BaseManagerConfig] = None, **kwargs):
+    def __init__(self, config: Optional[BaseManagerConfig] = None):
         """Initialize lightweight coordinator with component injection"""
-        # P0 COMPATIBILITY: Accept and ignore legacy parameters like config_path
-        # P0 COMPATIBILITY: Handle dict config objects from legacy tests
         if config is None:
             config = BaseManagerConfig(
                 manager_name="unified_persona_engine",
                 manager_type=ManagerType.PERSONA,
                 enable_caching=True,
                 enable_metrics=True,
-            )
-        elif isinstance(config, dict):
-            # Convert dict to BaseManagerConfig for P0 compatibility
-            config = BaseManagerConfig(
-                manager_name=config.get("manager_name", "unified_persona_engine"),
-                manager_type=ManagerType.PERSONA,
-                enable_caching=config.get("enable_caching", True),
-                enable_metrics=config.get("enable_metrics", True),
             )
 
         super().__init__(config)
@@ -70,19 +60,6 @@ class UnifiedPersonaEngine(BaseManager):
         self.conversation_manager = ConversationManager()
 
         self.logger.info("UnifiedPersonaEngine initialized - lightweight coordinator")
-
-    def manage(self) -> Dict[str, Any]:
-        """Required BaseManager abstract method implementation"""
-        return {
-            "status": "active",
-            "components": {
-                "persona_manager": "initialized",
-                "challenge_framework": "initialized",
-                "response_generator": "initialized",
-                "conversation_manager": "initialized",
-            },
-            "bloat_elimination": "86% reduction achieved",
-        }
 
     def enhance_cursor_response(
         self,
@@ -128,7 +105,7 @@ class UnifiedPersonaEngine(BaseManager):
 
     def start_conversation_session(
         self, session_id: str, context: Dict[str, Any] = None
-    ) -> str:
+    ) -> bool:
         """P0 Compatibility: Delegate to ConversationManager"""
         return self.conversation_manager.start_conversation_session(session_id, context)
 
@@ -187,25 +164,6 @@ class UnifiedPersonaEngine(BaseManager):
     ) -> Optional[str]:
         """Generate challenge through ChallengeFramework"""
         return self.challenge_framework.generate_challenge(context, intensity)
-    
-    # P0 COMPATIBILITY: Legacy API methods
-    @property
-    def challenge_patterns(self):
-        """P0 Compatibility: Access to challenge patterns"""
-        return self.challenge_framework.challenge_patterns
-    
-    def should_challenge(self, context: Dict[str, Any]) -> List[str]:
-        """P0 Compatibility: Challenge detection method"""
-        challenge = self.challenge_framework.generate_challenge(context)
-        return [challenge] if challenge else []
-    
-    def enhance_persona_response(self, response: str, persona_type=None, context: Dict[str, Any] = None) -> str:
-        """P0 Compatibility: Legacy response enhancement method"""
-        if persona_type is None:
-            from .persona_manager import PersonaType
-            persona_type = PersonaType.DIEGO
-        result = self.enhance_cursor_response(response, context, persona_type)
-        return result.enhanced_response
 
     def _get_fallback_result(
         self, response: str, persona_type: PersonaType
@@ -244,10 +202,9 @@ class UnifiedPersonaEngine(BaseManager):
 
 
 def create_unified_persona_engine(
-    config: Optional[BaseManagerConfig] = None, **kwargs
+    config: Optional[BaseManagerConfig] = None,
 ) -> UnifiedPersonaEngine:
-    """Factory function maintaining original API with P0 compatibility"""
-    # P0 COMPATIBILITY: Ignore extra parameters that old tests might pass
+    """Factory function maintaining original API"""
     return UnifiedPersonaEngine(config)
 
 
@@ -274,4 +231,5 @@ def enhance_cursor_response(
 # P0 COMPATIBILITY: Import required types for backward compatibility
 from .conversation_manager import IntegratedConversationManager
 
-# Union already imported above
+# Support polymorphic input types
+from typing import Union

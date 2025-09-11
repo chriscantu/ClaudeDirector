@@ -29,14 +29,14 @@ elif sys.path.index(lib_path) != 0:
     sys.path.remove(lib_path)
     sys.path.insert(0, lib_path)
 
-# STORY 9.6.1: Updated imports for unified persona engine
+# SOLID DECOMPOSITION: Updated imports for decomposed persona components
 try:
     from personas.unified_persona_engine import (
         UnifiedPersonaEngine,
-        ChallengeType,
         get_persona_engine,
         create_unified_persona_engine,
     )
+    from personas.challenge_framework import ChallengeType
 
     # Backward compatibility aliases
     StrategicChallengeFramework = UnifiedPersonaEngine
