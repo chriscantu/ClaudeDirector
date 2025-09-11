@@ -24,16 +24,20 @@ from unittest.mock import Mock, patch, MagicMock
 # Test imports
 import sys
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+# Add correct path for imports - we need to be in .claudedirector context
+CLAUDEDIRECTOR_ROOT = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "../../..")
+)
+sys.path.insert(0, CLAUDEDIRECTOR_ROOT)
 
 try:
-    from claudedirector.lib.context_engineering.workspace_integration import (
+    from lib.context_engineering.workspace_integration import (
         WorkspaceMonitor,
         StrategyFile,
         WorkspaceContext,
         StrategicFileHandler,
     )
-    from claudedirector.lib.context_engineering.advanced_context_engine import (
+    from lib.context_engineering.advanced_context_engine import (
         AdvancedContextEngine,
     )
 

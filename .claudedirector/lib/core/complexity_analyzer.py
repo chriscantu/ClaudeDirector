@@ -552,11 +552,11 @@ class AnalysisComplexityDetector:
         Returns:
             Tuple of (True, recommended_server) - always enhance
         """
-        # PHASE 12: Always-on enhancement - import persona mapping
-        from .enhanced_persona_manager import EnhancedPersonaManager
+        # PHASE 12: Always-on enhancement - import persona mapping from unified engine
+        from ..personas.unified_persona_engine import UnifiedPersonaEngine
 
         # Get persona's primary MCP server
-        recommended_server = EnhancedPersonaManager.PERSONA_SERVER_MAPPING.get(
+        recommended_server = UnifiedPersonaEngine.PERSONA_SERVER_MAPPING.get(
             persona, "sequential"
         )
 
