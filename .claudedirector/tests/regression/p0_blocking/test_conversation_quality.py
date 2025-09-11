@@ -22,8 +22,8 @@ class TestP0QualityTarget(unittest.TestCase):
         print("=" * 60)
 
         try:
-            from core.enhanced_persona_manager import (
-                IntegratedConversationManager,
+            from personas.unified_persona_engine import (
+                UnifiedPersonaEngine as IntegratedConversationManager,
             )
 
             # Initialize manager

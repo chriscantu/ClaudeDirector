@@ -7,6 +7,7 @@ Technical Story: TS-14.1.2 Context-Aware Recommendation Engine
 MCP Enhancement: Sequential (systematic_analysis) for ML coordination
 Target: 90%+ relevance rate with MCP-enhanced context analysis
 
+Context7 MCP Coordination: Enhanced pattern access with Context7 server coordination
 MCP Sequential Capabilities:
 - Systematic ML model coordination and selection
 - Context-aware framework detection with MCP intelligence
@@ -525,9 +526,9 @@ class MCPEnhancedMLPipeline(PerformanceOptimizedMLPipeline):
         }
 
         self.logger.info(
-            "mcp_enhanced_ml_pipeline_initialized",
-            mcp_available=self.mcp_coordinator.mcp_available,
-            enhancement_patterns=len(self.mcp_coordinator.analysis_patterns),
+            "mcp_enhanced_ml_pipeline_initialized - mcp_available=%s, enhancement_patterns=%d",
+            self.mcp_coordinator.mcp_available,
+            len(self.mcp_coordinator.analysis_patterns),
         )
 
     async def predict_context_aware_intelligence(

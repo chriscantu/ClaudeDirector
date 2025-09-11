@@ -23,10 +23,14 @@ import logging
 import time
 
 # Phase 3B.4: Import consolidated processor (only dependency)
-from .predictive_processor import (
-    PredictiveProcessor,
-    OrganizationalHealthMetrics,
-)
+from .predictive_processor import PredictiveProcessor
+
+# 🎯 P0 COMPATIBILITY: Import real OrganizationalHealthMetrics, not stub
+try:
+    from ..context_engineering.organizational_types import OrganizationalHealthMetrics
+except ImportError:
+    # Fallback to stub if not available
+    from .predictive_processor import OrganizationalHealthMetrics
 
 # Legacy imports for backward compatibility
 try:
@@ -242,6 +246,11 @@ class PredictiveAnalyticsEngine:
         except Exception:
             score = 0.5  # P0 test expects 0.5 on error
 
+        # 🎯 P0 DEBUG: Log which class we're using
+        self.logger.debug(
+            f"Creating OrganizationalHealthMetrics: {OrganizationalHealthMetrics.__module__}"
+        )  # Fixed logger reference
+
         metrics = OrganizationalHealthMetrics(
             overall_health_score=score,
             team_health_contribution=score,
@@ -253,6 +262,11 @@ class PredictiveAnalyticsEngine:
             strengths=["processor"],
             calculated_timestamp=current_time,
         )
+
+        # 🎯 P0 DEBUG: Verify attributes
+        self.logger.debug(
+            f"Created metrics with calculated_timestamp: {hasattr(metrics, 'calculated_timestamp')}"
+        )  # Fixed logger reference
         self._health_metrics_cache, self._cache_timestamp = metrics, current_time
         return metrics
 

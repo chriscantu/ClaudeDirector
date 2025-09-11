@@ -424,7 +424,7 @@ class WorkflowCoordinationEngine:
         recommendations = []
 
         # Handoff optimization
-        if handoff_analysis["average_duration_minutes"] > 90:  # > 1.5 hours
+        if handoff_analysis.get("average_duration_minutes", 0) > 90:  # > 1.5 hours
             recommendations.append(
                 {
                     "type": "handoff_optimization",
