@@ -61,9 +61,6 @@ from lib.context_engineering.strategic_memory_manager import StrategicMemoryMana
 from lib.ai_intelligence.ml_decision_engine import EnhancedMLDecisionEngine
 
 
-@pytest.mark.skip(
-    reason="Phase 5 strategic_intelligence module was consolidated in Phase 9.5 - functionality moved to existing architecture"
-)
 class TestSequentialThinkingMLWorkflow:
     """P0 Test Suite: Sequential Thinking ML Workflow"""
 
@@ -175,9 +172,6 @@ class TestSequentialThinkingMLWorkflow:
         assert steps[6].dependencies == [6]  # Step 7 depends on Step 6
 
 
-@pytest.mark.skip(
-    reason="Phase 5 strategic_intelligence module was consolidated in Phase 9.5 - functionality moved to existing architecture"
-)
 class TestSequentialThinkingExecution:
     """P0 Test Suite: Sequential Thinking Workflow Execution"""
 
@@ -381,9 +375,6 @@ class TestSequentialThinkingExecution:
         assert result.performance_metrics["overall_success_score"] > 0.9
 
 
-@pytest.mark.skip(
-    reason="Phase 5 strategic_intelligence module was consolidated in Phase 9.5 - functionality moved to existing architecture"
-)
 class TestSequentialThinkingFactory:
     """P0 Test Suite: Sequential Thinking Workflow Factory"""
 
@@ -409,9 +400,6 @@ class TestSequentialThinkingFactory:
         assert workflow.strategic_memory == mock_memory
 
 
-@pytest.mark.skip(
-    reason="Phase 5 strategic_intelligence module was consolidated in Phase 9.5 - functionality moved to existing architecture"
-)
 class TestSequentialThinkingCompliance:
     """P0 Test Suite: Sequential Thinking Methodology Compliance"""
 

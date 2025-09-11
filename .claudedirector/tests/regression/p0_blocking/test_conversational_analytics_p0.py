@@ -58,9 +58,6 @@ except ImportError:
         return ConversationalDataManager(**kwargs)
 
 
-@pytest.mark.skip(
-    reason="Conversational analytics MCP functionality was reorganized in Phase 9.5+ consolidation - functionality moved to existing architecture"
-)
 class TestConversationalAnalyticsP0:
     """P0 tests for conversational analytics capabilities"""
 

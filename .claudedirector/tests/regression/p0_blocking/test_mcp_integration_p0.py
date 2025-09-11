@@ -60,9 +60,6 @@ except ImportError:
         return MCPIntegrationManager(**kwargs)
 
 
-@pytest.mark.skip(
-    reason="MCP integration functionality was reorganized in Phase 9.5+ consolidation - functionality moved to existing architecture"
-)
 class TestMCPIntegrationP0:
     """P0 tests for MCP Integration Manager - BLOCKING level tests"""
 
