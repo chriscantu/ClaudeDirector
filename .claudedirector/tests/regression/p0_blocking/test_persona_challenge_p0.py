@@ -29,16 +29,20 @@ elif sys.path.index(lib_path) != 0:
     sys.path.remove(lib_path)
     sys.path.insert(0, lib_path)
 
-# Import with explicit error handling for CI debugging
+# STORY 9.6.1: Updated imports for unified persona engine
 try:
-    from personas.strategic_challenge_framework import (
-        StrategicChallengeFramework,
+    from personas.unified_persona_engine import (
+        UnifiedPersonaEngine,
         ChallengeType,
-        strategic_challenge_framework,
+        get_persona_engine,
+        create_unified_persona_engine,
     )
-    from core.enhanced_persona_manager import (
-        create_persona_enhancement_engine as PersonaEnhancementEngine,
-    )
+
+    # Backward compatibility aliases
+    StrategicChallengeFramework = UnifiedPersonaEngine
+    strategic_challenge_framework = get_persona_engine
+    PersonaEnhancementEngine = create_unified_persona_engine
+
     from core.complexity_analyzer import AnalysisComplexityDetector
 except ImportError as e:
     print(f"🚨 IMPORT ERROR: {e}")

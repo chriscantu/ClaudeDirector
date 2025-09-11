@@ -24,7 +24,7 @@ from typing import Dict, List, Any
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
 try:
-    from claudedirector.lib.context_engineering.analytics_engine import (
+    from lib.context_engineering.analytics_engine import (
         AnalyticsEngine,
         FrameworkPatternAnalyzer,
         InitiativeHealthScorer,

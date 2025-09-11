@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+"""
+Pre-commit P0 Protection Hook
+
+MANDATORY: Prevents ANY commit that breaks P0 tests.
+This hook runs before every commit and blocks commits that would break business-critical functionality.
+
+Installation:
+  cp .claudedirector/tools/git-hooks/pre-commit-p0-protection .git/hooks/pre-commit
+  chmod +x .git/hooks/pre-commit
+"""
+
+import sys
+import os
+from pathlib import Path
+
+# Add project root to path
+project_root = Path(__file__).parent.parent.parent.parent
+sys.path.insert(0, str(project_root / ".claudedirector/tools/p0_protection"))
+
+from mandatory_p0_gates import P0ProtectionSystem
+
+
+def main():
+    """Pre-commit P0 protection."""
+    print("\n" + "=" * 60)
+    print("🛡️  PRE-COMMIT P0 PROTECTION")
+    print("=" * 60)
+
+    # Check if this is a merge commit (skip P0 validation for merges)
+    if os.path.exists(".git/MERGE_HEAD"):
+        print("📝 Merge commit detected - skipping P0 validation")
+        return 0
+
+    # Run P0 protection
+    protection = P0ProtectionSystem()
+    success = protection.enforce_p0_gate("Git Commit")
+
+    if not success:
+        print("\n💡 TO FIX:")
+        print("   1. Fix failing P0 tests")
+        print(
+            "   2. Run: python .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py"
+        )
+        print("   3. Commit only when 39/39 tests pass")
+        print("\n🚨 P0 TESTS ARE BUSINESS-CRITICAL - NEVER SKIP THEM")
+        return 1
+
+    print("✅ Commit approved - P0 tests passing")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

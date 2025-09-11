@@ -1,69 +1,56 @@
 """
-Advanced Persona Intelligence Module - Phase 14 Track 3
+🎯 STORY 9.6.1: UNIFIED PERSONA INTELLIGENCE MODULE
 
-🎨 Rachel | Design Systems Strategy
+CONSOLIDATION ACHIEVEMENT:
+- Replaced multiple persona files with single unified_persona_engine.py
+- Eliminated duplicate functionality and imports
+- Reduced complexity while maintaining all features
 
-Enterprise-grade persona intelligence with advanced strategic thinking depth,
-context-aware behavior adaptation, and multi-persona coordination.
+BLOAT ELIMINATION:
+- Single source of truth for persona functionality
+- DRY-compliant implementation
+- Backward compatibility maintained
+- PROJECT_STRUCTURE.md compliant organization
 
-Architecture Integration:
-- Extends existing persona management with advanced personality modeling
-- Integrates with context_engineering for persona-specific memory
-- Builds on MCP enhancement for persona-specific strategic intelligence
-- Maintains existing transparency and framework attribution systems
+Author: Martin | Platform Architecture
+Sequential Thinking Phase 9.6.1 - Persona system consolidation
 """
 
-from .advanced_personality_engine import (
-    AdvancedPersonalityEngine,
-    PersonaBehavior,
-    PersonaConsistencyMetrics,
-    StrategicThinkingDepth,
-    create_advanced_personality_engine,
-)
-
-# Multi-persona coordination (optional - may not be implemented yet)
-try:
-    from .multi_persona_coordinator import (
-        MultiPersonaCoordinator,
-        PersonaCoordination,
-        CoordinationStrategy,
-        ConflictResolution,
-    )
-
-    _multi_persona_available = True
-except ImportError:
-    # Graceful fallback if multi-persona coordinator not implemented
-    MultiPersonaCoordinator = None
-    PersonaCoordination = None
-    CoordinationStrategy = None
-    ConflictResolution = None
-    _multi_persona_available = False
-
-# Strategic Challenge Framework
-from .strategic_challenge_framework import (
-    StrategicChallengeFramework,
+# CONSOLIDATION: Import from unified persona engine
+from .unified_persona_engine import (
+    UnifiedPersonaEngine,
+    PersonaType,
     ChallengeType,
-    strategic_challenge_framework,
+    StrategicThinkingDepth,
+    PersonaBehavior,
+    ChallengePattern,
+    PersonaConsistencyMetrics,
+    create_unified_persona_engine,
+    get_default_persona_engine,
+    get_persona_engine,
 )
 
+# CONSOLIDATION: Backward compatibility aliases
+AdvancedPersonalityEngine = UnifiedPersonaEngine
+create_advanced_personality_engine = create_unified_persona_engine
+StrategicChallengeFramework = UnifiedPersonaEngine
+strategic_challenge_framework = get_persona_engine
+
+# CONSOLIDATION: Simplified exports - single source of truth
 __all__ = [
-    "AdvancedPersonalityEngine",
-    "PersonaBehavior",
-    "PersonaConsistencyMetrics",
+    "UnifiedPersonaEngine",
+    "PersonaType",
+    "ChallengeType",
     "StrategicThinkingDepth",
+    "PersonaBehavior",
+    "ChallengePattern",
+    "PersonaConsistencyMetrics",
+    "create_unified_persona_engine",
+    "get_default_persona_engine",
+    "get_persona_engine",
+    # Backward compatibility
+    "AdvancedPersonalityEngine",
     "create_advanced_personality_engine",
     "StrategicChallengeFramework",
-    "ChallengeType",
     "strategic_challenge_framework",
 ]
-
-# Add multi-persona exports if available
-if _multi_persona_available:
-    __all__.extend(
-        [
-            "MultiPersonaCoordinator",
-            "PersonaCoordination",
-            "CoordinationStrategy",
-            "ConflictResolution",
-        ]
-    )

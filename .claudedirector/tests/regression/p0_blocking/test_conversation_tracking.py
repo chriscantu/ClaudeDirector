@@ -214,8 +214,8 @@ class TestConversationTrackingP0(unittest.TestCase):
                     )
                 except ImportError:
                     # Fallback to local import (development environment)
-                    from core.enhanced_persona_manager import (
-                        IntegratedConversationManager,
+                    from personas.unified_persona_engine import (
+                        UnifiedPersonaEngine as IntegratedConversationManager,
                     )
 
                 # Test basic initialization (should not crash)

@@ -1,0 +1,81 @@
+# AI Assistant P0 Protection Rules
+# MANDATORY behavioral constraints for AI assistants working on this codebase
+
+p0_protection_rules:
+
+  # RULE 1: P0 Test Supremacy
+  p0_tests_are_supreme:
+    description: "P0 tests are business-critical and take absolute priority"
+    enforcement: "MANDATORY"
+    violations_forbidden:
+      - "Suggesting to defer P0 test fixes"
+      - "Prioritizing feature work over P0 failures"
+      - "Advising to 'fix P0s later'"
+      - "Treating P0 failures as 'technical debt'"
+
+  # RULE 2: Immediate Stop Protocol
+  immediate_stop_protocol:
+    description: "When P0 tests fail, ALL other work stops immediately"
+    triggers:
+      - "User reports P0 test failures"
+      - "P0 validation detects failures"
+      - "Any mention of broken business-critical tests"
+    required_response:
+      - "Acknowledge P0 failure immediately"
+      - "Stop all feature/refactoring work"
+      - "Begin systematic P0 recovery using Sequential Thinking"
+      - "Do not proceed with other work until 39/39 P0s pass"
+
+  # RULE 3: Consolidation/Refactoring Protocol
+  consolidation_protocol:
+    description: "All code consolidation must be P0-test-first"
+    requirements:
+      - "Run P0 tests BEFORE any consolidation"
+      - "Consolidate ONE module at a time"
+      - "Run P0 tests AFTER each module consolidation"
+      - "Fix any P0 failures immediately before proceeding"
+      - "Never consolidate multiple modules without P0 validation"
+    forbidden_approaches:
+      - "Bulk consolidation without incremental P0 testing"
+      - "Reactive P0 debugging after major changes"
+      - "Deferring P0 fixes until 'later'"
+
+  # RULE 4: User Feedback Response Protocol
+  user_feedback_protocol:
+    description: "When user identifies P0 issues, respond immediately"
+    required_responses:
+      - "Acknowledge the P0 issue directly"
+      - "Take full responsibility if AI caused the issue"
+      - "Begin systematic P0 recovery immediately"
+      - "Never suggest deferring P0 fixes"
+    forbidden_responses:
+      - "Let's focus on other priorities first"
+      - "We can address P0 issues later"
+      - "P0 tests can be fixed in the next phase"
+
+  # RULE 5: Process Discipline
+  process_discipline:
+    description: "Maintain strict process discipline around P0 tests"
+    requirements:
+      - "Always run P0 tests before claiming success"
+      - "Document P0 status in all progress reports"
+      - "Include P0 validation in all TODO lists"
+      - "Treat P0 failures as highest priority tasks"
+    metrics:
+      - "P0 pass rate must be 100% (39/39)"
+      - "No exceptions, no deferrals, no compromises"
+
+# Enforcement Mechanisms
+enforcement:
+  pre_commit_hooks: true
+  ci_cd_integration: true
+  mandatory_validation: true
+  zero_tolerance: true
+
+# Escalation Protocol
+escalation:
+  p0_failure_detected:
+    - "Immediate notification"
+    - "All work stops"
+    - "Systematic recovery begins"
+    - "No other work until 100% P0 compliance"
