@@ -27,51 +27,58 @@ except ImportError:
         def __init__(self):
             self.mcp_client = Mock()  # Add missing mcp_client attribute
             self.lightweight_fallback = Mock()  # Add fallback system
-            
+
             # Add required fallback attributes for P0 tests
             self.persona_fallback = Mock()
             self.dependency_checker = Mock()
-            
+
             # Configure mock fallback methods
             self.persona_fallback.generate_lightweight_response = Mock(
                 return_value={
                     "response": "Lightweight strategic guidance available",
                     "mode": "fallback",
-                    "persona": "diego"
+                    "persona": "diego",
                 }
             )
-            
+
             self.dependency_checker.check_mcp_availability = Mock(return_value=False)
-            
+
         def get_persona_enhancement(self, persona, query):
             return {"enhanced": True, "persona": persona, "mcp_used": True}
-            
+
         def should_use_mcp(self, query):
             return True
-            
+
         def get_mcp_server_for_persona(self, persona):
             # Mock persona → server mapping (matches test expectations)
             mapping = {
                 "diego": "sequential",
-                "martin": "context7", 
+                "martin": "context7",
                 "rachel": "context7",
                 "camille": "sequential",
-                "alvaro": "sequential"
+                "alvaro": "sequential",
             }
             return mapping.get(persona, "sequential")
-            
+
         def _should_enhance(self, query, complexity_analysis):
             # Phase 12: Always return True for 100% enhancement rate
             return True
 
     class ComplexityAnalysis:
-        def __init__(self, query=None, confidence=None, enhancement_strategy=None, recommended_enhancement=None, **kwargs):
+        def __init__(
+            self,
+            query=None,
+            confidence=None,
+            enhancement_strategy=None,
+            recommended_enhancement=None,
+            **kwargs,
+        ):
             self.query = query
             self.confidence = confidence or 0.8
             self.enhancement_strategy = enhancement_strategy
             self.recommended_enhancement = recommended_enhancement
             self.complexity_score = 0.8
-            
+
         def requires_mcp(self):
             return True
 
@@ -207,7 +214,7 @@ class TestPhase12AlwaysOnMCP(unittest.TestCase):
                 class MockCursorResponseEnhancer:
                     def enhance_response(self, response, context):
                         return {"enhanced": True, "transparency": "MCP Enhanced"}
-                        
+
                     def should_show_mcp_transparency(self, query, response):
                         # Phase 12: Always return True for 100% transparency rate
                         return True
