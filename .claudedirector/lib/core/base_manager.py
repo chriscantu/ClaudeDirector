@@ -128,6 +128,7 @@ class BaseManagerConfig:
     max_retries: int = 3
     cache_ttl_seconds: int = 3600
     custom_config: Dict[str, Any] = field(default_factory=dict)
+    version: str = "1.0.0"  # P0 Compatibility: Version field for configuration tests
 
     def get(self, key: str, default: Any = None) -> Any:
         """Get configuration value with default"""

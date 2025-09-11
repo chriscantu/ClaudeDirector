@@ -17,12 +17,14 @@ from pathlib import Path
 from typing import Dict, List, Any
 
 # Unified environment setup per TESTING_ARCHITECTURE.md
-sys.path.insert(
-    0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../.."))
+# Add correct path for imports - we need to be in .claudedirector context
+CLAUDEDIRECTOR_ROOT = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "../../..")
 )
+sys.path.insert(0, CLAUDEDIRECTOR_ROOT)
 
 try:
-    from claudedirector.lib.context_engineering.team_dynamics_engine import (
+    from lib.context_engineering.team_dynamics_engine import (
         TeamDynamicsEngine,
         TeamInteractionAnalyzer,
         DependencyTracker,
@@ -654,7 +656,7 @@ class TestTeamDynamicsP0(unittest.TestCase):
             )
             return
         # Verify Analytics Engine integration capability
-        from claudedirector.lib.context_engineering.analytics_engine import (
+        from lib.context_engineering.analytics_engine import (
             AnalyticsEngine,
         )
 

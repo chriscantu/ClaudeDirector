@@ -16,14 +16,59 @@ from dataclasses import dataclass
 from enum import Enum
 import structlog
 
-# Import processor for delegation
-from .decision_processor import (
-    DecisionProcessor,
-    DecisionComplexity,
-    DecisionContext,
-    MLPredictionResult,
-    create_decision_processor,
-)
+# 🎯 CONTEXT7: Fix circular import - define classes locally
+
+
+class DecisionComplexity(Enum):
+    """Decision complexity levels for strategic analysis"""
+
+    SIMPLE = "simple"
+    MEDIUM = "medium"
+    COMPLEX = "complex"
+    ENTERPRISE = "enterprise"
+
+
+@dataclass
+class DecisionContext:
+    """Context for strategic decision making"""
+
+    message: str = ""
+    complexity: DecisionComplexity = DecisionComplexity.MEDIUM
+    persona: str = "diego"
+    stakeholders: List[str] = None
+    metadata: Dict[str, Any] = None
+
+    def __post_init__(self):
+        if self.stakeholders is None:
+            self.stakeholders = []
+        if self.metadata is None:
+            self.metadata = {}
+
+
+@dataclass
+class DecisionIntelligenceResult:
+    """Result from decision intelligence analysis"""
+
+    success: bool = True
+    decision_context: Optional[DecisionContext] = None
+    recommendations: List[str] = None
+    confidence: float = 0.75
+    metadata: Dict[str, Any] = None
+
+    def __post_init__(self):
+        if self.recommendations is None:
+            self.recommendations = []
+        if self.metadata is None:
+            self.metadata = {}
+
+
+# Import processor after defining classes to avoid circular import
+try:
+    from .unified_ai_engine import UnifiedAIEngine
+
+    DecisionProcessor = UnifiedAIEngine  # Alias for compatibility
+except ImportError:
+    DecisionProcessor = None
 
 # PHASE 13: ML Infrastructure imports with fallback
 try:
@@ -100,6 +145,25 @@ except ImportError:
 
 
 logger = structlog.get_logger(__name__)
+
+
+# 🎯 CONTEXT7: Add missing MLPredictionResult class
+@dataclass
+class MLPredictionResult:
+    """ML prediction result for decision enhancement"""
+
+    prediction_type: str = "strategic"
+    predicted_outcome: str = ""
+    confidence: float = 0.75
+    model_used: str = "ensemble"
+    features_used: List[str] = None
+    metadata: Dict[str, Any] = None
+
+    def __post_init__(self):
+        if self.features_used is None:
+            self.features_used = []
+        if self.metadata is None:
+            self.metadata = {}
 
 
 @dataclass

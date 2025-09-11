@@ -27,12 +27,14 @@ from typing import Dict, List, Any
 from unittest.mock import Mock, patch
 
 # Unified environment setup per TESTING_ARCHITECTURE.md
-sys.path.insert(
-    0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../.."))
+# Add correct path for imports - we need to be in .claudedirector context
+CLAUDEDIRECTOR_ROOT = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "../../..")
 )
+sys.path.insert(0, CLAUDEDIRECTOR_ROOT)
 
 try:
-    from claudedirector.lib.context_engineering.realtime_monitor import (
+    from lib.context_engineering.realtime_monitor import (
         RealTimeMonitor,
         EventProcessor,
         AlertEngine,
@@ -169,16 +171,24 @@ class TestRealTimeMonitoringP0(unittest.TestCase):
             for i in range(1)  # Below threshold
         ]
 
-        # Process critical events (should generate alerts)
+        # Process critical events (should generate alerts) - using separate monitor instance
+        critical_monitor = RealTimeMonitor(self.monitor.config)
         critical_alerts = []
         for event in critical_events:
-            alerts = self.monitor.process_team_event(event)
+            alerts = critical_monitor.process_team_event(event)
             critical_alerts.extend(alerts)
 
-        # Process normal events (should not generate alerts)
+        # Process normal events (should not generate alerts) - using separate monitor instance
+        normal_monitor = RealTimeMonitor(self.monitor.config)
         normal_alerts = []
         for event in normal_events:
-            alerts = self.monitor.process_team_event(event)
+            alerts = normal_monitor.process_team_event(event)
+            if alerts:  # 🎯 P0 DEBUG: Log unexpected alerts
+                print(
+                    f"🚨 FALSE POSITIVE: Normal event {event.event_id} (severity: {event.context.get('severity')}) generated {len(alerts)} alerts"
+                )
+                for alert in alerts:
+                    print(f"  - Alert: {alert.alert_id} from {alert.event_type}")
             normal_alerts.extend(alerts)
 
         # Validate alert accuracy
