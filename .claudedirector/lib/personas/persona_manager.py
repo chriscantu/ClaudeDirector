@@ -78,15 +78,15 @@ class PersonaManager(BaseManager):
             PersonaType.CAMILLE,
             PersonaType.RACHEL,
             PersonaType.ALVARO,
-            PersonaType.MARTIN
+            PersonaType.MARTIN,
         ]
-        
+
         for persona_type in default_personas:
             behavior = PersonaBehavior(
                 persona_type=persona_type,
                 challenge_intensity=0.7,
                 framework_focus=[f"{persona_type.value}_strategy"],
-                response_style="strategic"
+                response_style="strategic",
             )
             self.active_personas[persona_type.value] = behavior
 
