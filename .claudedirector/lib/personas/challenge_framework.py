@@ -82,7 +82,7 @@ class ChallengeFramework(BaseManager):
             # P0 ACCURACY: Respect should_generate decision for proper accuracy
             if not self._should_generate_challenge(context):
                 return None  # Return None for non-challenge inputs
-                
+
             # Determine appropriate challenge type
             challenge_type = self._select_challenge_type(context)
             pattern = self.challenge_patterns.get(challenge_type)
@@ -103,7 +103,7 @@ class ChallengeFramework(BaseManager):
     def _should_generate_challenge(self, context: Dict[str, Any]) -> bool:
         """Determine if a challenge should be generated based on context"""
         user_input = context.get("user_input", "").lower().strip()
-        
+
         # P0 ACCURACY: Non-challenge inputs that should return NO challenges
         non_challenge_patterns = [
             "what time is it",
@@ -113,21 +113,45 @@ class ChallengeFramework(BaseManager):
             "i appreciate your help",
             "thanks",
             "how are you",
-            "help me understand"
+            "help me understand",
+            "thank you for the explanation",
         ]
-        
+
         # Check for exact or partial matches to non-challenge patterns
         for pattern in non_challenge_patterns:
             if pattern in user_input or user_input in pattern:
                 return False
-        
+
         # Challenge inputs that should trigger challenges (strategic/assertive statements)
         challenge_keywords = [
-            "always works", "approach", "problem is", "need to", "constraints", 
-            "impossible", "expect", "prefer", "technology", "deployment", 
-            "performance", "budget", "users", "team", "should", "must"
+            "always works",
+            "approach",
+            "problem is",
+            "need to",
+            "constraints",
+            "impossible",
+            "expect",
+            "prefer",
+            "technology",
+            "deployment",
+            "performance",
+            "budget",
+            "users",
+            "team",
+            "should",
+            "must",
+            "obviously",
+            "need more",
+            "engineers",
+            "slow",
+            "works well",
+            "everyone knows",
+            "best",
+            "always",
+            "never",
+            "the best",
         ]
-        
+
         # Return True if contains strategic/assertive language
         return any(keyword in user_input for keyword in challenge_keywords)
 
@@ -138,13 +162,21 @@ class ChallengeFramework(BaseManager):
         # Enhanced heuristic for challenge type selection
         if any(word in keywords for word in ["assume", "belief", "think", "suppose"]):
             return ChallengeType.ASSUMPTION_TESTING
-        elif any(word in keywords for word in ["problem", "issue", "cause", "root", "why"]):
+        elif any(
+            word in keywords for word in ["problem", "issue", "cause", "root", "why"]
+        ):
             return ChallengeType.ROOT_CAUSE_ANALYSIS
-        elif any(word in keywords for word in ["option", "alternative", "choice", "approach"]):
+        elif any(
+            word in keywords for word in ["option", "alternative", "choice", "approach"]
+        ):
             return ChallengeType.ALTERNATIVE_EXPLORATION
-        elif any(word in keywords for word in ["stakeholder", "team", "user", "customer"]):
+        elif any(
+            word in keywords for word in ["stakeholder", "team", "user", "customer"]
+        ):
             return ChallengeType.STAKEHOLDER_VALIDATION
-        elif any(word in keywords for word in ["constraint", "limit", "budget", "resource"]):
+        elif any(
+            word in keywords for word in ["constraint", "limit", "budget", "resource"]
+        ):
             return ChallengeType.CONSTRAINT_REALITY
         else:
             return ChallengeType.EVIDENCE_DEMANDS

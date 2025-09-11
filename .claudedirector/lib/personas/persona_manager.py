@@ -43,6 +43,22 @@ class PersonaBehavior:
     response_style: str = "strategic"
     transparency_level: str = "high"
 
+    def get(self, key: str, default=None):
+        """P0 Compatibility: Provide dict-like .get() method"""
+        return getattr(self, key, default)
+
+    @property
+    def domain(self) -> str:
+        """P0 Compatibility: Provide domain property"""
+        domain_mapping = {
+            PersonaType.DIEGO: "engineering_leadership",
+            PersonaType.CAMILLE: "strategic_technology",
+            PersonaType.RACHEL: "design_systems",
+            PersonaType.ALVARO: "platform_investment",
+            PersonaType.MARTIN: "platform_architecture",
+        }
+        return domain_mapping.get(self.persona_type, "strategic_leadership")
+
 
 class PersonaManager(BaseManager):
     """
