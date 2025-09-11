@@ -66,7 +66,29 @@ class PersonaManager(BaseManager):
         self.active_personas: Dict[str, PersonaBehavior] = {}
         self.persona_cache = {}
 
+        # Initialize default personas for P0 compatibility
+        self._initialize_default_personas()
+
         self.logger.info("PersonaManager initialized - focused responsibility")
+
+    def _initialize_default_personas(self):
+        """Initialize default personas for P0 compatibility"""
+        default_personas = [
+            PersonaType.DIEGO,
+            PersonaType.CAMILLE,
+            PersonaType.RACHEL,
+            PersonaType.ALVARO,
+            PersonaType.MARTIN
+        ]
+        
+        for persona_type in default_personas:
+            behavior = PersonaBehavior(
+                persona_type=persona_type,
+                challenge_intensity=0.7,
+                framework_focus=[f"{persona_type.value}_strategy"],
+                response_style="strategic"
+            )
+            self.active_personas[persona_type.value] = behavior
 
     def manage(self) -> Dict[str, Any]:
         """Required BaseManager abstract method implementation"""

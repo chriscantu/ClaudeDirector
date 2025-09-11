@@ -587,7 +587,7 @@ __all__ = [
 
 # ===== CONSOLIDATION: Factory Functions =====
 def create_unified_ai_engine(
-    config: Optional[Dict[str, Any]] = None
+    config: Optional[Dict[str, Any]] = None,
 ) -> UnifiedAIEngine:
     """
     🎯 STORY 9.6.3: CONSOLIDATION FACTORY
