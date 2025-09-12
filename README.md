@@ -63,6 +63,17 @@ ClaudeDirector uses a **persona-based system** with strategic AI enhancement:
 
 ## Getting Started
 
+### 📥 Installation
+
+Clone the repository and start your first strategic session:
+
+```bash
+git clone https://github.com/chriscantu/ClaudeDirector.git
+cd ClaudeDirector
+```
+
+### 🚀 Quick Start
+
 1. **Open in Cursor IDE**: ClaudeDirector is optimized for Cursor integration
 2. **Ask Strategic Questions**: Start with any leadership or technical challenge
 3. **Role Customization**: First-run wizard adapts to your specific role and context
