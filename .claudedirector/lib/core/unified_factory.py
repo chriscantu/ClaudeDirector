@@ -48,6 +48,11 @@ class ComponentType(Enum):
     ORCHESTRATOR = "orchestrator"
     BRIDGE = "bridge"
 
+    # 🆕 Proactive Compliance Components (Phase 1)
+    COMPLIANCE_CONSTRAINT_ENGINE = "compliance_constraint_engine"
+    PROACTIVE_COMPLIANCE_ENGINE = "proactive_compliance_engine"
+    SOLID_TEMPLATE_ENGINE = "solid_template_engine"
+
 
 @dataclass
 class ComponentConfig:
@@ -147,6 +152,17 @@ class UnifiedFactory(BaseProcessor):
         )
         self._factory_methods[ComponentType.ORCHESTRATOR] = self._create_orchestrator
         self._factory_methods[ComponentType.PROCESSOR] = self._create_processor
+
+        # 🆕 Register proactive compliance components (Phase 1)
+        self._factory_methods[ComponentType.COMPLIANCE_CONSTRAINT_ENGINE] = (
+            self._create_compliance_constraint_engine
+        )
+        self._factory_methods[ComponentType.PROACTIVE_COMPLIANCE_ENGINE] = (
+            self._create_proactive_compliance_engine
+        )
+        self._factory_methods[ComponentType.SOLID_TEMPLATE_ENGINE] = (
+            self._create_solid_template_engine
+        )
 
     def create_component(
         self,
@@ -281,6 +297,63 @@ class UnifiedFactory(BaseProcessor):
         # Default BaseProcessor creation
         return BaseProcessor(config)
 
+    def _create_compliance_constraint_engine(
+        self, config: Optional[Dict[str, Any]] = None, **kwargs
+    ) -> Any:
+        """🆕 Create ComplianceConstraintEngine for proactive compliance"""
+        try:
+            from .validation.proactive_compliance_engine import (
+                ComplianceConstraintEngine,
+            )
+
+            return ComplianceConstraintEngine()
+        except ImportError:
+            raise ValueError("ProactiveComplianceEngine not available")
+
+    def _create_proactive_compliance_engine(
+        self, config: Optional[Dict[str, Any]] = None, **kwargs
+    ) -> Any:
+        """🆕 Create ProactiveComplianceEngine with enhanced validation"""
+        try:
+            from .validation.proactive_compliance_engine import (
+                ProactiveComplianceEngine,
+                create_proactive_compliance_engine,
+            )
+
+            hard_enforcement = kwargs.get("hard_enforcement", True)
+            additional_modules = kwargs.get("additional_modules")
+
+            return create_proactive_compliance_engine(
+                hard_enforcement=hard_enforcement, additional_modules=additional_modules
+            )
+        except ImportError:
+            raise ValueError("ProactiveComplianceEngine not available")
+
+    def _create_solid_template_engine(
+        self, config: Optional[Dict[str, Any]] = None, **kwargs
+    ) -> Any:
+        """🆕 Create SOLIDTemplateEngine for principle-enforced code generation"""
+        # Phase 2 implementation - basic template engine for now
+        # Will be enhanced with full SOLID template generation capabilities
+
+        class BasicSOLIDTemplateEngine:
+            """Basic SOLID template engine - Phase 2 foundation"""
+
+            def __init__(self, config=None):
+                self.config = config or {}
+                self.templates = {
+                    "single_responsibility": 'class {name}:\n    """Single responsibility class"""\n    pass',
+                    "open_closed": 'class {name}(ABC):\n    """Open for extension, closed for modification"""\n    @abstractmethod\n    def process(self): pass',
+                }
+
+            def generate_template(self, template_type: str, **kwargs) -> str:
+                """Generate SOLID-compliant code template"""
+                if template_type in self.templates:
+                    return self.templates[template_type].format(**kwargs)
+                return f"# SOLID template for {template_type} - to be implemented"
+
+        return BasicSOLIDTemplateEngine(config)
+
     def supports_component_type(self, component_type: ComponentType) -> bool:
         """Check if factory supports the specified component type"""
         return (
@@ -371,3 +444,23 @@ def create_predictive_engine(**kwargs) -> Any:
 def create_orchestrator(**kwargs) -> Any:
     """ELIMINATES create_decision_intelligence_orchestrator() function"""
     return create_component(ComponentType.ORCHESTRATOR, **kwargs)
+
+
+# 🆕 Proactive Compliance convenience functions (Phase 1)
+def create_compliance_constraint_engine(config: Optional[Dict[str, Any]] = None) -> Any:
+    """Create ComplianceConstraintEngine for proactive compliance validation"""
+    return create_component(ComponentType.COMPLIANCE_CONSTRAINT_ENGINE, config)
+
+
+def create_proactive_compliance_engine(
+    hard_enforcement: bool = True,
+    additional_modules: Optional[List] = None,
+    config: Optional[Dict[str, Any]] = None,
+) -> Any:
+    """Create ProactiveComplianceEngine with enhanced validation capabilities"""
+    return create_component(
+        ComponentType.PROACTIVE_COMPLIANCE_ENGINE,
+        config,
+        hard_enforcement=hard_enforcement,
+        additional_modules=additional_modules,
+    )
