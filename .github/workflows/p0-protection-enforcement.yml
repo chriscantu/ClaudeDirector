@@ -42,11 +42,11 @@ jobs:
     - name: P0 Results Validation
       run: |
         echo "📊 Validating P0 results..."
-        # Extract results and ensure 39/39 tests pass
+        # Extract results and ensure 41/41 tests pass
         result=$(python .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py 2>&1 | grep "SUCCESS RATE" || true)
 
-        if echo "$result" | grep -q "39/39"; then
-          echo "✅ P0 PROTECTION: All 39 business-critical tests passing"
+        if echo "$result" | grep -q "41/41"; then
+          echo "✅ P0 PROTECTION: All 41 business-critical tests passing"
         else
           echo "🚨 P0 PROTECTION FAILURE: Not all P0 tests passing"
           echo "❌ BLOCKING DEPLOYMENT: P0 tests are business-critical"
@@ -57,5 +57,5 @@ jobs:
       if: success()
       run: |
         echo "🎉 P0 PROTECTION PASSED"
-        echo "✅ All 39 business-critical tests verified"
+        echo "✅ All 41 business-critical tests verified"
         echo "🟢 Deployment approved by P0 protection system"

@@ -71,31 +71,14 @@ def main():
 
     print(f"🔍 Validating {len(staged_files)} Python files...")
 
-    # Initialize unified engine
-    engine = UnifiedPreventionEngine()
+    # Initialize unified engine with hard enforcement
+    engine = UnifiedPreventionEngine(hard_enforcement=True)
 
-    # Validate all staged files
-    all_results = {}
-    for file_path in staged_files:
-        file_results = engine.validate_file(file_path)
-        if file_results:
-            all_results[str(file_path)] = file_results
+    # Use hard enforcement for commit blocking
+    context = {"files": [str(f) for f in staged_files], "operation_type": "commit"}
 
-    # Generate report
-    if all_results:
-        report = engine.generate_report(all_results)
-        print(report)
-
-        # Count violations
-        total_violations = sum(
-            len(result.violations)
-            for file_results in all_results.values()
-            for result in file_results.values()
-        )
-
-        if total_violations > 0:
-            print(f"\n🚨 COMMIT BLOCKED: {total_violations} violations must be fixed")
-            return 1
+    if not engine.enforce_compliance("Git Commit", context):
+        return 1
 
     print("\n✅ ALL VALIDATIONS PASSED - Commit allowed")
     return 0

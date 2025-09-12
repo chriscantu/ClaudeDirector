@@ -159,8 +159,8 @@ class TestSequentialThinkingP0(unittest.TestCase):
         # Check Sequential Thinking enforcement documentation exists
         enforcement_doc = (
             self.project_root
-            / ".claudedirector"
             / "docs"
+            / "development"
             / "SEQUENTIAL_THINKING_ENFORCEMENT.md"
         )
         self.assertTrue(

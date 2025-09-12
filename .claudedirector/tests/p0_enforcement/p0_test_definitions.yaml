@@ -247,6 +247,28 @@ p0_features:
     introduced_version: "v3.1.0"
     owner: "martin"
 
+  # PHASE 2 AI INTELLIGENCE - MCP ENHANCED DECISION PIPELINE
+  - name: "MCP Enhanced Decision Pipeline P0"
+    test_module: ".claudedirector/tests/unit/ai_intelligence/test_mcp_decision_pipeline.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 240
+    description: "MCP Enhanced Decision Pipeline must coordinate MCP servers with <500ms latency and 90%+ success rate"
+    failure_impact: "MCP server coordination fails, strategic decision intelligence broken, pipeline processing unreliable"
+    business_impact: "Strategic guidance becomes unreliable, MCP enhancement capabilities lost, decision support compromised"
+    introduced_version: "v3.1.0"
+    owner: "martin"
+
+  # PHASE 2 AI INTELLIGENCE - UNIFIED AI ENGINE
+  - name: "Unified AI Engine P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_unified_ai_engine_p0.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 300
+    description: "Story 9.6.3 Unified AI Engine must provide consolidated AI processing with <200ms latency and 95%+ accuracy"
+    failure_impact: "Consolidated AI processing fails, framework analysis broken, predictive insights unavailable"
+    business_impact: "Strategic AI intelligence becomes fragmented, processing efficiency lost, decision support degraded"
+    introduced_version: "v3.6.0"
+    owner: "martin"
+
   # MARTIN'S PLATFORM ARCHITECTURE - SETUP FEATURE P0
   - name: "Setup Feature P0"
     test_module: ".claudedirector/tests/regression/p0_blocking/test_setup_feature.py"
