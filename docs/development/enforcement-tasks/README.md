@@ -1,6 +1,6 @@
 # Real-Time Enforcement System - Task Index
 
-**Spec-Kit Format** | **Sequential Thinking Applied** | **Context7 Enhanced**  
+**Spec-Kit Format** | **Sequential Thinking Applied** | **Context7 Enhanced**
 **Author**: Martin | Platform Architecture | **Date**: September 12, 2025
 
 ---
