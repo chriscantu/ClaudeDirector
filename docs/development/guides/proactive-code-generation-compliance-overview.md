@@ -110,8 +110,8 @@ Load Constraints → Generate Compliant Code → Deploy
 - [Implementation Plan](./proactive-code-generation-implementation-plan.md) - Development phases and timeline
 
 ### **Integration Specifications**
-- [P0 Test Integration](./proactive-code-generation-p0-integration.md) - Integration with existing P0 tests
-- [Context7 MCP Integration](./proactive-code-generation-context7-integration.md) - Context7 MCP utilization requirements
+- **P0 Test Integration**: Integration details documented within technical architecture specification
+- **Context7 MCP Integration**: Context7 MCP utilization requirements documented within process enforcement specification
 
 ### **Supporting Documentation**
 - [Sequential Thinking Enforcement](../SEQUENTIAL_THINKING_ENFORCEMENT.md) - Pre-existing methodology requirements

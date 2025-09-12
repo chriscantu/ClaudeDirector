@@ -118,7 +118,7 @@ def generate_code(requirements: Any) -> GeneratedCode:
 ❌ BLOCKED: Incomplete process compliance for "ProactiveComplianceSystem"
 
 📋 REQUIRED ACTIONS (ALL MUST BE COMPLETED):
-1. ✅ Create spec-kit specification: docs/development/guides/proactive-compliance-system-spec.md
+1. ✅ Create spec-kit specification: Documented across the four proactive compliance specification files
    - Use template: .claudedirector/templates/spec-kit-template.md
 
 2. ✅ Apply Sequential Thinking: Document all 6 steps (PRE-EXISTING REQUIREMENT)
