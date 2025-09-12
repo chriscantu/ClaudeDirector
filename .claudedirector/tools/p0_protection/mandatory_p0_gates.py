@@ -41,7 +41,7 @@ class P0ProtectionSystem:
 
             # Parse results
             passing_tests = 0
-            total_tests = 39  # Known P0 test count
+            total_tests = 41  # Known P0 test count
             failures = []
 
             for line in result.stdout.split("\n"):
@@ -58,7 +58,7 @@ class P0ProtectionSystem:
 
         except Exception as e:
             self.log_protection_event("ERROR", f"P0 validation failed: {e}")
-            return (False, 0, 39, [f"System error: {e}"])
+            return (False, 0, 41, [f"System error: {e}"])
 
     def log_protection_event(self, level: str, message: str):
         """Log P0 protection events."""
@@ -102,7 +102,7 @@ class P0ProtectionSystem:
             print(f"\n🛑 MANDATORY ACTION REQUIRED:")
             print(f"   1. Fix ALL failing P0 tests immediately")
             print(f"   2. Run: python {self.p0_test_runner}")
-            print(f"   3. Ensure 39/39 tests pass before proceeding")
+            print(f"   3. Ensure 41/41 tests pass before proceeding")
             print(f"   4. P0 tests are BUSINESS-CRITICAL and cannot be deferred")
 
             self.log_protection_event(

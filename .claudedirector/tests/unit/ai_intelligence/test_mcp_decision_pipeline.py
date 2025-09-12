@@ -113,7 +113,7 @@ class TestMCPEnhancedDecisionPipeline(unittest.TestCase):
 
         # Strategic decisions - full pipeline
         strategic_config = self.pipeline.pipeline_stages[
-            DecisionComplexity.STRATEGIC.value
+            DecisionComplexity.ENTERPRISE.value
         ]
         expected_stages = [
             "context_analysis",
@@ -139,8 +139,8 @@ class TestMCPEnhancedDecisionPipeline(unittest.TestCase):
         self.mock_mcp_helper.call_mcp_server.return_value = mock_response
 
         decision_context = DecisionContext(
-            user_input="How should we restructure our teams for better collaboration?",
-            session_id="test_session",
+            message="How should we restructure our teams for better collaboration?",
+            # session_id moved to metadata"test_session",
             persona="diego",
             complexity=DecisionComplexity.COMPLEX,
             detected_frameworks=["team_topologies"],
@@ -189,8 +189,8 @@ class TestMCPEnhancedDecisionPipeline(unittest.TestCase):
         self.mock_mcp_helper.call_mcp_server.return_value = mock_response
 
         decision_context = DecisionContext(
-            user_input="Strategic platform investment decision",
-            session_id="test_session",
+            message="Strategic platform investment decision",
+            # session_id moved to metadata"test_session",
             persona="camille",
             complexity=DecisionComplexity.STRATEGIC,
             detected_frameworks=[
@@ -227,10 +227,10 @@ class TestMCPEnhancedDecisionPipeline(unittest.TestCase):
     async def test_single_stage_execution_framework_analysis(self):
         """Test individual stage execution - Local framework analysis"""
         decision_context = DecisionContext(
-            user_input="Framework analysis test",
-            session_id="test_session",
+            message="Framework analysis test",
+            # session_id moved to metadata"test_session",
             persona="diego",
-            complexity=DecisionComplexity.MODERATE,
+            complexity=DecisionComplexity.MEDIUM,
             detected_frameworks=["team_topologies"],
             stakeholder_scope=["engineering"],
             time_sensitivity="short_term",
@@ -272,10 +272,10 @@ class TestMCPEnhancedDecisionPipeline(unittest.TestCase):
         self.mock_mcp_helper.call_mcp_server.return_value = context_response
 
         decision_context = DecisionContext(
-            user_input="Moderate complexity decision requiring sequential processing",
-            session_id="test_session",
+            message="Moderate complexity decision requiring sequential processing",
+            # session_id moved to metadata"test_session",
             persona="diego",
-            complexity=DecisionComplexity.MODERATE,
+            complexity=DecisionComplexity.MEDIUM,
             detected_frameworks=["team_topologies"],
             stakeholder_scope=["engineering"],
             time_sensitivity="medium_term",
@@ -326,8 +326,8 @@ class TestMCPEnhancedDecisionPipeline(unittest.TestCase):
         self.mock_mcp_helper.call_mcp_server.side_effect = mock_mcp_call
 
         decision_context = DecisionContext(
-            user_input="Strategic decision requiring parallel MCP processing",
-            session_id="test_session",
+            message="Strategic decision requiring parallel MCP processing",
+            # session_id moved to metadata"test_session",
             persona="camille",
             complexity=DecisionComplexity.STRATEGIC,
             detected_frameworks=["rumelt_strategy_kernel", "team_topologies"],
@@ -371,10 +371,10 @@ class TestMCPEnhancedDecisionPipeline(unittest.TestCase):
         self.mock_mcp_helper.call_mcp_server.side_effect = mock_mcp_call_with_failure
 
         decision_context = DecisionContext(
-            user_input="Decision with MCP server failure",
-            session_id="test_session",
+            message="Decision with MCP server failure",
+            # session_id moved to metadata"test_session",
             persona="diego",
-            complexity=DecisionComplexity.MODERATE,
+            complexity=DecisionComplexity.MEDIUM,
             detected_frameworks=["team_topologies"],
             stakeholder_scope=["engineering"],
             time_sensitivity="medium_term",
@@ -400,8 +400,8 @@ class TestMCPEnhancedDecisionPipeline(unittest.TestCase):
     async def test_full_pipeline_execution_simple(self):
         """Test complete pipeline execution for simple decisions"""
         decision_context = DecisionContext(
-            user_input="Simple decision requiring basic framework analysis",
-            session_id="test_session",
+            message="Simple decision requiring basic framework analysis",
+            # session_id moved to metadata"test_session",
             persona="diego",
             complexity=DecisionComplexity.SIMPLE,
             detected_frameworks=["team_topologies"],
@@ -456,8 +456,8 @@ class TestMCPEnhancedDecisionPipeline(unittest.TestCase):
         self.mock_mcp_helper.call_mcp_server.side_effect = mock_mcp_call
 
         decision_context = DecisionContext(
-            user_input="Strategic decision requiring full MCP coordination",
-            session_id="test_session",
+            message="Strategic decision requiring full MCP coordination",
+            # session_id moved to metadata"test_session",
             persona="camille",
             complexity=DecisionComplexity.STRATEGIC,
             detected_frameworks=["rumelt_strategy_kernel", "team_topologies"],
@@ -493,8 +493,8 @@ class TestMCPEnhancedDecisionPipeline(unittest.TestCase):
         self.mock_mcp_helper.call_mcp_server.return_value = {"status": "success"}
 
         decision_context = DecisionContext(
-            user_input="Performance test decision",
-            session_id="test_session",
+            message="Performance test decision",
+            # session_id moved to metadata"test_session",
             persona="diego",
             complexity=DecisionComplexity.COMPLEX,
             detected_frameworks=["team_topologies"],
@@ -564,14 +564,16 @@ class TestMCPEnhancedDecisionPipeline(unittest.TestCase):
         ]
 
         decision_context = DecisionContext(
-            user_input="Synthesis test",
-            session_id="test_session",
+            message="Synthesis test",
             persona="diego",
             complexity=DecisionComplexity.COMPLEX,
-            detected_frameworks=["rumelt_strategy_kernel"],
-            stakeholder_scope=["engineering"],
-            time_sensitivity="medium_term",
-            business_impact="medium",
+            stakeholders=["engineering"],
+            metadata={
+                "detected_frameworks": ["rumelt_strategy_kernel"],
+                "time_sensitivity": "medium_term",
+                "business_impact": "medium",
+                "session_id": "test_session",
+            },
         )
 
         # Test synthesis
@@ -637,22 +639,32 @@ class TestMCPEnhancedDecisionPipeline(unittest.TestCase):
             self.assertIn(stage, timeouts)
             self.assertGreater(timeouts[stage], 0)
 
-    async def test_error_handling_and_recovery(self):
+    def test_error_handling_and_recovery(self):
         """Test comprehensive error handling and recovery"""
+
+        async def _async_test():
+            return await self._test_error_handling_and_recovery()
+
+        # Run async test
+        asyncio.run(_async_test())
+
+    async def _test_error_handling_and_recovery(self):
         # Mock complete MCP failure
         self.mock_mcp_helper.call_mcp_server.side_effect = Exception(
             "All MCP servers down"
         )
 
         decision_context = DecisionContext(
-            user_input="Decision with complete MCP failure",
-            session_id="test_session",
+            message="Decision with complete MCP failure",
             persona="diego",
-            complexity=DecisionComplexity.STRATEGIC,  # Would normally use MCP
-            detected_frameworks=["team_topologies"],
-            stakeholder_scope=["engineering"],
-            time_sensitivity="medium_term",
-            business_impact="high",
+            complexity=DecisionComplexity.ENTERPRISE,  # Would normally use MCP
+            stakeholders=["engineering"],
+            metadata={
+                "detected_frameworks": ["team_topologies"],
+                "time_sensitivity": "medium_term",
+                "business_impact": "high",
+                "session_id": "test_session",
+            },
         )
 
         transparency_context = Mock(session_id="test_session", persona="diego")

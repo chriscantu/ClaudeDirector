@@ -9,6 +9,9 @@
 - All code changes must demonstrate systematic analysis
 - All architectural decisions must include Sequential Thinking documentation
 - All P0 tests must validate Sequential Thinking compliance
+- **ALL SPECIFICATIONS MUST USE SPEC-KIT FORMAT** (as per SPEC_KIT_ANALYSIS.md)
+- All development artifacts must follow PROJECT_STRUCTURE.md placement
+- All code must adhere to SOLID and DRY principles with BLOAT_PREVENTION_SYSTEM.md integration
 
 ## ZERO EXCEPTIONS RULE
 
@@ -17,6 +20,10 @@
 - Architecture modifications without Sequential Thinking documentation
 - Feature implementations without the 6-step methodology
 - Bug fixes that don't demonstrate root cause analysis
+- **Specifications not using spec-kit format**
+- Files placed outside PROJECT_STRUCTURE.md requirements
+- Code violating SOLID or DRY principles
+- Development without BLOAT_PREVENTION_SYSTEM.md integration
 
 ### 6-Step Sequential Thinking Methodology:
 1. **Problem Definition**: Clear articulation of the issue

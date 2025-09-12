@@ -345,7 +345,7 @@ class TestContext7UtilizationP0(unittest.TestCase):
     def test_p0_context7_documentation_compliance(self):
         """P0 TEST: Context7 utilization must be properly documented"""
         # Check for Context7 documentation
-        docs_dir = self.project_root / ".claudedirector" / "docs"
+        docs_dir = self.project_root / "docs"
         context7_documentation = []
 
         if docs_dir.exists():
