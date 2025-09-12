@@ -479,13 +479,18 @@ class QualityModule:
 
 class UnifiedPreventionEngine:
     """
-    Main engine that coordinates all validation modules
+    Main engine that coordinates all validation modules with optional hard enforcement
 
     PERFORMANCE TARGET: <100ms total analysis time
     ARCHITECTURE: Parallel module execution with result aggregation
+    ENHANCEMENT: Hard enforcement capability for blocking operations
     """
 
-    def __init__(self, modules: Optional[List[ValidationModule]] = None):
+    def __init__(
+        self,
+        modules: Optional[List[ValidationModule]] = None,
+        hard_enforcement: bool = False,
+    ):
         self.modules = modules or [
             BloatModule(),
             P0Module(),
@@ -493,6 +498,7 @@ class UnifiedPreventionEngine:
             QualityModule(),
         ]
         self.max_workers = min(4, len(self.modules))  # Parallel execution
+        self.hard_enforcement = hard_enforcement  # Block operations on violations
 
     def validate_file(self, file_path: Path) -> Dict[str, ValidationResult]:
         """Validate a single file using all modules in parallel"""
@@ -612,6 +618,46 @@ class UnifiedPreventionEngine:
             report_lines.append(f"\n🚨 {total_violations} violations require attention")
 
         return "\n".join(report_lines)
+
+    def enforce_compliance(self, operation: str, context: Dict[str, Any]) -> bool:
+        """
+        Hard enforcement method - blocks operations until compliance achieved
+
+        Args:
+            operation: Description of operation being attempted
+            context: Operation context (files, description, etc.)
+
+        Returns:
+            True if operation allowed, False if blocked
+        """
+        if not self.hard_enforcement:
+            return True  # Soft validation mode
+
+        print(f"\n🚨 HARD ENFORCEMENT: Validating {operation}")
+        print("=" * 60)
+
+        # Get files from context
+        files = context.get("files", [])
+        if not files:
+            return True  # No files to validate
+
+        # Validate all files
+        total_violations = 0
+        for file_path in files:
+            if isinstance(file_path, str):
+                file_path = Path(file_path)
+
+            results = self.validate_file(file_path)
+            for result in results.values():
+                total_violations += len(result.violations)
+
+        if total_violations > 0:
+            print(f"🔴 OPERATION BLOCKED: {total_violations} violations detected")
+            print(f"🛑 Fix all violations before proceeding with {operation}")
+            return False
+        else:
+            print(f"✅ OPERATION APPROVED: {operation}")
+            return True
 
 
 def main():

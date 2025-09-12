@@ -475,7 +475,7 @@ def main():
             print("\n✅ ALL MANDATORY P0 TESTS PASSED")
             print("🚀 P0 feature integrity maintained - commit allowed")
             # Add CI-compatible success rate format for GitHub workflows
-            print(f"📊 SUCCESS RATE: 39/39 tests passing (100%)")
+            print(f"📊 SUCCESS RATE: 41/41 tests passing (100%)")
             return 0
         else:
             print(f"\n❌ {enforcer.total_failures} P0 FAILURES")
