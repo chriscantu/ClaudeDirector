@@ -136,7 +136,7 @@ class MCPEnhancedDecisionPipeline:
                 "mcp_servers": [],
                 "parallel_execution": False,
             },
-            DecisionComplexity.MODERATE.value: {
+            DecisionComplexity.MEDIUM.value: {
                 "stages": ["context_analysis", "framework_analysis"],
                 "mcp_servers": ["context7"],
                 "parallel_execution": False,
@@ -150,7 +150,7 @@ class MCPEnhancedDecisionPipeline:
                 "mcp_servers": ["context7", "sequential"],
                 "parallel_execution": True,
             },
-            DecisionComplexity.STRATEGIC.value: {
+            DecisionComplexity.ENTERPRISE.value: {
                 "stages": [
                     "context_analysis",
                     "systematic_analysis",
@@ -214,7 +214,7 @@ class MCPEnhancedDecisionPipeline:
 
             logger.info(
                 "mcp_pipeline_execution_started",
-                session_id=decision_context.session_id,
+                session_id=decision_context.metadata.get("session_id", "unknown"),
                 complexity=decision_context.complexity.value,
                 stages=stages,
                 parallel_execution=parallel_execution,
@@ -266,7 +266,7 @@ class MCPEnhancedDecisionPipeline:
 
             logger.info(
                 "mcp_pipeline_execution_completed",
-                session_id=decision_context.session_id,
+                session_id=decision_context.metadata.get("session_id", "unknown"),
                 stages_completed=len(stages_executed),
                 mcp_enhancements=len(mcp_enhancements_applied),
                 confidence_score=confidence_score,
@@ -281,7 +281,7 @@ class MCPEnhancedDecisionPipeline:
 
             logger.error(
                 "mcp_pipeline_execution_failed",
-                session_id=decision_context.session_id,
+                session_id=decision_context.metadata.get("session_id", "unknown"),
                 error=str(e),
                 stages_completed=len(stages_executed),
                 processing_time_ms=total_processing_time_ms,
@@ -313,7 +313,7 @@ class MCPEnhancedDecisionPipeline:
         For simple to moderate complexity decisions where stages depend on each other.
         """
         executed_stages = []
-        previous_output = {"user_input": decision_context.user_input}
+        previous_output = {"message": decision_context.message}
 
         for stage_name in stages:
             try:
@@ -387,7 +387,7 @@ class MCPEnhancedDecisionPipeline:
                     stage_name,
                     decision_context,
                     transparency_context,
-                    {"user_input": decision_context.user_input},
+                    {"message": decision_context.message},
                 )
                 for stage_name in mcp_stages
             ]
@@ -416,7 +416,7 @@ class MCPEnhancedDecisionPipeline:
                     stage_name,
                     decision_context,
                     transparency_context,
-                    {"user_input": decision_context.user_input, **mcp_output},
+                    {"message": decision_context.message, **mcp_output},
                 )
                 executed_stages.append(stage_result)
             except Exception as e:
@@ -525,7 +525,7 @@ class MCPEnhancedDecisionPipeline:
         result = await self.mcp_helper.call_mcp_server(
             "context7",
             "pattern_recognition",
-            query=decision_context.user_input,
+            query=decision_context.message,
             context=decision_context.stakeholder_scope,
             timeout=timeout,
         )
@@ -546,7 +546,7 @@ class MCPEnhancedDecisionPipeline:
         result = await self.mcp_helper.call_mcp_server(
             "sequential",
             "systematic_analysis",
-            query=decision_context.user_input,
+            query=decision_context.message,
             frameworks=decision_context.detected_frameworks,
             timeout=timeout,
         )
@@ -567,7 +567,7 @@ class MCPEnhancedDecisionPipeline:
         result = await self.mcp_helper.call_mcp_server(
             "magic",
             "diagram_generation",
-            query=decision_context.user_input,
+            query=decision_context.message,
             context=input_data,
             timeout=timeout,
         )
@@ -596,7 +596,7 @@ class MCPEnhancedDecisionPipeline:
 
         # Use existing framework engine (87.5% accuracy)
         analysis = self.framework_engine.base_engine.analyze_systematically(
-            decision_context.user_input,
+            decision_context.message,
             decision_context.session_id,
             {"persona": decision_context.persona},
         )
