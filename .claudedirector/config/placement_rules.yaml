@@ -1,0 +1,183 @@
+# Placement Rules Configuration
+# Auto-generated from PROJECT_STRUCTURE.md for StructureAwarePlacementEngine
+
+placement_rules:
+  core_foundational:
+    base_path: ".claudedirector/lib/core"
+    patterns: ["*_manager.py", "*_processor.py", "*_engine.py", "base_*.py"]
+    description: "Foundational Components (PROJECT_STRUCTURE.md line 71-75)"
+    examples: ["database.py", "config.py", "models.py", "validation.py"]
+
+  validation:
+    base_path: ".claudedirector/lib/core/validation"
+    patterns: ["*_validation*.py", "*_compliance*.py", "*_prevention*.py"]
+    description: "Validation components"
+    examples: ["unified_prevention_engine.py", "proactive_compliance_engine.py"]
+
+  generation:
+    base_path: ".claudedirector/lib/core/generation"
+    patterns: ["*_template*.py", "*_generation*.py", "*_placement*.py"]
+    description: "Code generation components"
+    examples: ["solid_template_engine.py", "structure_aware_placement_engine.py"]
+
+  ai_intelligence:
+    base_path: ".claudedirector/lib/ai_intelligence"
+    patterns: ["*_intelligence*.py", "*_decision*.py", "*_framework*.py", "*_mcp*.py"]
+    description: "AI Enhancement System"
+    examples: ["decision_orchestrator.py", "enhanced_framework_detection.py"]
+
+  context_engineering:
+    base_path: ".claudedirector/lib/context_engineering"
+    patterns: ["*_context*.py", "*_layer*.py", "*_engine*.py", "*_learning*.py"]
+    description: "Context Engineering System"
+    examples: ["advanced_context_engine.py", "conversation_layer.py"]
+
+  performance:
+    base_path: ".claudedirector/lib/performance"
+    patterns: ["*_performance*.py", "*_cache*.py", "*_optimizer*.py", "*_monitor*.py"]
+    description: "Performance Optimization"
+    examples: ["cache_manager.py", "memory_optimizer.py"]
+
+  p0_features:
+    base_path: ".claudedirector/lib/p0_features"
+    patterns: ["*_p0*.py"]
+    description: "Business-Critical Features"
+    examples: ["p0_feature_modules"]
+
+  p1_features:
+    base_path: ".claudedirector/lib/p1_features"
+    patterns: ["*_p1*.py"]
+    description: "High-Priority Features"
+    examples: ["p1_feature_modules"]
+
+  p2_communication:
+    base_path: ".claudedirector/lib/p2_communication"
+    patterns: ["*_communication*.py", "*_chat*.py", "*_interface*.py"]
+    description: "Communication Layer"
+    examples: ["communication_modules"]
+
+  transparency:
+    base_path: ".claudedirector/lib/transparency"
+    patterns: ["*_transparency*.py", "*_audit*.py"]
+    description: "Transparency System"
+    examples: ["transparency_modules"]
+
+  integration:
+    base_path: ".claudedirector/lib/integration"
+    patterns: ["*_integration*.py", "*_bridge*.py"]
+    description: "Integration Layer"
+    examples: ["unified_bridge.py"]
+
+  config:
+    base_path: ".claudedirector/lib/config"
+    patterns: ["*_config*.py", "*_settings*.py"]
+    description: "Configuration Management"
+    examples: ["user_config.py"]
+
+  utils:
+    base_path: ".claudedirector/lib/utils"
+    patterns: ["*_utils*.py", "*_helper*.py", "*_tool*.py"]
+    description: "Utility Functions"
+    examples: ["helper_functions"]
+
+  # Test categories
+  tests_unit:
+    base_path: ".claudedirector/tests/unit"
+    patterns: ["test_*.py"]
+    description: "Unit Testing"
+    examples: ["test_component.py"]
+
+  tests_regression:
+    base_path: ".claudedirector/tests/regression"
+    patterns: ["test_*_p0.py", "test_*_regression.py"]
+    description: "Regression Protection"
+    examples: ["test_component_p0.py"]
+
+  tests_integration:
+    base_path: ".claudedirector/tests/integration"
+    patterns: ["test_*_integration.py"]
+    description: "Integration Testing"
+    examples: ["test_integration.py"]
+
+  tests_performance:
+    base_path: ".claudedirector/tests/performance"
+    patterns: ["test_*_performance.py"]
+    description: "Performance Validation"
+    examples: ["test_performance.py"]
+
+  # Documentation categories
+  docs_architecture:
+    base_path: "docs/architecture"
+    patterns: ["*.md"]
+    description: "Architectural Documentation"
+    examples: ["PROJECT_STRUCTURE.md", "OVERVIEW.md"]
+
+  docs_development:
+    base_path: "docs/development"
+    patterns: ["*.md"]
+    description: "Development Guides"
+    examples: ["DEVELOPMENT_GUIDE.md"]
+
+  docs_requirements:
+    base_path: "docs/requirements"
+    patterns: ["*.md"]
+    description: "Requirements Documentation"
+    examples: ["PRODUCT_REQUIREMENTS_DOCUMENT.md"]
+
+  # Tools
+  tools:
+    base_path: ".claudedirector/tools"
+    patterns: ["*.py"]
+    description: "Development & Operations Tools"
+    examples: ["architectural_validator.py"]
+
+# Component pattern matching for automatic categorization
+component_patterns:
+  # Generation patterns (check first - most specific)
+  template: "generation"
+  generation: "generation"
+  placement: "generation"
+
+  # Validation patterns
+  validation: "validation"
+  compliance: "validation"
+  prevention: "validation"
+
+  # Core patterns (check after more specific patterns)
+  engine: "core_foundational"
+  manager: "core_foundational"
+  processor: "core_foundational"
+  factory: "core_foundational"
+  config: "config"
+  database: "core_foundational"
+
+  # AI patterns
+  intelligence: "ai_intelligence"
+  decision: "ai_intelligence"
+  framework: "ai_intelligence"
+  mcp: "ai_intelligence"
+
+  # Context patterns
+  context: "context_engineering"
+  layer: "context_engineering"
+  learning: "context_engineering"
+  dynamics: "context_engineering"
+
+  # Performance patterns
+  performance: "performance"
+  cache: "performance"
+  optimizer: "performance"
+  monitor: "performance"
+
+  # Feature patterns
+  p0: "p0_features"
+  p1: "p1_features"
+  communication: "p2_communication"
+  chat: "p2_communication"
+
+  # System patterns
+  transparency: "transparency"
+  integration: "integration"
+  bridge: "integration"
+  utils: "utils"
+  helper: "utils"

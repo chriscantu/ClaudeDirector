@@ -53,6 +53,9 @@ class ComponentType(Enum):
     PROACTIVE_COMPLIANCE_ENGINE = "proactive_compliance_engine"
     SOLID_TEMPLATE_ENGINE = "solid_template_engine"
 
+    # 🆕 Phase 2: Generation Components
+    STRUCTURE_AWARE_PLACEMENT_ENGINE = "structure_aware_placement_engine"
+
 
 @dataclass
 class ComponentConfig:
@@ -162,6 +165,11 @@ class UnifiedFactory(BaseProcessor):
         )
         self._factory_methods[ComponentType.SOLID_TEMPLATE_ENGINE] = (
             self._create_solid_template_engine
+        )
+
+        # 🆕 Register Phase 2 generation components
+        self._factory_methods[ComponentType.STRUCTURE_AWARE_PLACEMENT_ENGINE] = (
+            self._create_structure_aware_placement_engine
         )
 
     def create_component(
@@ -333,26 +341,44 @@ class UnifiedFactory(BaseProcessor):
         self, config: Optional[Dict[str, Any]] = None, **kwargs
     ) -> Any:
         """🆕 Create SOLIDTemplateEngine for principle-enforced code generation"""
-        # Phase 2 implementation - basic template engine for now
-        # Will be enhanced with full SOLID template generation capabilities
+        try:
+            # Phase 2: Use advanced SOLIDTemplateEngine
+            from .generation.solid_template_engine import SOLIDTemplateEngine
 
-        class BasicSOLIDTemplateEngine:
-            """Basic SOLID template engine - Phase 2 foundation"""
+            return SOLIDTemplateEngine(config)
+        except ImportError:
+            # Fallback to shared basic template engine (DRY compliance)
+            from .generation.basic_solid_template_engine import BasicSOLIDTemplateEngine
 
-            def __init__(self, config=None):
-                self.config = config or {}
-                self.templates = {
-                    "single_responsibility": 'class {name}:\n    """Single responsibility class"""\n    pass',
-                    "open_closed": 'class {name}(ABC):\n    """Open for extension, closed for modification"""\n    @abstractmethod\n    def process(self): pass',
-                }
+            return BasicSOLIDTemplateEngine(config)
 
-            def generate_template(self, template_type: str, **kwargs) -> str:
-                """Generate SOLID-compliant code template"""
-                if template_type in self.templates:
-                    return self.templates[template_type].format(**kwargs)
-                return f"# SOLID template for {template_type} - to be implemented"
+    def _create_structure_aware_placement_engine(
+        self, config: Optional[Dict[str, Any]] = None, **kwargs
+    ) -> Any:
+        """🆕 Create StructureAwarePlacementEngine for PROJECT_STRUCTURE.md compliance"""
+        try:
+            from .generation.structure_aware_placement_engine import (
+                StructureAwarePlacementEngine,
+            )
 
-        return BasicSOLIDTemplateEngine(config)
+            return StructureAwarePlacementEngine(config)
+        except ImportError:
+            raise ValueError("StructureAwarePlacementEngine not available")
+
+    def process(self, *args, **kwargs) -> Any:
+        """
+        BaseProcessor abstract method implementation for UnifiedFactory
+
+        For UnifiedFactory, processing means component creation
+        """
+        if args and isinstance(args[0], ComponentType):
+            component_type = args[0]
+            config = kwargs.get("config")
+            return self.create_component(component_type, config, **kwargs)
+        else:
+            raise ValueError(
+                "UnifiedFactory.process() requires ComponentType as first argument"
+            )
 
     def supports_component_type(self, component_type: ComponentType) -> bool:
         """Check if factory supports the specified component type"""
@@ -464,3 +490,16 @@ def create_proactive_compliance_engine(
         hard_enforcement=hard_enforcement,
         additional_modules=additional_modules,
     )
+
+
+# 🆕 Phase 2: Generation Components convenience functions
+def create_solid_template_engine(config: Optional[Dict[str, Any]] = None) -> Any:
+    """Create SOLIDTemplateEngine for principle-enforced code generation"""
+    return create_component(ComponentType.SOLID_TEMPLATE_ENGINE, config)
+
+
+def create_structure_aware_placement_engine(
+    config: Optional[Dict[str, Any]] = None,
+) -> Any:
+    """Create StructureAwarePlacementEngine for PROJECT_STRUCTURE.md compliance"""
+    return create_component(ComponentType.STRUCTURE_AWARE_PLACEMENT_ENGINE, config)

@@ -432,6 +432,17 @@ p0_features:
     introduced_version: "v3.7.0"
     owner: "martin"
 
+  # PHASE 2 PROACTIVE CODE GENERATION COMPLIANCE SYSTEM
+  - name: "Phase 2 Generation Compliance P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_phase2_generation_compliance_p0.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 120
+    description: "Phase 2 Proactive Code Generation Compliance System must provide reliable SOLID template generation and PROJECT_STRUCTURE.md placement"
+    failure_impact: "Code generation produces non-SOLID compliant templates, components placed incorrectly, architectural standards violated"
+    business_impact: "Technical debt increases, architectural compliance lost, development productivity degrades"
+    introduced_version: "v3.8.0"
+    owner: "martin"
+
 
 # Enforcement settings
 enforcement:
