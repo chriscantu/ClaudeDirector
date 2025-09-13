@@ -347,22 +347,8 @@ class UnifiedFactory(BaseProcessor):
 
             return SOLIDTemplateEngine(config)
         except ImportError:
-            # Fallback to basic template engine for backward compatibility
-            class BasicSOLIDTemplateEngine:
-                """Basic SOLID template engine - Phase 2 foundation"""
-
-                def __init__(self, config=None):
-                    self.config = config or {}
-                    self.templates = {
-                        "single_responsibility": 'class {name}:\n    """Single responsibility class"""\n    pass',
-                        "open_closed": 'class {name}(ABC):\n    """Open for extension, closed for modification"""\n    @abstractmethod\n    def process(self): pass',
-                    }
-
-                def generate_template(self, template_type: str, **kwargs) -> str:
-                    """Generate SOLID-compliant code template"""
-                    if template_type in self.templates:
-                        return self.templates[template_type].format(**kwargs)
-                    return f"# SOLID template for {template_type} - to be implemented"
+            # Fallback to shared basic template engine (DRY compliance)
+            from .generation.basic_solid_template_engine import BasicSOLIDTemplateEngine
 
             return BasicSOLIDTemplateEngine(config)
 

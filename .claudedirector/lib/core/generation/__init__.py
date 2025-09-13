@@ -16,6 +16,7 @@ PHASE 2 COMPONENTS:
 Author: Strategic Team (Diego, Martin, Camille) with Sequential Thinking methodology
 """
 
+from .basic_solid_template_engine import BasicSOLIDTemplateEngine
 from .solid_template_engine import (
     SOLIDTemplateEngine,
     SOLIDPrinciple,
@@ -30,6 +31,7 @@ from .structure_aware_placement_engine import (
 )
 
 __all__ = [
+    "BasicSOLIDTemplateEngine",
     "SOLIDTemplateEngine",
     "SOLIDPrinciple",
     "TemplateContext",
