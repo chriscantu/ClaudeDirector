@@ -26,47 +26,17 @@ import time
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple, Union
 from dataclasses import dataclass, field
-from enum import Enum
 import logging
 
+# Import modular configuration components
+from .placement_config_loader import (
+    PlacementConfigLoader,
+    ComponentCategory,
+    PlacementRule,
+    create_placement_config_loader,
+)
+
 logger = logging.getLogger(__name__)
-
-
-class ComponentCategory(Enum):
-    """Component categories for placement mapping"""
-
-    CORE_FOUNDATIONAL = "core_foundational"
-    VALIDATION = "validation"
-    GENERATION = "generation"
-    AI_INTELLIGENCE = "ai_intelligence"
-    CONTEXT_ENGINEERING = "context_engineering"
-    PERFORMANCE = "performance"
-    P0_FEATURES = "p0_features"
-    P1_FEATURES = "p1_features"
-    P2_COMMUNICATION = "p2_communication"
-    TRANSPARENCY = "transparency"
-    INTEGRATION = "integration"
-    CONFIG = "config"
-    UTILS = "utils"
-    TESTS_UNIT = "tests_unit"
-    TESTS_REGRESSION = "tests_regression"
-    TESTS_INTEGRATION = "tests_integration"
-    TESTS_PERFORMANCE = "tests_performance"
-    DOCS_ARCHITECTURE = "docs_architecture"
-    DOCS_DEVELOPMENT = "docs_development"
-    DOCS_REQUIREMENTS = "docs_requirements"
-    TOOLS = "tools"
-
-
-@dataclass
-class PlacementRule:
-    """Rule for component placement based on PROJECT_STRUCTURE.md"""
-
-    category: ComponentCategory
-    base_path: str
-    patterns: List[str] = field(default_factory=list)
-    description: str = ""
-    examples: List[str] = field(default_factory=list)
 
 
 @dataclass
@@ -105,12 +75,16 @@ class StructureAwarePlacementEngine:
     """
 
     def __init__(self, config: Optional[Dict[str, Any]] = None):
-        """Initialize with PROJECT_STRUCTURE.md parsing"""
+        """Initialize with modular configuration loading"""
         self.config = config or {}
         self.project_root = Path(self.config.get("project_root", "."))
 
-        # Initialize placement rules from PROJECT_STRUCTURE.md
-        self._placement_rules = self._initialize_placement_rules()
+        # Initialize configuration loader
+        config_path = self.config.get("placement_config_path")
+        self._config_loader = create_placement_config_loader(config_path)
+
+        # Load placement rules from configuration
+        self._placement_rules = self._config_loader.load_placement_rules()
 
         # Context7 MCP integration patterns
         self._context7_patterns = {
@@ -119,247 +93,38 @@ class StructureAwarePlacementEngine:
             "best_practice": "Context7 placement best practices",
         }
 
-        # Component type patterns for automatic categorization
-        self._component_patterns = self._initialize_component_patterns()
+        # Load component patterns from configuration
+        self._component_patterns = self._config_loader.load_component_patterns()
 
         logger.info(
             f"structure_aware_placement_engine_initialized: "
             f"placement_rules={len(self._placement_rules)}, "
             f"component_patterns={len(self._component_patterns)}, "
             f"context7_patterns={len(self._context7_patterns)}, "
-            f"project_root={self.project_root}"
+            f"project_root={self.project_root}, "
+            f"config_driven=True"
         )
 
-    def _initialize_placement_rules(self) -> Dict[ComponentCategory, PlacementRule]:
-        """Initialize placement rules based on PROJECT_STRUCTURE.md"""
-        return {
-            # Core system components (line 71-75)
-            ComponentCategory.CORE_FOUNDATIONAL: PlacementRule(
-                category=ComponentCategory.CORE_FOUNDATIONAL,
-                base_path=".claudedirector/lib/core",
-                patterns=["*_manager.py", "*_processor.py", "*_engine.py", "base_*.py"],
-                description="Foundational Components (PROJECT_STRUCTURE.md line 71-75)",
-                examples=["database.py", "config.py", "models.py", "validation.py"],
-            ),
-            ComponentCategory.VALIDATION: PlacementRule(
-                category=ComponentCategory.VALIDATION,
-                base_path=".claudedirector/lib/core/validation",
-                patterns=["*_validation*.py", "*_compliance*.py", "*_prevention*.py"],
-                description="Validation components",
-                examples=[
-                    "unified_prevention_engine.py",
-                    "proactive_compliance_engine.py",
-                ],
-            ),
-            ComponentCategory.GENERATION: PlacementRule(
-                category=ComponentCategory.GENERATION,
-                base_path=".claudedirector/lib/core/generation",
-                patterns=["*_template*.py", "*_generation*.py", "*_placement*.py"],
-                description="Code generation components",
-                examples=[
-                    "solid_template_engine.py",
-                    "structure_aware_placement_engine.py",
-                ],
-            ),
-            # AI Intelligence system
-            ComponentCategory.AI_INTELLIGENCE: PlacementRule(
-                category=ComponentCategory.AI_INTELLIGENCE,
-                base_path=".claudedirector/lib/ai_intelligence",
-                patterns=[
-                    "*_intelligence*.py",
-                    "*_decision*.py",
-                    "*_framework*.py",
-                    "mcp_*.py",
-                ],
-                description="AI Enhancement System",
-                examples=[
-                    "decision_orchestrator.py",
-                    "enhanced_framework_detection.py",
-                ],
-            ),
-            # Context Engineering (Primary System)
-            ComponentCategory.CONTEXT_ENGINEERING: PlacementRule(
-                category=ComponentCategory.CONTEXT_ENGINEERING,
-                base_path=".claudedirector/lib/context_engineering",
-                patterns=[
-                    "*_context*.py",
-                    "*_layer*.py",
-                    "*_learning*.py",
-                    "*_dynamics*.py",
-                ],
-                description="Context Engineering - Primary System",
-                examples=["advanced_context_engine.py", "conversation_layer.py"],
-            ),
-            # Performance optimization
-            ComponentCategory.PERFORMANCE: PlacementRule(
-                category=ComponentCategory.PERFORMANCE,
-                base_path=".claudedirector/lib/performance",
-                patterns=[
-                    "*_performance*.py",
-                    "*_cache*.py",
-                    "*_optimizer*.py",
-                    "*_monitor*.py",
-                ],
-                description="Performance Optimization",
-                examples=["cache_manager.py", "memory_optimizer.py"],
-            ),
-            # Feature categories
-            ComponentCategory.P0_FEATURES: PlacementRule(
-                category=ComponentCategory.P0_FEATURES,
-                base_path=".claudedirector/lib/p0_features",
-                patterns=["*_p0*.py"],
-                description="Business-Critical Features",
-                examples=["p0_feature_modules"],
-            ),
-            ComponentCategory.P1_FEATURES: PlacementRule(
-                category=ComponentCategory.P1_FEATURES,
-                base_path=".claudedirector/lib/p1_features",
-                patterns=["*_p1*.py"],
-                description="High-Priority Features",
-                examples=["p1_feature_modules"],
-            ),
-            ComponentCategory.P2_COMMUNICATION: PlacementRule(
-                category=ComponentCategory.P2_COMMUNICATION,
-                base_path=".claudedirector/lib/p2_communication",
-                patterns=["*_communication*.py", "*_chat*.py", "*_interface*.py"],
-                description="Communication Layer",
-                examples=["communication_modules"],
-            ),
-            # System categories
-            ComponentCategory.TRANSPARENCY: PlacementRule(
-                category=ComponentCategory.TRANSPARENCY,
-                base_path=".claudedirector/lib/transparency",
-                patterns=["*_transparency*.py", "*_audit*.py"],
-                description="Transparency System",
-                examples=["transparency_modules"],
-            ),
-            ComponentCategory.INTEGRATION: PlacementRule(
-                category=ComponentCategory.INTEGRATION,
-                base_path=".claudedirector/lib/integration",
-                patterns=["*_integration*.py", "*_bridge*.py"],
-                description="Integration Layer",
-                examples=["unified_bridge.py"],
-            ),
-            ComponentCategory.CONFIG: PlacementRule(
-                category=ComponentCategory.CONFIG,
-                base_path=".claudedirector/lib/config",
-                patterns=["*_config*.py"],
-                description="Configuration Management",
-                examples=["user_config.py"],
-            ),
-            ComponentCategory.UTILS: PlacementRule(
-                category=ComponentCategory.UTILS,
-                base_path=".claudedirector/lib/utils",
-                patterns=["*_utils*.py", "*_helper*.py"],
-                description="Utility Functions",
-                examples=["utility_modules"],
-            ),
-            # Test categories (lines 124-155)
-            ComponentCategory.TESTS_UNIT: PlacementRule(
-                category=ComponentCategory.TESTS_UNIT,
-                base_path=".claudedirector/tests/unit",
-                patterns=["test_*.py"],
-                description="Unit Testing",
-                examples=["test_component.py"],
-            ),
-            ComponentCategory.TESTS_REGRESSION: PlacementRule(
-                category=ComponentCategory.TESTS_REGRESSION,
-                base_path=".claudedirector/tests/regression",
-                patterns=["test_*_p0.py", "test_*_regression.py"],
-                description="Regression Protection",
-                examples=["test_component_p0.py"],
-            ),
-            ComponentCategory.TESTS_INTEGRATION: PlacementRule(
-                category=ComponentCategory.TESTS_INTEGRATION,
-                base_path=".claudedirector/tests/integration",
-                patterns=["test_*_integration.py"],
-                description="Integration Testing",
-                examples=["test_integration.py"],
-            ),
-            ComponentCategory.TESTS_PERFORMANCE: PlacementRule(
-                category=ComponentCategory.TESTS_PERFORMANCE,
-                base_path=".claudedirector/tests/performance",
-                patterns=["test_*_performance.py"],
-                description="Performance Validation",
-                examples=["test_performance.py"],
-            ),
-            # Documentation categories (lines 208-234)
-            ComponentCategory.DOCS_ARCHITECTURE: PlacementRule(
-                category=ComponentCategory.DOCS_ARCHITECTURE,
-                base_path="docs/architecture",
-                patterns=["*.md"],
-                description="Architectural Documentation",
-                examples=["PROJECT_STRUCTURE.md", "OVERVIEW.md"],
-            ),
-            ComponentCategory.DOCS_DEVELOPMENT: PlacementRule(
-                category=ComponentCategory.DOCS_DEVELOPMENT,
-                base_path="docs/development",
-                patterns=["*.md"],
-                description="Development Guides",
-                examples=["DEVELOPMENT_GUIDE.md"],
-            ),
-            ComponentCategory.DOCS_REQUIREMENTS: PlacementRule(
-                category=ComponentCategory.DOCS_REQUIREMENTS,
-                base_path="docs/requirements",
-                patterns=["*.md"],
-                description="Requirements Documentation",
-                examples=["PRODUCT_REQUIREMENTS_DOCUMENT.md"],
-            ),
-            # Tools (lines 157-187)
-            ComponentCategory.TOOLS: PlacementRule(
-                category=ComponentCategory.TOOLS,
-                base_path=".claudedirector/tools",
-                patterns=["*.py"],
-                description="Development & Operations Tools",
-                examples=["architectural_validator.py"],
-            ),
-        }
+    def reload_configuration(self) -> None:
+        """Reload placement configuration from file"""
+        self._config_loader.reload_config()
+        self._placement_rules = self._config_loader.load_placement_rules()
+        self._component_patterns = self._config_loader.load_component_patterns()
 
-    def _initialize_component_patterns(self) -> Dict[str, ComponentCategory]:
-        """Initialize component type to category mapping patterns"""
-        return {
-            # Generation patterns (check first - most specific)
-            "template": ComponentCategory.GENERATION,
-            "generation": ComponentCategory.GENERATION,
-            "placement": ComponentCategory.GENERATION,
-            # Validation patterns
-            "validation": ComponentCategory.VALIDATION,
-            "compliance": ComponentCategory.VALIDATION,
-            "prevention": ComponentCategory.VALIDATION,
-            # Core patterns (check after more specific patterns)
-            "engine": ComponentCategory.CORE_FOUNDATIONAL,
-            "manager": ComponentCategory.CORE_FOUNDATIONAL,
-            "processor": ComponentCategory.CORE_FOUNDATIONAL,
-            "factory": ComponentCategory.CORE_FOUNDATIONAL,
-            "config": ComponentCategory.CONFIG,
-            "database": ComponentCategory.CORE_FOUNDATIONAL,
-            # AI patterns
-            "intelligence": ComponentCategory.AI_INTELLIGENCE,
-            "decision": ComponentCategory.AI_INTELLIGENCE,
-            "framework": ComponentCategory.AI_INTELLIGENCE,
-            "mcp": ComponentCategory.AI_INTELLIGENCE,
-            # Context patterns
-            "context": ComponentCategory.CONTEXT_ENGINEERING,
-            "layer": ComponentCategory.CONTEXT_ENGINEERING,
-            "learning": ComponentCategory.CONTEXT_ENGINEERING,
-            "dynamics": ComponentCategory.CONTEXT_ENGINEERING,
-            # Performance patterns
-            "performance": ComponentCategory.PERFORMANCE,
-            "cache": ComponentCategory.PERFORMANCE,
-            "optimizer": ComponentCategory.PERFORMANCE,
-            "monitor": ComponentCategory.PERFORMANCE,
-            # Feature patterns
-            "p0": ComponentCategory.P0_FEATURES,
-            "p1": ComponentCategory.P1_FEATURES,
-            "communication": ComponentCategory.P2_COMMUNICATION,
-            "chat": ComponentCategory.P2_COMMUNICATION,
-            # System patterns
-            "transparency": ComponentCategory.TRANSPARENCY,
-            "integration": ComponentCategory.INTEGRATION,
-            "bridge": ComponentCategory.INTEGRATION,
-            "utils": ComponentCategory.UTILS,
-            "helper": ComponentCategory.UTILS,
-        }
+        logger.info("Placement configuration reloaded from file")
+
+    def validate_configuration(self) -> List[str]:
+        """
+        Validate current configuration
+
+        Returns:
+            List of validation errors (empty if valid)
+        """
+        return self._config_loader.validate_config()
+
+    # Hardcoded methods removed - replaced by configuration-driven approach
+
+    # Component patterns method removed - now loaded from configuration
 
     def determine_placement(
         self, component_name: str, component_type: str, context: Dict[str, Any]

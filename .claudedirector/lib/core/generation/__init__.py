@@ -25,9 +25,13 @@ from .solid_template_engine import (
 )
 from .structure_aware_placement_engine import (
     StructureAwarePlacementEngine,
+    PlacementResult,
+)
+from .placement_config_loader import (
+    PlacementConfigLoader,
     ComponentCategory,
     PlacementRule,
-    PlacementResult,
+    create_placement_config_loader,
 )
 
 __all__ = [
@@ -37,7 +41,9 @@ __all__ = [
     "TemplateContext",
     "GenerationResult",
     "StructureAwarePlacementEngine",
+    "PlacementResult",
+    "PlacementConfigLoader",
     "ComponentCategory",
     "PlacementRule",
-    "PlacementResult",
+    "create_placement_config_loader",
 ]
