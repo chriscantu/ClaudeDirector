@@ -332,7 +332,7 @@ class AIProcessInterceptor:
 
 
 def create_ai_process_interceptor(
-    config: Optional[Dict[str, Any]] = None
+    config: Optional[Dict[str, Any]] = None,
 ) -> AIProcessInterceptor:
     """
     Factory function for creating AIProcessInterceptor
