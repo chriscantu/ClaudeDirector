@@ -555,7 +555,11 @@ class ReportGenerator:
             status=fields.get("status", {}).get("name", ""),
             priority=fields.get("priority", {}).get("name", "None"),
             project=fields.get("project", {}).get("name", ""),
-            assignee=fields.get("assignee", {}).get("displayName", "Unassigned"),
+            assignee=(
+                fields.get("assignee", {}).get("displayName", "Unassigned")
+                if fields.get("assignee")
+                else "Unassigned"
+            ),
             parent_key=(
                 fields.get("parent", {}).get("key") if fields.get("parent") else None
             ),
