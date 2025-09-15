@@ -243,15 +243,21 @@ class UnifiedFactory(BaseProcessor):
         try:
             # EnhancedPredictiveEngine removed as non-functional bloat
             # AI Trust Framework: AI cannot reliably predict complex human systems
-            raise ImportError("Enhanced Predictive Intelligence removed - provided only hardcoded stubs")
+            raise ImportError(
+                "Enhanced Predictive Intelligence removed - provided only hardcoded stubs"
+            )
         except ImportError:
             # Lightweight fallback for backward compatibility
             class PredictiveEngineStub:
                 def __init__(self, **kwargs):
                     pass
+
                 def __getattr__(self, name):
-                    return lambda *args, **kwargs: {"status": "fallback", "method": name}
-            
+                    return lambda *args, **kwargs: {
+                        "status": "fallback",
+                        "method": name,
+                    }
+
             return PredictiveEngineStub(
                 prediction_cache_size=kwargs.get("prediction_cache_size", 1000),
                 enable_real_time_updates=kwargs.get("enable_real_time_updates", True),
