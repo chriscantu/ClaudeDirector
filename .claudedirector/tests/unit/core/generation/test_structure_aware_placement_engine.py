@@ -171,7 +171,7 @@ class TestStructureAwarePlacementEngine(unittest.TestCase):
                 "expected_path_contains": "generation",
             },
             {
-                "component_name": "proactive_compliance_engine",
+                "component_name": "unified_prevention_engine",
                 "component_type": "compliance",
                 "expected_category": ComponentCategory.VALIDATION,
                 "expected_path_contains": "validation",

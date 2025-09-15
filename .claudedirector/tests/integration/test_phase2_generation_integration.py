@@ -152,7 +152,7 @@ class TestPhase2GenerationIntegration(unittest.TestCase):
 #### Validation Components (.claudedirector/lib/core/validation/)
 - `unified_prevention_engine.py` - Consolidated validation and prevention
 - `proactive_compliance_engine.py` - Proactive architectural compliance
-- `integrated_process_enforcer.py` - Process compliance enforcement
+- Process compliance enforcement (removed - non-functional)
 
 ### .claudedirector/lib/ai_intelligence/
 **Purpose**: AI Enhancement System for strategic intelligence
