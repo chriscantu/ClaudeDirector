@@ -642,7 +642,7 @@ class ReportGenerator:
 ---"""
 
     def _build_epic_portfolio(self, epic_issues: List[JiraIssue]) -> str:
-        """Build epic portfolio section"""
+        """Build epic portfolio section with proper team grouping"""
         if not epic_issues:
             return """## 📊 Completed Epic Portfolio by Team
 
@@ -652,27 +652,54 @@ class ReportGenerator:
 
 ---"""
 
-        epic_entries = []
+        # Group epics by project/team
+        teams = {}
         for issue in epic_issues:
-            timing = self._determine_completion_timing(issue.status)
-            jira_url = f"{self.analyzer.jira_base_url}/browse/{issue.key}"
+            project = issue.project
+            if project not in teams:
+                teams[project] = []
+            teams[project].append(issue)
 
-            entry = f"""### ✅ [{issue.key}]({jira_url}) - {issue.summary}
+        # Build team sections with clear visual separation
+        team_sections = []
+        for project, team_issues in sorted(teams.items()):
+            # Team header with emoji and clear separation
+            team_header = f"""### 📂 {project} ({len(team_issues)} epic{'s' if len(team_issues) != 1 else ''})
+
+"""
+
+            # Epic entries for this team
+            epic_entries = []
+            for issue in team_issues:
+                timing = self._determine_completion_timing(issue.status)
+                jira_url = f"{self.analyzer.jira_base_url}/browse/{issue.key}"
+
+                # Build header with parent initiative if available
+                if issue.parent_key:
+                    parent_url = (
+                        f"{self.analyzer.jira_base_url}/browse/{issue.parent_key}"
+                    )
+                    header = f"#### [{issue.parent_key}]({parent_url}) : [{issue.key}]({jira_url}) - {issue.summary}"
+                else:
+                    header = f"#### ✅ [{issue.key}]({jira_url}) - {issue.summary}"
+
+                entry = f"""{header}
 
 - **Status**: {timing} ({issue.status})
 - **Priority**: {issue.priority}
-- **Project**: {issue.project}
 - **Assignee**: {issue.assignee}
 - **Business Value**: {issue.business_value}
 
----"""
-            epic_entries.append(entry)
+"""
+                epic_entries.append(entry)
+
+            # Combine team header with epics and add visual separator
+            team_section = team_header + "".join(epic_entries) + "---\n"
+            team_sections.append(team_section)
 
         return f"""## 📊 Completed Epic Portfolio by Team
 
-{''.join(epic_entries)}
-
----"""
+{''.join(team_sections)}"""
 
     def _build_strategic_analysis(self, strategic_issues: List[JiraIssue]) -> str:
         """Build strategic story analysis section"""
