@@ -23,8 +23,12 @@ class DecisionComplexity(Enum):
     """Decision complexity levels for strategic analysis"""
 
     SIMPLE = "simple"
+    LOW = "low"
+    MODERATE = "moderate"
     MEDIUM = "medium"
+    HIGH = "high"
     COMPLEX = "complex"
+    STRATEGIC = "strategic"
     ENTERPRISE = "enterprise"
 
 
@@ -306,8 +310,36 @@ class DecisionIntelligenceOrchestrator:
             transparency_context = TransparencyContext(persona=persona)
 
             # 🏗️ CONSOLIDATED DELEGATION: All core logic in processor
-            decision_context = await self.processor.detect_decision_context(
+            decision_context_dict = await self.processor.detect_decision_context(
                 user_input, session_id, persona, context
+            )
+
+            # Convert dictionary to DecisionContext object for compatibility
+            complexity_str = decision_context_dict.get("complexity", "medium").lower()
+            complexity_enum = DecisionComplexity.MEDIUM  # Default
+
+            # Map complexity strings to enum values
+            complexity_mapping = {
+                "simple": DecisionComplexity.SIMPLE,
+                "low": DecisionComplexity.LOW,
+                "moderate": DecisionComplexity.MODERATE,
+                "medium": DecisionComplexity.MEDIUM,
+                "high": DecisionComplexity.HIGH,
+                "complex": DecisionComplexity.COMPLEX,
+                "strategic": DecisionComplexity.STRATEGIC,
+                "enterprise": DecisionComplexity.ENTERPRISE,
+            }
+
+            complexity_enum = complexity_mapping.get(
+                complexity_str, DecisionComplexity.MEDIUM
+            )
+
+            decision_context = DecisionContext(
+                message=decision_context_dict.get("user_input", user_input),
+                complexity=complexity_enum,
+                persona=decision_context_dict.get("persona", persona),
+                stakeholders=decision_context_dict.get("stakeholders", []),
+                metadata=decision_context_dict.get("metadata", {}),
             )
 
             # Delegate all complex operations to processor
@@ -403,16 +435,18 @@ class DecisionIntelligenceOrchestrator:
             # Return fallback result
             return DecisionIntelligenceResult(
                 decision_context=DecisionContext(
-                    user_input=user_input,
-                    session_id=session_id,
+                    message=user_input,
                     persona=persona,
                     complexity=DecisionComplexity.SIMPLE,
-                    domain="general",
-                    stakeholder_scope=["team"],
-                    time_sensitivity="normal",
-                    business_impact="low",
-                    confidence=0.5,
-                    detected_patterns=[],
+                    stakeholders=["team"],
+                    metadata={
+                        "session_id": session_id,
+                        "domain": "general",
+                        "time_sensitivity": "normal",
+                        "business_impact": "low",
+                        "confidence": 0.5,
+                        "detected_patterns": [],
+                    },
                 ),
                 recommended_frameworks=[],
                 mcp_servers_used=[],

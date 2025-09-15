@@ -64,15 +64,10 @@ except ImportError as e:
         return DecisionIntelligenceOrchestrator(*args, **kwargs)
 
 
-# Phase 11 Advanced AI Intelligence - P1 High Priority (2.5x ROI)
-from .predictive_engine import (
-    EnhancedPredictiveEngine,
-    PredictionResult,
-    PredictionType,
-    PredictionConfidence,
-    StrategicChallengePrediction,
-    create_enhanced_predictive_engine,
-)
+# Phase 11 Advanced AI Intelligence - REMOVED (NON-FUNCTIONAL BLOAT)
+# Enhanced Predictive Intelligence removed as it provided only hardcoded stubs claiming "85%+ accuracy"
+# AI Trust Framework: AI cannot reliably predict complex human systems (team collaboration, strategic decisions)
+# Replaced with external data analysis tools for genuine business intelligence
 
 # 🎯 CONTEXT7: Temporarily disable problematic imports for P0 recovery
 # Phase 7 Modular AI Intelligence Components
@@ -164,21 +159,26 @@ from .context.persona_selector import (
     PersonaActivationRecommendation,
 )
 
-# 🎯 STORY 9.6.3: CONSOLIDATED AI PROCESSING
-from .unified_ai_engine import (
-    UnifiedAIEngine,
-    AIProcessingResult,
-    FrameworkAnalysis,
-    PredictiveInsight,
-    DecisionRecommendation,
-    create_unified_ai_engine,
-    get_default_ai_engine,
-)
+# 🎯 STORY 9.6.3: CONSOLIDATED AI PROCESSING - REMOVED (NON-FUNCTIONAL BLOAT)
+# UnifiedAIEngine removed as it provided only hardcoded stubs and mock responses
+# Data classes moved to decision_orchestrator.py where they're actually used
+
+
+# Lightweight fallback stubs for backward compatibility
+class _LightweightStub:
+    """Ultra-lightweight stub for removed bloated systems"""
+
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def __getattr__(self, name):
+        return lambda *args, **kwargs: None
+
 
 # Backward compatibility aliases for removed processors
-FrameworkProcessor = UnifiedAIEngine
-PredictiveProcessor = UnifiedAIEngine
-DecisionProcessor = UnifiedAIEngine
+FrameworkProcessor = _LightweightStub
+PredictiveProcessor = _LightweightStub
+DecisionProcessor = _LightweightStub
 
 __all__ = [
     # Legacy components
@@ -189,12 +189,12 @@ __all__ = [
     "create_decision_intelligence_orchestrator",
     # Phase 7 Modular AI Intelligence
     "PredictiveAnalyticsEngine",
-    "StrategicChallengePrediction",
+    # "StrategicChallengePrediction", # REMOVED - predictive intelligence bloat
     "ContextAwareIntelligence",
     "PredictionModels",
     "ChallengeType",
     "RecommendationGenerator",
-    "PredictionConfidence",
+    # "PredictionConfidence", # REMOVED - predictive intelligence bloat
     "ContextAnalyzer",
     "ContextComplexity",
     "SituationalContext",
@@ -202,14 +202,8 @@ __all__ = [
     "ContextualFrameworkRecommendation",
     "PersonaSelector",
     "PersonaActivationRecommendation",
-    # 🎯 STORY 9.6.3: CONSOLIDATED AI PROCESSING
-    "UnifiedAIEngine",
-    "AIProcessingResult",
-    "FrameworkAnalysis",
-    "PredictiveInsight",
-    "DecisionRecommendation",
-    "create_unified_ai_engine",
-    "get_default_ai_engine",
+    # 🎯 STORY 9.6.3: CONSOLIDATED AI PROCESSING - REMOVED (NON-FUNCTIONAL BLOAT)
+    # Lightweight compatibility stubs maintained for backward compatibility
     "FrameworkProcessor",
     "PredictiveProcessor",
     "DecisionProcessor",

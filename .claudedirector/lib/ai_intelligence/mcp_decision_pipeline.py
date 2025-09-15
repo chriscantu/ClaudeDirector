@@ -136,10 +136,29 @@ class MCPEnhancedDecisionPipeline:
                 "mcp_servers": [],
                 "parallel_execution": False,
             },
+            DecisionComplexity.LOW.value: {
+                "stages": ["framework_analysis"],
+                "mcp_servers": [],
+                "parallel_execution": False,
+            },
+            DecisionComplexity.MODERATE.value: {
+                "stages": ["context_analysis", "framework_analysis"],
+                "mcp_servers": ["context7"],
+                "parallel_execution": False,
+            },
             DecisionComplexity.MEDIUM.value: {
                 "stages": ["context_analysis", "framework_analysis"],
                 "mcp_servers": ["context7"],
                 "parallel_execution": False,
+            },
+            DecisionComplexity.HIGH.value: {
+                "stages": [
+                    "context_analysis",
+                    "systematic_analysis",
+                    "framework_integration",
+                ],
+                "mcp_servers": ["context7", "sequential"],
+                "parallel_execution": True,
             },
             DecisionComplexity.COMPLEX.value: {
                 "stages": [
@@ -148,6 +167,17 @@ class MCPEnhancedDecisionPipeline:
                     "framework_integration",
                 ],
                 "mcp_servers": ["context7", "sequential"],
+                "parallel_execution": True,
+            },
+            DecisionComplexity.STRATEGIC.value: {
+                "stages": [
+                    "context_analysis",
+                    "systematic_analysis",
+                    "visual_enhancement",
+                    "framework_integration",
+                    "synthesis",
+                ],
+                "mcp_servers": ["context7", "sequential", "magic"],
                 "parallel_execution": True,
             },
             DecisionComplexity.ENTERPRISE.value: {
