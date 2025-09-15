@@ -258,16 +258,9 @@ p0_features:
     introduced_version: "v3.1.0"
     owner: "martin"
 
-  # PHASE 2 AI INTELLIGENCE - UNIFIED AI ENGINE
-  - name: "Unified AI Engine P0"
-    test_module: ".claudedirector/tests/regression/p0_blocking/test_unified_ai_engine_p0.py"
-    critical_level: "BLOCKING"
-    timeout_seconds: 300
-    description: "Story 9.6.3 Unified AI Engine must provide consolidated AI processing with <200ms latency and 95%+ accuracy"
-    failure_impact: "Consolidated AI processing fails, framework analysis broken, predictive insights unavailable"
-    business_impact: "Strategic AI intelligence becomes fragmented, processing efficiency lost, decision support degraded"
-    introduced_version: "v3.6.0"
-    owner: "martin"
+  # PHASE 2 AI INTELLIGENCE - UNIFIED AI ENGINE REMOVED (NON-FUNCTIONAL BLOAT)
+  # UnifiedAIEngine removed as it provided only hardcoded stubs and mock responses
+  # Actual functionality provided by lightweight decision_orchestrator.py
 
   # MARTIN'S PLATFORM ARCHITECTURE - SETUP FEATURE P0
   - name: "Setup Feature P0"
@@ -391,15 +384,9 @@ p0_features:
     introduced_version: "v3.3.0"
     owner: "martin"
 
-  - name: "Enhanced Predictive Intelligence P0"
-    test_module: ".claudedirector/tests/regression/p0_blocking/test_enhanced_predictive_intelligence_p0.py"
-    critical_level: "BLOCKING"
-    timeout_seconds: 300
-    description: "Phase 11 predictive intelligence must achieve 85%+ accuracy for strategic decisions with <500ms response time"
-    failure_impact: "Strategic decision prediction fails, P1 business value (2.5x ROI) compromised"
-    business_impact: "Predictive strategic guidance becomes unreliable, executive decision support compromised, competitive disadvantage"
-    introduced_version: "v3.4.0"
-    owner: "martin"
+  # Enhanced Predictive Intelligence P0 REMOVED (NON-FUNCTIONAL BLOAT)
+  # System claimed to predict complex human systems with "85%+ accuracy" but provided only hardcoded stubs
+  # Removed as part of AI Trust Framework enforcement - AI cannot reliably predict behavioral outcomes
 
   - name: "Persona Challenge P0"
     test_module: ".claudedirector/tests/regression/p0_blocking/test_persona_challenge_p0.py"

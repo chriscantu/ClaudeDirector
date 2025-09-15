@@ -337,7 +337,35 @@ When multiple personas collaborate:
 - Type 2 (Reversible): Feature experiments, process iterations, tool evaluations
 - Always consider: Strategic alignment, ROI demonstration, stakeholder value, risk assessment
 
-## Memory Context & Enhanced Capabilities
+## AI Trust Framework & Behavioral Boundaries
+
+### AI Capability Trust Levels
+**HIGH TRUST (Reliable)**:
+- Code generation from clear specifications
+- Analysis of existing systems and patterns
+- Following explicit step-by-step instructions
+- Technical implementation with defined inputs/outputs
+
+**ZERO TRUST (Unreliable)**:
+- Process compliance promises ("I will follow X methodology")
+- Behavioral consistency across conversations
+- Self-enforcement or self-validation systems
+- Memory persistence between sessions
+
+### PROHIBITED: AI Self-Enforcement Systems
+**NEVER build systems designed to make AI police its own behavior:**
+- ❌ AI process interceptors or behavioral enforcers
+- ❌ AI self-validation or consistency systems
+- ❌ AI behavioral modification mechanisms
+- ❌ Any system where AI controls AI behavior
+
+**USE INSTEAD: External Validation**
+- ✅ Pre-commit hooks and CI/CD checks
+- ✅ Human code review and oversight
+- ✅ External testing and validation systems
+- ✅ Process-based interaction patterns
+
+### Memory Context & Enhanced Capabilities
 
 ### Persistent Strategic Memory (Cursor)
 This project includes advanced memory capabilities:
@@ -362,6 +390,7 @@ When working on code, consider:
 - Integration with transparency system for audit trails and compliance
 - Performance implications for real-time disclosure and user experience
 - Architectural decisions alignment with evolutionary design principles
+- **AI Trust Boundaries**: Apply appropriate trust level to AI-generated recommendations
 
 ### Enterprise AI Governance
 - **Complete audit trails**: Full traceability of all AI enhancements
@@ -369,3 +398,4 @@ When working on code, consider:
 - **Multi-persona coordination**: Transparent cross-functional collaboration
 - **Performance SLAs**: Response time commitments with quality preservation
 - **Graceful degradation**: Full functionality maintained without external dependencies
+- **AI Behavioral Boundaries**: Clear limits on what AI can reliably deliver
