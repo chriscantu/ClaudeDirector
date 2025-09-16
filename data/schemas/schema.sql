@@ -133,6 +133,7 @@ CREATE TABLE strategic_decisions (
 -- Indexes for Performance
 -- ===========================================
 
+
 -- Executive sessions indexes
 CREATE INDEX idx_executive_sessions_stakeholder ON executive_sessions(stakeholder_key);
 CREATE INDEX idx_executive_sessions_date ON executive_sessions(meeting_date);
@@ -281,6 +282,13 @@ BEGIN
     UPDATE strategic_decisions SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
 END;
 
+-- Update timestamp trigger for session_context
+CREATE TRIGGER update_session_context_timestamp
+    AFTER UPDATE ON session_context
+BEGIN
+    UPDATE session_context SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
+END;
+
 -- ===========================================
 -- Initial Data Population
 -- ===========================================
@@ -291,7 +299,7 @@ INSERT INTO stakeholder_profiles (stakeholder_key, display_name, role_title, dep
 ('vp_product', 'VP Product', 'Vice President of Product', 'Product', 'strategic'),
 ('vp_design', 'VP Design', 'Vice President of Design', 'Design', 'visual'),
 ('design_lead', 'Design Lead', 'Lead of Design', 'Design', 'visual'),
-('product_lead', 'Product Lead', 'Lead of Product Management', 'Product', 'narrative_focused');
+('product_director', 'Product Director', 'Director of Product Management', 'Product', 'narrative_focused');
 
 -- Strategic tool outputs and intelligence tracking
 CREATE TABLE strategic_tool_outputs (

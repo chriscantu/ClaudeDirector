@@ -1,94 +1,36 @@
 # API Reference
 
-**API documentation for ClaudeDirector.**
+**ClaudeDirector is primarily a chat-based strategic leadership system. Users interact through natural language conversation, not programmatic APIs.**
 
 ---
 
-## 📚 **API Documentation Index**
+## 🎯 **User Interaction Model**
 
-### **Core System APIs**
+### **Primary Interface: Natural Language Chat**
+- **Cursor IDE**: Ask strategic questions directly in chat
+- **Claude.ai**: Engage with personas through conversation
+- **Configuration**: Use simple commands like `/configure`, `/status`, `/reset`
 
-#### **🔍 [Transparency System API](api/TRANSPARENCY_API.md)**
-AI enhancement disclosure and framework attribution.
-- MCP Transparency Middleware
-- Framework Attribution Engine
-
-#### **🎭 [Persona System API](api/PERSONA_SYSTEM_API.md)**
-Persona selection, management, and coordination.
-- Persona Manager
-- Base Persona Class
-
-#### **🔧 [MCP Integration API](api/MCP_INTEGRATION_API.md)**
-MCP server management and capability invocation.
-- MCP Client Manager
-- MCP Client Implementation
-
-### **Intelligence & Analysis APIs**
-
-#### **📚 [Framework Detection API](api/FRAMEWORK_DETECTION_API.md)**
-Detection and attribution of strategic frameworks.
-- Framework Detector
-- Pattern Recognition Engine
-
-#### **🔄 [Conversation Management API](api/CONVERSATION_API.md)**
-Conversation context management and persistence.
-- Conversation Manager
-- Context Persistence
-
-### **System Management APIs**
-
-#### **📊 [Performance Monitoring API](api/PERFORMANCE_API.md)**
-Performance tracking and metrics.
-- Performance Monitor
-- Metrics Collection
-
-#### **🛠️ [Configuration API](api/CONFIGURATION_API.md)**
-System configuration management and user preferences.
-- Configuration Manager
-- User Settings
+### **No Programming Required**
+ClaudeDirector is designed for engineering leaders, not developers. All functionality is accessible through:
+- Strategic conversation
+- Natural language queries
+- Simple slash commands
+- Automatic persona activation
 
 ---
 
-## 🚀 **Quick Start**
+## 📚 **For Developers (Internal)**
 
-### **Basic Usage**
-```python
-from lib.core.enhanced_persona_manager import EnhancedPersonaManager
-from lib.transparency.mcp_transparency import MCPTransparencyMiddleware
-
-# Initialize core components
-persona_manager = EnhancedPersonaManager()
-transparency = MCPTransparencyMiddleware()
-
-# Get enhanced strategic response
-response = await persona_manager.get_enhanced_response(
-    persona="diego",
-    user_input="How should we scale our platform architecture?"
-)
-```
-
-### **Advanced Integration**
-```python
-from lib.mcp.client_manager import MCPClientManager
-from lib.frameworks.framework_detector import FrameworkDetector
-
-# Initialize MCP integration
-mcp_manager = MCPClientManager()
-await mcp_manager.initialize_servers()
-
-# Detect strategic frameworks
-detector = FrameworkDetector()
-frameworks = detector.detect_frameworks(response_text, "diego")
-```
+If you need to understand the internal system architecture:
+- **Architecture Overview**: [docs/architecture/OVERVIEW.md](../architecture/OVERVIEW.md)
+- **Component Structure**: [docs/architecture/COMPONENTS.md](../architecture/COMPONENTS.md)
+- **Code Organization**: [docs/architecture/PROJECT_STRUCTURE.md](../architecture/PROJECT_STRUCTURE.md)
 
 ---
 
-## 📖 **Additional Resources**
+## 🚀 **Getting Started**
 
-- **[Architecture Overview](../architecture/OVERVIEW.md)** - System design and components
-- **[Development Guide](../development/DEVELOPMENT_GUIDE.md)** - Setup and development workflow
-- **[Strategic Frameworks](../frameworks/FRAMEWORKS_INDEX.md)** - Available framework methodologies
-
----
-
-**🎯 Complete API reference for transparent AI strategic leadership at enterprise scale.**
+**For Users**: See [Getting Started Guide](../GETTING_STARTED.md)
+**For Setup**: See [Installation Instructions](../setup/INSTALLATION.md)
+**For Configuration**: See [User Configuration](../USER_CONFIGURATION_GUIDE.md)

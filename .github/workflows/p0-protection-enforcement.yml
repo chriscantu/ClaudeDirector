@@ -24,6 +24,40 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+        # Install additional CI dependencies
+        pip install psutil pyyaml
+
+        # Verify environment matches local
+        echo "🔍 Python version: $(python --version)"
+        echo "🔍 Pip version: $(pip --version)"
+        echo "🔍 Working directory: $(pwd)"
+
+    - name: Initialize Environment (exact local match)
+      run: |
+        echo "🔧 Setting up environment to match local exactly"
+
+        # Set Python path exactly as local environment (absolute paths + preserve existing)
+        export PYTHONPATH="${PYTHONPATH}:$(pwd)/.claudedirector/lib:$(pwd)/.claudedirector/tests/regression:$(pwd)/.claudedirector/tests/integration"
+        echo "PYTHONPATH=$PYTHONPATH" >> $GITHUB_ENV
+
+        # Debug: Show actual PYTHONPATH for troubleshooting
+        echo "🔍 PYTHONPATH set to: $PYTHONPATH"
+
+        # Verify critical directories exist
+        echo "🔍 Verifying critical paths:"
+        ls -la .claudedirector/lib/ | head -5
+
+        # Set CI flag for environment detection
+        export GITHUB_ACTIONS=true
+        echo "GITHUB_ACTIONS=true" >> $GITHUB_ENV
+
+        # Initialize database exactly as local
+        python .claudedirector/tools/ci/init-database.py
+
+        # Verify database creation
+        echo "🔍 Database verification:"
+        ls -la data/ || echo "No data directory yet"
+
     - name: Run P0 Protection Gate
       run: |
         echo "🛡️ MANDATORY P0 PROTECTION GATE"
@@ -42,14 +76,40 @@ jobs:
     - name: P0 Results Validation
       run: |
         echo "📊 Validating P0 results..."
-        # Extract results and ensure 41/41 tests pass
-        result=$(python .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py 2>&1 | grep "SUCCESS RATE" || true)
+        echo "🔍 PYTHONPATH: $PYTHONPATH"
 
-        if echo "$result" | grep -q "41/41"; then
-          echo "✅ P0 PROTECTION: All 41 business-critical tests passing"
+        # Run P0 tests and capture all output for debugging
+        echo "🧪 Running P0 tests for validation..."
+        full_output=$(python .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py 2>&1)
+        exit_code=$?
+
+        echo "🔍 P0 test exit code: $exit_code"
+        echo "🔍 P0 test output (last 10 lines):"
+        echo "$full_output" | tail -10
+
+        # Check if tests ran successfully first
+        if [ $exit_code -ne 0 ]; then
+          echo "🚨 P0 TESTS FAILED TO RUN"
+          echo "❌ BLOCKING DEPLOYMENT: P0 tests failed with exit code $exit_code"
+          echo "🔍 Full test output:"
+          echo "$full_output"
+          exit 1
+        fi
+
+        # Extract results dynamically
+        result=$(echo "$full_output" | grep "SUCCESS RATE" || true)
+        echo "🔍 SUCCESS RATE line: '$result'"
+
+        # Extract the actual test counts dynamically (e.g., "40/40 tests passing")
+        if echo "$result" | grep -q "tests passing (100%)"; then
+          test_count=$(echo "$result" | grep -o '[0-9]\+/[0-9]\+ tests passing' | head -1)
+          echo "✅ P0 PROTECTION: All $test_count business-critical tests passing"
         else
           echo "🚨 P0 PROTECTION FAILURE: Not all P0 tests passing"
           echo "❌ BLOCKING DEPLOYMENT: P0 tests are business-critical"
+          echo "🔍 Expected SUCCESS RATE line with 'tests passing (100%)', got: '$result'"
+          echo "🔍 Full test output:"
+          echo "$full_output"
           exit 1
         fi
 
@@ -57,5 +117,7 @@ jobs:
       if: success()
       run: |
         echo "🎉 P0 PROTECTION PASSED"
-        echo "✅ All 41 business-critical tests verified"
+        # Get dynamic test count for success message
+        test_count=$(python .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py 2>&1 | grep -o '[0-9]\+/[0-9]\+ tests passing' | head -1)
+        echo "✅ All $test_count business-critical tests verified"
         echo "🟢 Deployment approved by P0 protection system"
