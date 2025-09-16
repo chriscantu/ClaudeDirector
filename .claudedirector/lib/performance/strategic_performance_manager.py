@@ -10,8 +10,15 @@ Phase: 9.2 - Performance Optimization
 
 import time
 import asyncio
-import psutil
 import gc
+
+# Optional psutil for advanced system monitoring
+try:
+    import psutil
+
+    PSUTIL_AVAILABLE = True
+except ImportError:
+    PSUTIL_AVAILABLE = False
 from typing import Dict, Any, Optional, List, Callable, Tuple
 from dataclasses import dataclass
 from pathlib import Path
@@ -632,7 +639,7 @@ class StrategicPerformanceManager(BaseManager):
             self.logger.error(f"Executive dashboard generation failed: {e}")
             return {"error": str(e), "timestamp": time.time()}
 
-    def run_performance_baseline_test(self) -> Dict[str, Any]:
+    async def run_performance_baseline_test(self) -> Dict[str, Any]:
         """
         🎯 PHASE 9.2: Run performance baseline test for acceptance criteria
 
@@ -754,6 +761,8 @@ class StrategicPerformanceManager(BaseManager):
 
     def _get_memory_usage_mb(self) -> float:
         """Get current memory usage in MB"""
+        if not PSUTIL_AVAILABLE:
+            return 0.0  # Fallback when psutil not available
         try:
             process = psutil.Process()
             memory_info = process.memory_info()
