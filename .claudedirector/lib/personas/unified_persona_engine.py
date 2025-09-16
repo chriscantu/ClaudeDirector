@@ -184,7 +184,7 @@ class UnifiedPersonaEngine(BaseManager):
 
     def _calculate_conversation_quality(self, context: Dict[str, Any]) -> float:
         """P0 Compatibility: Delegate to ConversationManager"""
-        return self.conversation_manager._calculate_conversation_quality_p0(context)
+        return self.conversation_manager._calculate_conversation_quality(context)
 
     def capture_conversation_turn(
         self,

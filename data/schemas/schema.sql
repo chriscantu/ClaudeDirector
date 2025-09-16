@@ -9,33 +9,6 @@ PRAGMA foreign_keys = ON;
 -- Strategic Context Tables
 -- ===========================================
 
--- Conversation tracking for P0 test compatibility
-CREATE TABLE IF NOT EXISTS conversations (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    session_id TEXT NOT NULL,
-    user_input TEXT,
-    assistant_response TEXT,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-    action_pattern_count INTEGER DEFAULT 0,
-    strategic_context_score REAL DEFAULT 0.5,
-    metadata TEXT
-);
-
--- Session context with P0 test required fields
-CREATE TABLE IF NOT EXISTS session_context (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    session_id TEXT UNIQUE NOT NULL,
-    session_type TEXT NOT NULL,
-    active_personas TEXT,
-    conversation_thread TEXT, -- JSON array of conversation turns
-    context_quality_score REAL DEFAULT 0.5,
-    last_backup_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-    session_start_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-    session_end_timestamp DATETIME NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 -- Executive meeting sessions and outcomes
 CREATE TABLE executive_sessions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -160,12 +133,6 @@ CREATE TABLE strategic_decisions (
 -- Indexes for Performance
 -- ===========================================
 
--- Conversation tracking indexes
-CREATE INDEX idx_conversations_session ON conversations(session_id);
-CREATE INDEX idx_conversations_timestamp ON conversations(timestamp);
-CREATE INDEX idx_session_context_session ON session_context(session_id);
-CREATE INDEX idx_session_context_type ON session_context(session_type);
-CREATE INDEX idx_session_context_backup ON session_context(last_backup_timestamp);
 
 -- Executive sessions indexes
 CREATE INDEX idx_executive_sessions_stakeholder ON executive_sessions(stakeholder_key);

@@ -8,7 +8,7 @@ import re
 from datetime import datetime
 from typing import Dict, List, Any
 
-from .integrated_conversation_manager import IntegratedConversationManager
+from ..personas.conversation_manager import ConversationManager
 
 
 class CursorConversationHook:
@@ -19,7 +19,7 @@ class CursorConversationHook:
 
     def __init__(self, auto_start: bool = True):
         """Initialize conversation hook with automatic session management"""
-        self.conversation_manager = IntegratedConversationManager()
+        self.conversation_manager = ConversationManager()
         self.auto_start = auto_start
         self.session_active = False
         self.persona_pattern = re.compile(r"🎯|📊|🎨|💼|🏗️|📈|💰|🤝|⚖️|🔒")
