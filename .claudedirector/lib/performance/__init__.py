@@ -103,6 +103,16 @@ async def create_systematic_response(
     )
 
 
+# Response Priority enum for P0 test compatibility
+class ResponsePriority:
+    """Response priority levels for optimization"""
+
+    CRITICAL = "critical"
+    HIGH = "high"
+    NORMAL = "normal"
+    LOW = "low"
+
+
 # Legacy compatibility - use existing performance systems
 def create_response_optimizer(*args, **kwargs):
     """Legacy compatibility - return performance monitor, ignoring parameters"""
@@ -119,8 +129,9 @@ class ResponseOptimizer:
 
     async def optimize_call(self, func, *args, **kwargs):
         """Legacy compatibility method for optimize_call"""
-        # Simple implementation that just calls the function
+        # Simple implementation that just calls the function and propagates exceptions
         import time
+        import inspect
 
         start_time = time.time()
 
@@ -128,22 +139,39 @@ class ResponseOptimizer:
         optimization_kwargs = {"priority", "cache_key", "timeout", "retry_count"}
         func_kwargs = {k: v for k, v in kwargs.items() if k not in optimization_kwargs}
 
-        if hasattr(func, "__call__"):
-            if hasattr(func, "__await__"):
-                result = await func(*args, **func_kwargs)
+        try:
+            # Handle different function types properly
+            if callable(func):
+                if inspect.iscoroutinefunction(func):
+                    # Async function - await it and let exceptions propagate
+                    result = await func(*args, **func_kwargs)
+                else:
+                    # Sync function - call it and let exceptions propagate
+                    result = func(*args, **func_kwargs)
             else:
-                result = func(*args, **func_kwargs)
-        else:
-            result = func
+                # Not callable - just return the value
+                result = func
 
-        execution_time = (time.time() - start_time) * 1000  # Convert to ms
+            execution_time = (time.time() - start_time) * 1000  # Convert to ms
 
-        # Return a simple response-like object
-        return {
-            "result": result,
-            "execution_time_ms": execution_time,
-            "status": "success",
-        }
+            # For P0 test compatibility, return the direct result
+            # The original unified system returned the actual result, not a wrapper
+            return result
+        except Exception:
+            # Let exceptions propagate as expected by P0 tests
+            # Don't catch and wrap exceptions - the test expects them to be raised
+            raise
+
+    async def cleanup(self):
+        """Cleanup method for P0 test compatibility"""
+        import inspect
+
+        # Delegate to performance monitor if it has cleanup
+        if hasattr(self._performance_monitor, "cleanup"):
+            if inspect.iscoroutinefunction(self._performance_monitor.cleanup):
+                await self._performance_monitor.cleanup()
+            else:
+                self._performance_monitor.cleanup()
 
     def __getattr__(self, name):
         # Delegate all other method calls to the performance monitor
@@ -154,6 +182,7 @@ __all__ = [
     "CacheManager",
     "MemoryOptimizer",
     "ResponseOptimizer",
+    "ResponsePriority",
     "PerformanceMonitor",
     # PHASE 8.4: Unified Response functionality (consolidated from unified_response_handler.py)
     "UnifiedResponseHandler",

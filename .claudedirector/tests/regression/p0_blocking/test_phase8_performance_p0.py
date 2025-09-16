@@ -43,7 +43,7 @@ try:
         return UnifiedPerformanceManager()
 
     from claudedirector.lib.performance.performance_monitor import PerformanceMonitor
-    from claudedirector.lib.performance import ResponseOptimizer
+    from claudedirector.lib.performance import ResponseOptimizer, ResponsePriority
 except ImportError:
     # Fallback for test environment
     sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
@@ -55,7 +55,7 @@ except ImportError:
         StrategicPerformanceManager as UnifiedPerformanceManager,
     )
     from lib.performance.performance_monitor import PerformanceMonitor
-    from lib.performance import ResponseOptimizer
+    from lib.performance import ResponseOptimizer, ResponsePriority
 
     # Mock PerformanceTarget enum for compatibility
     class PerformanceTarget:
@@ -70,8 +70,7 @@ except ImportError:
 
 
 # Legacy compatibility aliases for existing tests
-# ResponseOptimizer is imported from performance module, don't override it
-ResponsePriority = PerformanceTarget
+# ResponseOptimizer and ResponsePriority are imported from performance module, don't override them
 
 
 # CI Environment Detection and Adaptive Performance Thresholds
