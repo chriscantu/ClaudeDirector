@@ -192,8 +192,10 @@ class DatabaseManager(BaseManager):
         """
         if not hasattr(self._local, "connection") or self._local.connection is None:
             try:
-                # Get timeout from config
+                # Get timeout from config with fallback
                 timeout = self.config.get_nested("connection_timeout", 30.0)
+                if timeout is None:
+                    timeout = 30.0
 
                 self._local.connection = sqlite3.connect(
                     self.db_path,

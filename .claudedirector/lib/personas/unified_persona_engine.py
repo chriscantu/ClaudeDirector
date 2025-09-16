@@ -172,11 +172,19 @@ class UnifiedPersonaEngine(BaseManager):
         self, session_id: str, context: Dict[str, Any] = None
     ) -> str:
         """P0 Compatibility: Delegate to ConversationManager"""
-        return self.conversation_manager.start_conversation_session(session_id, context)
+        # ConversationManager.start_conversation_session takes session_type as first param
+        # Use session_id as session_type for P0 compatibility
+        return self.conversation_manager.start_conversation_session(
+            session_type=session_id
+        )
 
     def get_conversation_quality(self, session_id: str) -> float:
         """P0 Compatibility: Delegate to ConversationManager"""
         return self.conversation_manager.get_conversation_quality(session_id)
+
+    def _calculate_conversation_quality(self, context: Dict[str, Any]) -> float:
+        """P0 Compatibility: Delegate to ConversationManager"""
+        return self.conversation_manager._calculate_conversation_quality_p0(context)
 
     def capture_conversation_turn(
         self,
