@@ -285,19 +285,22 @@ class TestDocumentationFunctionalityPreservation(unittest.TestCase):
             )
 
     def test_framework_index_exists(self):
-        """Test that framework index provides strategic framework access"""
-        framework_index = PROJECT_ROOT / "docs/frameworks/FRAMEWORKS_INDEX.md"
-        self.assertTrue(framework_index.exists(), "Framework index must exist")
+        """Test that framework references are accessible via .cursorrules (new architecture)"""
+        cursorrules_file = PROJECT_ROOT / ".cursorrules"
+        self.assertTrue(
+            cursorrules_file.exists(),
+            "Framework configuration in .cursorrules must exist",
+        )
 
-        with open(framework_index, "r") as f:
+        with open(cursorrules_file, "r") as f:
             content = f.read()
 
-        # Should contain key strategic frameworks
+        # Should contain key strategic frameworks (now in .cursorrules)
         framework_references = [
             "Good Strategy Bad Strategy",
-            "WRAP Decision Framework",
+            "WRAP Framework",
             "Team Topologies",
-            "Strategic Platform Assessment",
+            "Capital Allocation Framework",
         ]
 
         for framework in framework_references:
@@ -305,7 +308,7 @@ class TestDocumentationFunctionalityPreservation(unittest.TestCase):
                 self.assertIn(
                     framework,
                     content,
-                    f"Framework reference '{framework}' must be preserved",
+                    f"Framework reference '{framework}' must be preserved in .cursorrules",
                 )
 
     def test_architecture_documentation_structure(self):

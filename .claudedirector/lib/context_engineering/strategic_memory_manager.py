@@ -30,16 +30,8 @@ try:
 except ImportError:
     PERFORMANCE_AVAILABLE = False
 
-# Phase 2 Migration: Add UnifiedDatabaseCoordinator support
-try:
-    from ..core.unified_database import (
-        get_unified_database_coordinator,
-        UnifiedDatabaseCoordinator,
-    )
-
-    UNIFIED_DB_AVAILABLE = True
-except ImportError:
-    UNIFIED_DB_AVAILABLE = False
+# Removed circular dependency - StrategicMemoryManager IS the unified database solution
+UNIFIED_DB_AVAILABLE = False
 
 # Legacy import compatibility during migration
 try:
@@ -116,13 +108,7 @@ class StrategicMemoryManager:
 
     def get_connection(self) -> sqlite3.Connection:
         """Get database connection via UnifiedDatabaseCoordinator with intelligent fallback"""
-        # Phase 2 Migration: Prefer UnifiedDatabaseCoordinator
-        if UNIFIED_DB_AVAILABLE:
-            try:
-                unified_coordinator = get_unified_database_coordinator()
-                return unified_coordinator.get_connection()
-            except Exception as e:
-                print(f"⚠️  UnifiedDatabaseCoordinator fallback to legacy: {e}")
+        # StrategicMemoryManager IS the unified database solution
 
         # Fallback to legacy optimized manager
         if LEGACY_DB_AVAILABLE:
