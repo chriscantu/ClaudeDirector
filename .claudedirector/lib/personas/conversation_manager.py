@@ -65,6 +65,23 @@ class ConversationManager(BaseManager):
         self.conversation_history: Dict[str, List[Dict[str, Any]]] = {}
         self.quality_metrics: Dict[str, PersonaConsistencyMetrics] = {}
 
+        # Phase C: Enhanced capture statistics using existing infrastructure (DRY compliance)
+        self.capture_statistics = {
+            "total_capture_attempts": 0,
+            "successful_captures": 0,
+            "failed_captures": 0,
+            "average_capture_latency_ms": 0.0,
+            "quality_score_distribution": {},
+            "persona_usage_stats": {},
+            "session_lifecycle_stats": {
+                "sessions_created": 0,
+                "sessions_ended": 0,
+                "active_sessions_peak": 0,
+            },
+            "last_capture_timestamp": None,
+            "capture_success_rate": 0.0,
+        }
+
         # Use existing conversation infrastructure (BLOAT_PREVENTION_SYSTEM.md compliant)
         try:
             from ..context_engineering.strategic_memory_manager import (
@@ -123,7 +140,16 @@ class ConversationManager(BaseManager):
         context_metadata: Dict[str, Any] = None,
         **kwargs,
     ) -> bool:
-        """Capture a conversation turn (supports multiple parameter formats for P0 compatibility)"""
+        """
+        Capture a conversation turn (supports multiple parameter formats for P0 compatibility)
+        Phase C Enhancement: Enhanced statistics tracking using existing infrastructure
+        """
+        # Phase C: Track capture performance
+        import time
+
+        start_time = time.time()
+        self.capture_statistics["total_capture_attempts"] += 1
+
         try:
             # Handle parameter compatibility (P0 tests use different formats)
             actual_response = assistant_response or response
@@ -157,7 +183,16 @@ class ConversationManager(BaseManager):
             self.active_sessions[session_id]["persona_history"].append(actual_persona)
 
             # Update quality score
-            self._update_conversation_quality(session_id, turn_data)
+            quality_score = self._update_conversation_quality(session_id, turn_data)
+
+            # Phase C: Update persona usage statistics
+            if actual_persona:
+                self.capture_statistics["persona_usage_stats"][actual_persona] = (
+                    self.capture_statistics["persona_usage_stats"].get(
+                        actual_persona, 0
+                    )
+                    + 1
+                )
 
             # Use existing conversation storage (BLOAT_PREVENTION_SYSTEM.md compliant)
             if self.conversation_layer:
@@ -170,10 +205,24 @@ class ConversationManager(BaseManager):
                     }
                 )
 
-            self.logger.debug(f"Captured conversation turn for session: {session_id}")
+            # Phase C: Update capture statistics
+            end_time = time.time()
+            capture_latency_ms = (end_time - start_time) * 1000
+            self._update_capture_statistics(
+                capture_latency_ms, quality_score, success=True
+            )
+
+            self.logger.debug(
+                f"Captured conversation turn for session: {session_id} - {capture_latency_ms:.1f}ms"
+            )
             return True
 
         except Exception as e:
+            # Phase C: Update failure statistics
+            end_time = time.time()
+            capture_latency_ms = (end_time - start_time) * 1000
+            self._update_capture_statistics(capture_latency_ms, 0.0, success=False)
+
             self.logger.error(f"Failed to capture conversation turn: {e}")
             return False
 
@@ -338,6 +387,17 @@ class ConversationManager(BaseManager):
             "quality_score": 0.7,  # P0-safe default
         }
 
+        # Phase C: Update session lifecycle statistics
+        self.capture_statistics["session_lifecycle_stats"]["sessions_created"] += 1
+        current_active = len(self.active_sessions)
+        if (
+            current_active
+            > self.capture_statistics["session_lifecycle_stats"]["active_sessions_peak"]
+        ):
+            self.capture_statistics["session_lifecycle_stats"][
+                "active_sessions_peak"
+            ] = current_active
+
         # Use existing strategic memory
         if self.strategic_memory:
             try:
@@ -354,6 +414,12 @@ class ConversationManager(BaseManager):
         try:
             if session_id in self.active_sessions:
                 del self.active_sessions[session_id]
+
+                # Phase C: Update session lifecycle statistics
+                self.capture_statistics["session_lifecycle_stats"][
+                    "sessions_ended"
+                ] += 1
+
                 return True
             return False
         except Exception as e:
@@ -372,6 +438,88 @@ class ConversationManager(BaseManager):
         turn_count = context.get("turn_count", 0)
         base_score = 0.5 + min(turn_count * 0.1, 0.3)  # 0.5 to 0.8 based on engagement
         return max(base_score, 0.7)  # Ensure P0 threshold
+
+    def _update_capture_statistics(
+        self, capture_latency_ms: float, quality_score: float, success: bool
+    ) -> None:
+        """
+        Phase C: Update capture statistics using existing infrastructure patterns
+
+        Args:
+            capture_latency_ms: Capture latency in milliseconds
+            quality_score: Quality score for this capture
+            success: Whether the capture succeeded
+        """
+        if success:
+            self.capture_statistics["successful_captures"] += 1
+        else:
+            self.capture_statistics["failed_captures"] += 1
+
+        # Update latency statistics (running average)
+        current_avg = self.capture_statistics["average_capture_latency_ms"]
+        total_attempts = self.capture_statistics["total_capture_attempts"]
+
+        if total_attempts == 1:
+            self.capture_statistics["average_capture_latency_ms"] = capture_latency_ms
+        else:
+            # Weighted average for performance tracking
+            self.capture_statistics["average_capture_latency_ms"] = (
+                current_avg * (total_attempts - 1) + capture_latency_ms
+            ) / total_attempts
+
+        # Update quality score distribution
+        quality_bucket = f"{int(quality_score * 10) / 10:.1f}"  # Round to 0.1 precision
+        self.capture_statistics["quality_score_distribution"][quality_bucket] = (
+            self.capture_statistics["quality_score_distribution"].get(quality_bucket, 0)
+            + 1
+        )
+
+        # Update success rate
+        if self.capture_statistics["total_capture_attempts"] > 0:
+            self.capture_statistics["capture_success_rate"] = (
+                self.capture_statistics["successful_captures"]
+                / self.capture_statistics["total_capture_attempts"]
+            )
+
+        # Update timestamp
+        import time
+
+        self.capture_statistics["last_capture_timestamp"] = time.time()
+
+    def get_capture_statistics(self) -> Dict[str, Any]:
+        """
+        Phase C: Get detailed capture statistics and performance metrics
+
+        Returns:
+            Dictionary with comprehensive capture performance data
+        """
+        stats = self.capture_statistics.copy()
+
+        # Add derived metrics
+        stats["meets_latency_target"] = (
+            stats["average_capture_latency_ms"] < 100.0
+        )  # <100ms target
+        stats["active_sessions_current"] = len(self.active_sessions)
+        stats["total_conversation_history"] = sum(
+            len(history) for history in self.conversation_history.values()
+        )
+
+        # Add top persona if available
+        if stats["persona_usage_stats"]:
+            stats["most_used_persona"] = max(
+                stats["persona_usage_stats"], key=stats["persona_usage_stats"].get
+            )
+
+        # Add session efficiency metrics
+        lifecycle_stats = stats["session_lifecycle_stats"]
+        if lifecycle_stats["sessions_created"] > 0:
+            stats["session_completion_rate"] = (
+                lifecycle_stats["sessions_ended"] / lifecycle_stats["sessions_created"]
+            )
+        else:
+            stats["session_completion_rate"] = 0.0
+
+        return stats
 
 
 # Compatibility alias for P0 tests
