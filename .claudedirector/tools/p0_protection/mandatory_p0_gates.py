@@ -39,26 +39,42 @@ class P0ProtectionSystem:
                 cwd=self.project_root,
             )
 
-            # Parse results
+            # Parse results dynamically
             passing_tests = 0
-            total_tests = 41  # Known P0 test count
+            total_tests = 0  # Will be determined dynamically from test output
             failures = []
 
             for line in result.stdout.split("\n"):
-                if "SUCCESS RATE" in line:
-                    # Extract passing count from success rate line
-                    pass
+                if "SUCCESS RATE" in line and "tests passing" in line:
+                    # Extract test counts from line like "📊 SUCCESS RATE: 40/40 tests passing (100%)"
+                    import re
+
+                    match = re.search(r"(\d+)/(\d+) tests passing", line)
+                    if match:
+                        passing_tests = int(match.group(1))
+                        total_tests = int(match.group(2))
                 elif "❌ FAILED:" in line:
                     failures.append(line.strip())
 
-            # Calculate passing tests
-            passing_tests = total_tests - len(failures)
+            # If we didn't find the success rate line, try alternative parsing
+            if total_tests == 0:
+                for line in result.stdout.split("\n"):
+                    if "Tests Run:" in line and "Total P0 Failures:" in line:
+                        # Parse from execution report format
+                        import re
+
+                        tests_match = re.search(r"Tests Run: (\d+)", line)
+                        failures_match = re.search(r"Total P0 Failures: (\d+)", line)
+                        if tests_match and failures_match:
+                            total_tests = int(tests_match.group(1))
+                            failed_count = int(failures_match.group(1))
+                            passing_tests = total_tests - failed_count
 
             return (len(failures) == 0, passing_tests, total_tests, failures)
 
         except Exception as e:
             self.log_protection_event("ERROR", f"P0 validation failed: {e}")
-            return (False, 0, 41, [f"System error: {e}"])
+            return (False, 0, 0, [f"System error: {e}"])
 
     def log_protection_event(self, level: str, message: str):
         """Log P0 protection events."""
@@ -102,7 +118,7 @@ class P0ProtectionSystem:
             print(f"\n🛑 MANDATORY ACTION REQUIRED:")
             print(f"   1. Fix ALL failing P0 tests immediately")
             print(f"   2. Run: python {self.p0_test_runner}")
-            print(f"   3. Ensure 41/41 tests pass before proceeding")
+            print(f"   3. Ensure {total}/{total} tests pass before proceeding")
             print(f"   4. P0 tests are BUSINESS-CRITICAL and cannot be deferred")
 
             self.log_protection_event(

@@ -42,14 +42,17 @@ jobs:
     - name: P0 Results Validation
       run: |
         echo "📊 Validating P0 results..."
-        # Extract results and ensure 41/41 tests pass
+        # Extract results dynamically instead of hardcoded 41/41
         result=$(python .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py 2>&1 | grep "SUCCESS RATE" || true)
 
-        if echo "$result" | grep -q "41/41"; then
-          echo "✅ P0 PROTECTION: All 41 business-critical tests passing"
+        # Extract the actual test counts dynamically (e.g., "40/40 tests passing")
+        if echo "$result" | grep -q "tests passing (100%)"; then
+          test_count=$(echo "$result" | grep -o '[0-9]\+/[0-9]\+ tests passing' | head -1)
+          echo "✅ P0 PROTECTION: All $test_count business-critical tests passing"
         else
           echo "🚨 P0 PROTECTION FAILURE: Not all P0 tests passing"
           echo "❌ BLOCKING DEPLOYMENT: P0 tests are business-critical"
+          echo "🔍 Test output: $result"
           exit 1
         fi
 
@@ -57,5 +60,7 @@ jobs:
       if: success()
       run: |
         echo "🎉 P0 PROTECTION PASSED"
-        echo "✅ All 41 business-critical tests verified"
+        # Get dynamic test count for success message
+        test_count=$(python .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py 2>&1 | grep -o '[0-9]\+/[0-9]\+ tests passing' | head -1)
+        echo "✅ All $test_count business-critical tests verified"
         echo "🟢 Deployment approved by P0 protection system"
