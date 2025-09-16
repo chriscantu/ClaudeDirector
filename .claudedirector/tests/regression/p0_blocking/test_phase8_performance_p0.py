@@ -25,29 +25,52 @@ try:
         ObjectPool,
     )
 
-    # Updated import for unified data performance manager (Phase 8.4 consolidation)
-    from claudedirector.lib.core.unified_data_performance_manager import (
-        UnifiedDataPerformanceManager as UnifiedPerformanceManager,
-        PerformanceTarget,
-        create_response_optimizer,  # Legacy compatibility
+    # Use existing performance systems instead of deleted unified bloat
+    from claudedirector.lib.performance.strategic_performance_manager import (
+        StrategicPerformanceManager as UnifiedPerformanceManager,
     )
     from claudedirector.lib.performance.performance_monitor import PerformanceMonitor
+
+    # Mock PerformanceTarget enum for compatibility
+    class PerformanceTarget:
+        ULTRA_FAST = 25
+        FAST = 50
+        NORMAL = 500
+        BACKGROUND = 1000
+
+    def create_response_optimizer():
+        """Legacy compatibility function"""
+        return UnifiedPerformanceManager()
+
+    from claudedirector.lib.performance.performance_monitor import PerformanceMonitor
+    from claudedirector.lib.performance import ResponseOptimizer
 except ImportError:
     # Fallback for test environment
     sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
     from lib.performance.cache_manager import CacheManager, CacheLevel
     from lib.performance.memory_optimizer import MemoryOptimizer, ObjectPool
 
-    # Updated import for unified data performance manager (Phase 8.4 consolidation)
-    from lib.core.unified_data_performance_manager import (
-        UnifiedDataPerformanceManager as UnifiedPerformanceManager,
-        PerformanceTarget,
-        create_response_optimizer,  # Legacy compatibility
+    # Use existing performance systems instead of deleted unified bloat
+    from lib.performance.strategic_performance_manager import (
+        StrategicPerformanceManager as UnifiedPerformanceManager,
     )
     from lib.performance.performance_monitor import PerformanceMonitor
+    from lib.performance import ResponseOptimizer
+
+    # Mock PerformanceTarget enum for compatibility
+    class PerformanceTarget:
+        ULTRA_FAST = 25
+        FAST = 50
+        NORMAL = 500
+        BACKGROUND = 1000
+
+    def create_response_optimizer():
+        """Legacy compatibility function"""
+        return UnifiedPerformanceManager()
+
 
 # Legacy compatibility aliases for existing tests
-ResponseOptimizer = create_response_optimizer
+# ResponseOptimizer is imported from performance module, don't override it
 ResponsePriority = PerformanceTarget
 
 

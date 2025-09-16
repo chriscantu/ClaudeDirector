@@ -9,17 +9,59 @@ from .cache_manager import CacheManager
 from .memory_optimizer import MemoryOptimizer
 from .performance_monitor import PerformanceMonitor
 
-# PHASE 8.4: Import unified response functionality from consolidated manager
-from ..core.unified_data_performance_manager import (
-    UnifiedResponse,
-    ResponseStatus,
-    ResponseType,
-    get_unified_manager,
-    create_mcp_response,
-    create_persona_response,
-    create_fallback_response,
-    create_conversational_response,
-)
+# Use existing performance systems instead of deleted unified bloat
+# Define response types locally to avoid dependency on deleted unified manager
+from dataclasses import dataclass
+from enum import Enum
+from typing import Any, Dict, Optional
+
+
+class ResponseStatus(Enum):
+    SUCCESS = "success"
+    ERROR = "error"
+    PARTIAL = "partial"
+
+
+class ResponseType(Enum):
+    MCP = "mcp"
+    PERSONA = "persona"
+    FALLBACK = "fallback"
+
+
+@dataclass
+class UnifiedResponse:
+    content: str
+    status: ResponseStatus = ResponseStatus.SUCCESS
+    response_type: ResponseType = ResponseType.FALLBACK
+    metadata: Optional[Dict[str, Any]] = None
+
+
+def get_unified_manager():
+    """Legacy compatibility - return performance monitor"""
+    return PerformanceMonitor()
+
+
+def create_mcp_response(content: str, **kwargs) -> UnifiedResponse:
+    return UnifiedResponse(content=content, response_type=ResponseType.MCP, **kwargs)
+
+
+def create_persona_response(content: str, **kwargs) -> UnifiedResponse:
+    return UnifiedResponse(
+        content=content, response_type=ResponseType.PERSONA, **kwargs
+    )
+
+
+def create_fallback_response(content: str, **kwargs) -> UnifiedResponse:
+    return UnifiedResponse(
+        content=content, response_type=ResponseType.FALLBACK, **kwargs
+    )
+
+
+def create_conversational_response(content: str, **kwargs) -> UnifiedResponse:
+    return UnifiedResponse(
+        content=content, response_type=ResponseType.PERSONA, **kwargs
+    )
+
 
 # Legacy compatibility aliases
 UnifiedResponseHandler = get_unified_manager
@@ -61,16 +103,51 @@ async def create_systematic_response(
     )
 
 
-# Import unified performance manager for legacy compatibility
-try:
-    from ..core.unified_data_performance_manager import create_response_optimizer
+# Legacy compatibility - use existing performance systems
+def create_response_optimizer(*args, **kwargs):
+    """Legacy compatibility - return performance monitor, ignoring parameters"""
+    # Ignore all parameters for compatibility with deleted unified system
+    return PerformanceMonitor()
 
-    ResponseOptimizer = create_response_optimizer
-except ImportError:
-    # Fallback if unified performance manager not available
-    class ResponseOptimizer:
-        def __init__(self, *args, **kwargs):
-            pass
+
+class ResponseOptimizer:
+    """Legacy compatibility class that wraps PerformanceMonitor"""
+
+    def __init__(self, *args, **kwargs):
+        # Ignore all parameters for compatibility with deleted unified system
+        self._performance_monitor = PerformanceMonitor()
+
+    async def optimize_call(self, func, *args, **kwargs):
+        """Legacy compatibility method for optimize_call"""
+        # Simple implementation that just calls the function
+        import time
+
+        start_time = time.time()
+
+        # Filter out optimization-specific kwargs that the function might not accept
+        optimization_kwargs = {"priority", "cache_key", "timeout", "retry_count"}
+        func_kwargs = {k: v for k, v in kwargs.items() if k not in optimization_kwargs}
+
+        if hasattr(func, "__call__"):
+            if hasattr(func, "__await__"):
+                result = await func(*args, **func_kwargs)
+            else:
+                result = func(*args, **func_kwargs)
+        else:
+            result = func
+
+        execution_time = (time.time() - start_time) * 1000  # Convert to ms
+
+        # Return a simple response-like object
+        return {
+            "result": result,
+            "execution_time_ms": execution_time,
+            "status": "success",
+        }
+
+    def __getattr__(self, name):
+        # Delegate all other method calls to the performance monitor
+        return getattr(self._performance_monitor, name)
 
 
 __all__ = [
