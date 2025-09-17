@@ -17,7 +17,7 @@ from enum import Enum
 import structlog
 
 # TS-4: Import unified response handler (eliminates duplicate MLPredictionResponse pattern)
-from ..performance.unified_response_handler import (
+from ..performance import (
     create_ml_response,
     UnifiedResponse,
     ResponseStatus,

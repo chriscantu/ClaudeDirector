@@ -13,9 +13,11 @@ lib_path = Path(__file__).parent.parent / "lib"
 sys.path.insert(0, str(lib_path))
 
 from claudedirector.bridges.cli_context_bridge import CLIContextBridge
-from claudedirector.core.integrated_conversation_manager import (
-    IntegratedConversationManager,
-)
+
+# TEMPORARILY DISABLED: IntegratedConversationManager module doesn't exist
+# from claudedirector.core.integrated_conversation_manager import (
+#     IntegratedConversationManager,
+# )
 
 
 def print_help():

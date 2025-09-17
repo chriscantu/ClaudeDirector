@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 # TS-4: Import unified response handler (eliminates duplicate FallbackResponse pattern)
-from ..performance.unified_response_handler import (
+from ..performance import (
     create_fallback_response,
     UnifiedResponse,
     ResponseStatus,

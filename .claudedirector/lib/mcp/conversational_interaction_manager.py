@@ -27,7 +27,7 @@ from .interactive_enhancement_addon import (
 from .mcp_integration_manager import MCPIntegrationManager
 
 # TS-4: Import unified response handler (eliminates duplicate InteractionResponse pattern)
-from ..performance.unified_response_handler import (
+from ..performance import (
     create_conversational_response,
     UnifiedResponse,
     ResponseStatus,
