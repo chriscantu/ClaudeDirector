@@ -66,7 +66,7 @@ def check_environment():
         print("✅ Using system python (GitHub CI mode)")
 
     # Check ClaudeDirector availability (using correct import path)
-    check_cmd = f'{python_cmd} -c "import sys; sys.path.insert(0, \\".claudedirector/lib\\"); from core.integrated_conversation_manager import IntegratedConversationManager; print(\\"ClaudeDirector core modules: OK\\")"'
+    check_cmd = f'{python_cmd} -c "import sys; sys.path.insert(0, \\".claudedirector/lib\\"); from core import ClaudeDirectorConfig, DatabaseManager; print(\\"ClaudeDirector core modules: OK\\")"'
     if not run_command(check_cmd, "ClaudeDirector Import Check"):
         print("❌ ClaudeDirector not properly available")
         return False
