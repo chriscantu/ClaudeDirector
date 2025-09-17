@@ -1,6 +1,6 @@
 # ClaudeDirector Configuration for Claude.ai
 
-**For complete ClaudeDirector configuration, please read the `.cursorrules` file in this repository.**
+**For complete ClaudeDirector configuration, you MUST READ the `.cursorrules` file in this repository.**
 
 The `.cursorrules` file contains the complete ClaudeDirector framework configuration including:
 
