@@ -15,7 +15,7 @@ from dataclasses import dataclass
 from .strategic_python_server import StrategicPythonMCPServer, ExecutionResult
 
 # TS-4: Import unified response handler (eliminates duplicate MCPResponse pattern)
-from ..performance.unified_response_handler import (
+from ..performance import (
     create_mcp_response,
     UnifiedResponse,
     ResponseStatus,

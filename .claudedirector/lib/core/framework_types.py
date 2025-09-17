@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from typing import Dict, List, Any
 
 # TS-4: Import unified response handler (eliminates duplicate SystematicResponse pattern)
-from ..performance.unified_response_handler import (
+from ..performance import (
     create_systematic_response,
     UnifiedResponse,
     ResponseStatus,
