@@ -1,112 +1,58 @@
 # Weekly Report Agent Configuration Template
-# Copy to weekly_report_config.yaml and customize for your organization
+#
+# IMPORTANT: This agent leverages the existing weekly_reporter.py configuration system.
+# Use the existing weekly-report-config.yaml file in leadership-workspace/configs/
+# instead of creating a separate configuration.
+#
+# This template shows the simplified Agent configuration options:
 
-# Jira Integration Settings
-jira_base_url: "https://your-org.atlassian.net"
-jira_username: "your-email@company.com"
-jira_api_token: "your-jira-api-token"  # Generate from Jira Account Settings
+# Agent Configuration (simplified)
+agent:
+  output_format: "markdown"
+  enable_logging: true
+  enable_caching: true
+  enable_metrics: true
 
-# Report Configuration
-report_template: "executive_summary"
-output_format: "markdown"  # Options: markdown, html, pdf
-include_charts: true
-forecast_weeks: 2
+# Path to existing weekly_reporter.py configuration
+# Point this to your existing leadership-workspace/configs/weekly-report-config.yaml
+weekly_reporter_config: "leadership-workspace/configs/weekly-report-config.yaml"
 
-# Team Mappings - Configure your UI Foundation teams
-teams:
-  - name: "Web Platform"
-    jira_project: "WP"
-    focus_areas:
-      - "Build system optimization"
-      - "Developer tooling"
-      - "Performance infrastructure"
-    business_value_framework: "velocity_multiplier"
+# Output configuration
+output:
+  auto_generate_filename: true  # Generate filename based on date
+  base_filename: "weekly-report"
+  date_format: "YYYY-MM-DD"
+  output_directory: "reports/"
 
-  - name: "Design System"
-    jira_project: "DS"
-    focus_areas:
-      - "Component library evolution"
-      - "Design token management"
-      - "Cross-team adoption"
-    business_value_framework: "consistency_impact"
+# Agent behavior
+behavior:
+  dry_run_default: false
+  validate_config_on_startup: true
+  test_jira_connection: true
 
-  - name: "Internationalization"
-    jira_project: "I18N"
-    focus_areas:
-      - "Localization infrastructure"
-      - "Cultural adaptation"
-      - "Market expansion enablement"
-    business_value_framework: "market_expansion"
+# USAGE INSTRUCTIONS:
+# 1. Ensure your existing leadership-workspace/configs/weekly-report-config.yaml is properly configured
+# 2. The Agent will use that existing configuration for all Jira queries and business logic
+# 3. This maintains the existing proven report format and business value translation
+# 4. The Agent provides orchestration and autonomous operation over the existing system
 
-  - name: "UI Service Shell"
-    jira_project: "USS"
-    focus_areas:
-      - "Shared application architecture"
-      - "Cross-app navigation"
-      - "Authentication integration"
-    business_value_framework: "platform_leverage"
+# Example Python usage:
+#   from .agents import create_weekly_report_agent
+#
+#   agent = create_weekly_report_agent(
+#       config_path="leadership-workspace/configs/weekly-report-config.yaml",
+#       output_path="reports/weekly-report-2025-09-18.md",
+#       dry_run=False
+#   )
+#
+#   result = agent.manage("generate_report")
+#   print(f"Report generated: {result.success}")
+#   print(f"Output: {result.data['report_content']}")
 
-  - name: "Header/Navigation"
-    jira_project: "HN"
-    focus_areas:
-      - "Consistent navigation experience"
-      - "Cross-product integration"
-      - "User journey optimization"
-    business_value_framework: "user_experience"
-
-# Business Value Translation Frameworks
-business_frameworks:
-  - name: "velocity_multiplier"
-    metrics:
-      - "development_velocity_improvement"
-      - "deployment_frequency"
-      - "lead_time_reduction"
-    impact_categories:
-      - "Developer Productivity"
-      - "Time to Market"
-      - "Operational Efficiency"
-    roi_calculation: "velocity_increase * team_count * developer_cost_per_hour"
-
-  - name: "consistency_impact"
-    metrics:
-      - "design_consistency_score"
-      - "component_reuse_rate"
-      - "design_to_dev_time"
-    impact_categories:
-      - "Brand Consistency"
-      - "Development Efficiency"
-      - "User Experience"
-    roi_calculation: "design_consistency_savings + development_efficiency_gain"
-
-  - name: "market_expansion"
-    metrics:
-      - "localization_coverage"
-      - "market_readiness_time"
-      - "cultural_adaptation_score"
-    impact_categories:
-      - "Revenue Opportunity"
-      - "Market Competitive Advantage"
-      - "Risk Mitigation"
-    roi_calculation: "new_market_revenue_potential - localization_investment"
-
-  - name: "platform_leverage"
-    metrics:
-      - "shared_component_adoption"
-      - "cross_team_reuse"
-      - "platform_capability_usage"
-    impact_categories:
-      - "Organizational Leverage"
-      - "Architecture Scalability"
-      - "Technical Debt Reduction"
-    roi_calculation: "reuse_savings + maintenance_cost_reduction"
-
-  - name: "user_experience"
-    metrics:
-      - "user_satisfaction_score"
-      - "task_completion_rate"
-      - "navigation_efficiency"
-    impact_categories:
-      - "User Satisfaction"
-      - "Business Conversion"
-      - "Competitive Differentiation"
-    roi_calculation: "conversion_improvement * average_order_value"
+# The agent automatically leverages all existing capabilities:
+# - Jira API integration with authentication
+# - Strategic story analysis and business value translation
+# - Executive-level formatting and communication
+# - Multi-team epic and story analysis
+# - L0/L2 initiative tracking
+# - Risk assessment and dependency analysis
