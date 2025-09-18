@@ -7,6 +7,7 @@ from typing import Dict, List, Optional, Any, Union, TypeVar
 from typing import Protocol, runtime_checkable
 from pathlib import Path
 from datetime import datetime
+from dataclasses import dataclass
 import sqlite3
 
 # Basic type aliases
@@ -115,3 +116,19 @@ class ArchivingError(ClaudeDirectorError):
 
 class PatternRecognitionError(ClaudeDirectorError):
     """Raised when pattern recognition operations fail."""
+
+
+# Processing result types
+@dataclass
+class ProcessingResult:
+    """Standard result type for processing operations"""
+
+    success: bool
+    message: str
+    data: Optional[Dict[str, Any]] = None
+    error_code: Optional[str] = None
+    timestamp: datetime = None
+
+    def __post_init__(self):
+        if self.timestamp is None:
+            self.timestamp = datetime.now()
