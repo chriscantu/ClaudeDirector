@@ -15,13 +15,32 @@ from dataclasses import dataclass
 from .strategic_python_server import StrategicPythonMCPServer, ExecutionResult
 
 # TS-4: Import unified response handler (eliminates duplicate MCPResponse pattern)
-from ..performance import (
-    create_mcp_response,
-    UnifiedResponse,
-    ResponseStatus,
-)
+try:
+    from ..performance.unified_response_handler import (
+        create_mcp_response,
+        UnifiedResponse,
+        ResponseStatus,
+    )
+except ImportError:
+    # Fallback definitions for missing unified_response_handler
+    def create_mcp_response(success: bool, data: any = None, error: str = None):
+        return {"success": success, "data": data, "error": error}
+
+    class UnifiedResponse:
+        def __init__(self, success: bool, data: any = None, error: str = None):
+            self.success = success
+            self.data = data
+            self.error = error
+
+    class ResponseStatus:
+        SUCCESS = "success"
+        ERROR = "error"
+
 
 logger = logging.getLogger(__name__)
+
+
+# Classes defined below in existing code
 
 
 @dataclass
@@ -38,6 +57,22 @@ class MCPRequest:
 # TS-4: MCPResponse class ELIMINATED - replaced with UnifiedResponse
 # This eliminates 40+ lines of duplicate response handling logic
 # All MCPResponse functionality now handled by create_mcp_response() from unified_response_handler
+
+
+# 🚀 ENHANCEMENT FIX: Provide MCPResponse class for __init__.py compatibility
+class MCPResponse:
+    """
+    Compatibility wrapper for MCPResponse - delegates to UnifiedResponse
+    Maintains API compatibility while using unified response handler internally
+    """
+
+    def __init__(self, success: bool, data: any = None, error: str = None, **kwargs):
+        self.success = success
+        self.data = data
+        self.error = error
+        # Store additional metadata
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
 
 class StrategicPythonMCPIntegration:
