@@ -26,6 +26,19 @@ from .unified_integration_processor import (
     IntegrationProcessingResult,
 )
 
+# 🚀 ENHANCEMENT: Import MCP enhancement components
+try:
+    from ..mcp.mcp_integration_manager import MCPIntegrationManager
+    from ..context_engineering.analytics_engine import AnalyticsEngine
+    from ..performance.cache_manager import CacheManager
+
+    MCP_ENHANCEMENT_AVAILABLE = True
+except ImportError:
+    MCPIntegrationManager = None
+    AnalyticsEngine = None
+    CacheManager = None
+    MCP_ENHANCEMENT_AVAILABLE = False
+
 try:
     from ..context_engineering import (
         AdvancedContextEngine,
@@ -111,6 +124,20 @@ class UnifiedBridge:
         # Initialize processor for delegation (DRY: single processor instance)
         self.processor = UnifiedIntegrationProcessor(processor_config)
 
+        # 🚀 ENHANCEMENT: Initialize MCP enhancement integration
+        self.mcp_integration = None
+        self.analytics_engine = None
+        self.cache_manager = None
+
+        if MCP_ENHANCEMENT_AVAILABLE:
+            try:
+                self.mcp_integration = MCPIntegrationManager()
+                self.analytics_engine = AnalyticsEngine()
+                self.cache_manager = CacheManager(max_memory_mb=5)
+                self.logger.info("MCP enhancement integration initialized successfully")
+            except Exception as e:
+                self.logger.warning(f"MCP enhancement integration failed: {e}")
+
         # Use BaseProcessor facade consolidation pattern
         facade_config = BaseProcessor.create_facade_delegate(
             processor_instance=self.processor,
@@ -165,15 +192,37 @@ class UnifiedBridge:
         return conversations.get(session_id, [])[:limit]
 
     def health_check(self) -> Dict[str, Any]:
-        """🏗️ Sequential Thinking Phase 5.2.1: Delegate to processor"""
+        """🏗️ Sequential Thinking Phase 5.2.1: Delegate to processor with MCP enhancement status"""
         status = self.processor.get_comprehensive_status()
+
+        # 🚀 ENHANCEMENT: Include MCP enhancement health status
+        mcp_enhancement_status = self._get_mcp_enhancement_status()
 
         return {
             "status": "healthy",
             "bridge_type": self.config.bridge_type.value,
             "enhanced_mode": self.enhanced_mode,
             "processor_status": status.get("system_health", {}),
+            "mcp_enhancements": mcp_enhancement_status,
             "last_check": time.time(),
+        }
+
+    def _get_mcp_enhancement_status(self) -> Dict[str, Any]:
+        """🚀 ENHANCEMENT: Get MCP enhancement component status"""
+        if not MCP_ENHANCEMENT_AVAILABLE:
+            return {
+                "available": False,
+                "reason": "MCP enhancement components not available",
+            }
+
+        return {
+            "available": True,
+            "mcp_integration": self.mcp_integration is not None,
+            "analytics_engine": self.analytics_engine is not None,
+            "cache_manager": self.cache_manager is not None,
+            "cache_stats": (
+                self.cache_manager.get_stats() if self.cache_manager else None
+            ),
         }
 
 

@@ -40,6 +40,11 @@ class CacheLevel(Enum):
     CONTEXT_ANALYSIS = "context_analysis"  # 15 minutes TTL
     MCP_RESPONSES = "mcp_responses"  # 5 minutes TTL
     STRATEGIC_MEMORY = "strategic_memory"  # 24 hours TTL
+    # 🚀 ENHANCEMENT: MCP-specific cache levels
+    MCP_SEQUENTIAL = "mcp_sequential"  # 10 minutes TTL - Complex analysis
+    MCP_CONTEXT7 = "mcp_context7"  # 30 minutes TTL - Documentation
+    MCP_MAGIC = "mcp_magic"  # 15 minutes TTL - UI components
+    MCP_PLAYWRIGHT = "mcp_playwright"  # 5 minutes TTL - Testing results
 
 
 @dataclass
@@ -110,6 +115,11 @@ class CacheManager(BaseManager):
                         "context_analysis": 900,  # 15 minutes
                         "mcp_responses": 300,  # 5 minutes
                         "strategic_memory": 86400,  # 24 hours
+                        # 🚀 ENHANCEMENT: MCP-specific config
+                        "mcp_sequential": 600,  # 10 minutes
+                        "mcp_context7": 1800,  # 30 minutes
+                        "mcp_magic": 900,  # 15 minutes
+                        "mcp_playwright": 300,  # 5 minutes
                     },
                 },
             )
@@ -144,6 +154,11 @@ class CacheManager(BaseManager):
             CacheLevel.CONTEXT_ANALYSIS: 900,
             CacheLevel.MCP_RESPONSES: 300,
             CacheLevel.STRATEGIC_MEMORY: 86400,
+            # 🚀 ENHANCEMENT: MCP-specific intelligent TTL
+            CacheLevel.MCP_SEQUENTIAL: 600,  # 10 min - Complex analysis
+            CacheLevel.MCP_CONTEXT7: 1800,  # 30 min - Documentation
+            CacheLevel.MCP_MAGIC: 900,  # 15 min - UI components
+            CacheLevel.MCP_PLAYWRIGHT: 300,  # 5 min - Testing results
         }
 
         self.ttl_config = {}
@@ -504,6 +519,40 @@ class CacheManager(BaseManager):
 
         self.cache_storage.clear()
         self.logger.info("Cache cleaned up")
+
+    # 🚀 ENHANCEMENT: MCP-specific intelligent caching methods
+
+    async def cache_mcp_response(
+        self,
+        server_type: str,
+        query: str,
+        response: Any,
+        complexity_hint: Optional[str] = None,
+    ) -> bool:
+        """Intelligently cache MCP server response with optimal TTL"""
+        # Generate MCP-specific cache key
+        cache_key = self._generate_cache_key("mcp", server_type, query)
+
+        # Determine optimal cache level based on server type and complexity
+        cache_level = self._determine_mcp_cache_level(server_type, complexity_hint)
+
+        return await self.set(cache_key, response, cache_level)
+
+    def _determine_mcp_cache_level(
+        self, server_type: str, complexity_hint: Optional[str] = None
+    ) -> CacheLevel:
+        """Determine optimal cache level for MCP server type"""
+        # Map server types to cache levels based on response characteristics
+        if server_type.lower() == "sequential":
+            return CacheLevel.MCP_SEQUENTIAL  # Complex analysis - medium TTL
+        elif server_type.lower() == "context7":
+            return CacheLevel.MCP_CONTEXT7  # Documentation - long TTL
+        elif server_type.lower() == "magic":
+            return CacheLevel.MCP_MAGIC  # UI components - medium TTL
+        elif server_type.lower() == "playwright":
+            return CacheLevel.MCP_PLAYWRIGHT  # Testing - short TTL
+        else:
+            return CacheLevel.MCP_RESPONSES  # Default MCP cache level
 
 
 # Global cache manager instance
