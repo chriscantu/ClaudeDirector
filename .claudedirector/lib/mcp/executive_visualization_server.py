@@ -3,7 +3,16 @@
 
 import logging
 from typing import Dict, Any, List, Optional, Union
-import plotly.graph_objects as go
+
+# 🚀 ENHANCEMENT FIX: Make plotly import optional for MCP integration compatibility
+try:
+    import plotly.graph_objects as go
+
+    PLOTLY_AVAILABLE = True
+except ImportError:
+    # Provide fallback for when plotly is not available
+    go = None
+    PLOTLY_AVAILABLE = False
 
 from .visualization_types import VisualizationResult
 from .visualization_template_router import VisualizationTemplateRouter
