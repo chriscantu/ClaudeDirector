@@ -104,7 +104,7 @@ repos:
         verbose: true
       - id: stakeholder-name-scanner
         name: 🚨 STAKEHOLDER INTELLIGENCE SCAN
-        entry: python3 .claudedirector/tools/quality/stakeholder_name_scanner.py --staged
+        entry: python3 .claudedirector/lib/security/scanners/stakeholder_name_scanner.py --staged
         language: system
         pass_filenames: false
         stages: [pre-commit]

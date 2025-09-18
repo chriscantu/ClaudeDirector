@@ -67,7 +67,7 @@ python -c \"
 import sys
 sys.path.insert(0, '.claudedirector/lib')
 try:
-    from core import integrated_conversation_manager
+    from core import ClaudeDirectorConfig, DatabaseManager
     from transparency import mcp_transparency
     from context_engineering import strategic_memory_manager
     print('✅ Core modules importable via direct import')

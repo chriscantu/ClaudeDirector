@@ -4,89 +4,32 @@
 
 ---
 
-## 📋 **Pattern Categories**
+## 📋 **Current Architecture Patterns**
 
-### 🤝 **[Collaboration Patterns](patterns/COLLABORATION_PATTERNS.md)**
-Multi-persona coordination patterns.
-- Sequential Consultation
-- Collaborative Analysis
-- Context Handoff
-- Implementation Guidelines
+### 🏗️ **Core System Patterns**
 
-### 🔧 **[Transparency Patterns](patterns/TRANSPARENCY_PATTERNS.md)**
-Audit trail patterns for AI interactions.
-- Multi-Persona Transparency Coordination
-- MCP Enhancement Attribution
-- Framework Integration Visibility
-- Audit Trail Standards
+ClaudeDirector follows established architectural patterns documented in:
+- **OVERVIEW.md**: High-level system architecture
+- **COMPONENTS.md**: Detailed component specifications
+- **PROJECT_STRUCTURE.md**: Mandatory project organization
+- **DECISIONS.md**: Architectural decision records (ADRs)
 
-### 🏛️ **[System Architecture Patterns](patterns/SYSTEM_ARCHITECTURE_PATTERNS.md)**
-Layered architecture and component organization patterns.
-- Presentation Layer Patterns
-- Business Logic Layer Patterns
-- Integration Layer Patterns
-- Data Layer Patterns
+### 🎯 **Key Architectural Principles**
 
-### 🔄 **[Data Flow Patterns](patterns/DATA_FLOW_PATTERNS.md)**
-Request-response flows and error handling.
-- Request-Response Pattern
-- Error Handling Pattern
-- Caching Pattern
-- Performance Optimization
+1. **Single Source of Truth**: Each concern has ONE authoritative location
+2. **Context Engineering First**: Primary system for strategic intelligence
+3. **P0 Test Protection**: Business-critical functionality always protected
+4. **User/System Separation**: Clear boundaries between user and system territory
+5. **Security by Default**: All personal data protected from source control
 
-### 🛡️ **[Security Patterns](patterns/SECURITY_PATTERNS.md)**
-Security architecture and data protection patterns.
-- Defense in Depth
-- Data Protection Pattern
-- Threat Mitigation
-- Compliance Framework
+### 📚 **Pattern References**
 
-### 📊 **[Performance Patterns](patterns/PERFORMANCE_PATTERNS.md)**
-Performance optimization patterns.
-- Response Time Optimization
-- Scalability Patterns
-- Memory Management
-- Performance SLAs
-
-### 🔧 **[Integration Patterns](patterns/INTEGRATION_PATTERNS.md)**
-External service integration patterns.
-- MCP Server Integration
-- Platform Integration
-- Data Integration
-- Security Integration
-
-### 📈 **[Scalability Patterns](patterns/SCALABILITY_PATTERNS.md)**
-Horizontal and vertical scaling patterns.
-- Horizontal Scaling
-- Vertical Scaling
-- Auto-Scaling Patterns
-- Growth Planning
+For specific implementation patterns, refer to:
+- **Context Engineering**: `.claudedirector/lib/context_engineering/` - 8-layer memory architecture
+- **AI Intelligence**: `.claudedirector/lib/ai_intelligence/` - MCP coordination and framework detection
+- **Core Components**: `.claudedirector/lib/core/` - Foundational system patterns
+- **Integration Layer**: `.claudedirector/lib/integration/` - Unified integration patterns
 
 ---
 
-## 🎯 **Pattern Selection Guidelines**
-
-### **When to Use Each Pattern Category**
-
-| Scenario | Primary Patterns | Secondary Patterns |
-|----------|------------------|-------------------|
-| **Multi-Persona Coordination** | Collaboration, Transparency | Data Flow, Performance |
-| **Enterprise Deployment** | Security, Integration | Scalability, Performance |
-| **High-Volume Usage** | Performance, Scalability | Data Flow, Integration |
-| **Complex Strategic Analysis** | Collaboration, Transparency | System Architecture |
-
-### **Pattern Interaction Matrix**
-
-- **Collaboration ↔ Transparency**: All multi-persona interactions require transparency
-- **Security ↔ Integration**: All external integrations must follow security patterns
-- **Performance ↔ Scalability**: Performance patterns enable effective scaling
-- **Data Flow ↔ System Architecture**: Data flows implement architectural layers
-
----
-
-## 📚 **Related Documentation**
-
-- **[System Overview](OVERVIEW.md)**: High-level architecture and components
-- **[Component Details](COMPONENTS.md)**: Individual component specifications
-- **[Architectural Decisions](DECISIONS.md)**: Key architectural decision records
-- **[API Reference](../reference/API_REFERENCE.md)**: API documentation
+*For detailed pattern implementations, see the component documentation in the respective directories.*

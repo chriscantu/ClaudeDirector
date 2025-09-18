@@ -12,7 +12,9 @@ from pathlib import Path
 lib_path = Path(__file__).parent.parent / "lib"
 sys.path.insert(0, str(lib_path))
 
-from lib.core.integrated_conversation_manager import IntegratedConversationManager
+# TEMPORARILY DISABLED: IntegratedConversationManager module doesn't exist
+# from lib.core.integrated_conversation_manager import IntegratedConversationManager
+from lib.core import DatabaseManager
 
 
 def capture_current_conversation():
@@ -21,12 +23,17 @@ def capture_current_conversation():
     print("🔄 Capturing Current Cursor Conversation Context")
     print("=" * 55)
 
-    # Initialize conversation manager
-    manager = IntegratedConversationManager()
+    # TEMPORARILY DISABLED: IntegratedConversationManager doesn't exist
+    # manager = IntegratedConversationManager()
+    print(
+        "⚠️ Tool temporarily disabled: IntegratedConversationManager module not available"
+    )
+    return
 
-    # Start a new session for current conversation
-    session_id = manager.start_conversation_session("strategic")
-    print(f"✅ Session started: {session_id[:12]}...")
+    # DISABLED CODE BELOW - IntegratedConversationManager doesn't exist
+    # # Start a new session for current conversation
+    # session_id = manager.start_conversation_session("strategic")
+    # print(f"✅ Session started: {session_id[:12]}...")
 
     # Capture the current strategic conversation context
     conversation_turns = [
