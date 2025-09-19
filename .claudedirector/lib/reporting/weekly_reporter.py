@@ -24,6 +24,20 @@ from urllib.parse import quote
 import re
 from pathlib import Path
 
+# Real MCP Integration following BLOAT_PREVENTION principles
+try:
+    from .weekly_reporter_mcp_bridge import (
+        create_weekly_reporter_mcp_bridge,
+        MCPEnhancementResult,
+    )
+
+    MCP_BRIDGE_AVAILABLE = True
+except ImportError:
+    # Graceful fallback when MCP bridge unavailable
+    create_weekly_reporter_mcp_bridge = None
+    MCPEnhancementResult = None
+    MCP_BRIDGE_AVAILABLE = False
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -269,12 +283,29 @@ class JiraClient:
 
 
 class StrategicAnalyzer:
-    """Analyzes story strategic impact and business value"""
+    """
+    Analyzes story strategic impact and business value
 
-    def __init__(self):
+    Enhanced with real MCP integration for Strategic reasoning and Context7 benchmarking
+    BLOAT_PREVENTION: REUSES existing MCPIntegrationManager, no duplicate MCP logic
+    """
+
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.jira_base_url = os.getenv(
             "JIRA_BASE_URL", "https://procoretech.atlassian.net"
         )
+
+        # Real MCP Integration (BLOAT_PREVENTION: REUSE existing infrastructure)
+        self.config = config or {}
+        self.mcp_bridge = None
+
+        if MCP_BRIDGE_AVAILABLE and self.config.get("enable_mcp_integration", False):
+            try:
+                self.mcp_bridge = create_weekly_reporter_mcp_bridge(self.config)
+                logger.info("StrategicAnalyzer: Real MCP integration enabled")
+            except Exception as e:
+                logger.warning(f"StrategicAnalyzer: MCP integration failed: {e}")
+                self.mcp_bridge = None
 
     def calculate_strategic_impact(self, issue: JiraIssue) -> StrategicScore:
         """Calculate strategic impact score for a story"""
@@ -565,38 +596,44 @@ class StrategicAnalyzer:
 
         return cleaned
 
-    # Phase 2 Enhancement: Sequential Thinking Monte Carlo Methods
+    # Phase 2 Enhancement: Real MCP Integration with Sequential Thinking Monte Carlo
     def calculate_completion_probability(
         self, issue: JiraIssue, historical_data: List[Dict]
     ) -> Dict:
         """
-        EXTENDS existing strategic analysis with sequential thinking + cycle time Monte Carlo
+        EXTENDS existing strategic analysis with REAL MCP Sequential thinking + Monte Carlo
 
-        Sequential Thinking: Systematic step-by-step analysis for forecasting accuracy
-        Context7 Integration: Industry Monte Carlo simulation using ticket cycle time distribution
-        DRY Compliance: Reuses existing JiraIssue dataclass and scoring patterns
-        Universal: Works for all teams regardless of story point usage
+        BLOAT_PREVENTION: REUSES existing statistical foundation, ENHANCES with real MCP
+        Sequential MCP: Real strategic reasoning trail generation for executive insights
+        Context7 MCP: Industry benchmarking patterns for competitive analysis
+        DRY Compliance: EXTENDS existing JiraIssue dataclass and scoring patterns
         """
-        # SEQUENTIAL STEP 1: EXTEND existing priority scoring logic
+        # SEQUENTIAL STEP 1: EXTEND existing priority scoring logic (UNCHANGED)
         base_score = self.calculate_strategic_impact(issue)  # REUSE existing method
 
-        # SEQUENTIAL STEP 2: Historical cycle time analysis with systematic reasoning
+        # SEQUENTIAL STEP 2: Historical cycle time analysis (UNCHANGED)
         cycle_time_data = self._sequential_analyze_historical_cycles(historical_data)
 
-        # SEQUENTIAL STEP 3: Monte Carlo simulation with structured approach
+        # SEQUENTIAL STEP 3: Monte Carlo simulation (UNCHANGED - statistical foundation)
         completion_prob = self._sequential_monte_carlo_simulation(
             issue, cycle_time_data
         )
 
-        # SEQUENTIAL STEP 4: Risk assessment with methodical evaluation
+        # SEQUENTIAL STEP 4: Risk assessment (UNCHANGED)
         risk_analysis = self._sequential_risk_assessment(
             issue, base_score, cycle_time_data
         )
 
-        # SEQUENTIAL STEP 5: Timeline prediction with structured reasoning
+        # SEQUENTIAL STEP 5: Timeline prediction (UNCHANGED)
         timeline_forecast = self._sequential_timeline_prediction(issue, cycle_time_data)
 
-        return {
+        # NEW: Real MCP Enhancement for executive insights
+        mcp_enhancement = self._enhance_with_real_mcp_reasoning(
+            issue, completion_prob, cycle_time_data
+        )
+
+        # Base statistical result (PRESERVED)
+        base_result = {
             "completion_probability": completion_prob,
             "confidence_interval": self._calculate_monte_carlo_confidence(
                 cycle_time_data
@@ -609,9 +646,35 @@ class StrategicAnalyzer:
             ),
             "sequential_reasoning": self._generate_reasoning_trail(
                 issue, cycle_time_data
-            ),  # NEW
-            "analysis_methodology": "Sequential Thinking + Monte Carlo",  # NEW
+            ),
+            "analysis_methodology": "Real MCP Sequential + Monte Carlo",  # UPDATED
         }
+
+        # ENHANCE with real MCP insights (preserves existing structure)
+        if mcp_enhancement and not mcp_enhancement.fallback_used:
+            base_result.update(
+                {
+                    "mcp_reasoning_trail": mcp_enhancement.reasoning_trail,
+                    "executive_summary": mcp_enhancement.executive_summary,
+                    "mcp_risk_factors": mcp_enhancement.risk_factors,
+                    "industry_context": mcp_enhancement.industry_context,
+                    "mcp_processing_time": mcp_enhancement.processing_time,
+                    "mcp_enhanced": True,
+                }
+            )
+        else:
+            base_result.update(
+                {
+                    "mcp_enhanced": False,
+                    "mcp_fallback_reason": (
+                        mcp_enhancement.error_message
+                        if mcp_enhancement
+                        else "MCP disabled"
+                    ),
+                }
+            )
+
+        return base_result
 
     def _sequential_analyze_historical_cycles(
         self, historical_data: List[Dict]
@@ -1099,6 +1162,103 @@ class StrategicAnalyzer:
             "4. Coordination Assessment: Structured evaluation of multi-team coordination overhead",
             "5. Mitigation Development: Strategic planning for dependency resolution and prevention",
         ]
+
+    def _enhance_with_real_mcp_reasoning(
+        self,
+        issue: JiraIssue,
+        completion_probability: float,
+        cycle_time_data: List[float],
+    ) -> Optional[MCPEnhancementResult]:
+        """
+        ENHANCE existing analysis with real MCP Sequential reasoning and Context7 benchmarking
+
+        BLOAT_PREVENTION: REUSES existing MCP bridge, no duplicate MCP coordination
+        Sequential MCP: Strategic reasoning trail generation for executive insights
+        Context7 MCP: Industry benchmarking patterns for competitive analysis
+        """
+        if not self.mcp_bridge or not self.mcp_bridge.is_enabled():
+            logger.debug("MCP enhancement skipped: bridge unavailable or disabled")
+            return None
+
+        try:
+            # Real Sequential MCP enhancement for strategic reasoning
+            sequential_enhancement = None
+            if self.config.get("enable_sequential_reasoning", True):
+                sequential_enhancement = self.mcp_bridge.enhance_completion_probability(
+                    issue.key, completion_probability, cycle_time_data
+                )
+
+            # Real Context7 MCP enhancement for industry benchmarking
+            context7_enhancement = None
+            if self.config.get("enable_context7_benchmarking", True):
+                # Extract team name from issue project
+                team_name = issue.project or "unknown_team"
+                context7_enhancement = self.mcp_bridge.enhance_with_industry_benchmarks(
+                    team_name, cycle_time_data, domain="software_engineering"
+                )
+
+            # Combine enhancements (preserving individual fallback behavior)
+            combined_result = MCPEnhancementResult(
+                reasoning_trail=[],
+                executive_summary="",
+                risk_factors=[],
+                industry_context={},
+                processing_time=0.0,
+                fallback_used=True,
+                error_message="No enhancements available",
+            )
+
+            # Merge Sequential enhancement
+            if sequential_enhancement and not sequential_enhancement.fallback_used:
+                combined_result.reasoning_trail.extend(
+                    sequential_enhancement.reasoning_trail
+                )
+                combined_result.executive_summary = (
+                    sequential_enhancement.executive_summary
+                )
+                combined_result.risk_factors.extend(sequential_enhancement.risk_factors)
+                combined_result.processing_time += (
+                    sequential_enhancement.processing_time
+                )
+                combined_result.fallback_used = False
+                combined_result.error_message = None
+
+            # Merge Context7 enhancement
+            if context7_enhancement and not context7_enhancement.fallback_used:
+                combined_result.industry_context.update(
+                    context7_enhancement.industry_context
+                )
+                combined_result.processing_time += context7_enhancement.processing_time
+                combined_result.fallback_used = False
+                combined_result.error_message = None
+
+            # Log enhancement status
+            if not combined_result.fallback_used:
+                logger.info(
+                    f"MCP enhancement successful for {issue.key} in {combined_result.processing_time:.2f}s"
+                )
+            else:
+                logger.debug(
+                    f"MCP enhancement fallback for {issue.key}: {combined_result.error_message}"
+                )
+
+            return combined_result
+
+        except Exception as e:
+            logger.error(f"MCP enhancement failed for {issue.key}: {e}")
+            return (
+                MCPEnhancementResult(
+                    reasoning_trail=[],
+                    executive_summary="",
+                    risk_factors=[],
+                    industry_context={},
+                    processing_time=0.0,
+                    fallback_used=True,
+                    error_message=f"MCP enhancement error: {str(e)}",
+                )
+                if MCPEnhancementResult
+                else None
+            )
 
 
 class ReportGenerator:
@@ -1628,7 +1788,10 @@ def main():
         logger.info("Initializing weekly report generator...")
         config = ConfigManager(str(config_path))
         jira_client = JiraClient(config.get_jira_config())
-        analyzer = StrategicAnalyzer()
+
+        # Pass config to StrategicAnalyzer for MCP integration
+        analyzer_config = config.config.get("mcp_integration", {})
+        analyzer = StrategicAnalyzer(analyzer_config)
         generator = ReportGenerator(config, jira_client, analyzer)
 
         # Generate output path if not specified
