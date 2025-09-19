@@ -568,26 +568,29 @@ if __name__ == "__main__":
     readme_path = "README.md"
     if os.path.exists(readme_path):
         # Make README.md temporarily read-only during cleanup execution
-        try:
-            import stat
+        import stat
 
-            current_mode = os.stat(readme_path).st_mode
+        current_mode = os.stat(readme_path).st_mode
+
+        try:
             os.chmod(readme_path, current_mode & ~stat.S_IWRITE)
 
             # Run main cleanup
             main()
 
-            # Restore original permissions
-            os.chmod(readme_path, current_mode)
-
         except Exception as e:
-            # Restore permissions even on error
+            print(f"⚠️  README protection error: {e}")
+        finally:
+            # ALWAYS restore original permissions, even on error
             try:
                 os.chmod(readme_path, current_mode)
-            except:
-                pass
-            print(f"⚠️  README protection error: {e}")
-            sys.exit(0)  # Don't fail the commit due to protection issues
+            except Exception as restore_error:
+                print(f"⚠️  Failed to restore README permissions: {restore_error}")
+                # Try to at least make it writable
+                try:
+                    os.chmod(readme_path, 0o644)
+                except:
+                    pass
     else:
         # README.md doesn't exist - run normally but warn
         print("⚠️  WARNING: README.md not found - this may indicate a deletion issue")
