@@ -159,7 +159,7 @@ class P0TestEnforcer:
                 # Set environment variable to indicate P0 test suite context
                 env = os.environ.copy()
                 env["P0_TEST_SUITE"] = "1"
-                
+
                 result = subprocess.run(
                     cmd,
                     capture_output=True,

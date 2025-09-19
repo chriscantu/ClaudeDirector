@@ -602,7 +602,9 @@ class TestPerformance(unittest.TestCase):
         # Be more lenient during pre-commit/P0 test suite runs due to resource contention
         if self.is_precommit or os.getenv("P0_TEST_SUITE") == "1":
             # Pre-commit environment: more lenient due to multiple concurrent tests
-            cpu_tolerance = max(25, baseline_cpu * 0.5)  # 25% minimum or 50% of baseline
+            cpu_tolerance = max(
+                25, baseline_cpu * 0.5
+            )  # 25% minimum or 50% of baseline
         else:
             cpu_tolerance = max(10, baseline_cpu * 0.2)
         self.assertLessEqual(
