@@ -26,6 +26,7 @@ from pathlib import Path
 
 # Real MCP Integration following BLOAT_PREVENTION principles
 try:
+    # Try relative imports first (for package context)
     from .weekly_reporter_mcp_bridge import (
         create_weekly_reporter_mcp_bridge,
         MCPEnhancementResult,
@@ -33,10 +34,19 @@ try:
 
     MCP_BRIDGE_AVAILABLE = True
 except ImportError:
-    # Graceful fallback when MCP bridge unavailable
-    create_weekly_reporter_mcp_bridge = None
-    MCPEnhancementResult = None
-    MCP_BRIDGE_AVAILABLE = False
+    try:
+        # Fallback to absolute imports (for Claude Code context)
+        from reporting.weekly_reporter_mcp_bridge import (
+            create_weekly_reporter_mcp_bridge,
+            MCPEnhancementResult,
+        )
+
+        MCP_BRIDGE_AVAILABLE = True
+    except ImportError:
+        # Graceful fallback when MCP bridge unavailable
+        create_weekly_reporter_mcp_bridge = None
+        MCPEnhancementResult = None
+        MCP_BRIDGE_AVAILABLE = False
 
 # Configure logging
 logging.basicConfig(
@@ -1503,31 +1513,67 @@ class ReportGenerator:
 
 ---"""
 
-        # Analyze strategic impact for each story
+        # Analyze strategic impact for each story with MCP enhancement
         strategic_entries = []
+        mcp_enhanced_count = 0
+
         for issue in strategic_issues:
             score = self.analyzer.calculate_strategic_impact(issue)
             if score.score >= 5:  # Only show high-impact stories
                 timing = self._determine_completion_timing(issue.status)
                 jira_url = f"{self.analyzer.jira_base_url}/browse/{issue.key}"
 
+                # Check if we can get MCP-enhanced completion probability analysis
+                mcp_indicator = ""
+                try:
+                    if (
+                        hasattr(self.analyzer, "mcp_bridge")
+                        and self.analyzer.mcp_bridge
+                    ):
+                        completion_analysis = (
+                            self.analyzer.calculate_completion_probability(issue, [])
+                        )
+                        if completion_analysis.get("mcp_enhanced", False):
+                            mcp_enhanced_count += 1
+                            mcp_indicator = "\n- **Analysis Enhancement**: 🤖 MCP Sequential Thinking Applied"
+                            if completion_analysis.get("mcp_reasoning_trail"):
+                                reasoning_preview = (
+                                    completion_analysis["mcp_reasoning_trail"][:1]
+                                    if completion_analysis["mcp_reasoning_trail"]
+                                    else []
+                                )
+                                if reasoning_preview:
+                                    mcp_indicator += f"\n- **Strategic Insight**: {reasoning_preview[0]}"
+                        elif completion_analysis.get("mcp_enhanced", False) == False:
+                            mcp_indicator = "\n- **Analysis Enhancement**: 📊 Statistical Monte Carlo (MCP: Fallback)"
+                except Exception:
+                    # Graceful fallback if completion analysis fails
+                    pass
+
                 entry = f"""#### 📋 [{issue.key}]({jira_url}) - {issue.summary}
 
 - **Status**: {timing} ({issue.status})
 - **Project**: {issue.project}
 - **Strategic Impact**: {score.score}/10 points
-- **Business Value**: {' '.join(score.indicators)}
+- **Business Value**: {' '.join(score.indicators)}{mcp_indicator}
 
 ---"""
                 strategic_entries.append(entry)
 
         high_impact_count = len(strategic_entries)
 
+        # Generate MCP enhancement summary
+        mcp_summary = ""
+        if mcp_enhanced_count > 0:
+            mcp_summary = f" (🤖 {mcp_enhanced_count} with MCP Sequential Thinking)"
+        elif high_impact_count > 0:
+            mcp_summary = f" (📊 Statistical Analysis - MCP Sequential Thinking: {'Active' if hasattr(self.analyzer, 'mcp_bridge') and self.analyzer.mcp_bridge and self.analyzer.mcp_bridge.mcp_enabled else 'Unavailable'})"
+
         content = f"""## 🚀 Strategic Story Impact Analysis
 
 ### Executive Story Highlights
 
-**High-Impact Completions**: {high_impact_count} strategic stories completed or completing this week
+**High-Impact Completions**: {high_impact_count} strategic stories completed or completing this week{mcp_summary}
 
 {''.join(strategic_entries)}"""
 
@@ -1542,6 +1588,36 @@ class ReportGenerator:
 - **Platform Investment ROI**: Critical developer tooling advancing toward production
 - **Technical Debt Reduction**: Legacy system migrations completed with high business impact
 - **Execution Resilience**: Strategic work continues despite resource constraints
+
+---"""
+
+        # Add strategic impact scoring rubric for transparency
+        content += """
+### 📋 Strategic Impact Scoring Methodology
+
+**Impact Score Calculation** (0-10+ points):
+
+**🔴 Priority-Based Scoring**:
+- Critical/Highest Priority: +3 points
+- High Priority: +2 points
+
+**🌐 Cross-Functional Impact**:
+- Cross-Project Integration: +2 points (UIS-, UXI-, HUBS-, WES-, shared components)
+- High Collaboration: +1 point (>3 watchers)
+- Highly Connected: +1 point (>2 issue links)
+
+**⚙️ Platform & Developer Experience**:
+- Platform/DevEx Impact: +3 points (tooling, automation, build systems, developer experience)
+- Major Release/L2 Initiative: +3 points (v1.0, version 1, L2 initiatives)
+
+**🔓 Organizational Enablement**:
+- Dependency Resolution: +2 points (unblocking, enabling, prerequisite work)
+- Production Impact: +3 points (customer-facing, incident response, critical path)
+
+**👑 Executive Override**:
+- Executive Priority Stories: +5 points (manually designated strategic stories)
+
+*Strategic stories scoring ≥5 points are highlighted in executive analysis above.*
 
 ---"""
 
@@ -1722,11 +1798,27 @@ class ReportGenerator:
 ---"""
 
     def _build_footer(self) -> str:
-        """Build report footer"""
+        """Build report footer with MCP usage status"""
         next_week = self.current_date + timedelta(days=7)
+
+        # Check MCP enhancement status
+        mcp_status = self._get_mcp_status_message()
+
         return f"""*📊 **Data Source**: Live Jira Initiative Data - {self.current_date.strftime('%Y-%m-%d %H:%M:%S')}*
 *🔄 **Next Report**: {next_week.strftime('%Y-%m-%d')}*
-*🎯 **Focus**: L0/L2 strategic initiative progress with executive business value translation*"""
+*🎯 **Focus**: L0/L2 strategic initiative progress with executive business value translation*
+{mcp_status}"""
+
+    def _get_mcp_status_message(self) -> str:
+        """Generate MCP usage status message for report footer"""
+        if not hasattr(self.analyzer, "mcp_bridge") or self.analyzer.mcp_bridge is None:
+            return "*🤖 **Analysis Engine**: Statistical Monte Carlo (MCP Sequential Thinking: Disabled)*"
+
+        # Check if MCP bridge is enabled
+        if self.analyzer.mcp_bridge.mcp_enabled:
+            return "*🤖 **Analysis Engine**: MCP Sequential Thinking + Statistical Monte Carlo (Enhanced Strategic Reasoning Active)*"
+        else:
+            return "*🤖 **Analysis Engine**: Statistical Monte Carlo (MCP Sequential Thinking: Unavailable)*"
 
     def _determine_completion_timing(self, status: str) -> str:
         """Determine completion timing emoji and text"""

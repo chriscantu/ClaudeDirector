@@ -21,6 +21,7 @@ from dataclasses import dataclass
 
 # REUSE existing MCP infrastructure (BLOAT_PREVENTION compliance)
 try:
+    # Try relative imports first (for package context)
     from ..mcp.mcp_integration_manager import (
         MCPIntegrationManager,
         MCPServerType,
@@ -30,12 +31,23 @@ try:
 
     MCP_AVAILABLE = True
 except ImportError:
-    # Graceful fallback when MCP infrastructure unavailable
-    MCPIntegrationManager = None
-    MCPServerType = None
-    QueryPattern = None
-    RealMCPIntegrationHelper = None
-    MCP_AVAILABLE = False
+    try:
+        # Fallback to absolute imports (for Claude Code context)
+        from mcp.mcp_integration_manager import (
+            MCPIntegrationManager,
+            MCPServerType,
+            QueryPattern,
+        )
+        from transparency.real_mcp_integration import RealMCPIntegrationHelper
+
+        MCP_AVAILABLE = True
+    except ImportError:
+        # Graceful fallback when MCP infrastructure unavailable
+        MCPIntegrationManager = None
+        MCPServerType = None
+        QueryPattern = None
+        RealMCPIntegrationHelper = None
+        MCP_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 

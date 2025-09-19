@@ -36,17 +36,26 @@ from .constants import MCPServerConstants
 
 # 🚀 ENHANCEMENT: Import for Claude Code MCP server integration
 try:
+    # Try relative imports first (for package context)
     from ..transparency.real_mcp_integration import RealMCPIntegrationHelper
     from ..transparency.integrated_transparency import TransparencyContext
     from ..transparency.persona_integration import TransparentPersonaManager
 
     CLAUDE_CODE_MCP_AVAILABLE = True
 except ImportError:
-    # Graceful fallback if Claude Code MCP servers not available
-    RealMCPIntegrationHelper = None
-    TransparencyContext = None
-    TransparentPersonaManager = None
-    CLAUDE_CODE_MCP_AVAILABLE = False
+    try:
+        # Fallback to absolute imports (for Claude Code context)
+        from transparency.real_mcp_integration import RealMCPIntegrationHelper
+        from transparency.integrated_transparency import TransparencyContext
+        from transparency.persona_integration import TransparentPersonaManager
+
+        CLAUDE_CODE_MCP_AVAILABLE = True
+    except ImportError:
+        # Graceful fallback if Claude Code MCP servers not available
+        RealMCPIntegrationHelper = None
+        TransparencyContext = None
+        TransparentPersonaManager = None
+        CLAUDE_CODE_MCP_AVAILABLE = False
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -162,16 +171,41 @@ class MCPIntegrationManager:
         if not CLAUDE_CODE_MCP_AVAILABLE:
             return
 
-        # Initialize transparency context for MCP integration
-        transparency_context = TransparencyContext()
-        persona_manager = TransparentPersonaManager(transparency_context)
+        # Initialize transparency system for MCP integration
+        from transparency.integrated_transparency import IntegratedTransparencySystem
 
-        # Initialize Claude Code MCP integration helper
-        # Note: MCPUseClient initialization would be handled by existing infrastructure
+        transparency_system = IntegratedTransparencySystem(config={"debug_mode": False})
+        transparency_context = TransparencyContext(persona="diego")
+        persona_manager = TransparentPersonaManager(transparency_system)
+
+        # Create fallback MCP client if real client not available
+        try:
+            from ..integration.unified_bridge import MCPUseClient
+
+            mcp_client = MCPUseClient()
+        except ImportError:
+            # Use fallback client class when MCP infrastructure not available
+            class FallbackMCPClient:
+                def __init__(self):
+                    self.is_available = False
+
+                def is_server_available(self, server_name: str) -> bool:
+                    return False
+
+                async def call_server(self, server_name: str, *args, **kwargs):
+                    return {
+                        "success": False,
+                        "error": "MCP client not available",
+                        "fallback": True,
+                    }
+
+            mcp_client = FallbackMCPClient()
+
+        # Initialize Claude Code MCP integration helper with proper client
         self.claude_code_mcp_helper = RealMCPIntegrationHelper(
             transparency_context=transparency_context,
             persona_manager=persona_manager,
-            mcp_client=None,  # Will be initialized by existing infrastructure
+            mcp_client=mcp_client,
         )
 
     def _initialize_mcp_servers(self) -> Dict[MCPServerType, List[MCPServerConfig]]:
