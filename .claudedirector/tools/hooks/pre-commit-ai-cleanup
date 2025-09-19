@@ -262,6 +262,10 @@ class AICleanupEnforcer:
         violations = []
 
         for filepath in self.staged_files.keys():
+            # Skip exempt files FIRST
+            if self._is_exempt(filepath):
+                continue
+                
             # Check against temporary file patterns
             for pattern in self.excessive_patterns["temporary_artifacts"]:
                 if re.search(pattern, filepath):
@@ -269,7 +273,7 @@ class AICleanupEnforcer:
                         f"🗑️ TEMPORARY ARTIFACT: {filepath} appears to be a temporary file that should be cleaned up"
                     )
 
-            # Check for backup/duplicate files
+            # Check for backup/duplicate files (exemptions already checked above)
             if filepath.endswith((".bak", ".backup", ".orig", ".copy")):
                 violations.append(
                     f"💾 BACKUP FILE: {filepath} is a backup file that should not be committed"
@@ -398,6 +402,10 @@ class AICleanupEnforcer:
         # Add removal commands for temporary files
         temp_files = []
         for filepath in self.staged_files.keys():
+            # Skip exempt files FIRST
+            if self._is_exempt(filepath):
+                continue
+                
             for pattern in self.excessive_patterns["temporary_artifacts"]:
                 if re.search(pattern, filepath):
                     temp_files.append(filepath)
