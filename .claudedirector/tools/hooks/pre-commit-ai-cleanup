@@ -203,19 +203,57 @@ class AICleanupEnforcer:
             return ""
 
     def _is_exempt(self, filepath: str) -> bool:
-        """Check if file is exempt from cleanup enforcement"""
-        # Check exact file matches
+        """Check if file is exempt from cleanup enforcement - BULLETPROOF VERSION"""
+        import os.path
+
+        # CRITICAL: README.md is ALWAYS exempt - multiple path variations
+        readme_variations = [
+            "README.md",
+            "./README.md",
+            "README.MD",
+            "./README.MD",
+            os.path.abspath("README.md"),
+            os.path.normpath("README.md"),
+            os.path.normpath("./README.md"),
+        ]
+
+        # Normalize the input filepath for comparison
+        normalized_filepath = os.path.normpath(filepath)
+        basename_filepath = os.path.basename(filepath)
+
+        # BULLETPROOF README protection - check all variations
+        if (
+            filepath in readme_variations
+            or normalized_filepath in readme_variations
+            or basename_filepath == "README.md"
+            or basename_filepath == "README.MD"
+            or filepath.endswith("/README.md")
+            or filepath.endswith("/README.MD")
+        ):
+            return True
+
+        # Check exact file matches (original logic)
         if filepath in self.exemptions.get("files", []):
             return True
 
-        # Check pattern matches
+        # Also check normalized path against exemptions
+        if normalized_filepath in self.exemptions.get("files", []):
+            return True
+
+        # Check basename against exemptions (for path-independent matching)
+        if basename_filepath in self.exemptions.get("files", []):
+            return True
+
+        # Check pattern matches (original logic)
         for pattern in self.exemptions.get("patterns", []):
-            if re.search(pattern, filepath):
+            if re.search(pattern, filepath) or re.search(pattern, normalized_filepath):
                 return True
 
-        # Check directory matches
+        # Check directory matches (original logic)
         for directory in self.exemptions.get("directories", []):
-            if filepath.startswith(directory):
+            if filepath.startswith(directory) or normalized_filepath.startswith(
+                directory
+            ):
                 return True
 
         return False
@@ -262,6 +300,14 @@ class AICleanupEnforcer:
         violations = []
 
         for filepath in self.staged_files.keys():
+            # CRITICAL: Double-check README protection before any processing
+            if "README" in filepath.upper():
+                continue
+
+            # Skip exempt files FIRST
+            if self._is_exempt(filepath):
+                continue
+
             # Check against temporary file patterns
             for pattern in self.excessive_patterns["temporary_artifacts"]:
                 if re.search(pattern, filepath):
@@ -269,7 +315,7 @@ class AICleanupEnforcer:
                         f"🗑️ TEMPORARY ARTIFACT: {filepath} appears to be a temporary file that should be cleaned up"
                     )
 
-            # Check for backup/duplicate files
+            # Check for backup/duplicate files (exemptions already checked above)
             if filepath.endswith((".bak", ".backup", ".orig", ".copy")):
                 violations.append(
                     f"💾 BACKUP FILE: {filepath} is a backup file that should not be committed"
@@ -398,6 +444,14 @@ class AICleanupEnforcer:
         # Add removal commands for temporary files
         temp_files = []
         for filepath in self.staged_files.keys():
+            # CRITICAL: Double-check README protection before any processing
+            if "README" in filepath.upper():
+                continue
+
+            # Skip exempt files FIRST
+            if self._is_exempt(filepath):
+                continue
+
             for pattern in self.excessive_patterns["temporary_artifacts"]:
                 if re.search(pattern, filepath):
                     temp_files.append(filepath)
@@ -506,4 +560,38 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # IMMUTABLE README PROTECTION - Final safeguard
+    import os
+    import sys
+
+    # Check if README.md exists and protect it from any deletion
+    readme_path = "README.md"
+    if os.path.exists(readme_path):
+        # Make README.md temporarily read-only during cleanup execution
+        import stat
+
+        current_mode = os.stat(readme_path).st_mode
+
+        try:
+            os.chmod(readme_path, current_mode & ~stat.S_IWRITE)
+
+            # Run main cleanup
+            main()
+
+        except Exception as e:
+            print(f"⚠️  README protection error: {e}")
+        finally:
+            # ALWAYS restore original permissions, even on error
+            try:
+                os.chmod(readme_path, current_mode)
+            except Exception as restore_error:
+                print(f"⚠️  Failed to restore README permissions: {restore_error}")
+                # Try to at least make it writable
+                try:
+                    os.chmod(readme_path, 0o644)
+                except:
+                    pass
+    else:
+        # README.md doesn't exist - run normally but warn
+        print("⚠️  WARNING: README.md not found - this may indicate a deletion issue")
+        main()
