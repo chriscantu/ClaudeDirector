@@ -92,6 +92,8 @@ class QueryPattern(Enum):
     TECHNICAL_QUESTION = "technical_question"  # → Context7 primary
     UI_COMPONENT = "ui_component"  # → Magic primary
     TESTING_AUTOMATION = "testing_automation"  # → Playwright primary
+    # 🚀 PHASE 1 EXTENSION: Add retrospective pattern (REUSE existing routing infrastructure)
+    RETROSPECTIVE_ANALYSIS = "retrospective_analysis"  # → Sequential primary
     GENERAL_QUERY = "general_query"  # → Sequential primary
 
 
@@ -813,6 +815,21 @@ class MCPIntegrationManager:
         """Simple rule-based query pattern classification - no ML dependencies."""
         query_lower = query.lower()
 
+        # 🚀 PHASE 1 EXTENSION: Add retrospective pattern detection (REUSE existing classification logic)
+        retrospective_keywords = [
+            "retrospective",
+            "reflection",
+            "weekly review",
+            "progress",
+            "improvement",
+            "rating",
+            "what did i",
+            "how could i",
+            "scale of 1",
+        ]
+        if any(keyword in query_lower for keyword in retrospective_keywords):
+            return QueryPattern.RETROSPECTIVE_ANALYSIS
+
         # Strategic analysis patterns
         strategic_keywords = [
             "strategy",
@@ -880,6 +897,8 @@ class MCPIntegrationManager:
             QueryPattern.TECHNICAL_QUESTION: MCPServerType.CONTEXT7,
             QueryPattern.UI_COMPONENT: MCPServerType.MAGIC,
             QueryPattern.TESTING_AUTOMATION: MCPServerType.PLAYWRIGHT,
+            # 🚀 PHASE 1 EXTENSION: Add retrospective routing (REUSE existing server mapping)
+            QueryPattern.RETROSPECTIVE_ANALYSIS: MCPServerType.SEQUENTIAL,
             QueryPattern.GENERAL_QUERY: MCPServerType.SEQUENTIAL,
         }
         return server_mapping.get(pattern)

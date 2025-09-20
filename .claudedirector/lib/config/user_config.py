@@ -40,6 +40,18 @@ class UserIdentity:
     role: str = ""
     organization: str = ""
 
+    # 🚀 PHASE 1 EXTENSION: Add retrospective preferences to existing structure (REUSE existing patterns)
+    retrospective_preferences: Dict[str, Any] = None
+
+    def __post_init__(self):
+        """Initialize retrospective preferences with defaults if not provided"""
+        if self.retrospective_preferences is None:
+            self.retrospective_preferences = {
+                "reminder_enabled": True,
+                "preferred_day": "Sunday",
+                "analysis_depth": "standard",
+            }
+
     def get_name(self, context: str = "default") -> str:
         """
         Get appropriate name based on context
@@ -363,6 +375,78 @@ class UserConfigManager(BaseManager):
                 print("❌ Failed to save configuration")
 
         return new_identity
+
+    # 🚀 PHASE 1 EXTENSION: Retrospective preferences setup (REUSE existing patterns)
+    def setup_retrospective_preferences(self) -> dict:
+        """
+        Setup retrospective preferences using existing patterns
+
+        BLOAT_PREVENTION: REUSES existing interactive setup patterns
+        ARCHITECTURE: REUSES existing validation and error handling
+        """
+        print("🎯 Retrospective Preferences Setup")
+        print("=" * 40)
+        print("Configure your weekly retrospective preferences.")
+        print()
+
+        current = self.get_user_identity()
+        current_prefs = current.retrospective_preferences or {
+            "reminder_enabled": True,
+            "preferred_day": "Sunday",
+            "analysis_depth": "standard",
+        }
+
+        # Get preferences using existing interactive patterns
+        reminder_input = (
+            input(
+                f"Enable weekly reminders? [y/N] [{current_prefs.get('reminder_enabled', True)}]: "
+            )
+            .strip()
+            .lower()
+        )
+        reminder_enabled = (
+            reminder_input in ("y", "yes")
+            if reminder_input
+            else current_prefs.get("reminder_enabled", True)
+        )
+
+        preferred_day = input(
+            f"Preferred retrospective day [Sunday]: "
+        ).strip() or current_prefs.get("preferred_day", "Sunday")
+
+        print("\nAnalysis depth options:")
+        print("  • basic: Simple progress tracking")
+        print("  • standard: Progress + improvements + rating")
+        print("  • deep: Standard + trend analysis + insights")
+        analysis_depth = input(
+            f"Analysis depth [standard]: "
+        ).strip() or current_prefs.get("analysis_depth", "standard")
+
+        # Create updated preferences
+        new_preferences = {
+            "reminder_enabled": reminder_enabled,
+            "preferred_day": preferred_day,
+            "analysis_depth": analysis_depth,
+        }
+
+        # Update user identity (REUSE existing UserIdentity structure)
+        current.retrospective_preferences = new_preferences
+
+        # Show preview using existing patterns
+        print("\n📋 Retrospective Preferences Preview:")
+        print(f"  Reminders enabled: {new_preferences['reminder_enabled']}")
+        print(f"  Preferred day: {new_preferences['preferred_day']}")
+        print(f"  Analysis depth: {new_preferences['analysis_depth']}")
+
+        # Confirm and save using existing patterns
+        confirm = input("\nSave these preferences? [Y/n]: ").strip().lower()
+        if confirm in ("", "y", "yes"):
+            if self.save_user_config(current):
+                print("✅ Retrospective preferences saved successfully!")
+            else:
+                print("❌ Failed to save preferences")
+
+        return new_preferences
 
 
 # Global instance for easy access

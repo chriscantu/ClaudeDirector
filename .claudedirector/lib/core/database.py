@@ -286,6 +286,11 @@ class DatabaseManager(BaseManager):
                 "meeting": self.config.meeting_schema_path,
                 "stakeholder": self.config.stakeholder_schema_path,
                 "task": self.config.task_schema_path,
+                # 🚀 PHASE 1 EXTENSION: Add retrospective schema mapping (REUSE existing pattern)
+                "retrospective": Path(__file__).parent.parent
+                / "config"
+                / "schemas"
+                / "retrospective_schema.sql",
             }
             schema_path = schema_mapping.get(schema_name)
 
@@ -339,6 +344,16 @@ class DatabaseManager(BaseManager):
                 f"Failed to apply schema '{schema_name}': {e}",
                 db_path=str(self.db_path),
             )
+
+    # 🚀 PHASE 1 EXTENSION: Retrospective schema management (REUSE existing patterns)
+    def ensure_retrospective_schema(self) -> bool:
+        """
+        Ensure retrospective schema is applied - EXTENDS existing infrastructure
+
+        BLOAT_PREVENTION: REUSES existing ensure_schema method (NO duplication)
+        ARCHITECTURE: Follows existing schema management patterns
+        """
+        return self.ensure_schema("retrospective")
 
     def get_table_info(self, table_name: str) -> Dict[str, Any]:
         """Get information about a specific table"""

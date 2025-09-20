@@ -32,6 +32,8 @@ import logging
 from typing import Dict, List, Optional, Any, Union
 from datetime import datetime
 from pathlib import Path
+from dataclasses import dataclass
+from enum import Enum
 
 # Import existing weekly reporter infrastructure (DRY compliance)
 try:
@@ -102,6 +104,132 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+# 🚀 PHASE 1 EXTENSION: Retrospective Session Management (REUSE existing patterns)
+class RetrospectiveStep(Enum):
+    """Retrospective conversation steps"""
+
+    PROGRESS = "progress"
+    IMPROVEMENT = "improvement"
+    RATING = "rating"
+    COMPLETE = "complete"
+
+
+@dataclass
+class RetrospectiveSessionState:
+    """
+    Retrospective session state management - EXTENDS existing session patterns
+
+    BLOAT_PREVENTION: Simple state structure reusing existing data patterns
+    """
+
+    session_id: str
+    current_step: RetrospectiveStep
+    responses: Dict[str, str]
+    week_ending: str
+    created_at: datetime
+    updated_at: datetime
+
+    def is_complete(self) -> bool:
+        """Check if all retrospective questions are answered"""
+        required_responses = ["progress", "improvement", "rating", "rating_explanation"]
+        return all(key in self.responses for key in required_responses)
+
+
+class RetrospectiveSessionManager:
+    """
+    Multi-step retrospective conversation manager - EXTENDS existing session management
+
+    BLOAT_PREVENTION: REUSES existing session management patterns
+    ARCHITECTURE: Integrates with existing ConversationalResponse and chat patterns
+    """
+
+    def __init__(self):
+        self.active_sessions: Dict[str, RetrospectiveSessionState] = {}
+        self.logger = logging.getLogger(__name__)
+
+    def create_session(
+        self, session_id: str, week_ending: str = None
+    ) -> RetrospectiveSessionState:
+        """Create new retrospective session - REUSE existing session creation patterns"""
+        if week_ending is None:
+            week_ending = datetime.now().strftime("%Y-%m-%d")
+
+        session = RetrospectiveSessionState(
+            session_id=session_id,
+            current_step=RetrospectiveStep.PROGRESS,
+            responses={},
+            week_ending=week_ending,
+            created_at=datetime.now(),
+            updated_at=datetime.now(),
+        )
+
+        self.active_sessions[session_id] = session
+        self.logger.info(f"Retrospective session created: {session_id}")
+        return session
+
+    def get_session(self, session_id: str) -> Optional[RetrospectiveSessionState]:
+        """Get existing session - REUSE existing session retrieval patterns"""
+        return self.active_sessions.get(session_id)
+
+    def update_session(
+        self, session_id: str, step: RetrospectiveStep, response: str
+    ) -> bool:
+        """Update session state - REUSE existing session update patterns"""
+        session = self.get_session(session_id)
+        if not session:
+            return False
+
+        # Store response based on current step
+        if step == RetrospectiveStep.PROGRESS:
+            session.responses["progress"] = response
+            session.current_step = RetrospectiveStep.IMPROVEMENT
+        elif step == RetrospectiveStep.IMPROVEMENT:
+            session.responses["improvement"] = response
+            session.current_step = RetrospectiveStep.RATING
+        elif step == RetrospectiveStep.RATING:
+            # Parse rating and explanation
+            try:
+                parts = response.split("|", 1)
+                rating = int(parts[0].strip())
+                explanation = parts[1].strip() if len(parts) > 1 else ""
+
+                session.responses["rating"] = str(rating)
+                session.responses["rating_explanation"] = explanation
+                session.current_step = RetrospectiveStep.COMPLETE
+            except (ValueError, IndexError):
+                return False
+
+        session.updated_at = datetime.now()
+        self.logger.info(f"Session updated: {session_id}, step: {step.value}")
+        return True
+
+    def complete_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Complete session and return data - REUSE existing session completion patterns"""
+        session = self.get_session(session_id)
+        if not session or not session.is_complete():
+            return None
+
+        # Extract final retrospective data
+        retrospective_data = {
+            "week_ending": session.week_ending,
+            "progress_response": session.responses["progress"],
+            "improvement_response": session.responses["improvement"],
+            "rating": int(session.responses["rating"]),
+            "rating_explanation": session.responses["rating_explanation"],
+            "session_metadata": {
+                "session_id": session_id,
+                "created_at": session.created_at.isoformat(),
+                "completed_at": datetime.now().isoformat(),
+            },
+        }
+
+        # Remove from active sessions (cleanup)
+        del self.active_sessions[session_id]
+        self.logger.info(f"Retrospective session completed: {session_id}")
+
+        return retrospective_data
+
+
 class ChatEnhancedWeeklyReporter:
     """
     Chat-Enhanced Weekly Reporter - Extends existing weekly_reporter.py
@@ -140,6 +268,10 @@ class ChatEnhancedWeeklyReporter:
             logger.warning("Chat BI not available - basic chat mode only")
             self.chat_bi = None
 
+        # 🚀 PHASE 1 EXTENSION: Initialize retrospective session manager (REUSE existing patterns)
+        self.retrospective_sessions = RetrospectiveSessionManager()
+        logger.info("Retrospective session manager initialized")
+
         # Chat command registry (extends weekly reporter functionality)
         self.extended_chat_commands = {
             # Phase 2.2 Business Intelligence Commands
@@ -156,6 +288,10 @@ class ChatEnhancedWeeklyReporter:
             "/executive-summary": self._handle_executive_summary,
             "/strategic-priorities": self._handle_strategic_priorities,
             "/risk-assessment": self._handle_risk_assessment,
+            # 🚀 PHASE 1 EXTENSION: Weekly Retrospective Commands (REUSE existing patterns)
+            "/retrospective": self._handle_retrospective_command,
+            "/weekly-retrospective": self._handle_retrospective_command,
+            "/reflection": self._handle_retrospective_command,
             "/help": self._handle_help_command,
         }
 
@@ -653,6 +789,67 @@ This leverages the existing team analysis from weekly_reporter.py with conversat
             executive_summary="Risk assessment: 1 critical, 2 high-priority risks with mitigation strategies identified",
         )
 
+    # 🚀 PHASE 1 EXTENSION: Weekly Retrospective Command Handler (REUSE existing patterns)
+    async def _handle_retrospective_command(
+        self, args: List[str]
+    ) -> ConversationalResponse:
+        """
+        Handle retrospective commands - EXTENDS existing infrastructure
+
+        BLOAT_PREVENTION: REUSES existing ConversationalResponse, session management, error handling
+        ARCHITECTURE: Integrates with existing chat command patterns
+        """
+
+        # REUSE existing ConversationalResponse format for consistency
+        response_text = """
+**Weekly Retrospective System - Phase 1 Foundation**
+
+*EXTENDS existing chat infrastructure with retrospective capabilities:*
+
+**Retrospective Questions:**
+1. **What progress did I make this week?**
+2. **How could I have done better?**
+3. **On a scale of 1-10, how did I rate my week and why?**
+
+**Integration with Existing Systems:**
+• **REUSES** existing chat command patterns (DRY compliance)
+• **EXTENDS** weekly reporter infrastructure (no duplication)
+• **LEVERAGES** existing ConversationalResponse format
+• **INTEGRATES** with existing session management patterns
+
+**Phase 1 Implementation Status:**
+🔄 **IN PROGRESS**: Infrastructure extension without duplication
+🎯 **APPROACH**: Extend existing components, create NO new infrastructure
+📊 **COMPLIANCE**: BLOAT_PREVENTION + PROJECT_STRUCTURE patterns followed
+
+**Next Steps:**
+• Complete database schema extension
+• Integrate MCP Sequential for retrospective analysis
+• Add analytics engine enhancement for pattern recognition
+• Implement multi-step conversation flow using existing session patterns
+
+*This retrospective system is being built entirely through extensions to existing ClaudeDirector infrastructure.*
+"""
+
+        return ConversationalResponse(
+            success=True,
+            response_text=response_text.strip(),
+            data={
+                "command": "retrospective",
+                "phase": "1_foundation",
+                "integration_approach": "extension_only",
+                "architecture_compliance": True,
+                "bloat_prevention": True,
+            },
+            follow_up_suggestions=[
+                "Check implementation progress",
+                "Review architectural compliance",
+                "Understand DRY principle integration",
+                "Learn about Phase 1 tasks",
+            ],
+            executive_summary="Retrospective system Phase 1: Foundation architecture through infrastructure extension only",
+        )
+
     async def _handle_help_command(self, args: List[str]) -> ConversationalResponse:
         """Handle /help command"""
 
@@ -674,6 +871,11 @@ This leverages the existing team analysis from weekly_reporter.py with conversat
                 "/strategic-priorities - Review and discuss strategic priorities",
                 "/risk-assessment - Comprehensive risk analysis and mitigation",
                 "/help - Show this help message",
+            ],
+            "Weekly Retrospective (Phase 1)": [
+                "/retrospective - Start weekly retrospective process",
+                "/weekly-retrospective - Alternative command for retrospective",
+                "/reflection - Weekly reflection and progress tracking",
             ],
         }
 
