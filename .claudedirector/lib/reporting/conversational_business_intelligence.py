@@ -125,6 +125,14 @@ except ImportError:
                 self.score = 0
                 self.indicators = []
 
+        class MCPEnhancementResult:
+            def __init__(
+                self, success=False, strategic_insights="", industry_insights=None
+            ):
+                self.success = success
+                self.strategic_insights = strategic_insights
+                self.industry_insights = industry_insights or {}
+
         # Assign fallback implementations (maintains API compatibility)
         StrategicAnalyzer = _NullStrategicAnalyzer
         BusinessValueFramework = _NullBusinessValueFramework
@@ -887,6 +895,151 @@ class ConversationalBusinessIntelligence:
         )
 
         return await self._handle_correlation_query(query)
+
+    # Additional command handlers
+    async def _handle_design_system_roi_command(
+        self, args: List[str]
+    ) -> ConversationalResponse:
+        """Handle /calculate-design-system-roi command"""
+        timeframe = args[0] if args else "ytd"
+        query = ChatBusinessQuery(
+            query_text=f"Calculate design system ROI for {timeframe}",
+            query_type="roi_calculation",
+            parameters={"domain": "design_system", "timeframe": timeframe},
+        )
+        return await self._handle_roi_query(query)
+
+    async def _handle_cost_savings_command(
+        self, args: List[str]
+    ) -> ConversationalResponse:
+        """Handle /analyze-cost-savings command"""
+        domain = args[0] if args else "platform"
+        query = ChatBusinessQuery(
+            query_text=f"Analyze cost savings for {domain}",
+            query_type="roi_calculation",
+            parameters={"domain": domain, "timeframe": "ytd"},
+        )
+        return await self._handle_roi_query(query)
+
+    async def _handle_velocity_benchmark_command(
+        self, args: List[str]
+    ) -> ConversationalResponse:
+        """Handle /compare-velocity-metrics command"""
+        query = ChatBusinessQuery(
+            query_text="Compare velocity metrics against industry",
+            query_type="industry_benchmark",
+            parameters={"domain": "velocity", "metric": "development_velocity"},
+        )
+        return await self._handle_benchmark_query(query)
+
+    async def _handle_adoption_benchmark_command(
+        self, args: List[str]
+    ) -> ConversationalResponse:
+        """Handle /benchmark-platform-adoption command"""
+        query = ChatBusinessQuery(
+            query_text="Benchmark platform adoption rates",
+            query_type="industry_benchmark",
+            parameters={"domain": "platform", "metric": "adoption_rates"},
+        )
+        return await self._handle_benchmark_query(query)
+
+    async def _handle_dependency_analysis_command(
+        self, args: List[str]
+    ) -> ConversationalResponse:
+        """Handle /analyze-cross-team-dependencies command"""
+        return ConversationalResponse(
+            success=True,
+            response_text="Cross-team dependency analysis would integrate with existing strategic analyzer",
+            data={"analysis_type": "dependencies"},
+            follow_up_suggestions=[
+                "Analyze specific team dependencies",
+                "Review coordination metrics",
+            ],
+        )
+
+    async def _handle_risk_analysis_command(
+        self, args: List[str]
+    ) -> ConversationalResponse:
+        """Handle /strategic-risk-assessment command"""
+        return ConversationalResponse(
+            success=True,
+            response_text="Strategic risk assessment would use MCP Sequential for comprehensive analysis",
+            data={"analysis_type": "risk_assessment"},
+            follow_up_suggestions=[
+                "Deep dive into specific risks",
+                "Review mitigation strategies",
+            ],
+        )
+
+    async def _handle_impact_analysis_command(
+        self, args: List[str]
+    ) -> ConversationalResponse:
+        """Handle /platform-impact-analysis command"""
+        return ConversationalResponse(
+            success=True,
+            response_text="Platform impact analysis would correlate adoption metrics with business outcomes",
+            data={"analysis_type": "impact_analysis"},
+            follow_up_suggestions=[
+                "Analyze specific platform components",
+                "Review business correlation",
+            ],
+        )
+
+    async def _handle_value_scoring_command(
+        self, args: List[str]
+    ) -> ConversationalResponse:
+        """Handle /initiative-value-scoring command"""
+        return ConversationalResponse(
+            success=True,
+            response_text="Initiative value scoring would use existing business value frameworks",
+            data={"analysis_type": "value_scoring"},
+            follow_up_suggestions=[
+                "Score specific initiatives",
+                "Compare initiative priorities",
+            ],
+        )
+
+    async def _handle_executive_summary_command(
+        self, args: List[str]
+    ) -> ConversationalResponse:
+        """Handle /executive-summary command"""
+        return ConversationalResponse(
+            success=True,
+            response_text="Executive summary would integrate latest strategic analysis with MCP enhancement",
+            data={"summary_type": "executive"},
+            follow_up_suggestions=[
+                "Drill down into specific areas",
+                "Generate detailed reports",
+            ],
+        )
+
+    async def _handle_quarterly_review_command(
+        self, args: List[str]
+    ) -> ConversationalResponse:
+        """Handle /quarterly-business-review command"""
+        return ConversationalResponse(
+            success=True,
+            response_text="Quarterly business review would compile comprehensive strategic and financial analysis",
+            data={"review_type": "quarterly"},
+            follow_up_suggestions=[
+                "Focus on specific quarters",
+                "Compare year-over-year trends",
+            ],
+        )
+
+    async def _handle_stakeholder_communication_command(
+        self, args: List[str]
+    ) -> ConversationalResponse:
+        """Handle /stakeholder-communication command"""
+        return ConversationalResponse(
+            success=True,
+            response_text="Stakeholder communication would optimize insights for different executive audiences",
+            data={"communication_type": "stakeholder"},
+            follow_up_suggestions=[
+                "Target specific stakeholder groups",
+                "Generate executive presentations",
+            ],
+        )
 
     # MCP Integration methods
     async def _enhance_with_mcp_sequential(
