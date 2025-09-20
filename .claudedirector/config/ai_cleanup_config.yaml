@@ -114,7 +114,10 @@ exemptions:
   files:
     - "docs/ARCHITECTURE.md"     # Architecture docs can be large
     - "docs/IMPLEMENTATION_GUIDE.md"  # Implementation guides are comprehensive
-    - "README.md"                # Main readme exempt from size limits
+    - "README.md"                # Main readme exempt from size limits - CRITICAL PROTECTION
+    - "./README.md"              # Main readme with relative path - CRITICAL PROTECTION
+    - "README.MD"                # Main readme case variation - CRITICAL PROTECTION
+    - "./README.MD"              # Main readme case variation with path - CRITICAL PROTECTION
     - ".claudedirector/tools/ai-cleanup/README.md"  # AI cleanup documentation
 
   patterns:
