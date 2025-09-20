@@ -6,6 +6,7 @@ CRITICAL: These tests must NEVER be skipped and MUST pass before any commit.
 Enforces user requirement: "ensure that all P0 features are always tested moving forward and never skipped"
 """
 
+import os
 import sys
 import subprocess
 import time
@@ -155,12 +156,17 @@ class P0TestEnforcer:
                 # Handle single test file
                 cmd = [sys.executable, str(test_path)]
 
+                # Set environment variable to indicate P0 test suite context
+                env = os.environ.copy()
+                env["P0_TEST_SUITE"] = "1"
+
                 result = subprocess.run(
                     cmd,
                     capture_output=True,
                     text=True,
                     timeout=120,  # 2 minute timeout
                     cwd=PROJECT_ROOT,
+                    env=env,
                 )
 
             duration = time.time() - start_time
