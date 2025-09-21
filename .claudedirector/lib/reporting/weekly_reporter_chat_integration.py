@@ -105,129 +105,9 @@ logger = logging.getLogger(__name__)
 
 
 # 🚀 PHASE 1 EXTENSION: Retrospective Session Management (REUSE existing patterns)
-class RetrospectiveStep(Enum):
-    """Retrospective conversation steps"""
-
-    PROGRESS = "progress"
-    IMPROVEMENT = "improvement"
-    RATING = "rating"
-    COMPLETE = "complete"
-
-
-@dataclass
-class RetrospectiveSessionState:
-    """
-    Retrospective session state management - EXTENDS existing session patterns
-
-    BLOAT_PREVENTION: Simple state structure reusing existing data patterns
-    """
-
-    session_id: str
-    current_step: RetrospectiveStep
-    responses: Dict[str, str]
-    week_ending: str
-    created_at: datetime
-    updated_at: datetime
-
-    def is_complete(self) -> bool:
-        """Check if all retrospective questions are answered"""
-        required_responses = ["progress", "improvement", "rating", "rating_explanation"]
-        return all(key in self.responses for key in required_responses)
-
-
-class RetrospectiveSessionManager:
-    """
-    Multi-step retrospective conversation manager - EXTENDS existing session management
-
-    BLOAT_PREVENTION: REUSES existing session management patterns
-    ARCHITECTURE: Integrates with existing ConversationalResponse and chat patterns
-    """
-
-    def __init__(self):
-        self.active_sessions: Dict[str, RetrospectiveSessionState] = {}
-        self.logger = logging.getLogger(__name__)
-
-    def create_session(
-        self, session_id: str, week_ending: str = None
-    ) -> RetrospectiveSessionState:
-        """Create new retrospective session - REUSE existing session creation patterns"""
-        if week_ending is None:
-            week_ending = datetime.now().strftime("%Y-%m-%d")
-
-        session = RetrospectiveSessionState(
-            session_id=session_id,
-            current_step=RetrospectiveStep.PROGRESS,
-            responses={},
-            week_ending=week_ending,
-            created_at=datetime.now(),
-            updated_at=datetime.now(),
-        )
-
-        self.active_sessions[session_id] = session
-        self.logger.info(f"Retrospective session created: {session_id}")
-        return session
-
-    def get_session(self, session_id: str) -> Optional[RetrospectiveSessionState]:
-        """Get existing session - REUSE existing session retrieval patterns"""
-        return self.active_sessions.get(session_id)
-
-    def update_session(
-        self, session_id: str, step: RetrospectiveStep, response: str
-    ) -> bool:
-        """Update session state - REUSE existing session update patterns"""
-        session = self.get_session(session_id)
-        if not session:
-            return False
-
-        # Store response based on current step
-        if step == RetrospectiveStep.PROGRESS:
-            session.responses["progress"] = response
-            session.current_step = RetrospectiveStep.IMPROVEMENT
-        elif step == RetrospectiveStep.IMPROVEMENT:
-            session.responses["improvement"] = response
-            session.current_step = RetrospectiveStep.RATING
-        elif step == RetrospectiveStep.RATING:
-            # Parse rating and explanation
-            try:
-                parts = response.split("|", 1)
-                rating = int(parts[0].strip())
-                explanation = parts[1].strip() if len(parts) > 1 else ""
-
-                session.responses["rating"] = str(rating)
-                session.responses["rating_explanation"] = explanation
-                session.current_step = RetrospectiveStep.COMPLETE
-            except (ValueError, IndexError):
-                return False
-
-        session.updated_at = datetime.now()
-        self.logger.info(f"Session updated: {session_id}, step: {step.value}")
-        return True
-
-    def complete_session(self, session_id: str) -> Optional[Dict[str, Any]]:
-        """Complete session and return data - REUSE existing session completion patterns"""
-        session = self.get_session(session_id)
-        if not session or not session.is_complete():
-            return None
-
-        # Extract final retrospective data
-        retrospective_data = {
-            "week_ending": session.week_ending,
-            "progress_response": session.responses["progress"],
-            "improvement_response": session.responses["improvement"],
-            "rating": int(session.responses["rating"]),
-            "rating_explanation": session.responses["rating_explanation"],
-            "session_metadata": {
-                "session_id": session_id,
-                "created_at": session.created_at.isoformat(),
-                "completed_at": datetime.now().isoformat(),
-            },
-        }
-
-        # Remove from active sessions (cleanup)
-        del self.active_sessions[session_id]
-        self.logger.info(f"Retrospective session completed: {session_id}")
-
-        return retrospective_data
+# NOTE: Retrospective session management moved to retrospective_enabled_chat_reporter.py (DRY compliance)
+# Removed: RetrospectiveStep, RetrospectiveSessionState, RetrospectiveSessionManager
+# Weekly reporter should not manage retrospective sessions (Single Responsibility Principle)
 
 
 class ChatEnhancedWeeklyReporter:
@@ -268,31 +148,40 @@ class ChatEnhancedWeeklyReporter:
             logger.warning("Chat BI not available - basic chat mode only")
             self.chat_bi = None
 
-        # 🚀 PHASE 1 EXTENSION: Initialize retrospective session manager (REUSE existing patterns)
-        self.retrospective_sessions = RetrospectiveSessionManager()
-        logger.info("Retrospective session manager initialized")
+        # NOTE: Retrospective functionality handled by RetrospectiveEnabledChatReporter (DRY compliance)
 
-        # Chat command registry (extends weekly reporter functionality)
+        # Chat command registry (DRY compliance - no duplicates)
         self.extended_chat_commands = {
-            # Phase 2.2 Business Intelligence Commands
-            "/analyze-platform-roi": self._handle_roi_analysis,
-            "/benchmark-against-industry": self._handle_industry_benchmark,
-            "/strategic-insights": self._handle_strategic_insights,
-            "/business-value-correlation": self._handle_business_correlation,
-            # Weekly Report Integration Commands
+            # Weekly Report Integration Commands (UNIQUE to weekly reporter)
             "/generate-weekly-report": self._handle_weekly_report_generation,
             "/chat-about-report": self._handle_report_chat,
             "/analyze-epic": self._handle_epic_analysis,
             "/team-performance": self._handle_team_performance,
-            # Executive Communication Commands
-            "/executive-summary": self._handle_executive_summary,
+            # Executive Communication Commands (UNIQUE to weekly reporter context)
             "/strategic-priorities": self._handle_strategic_priorities,
             "/risk-assessment": self._handle_risk_assessment,
-            # 🚀 PHASE 1 EXTENSION: Weekly Retrospective Commands (REUSE existing patterns)
-            "/retrospective": self._handle_retrospective_command,
-            "/weekly-retrospective": self._handle_retrospective_command,
-            "/reflection": self._handle_retrospective_command,
             "/help": self._handle_help_command,
+        }
+        # NOTE: Retrospective commands (/retrospective, /weekly-retrospective, /reflection)
+        # moved to RetrospectiveEnabledChatReporter (Single Responsibility Principle)
+
+        # Commands delegated to ConversationalBusinessIntelligence (DRY compliance)
+        self.delegated_commands = {
+            "/analyze-platform-roi",
+            "/benchmark-against-industry",
+            "/strategic-insights",
+            "/business-value-correlation",
+            "/executive-summary",
+            "/calculate-design-system-roi",
+            "/analyze-cost-savings",
+            "/compare-velocity-metrics",
+            "/benchmark-platform-adoption",
+            "/analyze-cross-team-dependencies",
+            "/strategic-risk-assessment",
+            "/platform-impact-analysis",
+            "/initiative-value-scoring",
+            "/quarterly-business-review",
+            "/stakeholder-communication",
         }
 
     async def process_chat_request(self, user_input: str) -> ConversationalResponse:
@@ -328,21 +217,41 @@ class ChatEnhancedWeeklyReporter:
             )
 
     async def _process_chat_command(self, command_input: str) -> ConversationalResponse:
-        """Process structured chat commands"""
+        """Process structured chat commands with delegation (DRY compliance)"""
 
         command_parts = command_input.strip().split()
         command = command_parts[0]
         args = command_parts[1:] if len(command_parts) > 1 else []
 
+        # Handle commands unique to weekly reporter
         if command in self.extended_chat_commands:
             handler = self.extended_chat_commands[command]
             return await handler(args)
+
+        # Delegate business intelligence commands to ConversationalBusinessIntelligence (DRY compliance)
+        elif command in self.delegated_commands:
+            if self.chat_bi:
+                return await self.chat_bi.process_chat_query(command_input)
+            else:
+                return ConversationalResponse(
+                    success=False,
+                    response_text=f"Command {command} requires conversational BI system (currently unavailable)",
+                    data={"command": command},
+                    follow_up_suggestions=[
+                        "/generate-weekly-report",
+                        "/retrospective",
+                        "/help",
+                    ],
+                )
         else:
-            available_commands = list(self.extended_chat_commands.keys())
+            # Show all available commands (both unique and delegated)
+            all_commands = list(self.extended_chat_commands.keys()) + list(
+                self.delegated_commands
+            )
             return ConversationalResponse(
                 success=False,
                 response_text=f"Unknown command: {command}",
-                data={"available_commands": available_commands},
+                data={"available_commands": all_commands},
                 follow_up_suggestions=[
                     "/help",
                     "/generate-weekly-report",
@@ -350,67 +259,9 @@ class ChatEnhancedWeeklyReporter:
                 ],
             )
 
-    # Phase 2.2 Business Intelligence Command Handlers
-    async def _handle_roi_analysis(self, args: List[str]) -> ConversationalResponse:
-        """Handle /analyze-platform-roi command"""
-
-        if self.chat_bi:
-            # Delegate to conversational BI system
-            timeframe = args[0] if args else "ytd"
-            domain = args[1] if len(args) > 1 else "platform"
-
-            query_text = f"Calculate {domain} ROI for {timeframe}"
-            return await self.chat_bi.process_chat_query(query_text)
-        else:
-            return self._create_fallback_response(
-                "ROI analysis requires the full conversational BI system",
-                {"command": "roi_analysis", "args": args},
-            )
-
-    async def _handle_industry_benchmark(
-        self, args: List[str]
-    ) -> ConversationalResponse:
-        """Handle /benchmark-against-industry command"""
-
-        if self.chat_bi:
-            metric = args[0] if args else "overall"
-            query_text = f"How do we benchmark against industry for {metric}?"
-            return await self.chat_bi.process_chat_query(query_text)
-        else:
-            return self._create_fallback_response(
-                "Industry benchmarking requires Context7 integration",
-                {"command": "industry_benchmark", "args": args},
-            )
-
-    async def _handle_strategic_insights(
-        self, args: List[str]
-    ) -> ConversationalResponse:
-        """Handle /strategic-insights command"""
-
-        if self.chat_bi:
-            domain = args[0] if args else "platform"
-            query_text = f"Generate strategic insights for {domain}"
-            return await self.chat_bi.process_chat_query(query_text)
-        else:
-            return self._create_fallback_response(
-                "Strategic insights require MCP Sequential integration",
-                {"command": "strategic_insights", "args": args},
-            )
-
-    async def _handle_business_correlation(
-        self, args: List[str]
-    ) -> ConversationalResponse:
-        """Handle /business-value-correlation command"""
-
-        if self.chat_bi:
-            initiative = args[0] if args else "platform"
-            query_text = f"Analyze business value correlation for {initiative}"
-            return await self.chat_bi.process_chat_query(query_text)
-        else:
-            return self._create_fallback_response(
-                "Business correlation analysis requires full BI integration",
-                {"command": "business_correlation", "args": args},
-            )
+    # NOTE: Business Intelligence commands delegated to ConversationalBusinessIntelligence (DRY compliance)
+    # Removed duplicate handlers: _handle_roi_analysis, _handle_industry_benchmark,
+    # _handle_strategic_insights, _handle_business_correlation, _handle_executive_summary
 
     # Weekly Report Integration Command Handlers
     async def _handle_weekly_report_generation(
