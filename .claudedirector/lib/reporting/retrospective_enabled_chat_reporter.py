@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Personal Weekly Retrospective System - STANDALONE Implementation
-NO JIRA DEPENDENCIES - Pure personal reflection system
+Pure personal reflection system
 
 Personal Weekly Retrospective - Simple 3-Question Chat System
 
@@ -14,7 +14,7 @@ SIMPLE IMPLEMENTATION:
 3. Complete standalone system with minimal dependencies
 
 NO BUSINESS FEATURES:
-- No JIRA integration
+- No external integrations
 - No business metrics or KPIs
 - No strategic analysis
 - No performance analytics
@@ -63,7 +63,7 @@ except ImportError:
     RetrospectiveValidator = _SimpleValidator
 
 
-# Standalone ConversationalResponse (NO JIRA DEPENDENCIES)
+# Standalone ConversationalResponse for personal retrospectives
 @dataclass
 class ConversationalResponse:
     success: bool
