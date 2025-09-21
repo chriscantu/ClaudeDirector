@@ -26,8 +26,8 @@
 ## Technical Deliverables
 
 **Core Implementation:**
-- `conversational_business_intelligence.py` (1084 lines) - Chat-based BI engine
-- `weekly_reporter_chat_integration.py` (838 lines) - Integration layer
+- ~~`conversational_business_intelligence.py`~~ - **REMOVED** (off-scope for personal retrospectives)
+- `weekly_reporter_chat_integration.py` (838 lines) - Integration layer (refocused on personal retrospectives)
 - `phase2_2_integration_test.py` (581 lines) - Comprehensive test suite
 
 **Validation Results:**

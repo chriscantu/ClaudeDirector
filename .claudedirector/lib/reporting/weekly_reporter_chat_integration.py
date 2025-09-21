@@ -1,29 +1,29 @@
 #!/usr/bin/env python3
 """
-Weekly Reporter Chat Integration - Phase 2.2 Extension
-Extends existing weekly_reporter.py with conversational business intelligence
+Weekly Reporter Chat Integration - Personal Retrospective Focus
+Extends existing weekly_reporter.py with chat interface for personal reflection
 
 🏗️ Martin | Platform Architecture - SOLID/DRY compliance
-💼 Alvaro | Business Strategy - Executive chat interface integration
 🎯 EXTENDS existing weekly_reporter.py (DRY compliance)
-🔒 PRD Compliance: Chat-only interface (lines 162-165)
+🔒 PERSONAL FOCUS: Individual reflection, not business intelligence
 
 SEQUENTIAL THINKING METHODOLOGY APPLIED:
-1. Problem Definition: Integrate chat interface with existing weekly reporter
+1. Problem Definition: Add chat interface to existing weekly reporter
 2. Current State Analysis: weekly_reporter.py provides core functionality
-3. Solution Hypothesis: Extension pattern with conversational layer
+3. Solution Hypothesis: Extension pattern with conversational layer for personal use
 4. Validation: Context7 Lightweight Fallback + Protocol interfaces
-5. Execution: Chat command routing with MCP Sequential enhancement
-6. Verification: DRY compliance + architectural validation
+5. Execution: Simple chat command routing for personal retrospectives
+6. Verification: DRY compliance + personal focus validation
 
 CONTEXT7 PATTERNS IMPLEMENTED:
 - Extension Pattern: Builds on existing weekly_reporter.py infrastructure
 - Adapter Pattern: Chat interface adapts existing report generation
-- Command Pattern: Chat commands route to appropriate business logic
+- Command Pattern: Chat commands route to personal retrospective logic
 - Lightweight Fallback: Graceful degradation when dependencies unavailable
 
 BLOAT_PREVENTION: Extends existing infrastructure, no duplication
 PROJECT_STRUCTURE: Located in .claudedirector/lib/reporting/ (compliant)
+PERSONAL FOCUS: Individual reflection only - no business intelligence
 """
 
 import asyncio
@@ -48,15 +48,13 @@ try:
         StrategicScore,
         JiraIssue,
     )
-    from .conversational_business_intelligence import (
-        ConversationalBusinessIntelligence,
-        ChatBusinessQuery,
-        ConversationalResponse,
-        create_conversational_business_intelligence,
-    )
+
+    # REMOVED: conversational_business_intelligence (off-scope for personal retrospectives)
 
     WEEKLY_REPORTER_AVAILABLE = True
-    CHAT_BI_AVAILABLE = True
+    CHAT_BI_AVAILABLE = (
+        False  # Removed business intelligence - not needed for personal retrospectives
+    )
 except ImportError:
     try:
         # Fallback to absolute imports (for Claude Code context)
@@ -70,15 +68,11 @@ except ImportError:
             StrategicScore,
             JiraIssue,
         )
-        from reporting.conversational_business_intelligence import (
-            ConversationalBusinessIntelligence,
-            ChatBusinessQuery,
-            ConversationalResponse,
-            create_conversational_business_intelligence,
-        )
+
+        # REMOVED: conversational_business_intelligence (off-scope for personal retrospectives)
 
         WEEKLY_REPORTER_AVAILABLE = True
-        CHAT_BI_AVAILABLE = True
+        CHAT_BI_AVAILABLE = False  # Removed business intelligence - not needed for personal retrospectives
     except ImportError:
         # Graceful fallback for testing/development
         WEEKLY_REPORTER_AVAILABLE = False
@@ -114,9 +108,9 @@ class ChatEnhancedWeeklyReporter:
     """
     Chat-Enhanced Weekly Reporter - Extends existing weekly_reporter.py
 
-    Single Responsibility: Add conversational business intelligence to weekly reports
+    Single Responsibility: Add conversational interface for personal retrospectives
     Open/Closed Principle: Extends existing functionality without modification
-    Dependency Inversion: Depends on abstractions (WeeklyReportGenerator, ConversationalBI)
+    Dependency Inversion: Depends on abstractions (WeeklyReportGenerator)
     """
 
     def __init__(self, config_path: str):
@@ -140,13 +134,8 @@ class ChatEnhancedWeeklyReporter:
             )
             self.config = {}
 
-        # Initialize conversational business intelligence (Phase 2.2 enhancement)
-        if CHAT_BI_AVAILABLE:
-            self.chat_bi = create_conversational_business_intelligence(config_path)
-            logger.info("Conversational Business Intelligence initialized")
-        else:
-            logger.warning("Chat BI not available - basic chat mode only")
-            self.chat_bi = None
+        # REMOVED: Business intelligence initialization (off-scope for personal retrospectives)
+        self.chat_bi = None
 
         # NOTE: Retrospective functionality handled by RetrospectiveEnabledChatReporter (DRY compliance)
 
@@ -165,28 +154,15 @@ class ChatEnhancedWeeklyReporter:
         # NOTE: Retrospective commands (/retrospective, /weekly-retrospective, /reflection)
         # moved to RetrospectiveEnabledChatReporter (Single Responsibility Principle)
 
-        # Commands delegated to ConversationalBusinessIntelligence (DRY compliance)
-        self.delegated_commands = {
-            "/analyze-platform-roi",
-            "/benchmark-against-industry",
-            "/strategic-insights",
-            "/business-value-correlation",
-            "/executive-summary",
-            "/calculate-design-system-roi",
-            "/analyze-cost-savings",
-            "/compare-velocity-metrics",
-            "/benchmark-platform-adoption",
-            "/analyze-cross-team-dependencies",
-            "/strategic-risk-assessment",
-            "/platform-impact-analysis",
-            "/initiative-value-scoring",
-            "/quarterly-business-review",
-            "/stakeholder-communication",
-        }
+        # REMOVED: Business intelligence commands (off-scope for personal retrospectives)
+        # Personal retrospectives focus on individual reflection, not business analysis
+        self.delegated_commands = (
+            set()
+        )  # Empty - no business intelligence commands needed
 
     async def process_chat_request(self, user_input: str) -> ConversationalResponse:
         """
-        Main entry point for processing chat-based business intelligence requests
+        Main entry point for processing personal retrospective requests
 
         Extends existing weekly reporter with conversational interface (PRD compliance)
         """
@@ -198,11 +174,8 @@ class ChatEnhancedWeeklyReporter:
             if user_input.startswith("/"):
                 return await self._process_chat_command(user_input)
 
-            # Otherwise, delegate to conversational BI system
-            if self.chat_bi:
-                return await self.chat_bi.process_chat_query(user_input)
-            else:
-                return await self._handle_fallback_chat(user_input)
+            # REMOVED: Business intelligence delegation (off-scope for personal retrospectives)
+            return await self._handle_fallback_chat(user_input)
 
         except Exception as e:
             logger.error(f"Error processing chat request: {e}")
@@ -228,21 +201,18 @@ class ChatEnhancedWeeklyReporter:
             handler = self.extended_chat_commands[command]
             return await handler(args)
 
-        # Delegate business intelligence commands to ConversationalBusinessIntelligence (DRY compliance)
+        # REMOVED: Business intelligence delegation (off-scope for personal retrospectives)
         elif command in self.delegated_commands:
-            if self.chat_bi:
-                return await self.chat_bi.process_chat_query(command_input)
-            else:
-                return ConversationalResponse(
-                    success=False,
-                    response_text=f"Command {command} requires conversational BI system (currently unavailable)",
-                    data={"command": command},
-                    follow_up_suggestions=[
-                        "/generate-weekly-report",
-                        "/retrospective",
-                        "/help",
-                    ],
-                )
+            return ConversationalResponse(
+                success=False,
+                response_text=f"Command {command} is not available - business intelligence features removed to focus on personal retrospectives",
+                data={"command": command},
+                follow_up_suggestions=[
+                    "/generate-weekly-report",
+                    "/retrospective",
+                    "/help",
+                ],
+            )
         else:
             # Show all available commands (both unique and delegated)
             all_commands = list(self.extended_chat_commands.keys()) + list(
