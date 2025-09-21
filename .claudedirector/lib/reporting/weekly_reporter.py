@@ -24,6 +24,11 @@ from urllib.parse import quote
 import re
 from pathlib import Path
 
+# BLOAT_PREVENTION: Import centralized components
+from ..core.models import JiraIssue, StrategicScore, Initiative
+from ..config.jira_config import ConfigManager
+from ..integration.jira_client import JiraClient
+
 # Real MCP Integration following BLOAT_PREVENTION principles
 try:
     # Try relative imports first (for package context)
@@ -60,236 +65,13 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-@dataclass
-class JiraIssue:
-    """Data class for Jira issue representation"""
-
-    key: str
-    summary: str
-    status: str
-    priority: str
-    project: str
-    assignee: str
-    parent_key: Optional[str] = None
-    watchers: int = 0
-    links: int = 0
-    business_value: str = ""
-    # Phase 2 Enhancement: Cycle time fields for Monte Carlo forecasting
-    cycle_time_days: Optional[float] = None
-    created_date: Optional[str] = None
-    resolved_date: Optional[str] = None
-    in_progress_date: Optional[str] = None
+# BLOAT_PREVENTION: Data models moved to core/models.py (DRY compliance)
 
 
-@dataclass
-class StrategicScore:
-    """Data class for strategic impact scoring"""
-
-    score: int = 0
-    indicators: List[str] = field(default_factory=list)
-
-    def add_score(self, points: int, indicator: str):
-        self.score += points
-        self.indicators.append(indicator)
+# BLOAT_PREVENTION: ConfigManager moved to config/jira_config.py (DRY compliance)
 
 
-@dataclass
-class Initiative:
-    """Data class for L0/L2 strategic initiatives"""
-
-    key: str
-    title: str
-    level: str  # L0, L1, L2
-    progress_pct: int = 0
-    status_desc: str = ""  # "releasing this week", "60% complete"
-    business_context: str = ""
-    team_impact: str = ""  # "minimal impact to teams"
-    decision: Optional[str] = None
-    project: str = ""
-    status: str = ""
-    child_stories: List[JiraIssue] = field(default_factory=list)
-
-
-class ConfigManager:
-    """Handles YAML configuration parsing and validation"""
-
-    def __init__(self, config_path: str):
-        self.config_path = config_path
-        self.config = self._load_config()
-        self._validate_config()
-
-    def _load_config(self) -> Dict[str, Any]:
-        """Load YAML configuration file"""
-        try:
-            with open(self.config_path, "r") as f:
-                config = yaml.safe_load(f)
-            logger.info(f"Successfully loaded config from {self.config_path}")
-            return config
-        except FileNotFoundError:
-            logger.error(f"Config file not found: {self.config_path}")
-            raise
-        except yaml.YAMLError as e:
-            logger.error(f"YAML parsing error: {e}")
-            raise
-
-    def _validate_config(self):
-        """Validate required configuration sections"""
-        required_sections = ["jira", "jql_queries"]
-        for section in required_sections:
-            if section not in self.config:
-                raise ValueError(f"Missing required config section: {section}")
-        logger.info("Configuration validation successful")
-
-    def get_jql_query(self, query_name: str) -> Optional[str]:
-        """Extract JQL query by name"""
-        return self.config.get("jql_queries", {}).get(query_name)
-
-    def get_jira_config(self) -> Dict[str, Any]:
-        """Get Jira connection configuration"""
-        return self.config.get("jira", {})
-
-
-class JiraClient:
-    """Handles Jira API connections and data fetching"""
-
-    def __init__(self, config: Dict[str, Any]):
-        self.base_url = config.get("base_url", "").rstrip("/")
-        self.email = config.get("auth", {}).get("email", "")
-        self.api_token = os.getenv(
-            "JIRA_API_TOKEN", config.get("auth", {}).get("api_token", "")
-        )
-
-        # Override from environment variables if available
-        self.base_url = os.getenv("JIRA_BASE_URL", self.base_url)
-        self.email = os.getenv("JIRA_EMAIL", self.email)
-
-        self.session = self._create_session()
-        self._validate_credentials()
-
-    def _create_session(self) -> requests.Session:
-        """Create HTTP session with authentication"""
-        session = requests.Session()
-        session.auth = (self.email, self.api_token)
-        session.headers.update(
-            {
-                "Accept": "application/json",
-                "Content-Type": "application/json",
-            }
-        )
-        return session
-
-    def _validate_credentials(self):
-        """Validate Jira credentials are configured"""
-        if not all([self.base_url, self.email, self.api_token]):
-            raise ValueError(
-                "Missing Jira credentials. Check environment variables or config file."
-            )
-        logger.info("Jira credentials configured")
-
-    def fetch_issues(self, jql: str, max_results: int = 100) -> List[Dict[str, Any]]:
-        """Fetch issues using JQL query"""
-        try:
-            encoded_jql = quote(jql)
-            url = f"{self.base_url}/rest/api/3/search/jql"
-            params = {
-                "jql": jql,
-                "maxResults": max_results,
-                "fields": "summary,key,status,assignee,project,priority,parent,watchers,issuelinks,description,created,resolutiondate",
-            }
-
-            logger.info(f"Fetching issues with JQL: {jql[:100]}...")
-            response = self.session.get(url, params=params, timeout=30)
-            response.raise_for_status()
-
-            data = response.json()
-            issues = data.get("issues", [])
-            logger.info(f"Successfully fetched {len(issues)} issues from Jira")
-            return issues
-
-        except requests.exceptions.RequestException as e:
-            logger.error(f"Jira API request failed: {e}")
-            raise
-        except json.JSONDecodeError as e:
-            logger.error(f"Failed to parse Jira response: {e}")
-            raise
-
-    def collect_historical_cycle_times(
-        self, team_projects: List[str], months: int = 6
-    ) -> List[Dict[str, Any]]:
-        """
-        Phase 2 Enhancement: Collect historical cycle time data for Monte Carlo simulation
-
-        EXTENDS existing fetch_issues() method - NO duplicate API client (DRY compliance)
-        Sequential Thinking: Systematic data collection for accurate forecasting
-        Universal: Works for all teams regardless of story point usage
-        """
-        try:
-            # Calculate date range for historical data
-            end_date = datetime.now()
-            start_date = end_date - timedelta(days=months * 30)
-
-            # REUSE existing JQL patterns - build upon proven query structure
-            project_filter = " OR ".join(
-                [f"project = {project}" for project in team_projects]
-            )
-            historical_jql = f"""
-                ({project_filter}) AND
-                status = Done AND
-                resolutiondate >= "{start_date.strftime('%Y-%m-%d')}" AND
-                resolutiondate <= "{end_date.strftime('%Y-%m-%d')}"
-                ORDER BY resolutiondate DESC
-            """
-
-            logger.info(
-                f"Collecting {months} months of historical cycle time data for projects: {team_projects}"
-            )
-
-            # LEVERAGE existing fetch_issues() method - avoid duplicate API logic
-            historical_issues = []
-            start_at = 0
-            max_results = 100
-
-            while True:
-                # Use existing proven pagination pattern
-                batch_jql = f"{historical_jql}"
-                url = f"{self.base_url}/rest/api/3/search/jql"
-                params = {
-                    "jql": batch_jql,
-                    "maxResults": max_results,
-                    "startAt": start_at,
-                    "fields": "summary,key,status,assignee,project,priority,created,resolutiondate,changelog",
-                }
-
-                response = self.session.get(url, params=params, timeout=30)
-                response.raise_for_status()
-
-                data = response.json()
-                batch_issues = data.get("issues", [])
-
-                if not batch_issues:
-                    break
-
-                historical_issues.extend(batch_issues)
-                start_at += max_results
-
-                # Safety check to prevent excessive API calls
-                if len(historical_issues) >= 1000:
-                    logger.warning(
-                        f"Historical data collection reached limit of 1000 issues"
-                    )
-                    break
-
-            logger.info(
-                f"Successfully collected {len(historical_issues)} historical issues for cycle time analysis"
-            )
-            return historical_issues
-
-        except requests.exceptions.RequestException as e:
-            logger.error(f"Historical cycle time collection failed: {e}")
-            raise
-        except Exception as e:
-            logger.error(f"Unexpected error in cycle time collection: {e}")
-            raise
+# BLOAT_PREVENTION: JiraClient moved to integration/jira_client.py (DRY compliance)
 
 
 class StrategicAnalyzer:

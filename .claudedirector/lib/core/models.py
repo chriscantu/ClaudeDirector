@@ -5,7 +5,7 @@ Provides base data models and exceptions used across the system.
 Follows SOLID principles with clear separation of concerns.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Dict, List, Any, Optional
 from enum import Enum
 
@@ -51,11 +51,56 @@ class StrategicContext:
         if self.stakeholder_priorities is None:
             self.stakeholder_priorities = {}
 
-        # PHASE 8.4: Map P0 test interface to internal fields
-        if self.strategic_objectives and not self.objectives:
-            self.objectives = self.strategic_objectives
-        if self.stakeholder_priorities and not self.stakeholders:
-            self.stakeholders = list(self.stakeholder_priorities.keys())
+
+# BLOAT_PREVENTION: Centralized Jira data models (extracted from weekly_reporter.py)
+@dataclass
+class JiraIssue:
+    """Data class for Jira issue representation"""
+
+    key: str
+    summary: str
+    status: str
+    priority: str
+    project: str
+    assignee: str
+    parent_key: Optional[str] = None
+    watchers: int = 0
+    links: int = 0
+    business_value: str = ""
+    # Phase 2 Enhancement: Cycle time fields for Monte Carlo forecasting
+    cycle_time_days: Optional[float] = None
+    created_date: Optional[str] = None
+    resolved_date: Optional[str] = None
+    in_progress_date: Optional[str] = None
+
+
+@dataclass
+class StrategicScore:
+    """Data class for strategic impact scoring"""
+
+    score: int = 0
+    indicators: List[str] = field(default_factory=list)
+
+    def add_score(self, points: int, indicator: str):
+        self.score += points
+        self.indicators.append(indicator)
+
+
+@dataclass
+class Initiative:
+    """Data class for L0/L2 strategic initiatives"""
+
+    key: str
+    title: str
+    level: str  # L0, L1, L2
+    progress_pct: int = 0
+    status_desc: str = ""  # "releasing this week", "60% complete"
+    business_context: str = ""
+    team_impact: str = ""  # "minimal impact to teams"
+    decision: Optional[str] = None
+    project: str = ""
+    status: str = ""
+    child_stories: List["JiraIssue"] = field(default_factory=list)
 
 
 @dataclass

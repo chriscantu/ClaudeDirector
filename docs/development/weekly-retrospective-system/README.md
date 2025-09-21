@@ -5,9 +5,9 @@
 
 ## Overview
 
-Personal weekly reflection system with 3 standardized questions. Must REUSE existing ClaudeDirector infrastructure (no duplicates).
+Personal weekly reflection system with 3 standardized questions. STANDALONE implementation with NO JIRA dependencies.
 
-> **Note**: This is completely separate from `specs/003-weekly-report-agent-phase2/` (business intelligence). This system handles personal reflection only.
+> **IMPORTANT**: This has NOTHING to do with JIRA. Completely separate from `specs/003-weekly-report-agent-phase2/` (business intelligence). This system handles ONLY personal reflection - no business data, no project tracking, no team metrics.
 
 ### Questions
 1. **Progress**: "What progress did I make this week?"
@@ -16,21 +16,26 @@ Personal weekly reflection system with 3 standardized questions. Must REUSE exis
 
 ## Architecture
 
-**Extension Strategy** - REUSE existing components:
+**STANDALONE Strategy** - NO JIRA dependencies, reuse only non-business infrastructure:
 
 ```
-EXISTING INFRASTRUCTURE (MUST REUSE):
+EXISTING INFRASTRUCTURE (NON-JIRA ONLY):
 ├── StrategicMemoryManager          → Session management
-├── AnalyticsEngine                 → Retrospective analysis support
+├── AnalyticsEngine                 → Basic analytics (personal only)
 ├── RetrospectiveValidator          → Input validation
-├── MCPIntegrationManager           → RETROSPECTIVE_ANALYSIS pattern
 ├── UserIdentity                    → User configuration
 └── DatabaseManager                 → Data persistence
 
-REQUIRED ADDITIONS:
+STANDALONE IMPLEMENTATION:
 ├── retrospective_schema.sql        → Database schema extension
-├── /retrospective command          → Command mapping only
-└── RetrospectiveEnabledChatReporter → Minimal extension class
+├── /retrospective command          → Standalone command system
+└── PersonalRetrospectiveSystem     → Standalone personal reflection class
+
+EXPLICITLY EXCLUDED (NO JIRA):
+├── ❌ WeeklyReporter               → JIRA business intelligence
+├── ❌ JiraClient                   → JIRA API connections
+├── ❌ BusinessValueFramework       → Business metrics analysis
+└── ❌ Any ChatEnhancedWeeklyReporter → JIRA-based chat systems
 ```
 
 ## Usage

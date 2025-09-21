@@ -33,17 +33,13 @@ from typing import Dict, List, Optional, Any, Union, Tuple
 from datetime import datetime, timedelta
 from pathlib import Path
 
-# Import existing infrastructure (DRY compliance)
+# BLOAT_PREVENTION: Import centralized components (DRY compliance)
 try:
-    # Try relative imports first (for package context)
-    from .weekly_reporter import (
-        StrategicAnalyzer,
-        BusinessValueFramework,
-        JiraClient,
-        ConfigManager,
-        Initiative,
-        StrategicScore,
-    )
+    # Import from centralized locations
+    from ..core.models import JiraIssue, StrategicScore, Initiative
+    from ..config.jira_config import ConfigManager
+    from ..integration.jira_client import JiraClient
+    from .weekly_reporter import StrategicAnalyzer, BusinessValueFramework
     from .weekly_reporter_mcp_bridge import (
         create_weekly_reporter_mcp_bridge,
         MCPEnhancementResult,
