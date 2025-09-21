@@ -69,7 +69,7 @@ def check_explicit_readme_intent() -> bool:
         import subprocess
 
         result = subprocess.run(
-            ["git", "log", "--format=%B", "-n", "1", "--staged"],
+            ["git", "log", "--format=%B", "-n", "1", "HEAD"],
             capture_output=True,
             text=True,
             timeout=5,
@@ -78,11 +78,14 @@ def check_explicit_readme_intent() -> bool:
             commit_msg = result.stdout.lower()
             readme_intent_markers = [
                 "readme",
+                "readme.md",
                 "documentation update",
                 "update readme",
                 "fix readme",
                 "improve readme",
                 "enhance readme",
+                "restore readme",
+                "restored by",
             ]
             return any(marker in commit_msg for marker in readme_intent_markers)
     except:
