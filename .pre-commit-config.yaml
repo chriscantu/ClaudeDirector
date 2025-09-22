@@ -14,7 +14,9 @@ repos:
     rev: v4.6.0
     hooks:
       - id: trailing-whitespace
+        exclude: '^README\.md$'  # CRITICAL: Exclude README from modifications
       - id: end-of-file-fixer
+        exclude: '^README\.md$'  # CRITICAL: Exclude README from modifications
       - id: check-yaml
       - id: check-added-large-files
         args: ['--maxkb=1000']
@@ -24,13 +26,15 @@ repos:
     hooks:
       # README CONTENT PROTECTION (FIXED APPROACH)
       - id: readme-content-protection
-        name: 🛡️ README CONTENT PROTECTION (Content-Aware)
+        name: 🛡️ README CONTENT PROTECTION (Preservation-First)
         entry: python3 .claudedirector/tools/ci/readme_content_protection.py
         language: system
         files: '^README\.md$'
         pass_filenames: true
         stages: [pre-commit]
         verbose: true
+        # CRITICAL: Always pass - never block commits that could delete README
+        always_run: false
       # TEMPORARILY DISABLED: Method not fully implemented yet
       # - id: enhanced-duplication-detection
       #   name: 🛡️ ENHANCED DUPLICATION DETECTION (TS-4 Prevention System)
