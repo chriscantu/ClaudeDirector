@@ -85,8 +85,8 @@ Automated validation system for .cursorrules file structure and content to ensur
 
 ### **Architecture**
 - [CURSORRULES_VALIDATION_STRATEGY.md](../../architecture/CURSORRULES_VALIDATION_STRATEGY.md) - Overall validation strategy
-- [CURSORRULES_REFACTORING_PLAN.md](../../architecture/CURSORRULES_REFACTORING_PLAN.md) - Refactoring background
-- [CROSS_PLATFORM_COMPATIBILITY_ANALYSIS.md](../../architecture/CROSS_PLATFORM_COMPATIBILITY_ANALYSIS.md) - Compatibility analysis
+- [PROJECT_STRUCTURE.md](../../architecture/PROJECT_STRUCTURE.md) - Architectural compliance patterns
+- [TESTING_ARCHITECTURE.md](../../architecture/TESTING_ARCHITECTURE.md) - P0 test integration patterns
 
 ### **Testing**
 - [TESTING_ARCHITECTURE.md](../../architecture/TESTING_ARCHITECTURE.md) - P0 test patterns
