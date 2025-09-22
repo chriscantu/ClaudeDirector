@@ -430,6 +430,17 @@ p0_features:
     introduced_version: "v3.8.0"
     owner: "martin"
 
+  # .CURSORRULES VALIDATION SYSTEM
+  - name: ".cursorrules Validation P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_cursorrules_validation_p0.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 60
+    description: ".cursorrules file structure and content must be valid for cross-platform compatibility (Cursor + Claude Code)"
+    failure_impact: ".cursorrules malformed, cross-platform compatibility broken, persona/framework activation fails"
+    business_impact: "Strategic guidance becomes inconsistent across platforms, user experience fragmented, system reliability compromised"
+    introduced_version: "v3.8.1"
+    owner: "martin"
+
 
 # Enforcement settings
 enforcement:
