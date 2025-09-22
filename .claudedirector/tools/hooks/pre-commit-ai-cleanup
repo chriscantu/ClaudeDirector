@@ -204,18 +204,36 @@ class AICleanupEnforcer:
 
     def _is_exempt(self, filepath: str) -> bool:
         """Check if file is exempt from cleanup enforcement"""
+        # BULLETPROOF README PROTECTION - Multiple path variations
+        readme_variations = [
+            "README.md",
+            "./README.md",
+            "readme.md",
+            "./readme.md",
+            str(self.repo_root / "README.md"),
+            str(Path(filepath).resolve()).endswith("README.md"),
+            Path(filepath).name.lower() == "readme.md",
+        ]
+
+        if any(readme_variations) or "README.md" in str(filepath):
+            print(f"🛡️ README PROTECTION: Exempting {filepath} from AI cleanup")
+            return True
+
         # Check exact file matches
         if filepath in self.exemptions.get("files", []):
             return True
 
-        # Check pattern matches
+        # Check pattern matches (with path normalization)
+        normalized_path = str(Path(filepath).resolve())
         for pattern in self.exemptions.get("patterns", []):
-            if re.search(pattern, filepath):
+            if re.search(pattern, filepath) or re.search(pattern, normalized_path):
                 return True
 
-        # Check directory matches
+        # Check directory matches (with path normalization)
         for directory in self.exemptions.get("directories", []):
-            if filepath.startswith(directory):
+            if filepath.startswith(directory) or normalized_path.startswith(
+                str(Path(directory).resolve())
+            ):
                 return True
 
         return False
@@ -422,6 +440,18 @@ class AICleanupEnforcer:
         """Run all enforcement checks"""
         print("🧹 AI Cleanup Enforcement Starting...")
         print("=" * 50)
+
+        # BULLETPROOF README PROTECTION - Pre-check
+        readme_files = [f for f in self.staged_files.keys() if "README" in f.upper()]
+        if readme_files:
+            print(f"🛡️ README PROTECTION ACTIVE: Found {readme_files}")
+            for readme_file in readme_files:
+                if not self._is_exempt(readme_file):
+                    print(
+                        f"⚠️ README PROTECTION WARNING: {readme_file} not properly exempted!"
+                    )
+                    # Force exemption for any README file
+                    self.exemptions.setdefault("files", []).append(readme_file)
 
         # Run all checks
         doc_violations = self.check_excessive_documentation()

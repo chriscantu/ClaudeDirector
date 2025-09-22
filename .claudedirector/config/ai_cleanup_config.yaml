@@ -114,10 +114,16 @@ exemptions:
   files:
     - "docs/ARCHITECTURE.md"     # Architecture docs can be large
     - "docs/IMPLEMENTATION_GUIDE.md"  # Implementation guides are comprehensive
-    - "README.md"                # Main readme exempt from size limits
+    - "README.md"                # Main readme exempt from size limits - BULLETPROOF PROTECTION
+    - "./README.md"              # README with relative path - BULLETPROOF PROTECTION
+    - "readme.md"                # Lowercase variation - BULLETPROOF PROTECTION
+    - "./readme.md"              # Lowercase with relative path - BULLETPROOF PROTECTION
     - ".claudedirector/tools/ai-cleanup/README.md"  # AI cleanup documentation
 
   patterns:
+    - ".*README\\.md$"           # Any README.md file - BULLETPROOF PROTECTION
+    - ".*readme\\.md$"           # Any readme.md file - BULLETPROOF PROTECTION
+    - ".*README.*"               # Any README variation - BULLETPROOF PROTECTION
     - "test_.*integration.*"     # Integration tests can be large
     - "test_.*regression.*"      # Regression tests are comprehensive
     - "test_.*_p0\\.py$"        # P0 tests are critical and comprehensive

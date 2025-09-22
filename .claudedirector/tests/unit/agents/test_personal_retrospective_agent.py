@@ -86,6 +86,66 @@ class TestPersonalRetrospectiveAgent(unittest.TestCase):
         self.assertFalse(result.success)
         self.assertIn("Unknown command", result.message)
 
+    # Phase 2: Interactive Chat Tests
+    def test_interactive_retrospective_flow(self):
+        """Test complete interactive retrospective flow"""
+        user_id = "test_user_interactive"
+
+        # Start interactive session
+        result = self.agent.process_request(
+            {"command": "/retrospective create", "user_id": user_id}
+        )
+        self.assertTrue(result.success)
+        self.assertIn("Question 1:", result.message)
+        self.assertIn(user_id, self.agent.active_sessions)
+
+        # Answer question 1
+        result = self.agent.process_request(
+            {
+                "user_id": user_id,
+                "user_input": "Completed Phase 2 implementation successfully",
+            }
+        )
+        self.assertTrue(result.success)
+        self.assertIn("Question 2:", result.message)
+
+        # Answer question 2
+        result = self.agent.process_request(
+            {
+                "user_id": user_id,
+                "user_input": "Could have planned better to avoid analysis paralysis",
+            }
+        )
+        self.assertTrue(result.success)
+        self.assertIn("Question 3:", result.message)
+
+        # Answer question 3 (completes retrospective)
+        result = self.agent.process_request(
+            {
+                "user_id": user_id,
+                "user_input": "Focus on immediate implementation over extensive analysis",
+            }
+        )
+        self.assertTrue(result.success)
+        self.assertIn("✅ Retrospective completed", result.message)
+        self.assertNotIn(user_id, self.agent.active_sessions)  # Session cleaned up
+
+    def test_chat_commands(self):
+        """Test chat command routing"""
+        # Test help command
+        result = self.agent.process_request({"command": "/retrospective help"})
+        self.assertTrue(result.success)
+        self.assertIn("Chat Commands", result.message)
+
+        # Test view command
+        result = self.agent.process_request({"command": "/retrospective view"})
+        self.assertTrue(result.success)
+
+        # Test unknown chat command
+        result = self.agent.process_request({"command": "/retrospective unknown"})
+        self.assertFalse(result.success)
+        self.assertIn("Unknown chat command", result.message)
+
 
 if __name__ == "__main__":
     unittest.main()
