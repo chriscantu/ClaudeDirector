@@ -118,6 +118,8 @@ exemptions:
     - "./README.md"              # README with relative path - BULLETPROOF PROTECTION
     - "readme.md"                # Lowercase variation - BULLETPROOF PROTECTION
     - "./readme.md"              # Lowercase with relative path - BULLETPROOF PROTECTION
+    - "README.MD"                # Uppercase variation - BULLETPROOF PROTECTION
+    - "./README.MD"              # Uppercase with relative path - BULLETPROOF PROTECTION
     - ".claudedirector/tools/ai-cleanup/README.md"  # AI cleanup documentation
 
   patterns:
