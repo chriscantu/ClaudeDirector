@@ -315,9 +315,11 @@ class TestDocumentationFunctionalityPreservation(unittest.TestCase):
         """Test that architecture documentation maintains structure"""
         arch_files = [
             "docs/architecture/OVERVIEW.md",
-            "docs/architecture/COMPONENTS.md",
-            "docs/architecture/PATTERNS.md",
-            "docs/architecture/DECISIONS.md",
+            "docs/architecture/PROJECT_STRUCTURE.md",
+            "docs/architecture/BLOAT_PREVENTION_SYSTEM.md",
+            "docs/architecture/P0_PROTECTION_SYSTEM.md",
+            "docs/architecture/TESTING_ARCHITECTURE.md",
+            "docs/architecture/CURSORRULES_VALIDATION_STRATEGY.md",
         ]
 
         for arch_file in arch_files:

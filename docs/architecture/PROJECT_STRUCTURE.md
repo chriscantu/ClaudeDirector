@@ -215,11 +215,12 @@ config/
 ```
 docs/
 ├── architecture/                           # 🏗️ Architectural Documentation
-│   ├── OVERVIEW.md                         # High-level architecture (THIS FILE NEEDS UPDATE)
+│   ├── OVERVIEW.md                         # High-level architecture and component details
 │   ├── PROJECT_STRUCTURE.md                # This document
 │   ├── TESTING_ARCHITECTURE.md             # Test system architecture
-│   ├── COMPONENTS.md                       # Component specifications
-│   └── patterns/                           # Architectural patterns
+│   ├── BLOAT_PREVENTION_SYSTEM.md          # Code duplication prevention
+│   ├── P0_PROTECTION_SYSTEM.md             # Critical feature protection
+│   └── [additional architecture docs]      # Specialized architectural guidance
 │
 ├── requirements/                           # 📋 Requirements Documentation
 │   ├── CONTEXT_ENGINEERING_REQUIREMENTS.md # Primary requirements

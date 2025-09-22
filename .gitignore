@@ -331,3 +331,4 @@ workspace-backup-*/
 
 # Migration backups (temporary safety)
 .claudedirector/.migration-backup-*
+test_personal_retrospective.py

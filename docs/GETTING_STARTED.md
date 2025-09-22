@@ -185,6 +185,29 @@ Future ML capabilities for predictive strategic leadership:
 
 *Current Phase 12 provides the foundation for all future ML enhancements*
 
+## 🧪 **Testing New Features**
+
+### Personal Weekly Retrospective (Phase 1+2 Complete)
+A clean, focused personal reflection tool for engineering leaders:
+
+**Quick Test**:
+```bash
+# Run from project root
+python test_personal_retrospective.py
+```
+
+**Chat Commands** (use in Claude/Cursor):
+- `/retrospective create` - Start interactive 3-question retrospective
+- `/retrospective view` - See your recent retrospectives
+- `/retrospective help` - Show available commands
+
+**3-Question Framework**:
+1. What went well this week?
+2. What could have gone better?
+3. What will I focus on next week?
+
+**Database**: SQLite storage at `data/strategic/retrospective.db`
+
 ## 📚 **Next Steps**
 
 - **[🤖 Meet Your AI Directors](CAPABILITIES.md)** - Complete persona and capability overview
