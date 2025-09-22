@@ -9,14 +9,14 @@
 
 ## 🎯 **IMPLEMENTATION STRATEGY**
 
-### **Architecture Decision: Build on Proven Patterns**
-Following the successful patterns from PR #150 (Weekly Report Agent) and the recent personal retrospective work:
+### **✅ ARCHITECTURE COMPLIANCE: Extend Existing Infrastructure**
+Following PROJECT_STRUCTURE.md and BLOAT_PREVENTION_SYSTEM.md requirements:
 
-- **BaseManager inheritance** for consistency and reusability
-- **SQLite database integration** with existing infrastructure
-- **YAML configuration system** for standardized setup
-- **ConversationalInteractionManager routing** for chat integration
-- **GitHub spec-kit methodology** for systematic development
+- **StrategicTaskManager extension** - DRY compliance, zero duplication
+- **StrategicMemoryManager integration** - Existing L0/L1 strategic analysis
+- **BaseManager pattern** - Correct BaseManagerConfig initialization
+- **automation/ domain placement** - Proper architectural organization
+- **ConversationalInteractionManager routing** - Existing chat patterns
 
 ### **Key Design Principles**
 1. **Strategic Focus**: Daily planning aligned with L0/L1 organizational initiatives
@@ -33,126 +33,165 @@ Following the successful patterns from PR #150 (Weekly Report Agent) and the rec
 
 ### **Phase 1: Core Agent Implementation with L0/L1 Integration** (3-4 hours)
 
-#### **Task 1.1: Strategic Agent Class Structure** (45 min)
+#### **Task 1.1: ✅ COMPLIANT Manager Structure** (30 min)
 ```python
-# File: .claudedirector/lib/agents/personal_daily_planner_agent.py
-class PersonalDailyPlannerAgent(BaseManager):
-    manager_type = ManagerType.ANALYTICS
+# File: .claudedirector/lib/automation/daily_planning_manager.py
+from ..core.base_manager import BaseManager, BaseManagerConfig, ManagerType
+from ..automation.task_manager import StrategicTaskManager
+from ..context_engineering.strategic_memory_manager import StrategicMemoryManager
 
-    # Core strategic methods:
-    # - create_daily_plan_with_strategic_analysis()
-    # - review_daily_plan_with_l0_l1_assessment()
-    # - get_strategic_alignment_analysis()
-    # - get_l0_l1_initiative_progress()
-    # - calculate_strategic_balance_score()
-    # - load_organizational_initiatives()
+class DailyPlanningManager(BaseManager):
+    """
+    ✅ ARCHITECTURE COMPLIANCE:
+    - Extends existing StrategicTaskManager (DRY principle)
+    - Uses existing StrategicMemoryManager (BLOAT_PREVENTION_SYSTEM.md)
+    - Correct BaseManager pattern
+    - Single Responsibility: Coordination only
+    """
+    
+    def __init__(self, config_path: Optional[str] = None):
+        base_config = BaseManagerConfig(
+            manager_name="daily_planning_manager",
+            manager_type=ManagerType.AUTOMATION,  # ✅ Correct domain
+            enable_logging=True,
+            enable_caching=True,
+            enable_metrics=True,
+        )
+        
+        super().__init__(base_config)
+        
+        # ✅ DRY: Leverage existing infrastructure
+        self.task_manager = StrategicTaskManager(self.db_path)
+        self.memory_manager = StrategicMemoryManager()
 ```
 
 **Deliverables**:
-- [ ] BaseManager-compliant class structure with strategic extensions
-- [ ] Abstract method implementations including L0/L1 analysis
-- [ ] YAML configuration loading for organizational initiatives
-- [ ] L0/L1 initiative configuration and mapping logic
-- [ ] Strategic balance calculation algorithms
-- [ ] Error handling with graceful degradation
+- [ ] ✅ BaseManager-compliant coordination layer (not monolithic agent)
+- [ ] ✅ Integration with existing StrategicTaskManager
+- [ ] ✅ Integration with existing StrategicMemoryManager  
+- [ ] ✅ Proper file placement in automation/ domain
+- [ ] ✅ Zero code duplication - pure coordination layer
 
-#### **Task 1.2: Enhanced Database Schema & Strategic Operations** (60 min)
-```sql
--- File: data/strategic/daily_plans.sql
-CREATE TABLE daily_plans (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    date DATE NOT NULL UNIQUE,
-    priorities TEXT NOT NULL,
-    completion_status TEXT,
-    additional_progress TEXT,
-    completion_rate REAL,
-    l0_initiative_mapping TEXT,         -- JSON mapping priorities to L0 initiatives
-    l1_initiative_mapping TEXT,         -- JSON mapping priorities to L1 initiatives
-    strategic_balance_score REAL,       -- Strategic effectiveness score (0-100)
-    persona_recommendations TEXT,       -- Diego's strategic guidance
-    l0_progress_score REAL,             -- Daily L0 initiative progress (0-100)
-    l1_progress_score REAL,             -- Daily L1 initiative progress (0-100)
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE organizational_initiatives (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    type TEXT NOT NULL CHECK (type IN ('L0', 'L1')),
-    description TEXT,
-    owner TEXT,
-    target_percentage REAL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_active BOOLEAN DEFAULT 1
-);
+#### **Task 1.2: ✅ COMPLIANT Database Integration** (20 min)
+```python
+# ✅ NO NEW DATABASE SCHEMA - Use existing infrastructure
+class DailyPlanningManager(BaseManager):
+    def _create_daily_plan(self, priorities: List[str], l0_mapping: Dict, l1_mapping: Dict):
+        """Use existing StrategicTaskManager database capabilities"""
+        return self.task_manager.create_strategic_task_plan(
+            date=datetime.now().date(),
+            tasks=priorities,
+            initiative_mapping={'L0': l0_mapping, 'L1': l1_mapping},
+            strategic_context=self._get_strategic_context()
+        )
+    
+    def _get_strategic_context(self) -> Dict:
+        """Use existing StrategicMemoryManager for L0/L1 initiatives"""
+        return self.memory_manager.get_strategic_context()
+    
+    def _analyze_strategic_alignment(self, priorities: List[str]) -> Dict:
+        """Use existing strategic analysis capabilities"""
+        return self.memory_manager.analyze_priority_alignment(
+            priorities=priorities,
+            strategic_context=self._get_strategic_context()
+        )
 ```
 
 **Deliverables**:
-- [ ] Enhanced SQLite schema with L0/L1 strategic tracking
-- [ ] Database connection management with strategic memory integration
-- [ ] CRUD operations for daily plans and organizational initiatives
-- [ ] L0/L1 initiative mapping and progress tracking operations
-- [ ] Strategic balance score calculation and storage
-- [ ] JSON serialization for priorities/completion/strategic data
+- [ ] ✅ Integration with existing StrategicTaskManager database
+- [ ] ✅ Integration with existing StrategicMemoryManager strategic data
+- [ ] ✅ Zero new database schemas (BLOAT_PREVENTION_SYSTEM.md compliance)
+- [ ] ✅ Leverage existing CRUD operations and JSON serialization
+- [ ] ✅ Use existing strategic analysis and L0/L1 initiative storage
 
-#### **Task 1.3: Data Models** (30 min)
+#### **Task 1.3: ✅ COMPLIANT Data Models** (10 min)
 ```python
-# File: .claudedirector/lib/agents/models/daily_plan.py
+# ✅ NO NEW DATA MODELS - Use existing types
+from ..core.types import ProcessingResult
+from ..automation.task_manager import StrategicTaskManager  # Uses existing TaskData
+from ..context_engineering.strategic_memory_manager import StrategicMemoryManager  # Uses existing StrategicContext
+
 @dataclass
-class DailyPlan:
-    id: Optional[int]
-    date: datetime.date
-    priorities: List[str]
-    completion_status: Dict[int, bool] = field(default_factory=dict)
-    additional_progress: str = ""
-    completion_rate: float = 0.0
+class DailyPlanningResult(ProcessingResult):
+    """✅ ONLY new type needed - extends existing ProcessingResult pattern"""
+    daily_tasks: Optional[List[Dict]] = None  # From StrategicTaskManager
+    strategic_analysis: Optional[Dict] = None  # From StrategicMemoryManager
+    completion_stats: Optional[Dict[str, float]] = None
 ```
 
 **Deliverables**:
-- [ ] Type-safe data models
-- [ ] ProcessingResult extensions
-- [ ] Validation logic
-- [ ] Serialization methods
+- [ ] ✅ Extend existing ProcessingResult pattern only
+- [ ] ✅ Use existing StrategicTaskManager.TaskData
+- [ ] ✅ Use existing StrategicMemoryManager.StrategicContext
+- [ ] ✅ Zero duplicate data models (DRY compliance)
 
-#### **Task 1.4: Core Business Logic** (45 min)
-- [ ] Priority setting workflow
-- [ ] Completion tracking logic
-- [ ] Completion rate calculations
-- [ ] Duplicate prevention (same-day plans)
+#### **Task 1.4: ✅ COMPLIANT Business Logic** (20 min)
+```python
+def manage(self, operation: str, *args, **kwargs) -> Any:
+    """Coordinate existing systems - no new business logic"""
+    if operation == "create_daily_plan":
+        return self.task_manager.create_strategic_task_plan(*args, **kwargs)
+    elif operation == "review_daily_plan":
+        return self.task_manager.review_daily_progress(*args, **kwargs)
+    elif operation == "analyze_strategic_alignment":
+        return self.memory_manager.analyze_priority_alignment(*args, **kwargs)
+```
+
+**Deliverables**:
+- [ ] ✅ Pure coordination layer - delegate to existing systems
+- [ ] ✅ Use existing StrategicTaskManager workflows
+- [ ] ✅ Use existing StrategicMemoryManager analysis
+- [ ] ✅ Zero duplicate business logic (BLOAT_PREVENTION_SYSTEM.md)
 
 ---
 
-### **Phase 2: Chat Integration** (1-2 hours)
+### **Phase 2: ✅ COMPLIANT Chat Integration** (30 min)
 
-#### **Task 2.1: Command Routing** (30 min)
+#### **Task 2.1: ✅ COMPLIANT Command Routing** (15 min)
 ```python
 # File: .claudedirector/lib/mcp/conversational_interaction_manager.py
+# ✅ Use existing pattern - add to existing InteractionIntent enum
 class InteractionIntent(Enum):
-    DAILY_PLAN_COMMAND = "daily_plan_command"
+    # ... existing intents ...
+    DAILY_PLAN_COMMAND = "daily_plan_command"  # ✅ Add to existing enum
 
-# Add to intent_patterns:
+# ✅ Use existing intent_patterns structure
 "daily.plan": InteractionIntent.DAILY_PLAN_COMMAND,
 "/daily-plan": InteractionIntent.DAILY_PLAN_COMMAND,
+
+# ✅ Use existing agent lazy initialization pattern (like WeeklyReportAgent)
+@property
+def _daily_planning_manager(self) -> DailyPlanningManager:
+    if not hasattr(self, '_daily_planning_instance'):
+        self._daily_planning_instance = DailyPlanningManager()
+    return self._daily_planning_instance
 ```
 
 **Deliverables**:
-- [ ] Intent recognition patterns
-- [ ] Command routing logic
-- [ ] Agent lazy initialization
-- [ ] Error handling integration
+- [ ] ✅ Add to existing InteractionIntent enum (no new patterns)
+- [ ] ✅ Use existing intent_patterns structure (DRY compliance)
+- [ ] ✅ Use existing lazy initialization pattern
+- [ ] ✅ Use existing error handling infrastructure
 
-#### **Task 2.2: Interactive Sessions** (45 min)
-- [ ] Morning priority setting flow
-- [ ] End-of-day review flow
-- [ ] Session state management
-- [ ] Input validation and parsing
+#### **Task 2.2: ✅ COMPLIANT Interactive Sessions** (15 min)
+```python
+# ✅ Use existing ConversationalInteractionManager session patterns
+def _handle_daily_plan_command(self, user_input: str) -> str:
+    """Use existing command handling patterns"""
+    if "start" in user_input or "morning" in user_input:
+        return self._daily_planning_manager.manage("create_daily_plan")
+    elif "review" in user_input or "evening" in user_input:
+        return self._daily_planning_manager.manage("review_daily_plan")
+    elif "today" in user_input:
+        return self._daily_planning_manager.manage("get_today_status")
+    # ... delegate to existing systems
+```
 
-#### **Task 2.3: Command Interface** (30 min)
-- [ ] `/daily-plan start` - Morning session
-- [ ] `/daily-plan review` - Evening session
-- [ ] `/daily-plan today` - Quick status
-- [ ] `/daily-plan help` - Command reference
+**Deliverables**:
+- [ ] ✅ Use existing ConversationalInteractionManager session patterns
+- [ ] ✅ Delegate to StrategicTaskManager for priority/review flows
+- [ ] ✅ Use existing session state management infrastructure
+- [ ] ✅ Use existing input validation patterns
 
 ---
 
