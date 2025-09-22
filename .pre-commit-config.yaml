@@ -95,6 +95,15 @@ repos:
         stages: [pre-commit]
         verbose: true
 
+      - id: cursorrules-validation
+        name: 🎯 .CURSORRULES VALIDATION (Cross-Platform Compatibility)
+        entry: python3 -m pytest .claudedirector/tests/regression/p0_blocking/test_cursorrules_validation_p0.py -v
+        language: system
+        files: '^\.cursorrules$'
+        pass_filenames: false
+        stages: [pre-commit]
+        verbose: true
+
   # CRITICAL SECURITY ENFORCEMENT
   - repo: local
     hooks:
