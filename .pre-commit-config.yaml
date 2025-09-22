@@ -28,6 +28,7 @@ repos:
         entry: python3 .claudedirector/tools/ci/readme_content_protection.py
         language: system
         files: '^README\.md$'
+        exclude: '.+/README\.md$'  # Exclude any README.md with a path separator
         pass_filenames: true
         stages: [pre-commit]
         verbose: true
