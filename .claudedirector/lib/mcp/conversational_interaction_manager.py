@@ -547,6 +547,36 @@ class ConversationalInteractionManager:
                     response_content = "📊 No daily plan found for today"
 
             elif any(
+                word in query_lower
+                for word in ["complete", "done", "finished", "mark done"]
+            ):
+                # ✅ NEW: Handle task completion with fuzzy matching
+                priority_name = self._extract_priority_name_from_completion_query(
+                    intent.raw_query
+                )
+
+                if not priority_name:
+                    response_content = "❓ Please specify which priority to mark as complete (e.g., 'daily plan complete team meeting')"
+                else:
+                    # ✅ DRY: Use existing DailyPlanningManager for completion
+                    result = self.daily_planning_manager.manage(
+                        "complete_priority", priority_name=priority_name
+                    )
+
+                    if result.success:
+                        response_content = result.message
+                        if result.completion_stats:
+                            completed = result.completion_stats.get(
+                                "completed_tasks", 0
+                            )
+                            total = result.completion_stats.get("total_tasks", 0)
+                            response_content += (
+                                f"\n📊 Progress: {completed}/{total} tasks completed"
+                            )
+                    else:
+                        response_content = f"❌ {result.message}"
+
+            elif any(
                 word in query_lower for word in ["balance", "strategic", "l0", "l1"]
             ):
                 # ✅ DRY: Use existing DailyPlanningManager for strategic balance
@@ -565,7 +595,9 @@ class ConversationalInteractionManager:
                 response_content = """
                 🎯 Daily Planning Commands:
                 • "daily plan start" - Create new daily plan
+                • "daily plan complete [task]" - Mark priority as done
                 • "daily plan review" - Check today's progress
+                • "daily plan status" - Quick progress overview
                 • "daily plan balance" - View strategic alignment
                 """
 
@@ -625,6 +657,36 @@ class ConversationalInteractionManager:
             ]
 
         return priorities[:5]  # Limit to 5 priorities max
+
+    def _extract_priority_name_from_completion_query(self, query: str) -> str:
+        """
+        ✅ Extract priority name from completion commands for fuzzy matching
+        ✅ SOLID: Single responsibility for priority name extraction
+        """
+        query_lower = query.lower()
+
+        # Remove common completion command words
+        for cmd_word in [
+            "daily plan complete",
+            "daily plan done",
+            "mark done",
+            "complete priority",
+            "done",
+            "finished",
+            "complete",
+        ]:
+            if cmd_word in query_lower:
+                query_lower = query_lower.replace(cmd_word, "").strip()
+                break
+
+        # Clean up extra words and return priority name
+        priority_name = query_lower.strip()
+
+        # If nothing left, return empty string
+        if not priority_name or len(priority_name) < 2:
+            return ""
+
+        return priority_name
 
     async def _generate_follow_up_suggestions(
         self,

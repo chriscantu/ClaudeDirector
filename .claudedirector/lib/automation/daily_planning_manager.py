@@ -88,6 +88,8 @@ class DailyPlanningManager(BaseManager):
             return self._get_today_status(*args, **kwargs)
         elif operation == "get_strategic_balance":
             return self._get_strategic_balance(*args, **kwargs)
+        elif operation == "complete_priority":
+            return self._complete_priority(*args, **kwargs)
         else:
             raise ValueError(f"Unknown operation: {operation}")
 
@@ -325,4 +327,96 @@ class DailyPlanningManager(BaseManager):
                 success=False,
                 message=f"Failed to get strategic balance: {e}",
                 data={"error": str(e)},
+            )
+
+    def _complete_priority(self, priority_name: str, **kwargs) -> DailyPlanningResult:
+        """
+        ✅ Mark individual priority as completed
+        ✅ BLOAT_PREVENTION_SYSTEM.md: Uses existing StrategicTaskManager for updates
+        ✅ DRY: Leverages existing task update logic
+        """
+        try:
+            today = datetime.now().date().isoformat()
+
+            # ✅ Use existing task manager to find and update task
+            connection = self.task_manager.get_connection()
+            cursor = connection.cursor()
+
+            # Find matching task with fuzzy matching for usability
+            cursor.execute(
+                """
+                SELECT id, task_text, status
+                FROM strategic_tasks
+                WHERE DATE(created_date) = ?
+                  AND category = 'daily_planning'
+                  AND (task_text LIKE ? OR task_text LIKE ?)
+                ORDER BY
+                  CASE WHEN LOWER(task_text) LIKE LOWER(?) THEN 1 ELSE 2 END,
+                  LENGTH(task_text)
+                LIMIT 1
+            """,
+                (
+                    today,
+                    f"%{priority_name}%",
+                    f"%{priority_name.lower()}%",
+                    f"%{priority_name}%",
+                ),
+            )
+
+            result = cursor.fetchone()
+            if not result:
+                return DailyPlanningResult(
+                    success=False,
+                    message=f"Priority '{priority_name}' not found in today's plan",
+                    data={"error": "priority_not_found", "searched_for": priority_name},
+                )
+
+            task_id, task_text, current_status = result
+
+            if current_status == "completed":
+                return DailyPlanningResult(
+                    success=True,
+                    message=f"Priority '{priority_name}' was already completed",
+                    data={"already_completed": True, "task_text": task_text},
+                )
+
+            # ✅ DRY: Use existing database update pattern
+            cursor.execute(
+                """
+                UPDATE strategic_tasks
+                SET status = 'completed',
+                    updated_date = ?
+                WHERE id = ?
+            """,
+                (datetime.now().isoformat(), task_id),
+            )
+
+            connection.commit()
+
+            # Get updated completion stats using existing method
+            status_result = self._get_today_status()
+
+            # Get strategic context for alignment analysis
+            strategic_context = self._get_strategic_context()
+
+            return DailyPlanningResult(
+                success=True,
+                message=f"✅ Priority completed: {task_text.replace('Daily Plan: ', '').split(';')[0] if ';' in task_text else task_text}",
+                completion_stats=(
+                    status_result.completion_stats if status_result.success else None
+                ),
+                strategic_analysis=strategic_context,
+                data={
+                    "completed_task": task_text,
+                    "completion_time": datetime.now().isoformat(),
+                    "task_id": task_id,
+                },
+            )
+
+        except Exception as e:
+            self.logger.error(f"Failed to complete priority: {e}")
+            return DailyPlanningResult(
+                success=False,
+                message=f"Failed to complete priority '{priority_name}': {e}",
+                data={"error": str(e), "priority_name": priority_name},
             )

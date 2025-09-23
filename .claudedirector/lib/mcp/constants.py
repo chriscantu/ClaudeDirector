@@ -244,6 +244,13 @@ class MCPServerConstants:
                 "daily priorities",
                 "plan today",
                 "review plan",
+                "daily plan complete",
+                "daily plan done",
+                "mark done",
+                "complete priority",
+                "done",
+                "finished",
+                "daily plan status",
             ],
         }
 

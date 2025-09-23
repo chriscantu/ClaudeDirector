@@ -43,11 +43,25 @@ A **Strategic Personal Daily Planning Agent** that provides:
 - **Storage**: Daily plan entry with timestamp, priorities, L0/L1 mappings, strategic balance score
 - **Validation**: Prevent duplicate plans for same day, warn on strategic imbalance
 
-#### **F2: End-of-Day Strategic Progress Review**
+#### **F2: Individual Task Completion (Throughout Day)**
+- **Commands**:
+  - `"daily plan complete [task name]"` - Mark specific priority as done
+  - `"daily plan done architecture review"` - Natural language completion
+  - `"mark done team meeting"` - Alternative completion syntax
+- **Flow**:
+  1. Parse task name from natural language command
+  2. Match against today's priorities (fuzzy matching for flexibility)
+  3. Mark task as completed with timestamp
+  4. Update strategic balance score based on L0/L1 initiative progress
+  5. Provide completion confirmation with remaining priorities
+- **Validation**: Only allow completion of today's planned priorities
+- **Storage**: Update daily plan entry with completion status and timestamp per priority
+
+#### **F3: End-of-Day Strategic Progress Review**
 - **Command**: `/daily-plan review` or `/daily-plan evening`
 - **Flow**:
-  1. Display morning priorities with completion checkboxes and L0/L1 initiative mapping
-  2. Ask "Which priorities did you complete today?"
+  1. Display morning priorities with current completion status and L0/L1 initiative mapping
+  2. Show completion rate and strategic balance achieved
   3. Diego persona analyzes L0/L1 initiative progress and strategic impact
   4. Ask "What other significant progress did you make?"
   5. Strategic effectiveness assessment with recommendations for tomorrow
@@ -60,9 +74,19 @@ A **Strategic Personal Daily Planning Agent** that provides:
 - **Filtering**: By date range, completion status, L0/L1 initiative focus
 - **Insights**: Weekly/monthly completion trends, strategic balance patterns, initiative progress tracking
 
-#### **F4: Quick Strategic Commands**
+#### **F4: Real-Time Priority Status Check**
+- **Commands**:
+  - `"daily plan status"` - Show current day progress with completion checkboxes
+  - `"daily plan today"` - Quick status overview with strategic balance
+- **Flow**:
+  1. Display today's priorities with completion status (✅ done, ⏳ pending)
+  2. Show completion percentage and strategic balance score
+  3. Highlight remaining L0 (required) vs L1 (strategic) priorities
+  4. Provide time-based recommendations if late in day
+- **Output**: Progress dashboard with strategic guidance for remaining priorities
+
+#### **F5: Quick Strategic Commands**
 - `/daily-plan help` - Show available commands and L0/L1 initiative overview
-- `/daily-plan today` - Show today's plan status with strategic alignment
 - `/daily-plan stats` - Show completion statistics and L0/L1 initiative progress trends
 - `/daily-plan balance` - Show current strategic balance (L0/L1/Operational ratio)
 
@@ -107,11 +131,27 @@ class DailyPlanningManager(BaseManager):
     def manage(self, operation: str, *args, **kwargs) -> Any:
         """Execute daily planning operations using existing infrastructure"""
         if operation == "create_daily_plan":
-            return self.task_manager.create_daily_task_plan(*args, **kwargs)
+            return self._create_daily_plan(*args, **kwargs)
+        elif operation == "complete_priority":
+            return self._complete_priority(*args, **kwargs)  # ✅ NEW: Task completion
         elif operation == "review_daily_plan":
-            return self.task_manager.review_daily_progress(*args, **kwargs)
+            return self._review_daily_plan(*args, **kwargs)
+        elif operation == "get_today_status":
+            return self._get_today_status(*args, **kwargs)
         else:
             raise ValueError(f"Unknown operation: {operation}")
+
+    def _complete_priority(self, priority_name: str, **kwargs) -> DailyPlanningResult:
+        """
+        ✅ Mark individual priority as completed
+        ✅ BLOAT_PREVENTION_SYSTEM.md: Uses existing StrategicTaskManager for updates
+        """
+        # Delegate to existing task management infrastructure
+        return self.task_manager.update_task_status(
+            category="daily_planning",
+            task_name=priority_name,
+            status="completed"
+        )
 ```
 
 ### **Database Integration - Leveraging Existing Infrastructure**
@@ -256,6 +296,38 @@ What other significant progress did you make today?
 ✅ Daily plan updated with strategic insights!
 ```
 
+### **Individual Task Completion (During Day)**
+```
+> "daily plan complete Q4 roadmap review"
+
+✅ Priority completed: Q4 roadmap review
+🎯 Strategic Impact: L0 - Platform Scalability initiative progress +20%
+📊 Today's Progress: 1/5 priorities completed (20%)
+
+Remaining priorities:
+⏳ Technical debt UI assessment (L0 - Technical Debt)
+⏳ Team 1:1 meetings (L0 - Team Development)
+⏳ Strategic planning prep (L1 - Process Innovation)
+⏳ Production debug (Operational)
+
+💡 Diego | Engineering Leadership: Great start on L0 initiatives! Consider tackling the technical debt assessment next to maintain L0 momentum.
+```
+
+```
+> "mark done team 1:1 meetings"
+
+✅ Priority completed: Team 1:1 meetings
+🎯 Strategic Impact: L0 - Team Development initiative progress +33%
+📊 Today's Progress: 3/5 priorities completed (60%)
+
+Remaining priorities:
+⏳ Strategic planning prep (L1 - Process Innovation)
+⏳ Production debug (Operational)
+
+⚖️ Strategic Balance Update: L0 67%, L1 17%, Operational 16%
+💡 Excellent L0 progress! Consider the strategic planning task to boost L1 focus.
+```
+
 ### **Quick Status Check**
 ```
 📋 Today's Plan Status (2025-09-22)
@@ -320,24 +392,27 @@ Use `/daily-plan review` to update progress.
 
 ### **P0 Tests** (Zero tolerance)
 - Daily plan creation and retrieval
+- Individual priority completion functionality
 - Completion tracking accuracy
 - Data persistence integrity
-- Chat command availability
+- Chat command availability (including completion commands)
 
 ---
 
 ## 📊 **SUCCESS METRICS**
 
 ### **Technical Metrics**
-- **Code Size**: <150 lines (BaseManager pattern efficiency)
-- **Test Coverage**: >90% unit test coverage
+- **Code Size**: <200 lines (BaseManager pattern efficiency + completion functionality)
+- **Test Coverage**: >90% unit test coverage including completion workflows
 - **Performance**: <500ms response time for all operations
 - **Database**: <1MB storage per year of daily plans
+- **Zero Code Duplication**: Pure coordination layer using existing infrastructure
 
 ### **User Experience Metrics**
-- **Simplicity**: 2-command workflow (start → review)
-- **Speed**: <30 seconds for priority setting
+- **Simplicity**: 3-command workflow (start → complete → review)
+- **Speed**: <30 seconds for priority setting, <5 seconds for completion
 - **Reliability**: 100% data persistence accuracy
+- **Usability**: Natural language completion commands with fuzzy matching
 - **Insights**: Weekly completion rate trends
 
 ### **Architectural Compliance**
