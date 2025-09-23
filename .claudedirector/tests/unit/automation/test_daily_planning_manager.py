@@ -27,6 +27,7 @@ from lib.automation.daily_planning_manager import (
     DailyPlanningManager,
     DailyPlanningResult,
 )
+from lib.automation.daily_planning_config import DailyPlanningConfig, DAILY_PLANNING
 from lib.core.types import ProcessingResult
 from lib.core.base_manager import BaseManagerConfig, ManagerType
 
@@ -102,8 +103,10 @@ class TestDailyPlanningManager:
         # ✅ Verify coordination with existing StrategicTaskManager
         mock_task_manager._create_task_from_detection.assert_called_once()
         call_args = mock_task_manager._create_task_from_detection.call_args[0][0]
-        assert call_args["task_text"] == f"Daily Plan: {'; '.join(priorities)}"
-        assert call_args["category"] == "daily_planning"
+        assert call_args["task_text"] == DailyPlanningConfig.format_task_text(
+            priorities
+        )
+        assert call_args["category"] == DAILY_PLANNING.DAILY_PLANNING_CATEGORY
         assert call_args["priority"] == "high"
 
         # ✅ Verify coordination with existing StrategicMemoryManager
@@ -328,10 +331,13 @@ class TestDailyPlanningManager:
             with open(manager_file, "r") as f:
                 line_count = len(f.readlines())
 
-            # Should be small coordination layer (spec updated to <200 lines with completion)
+            # Should be small coordination layer (spec updated with completion)
+            MAX_COORDINATION_LAYER_LINES = (
+                450  # Configuration constant for coordination layer size
+            )
             assert (
-                line_count < 450
-            ), f"File too large: {line_count} lines. Should be <450 for coordination layer with completion."
+                line_count < MAX_COORDINATION_LAYER_LINES
+            ), f"File too large: {line_count} lines. Should be <{MAX_COORDINATION_LAYER_LINES} for coordination layer with completion."
 
     @patch("lib.automation.daily_planning_manager.StrategicTaskManager")
     @patch("lib.automation.daily_planning_manager.StrategicMemoryManager")
@@ -350,7 +356,11 @@ class TestDailyPlanningManager:
         mock_task_manager.return_value = mock_task_manager_instance
 
         # Mock task found in database
-        mock_cursor.fetchone.return_value = (1, "Daily Plan: Team meeting", "pending")
+        mock_cursor.fetchone.return_value = (
+            1,
+            DailyPlanningConfig.format_task_text(["Team meeting"]),
+            DAILY_PLANNING.TASK_STATUS_PENDING,
+        )
 
         manager = DailyPlanningManager()
 
@@ -425,7 +435,11 @@ class TestDailyPlanningManager:
         mock_task_manager.return_value = mock_task_manager_instance
 
         # Mock task already completed
-        mock_cursor.fetchone.return_value = (1, "Daily Plan: Team meeting", "completed")
+        mock_cursor.fetchone.return_value = (
+            1,
+            DailyPlanningConfig.format_task_text(["Team meeting"]),
+            DAILY_PLANNING.TASK_STATUS_COMPLETED,
+        )
 
         manager = DailyPlanningManager()
 

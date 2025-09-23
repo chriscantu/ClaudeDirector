@@ -36,6 +36,7 @@ from ..performance import (
 # ✅ DRY: Import daily planning manager for coordination
 try:
     from ..automation.daily_planning_manager import DailyPlanningManager
+    from ..automation.daily_planning_config import DailyPlanningConfig, DAILY_PLANNING
 
     DAILY_PLANNING_AVAILABLE = True
 except ImportError:
@@ -528,7 +529,11 @@ class ConversationalInteractionManager:
                     alignment_score = result.strategic_analysis.get(
                         "alignment_score", 0
                     )
-                    response_content += f" (Strategic alignment: {alignment_score}%)"
+                    response_content += (
+                        DailyPlanningConfig.format_strategic_alignment_message(
+                            alignment_score
+                        )
+                    )
 
             elif any(
                 word in query_lower
@@ -650,13 +655,9 @@ class ConversationalInteractionManager:
 
         # Default priorities if nothing extracted
         if not priorities:
-            priorities = [
-                "Review daily tasks",
-                "Strategic planning",
-                "Team coordination",
-            ]
+            priorities = DailyPlanningConfig.get_default_priorities()
 
-        return priorities[:5]  # Limit to 5 priorities max
+        return DailyPlanningConfig.limit_priorities(priorities)
 
     def _extract_priority_name_from_completion_query(self, query: str) -> str:
         """
@@ -683,7 +684,7 @@ class ConversationalInteractionManager:
         priority_name = query_lower.strip()
 
         # If nothing left, return empty string
-        if not priority_name or len(priority_name) < 2:
+        if not DailyPlanningConfig.is_valid_priority_name(priority_name):
             return ""
 
         return priority_name

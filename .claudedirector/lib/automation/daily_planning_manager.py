@@ -21,6 +21,7 @@ from ..core.base_manager import BaseManager, BaseManagerConfig, ManagerType
 from ..core.types import ProcessingResult
 from ..automation.task_manager import StrategicTaskManager
 from ..context_engineering.strategic_memory_manager import StrategicMemoryManager
+from .daily_planning_config import DailyPlanningConfig, DAILY_PLANNING
 
 
 @dataclass
@@ -108,9 +109,9 @@ class DailyPlanningManager(BaseManager):
             # ✅ DRY: Leveraging existing task creation logic
             task_result = self.task_manager._create_task_from_detection(
                 {
-                    "task_text": f"Daily Plan: {'; '.join(priorities)}",
+                    "task_text": DailyPlanningConfig.format_task_text(priorities),
                     "assignment_direction": "self",
-                    "category": "daily_planning",
+                    "category": DAILY_PLANNING.DAILY_PLANNING_CATEGORY,
                     "priority": "high",
                     "impact_scope": "personal",
                     "follow_up_required": True,
@@ -134,7 +135,9 @@ class DailyPlanningManager(BaseManager):
                     }
                 ],
                 strategic_analysis=strategic_analysis,
-                completion_stats={"planned": len(priorities), "completed": 0},
+                completion_stats=DailyPlanningConfig.get_completion_stats_template(
+                    len(priorities)
+                ),
             )
 
         except Exception as e:
@@ -196,7 +199,9 @@ class DailyPlanningManager(BaseManager):
             l1_initiatives = strategic_context.get("l1_initiatives", [])
 
             # Basic alignment scoring (no complex new logic)
-            alignment_score = min(len(priorities) * 20, 100)  # Simple heuristic
+            alignment_score = DailyPlanningConfig.calculate_alignment_score(
+                len(priorities)
+            )
 
             return {
                 "alignment_score": alignment_score,
@@ -222,18 +227,7 @@ class DailyPlanningManager(BaseManager):
                 return self.memory_manager.get_strategic_context()
             else:
                 # Fallback to basic context structure
-                return {
-                    "l0_initiatives": [
-                        "Platform Scalability",
-                        "Technical Debt Reduction",
-                        "Team Development",
-                    ],
-                    "l1_initiatives": [
-                        "Cross-Team Coordination",
-                        "Engineering Process Innovation",
-                    ],
-                    "organizational_priorities": "strategic_leadership",
-                }
+                return DailyPlanningConfig.get_default_strategic_context()
 
         except Exception as e:
             self.logger.error(f"Failed to get strategic context: {e}")
@@ -255,12 +249,16 @@ class DailyPlanningManager(BaseManager):
             cursor.execute(
                 """
                 SELECT COUNT(*) as total_tasks,
-                       SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed_tasks
+                       SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as completed_tasks
                 FROM strategic_tasks
                 WHERE DATE(created_date) = ?
-                  AND category = 'daily_planning'
+                  AND category = ?
             """,
-                (today,),
+                (
+                    DAILY_PLANNING.TASK_STATUS_COMPLETED,
+                    today,
+                    DAILY_PLANNING.DAILY_PLANNING_CATEGORY,
+                ),
             )
 
             result = cursor.fetchone()
@@ -348,7 +346,7 @@ class DailyPlanningManager(BaseManager):
                 SELECT id, task_text, status
                 FROM strategic_tasks
                 WHERE DATE(created_date) = ?
-                  AND category = 'daily_planning'
+                  AND category = ?
                   AND (task_text LIKE ? OR task_text LIKE ?)
                 ORDER BY
                   CASE WHEN LOWER(task_text) LIKE LOWER(?) THEN 1 ELSE 2 END,
@@ -357,6 +355,7 @@ class DailyPlanningManager(BaseManager):
             """,
                 (
                     today,
+                    DAILY_PLANNING.DAILY_PLANNING_CATEGORY,
                     f"%{priority_name}%",
                     f"%{priority_name.lower()}%",
                     f"%{priority_name}%",
@@ -373,7 +372,7 @@ class DailyPlanningManager(BaseManager):
 
             task_id, task_text, current_status = result
 
-            if current_status == "completed":
+            if current_status == DAILY_PLANNING.TASK_STATUS_COMPLETED:
                 return DailyPlanningResult(
                     success=True,
                     message=f"Priority '{priority_name}' was already completed",
@@ -384,11 +383,15 @@ class DailyPlanningManager(BaseManager):
             cursor.execute(
                 """
                 UPDATE strategic_tasks
-                SET status = 'completed',
+                SET status = ?,
                     updated_date = ?
                 WHERE id = ?
             """,
-                (datetime.now().isoformat(), task_id),
+                (
+                    DAILY_PLANNING.TASK_STATUS_COMPLETED,
+                    datetime.now().isoformat(),
+                    task_id,
+                ),
             )
 
             connection.commit()
@@ -401,7 +404,7 @@ class DailyPlanningManager(BaseManager):
 
             return DailyPlanningResult(
                 success=True,
-                message=f"✅ Priority completed: {task_text.replace('Daily Plan: ', '').split(';')[0] if ';' in task_text else task_text}",
+                message=f"✅ Priority completed: {task_text.replace(f'{DAILY_PLANNING.TASK_TEXT_PREFIX}: ', '').split(DAILY_PLANNING.TASK_TEXT_SEPARATOR)[0] if DAILY_PLANNING.TASK_TEXT_SEPARATOR in task_text else task_text}",
                 completion_stats=(
                     status_result.completion_stats if status_result.success else None
                 ),
