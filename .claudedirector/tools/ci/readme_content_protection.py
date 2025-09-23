@@ -100,9 +100,16 @@ def main():
 
     readme_path = Path(sys.argv[1])
 
+    # 🛡️ CRITICAL FIX: Only protect root README.md, not subdirectory READMEs
+    if readme_path.name == "README.md" and readme_path.parent != Path("."):
+        print(f"✅ README PROTECTION: Skipping subdirectory README: {readme_path}")
+        print("📋 Only root README.md is protected from accidental changes")
+        sys.exit(0)
+
     # CRITICAL FIX: PRESERVATION-FIRST PROTECTION
     # Never block commits that could cause README deletion
     # Instead, validate content and warn but ALWAYS ALLOW
+    # PROACTIVE PROTECTION: Check if README changes are explicitly intended
     if not check_explicit_readme_intent():
         print("🛡️ README PROTECTION: Implicit README changes detected")
         print("📋 Allowing commit but monitoring for content integrity")
