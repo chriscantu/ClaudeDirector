@@ -23,9 +23,9 @@ ClaudeDirector is designed for engineering leaders, not developers. All function
 ## 📚 **For Developers (Internal)**
 
 If you need to understand the internal system architecture:
-- **Architecture Overview**: [docs/architecture/OVERVIEW.md](../architecture/OVERVIEW.md)
-- **Component Structure**: [docs/architecture/COMPONENTS.md](../architecture/COMPONENTS.md)
-- **Code Organization**: [docs/architecture/PROJECT_STRUCTURE.md](../architecture/PROJECT_STRUCTURE.md)
+- **Architecture Overview**: [docs/architecture/OVERVIEW.md](../architecture/OVERVIEW.md) - High-level system and component architecture
+- **Code Organization**: [docs/architecture/PROJECT_STRUCTURE.md](../architecture/PROJECT_STRUCTURE.md) - Mandatory project structure
+- **Testing Architecture**: [docs/architecture/TESTING_ARCHITECTURE.md](../architecture/TESTING_ARCHITECTURE.md) - Test system design
 
 ---
 

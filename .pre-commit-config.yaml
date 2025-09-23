@@ -14,7 +14,9 @@ repos:
     rev: v4.6.0
     hooks:
       - id: trailing-whitespace
+        exclude: '^README\.md$'  # CRITICAL: Exclude README from modifications
       - id: end-of-file-fixer
+        exclude: '^README\.md$'  # CRITICAL: Exclude README from modifications
       - id: check-yaml
       - id: check-added-large-files
         args: ['--maxkb=1000']
@@ -22,15 +24,17 @@ repos:
   # CODE BLOAT PREVENTION (RUNS EARLY TO CATCH DUPLICATION)
   - repo: local
     hooks:
-      # README CONTENT PROTECTION (TEMPORARILY DISABLED - CAUSING DELETION ISSUES)
-      # - id: readme-content-protection
-      #   name: 🛡️ README CONTENT PROTECTION (Root README Only)
-      #   entry: python3 .claudedirector/tools/ci/readme_content_protection.py
-      #   language: system
-      #   files: 'README\.md$'  # Match any README.md (script handles filtering)
-      #   pass_filenames: true
-      #   stages: [pre-commit]
-      #   verbose: true
+      # README CONTENT PROTECTION (FIXED APPROACH)
+      - id: readme-content-protection
+        name: 🛡️ README CONTENT PROTECTION (Preservation-First)
+        entry: python3 .claudedirector/tools/ci/readme_content_protection.py
+        language: system
+        files: '^README\.md$'
+        pass_filenames: true
+        stages: [pre-commit]
+        verbose: true
+        # CRITICAL: Always pass - never block commits that could delete README
+        always_run: false
       # TEMPORARILY DISABLED: Method not fully implemented yet
       # - id: enhanced-duplication-detection
       #   name: 🛡️ ENHANCED DUPLICATION DETECTION (TS-4 Prevention System)
@@ -88,6 +92,15 @@ repos:
         files: '^\.claudedirector/tests/.*test.*p0.*\.py$|^\.claudedirector/tests/.*_p0_.*\.py$'
         exclude: '^\.claudedirector/tests/p0_enforcement/run_mandatory_p0_tests\.py$'
         pass_filenames: true
+        stages: [pre-commit]
+        verbose: true
+
+      - id: cursorrules-validation
+        name: 🎯 .CURSORRULES VALIDATION (Cross-Platform Compatibility)
+        entry: python3 -m pytest .claudedirector/tests/regression/p0_blocking/test_cursorrules_validation_p0.py -v
+        language: system
+        files: '^\.cursorrules$'
+        pass_filenames: false
         stages: [pre-commit]
         verbose: true
 

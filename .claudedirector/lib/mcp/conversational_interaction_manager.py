@@ -46,6 +46,18 @@ except ImportError:
 
     DAILY_PLANNING_AVAILABLE = False
 
+# Phase 2: Personal Retrospective Agent Integration (DRY compliance)
+try:
+    from ..agents.personal_retrospective_agent import PersonalRetrospectiveAgent
+
+    RETROSPECTIVE_AVAILABLE = True
+except ImportError:
+    # Graceful degradation if not available
+    class PersonalRetrospectiveAgent:
+        pass
+
+    RETROSPECTIVE_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -60,6 +72,9 @@ class InteractionIntent(Enum):
     INSIGHT_REQUEST = "insight_request"  # "What's driving this spike?"
     DAILY_PLAN_COMMAND = (
         "daily_plan_command"  # "Daily plan start", "/daily-plan review"
+    )
+    RETROSPECTIVE_COMMAND = (
+        "retrospective_command"  # "/retrospective create", "/retrospective view"
     )
     UNKNOWN = "unknown"
 
@@ -114,6 +129,9 @@ class ConversationalInteractionManager:
         self.interactive_addon = interactive_addon or InteractiveEnhancementAddon()
         self.mcp_manager = MCPIntegrationManager()
 
+        # Phase 2: Personal Retrospective Agent Integration (Lightweight Factory Pattern)
+        self._retrospective_agent = None  # Lazy initialization for performance
+
         # Natural language patterns from configuration (DRY compliance)
         self.intent_patterns = {
             InteractionIntent.TIME_NAVIGATION: MCPServerConstants.Phase7B.INTENT_PATTERNS[
@@ -137,6 +155,12 @@ class ConversationalInteractionManager:
             InteractionIntent.DAILY_PLAN_COMMAND: MCPServerConstants.Phase7B.INTENT_PATTERNS[
                 "daily_plan_command"
             ],
+            InteractionIntent.RETROSPECTIVE_COMMAND: [
+                r"/retrospective\s+(create|view|help)",
+                r"retrospective\s+(create|view|help)",
+                r"personal\s+retrospective",
+                r"weekly\s+retrospective",
+            ],
         }
 
         # Entity and time patterns from configuration
@@ -156,6 +180,24 @@ class ConversationalInteractionManager:
         logger.info(
             "✅ ARCHITECTURE: Extends Phase 7A InteractiveEnhancementAddon (DRY compliance)"
         )
+
+    @property
+    def retrospective_agent(self) -> PersonalRetrospectiveAgent:
+        """
+        Lazy-loaded PersonalRetrospectiveAgent (SOLID: Single Responsibility)
+
+        ARCHITECTURE COMPLIANCE:
+        - DRY: Reuses existing BaseManager pattern
+        - Performance: Lazy initialization
+        - SOLID: Dependency injection pattern
+        """
+        if not RETROSPECTIVE_AVAILABLE:
+            return None
+
+        if self._retrospective_agent is None:
+            self._retrospective_agent = PersonalRetrospectiveAgent()
+            logger.info("✅ PersonalRetrospectiveAgent initialized (lazy loading)")
+        return self._retrospective_agent
 
     def cleanup(self):
         """
@@ -234,6 +276,10 @@ class ConversationalInteractionManager:
             logger.info(
                 f"Intent recognized: {intent.intent.value} (confidence: {intent.confidence:.2f})"
             )
+
+            # Phase 2: Personal Retrospective Command Routing (DRY compliance)
+            if intent.intent == InteractionIntent.RETROSPECTIVE_COMMAND:
+                return await self._handle_retrospective_command(query, current_context)
 
             # Step 2: Apply chart modifications based on intent
             # ARCHITECTURE: Leverage existing InteractiveEnhancementAddon (DRY principle)
@@ -719,6 +765,111 @@ class ConversationalInteractionManager:
         except Exception as e:
             logger.error(f"Error generating follow-up suggestions: {e}")
             return self.default_suggestions.get("default", [])
+
+    async def _handle_retrospective_command(
+        self, query: str, current_context: Dict[str, Any] = None
+    ) -> UnifiedResponse:
+        """
+        Handle personal retrospective commands (Phase 2 Integration)
+
+        ARCHITECTURE COMPLIANCE:
+        - DRY: Delegates to PersonalRetrospectiveAgent (no duplication)
+        - SOLID: Single responsibility for command routing
+        - Performance: <500ms target maintained
+
+        Args:
+            query: Original user query (e.g., "/retrospective create")
+            current_context: Current session context
+
+        Returns:
+            UnifiedResponse: Retrospective command result
+        """
+        start_time = time.time()
+
+        try:
+            # Check if retrospective agent is available
+            if not RETROSPECTIVE_AVAILABLE:
+                logger.warning("PersonalRetrospectiveAgent not available")
+                return await create_conversational_response(
+                    content="Sorry, the retrospective feature is not available.",
+                    status=ResponseStatus.ERROR,
+                    success=False,
+                    error="Personal retrospective feature not available",
+                    metadata={"processing_time": time.time() - start_time},
+                )
+
+            # Parse retrospective command from query
+            query_lower = query.lower().strip()
+            user_id = (
+                current_context.get("user_id", "default_user")
+                if current_context
+                else "default_user"
+            )
+
+            # Extract command and user input
+            if "/retrospective create" in query_lower:
+                command = "/retrospective create"
+                user_input = ""
+            elif "/retrospective view" in query_lower:
+                command = "/retrospective view"
+                user_input = ""
+            elif "/retrospective help" in query_lower:
+                command = "/retrospective help"
+                user_input = ""
+            else:
+                # Handle session input during active retrospective
+                command = "session_input"
+                user_input = query.strip()
+
+            # Delegate to PersonalRetrospectiveAgent (DRY compliance)
+            request_data = {
+                "command": command,
+                "user_id": user_id,
+                "user_input": user_input,
+            }
+
+            result = self.retrospective_agent.process_request(request_data)
+
+            processing_time = time.time() - start_time
+            logger.info(f"✅ Retrospective command processed in {processing_time:.3f}s")
+
+            return await create_conversational_response(
+                content=result.message,
+                status=(
+                    ResponseStatus.SUCCESS if result.success else ResponseStatus.ERROR
+                ),
+                success=result.success,
+                follow_up_suggestions=(
+                    [
+                        "/retrospective create - Start new retrospective",
+                        "/retrospective view - View recent entries",
+                        "/retrospective help - Show help",
+                    ]
+                    if result.success
+                    else []
+                ),
+                metadata={
+                    "retrospective_command": command,
+                    "processing_time": processing_time,
+                    "agent_result": result.__dict__,
+                },
+            )
+
+        except Exception as e:
+            processing_time = time.time() - start_time
+            logger.error(
+                f"❌ Error processing retrospective command: {e}", exc_info=True
+            )
+
+            return await create_conversational_response(
+                content=f"Sorry, I encountered an error processing your retrospective command: {str(e)}",
+                status=ResponseStatus.ERROR,
+                success=False,
+                error=f"Retrospective processing failed: {str(e)}",
+                metadata={
+                    "processing_time": processing_time,
+                },
+            )
 
     def __enter__(self):
         """Context manager entry point"""
