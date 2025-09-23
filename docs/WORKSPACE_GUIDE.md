@@ -199,6 +199,29 @@ claudedirector setup workspace
 
 **Questions or issues?** The new structure is designed to be more flexible and professional. Your work is safe and the framework is more powerful than ever!
 
+## 🎯 **Daily Planning Workflow** ✨ **NEW**
+
+### Personal Daily Planning Integration
+
+The new Personal Daily Planning Agent integrates seamlessly with your workspace:
+
+**Daily Workflow**:
+1. **Morning**: `"daily plan start"` - Set strategic priorities aligned with L0/L1 initiatives
+2. **Throughout Day**: `"daily plan complete [task]"` - Mark tasks done as you complete them
+3. **Evening**: `"daily plan review"` - Assess progress and strategic impact
+
+**Workspace Integration**:
+- **SQLite Storage**: Plans stored in `data/strategic/strategic_memory.db`
+- **No File Management**: Zero manual tracking files needed
+- **Strategic Context**: Automatic L0/L1 initiative alignment
+- **Executive Reports**: Progress data available for stakeholder updates
+
+**Benefits for Your Workspace**:
+- **Zero Overhead**: No additional files to manage
+- **Strategic Alignment**: Daily execution tied to organizational priorities
+- **Executive Visibility**: Progress data ready for leadership reporting
+- **Natural Language**: No complex task management systems needed
+
 ---
 
 *This guide ensures your leadership work stays organized and private while keeping the ClaudeDirector framework clean and demo-ready.*
