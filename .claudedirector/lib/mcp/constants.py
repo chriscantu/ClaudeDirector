@@ -232,6 +232,19 @@ class MCPServerConstants:
                 "pattern",
                 "anomaly",
             ],
+            "daily_plan_command": [
+                "daily plan",
+                "/daily-plan",
+                "daily-plan",
+                "daily planning",
+                "plan start",
+                "plan review",
+                "today plan",
+                "priorities",
+                "daily priorities",
+                "plan today",
+                "review plan",
+            ],
         }
 
         # Entity Recognition Patterns

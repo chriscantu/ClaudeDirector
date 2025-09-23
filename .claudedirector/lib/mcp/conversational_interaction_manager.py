@@ -33,6 +33,18 @@ from ..performance import (
     ResponseStatus,
 )
 
+# ✅ DRY: Import daily planning manager for coordination
+try:
+    from ..automation.daily_planning_manager import DailyPlanningManager
+
+    DAILY_PLANNING_AVAILABLE = True
+except ImportError:
+    # Graceful degradation if not available
+    class DailyPlanningManager:
+        pass
+
+    DAILY_PLANNING_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -45,6 +57,9 @@ class InteractionIntent(Enum):
     COMPARISON = "comparison"  # "Compare with last quarter"
     CONTEXT_RESET = "context_reset"  # "Go back", "Reset filters"
     INSIGHT_REQUEST = "insight_request"  # "What's driving this spike?"
+    DAILY_PLAN_COMMAND = (
+        "daily_plan_command"  # "Daily plan start", "/daily-plan review"
+    )
     UNKNOWN = "unknown"
 
 
@@ -118,6 +133,9 @@ class ConversationalInteractionManager:
             InteractionIntent.INSIGHT_REQUEST: MCPServerConstants.Phase7B.INTENT_PATTERNS[
                 "insight_request"
             ],
+            InteractionIntent.DAILY_PLAN_COMMAND: MCPServerConstants.Phase7B.INTENT_PATTERNS[
+                "daily_plan_command"
+            ],
         }
 
         # Entity and time patterns from configuration
@@ -129,6 +147,9 @@ class ConversationalInteractionManager:
         self.performance_target = (
             MCPServerConstants.Phase7B.INTERACTION_PROCESSING_TARGET
         )
+
+        # ✅ DRY: Lazy initialization for optional managers
+        self._daily_planning_manager = None
 
         logger.info(f"ConversationalInteractionManager {self.version} initialized")
         logger.info(
@@ -162,6 +183,25 @@ class ConversationalInteractionManager:
             await self.mcp_manager.async_cleanup()
 
         logger.info("✅ Conversational Interaction Manager async cleanup complete")
+
+    @property
+    def daily_planning_manager(self) -> Optional[DailyPlanningManager]:
+        """
+        ✅ DRY: Lazy initialization of DailyPlanningManager
+        Following existing pattern for optional manager integration
+        """
+        if not DAILY_PLANNING_AVAILABLE:
+            return None
+
+        if self._daily_planning_manager is None:
+            try:
+                self._daily_planning_manager = DailyPlanningManager()
+                logger.info("✅ DailyPlanningManager initialized successfully")
+            except Exception as e:
+                logger.error(f"❌ Failed to initialize DailyPlanningManager: {e}")
+                return None
+
+        return self._daily_planning_manager
 
     async def process_interaction_query(
         self, query: str, chart_id: str, current_context: Dict[str, Any] = None
@@ -333,6 +373,8 @@ class ConversationalInteractionManager:
                 return await self._handle_context_reset(intent, chart_id, context)
             elif intent.intent == InteractionIntent.INSIGHT_REQUEST:
                 return await self._handle_insight_request(intent, chart_id, context)
+            elif intent.intent == InteractionIntent.DAILY_PLAN_COMMAND:
+                return await self._handle_daily_plan_command(intent, chart_id, context)
             else:
                 # Default: return current state
                 return {
@@ -445,6 +487,144 @@ class ConversationalInteractionManager:
             "modification_type": "insight_request",
             "insights_generated": True,
         }
+
+    async def _handle_daily_plan_command(
+        self, intent: QueryIntent, chart_id: str, context: Dict
+    ) -> Dict:
+        """
+        ✅ Handle daily planning commands
+        ✅ DRY: Uses existing DailyPlanningManager for coordination
+        """
+        logger.info(f"Processing daily plan command: {intent.raw_query}")
+
+        if not self.daily_planning_manager:
+            logger.warning("DailyPlanningManager not available")
+            return {
+                "updated_html": context.get("current_html", ""),
+                "state_changed": False,
+                "modification_type": "daily_plan_command",
+                "error": "Daily planning feature not available",
+            }
+
+        try:
+            # ✅ Parse command type from query
+            query_lower = intent.raw_query.lower()
+
+            if any(
+                word in query_lower for word in ["start", "create", "new", "plan today"]
+            ):
+                # Extract priorities from query (simple parsing)
+                priorities = self._extract_priorities_from_query(intent.raw_query)
+
+                # ✅ DRY: Use existing DailyPlanningManager
+                result = self.daily_planning_manager.manage(
+                    "create_daily_plan", priorities=priorities
+                )
+
+                response_content = (
+                    f"✅ Daily plan created with {len(priorities)} priorities"
+                )
+                if result.strategic_analysis:
+                    alignment_score = result.strategic_analysis.get(
+                        "alignment_score", 0
+                    )
+                    response_content += f" (Strategic alignment: {alignment_score}%)"
+
+            elif any(
+                word in query_lower
+                for word in ["review", "check", "status", "progress"]
+            ):
+                # ✅ DRY: Use existing DailyPlanningManager for status
+                result = self.daily_planning_manager.manage("get_today_status")
+
+                if result.completion_stats:
+                    completed = result.completion_stats.get("completed_tasks", 0)
+                    total = result.completion_stats.get("total_tasks", 0)
+                    response_content = (
+                        f"📊 Daily progress: {completed}/{total} tasks completed"
+                    )
+                else:
+                    response_content = "📊 No daily plan found for today"
+
+            elif any(
+                word in query_lower for word in ["balance", "strategic", "l0", "l1"]
+            ):
+                # ✅ DRY: Use existing DailyPlanningManager for strategic balance
+                result = self.daily_planning_manager.manage("get_strategic_balance")
+
+                if result.l0_l1_balance:
+                    l0_pct = result.l0_l1_balance.get("l0_percentage", 0)
+                    l1_pct = result.l0_l1_balance.get("l1_percentage", 0)
+                    response_content = (
+                        f"⚖️ Strategic balance: L0 {l0_pct:.0f}%, L1 {l1_pct:.0f}%"
+                    )
+                else:
+                    response_content = "⚖️ Strategic balance analysis unavailable"
+            else:
+                # Default help response
+                response_content = """
+                🎯 Daily Planning Commands:
+                • "daily plan start" - Create new daily plan
+                • "daily plan review" - Check today's progress
+                • "daily plan balance" - View strategic alignment
+                """
+
+            return {
+                "updated_html": context.get("current_html", "")
+                + f"\n{response_content}",
+                "state_changed": True,
+                "modification_type": "daily_plan_command",
+                "daily_plan_result": result.data if hasattr(result, "data") else None,
+                "command_processed": True,
+            }
+
+        except Exception as e:
+            logger.error(f"Error processing daily plan command: {e}")
+            return {
+                "updated_html": context.get("current_html", ""),
+                "state_changed": False,
+                "modification_type": "daily_plan_command",
+                "error": f"Daily planning error: {str(e)}",
+            }
+
+    def _extract_priorities_from_query(self, query: str) -> List[str]:
+        """
+        ✅ Simple priority extraction from natural language
+        ✅ No complex NLP - basic pattern matching only
+        """
+        # Remove command words and extract priorities
+        query_clean = query.lower()
+        for cmd_word in [
+            "daily plan",
+            "start",
+            "create",
+            "new",
+            "plan today",
+            "/daily-plan",
+        ]:
+            query_clean = query_clean.replace(cmd_word, "")
+
+        # Simple priority extraction - split by common delimiters
+        priorities = []
+        for delimiter in [",", ";", "and", "&"]:
+            if delimiter in query_clean:
+                parts = [p.strip() for p in query_clean.split(delimiter) if p.strip()]
+                priorities = parts
+                break
+
+        # Fallback: if no delimiters, treat whole query as single priority
+        if not priorities and query_clean.strip():
+            priorities = [query_clean.strip()]
+
+        # Default priorities if nothing extracted
+        if not priorities:
+            priorities = [
+                "Review daily tasks",
+                "Strategic planning",
+                "Team coordination",
+            ]
+
+        return priorities[:5]  # Limit to 5 priorities max
 
     async def _generate_follow_up_suggestions(
         self,
