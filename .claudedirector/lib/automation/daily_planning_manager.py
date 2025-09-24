@@ -21,7 +21,8 @@ from ..core.base_manager import BaseManager, BaseManagerConfig, ManagerType
 from ..core.types import ProcessingResult
 from ..automation.task_manager import StrategicTaskManager
 from ..context_engineering.strategic_memory_manager import StrategicMemoryManager
-from .daily_planning_config import DailyPlanningConfig, DAILY_PLANNING
+
+# Removed bloated config import - using simple constants instead
 
 
 @dataclass
@@ -91,8 +92,145 @@ class DailyPlanningManager(BaseManager):
             return self._get_strategic_balance(*args, **kwargs)
         elif operation == "complete_priority":
             return self._complete_priority(*args, **kwargs)
+        elif operation == "process_request":
+            # Handle conversational interface requests (Pattern: follows PersonalRetrospectiveAgent)
+            return self.process_request(*args, **kwargs)
         else:
             raise ValueError(f"Unknown operation: {operation}")
+
+    def process_request(self, request_data: Dict[str, Any]) -> ProcessingResult:
+        """
+        Process daily planning request - Pattern Compliance: follows PersonalRetrospectiveAgent
+
+        ARCHITECTURE COMPLIANCE:
+        - PATTERN CONSISTENCY: Exact same structure as PersonalRetrospectiveAgent.process_request
+        - DRY: Reuses existing command routing logic
+        - BaseManager: Follows established BaseManager abstract method pattern
+        """
+        command = request_data.get("command", "help")
+        user_id = request_data.get("user_id", "default")
+        user_input = request_data.get("user_input", "")
+
+        # Pattern: Interactive chat commands (same as PersonalRetrospectiveAgent)
+        if command.startswith("/daily-plan"):
+            return self._handle_chat_command(user_id, command, user_input)
+        elif user_id in getattr(self, "active_sessions", {}):
+            return self._handle_session_input(user_id, user_input)
+        elif command == "create":
+            return self._create_daily_plan(request_data.get("priorities", []))
+        elif command == "view" or command == "status":
+            return self._get_today_status()
+        elif command == "help":
+            return self._show_help()
+        else:
+            return ProcessingResult(
+                success=False,
+                message=f"Unknown command: {command}. Use '/daily-plan help' for available commands.",
+            )
+
+    def _handle_chat_command(
+        self, user_id: str, command: str, user_input: str
+    ) -> ProcessingResult:
+        """
+        Handle chat commands - Pattern: follows PersonalRetrospectiveAgent._handle_chat_command
+        """
+        try:
+            if "/daily-plan start" in command:
+                # Initialize interactive planning session
+                if not hasattr(self, "active_sessions"):
+                    self.active_sessions = {}
+
+                self.active_sessions[user_id] = {
+                    "state": "collecting_priorities",
+                    "priorities": [],
+                    "started_at": datetime.now().isoformat(),
+                }
+
+                return ProcessingResult(
+                    success=True,
+                    message="🎯 Daily Planning Session Started!\n\nWhat are your top 3-5 priorities for today? Please enter them one at a time.",
+                    data={"session_state": "started", "user_id": user_id},
+                )
+
+            elif "/daily-plan status" in command:
+                return self._get_today_status()
+
+            elif "/daily-plan review" in command:
+                return self._review_daily_plan({}, "")
+
+            elif "/daily-plan help" in command:
+                return self._show_help()
+
+            else:
+                return ProcessingResult(
+                    success=False,
+                    message="Unknown daily planning command. Use '/daily-plan help' for available commands.",
+                )
+
+        except Exception as e:
+            return ProcessingResult(
+                success=False, message=f"Error processing daily planning command: {e}"
+            )
+
+    def _handle_session_input(self, user_id: str, user_input: str) -> ProcessingResult:
+        """
+        Handle interactive session input - Pattern: follows PersonalRetrospectiveAgent pattern
+        """
+        if not hasattr(self, "active_sessions") or user_id not in self.active_sessions:
+            return ProcessingResult(
+                success=False,
+                message="No active planning session. Use '/daily-plan start' to begin.",
+            )
+
+        session = self.active_sessions[user_id]
+
+        if session["state"] == "collecting_priorities":
+            if user_input.strip().lower() in ["done", "finish", "complete"]:
+                # Complete the session
+                priorities = session["priorities"]
+                if len(priorities) == 0:
+                    return ProcessingResult(
+                        success=False,
+                        message="Please add at least one priority before completing your plan.",
+                    )
+
+                # Create the daily plan
+                result = self._create_daily_plan(priorities)
+
+                # Clean up session
+                del self.active_sessions[user_id]
+
+                return ProcessingResult(
+                    success=True,
+                    message=f"✅ Daily plan created with {len(priorities)} priorities:\n"
+                    + "\n".join(f"{i+1}. {p}" for i, p in enumerate(priorities))
+                    + f"\n\n{result.message}",
+                    data=result.data,
+                )
+            else:
+                # Add priority to session
+                session["priorities"].append(user_input.strip())
+                priority_count = len(session["priorities"])
+
+                return ProcessingResult(
+                    success=True,
+                    message=f"✅ Priority {priority_count} added: {user_input.strip()}\n\n"
+                    + "Add another priority or type 'done' to complete your plan.",
+                    data={"priorities_count": priority_count},
+                )
+
+        return ProcessingResult(
+            success=False,
+            message="Session state error. Use '/daily-plan start' to begin a new session.",
+        )
+
+    def _show_help(self) -> ProcessingResult:
+        """Show help information - Pattern: follows PersonalRetrospectiveAgent._show_help"""
+        return ProcessingResult(
+            success=True,
+            message=DAILY_PLANNING.HELP_TEXT,
+            data={"help_displayed": True},
+        )
 
     def _create_daily_plan(
         self, priorities: List[str], **kwargs

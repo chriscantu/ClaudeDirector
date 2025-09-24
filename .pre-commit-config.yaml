@@ -24,17 +24,9 @@ repos:
   # CODE BLOAT PREVENTION (RUNS EARLY TO CATCH DUPLICATION)
   - repo: local
     hooks:
-      # README CONTENT PROTECTION (FIXED APPROACH)
-      - id: readme-content-protection
-        name: 🛡️ README CONTENT PROTECTION (Preservation-First)
-        entry: python3 .claudedirector/tools/ci/readme_content_protection.py
-        language: system
-        files: '^README\.md$'
-        pass_filenames: true
-        stages: [pre-commit]
-        verbose: true
-        # CRITICAL: Always pass - never block commits that could delete README
-        always_run: false
+      # README PROTECTION: Consolidated to AI cleanup exemption system only
+      # Removed competing protection hook to prevent system interference
+      # README.md is protected by .claudedirector/tools/hooks/pre-commit-ai-cleanup exemptions
       # TEMPORARILY DISABLED: Method not fully implemented yet
       # - id: enhanced-duplication-detection
       #   name: 🛡️ ENHANCED DUPLICATION DETECTION (TS-4 Prevention System)

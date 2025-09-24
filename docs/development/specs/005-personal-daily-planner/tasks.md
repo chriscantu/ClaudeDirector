@@ -63,11 +63,12 @@ This specification is organized into focused documents:
 - Natural language command processing
 
 ### Chat Commands (✅ All Implemented)
-- `"daily plan start"` → Creates daily plan with strategic alignment
-- `"daily plan complete [task]"` → **NEW**: Mark individual priorities as done
-- `"daily plan review"` → Reviews progress with statistics
-- `"daily plan balance"` → Shows L0/L1 strategic balance
-- `"daily plan status"` → Current day progress summary
+- `/daily-plan start` → Creates daily plan with strategic alignment
+- `/daily-plan status` → Current day progress summary
+- `/daily-plan review` → Reviews progress with statistics
+- `/daily-plan help` → Shows available commands and usage
+
+**Pattern**: Consistent slash command format matching `/retrospective` commands.
 
 ### Advanced Features (⚠️ Partial)
 - Interactive sessions (basic implementation)

@@ -218,11 +218,12 @@ Strategic daily planning with L0/L1 organizational initiative alignment:
 **Setup**: No additional configuration required - works with your existing user identity.
 
 **Core Commands**:
-- `"daily plan start"` - Create strategic daily plan
-- `"daily plan complete [task]"` - Mark priorities as done
-- `"daily plan review"` - Progress review with statistics
-- `"daily plan status"` - Quick progress overview
-- `"daily plan balance"` - Strategic L0/L1 alignment analysis
+- `/daily-plan start` - Create strategic daily plan
+- `/daily-plan status` - Quick progress overview
+- `/daily-plan review` - Progress review with statistics
+- `/daily-plan help` - Show available commands
+
+**Note**: Uses slash command pattern consistent with `/retrospective` commands.
 
 **Personal Benefits**:
 - Strategic alignment with organizational priorities
@@ -238,6 +239,6 @@ Strategic daily planning with L0/L1 organizational initiative alignment:
 2. **Test the configuration** to ensure it loads correctly
 3. **Run P0 tests** to see personalized enforcement messages
 4. **Generate documentation** to see proper attribution
-5. **Try daily planning** with `"daily plan start"` ✨ **NEW**
+5. **Try daily planning** with `/daily-plan start` ✨ **NEW**
 
 Your ClaudeDirector experience is now personalized and professional!
