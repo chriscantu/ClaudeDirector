@@ -21,7 +21,8 @@ from ..core.base_manager import BaseManager, BaseManagerConfig, ManagerType
 from ..core.types import ProcessingResult
 from ..automation.task_manager import StrategicTaskManager
 from ..context_engineering.strategic_memory_manager import StrategicMemoryManager
-from .daily_planning_config import DailyPlanningConfig, DAILY_PLANNING
+
+# Removed bloated config import - using simple constants instead
 
 
 @dataclass
@@ -134,42 +135,41 @@ class DailyPlanningManager(BaseManager):
         Handle chat commands - Pattern: follows PersonalRetrospectiveAgent._handle_chat_command
         """
         try:
-            if DailyPlanningConfig.get_command_constants()["start"] in command:
+            if "/daily-plan start" in command:
                 # Initialize interactive planning session
                 if not hasattr(self, "active_sessions"):
                     self.active_sessions = {}
 
-                self.active_sessions[user_id] = DailyPlanningConfig.get_session_data(
-                    user_id
-                )
+                self.active_sessions[user_id] = {
+                    "state": "collecting_priorities",
+                    "priorities": [],
+                    "started_at": datetime.now().isoformat(),
+                }
 
                 return ProcessingResult(
                     success=True,
-                    message=DAILY_PLANNING.MSG_SESSION_STARTED,
-                    data={
-                        DAILY_PLANNING.SESSION_STATE_STARTED: DAILY_PLANNING.SESSION_STATE_STARTED,
-                        DAILY_PLANNING.SESSION_KEY_USER_ID: user_id,
-                    },
+                    message="🎯 Daily Planning Session Started!\n\nWhat are your top 3-5 priorities for today? Please enter them one at a time.",
+                    data={"session_state": "started", "user_id": user_id},
                 )
 
-            elif DailyPlanningConfig.get_command_constants()["status"] in command:
+            elif "/daily-plan status" in command:
                 return self._get_today_status()
 
-            elif DailyPlanningConfig.get_command_constants()["review"] in command:
+            elif "/daily-plan review" in command:
                 return self._review_daily_plan({}, "")
 
-            elif DailyPlanningConfig.get_command_constants()["help"] in command:
+            elif "/daily-plan help" in command:
                 return self._show_help()
 
             else:
                 return ProcessingResult(
                     success=False,
-                    message=DAILY_PLANNING.MSG_UNKNOWN_COMMAND,
+                    message="Unknown daily planning command. Use '/daily-plan help' for available commands.",
                 )
 
         except Exception as e:
             return ProcessingResult(
-                success=False, message=DailyPlanningConfig.format_error_message(str(e))
+                success=False, message=f"Error processing daily planning command: {e}"
             )
 
     def _handle_session_input(self, user_id: str, user_input: str) -> ProcessingResult:
@@ -179,19 +179,19 @@ class DailyPlanningManager(BaseManager):
         if not hasattr(self, "active_sessions") or user_id not in self.active_sessions:
             return ProcessingResult(
                 success=False,
-                message=DAILY_PLANNING.MSG_NO_SESSION,
+                message="No active planning session. Use '/daily-plan start' to begin.",
             )
 
         session = self.active_sessions[user_id]
 
-        if session[DAILY_PLANNING.SESSION_KEY_STATE] == DAILY_PLANNING.STATE_COLLECTING:
-            if DailyPlanningConfig.is_completion_word(user_input.strip()):
+        if session["state"] == "collecting_priorities":
+            if user_input.strip().lower() in ["done", "finish", "complete"]:
                 # Complete the session
-                priorities = session[DAILY_PLANNING.SESSION_KEY_PRIORITIES]
+                priorities = session["priorities"]
                 if len(priorities) == 0:
                     return ProcessingResult(
                         success=False,
-                        message=DAILY_PLANNING.MSG_NO_PRIORITIES,
+                        message="Please add at least one priority before completing your plan.",
                     )
 
                 # Create the daily plan
@@ -202,29 +202,26 @@ class DailyPlanningManager(BaseManager):
 
                 return ProcessingResult(
                     success=True,
-                    message=DailyPlanningConfig.format_plan_created_message(
-                        len(priorities), priorities, result.message
-                    ),
+                    message=f"✅ Daily plan created with {len(priorities)} priorities:\n"
+                    + "\n".join(f"{i+1}. {p}" for i, p in enumerate(priorities))
+                    + f"\n\n{result.message}",
                     data=result.data,
                 )
             else:
                 # Add priority to session
-                session[DAILY_PLANNING.SESSION_KEY_PRIORITIES].append(
-                    user_input.strip()
-                )
-                priority_count = len(session[DAILY_PLANNING.SESSION_KEY_PRIORITIES])
+                session["priorities"].append(user_input.strip())
+                priority_count = len(session["priorities"])
 
                 return ProcessingResult(
                     success=True,
-                    message=DailyPlanningConfig.format_priority_added_message(
-                        priority_count, user_input.strip()
-                    ),
+                    message=f"✅ Priority {priority_count} added: {user_input.strip()}\n\n"
+                    + "Add another priority or type 'done' to complete your plan.",
                     data={"priorities_count": priority_count},
                 )
 
         return ProcessingResult(
             success=False,
-            message=DAILY_PLANNING.MSG_SESSION_ERROR,
+            message="Session state error. Use '/daily-plan start' to begin a new session.",
         )
 
     def _show_help(self) -> ProcessingResult:

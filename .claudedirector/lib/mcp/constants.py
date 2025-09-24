@@ -233,14 +233,14 @@ class MCPServerConstants:
                 "anomaly",
             ],
             "daily_plan_command": [
-                "/daily-plan start",
-                "/daily-plan status",
-                "/daily-plan review",
-                "/daily-plan help",
-                "daily-plan start",
-                "daily-plan status",
-                "daily-plan review",
-                "daily-plan help",
+                "daily plan",
+                "/daily-plan",
+                "daily-plan",
+                "daily planning",
+                "plan start",
+                "plan review",
+                "today plan",
+                "priorities",
             ],
         }
 
