@@ -493,8 +493,58 @@ class AICleanupEnforcer:
         print("🧹 AI Cleanup Enforcement Starting...")
         print("=" * 50)
 
-        # BULLETPROOF README PROTECTION - Pre-check
+        # BULLETPROOF README PROTECTION - Enhanced filesystem check
         readme_files = [f for f in self.staged_files.keys() if "README" in f.upper()]
+
+        # CRITICAL FIX: Also check if README.md exists in working tree
+        import os
+        import shutil
+        import time
+
+        if os.path.exists("README.md") and "README.md" not in readme_files:
+            readme_files.append("README.md")
+            print(
+                "🛡️ README PROTECTION: Added working tree README.md to protection list"
+            )
+
+            # Create timestamped backup to prevent pre-commit stash corruption
+            timestamp = int(time.time())
+            backup_filename = f"README.md.pre-commit-backup-{timestamp}"
+
+            try:
+                # Ensure backup directory exists
+                os.makedirs(".claudedirector/backups", exist_ok=True)
+
+                # Create multiple backup formats for reliability
+                shutil.copy2("README.md", f".claudedirector/backups/{backup_filename}")
+                shutil.copy2(
+                    "README.md", ".claudedirector/backups/README.md.emergency-backup"
+                )
+
+                # Also create a git-tracked backup in case filesystem is corrupted
+                with open("README.md", "r") as src, open(
+                    ".claudedirector/backups/README.md.git-safe", "w"
+                ) as dst:
+                    dst.write(src.read())
+
+                print(
+                    f"🛡️ README PROTECTION: Multi-format backup created ({backup_filename})"
+                )
+
+                # Store README content hash for integrity verification
+                import hashlib
+
+                with open("README.md", "rb") as f:
+                    readme_hash = hashlib.md5(f.read()).hexdigest()
+                with open(".claudedirector/backups/README.md.hash", "w") as f:
+                    f.write(readme_hash)
+
+                print(f"🛡️ README PROTECTION: Content hash stored for verification")
+
+            except Exception as e:
+                print(f"⚠️ README backup warning: {e}")
+                print("🚨 CRITICAL: README backup failed - stash corruption risk high!")
+
         if readme_files:
             print(f"🛡️ README PROTECTION ACTIVE: Found {readme_files}")
             for readme_file in readme_files:

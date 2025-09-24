@@ -199,6 +199,25 @@ class ConversationalInteractionManager:
             logger.info("✅ PersonalRetrospectiveAgent initialized (lazy loading)")
         return self._retrospective_agent
 
+    @property
+    def daily_planning_manager(self) -> DailyPlanningManager:
+        """
+        Lazy-loaded DailyPlanningManager (Pattern Compliance: follows retrospective_agent)
+
+        ARCHITECTURE COMPLIANCE:
+        - DRY: Reuses existing BaseManager pattern
+        - Performance: Lazy initialization
+        - PATTERN CONSISTENCY: Same pattern as retrospective_agent
+        """
+        if not DAILY_PLANNING_AVAILABLE:
+            raise ImportError("DailyPlanningManager not available")
+
+        if self._daily_planning_manager is None:
+            self._daily_planning_manager = DailyPlanningManager()
+            logger.info("✅ DailyPlanningManager initialized (lazy loading)")
+
+        return self._daily_planning_manager
+
     def cleanup(self):
         """
         Cleanup resources following OVERVIEW.md patterns
@@ -280,6 +299,10 @@ class ConversationalInteractionManager:
             # Phase 2: Personal Retrospective Command Routing (DRY compliance)
             if intent.intent == InteractionIntent.RETROSPECTIVE_COMMAND:
                 return await self._handle_retrospective_command(query, current_context)
+
+            # Phase 2: Daily Planning Command Routing (Pattern Compliance: follows retrospective)
+            if intent.intent == InteractionIntent.DAILY_PLAN_COMMAND:
+                return await self._handle_daily_plan_command(query, current_context)
 
             # Step 2: Apply chart modifications based on intent
             # ARCHITECTURE: Leverage existing InteractiveEnhancementAddon (DRY principle)
@@ -866,6 +889,118 @@ class ConversationalInteractionManager:
                 status=ResponseStatus.ERROR,
                 success=False,
                 error=f"Retrospective processing failed: {str(e)}",
+                metadata={
+                    "processing_time": processing_time,
+                },
+            )
+
+    async def _handle_daily_plan_command(
+        self, query: str, current_context: Dict[str, Any] = None
+    ) -> UnifiedResponse:
+        """
+        Handle daily planning commands (Pattern Compliance: follows _handle_retrospective_command)
+
+        ARCHITECTURE COMPLIANCE:
+        - DRY: Delegates to DailyPlanningManager (no duplication)
+        - PATTERN CONSISTENCY: Exact same structure as _handle_retrospective_command
+        - Performance: <500ms target maintained
+
+        Args:
+            query: Original user query (e.g., "/daily-plan start")
+            current_context: Current session context
+
+        Returns:
+            UnifiedResponse: Daily planning command result
+        """
+        start_time = time.time()
+
+        try:
+            # Check if daily planning manager is available
+            if not DAILY_PLANNING_AVAILABLE:
+                logger.warning("DailyPlanningManager not available")
+                from ..automation.daily_planning_config import DAILY_PLANNING
+
+                return await create_conversational_response(
+                    content=DAILY_PLANNING.ERROR_FEATURE_UNAVAILABLE,
+                    status=ResponseStatus.ERROR,
+                    success=False,
+                    error=DAILY_PLANNING.ERROR_DAILY_PLANNING_UNAVAILABLE,
+                    metadata={"processing_time": time.time() - start_time},
+                )
+
+            # Parse daily planning command from query (SAME PATTERN as retrospective)
+            query_lower = query.lower().strip()
+            user_id = (
+                current_context.get("user_id", "default_user")
+                if current_context
+                else "default_user"
+            )
+
+            # Extract command and user input (FOLLOWS RETROSPECTIVE PATTERN)
+            from ..automation.daily_planning_config import DailyPlanningConfig
+
+            commands = DailyPlanningConfig.get_command_constants()
+
+            if commands["start"] in query_lower:
+                command = commands["start"]
+                user_input = ""
+            elif commands["status"] in query_lower:
+                command = commands["status"]
+                user_input = ""
+            elif commands["review"] in query_lower:
+                command = commands["review"]
+                user_input = ""
+            elif commands["help"] in query_lower:
+                command = commands["help"]
+                user_input = ""
+            else:
+                # Handle session input during active daily planning
+                command = "session_input"
+                user_input = query.strip()
+
+            # Delegate to DailyPlanningManager (SAME PATTERN as retrospective)
+            request_data = {
+                "command": command,
+                "user_id": user_id,
+                "user_input": user_input,
+            }
+
+            result = self.daily_planning_manager.manage("process_request", request_data)
+
+            processing_time = time.time() - start_time
+            logger.info(
+                f"✅ Daily planning command processed in {processing_time:.3f}s"
+            )
+
+            return await create_conversational_response(
+                content=result.message,
+                status=(
+                    ResponseStatus.SUCCESS if result.success else ResponseStatus.ERROR
+                ),
+                success=result.success,
+                follow_up_suggestions=(
+                    DailyPlanningConfig.get_follow_up_suggestions()
+                    if result.success
+                    else []
+                ),
+                metadata={
+                    "daily_plan_command": command,
+                    "processing_time": processing_time,
+                    "manager_result": result.__dict__,
+                },
+            )
+
+        except Exception as e:
+            processing_time = time.time() - start_time
+            logger.error(
+                f"❌ Error processing daily planning command: {e}", exc_info=True
+            )
+
+            return await create_conversational_response(
+                content=f"Sorry, I encountered an error processing your daily planning command: {str(e)}",
+                status=ResponseStatus.ERROR,
+                success=False,
+                error=f"Daily planning processing failed: {str(e)}",
                 metadata={
                     "processing_time": processing_time,
                 },
