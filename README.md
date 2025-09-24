@@ -101,5 +101,4 @@ ClaudeDirector is designed for **self-service strategic leadership**:
 
 ---
 
-**Ready to transform your strategic leadership?** [Get Started →](docs/GETTING_STARTED.md)test change
-Test fix: README.md should preserve committed changes
+**Ready to transform your strategic leadership?** [Get Started →](docs/GETTING_STARTED.md)
