@@ -918,11 +918,13 @@ class ConversationalInteractionManager:
             # Check if daily planning manager is available
             if not DAILY_PLANNING_AVAILABLE:
                 logger.warning("DailyPlanningManager not available")
+                from ..automation.daily_planning_config import DAILY_PLANNING
+
                 return await create_conversational_response(
-                    content="Sorry, the daily planning feature is not available.",
+                    content=DAILY_PLANNING.ERROR_FEATURE_UNAVAILABLE,
                     status=ResponseStatus.ERROR,
                     success=False,
-                    error="Daily planning feature not available",
+                    error=DAILY_PLANNING.ERROR_DAILY_PLANNING_UNAVAILABLE,
                     metadata={"processing_time": time.time() - start_time},
                 )
 
@@ -935,17 +937,21 @@ class ConversationalInteractionManager:
             )
 
             # Extract command and user input (FOLLOWS RETROSPECTIVE PATTERN)
-            if "/daily-plan start" in query_lower:
-                command = "/daily-plan start"
+            from ..automation.daily_planning_config import DailyPlanningConfig
+
+            commands = DailyPlanningConfig.get_command_constants()
+
+            if commands["start"] in query_lower:
+                command = commands["start"]
                 user_input = ""
-            elif "/daily-plan status" in query_lower:
-                command = "/daily-plan status"
+            elif commands["status"] in query_lower:
+                command = commands["status"]
                 user_input = ""
-            elif "/daily-plan review" in query_lower:
-                command = "/daily-plan review"
+            elif commands["review"] in query_lower:
+                command = commands["review"]
                 user_input = ""
-            elif "/daily-plan help" in query_lower:
-                command = "/daily-plan help"
+            elif commands["help"] in query_lower:
+                command = commands["help"]
                 user_input = ""
             else:
                 # Handle session input during active daily planning
@@ -973,12 +979,7 @@ class ConversationalInteractionManager:
                 ),
                 success=result.success,
                 follow_up_suggestions=(
-                    [
-                        "/daily-plan start - Start daily planning session",
-                        "/daily-plan status - Check today's progress",
-                        "/daily-plan review - Review and complete plan",
-                        "/daily-plan help - Show help",
-                    ]
+                    DailyPlanningConfig.get_follow_up_suggestions()
                     if result.success
                     else []
                 ),

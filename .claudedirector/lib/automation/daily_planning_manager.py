@@ -134,41 +134,42 @@ class DailyPlanningManager(BaseManager):
         Handle chat commands - Pattern: follows PersonalRetrospectiveAgent._handle_chat_command
         """
         try:
-            if "/daily-plan start" in command:
+            if DailyPlanningConfig.get_command_constants()["start"] in command:
                 # Initialize interactive planning session
                 if not hasattr(self, "active_sessions"):
                     self.active_sessions = {}
 
-                self.active_sessions[user_id] = {
-                    "state": "collecting_priorities",
-                    "priorities": [],
-                    "started_at": datetime.now().isoformat(),
-                }
+                self.active_sessions[user_id] = DailyPlanningConfig.get_session_data(
+                    user_id
+                )
 
                 return ProcessingResult(
                     success=True,
-                    message="🎯 Daily Planning Session Started!\n\nWhat are your top 3-5 priorities for today? Please enter them one at a time.",
-                    data={"session_state": "started", "user_id": user_id},
+                    message=DAILY_PLANNING.MSG_SESSION_STARTED,
+                    data={
+                        DAILY_PLANNING.SESSION_STATE_STARTED: DAILY_PLANNING.SESSION_STATE_STARTED,
+                        DAILY_PLANNING.SESSION_KEY_USER_ID: user_id,
+                    },
                 )
 
-            elif "/daily-plan status" in command:
+            elif DailyPlanningConfig.get_command_constants()["status"] in command:
                 return self._get_today_status()
 
-            elif "/daily-plan review" in command:
+            elif DailyPlanningConfig.get_command_constants()["review"] in command:
                 return self._review_daily_plan({}, "")
 
-            elif "/daily-plan help" in command:
+            elif DailyPlanningConfig.get_command_constants()["help"] in command:
                 return self._show_help()
 
             else:
                 return ProcessingResult(
                     success=False,
-                    message="Unknown daily planning command. Use '/daily-plan help' for available commands.",
+                    message=DAILY_PLANNING.MSG_UNKNOWN_COMMAND,
                 )
 
         except Exception as e:
             return ProcessingResult(
-                success=False, message=f"Error processing daily planning command: {e}"
+                success=False, message=DailyPlanningConfig.format_error_message(str(e))
             )
 
     def _handle_session_input(self, user_id: str, user_input: str) -> ProcessingResult:
@@ -178,19 +179,19 @@ class DailyPlanningManager(BaseManager):
         if not hasattr(self, "active_sessions") or user_id not in self.active_sessions:
             return ProcessingResult(
                 success=False,
-                message="No active planning session. Use '/daily-plan start' to begin.",
+                message=DAILY_PLANNING.MSG_NO_SESSION,
             )
 
         session = self.active_sessions[user_id]
 
-        if session["state"] == "collecting_priorities":
-            if user_input.strip().lower() in ["done", "finish", "complete"]:
+        if session[DAILY_PLANNING.SESSION_KEY_STATE] == DAILY_PLANNING.STATE_COLLECTING:
+            if DailyPlanningConfig.is_completion_word(user_input.strip()):
                 # Complete the session
-                priorities = session["priorities"]
+                priorities = session[DAILY_PLANNING.SESSION_KEY_PRIORITIES]
                 if len(priorities) == 0:
                     return ProcessingResult(
                         success=False,
-                        message="Please add at least one priority before completing your plan.",
+                        message=DAILY_PLANNING.MSG_NO_PRIORITIES,
                     )
 
                 # Create the daily plan
@@ -201,53 +202,37 @@ class DailyPlanningManager(BaseManager):
 
                 return ProcessingResult(
                     success=True,
-                    message=f"✅ Daily plan created with {len(priorities)} priorities:\n"
-                    + "\n".join(f"{i+1}. {p}" for i, p in enumerate(priorities))
-                    + f"\n\n{result.message}",
+                    message=DailyPlanningConfig.format_plan_created_message(
+                        len(priorities), priorities, result.message
+                    ),
                     data=result.data,
                 )
             else:
                 # Add priority to session
-                session["priorities"].append(user_input.strip())
-                priority_count = len(session["priorities"])
+                session[DAILY_PLANNING.SESSION_KEY_PRIORITIES].append(
+                    user_input.strip()
+                )
+                priority_count = len(session[DAILY_PLANNING.SESSION_KEY_PRIORITIES])
 
                 return ProcessingResult(
                     success=True,
-                    message=f"✅ Priority {priority_count} added: {user_input.strip()}\n\n"
-                    + f"Add another priority or type 'done' to complete your plan.",
+                    message=DailyPlanningConfig.format_priority_added_message(
+                        priority_count, user_input.strip()
+                    ),
                     data={"priorities_count": priority_count},
                 )
 
         return ProcessingResult(
             success=False,
-            message="Session state error. Use '/daily-plan start' to begin a new session.",
+            message=DAILY_PLANNING.MSG_SESSION_ERROR,
         )
 
     def _show_help(self) -> ProcessingResult:
         """Show help information - Pattern: follows PersonalRetrospectiveAgent._show_help"""
-        help_text = """
-🎯 Daily Planning Commands
-
-Available Commands:
-  /daily-plan start  - Start interactive daily planning session
-  /daily-plan status - Check today's progress
-  /daily-plan review - Review and complete today's plan
-  /daily-plan help   - Show this help message
-
-Interactive Planning:
-1. Use '/daily-plan start' to begin
-2. Enter your priorities one at a time
-3. Type 'done' when finished
-4. Your plan will be created with strategic alignment analysis
-
-Strategic Focus:
-- L0 Initiatives: Required organizational work (70% recommended)
-- L1 Initiatives: Strategic competitive advantage (30% recommended)
-- Documentation focus: Planning captures priorities, doesn't execute them
-"""
-
         return ProcessingResult(
-            success=True, message=help_text.strip(), data={"help_displayed": True}
+            success=True,
+            message=DAILY_PLANNING.HELP_TEXT,
+            data={"help_displayed": True},
         )
 
     def _create_daily_plan(
