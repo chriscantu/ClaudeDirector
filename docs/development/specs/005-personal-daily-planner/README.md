@@ -20,10 +20,11 @@ A ✅ **ARCHITECTURE-COMPLIANT** strategic coordination layer for engineering le
 
 ### **Key Strategic Commands**
 - `/daily-plan start` - Set today's priorities with L0/L1 strategic alignment analysis (morning)
+- `/daily-plan status` - Quick status check with strategic balance score
 - `/daily-plan review` - Update progress with strategic effectiveness assessment (evening)
-- `/daily-plan today` - Quick status check with strategic balance score
-- `/daily-plan balance` - Show current L0/L1/Operational work ratio
 - `/daily-plan help` - Command reference with L0/L1 initiative overview
+
+**Pattern Consistency**: Uses `/daily-plan` slash command pattern matching `/retrospective` commands.
 
 ---
 
