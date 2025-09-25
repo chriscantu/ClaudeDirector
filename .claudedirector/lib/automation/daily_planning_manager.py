@@ -58,7 +58,7 @@ class DailyPlanningManager(BaseManager):
         # ✅ CORRECT BaseManager initialization
         base_config = BaseManagerConfig(
             manager_name="daily_planning_manager",
-            manager_type=ManagerType.AUTOMATION,
+            manager_type=ManagerType.ANALYTICS,  # Use ANALYTICS as closest match (same as PersonalRetrospectiveAgent)
             enable_logging=True,
             enable_caching=True,
             enable_metrics=True,
