@@ -20,12 +20,13 @@ from ..core.types import ProcessingResult
 
 @dataclass
 class RetrospectiveEntry:
-    """Single retrospective entry with 3 questions"""
+    """Single retrospective entry with 4 questions"""
 
     date: str
     went_well: str
     could_improve: str
     next_focus: str
+    rating: int
 
 
 class PersonalRetrospectiveAgent(BaseManager):
@@ -71,6 +72,7 @@ class PersonalRetrospectiveAgent(BaseManager):
                     went_well TEXT NOT NULL,
                     could_improve TEXT NOT NULL,
                     next_focus TEXT NOT NULL,
+                    rating INTEGER NOT NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """
@@ -118,20 +120,22 @@ class PersonalRetrospectiveAgent(BaseManager):
                 went_well=data.get("went_well", ""),
                 could_improve=data.get("could_improve", ""),
                 next_focus=data.get("next_focus", ""),
+                rating=data.get("rating", 5),
             )
 
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
                     """
                     INSERT OR REPLACE INTO retrospectives
-                    (date, went_well, could_improve, next_focus)
-                    VALUES (?, ?, ?, ?)
+                    (date, went_well, could_improve, next_focus, rating)
+                    VALUES (?, ?, ?, ?, ?)
                 """,
                     (
                         entry.date,
                         entry.went_well,
                         entry.could_improve,
                         entry.next_focus,
+                        entry.rating,
                     ),
                 )
 
@@ -153,7 +157,7 @@ class PersonalRetrospectiveAgent(BaseManager):
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
                     """
-                    SELECT date, went_well, could_improve, next_focus
+                    SELECT date, went_well, could_improve, next_focus, rating
                     FROM retrospectives
                     ORDER BY date DESC
                     LIMIT ?
@@ -167,6 +171,7 @@ class PersonalRetrospectiveAgent(BaseManager):
                         went_well=row[1],
                         could_improve=row[2],
                         next_focus=row[3],
+                        rating=row[4],
                     )
                     for row in cursor.fetchall()
                 ]
@@ -196,10 +201,11 @@ Chat Commands (Phase 2):
   /retrospective view    - View recent retrospectives
   /retrospective help    - Show this help
 
-3-Question Framework:
+4-Question Framework:
   1. What went well this week?
   2. What could have gone better?
   3. What will I focus on next week?
+  4. How would I rate this week on a scale of 1-10?
         """
         return ProcessingResult(success=True, message=help_text.strip())
 
@@ -226,6 +232,7 @@ Chat Commands (Phase 2):
             "What went well this week?",
             "What could have gone better?",
             "What will I focus on next week?",
+            "How would I rate this week on a scale of 1-10?",
         ]
 
         self.active_sessions[user_id] = {
@@ -258,12 +265,21 @@ Chat Commands (Phase 2):
             )
         else:
             # Complete retrospective (reuse existing _create_retrospective logic)
+            rating_text = session["responses"].get(questions[3], "5")
+            try:
+                rating = int(rating_text)
+                if rating < 1 or rating > 10:
+                    rating = 5  # Default to 5 if invalid
+            except ValueError:
+                rating = 5  # Default to 5 if not a number
+
             result = self._create_retrospective(
                 {
                     "date": session["date"],
                     "went_well": session["responses"].get(questions[0], ""),
                     "could_improve": session["responses"].get(questions[1], ""),
                     "next_focus": session["responses"].get(questions[2], ""),
+                    "rating": rating,
                 }
             )
 
