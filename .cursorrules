@@ -239,7 +239,7 @@ adapted through my Engineering Leadership experience.
 - **`/reset`**: Reset to defaults and trigger first-run wizard on next strategic question
 
 ### Personal Retrospective Commands (Phase 2 Integration)
-- **`/retrospective create`**: Start interactive weekly retrospective (3 questions)
+- **`/retrospective create`**: Start interactive weekly retrospective (4 questions)
 - **`/retrospective view`**: View recent retrospective entries
 - **`/retrospective help`**: Show retrospective command help
 

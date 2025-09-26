@@ -14,6 +14,7 @@ retrospective:
     - "What went well this week?"
     - "What could have gone better?"
     - "What will I focus on next week?"
+    - "How would I rate this week on a scale of 1-10?"
 
   default_limit: 5
 
