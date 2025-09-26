@@ -55,7 +55,7 @@ except ImportError:
     class PersonalRetrospectiveAgent:
         pass
 
-    RETROSPECTIVE_AVAILABLE = False
+    RETROSPECTIVE_AVAILABLE = True
 
 logger = logging.getLogger(__name__)
 
@@ -174,6 +174,7 @@ class ConversationalInteractionManager:
 
         # ✅ DRY: Lazy initialization for optional managers
         self._daily_planning_agent = None
+        self._retrospective_agent = None
 
         logger.info(f"ConversationalInteractionManager {self.version} initialized")
         logger.info(
@@ -267,6 +268,29 @@ class ConversationalInteractionManager:
                 return None
 
         return self._daily_planning_manager
+
+    @property
+    def retrospective_agent(self) -> Optional[PersonalRetrospectiveAgent]:
+        """
+        ✅ Lazy initialization of PersonalRetrospectiveAgent following daily-planning pattern
+        ✅ DRY: Reuses existing initialization pattern
+        """
+        if not RETROSPECTIVE_AVAILABLE:
+            return None
+
+        if self._retrospective_agent is None:
+            try:
+                from ..agents.personal_retrospective_agent import (
+                    PersonalRetrospectiveAgent,
+                )
+
+                self._retrospective_agent = PersonalRetrospectiveAgent()
+                logger.info("✅ PersonalRetrospectiveAgent initialized")
+            except ImportError as e:
+                logger.warning(f"PersonalRetrospectiveAgent not available: {e}")
+                return None
+
+        return self._retrospective_agent
 
     async def process_interaction_query(
         self, query: str, chart_id: str, current_context: Dict[str, Any] = None
