@@ -441,6 +441,16 @@ p0_features:
     introduced_version: "v3.8.1"
     owner: "martin"
 
+  - name: "Personal Daily Planning P0"
+    test_module: ".claudedirector/tests/regression/p0_blocking/test_personal_daily_planning_p0.py"
+    critical_level: "BLOCKING"
+    timeout_seconds: 180
+    description: "PersonalDailyPlanningAgent must work end-to-end following PersonalRetrospectiveAgent pattern"
+    failure_impact: "Daily planning feature completely broken, /daily-plan commands fail"
+    business_impact: "Strategic daily productivity feature unusable, user frustration"
+    introduced_version: "v3.3.1"
+    owner: "martin"
+
 
 # Enforcement settings
 enforcement:
