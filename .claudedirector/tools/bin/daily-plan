@@ -1,0 +1,139 @@
+#!/usr/bin/env python3
+"""
+Daily Planning CLI - Direct Integration
+Following PROJECT_STRUCTURE.md: tools/bin/ for executable binaries
+
+🎯 SCOPE: Simple CLI wrapper for PersonalDailyPlanningAgent
+🏗️ ARCHITECTURE: Direct agent invocation, no MCP/ConversationalInteractionManager dependency
+📊 COMPLIANCE: BLOAT_PREVENTION_SYSTEM.md - minimal, focused implementation
+"""
+
+import sys
+import os
+from pathlib import Path
+
+# Setup paths following TESTING_ARCHITECTURE.md patterns
+PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector/lib"))
+
+
+def print_help():
+    """Print daily planning CLI help"""
+    print(
+        """
+🎯 Daily Planning Commands
+==========================
+
+USAGE:
+    daily-plan <command>
+
+COMMANDS:
+    start    - Start interactive planning session
+    status   - Show today's plan
+    review   - Review recent plans
+    help     - Show this help
+
+EXAMPLES:
+    daily-plan start     # Create today's plan
+    daily-plan status    # Check current plan
+    daily-plan review    # Review past plans
+
+INTEGRATION:
+    This tool directly invokes PersonalDailyPlanningAgent
+    bypassing ConversationalInteractionManager for reliability.
+"""
+    )
+
+
+def main():
+    """Main CLI interface for daily planning"""
+    if len(sys.argv) < 2:
+        command = "help"
+    else:
+        command = sys.argv[1].lower()
+
+    try:
+        # Import PersonalDailyPlanningAgent using standard import (following existing CLI pattern)
+        from agents.personal_daily_planning_agent import PersonalDailyPlanningAgent
+
+        # Initialize agent
+        agent = PersonalDailyPlanningAgent()
+
+        # Handle commands
+        if command == "help" or command == "--help" or command == "-h":
+            print_help()
+            return 0
+
+        elif command == "start":
+            result = agent.process_request(
+                {
+                    "command": "/daily-plan start",
+                    "user_id": os.getenv("USER", "default"),
+                    "user_input": "",
+                }
+            )
+            print(result.message)
+
+            # Handle interactive session
+            if result.success and hasattr(agent, "active_sessions"):
+                user_id = os.getenv("USER", "default")
+                if user_id in agent.active_sessions:
+                    print("\n📝 Enter your priorities (type 'done' when finished):")
+                    while user_id in agent.active_sessions:
+                        try:
+                            user_input = input("> ")
+                            if user_input.lower() in ["done", "finish", "complete"]:
+                                result = agent.process_request(
+                                    {"user_id": user_id, "user_input": "done"}
+                                )
+                                print(result.message)
+                                break
+                            else:
+                                result = agent.process_request(
+                                    {"user_id": user_id, "user_input": user_input}
+                                )
+                                print(result.message)
+                        except (KeyboardInterrupt, EOFError):
+                            print("\n❌ Session cancelled")
+                            break
+
+            return 0 if result.success else 1
+
+        elif command == "status":
+            result = agent.process_request(
+                {
+                    "command": "/daily-plan status",
+                    "user_id": os.getenv("USER", "default"),
+                    "user_input": "",
+                }
+            )
+            print(result.message)
+            return 0 if result.success else 1
+
+        elif command == "review":
+            result = agent.process_request(
+                {
+                    "command": "/daily-plan review",
+                    "user_id": os.getenv("USER", "default"),
+                    "user_input": "",
+                }
+            )
+            print(result.message)
+            return 0 if result.success else 1
+
+        else:
+            print(f"❌ Unknown command: {command}")
+            print("Use 'daily-plan help' for usage information")
+            return 1
+
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        import traceback
+
+        traceback.print_exc()
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

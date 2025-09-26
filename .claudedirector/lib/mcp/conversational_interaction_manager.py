@@ -33,22 +33,21 @@ from ..performance import (
     ResponseStatus,
 )
 
-# ✅ DRY: Import daily planning manager for coordination
+# ✅ DRY: Import daily planning agent for coordination (following PersonalRetrospectiveAgent pattern)
 try:
-    from ..automation.daily_planning_manager import DailyPlanningManager
-    from ..automation.daily_planning_config import DailyPlanningConfig, DAILY_PLANNING
+    from agents.personal_daily_planning_agent import PersonalDailyPlanningAgent
 
     DAILY_PLANNING_AVAILABLE = True
 except ImportError:
     # Graceful degradation if not available
-    class DailyPlanningManager:
+    class PersonalDailyPlanningAgent:
         pass
 
     DAILY_PLANNING_AVAILABLE = False
 
 # Phase 2: Personal Retrospective Agent Integration (DRY compliance)
 try:
-    from ..agents.personal_retrospective_agent import PersonalRetrospectiveAgent
+    from agents.personal_retrospective_agent import PersonalRetrospectiveAgent
 
     RETROSPECTIVE_AVAILABLE = True
 except ImportError:
@@ -174,7 +173,7 @@ class ConversationalInteractionManager:
         )
 
         # ✅ DRY: Lazy initialization for optional managers
-        self._daily_planning_manager = None
+        self._daily_planning_agent = None
 
         logger.info(f"ConversationalInteractionManager {self.version} initialized")
         logger.info(
@@ -200,9 +199,9 @@ class ConversationalInteractionManager:
         return self._retrospective_agent
 
     @property
-    def daily_planning_manager(self) -> DailyPlanningManager:
+    def daily_planning_agent(self) -> PersonalDailyPlanningAgent:
         """
-        Lazy-loaded DailyPlanningManager (Pattern Compliance: follows retrospective_agent)
+        Lazy-loaded PersonalDailyPlanningAgent (Pattern Compliance: follows retrospective_agent)
 
         ARCHITECTURE COMPLIANCE:
         - DRY: Reuses existing BaseManager pattern
@@ -210,13 +209,13 @@ class ConversationalInteractionManager:
         - PATTERN CONSISTENCY: Same pattern as retrospective_agent
         """
         if not DAILY_PLANNING_AVAILABLE:
-            raise ImportError("DailyPlanningManager not available")
+            return None
 
-        if self._daily_planning_manager is None:
-            self._daily_planning_manager = DailyPlanningManager()
-            logger.info("✅ DailyPlanningManager initialized (lazy loading)")
+        if self._daily_planning_agent is None:
+            self._daily_planning_agent = PersonalDailyPlanningAgent()
+            logger.info("✅ PersonalDailyPlanningAgent initialized (lazy loading)")
 
-        return self._daily_planning_manager
+        return self._daily_planning_agent
 
     def cleanup(self):
         """
@@ -247,9 +246,9 @@ class ConversationalInteractionManager:
         logger.info("✅ Conversational Interaction Manager async cleanup complete")
 
     @property
-    def daily_planning_manager(self) -> Optional[DailyPlanningManager]:
+    def daily_planning_manager(self) -> Optional[PersonalDailyPlanningAgent]:
         """
-        ✅ DRY: Lazy initialization of DailyPlanningManager
+        ✅ DRY: Lazy initialization of PersonalDailyPlanningAgent
         Following existing pattern for optional manager integration
         """
         if not DAILY_PLANNING_AVAILABLE:
@@ -257,10 +256,10 @@ class ConversationalInteractionManager:
 
         if self._daily_planning_manager is None:
             try:
-                self._daily_planning_manager = DailyPlanningManager()
-                logger.info("✅ DailyPlanningManager initialized successfully")
+                self._daily_planning_manager = PersonalDailyPlanningAgent()
+                logger.info("✅ PersonalDailyPlanningAgent initialized successfully")
             except Exception as e:
-                logger.error(f"❌ Failed to initialize DailyPlanningManager: {e}")
+                logger.error(f"❌ Failed to initialize PersonalDailyPlanningAgent: {e}")
                 return None
 
         return self._daily_planning_manager
@@ -563,12 +562,12 @@ class ConversationalInteractionManager:
     ) -> Dict:
         """
         ✅ Handle daily planning commands
-        ✅ DRY: Uses existing DailyPlanningManager for coordination
+        ✅ DRY: Uses existing PersonalDailyPlanningAgent for coordination
         """
         logger.info(f"Processing daily plan command: {intent.raw_query}")
 
-        if not self.daily_planning_manager:
-            logger.warning("DailyPlanningManager not available")
+        if not self.daily_planning_agent:
+            logger.warning("PersonalDailyPlanningAgent not available")
             return {
                 "updated_html": context.get("current_html", ""),
                 "state_changed": False,
@@ -586,9 +585,13 @@ class ConversationalInteractionManager:
                 # Extract priorities from query (simple parsing)
                 priorities = self._extract_priorities_from_query(intent.raw_query)
 
-                # ✅ DRY: Use existing DailyPlanningManager
-                result = self.daily_planning_manager.manage(
-                    "create_daily_plan", priorities=priorities
+                # ✅ DRY: Use existing PersonalDailyPlanningAgent
+                result = self.daily_planning_agent.process_request(
+                    {
+                        "command": "/daily-plan start",
+                        "user_id": context.get("user_id", "default"),
+                        "user_input": "",
+                    }
                 )
 
                 response_content = (
@@ -599,17 +602,21 @@ class ConversationalInteractionManager:
                         "alignment_score", 0
                     )
                     response_content += (
-                        DailyPlanningConfig.format_strategic_alignment_message(
-                            alignment_score
-                        )
+                        f"\n📊 Strategic Alignment: {alignment_score:.0f}%"
                     )
 
             elif any(
                 word in query_lower
                 for word in ["review", "check", "status", "progress"]
             ):
-                # ✅ DRY: Use existing DailyPlanningManager for status
-                result = self.daily_planning_manager.manage("get_today_status")
+                # ✅ DRY: Use existing PersonalDailyPlanningAgent for status
+                result = self.daily_planning_manager.process_request(
+                    {
+                        "command": "/daily-plan status",
+                        "user_id": context.get("user_id", "default"),
+                        "user_input": "",
+                    }
+                )
 
                 if result.completion_stats:
                     completed = result.completion_stats.get("completed_tasks", 0)
@@ -632,9 +639,13 @@ class ConversationalInteractionManager:
                 if not priority_name:
                     response_content = "❓ Please specify which priority to mark as complete (e.g., 'daily plan complete team meeting')"
                 else:
-                    # ✅ DRY: Use existing DailyPlanningManager for completion
-                    result = self.daily_planning_manager.manage(
-                        "complete_priority", priority_name=priority_name
+                    # ✅ DRY: Use existing PersonalDailyPlanningAgent for completion
+                    result = self.daily_planning_manager.process_request(
+                        {
+                            "command": "complete",
+                            "user_id": context.get("user_id", "default"),
+                            "user_input": priority_name,
+                        }
                     )
 
                     if result.success:
@@ -653,8 +664,14 @@ class ConversationalInteractionManager:
             elif any(
                 word in query_lower for word in ["balance", "strategic", "l0", "l1"]
             ):
-                # ✅ DRY: Use existing DailyPlanningManager for strategic balance
-                result = self.daily_planning_manager.manage("get_strategic_balance")
+                # ✅ DRY: Use existing PersonalDailyPlanningAgent for strategic balance
+                result = self.daily_planning_manager.process_request(
+                    {
+                        "command": "balance",
+                        "user_id": context.get("user_id", "default"),
+                        "user_input": "",
+                    }
+                )
 
                 if result.l0_l1_balance:
                     l0_pct = result.l0_l1_balance.get("l0_percentage", 0)
@@ -724,9 +741,9 @@ class ConversationalInteractionManager:
 
         # Default priorities if nothing extracted
         if not priorities:
-            priorities = DailyPlanningConfig.get_default_priorities()
+            priorities = ["Strategic planning", "Team coordination", "Technical debt"]
 
-        return DailyPlanningConfig.limit_priorities(priorities)
+        return priorities[:5]  # Limit to 5 priorities
 
     def _extract_priority_name_from_completion_query(self, query: str) -> str:
         """
@@ -753,7 +770,7 @@ class ConversationalInteractionManager:
         priority_name = query_lower.strip()
 
         # If nothing left, return empty string
-        if not DailyPlanningConfig.is_valid_priority_name(priority_name):
+        if not priority_name or len(priority_name.strip()) < 2:
             return ""
 
         return priority_name
@@ -901,7 +918,7 @@ class ConversationalInteractionManager:
         Handle daily planning commands (Pattern Compliance: follows _handle_retrospective_command)
 
         ARCHITECTURE COMPLIANCE:
-        - DRY: Delegates to DailyPlanningManager (no duplication)
+        - DRY: Delegates to PersonalDailyPlanningAgent (no duplication)
         - PATTERN CONSISTENCY: Exact same structure as _handle_retrospective_command
         - Performance: <500ms target maintained
 
@@ -917,14 +934,13 @@ class ConversationalInteractionManager:
         try:
             # Check if daily planning manager is available
             if not DAILY_PLANNING_AVAILABLE:
-                logger.warning("DailyPlanningManager not available")
-                from ..automation.daily_planning_config import DAILY_PLANNING
+                logger.warning("PersonalDailyPlanningAgent not available")
 
                 return await create_conversational_response(
-                    content=DAILY_PLANNING.ERROR_FEATURE_UNAVAILABLE,
+                    content="Sorry, the daily planning feature is not available.",
                     status=ResponseStatus.ERROR,
                     success=False,
-                    error=DAILY_PLANNING.ERROR_DAILY_PLANNING_UNAVAILABLE,
+                    error="Daily planning feature not available",
                     metadata={"processing_time": time.time() - start_time},
                 )
 
@@ -937,35 +953,31 @@ class ConversationalInteractionManager:
             )
 
             # Extract command and user input (FOLLOWS RETROSPECTIVE PATTERN)
-            from ..automation.daily_planning_config import DailyPlanningConfig
-
-            commands = DailyPlanningConfig.get_command_constants()
-
-            if commands["start"] in query_lower:
-                command = commands["start"]
+            if "/daily-plan start" in query_lower:
+                command = "/daily-plan start"
                 user_input = ""
-            elif commands["status"] in query_lower:
-                command = commands["status"]
+            elif "/daily-plan status" in query_lower:
+                command = "/daily-plan status"
                 user_input = ""
-            elif commands["review"] in query_lower:
-                command = commands["review"]
+            elif "/daily-plan review" in query_lower:
+                command = "/daily-plan review"
                 user_input = ""
-            elif commands["help"] in query_lower:
-                command = commands["help"]
+            elif "/daily-plan help" in query_lower:
+                command = "/daily-plan help"
                 user_input = ""
             else:
                 # Handle session input during active daily planning
                 command = "session_input"
                 user_input = query.strip()
 
-            # Delegate to DailyPlanningManager (SAME PATTERN as retrospective)
+            # Delegate to PersonalDailyPlanningAgent (SAME PATTERN as retrospective)
             request_data = {
                 "command": command,
                 "user_id": user_id,
                 "user_input": user_input,
             }
 
-            result = self.daily_planning_manager.manage("process_request", request_data)
+            result = self.daily_planning_manager.process_request(request_data)
 
             processing_time = time.time() - start_time
             logger.info(
@@ -979,7 +991,12 @@ class ConversationalInteractionManager:
                 ),
                 success=result.success,
                 follow_up_suggestions=(
-                    DailyPlanningConfig.get_follow_up_suggestions()
+                    [
+                        "/daily-plan start - Start new daily plan",
+                        "/daily-plan status - Check today's plan",
+                        "/daily-plan review - Review recent plans",
+                        "/daily-plan help - Show help",
+                    ]
                     if result.success
                     else []
                 ),
