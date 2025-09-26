@@ -54,11 +54,22 @@ def main():
         command = sys.argv[1].lower()
 
     try:
-        # Import PersonalDailyPlanningAgent using standard import (following existing CLI pattern)
-        from agents.personal_daily_planning_agent import PersonalDailyPlanningAgent
+        # Import TerminalSafeDailyPlanningAgent - BLOAT_PREVENTION_SYSTEM.md compliant
+        import importlib.util
 
-        # Initialize agent
-        agent = PersonalDailyPlanningAgent()
+        agent_path = (
+            PROJECT_ROOT
+            / ".claudedirector/lib/agents/terminal_safe_daily_planning_agent.py"
+        )
+        spec = importlib.util.spec_from_file_location(
+            "terminal_safe_daily_planning_agent", agent_path
+        )
+        agent_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(agent_module)
+        TerminalSafeDailyPlanningAgent = agent_module.TerminalSafeDailyPlanningAgent
+
+        # Initialize agent - terminal-safe, no blocking operations
+        agent = TerminalSafeDailyPlanningAgent()
 
         # Handle commands
         if command == "help" or command == "--help" or command == "-h":
@@ -75,28 +86,16 @@ def main():
             )
             print(result.message)
 
-            # Handle interactive session
-            if result.success and hasattr(agent, "active_sessions"):
-                user_id = os.getenv("USER", "default")
-                if user_id in agent.active_sessions:
-                    print("\n📝 Enter your priorities (type 'done' when finished):")
-                    while user_id in agent.active_sessions:
-                        try:
-                            user_input = input("> ")
-                            if user_input.lower() in ["done", "finish", "complete"]:
-                                result = agent.process_request(
-                                    {"user_id": user_id, "user_input": "done"}
-                                )
-                                print(result.message)
-                                break
-                            else:
-                                result = agent.process_request(
-                                    {"user_id": user_id, "user_input": user_input}
-                                )
-                                print(result.message)
-                        except (KeyboardInterrupt, EOFError):
-                            print("\n❌ Session cancelled")
-                            break
+            # For CLI usage, show instructions instead of interactive loop
+            if result.success:
+                print("\n💡 CLI Usage Instructions:")
+                print("   This CLI tool starts a planning session.")
+                print("   For interactive planning, use the chat interface:")
+                print("   /daily-plan start")
+                print("\n   Or add priorities directly:")
+                print(
+                    "   daily-plan start --priority 'Strategic planning' --priority 'Team coordination'"
+                )
 
             return 0 if result.success else 1
 

@@ -33,14 +33,14 @@ from ..performance import (
     ResponseStatus,
 )
 
-# ✅ DRY: Import daily planning agent for coordination (following PersonalRetrospectiveAgent pattern)
+# ✅ DRY: Import terminal-safe daily planning agent (BLOAT_PREVENTION_SYSTEM.md compliant)
 try:
-    from agents.personal_daily_planning_agent import PersonalDailyPlanningAgent
+    from agents.terminal_safe_daily_planning_agent import TerminalSafeDailyPlanningAgent
 
     DAILY_PLANNING_AVAILABLE = True
 except ImportError:
     # Graceful degradation if not available
-    class PersonalDailyPlanningAgent:
+    class TerminalSafeDailyPlanningAgent:
         pass
 
     DAILY_PLANNING_AVAILABLE = False
@@ -246,9 +246,9 @@ class ConversationalInteractionManager:
         logger.info("✅ Conversational Interaction Manager async cleanup complete")
 
     @property
-    def daily_planning_manager(self) -> Optional[PersonalDailyPlanningAgent]:
+    def daily_planning_manager(self) -> Optional[TerminalSafeDailyPlanningAgent]:
         """
-        ✅ DRY: Lazy initialization of PersonalDailyPlanningAgent
+        ✅ DRY: Lazy initialization of TerminalSafeDailyPlanningAgent
         Following existing pattern for optional manager integration
         """
         if not DAILY_PLANNING_AVAILABLE:
@@ -256,10 +256,14 @@ class ConversationalInteractionManager:
 
         if self._daily_planning_manager is None:
             try:
-                self._daily_planning_manager = PersonalDailyPlanningAgent()
-                logger.info("✅ PersonalDailyPlanningAgent initialized successfully")
+                self._daily_planning_manager = TerminalSafeDailyPlanningAgent()
+                logger.info(
+                    "✅ TerminalSafeDailyPlanningAgent initialized successfully"
+                )
             except Exception as e:
-                logger.error(f"❌ Failed to initialize PersonalDailyPlanningAgent: {e}")
+                logger.error(
+                    f"❌ Failed to initialize TerminalSafeDailyPlanningAgent: {e}"
+                )
                 return None
 
         return self._daily_planning_manager
