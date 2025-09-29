@@ -82,10 +82,16 @@
 [ASCII diagram or description of system architecture]
 ```
 
-### **Component Breakdown**
+### **Component Breakdown** (Max 5 Components - Constitutional Constraint)
 1. **[Component 1]**: [Purpose and responsibilities]
+   - **Location**: `.claudedirector/lib/[module]/[component].py`
+   - **Integration**: [How it integrates with existing architecture]
 2. **[Component 2]**: [Purpose and responsibilities]
+   - **Location**: `.claudedirector/lib/[module]/[component].py`
+   - **Integration**: [How it integrates with existing architecture]
 3. **[Component 3]**: [Purpose and responsibilities]
+   - **Location**: `.claudedirector/lib/[module]/[component].py`
+   - **Integration**: [How it integrates with existing architecture]
 
 ### **Data Flow**
 ```
@@ -95,6 +101,12 @@
 ### **Integration Points**
 - **[System/Service 1]**: [Integration method and purpose]
 - **[System/Service 2]**: [Integration method and purpose]
+
+### **Bloat Prevention Compliance**
+- **DRY Principle**: [How this avoids code duplication]
+- **SOLID Compliance**: [How this follows SOLID principles]
+- **Architectural Alignment**: [How this fits PROJECT_STRUCTURE.md]
+- **Pre-commit Validation**: [Bloat prevention hook requirements]
 
 ---
 
@@ -166,6 +178,9 @@
 - [ ] TDD workflow followed
 - [ ] DRY/SOLID principles maintained
 - [ ] P0 tests passing
+- [ ] PROJECT_STRUCTURE.md compliance validated
+- [ ] BLOAT_PREVENTION_SYSTEM.md requirements met
+- [ ] Pre-commit hooks configured for bloat prevention
 
 ### **Strategic Intelligence**
 - [ ] Framework integration completed

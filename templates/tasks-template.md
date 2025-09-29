@@ -43,24 +43,30 @@
 - **Integration Points**: [How this connects to existing systems]
 - **Performance Requirements**: [Specific performance criteria]
 
-### **Component Design**
+### **Component Design** (Max 5 Components - Constitutional Constraint)
 1. **[Component 1]**
    - **Purpose**: [What this component does]
    - **Responsibilities**: [Specific responsibilities]
+   - **Location**: `.claudedirector/lib/[module]/[component].py`
    - **Interfaces**: [How it interacts with other components]
    - **Constitutional Compliance**: [How it meets simplicity constraints]
+   - **Bloat Prevention**: [How this avoids duplication]
 
 2. **[Component 2]**
    - **Purpose**: [What this component does]
    - **Responsibilities**: [Specific responsibilities]
+   - **Location**: `.claudedirector/lib/[module]/[component].py`
    - **Interfaces**: [How it interacts with other components]
    - **Constitutional Compliance**: [How it meets simplicity constraints]
+   - **Bloat Prevention**: [How this avoids duplication]
 
 3. **[Component 3]**
    - **Purpose**: [What this component does]
    - **Responsibilities**: [Specific responsibilities]
+   - **Location**: `.claudedirector/lib/[module]/[component].py`
    - **Interfaces**: [How it interacts with other components]
    - **Constitutional Compliance**: [How it meets simplicity constraints]
+   - **Bloat Prevention**: [How this avoids duplication]
 
 ### **Data Requirements**
 - **Input Data**: [What data is required]
@@ -211,6 +217,9 @@
 - [ ] TDD workflow followed
 - [ ] DRY/SOLID principles maintained
 - [ ] P0 tests passing
+- [ ] PROJECT_STRUCTURE.md compliance validated
+- [ ] BLOAT_PREVENTION_SYSTEM.md requirements met
+- [ ] Pre-commit hooks configured for bloat prevention
 - [ ] Bloat prevention strategy implemented
 
 ### **Strategic Intelligence**
