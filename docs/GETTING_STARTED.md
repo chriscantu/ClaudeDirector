@@ -26,6 +26,27 @@ Complete setup guide for engineering leaders at any level.
 
 The setup wizard automatically activates on your first strategic question and takes just 60 seconds.
 
+## Constitutional Development Process
+
+For strategic development work, use our GitHub Spec-Kit constitutional development process:
+
+```
+--think-hard --c7 --constitutional-development
+
+[Your development request here]
+
+Please follow the GitHub Spec-Kit constitutional development process:
+1. Create executable specification using .claudedirector/templates/spec-template.md
+2. Apply Sequential Thinking methodology (6-step process)
+3. Ensure PROJECT_STRUCTURE.md and BLOAT_PREVENTION_SYSTEM.md compliance
+4. Include strategic framework integration (Team Topologies, WRAP, Capital Allocation)
+5. Validate constitutional compliance (max 3 projects, max 5 components)
+6. Apply TDD workflow (RED-GREEN-Refactor)
+7. Include P0 testing requirements
+```
+
+**Full Guide**: [Constitutional Development Prompts](development/guides/CONSTITUTIONAL_DEVELOPMENT_PROMPTS.md)
+
 ### Supported Leadership Roles
 - **🏢 VP/SVP Engineering** - Executive strategy, board communication, organizational scaling
 - **💻 CTO** - Technology vision, strategic leadership, competitive positioning
