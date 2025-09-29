@@ -31,7 +31,7 @@ The setup wizard automatically activates on your first strategic question and ta
 For strategic development work, use our GitHub Spec-Kit constitutional development process:
 
 ```
---think-hard --c7 --constitutional-development
+--constitutional-development
 
 [Your development request here]
 
@@ -44,6 +44,8 @@ Please follow the GitHub Spec-Kit constitutional development process:
 6. Apply TDD workflow (RED-GREEN-Refactor)
 7. Include P0 testing requirements
 ```
+
+**🔧 Automatic MCP Activation**: Sequential Thinking and Context7 MCP servers activate automatically when using `--constitutional-development`.
 
 **Full Guide**: [Constitutional Development Prompts](development/guides/CONSTITUTIONAL_DEVELOPMENT_PROMPTS.md)
 

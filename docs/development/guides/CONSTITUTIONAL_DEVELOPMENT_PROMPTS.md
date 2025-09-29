@@ -10,8 +10,28 @@ This guide provides the correct prompt structures for triggering GitHub Spec-Kit
 
 ## 🏆 **Primary Prompt Structure**
 
-### **Standard Constitutional Development Prompt**
+### **Standard Constitutional Development Prompt (Simplified)**
 
+```
+--constitutional-development
+
+[Your development request here]
+
+Please follow the GitHub Spec-Kit constitutional development process:
+1. Create executable specification using .claudedirector/templates/spec-template.md
+2. Apply Sequential Thinking methodology (6-step process)
+3. Ensure PROJECT_STRUCTURE.md and BLOAT_PREVENTION_SYSTEM.md compliance
+4. Include strategic framework integration (Team Topologies, WRAP, Capital Allocation)
+5. Validate constitutional compliance (max 3 projects, max 5 components)
+6. Apply TDD workflow (RED-GREEN-Refactor)
+7. Include P0 testing requirements
+```
+
+**🔧 Automatic MCP Activation**: Sequential Thinking (`--think-hard`) and Context7 (`--c7`) MCP servers activate automatically when using `--constitutional-development`.
+
+### **Advanced Override Options**
+
+#### **Explicit MCP Control**
 ```
 --think-hard --c7 --constitutional-development
 
@@ -27,11 +47,9 @@ Please follow the GitHub Spec-Kit constitutional development process:
 7. Include P0 testing requirements
 ```
 
-### **Alternative Prompt Triggers**
-
-#### **Spec-Kit Specific Trigger**
+#### **Sequential Only**
 ```
---think-hard --c7 --spec-kit
+--sequential-only --constitutional-development
 
 [Your development request here]
 
@@ -45,13 +63,13 @@ Please follow the GitHub Spec-Kit constitutional development process:
 7. Include P0 testing requirements
 ```
 
-#### **Constitutional Compliance Trigger**
+#### **No MCP Enhancement**
 ```
---think-hard --c7 --constitutional-compliance
+--no-mcp --constitutional-development
 
 [Your development request here]
 
-Please follow the constitutional development process:
+Please follow the GitHub Spec-Kit constitutional development process:
 1. Create executable specification using .claudedirector/templates/spec-template.md
 2. Apply Sequential Thinking methodology (6-step process)
 3. Ensure PROJECT_STRUCTURE.md and BLOAT_PREVENTION_SYSTEM.md compliance
@@ -63,13 +81,44 @@ Please follow the constitutional development process:
 
 ---
 
+## 🔄 **Subsequent Request Patterns**
+
+### **Pattern A: Continuation (Recommended)**
+```
+Continue with the next component implementation
+```
+
+### **Pattern B: Context-Aware**
+```
+Apply the same constitutional process to [new request]
+```
+
+### **Pattern C: Explicit Reference**
+```
+Using the same constitutional development process, [new request]
+```
+
+### **Pattern D: Sequential Steps**
+```
+Next step: [specific next action]
+```
+
+### **Pattern E: Context Switching**
+```
+Switch to [new context] using constitutional development
+```
+
+**🔧 Automatic Context**: Subsequent requests automatically maintain constitutional context and MCP activation without requiring repeated flags.
+
+---
+
 ## 📋 **Prompt Components Explained**
 
 ### **1. Constitutional Triggers**
-- **`--constitutional-development`** - Primary trigger for Spec-Kit constitutional process
-- **`--spec-kit`** - Alternative trigger for Spec-Kit process
-- **`--constitutional-compliance`** - Compliance-focused trigger
-- **`--think-hard --c7`** - Enables Sequential Thinking + Context7 MCP
+- **`--constitutional-development`** - Primary trigger for Spec-Kit constitutional process (automatic MCP activation)
+- **`--think-hard --c7`** - Explicit MCP control for advanced users
+- **`--sequential-only`** - Sequential Thinking MCP only
+- **`--no-mcp`** - Constitutional process without MCP enhancement
 
 ### **2. Mandatory Process Elements**
 - **Executable Specification** - Uses `.claudedirector/templates/spec-template.md`
@@ -90,7 +139,7 @@ Please follow the constitutional development process:
 ### **Strategic Feature Development**
 
 ```
---think-hard --c7 --constitutional-development
+--constitutional-development
 
 I need to implement a new strategic analytics dashboard for executive reporting that provides real-time insights into team performance, project health, and business impact metrics.
 
@@ -107,7 +156,7 @@ Please follow the GitHub Spec-Kit constitutional development process:
 ### **Platform Architecture Changes**
 
 ```
---think-hard --c7 --constitutional-development
+--constitutional-development
 
 We need to restructure our platform architecture for better scalability, moving from monolithic to microservices architecture while maintaining our strategic intelligence capabilities.
 
@@ -124,7 +173,7 @@ Please follow the GitHub Spec-Kit constitutional development process:
 ### **Integration Development**
 
 ```
---think-hard --c7 --constitutional-development
+--constitutional-development
 
 I need to integrate a new MCP server for enhanced AI capabilities, specifically for advanced data analysis and predictive analytics in our strategic decision-making process.
 
@@ -141,7 +190,7 @@ Please follow the GitHub Spec-Kit constitutional development process:
 ### **Performance Optimization**
 
 ```
---think-hard --c7 --constitutional-development
+--constitutional-development
 
 We need to optimize our system performance to achieve sub-200ms response times for all AI operations while maintaining our strategic intelligence capabilities and constitutional compliance.
 
@@ -158,7 +207,7 @@ Please follow the GitHub Spec-Kit constitutional development process:
 ### **Security Enhancement**
 
 ```
---think-hard --c7 --constitutional-development
+--constitutional-development
 
 We need to enhance our security posture with advanced threat detection, data protection, and compliance validation while maintaining our strategic development capabilities.
 
@@ -214,7 +263,23 @@ Please follow the GitHub Spec-Kit constitutional development process:
 
 ## 🚀 **Quick Reference**
 
-### **Copy-Paste Template**
+### **Copy-Paste Template (Simplified)**
+```
+--constitutional-development
+
+[Your development request here]
+
+Please follow the GitHub Spec-Kit constitutional development process:
+1. Create executable specification using .claudedirector/templates/spec-template.md
+2. Apply Sequential Thinking methodology (6-step process)
+3. Ensure PROJECT_STRUCTURE.md and BLOAT_PREVENTION_SYSTEM.md compliance
+4. Include strategic framework integration (Team Topologies, WRAP, Capital Allocation)
+5. Validate constitutional compliance (max 3 projects, max 5 components)
+6. Apply TDD workflow (RED-GREEN-Refactor)
+7. Include P0 testing requirements
+```
+
+### **Advanced Control Template**
 ```
 --think-hard --c7 --constitutional-development
 
