@@ -160,6 +160,11 @@ class TestCursorrrulesValidationP0(unittest.TestCase):
             "description": "Show retrospective command help",
             "required": True,
         },
+        "/generate-weekly-report": {
+            "pattern": r"/generate-weekly-report",
+            "description": "Generate weekly executive report",
+            "required": True,
+        },
         "/configure": {
             "pattern": r"/configure",
             "description": "Restart first-run wizard",
