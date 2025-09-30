@@ -49,6 +49,39 @@ test(p0): add persona selection accuracy tests
 
 ---
 
+## 🎯 **Constitutional Development Workflow**
+
+### **GitHub Spec-Kit Integration**
+For strategic development work, use our constitutional development process:
+
+```bash
+# Constitutional development workflow
+--constitutional-development
+
+[Your development request here]
+
+Please follow the GitHub Spec-Kit constitutional development process:
+1. Create executable specification using .claudedirector/templates/spec-template.md
+2. Apply Sequential Thinking methodology (6-step process)
+3. Ensure PROJECT_STRUCTURE.md and BLOAT_PREVENTION_SYSTEM.md compliance
+4. Include strategic framework integration (Team Topologies, WRAP, Capital Allocation)
+5. Validate constitutional compliance (max 3 projects, max 5 components)
+6. Apply TDD workflow (RED-GREEN-Refactor)
+7. Include P0 testing requirements
+```
+
+**🔧 Automatic MCP Activation**: Sequential Thinking (`--think-hard`) and Context7 (`--c7`) MCP servers activate automatically when using `--constitutional-development`.
+
+### **Constitutional Development Benefits**
+- **Simplified Workflow**: Single trigger for complete development process
+- **Automatic Enhancement**: MCP servers activate automatically
+- **Quality Assurance**: Built-in bloat prevention and architectural compliance
+- **Strategic Intelligence**: Framework integration and executive validation
+
+**Full Guide**: [Constitutional Development Prompts](CONSTITUTIONAL_DEVELOPMENT_PROMPTS.md)
+
+---
+
 ## 📋 **Development Standards**
 
 ### **Code Quality**

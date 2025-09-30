@@ -10,6 +10,7 @@
 - All architectural decisions must include Sequential Thinking documentation
 - All P0 tests must validate Sequential Thinking compliance
 - **ALL SPECIFICATIONS MUST USE SPEC-KIT FORMAT** (as per SPEC_KIT_ANALYSIS.md)
+- **ALL DEVELOPMENT MUST USE CONSTITUTIONAL DEVELOPMENT PROCESS** (as per CONSTITUTIONAL_DEVELOPMENT_PROMPTS.md)
 - All development artifacts must follow PROJECT_STRUCTURE.md placement
 - All code must adhere to SOLID and DRY principles with BLOAT_PREVENTION_SYSTEM.md integration
 
@@ -21,6 +22,7 @@
 - Feature implementations without the 6-step methodology
 - Bug fixes that don't demonstrate root cause analysis
 - **Specifications not using spec-kit format**
+- **Development not using constitutional development process**
 - Files placed outside PROJECT_STRUCTURE.md requirements
 - Code violating SOLID or DRY principles
 - Development without BLOAT_PREVENTION_SYSTEM.md integration

@@ -156,6 +156,7 @@ jobs:
 ## 📚 **Reference Documentation**
 
 ### **Development Guides** (MANDATORY READING)
+- **[Constitutional Development Prompts](development/guides/CONSTITUTIONAL_DEVELOPMENT_PROMPTS.md)**: GitHub Spec-Kit constitutional development process and prompt templates
 - **[Core Architecture](development/guides/CORE_ARCHITECTURE.md)**: System architecture principles and foundational components
 - **[Development Workflow](development/guides/DEVELOPMENT_WORKFLOW.md)**: Git workflow, branching, and commit standards
 - **[Testing & QA](development/guides/TESTING_QA.md)**: Comprehensive testing strategies and quality assurance
