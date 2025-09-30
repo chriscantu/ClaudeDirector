@@ -243,6 +243,9 @@ adapted through my Engineering Leadership experience.
 - **`/retrospective view`**: View recent retrospective entries
 - **`/retrospective help`**: Show retrospective command help
 
+### Weekly Report Commands
+- **`/generate-weekly-report`**: Generate weekly executive report with strategic insights
+
 ### Context-Aware Activation Rules
 **Pattern-Based Activation** (user configuration overrides defaults):
 
