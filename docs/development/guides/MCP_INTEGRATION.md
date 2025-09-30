@@ -63,6 +63,50 @@ servers:
 
 ---
 
+## 🎯 **Constitutional Development Integration**
+
+### **Automatic MCP Activation**
+When using the constitutional development process, MCP servers activate automatically:
+
+```bash
+--constitutional-development
+
+[Your development request here]
+
+Please follow the GitHub Spec-Kit constitutional development process:
+1. Create executable specification using .claudedirector/templates/spec-template.md
+2. Apply Sequential Thinking methodology (6-step process)
+3. Ensure PROJECT_STRUCTURE.md and BLOAT_PREVENTION_SYSTEM.md compliance
+4. Include strategic framework integration (Team Topologies, WRAP, Capital Allocation)
+5. Validate constitutional compliance (max 3 projects, max 5 components)
+6. Apply TDD workflow (RED-GREEN-Refactor)
+7. Include P0 testing requirements
+```
+
+**🔧 Automatic Activation**: Sequential Thinking (`--think-hard`) and Context7 (`--c7`) MCP servers activate automatically when using `--constitutional-development`.
+
+### **Manual MCP Control**
+For advanced users who want explicit control:
+
+```bash
+--think-hard --c7 --constitutional-development
+
+[Your development request here]
+
+Please follow the GitHub Spec-Kit constitutional development process:
+1. Create executable specification using .claudedirector/templates/spec-template.md
+2. Apply Sequential Thinking methodology (6-step process)
+3. Ensure PROJECT_STRUCTURE.md and BLOAT_PREVENTION_SYSTEM.md compliance
+4. Include strategic framework integration (Team Topologies, WRAP, Capital Allocation)
+5. Validate constitutional compliance (max 3 projects, max 5 components)
+6. Apply TDD workflow (RED-GREEN-Refactor)
+7. Include P0 testing requirements
+```
+
+**Full Guide**: [Constitutional Development Prompts](CONSTITUTIONAL_DEVELOPMENT_PROMPTS.md)
+
+---
+
 ## 📋 **Development Guidelines**
 
 ### **MCP Server Requirements**

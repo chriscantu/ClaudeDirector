@@ -1309,7 +1309,7 @@ class ReportGenerator:
                 epic_issues = [self._convert_raw_issue(issue) for issue in raw_epics]
 
             # Fetch strategic story data (supporting detail)
-            strategic_query = self.config.get_jql_query("strategic_test")
+            strategic_query = self.config.get_jql_query("strategic_comprehensive")
             strategic_issues = []
             if strategic_query:
                 raw_strategic = self.jira.fetch_issues(strategic_query)
@@ -1354,6 +1354,8 @@ class ReportGenerator:
             watchers=fields.get("watchers", {}).get("watchCount", 0),
             links=len(fields.get("issuelinks", [])),
             business_value=self.analyzer.extract_business_value(raw_issue),
+            created_date=fields.get("created"),
+            resolved_date=fields.get("resolutiondate"),
         )
 
     def _build_report_content(
@@ -1471,12 +1473,24 @@ class ReportGenerator:
                 else:
                     header = f"#### ✅ [{issue.key}]({jira_url}) - {issue.summary}"
 
+                # Format completion date if available
+                completion_date = ""
+                if issue.resolved_date:
+                    try:
+                        resolved_dt = datetime.fromisoformat(
+                            issue.resolved_date.replace("Z", "+00:00")
+                        )
+                        completion_date = (
+                            f"- **Completed**: {resolved_dt.strftime('%Y-%m-%d')}\n"
+                        )
+                    except (ValueError, AttributeError):
+                        completion_date = ""
+
                 entry = f"""{header}
 
 - **Status**: {timing} ({issue.status})
 - **Priority**: {issue.priority}
-- **Assignee**: {issue.assignee}
-- **Business Value**: {issue.business_value}
+- **Assignee**: {issue.assignee}{completion_date}- **Business Value**: {issue.business_value}
 
 """
                 epic_entries.append(entry)
@@ -1550,12 +1564,24 @@ class ReportGenerator:
                     # Graceful fallback if completion analysis fails
                     pass
 
+                # Format completion date if available
+                completion_date = ""
+                if issue.resolved_date:
+                    try:
+                        resolved_dt = datetime.fromisoformat(
+                            issue.resolved_date.replace("Z", "+00:00")
+                        )
+                        completion_date = (
+                            f"- **Completed**: {resolved_dt.strftime('%Y-%m-%d')}\n"
+                        )
+                    except (ValueError, AttributeError):
+                        completion_date = ""
+
                 entry = f"""#### 📋 [{issue.key}]({jira_url}) - {issue.summary}
 
 - **Status**: {timing} ({issue.status})
 - **Project**: {issue.project}
-- **Strategic Impact**: {score.score}/10 points
-- **Business Value**: {' '.join(score.indicators)}{mcp_indicator}
+- **Strategic Impact**: {score.score}/10 points{completion_date}- **Business Value**: {' '.join(score.indicators)}{mcp_indicator}
 
 ---"""
                 strategic_entries.append(entry)
@@ -1679,10 +1705,14 @@ class ReportGenerator:
         l0_count = len([i for i in active_initiatives if i.level == "L0"])
         l2_count = len([i for i in active_initiatives if i.level == "L2"])
 
-        projects = list(set(i.project for i in initiatives))
+        # Combine teams from both strategic initiatives and completed epics
+        initiative_projects = set(i.project for i in initiatives)
+        epic_projects = set(issue.project for issue in epic_issues)
+        all_active_projects = initiative_projects.union(epic_projects)
+
         project_summary = (
-            "\n".join(f"- {project}" for project in projects)
-            if projects
+            "\n".join(f"- {project}" for project in sorted(all_active_projects))
+            if all_active_projects
             else "- Platform initiatives across Web Foundation teams"
         )
 
