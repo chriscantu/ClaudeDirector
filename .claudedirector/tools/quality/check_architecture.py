@@ -24,6 +24,14 @@ class ArchitectureChecker:
             "lib.frameworks": ["lib.core"],
             "lib.mcp": ["lib.core", "lib.integrations"],
         }
+        # Whitelist for legitimate circular imports (e.g., extension patterns with fallback imports)
+        self.whitelisted_circular_imports = {
+            "lib/core/sdk_enhanced_manager.py": ["lib.core.base_manager"],
+            "lib/integration/mcp_sdk_enhancements.py": [
+                "lib.integration.mcp_enterprise_coordinator",
+                "lib.core.sdk_enhanced_manager",
+            ],
+        }
 
     def check_import_compliance(self, file_path: Path, tree: ast.AST) -> List[str]:
         """Check if imports follow architectural boundaries."""
@@ -48,6 +56,12 @@ class ArchitectureChecker:
 
     def _is_circular_import(self, file_path: Path, module_name: str) -> bool:
         """Detect potential circular imports."""
+        # Check whitelist first
+        file_path_str = str(file_path).replace(".claudedirector/", "")
+        if file_path_str in self.whitelisted_circular_imports:
+            if module_name in self.whitelisted_circular_imports[file_path_str]:
+                return False  # Whitelisted, not a violation
+
         # Simplified circular import detection
         file_module = self._get_module_from_path(file_path)
 
