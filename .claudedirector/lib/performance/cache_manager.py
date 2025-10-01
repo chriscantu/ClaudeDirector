@@ -175,11 +175,17 @@ class CacheManager(BaseManager):
         self._start_cleanup_task()
 
         # Use BaseManager logging
+        # SDK-inspired prompt optimizer (Task 001)
+        # Optional enhancement - graceful degradation if not available
+        self.prompt_optimizer = None
+        self._initialize_prompt_optimizer()
+
         self.logger.info(
             "Cache manager initialized",
             max_memory_mb=self.max_memory_bytes / (1024 * 1024),
             max_entries=self.max_entries,
             ttl_config={level.value: ttl for level, ttl in self.ttl_config.items()},
+            prompt_optimizer_enabled=self.prompt_optimizer is not None,
         )
 
     def manage(self, operation: str, *args, **kwargs) -> Any:
@@ -246,6 +252,22 @@ class CacheManager(BaseManager):
                 kwargs=kwargs,
             )
             raise
+
+    def _initialize_prompt_optimizer(self):
+        """Initialize SDK-inspired prompt optimizer (graceful degradation)"""
+        try:
+            from .prompt_cache_optimizer import SDKInspiredPromptCacheOptimizer
+
+            self.prompt_optimizer = SDKInspiredPromptCacheOptimizer(
+                cache_manager=self, cache_ttl=3600, enable_metrics=True
+            )
+            self.logger.info("SDK-inspired prompt optimizer initialized")
+        except ImportError as e:
+            self.logger.debug(f"Prompt optimizer not available: {e}")
+            self.prompt_optimizer = None
+        except Exception as e:
+            self.logger.warning(f"Failed to initialize prompt optimizer: {e}")
+            self.prompt_optimizer = None
 
     def _start_cleanup_task(self):
         """Start background cleanup task"""
@@ -553,6 +575,45 @@ class CacheManager(BaseManager):
             return CacheLevel.MCP_PLAYWRIGHT  # Testing - short TTL
         else:
             return CacheLevel.MCP_RESPONSES  # Default MCP cache level
+
+    # SDK-inspired prompt optimization methods (Task 001)
+
+    def get_prompt_optimizer(self):
+        """Get the prompt optimizer instance (graceful degradation)"""
+        return self.prompt_optimizer
+
+    def assemble_optimized_prompt(
+        self,
+        persona: str,
+        framework: Optional[str] = None,
+        conversation_context: str = "",
+        strategic_memory: Optional[Dict[str, Any]] = None,
+        user_query: str = "",
+    ) -> Dict[str, Any]:
+        """
+        Assemble prompt using SDK-inspired caching optimization
+
+        Facade pattern: Provides clean interface to prompt optimization
+        Graceful degradation: Falls back to basic assembly if optimizer unavailable
+        """
+        if self.prompt_optimizer:
+            return self.prompt_optimizer.assemble_cached_prompt(
+                persona=persona,
+                framework=framework,
+                conversation_context=conversation_context,
+                strategic_memory=strategic_memory,
+                user_query=user_query,
+            )
+        else:
+            # Fallback: Basic prompt assembly without caching
+            return {
+                "prompt": f"🎯 {persona} | Strategic Leadership\n\n{user_query}",
+                "cache_hits": 0,
+                "cache_misses": 0,
+                "tokens_saved": 0,
+                "optimization_applied": "fallback_basic_assembly",
+                "cache_efficiency": 0.0,
+            }
 
 
 # Global cache manager instance
