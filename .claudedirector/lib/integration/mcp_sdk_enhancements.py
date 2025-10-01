@@ -19,6 +19,7 @@ from functools import wraps
 try:
     from .mcp_enterprise_coordinator import MCPEnterpriseCoordinator, MCPServerStatus
     from ..core.sdk_enhanced_manager import SDKEnhancedManager, SDKErrorCategory
+    from ..config.performance_config import get_sdk_error_handling_config
 except ImportError:
     # Fallback for test environments
     import sys
@@ -27,6 +28,7 @@ except ImportError:
     sys.path.insert(0, str(Path(__file__).parent))
     from mcp_enterprise_coordinator import MCPEnterpriseCoordinator, MCPServerStatus
     from core.sdk_enhanced_manager import SDKEnhancedManager, SDKErrorCategory
+    from config.performance_config import get_sdk_error_handling_config
 
 
 def enhance_mcp_coordinator_with_sdk_patterns(
@@ -191,29 +193,32 @@ class MCPSDKErrorTracker:
         if total_errors == 0:
             return {"error_patterns": {}, "recommendations": [], "total_errors": 0}
 
-        # Generate recommendations based on error patterns
+        # Load threshold configuration
+        sdk_config = get_sdk_error_handling_config()
+
+        # Generate recommendations based on error patterns (configuration-driven)
         recommendations = []
 
         rate_limit_ratio = patterns[SDKErrorCategory.RATE_LIMIT] / total_errors
-        if rate_limit_ratio > 0.3:
+        if rate_limit_ratio > sdk_config.rate_limit_threshold_ratio:
             recommendations.append(
                 "Consider implementing request throttling or increasing rate limits"
             )
 
         timeout_ratio = patterns[SDKErrorCategory.TIMEOUT] / total_errors
-        if timeout_ratio > 0.2:
+        if timeout_ratio > sdk_config.timeout_threshold_ratio:
             recommendations.append(
                 "Consider increasing timeout values or optimizing request processing"
             )
 
         permanent_ratio = patterns[SDKErrorCategory.PERMANENT] / total_errors
-        if permanent_ratio > 0.1:
+        if permanent_ratio > sdk_config.permanent_threshold_ratio:
             recommendations.append(
                 "Check server configuration and authentication settings"
             )
 
         context_limit_ratio = patterns[SDKErrorCategory.CONTEXT_LIMIT] / total_errors
-        if context_limit_ratio > 0.05:
+        if context_limit_ratio > sdk_config.context_limit_threshold_ratio:
             recommendations.append(
                 "Review request payload sizes and context window limits"
             )

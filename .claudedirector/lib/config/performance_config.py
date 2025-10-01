@@ -93,10 +93,110 @@ class ContextEngineConfig:
     fallback_layer_coverage: float = 0.2
 
 
+@dataclass
+class SDKErrorHandlingConfig:
+    """SDK error handling configuration constants"""
+
+    # Error categorization patterns
+    rate_limit_patterns: list = None
+    transient_patterns: list = None
+    permanent_patterns: list = None
+    context_limit_patterns: list = None
+    timeout_patterns: list = None
+
+    # Retry strategies per error category
+    rate_limit_max_retries: int = 5
+    rate_limit_backoff_multiplier: float = 2.0
+
+    transient_max_retries: int = 3
+    transient_backoff_multiplier: float = 1.5
+
+    permanent_max_retries: int = 0
+    permanent_backoff_multiplier: float = 0
+
+    context_limit_max_retries: int = 0
+    context_limit_backoff_multiplier: float = 0
+
+    timeout_max_retries: int = 2
+    timeout_backoff_multiplier: float = 1.2
+
+    # MCP SDK error profile thresholds (for recommendations)
+    rate_limit_threshold_ratio: float = (
+        0.3  # 30% rate limit errors triggers recommendation
+    )
+    timeout_threshold_ratio: float = 0.2  # 20% timeout errors triggers recommendation
+    permanent_threshold_ratio: float = (
+        0.1  # 10% permanent errors triggers recommendation
+    )
+    context_limit_threshold_ratio: float = (
+        0.05  # 5% context limit errors triggers recommendation
+    )
+
+    def __post_init__(self):
+        if self.rate_limit_patterns is None:
+            self.rate_limit_patterns = [
+                "rate limit",
+                "too many requests",
+                "quota exceeded",
+                "429",
+                "rate_limit_exceeded",
+                "throttled",
+                "rate limiting",
+            ]
+
+        if self.transient_patterns is None:
+            self.transient_patterns = [
+                "timeout",
+                "connection",
+                "network",
+                "502",
+                "503",
+                "504",
+                "temporary failure",
+                "service unavailable",
+                "connection reset",
+            ]
+
+        if self.permanent_patterns is None:
+            self.permanent_patterns = [
+                "authentication",
+                "unauthorized",
+                "invalid api key",
+                "401",
+                "403",
+                "forbidden",
+                "invalid_request",
+                "bad_request",
+                "400",
+            ]
+
+        if self.context_limit_patterns is None:
+            self.context_limit_patterns = [
+                "context length",
+                "token limit",
+                "input too long",
+                "context_length_exceeded",
+                "maximum context",
+                "context window",
+                "tokens exceeded",
+            ]
+
+        if self.timeout_patterns is None:
+            self.timeout_patterns = [
+                "request timeout",
+                "read timeout",
+                "connection timeout",
+                "deadline exceeded",
+                "timed out",
+                "timeout error",
+            ]
+
+
 # Global configuration instances
 PROMPT_CACHING_CONFIG = PromptCachingConfig()
 CACHE_MANAGER_CONFIG = CacheManagerConfig()
 CONTEXT_ENGINE_CONFIG = ContextEngineConfig()
+SDK_ERROR_HANDLING_CONFIG = SDKErrorHandlingConfig()
 
 
 def get_prompt_caching_config() -> PromptCachingConfig:
@@ -112,6 +212,11 @@ def get_cache_manager_config() -> CacheManagerConfig:
 def get_context_engine_config() -> ContextEngineConfig:
     """Get context engine configuration"""
     return CONTEXT_ENGINE_CONFIG
+
+
+def get_sdk_error_handling_config() -> SDKErrorHandlingConfig:
+    """Get SDK error handling configuration"""
+    return SDK_ERROR_HANDLING_CONFIG
 
 
 # Configuration validation

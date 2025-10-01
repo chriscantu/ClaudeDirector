@@ -120,6 +120,18 @@ class SDKErrorHandlingConfig:
     timeout_max_retries: int = 2
     timeout_backoff_multiplier: float = 1.2
 
+    # MCP SDK error profile thresholds (for recommendations)
+    rate_limit_threshold_ratio: float = (
+        0.3  # 30% rate limit errors triggers recommendation
+    )
+    timeout_threshold_ratio: float = 0.2  # 20% timeout errors triggers recommendation
+    permanent_threshold_ratio: float = (
+        0.1  # 10% permanent errors triggers recommendation
+    )
+    context_limit_threshold_ratio: float = (
+        0.05  # 5% context limit errors triggers recommendation
+    )
+
     def __post_init__(self):
         if self.rate_limit_patterns is None:
             self.rate_limit_patterns = [

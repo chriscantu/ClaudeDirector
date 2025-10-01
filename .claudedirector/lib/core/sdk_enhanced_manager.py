@@ -18,7 +18,10 @@ from abc import ABC
 
 try:
     from .base_manager import BaseManager, BaseManagerConfig
-    from ..config.performance_config import get_cache_manager_config
+    from ..config.performance_config import (
+        get_cache_manager_config,
+        get_sdk_error_handling_config,
+    )
 except ImportError:
     # Fallback for test environments
     import sys
@@ -26,7 +29,10 @@ except ImportError:
 
     sys.path.insert(0, str(Path(__file__).parent))
     from base_manager import BaseManager, BaseManagerConfig
-    from config.performance_config import get_cache_manager_config
+    from config.performance_config import (
+        get_cache_manager_config,
+        get_sdk_error_handling_config,
+    )
 
 
 class SDKErrorCategory(Enum):
@@ -59,85 +65,52 @@ class SDKEnhancedManager(BaseManager):
 
     def __init__(self, config: Optional[BaseManagerConfig] = None):
         """Initialize with existing BaseManager infrastructure"""
-        super().__init__(config or BaseManagerConfig())
+        # Default config if not provided (with required manager_name)
+        if config is None:
+            config = BaseManagerConfig(
+                manager_name="sdk_enhanced_manager",
+                manager_type=None,  # Can be specified by subclasses
+            )
 
-        # SDK-specific error categorization rules (NEW functionality)
+        super().__init__(config)
+
+        # Load SDK error configuration from centralized config
+        sdk_config = get_sdk_error_handling_config()
+
+        # SDK-specific error categorization rules (from configuration)
         self.sdk_error_patterns = {
-            SDKErrorCategory.RATE_LIMIT: [
-                "rate limit",
-                "too many requests",
-                "quota exceeded",
-                "429",
-                "rate_limit_exceeded",
-                "throttled",
-                "rate limiting",
-            ],
-            SDKErrorCategory.TRANSIENT: [
-                "timeout",
-                "connection",
-                "network",
-                "502",
-                "503",
-                "504",
-                "temporary failure",
-                "service unavailable",
-                "connection reset",
-            ],
-            SDKErrorCategory.PERMANENT: [
-                "authentication",
-                "unauthorized",
-                "invalid api key",
-                "401",
-                "403",
-                "forbidden",
-                "invalid_request",
-                "bad_request",
-                "400",
-            ],
-            SDKErrorCategory.CONTEXT_LIMIT: [
-                "context length",
-                "token limit",
-                "input too long",
-                "context_length_exceeded",
-                "maximum context",
-                "context window",
-                "tokens exceeded",
-            ],
-            SDKErrorCategory.TIMEOUT: [
-                "request timeout",
-                "read timeout",
-                "connection timeout",
-                "deadline exceeded",
-                "timed out",
-                "timeout error",
-            ],
+            SDKErrorCategory.RATE_LIMIT: sdk_config.rate_limit_patterns,
+            SDKErrorCategory.TRANSIENT: sdk_config.transient_patterns,
+            SDKErrorCategory.PERMANENT: sdk_config.permanent_patterns,
+            SDKErrorCategory.CONTEXT_LIMIT: sdk_config.context_limit_patterns,
+            SDKErrorCategory.TIMEOUT: sdk_config.timeout_patterns,
         }
 
-        # SDK-specific retry strategies (maps to existing BaseManager config)
+        # SDK-specific retry strategies (from configuration)
         self.sdk_retry_strategies = {
             SDKErrorCategory.RATE_LIMIT: {
-                "backoff_multiplier": 2.0,
-                "max_retries": 5,
+                "backoff_multiplier": sdk_config.rate_limit_backoff_multiplier,
+                "max_retries": sdk_config.rate_limit_max_retries,
                 "should_retry": True,
             },
             SDKErrorCategory.TRANSIENT: {
-                "backoff_multiplier": 1.5,
-                "max_retries": 3,
+                "backoff_multiplier": sdk_config.transient_backoff_multiplier,
+                "max_retries": sdk_config.transient_max_retries,
                 "should_retry": True,
             },
             SDKErrorCategory.PERMANENT: {
-                "backoff_multiplier": 0,
-                "max_retries": 0,
+                "backoff_multiplier": sdk_config.permanent_backoff_multiplier,
+                "max_retries": sdk_config.permanent_max_retries,
                 "should_retry": False,
             },
             SDKErrorCategory.CONTEXT_LIMIT: {
-                "backoff_multiplier": 0,
-                "max_retries": 0,
+                "backoff_multiplier": sdk_config.context_limit_backoff_multiplier,
+                "max_retries": sdk_config.context_limit_max_retries,
                 "should_retry": False,
             },
             SDKErrorCategory.TIMEOUT: {
-                "backoff_multiplier": 1.2,
-                "max_retries": 2,
+                "backoff_multiplier": sdk_config.timeout_backoff_multiplier,
+                "max_retries": sdk_config.timeout_max_retries,
                 "should_retry": True,
             },
         }
@@ -286,6 +259,8 @@ def create_sdk_enhanced_manager(
     """
     if config:
         manager_config = BaseManagerConfig(
+            manager_name=config.get("manager_name", "sdk_enhanced_manager"),
+            manager_type=config.get("manager_type", None),
             enable_logging=config.get("enable_logging", True),
             enable_caching=config.get("enable_caching", True),
             enable_metrics=config.get("enable_metrics", True),
@@ -294,7 +269,7 @@ def create_sdk_enhanced_manager(
             custom_config=config.get("custom_config", {}),
         )
     else:
-        manager_config = BaseManagerConfig()
+        manager_config = None  # Will use default in __init__
 
     return SDKEnhancedManager(manager_config)
 
