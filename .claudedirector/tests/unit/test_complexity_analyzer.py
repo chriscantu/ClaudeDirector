@@ -5,8 +5,8 @@ Tests the complexity analysis and enhancement decision logic.
 
 import pytest
 from lib.core.complexity_analyzer import (
-    ComplexityAnalyzer,
-    ComplexityLevel,
+    AnalysisComplexityDetector,
+    AnalysisComplexity,
     ComplexityAnalysis,
 )
 
@@ -30,12 +30,12 @@ class TestComplexityAnalyzer:
 
     @pytest.fixture
     def analyzer(self, sample_config):
-        """Create ComplexityAnalyzer instance"""
-        return ComplexityAnalyzer(sample_config)
+        """Create AnalysisComplexityDetector instance"""
+        return AnalysisComplexityDetector(sample_config)
 
     def test_initialization(self, sample_config):
         """Test analyzer initialization"""
-        analyzer = ComplexityAnalyzer(sample_config)
+        analyzer = AnalysisComplexityDetector(sample_config)
         assert analyzer.config == sample_config
         assert analyzer.thresholds == sample_config["enhancement_thresholds"]
         assert len(analyzer.strategic_keywords) > 0
@@ -53,7 +53,10 @@ class TestComplexityAnalyzer:
         for input_text in simple_inputs:
             analysis = analyzer.analyze_complexity(input_text, "diego")
             assert isinstance(analysis, ComplexityAnalysis)
-            assert analysis.level in [ComplexityLevel.SIMPLE, ComplexityLevel.MODERATE]
+            assert analysis.complexity in [
+                AnalysisComplexity.SIMPLE,
+                AnalysisComplexity.MEDIUM,
+            ]
             assert analysis.confidence < 0.6
             assert analysis.recommended_enhancement is None
 
@@ -68,11 +71,11 @@ class TestComplexityAnalyzer:
         for input_text in strategic_inputs:
             analysis = analyzer.analyze_complexity(input_text, "diego")
             assert isinstance(analysis, ComplexityAnalysis)
-            # Strategic questions should be at least MODERATE complexity
-            assert analysis.level in [
-                ComplexityLevel.MODERATE,
-                ComplexityLevel.COMPLEX,
-                ComplexityLevel.STRATEGIC,
+            # Strategic questions should be at least MEDIUM complexity
+            assert analysis.complexity in [
+                AnalysisComplexity.MEDIUM,
+                AnalysisComplexity.COMPLEX,
+                AnalysisComplexity.SYSTEMATIC,
             ]
             assert (
                 analysis.confidence > 0.3
@@ -91,7 +94,10 @@ class TestComplexityAnalyzer:
 
         analysis = analyzer.analyze_complexity(diego_input, "diego")
         assert analysis.persona_specific_score > 0
-        assert analysis.level in [ComplexityLevel.COMPLEX, ComplexityLevel.STRATEGIC]
+        assert analysis.complexity in [
+            AnalysisComplexity.COMPLEX,
+            AnalysisComplexity.SYSTEMATIC,
+        ]
         if analysis.confidence >= 0.7:
             assert analysis.recommended_enhancement == "systematic_analysis"
 
@@ -134,13 +140,13 @@ class TestComplexityAnalyzer:
     def test_complexity_level_determination(self, analyzer):
         """Test complexity level determination from scores"""
         # Test different score ranges (updated for our new thresholds)
-        assert analyzer._determine_complexity_level(0.9) == ComplexityLevel.STRATEGIC
+        assert analyzer._determine_complexity_level(0.9) == AnalysisComplexity.STRATEGIC
         assert (
-            analyzer._determine_complexity_level(0.7) == ComplexityLevel.STRATEGIC
+            analyzer._determine_complexity_level(0.7) == AnalysisComplexity.STRATEGIC
         )  # Adjusted threshold
-        assert analyzer._determine_complexity_level(0.6) == ComplexityLevel.COMPLEX
-        assert analyzer._determine_complexity_level(0.4) == ComplexityLevel.MODERATE
-        assert analyzer._determine_complexity_level(0.2) == ComplexityLevel.SIMPLE
+        assert analyzer._determine_complexity_level(0.6) == AnalysisComplexity.COMPLEX
+        assert analyzer._determine_complexity_level(0.4) == AnalysisComplexity.MODERATE
+        assert analyzer._determine_complexity_level(0.2) == AnalysisComplexity.SIMPLE
 
     def test_pattern_complexity_analysis(self, analyzer):
         """Test pattern-based complexity analysis"""
@@ -188,7 +194,7 @@ class TestComplexityAnalyzer:
         """Test enhancement decision logic"""
         # Create analysis that should trigger enhancement
         high_confidence_analysis = ComplexityAnalysis(
-            level=ComplexityLevel.STRATEGIC,
+            level=AnalysisComplexity.STRATEGIC,
             confidence=0.8,
             triggers=["strategic_question"],
             recommended_enhancement="systematic_analysis",
@@ -199,7 +205,7 @@ class TestComplexityAnalyzer:
 
         # Create analysis that should not trigger enhancement
         low_confidence_analysis = ComplexityAnalysis(
-            level=ComplexityLevel.SIMPLE,
+            level=AnalysisComplexity.SIMPLE,
             confidence=0.2,
             triggers=[],
             recommended_enhancement=None,
@@ -221,7 +227,7 @@ class TestComplexityAnalyzer:
 
         for persona, expected_enhancement in test_cases:
             analysis = ComplexityAnalysis(
-                level=ComplexityLevel.STRATEGIC,
+                level=AnalysisComplexity.STRATEGIC,
                 confidence=0.8,
                 triggers=["strategic_question"],
                 recommended_enhancement=expected_enhancement,
@@ -286,7 +292,7 @@ class TestComplexityAnalyzer:
         for input_text in empty_inputs:
             analysis = analyzer.analyze_complexity(input_text, "diego")
             assert isinstance(analysis, ComplexityAnalysis)
-            assert analysis.level == ComplexityLevel.SIMPLE
+            assert analysis.complexity == AnalysisComplexity.SIMPLE
             assert analysis.confidence >= 0.0
 
     def test_threshold_configuration(self, analyzer):
