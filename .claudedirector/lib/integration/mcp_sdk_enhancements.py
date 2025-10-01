@@ -76,8 +76,13 @@ def enhance_mcp_coordinator_with_sdk_patterns(
             # Adjust circuit breaker behavior based on error category
             if error_category == SDKErrorCategory.PERMANENT:
                 # Permanent errors should trip circuit breaker faster
+                sdk_config = get_sdk_error_handling_config()
                 original_threshold = coordinator.circuit_breaker_threshold
-                coordinator.circuit_breaker_threshold = max(1, original_threshold // 2)
+                new_threshold = int(
+                    original_threshold
+                    * sdk_config.circuit_breaker_threshold_reduction_factor
+                )
+                coordinator.circuit_breaker_threshold = max(1, new_threshold)
                 coordinator.logger.warning(
                     f"Permanent error detected for {server_id}, reducing circuit breaker threshold"
                 )

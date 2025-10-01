@@ -132,6 +132,11 @@ class SDKErrorHandlingConfig:
         0.05  # 5% context limit errors triggers recommendation
     )
 
+    # Circuit breaker adjustment factors
+    circuit_breaker_threshold_reduction_factor: float = (
+        0.5  # Reduce threshold by 50% on permanent errors
+    )
+
     def __post_init__(self):
         if self.rate_limit_patterns is None:
             self.rate_limit_patterns = [
