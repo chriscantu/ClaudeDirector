@@ -23,13 +23,22 @@ try:
         get_sdk_error_handling_config,
     )
 except ImportError:
-    # Fallback for test environments
+    # Fallback for test environments with different PYTHONPATH
     import sys
     from pathlib import Path
 
-    sys.path.insert(0, str(Path(__file__).parent))
-    from base_manager import BaseManager, BaseManagerConfig
-    from config.performance_config import (
+    # Add .claudedirector to sys.path for absolute imports
+    _claudedirector_root = Path(__file__).resolve().parent.parent.parent
+    if str(_claudedirector_root) not in sys.path:
+        sys.path.insert(0, str(_claudedirector_root))
+
+    # Absolute imports from lib package (avoids circular import detection)
+    from lib.core.base_manager import BaseManager, BaseManagerConfig
+
+    # Import from canonical config location
+    _config_root = _claudedirector_root / "config"
+    sys.path.insert(0, str(_config_root))
+    from performance_config import (
         get_cache_manager_config,
         get_sdk_error_handling_config,
     )

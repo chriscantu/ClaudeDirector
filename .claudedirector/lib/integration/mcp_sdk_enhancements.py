@@ -21,14 +21,26 @@ try:
     from ..core.sdk_enhanced_manager import SDKEnhancedManager, SDKErrorCategory
     from ..config.performance_config import get_sdk_error_handling_config
 except ImportError:
-    # Fallback for test environments
+    # Fallback for test environments with different PYTHONPATH
     import sys
     from pathlib import Path
 
-    sys.path.insert(0, str(Path(__file__).parent))
-    from mcp_enterprise_coordinator import MCPEnterpriseCoordinator, MCPServerStatus
-    from core.sdk_enhanced_manager import SDKEnhancedManager, SDKErrorCategory
-    from config.performance_config import get_sdk_error_handling_config
+    # Add .claudedirector to sys.path for absolute imports
+    _claudedirector_root = Path(__file__).resolve().parent.parent.parent
+    if str(_claudedirector_root) not in sys.path:
+        sys.path.insert(0, str(_claudedirector_root))
+
+    # Absolute imports from lib package (avoids circular import detection)
+    from lib.integration.mcp_enterprise_coordinator import (
+        MCPEnterpriseCoordinator,
+        MCPServerStatus,
+    )
+    from lib.core.sdk_enhanced_manager import SDKEnhancedManager, SDKErrorCategory
+
+    # Import from canonical config location
+    _config_root = _claudedirector_root / "config"
+    sys.path.insert(0, str(_config_root))
+    from performance_config import get_sdk_error_handling_config
 
 
 def enhance_mcp_coordinator_with_sdk_patterns(
