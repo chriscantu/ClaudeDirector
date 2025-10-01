@@ -34,6 +34,14 @@ from .team_dynamics_engine import (
     TeamDynamicsEngine,
 )  # Phase 3.2 Team Dynamics
 
+# SDK-inspired prompt optimization integration (Task 001)
+try:
+    from ..performance.cache_manager import get_cache_manager
+
+    PROMPT_OPTIMIZATION_AVAILABLE = True
+except ImportError:
+    PROMPT_OPTIMIZATION_AVAILABLE = False
+
 
 @dataclass
 class ContextRetrievalMetrics:
@@ -332,6 +340,139 @@ class AdvancedContextEngine:
             self.logger.error(f"Context retrieval failed: {e}")
             # Graceful degradation - return basic context
             return self._get_fallback_context(query, session_id)
+
+    def get_optimized_prompt_context(
+        self,
+        query: str,
+        persona: str,
+        framework: Optional[str] = None,
+        session_id: str = "default",
+        max_context_size: int = 1024 * 1024,
+    ) -> Dict[str, Any]:
+        """
+        Get contextual intelligence with SDK-inspired prompt optimization
+
+        This method combines the existing 8-layer context system with
+        the new prompt caching optimization for maximum performance.
+
+        Args:
+            query: Current user query
+            persona: Strategic persona (diego, martin, rachel, etc.)
+            framework: Strategic framework to apply (optional)
+            session_id: Session identifier for context tracking
+            max_context_size: Maximum context size in bytes
+
+        Returns:
+            Optimized prompt with context and performance metrics
+        """
+        start_time = time.time()
+
+        try:
+            # Step 1: Get traditional contextual intelligence
+            context_result = self.get_contextual_intelligence(
+                query=query,
+                session_id=session_id,
+                max_context_size=max_context_size,
+            )
+
+            # Step 2: Apply SDK-inspired prompt optimization if available
+            if PROMPT_OPTIMIZATION_AVAILABLE:
+                try:
+                    cache_manager = get_cache_manager()
+
+                    # Extract strategic memory from context
+                    strategic_memory = {
+                        "strategic_context": context_result["context"].get(
+                            "strategic", {}
+                        ),
+                        "stakeholder_context": context_result["context"].get(
+                            "stakeholder", {}
+                        ),
+                        "organizational_context": context_result["context"].get(
+                            "organizational", {}
+                        ),
+                    }
+
+                    # Extract conversation context
+                    conversation_context = str(
+                        context_result["context"].get("conversation", "")
+                    )
+
+                    # Assemble optimized prompt using cache manager
+                    prompt_result = cache_manager.assemble_optimized_prompt(
+                        persona=persona,
+                        framework=framework,
+                        conversation_context=conversation_context,
+                        strategic_memory=strategic_memory,
+                        user_query=query,
+                    )
+
+                    # Combine results
+                    optimization_time = time.time() - start_time
+
+                    return {
+                        **context_result,
+                        "optimized_prompt": prompt_result["prompt"],
+                        "optimization_metrics": {
+                            "cache_hits": prompt_result["cache_hits"],
+                            "cache_misses": prompt_result["cache_misses"],
+                            "tokens_saved": prompt_result["tokens_saved"],
+                            "optimization_applied": prompt_result[
+                                "optimization_applied"
+                            ],
+                            "cache_efficiency": prompt_result["cache_efficiency"],
+                            "total_optimization_time_seconds": optimization_time,
+                        },
+                        "sdk_integration": "active",
+                    }
+
+                except Exception as e:
+                    self.logger.warning(
+                        f"Prompt optimization failed, using fallback: {e}"
+                    )
+                    # Fall through to fallback
+
+            # Fallback: Basic prompt assembly without optimization
+            basic_prompt = f"🎯 {persona} | Strategic Leadership\n\n"
+            if framework:
+                basic_prompt += f"Framework: {framework}\n\n"
+            basic_prompt += f"Context: {str(context_result['context'])}\n\n"
+            basic_prompt += f"Query: {query}"
+
+            return {
+                **context_result,
+                "optimized_prompt": basic_prompt,
+                "optimization_metrics": {
+                    "cache_hits": 0,
+                    "cache_misses": 0,
+                    "tokens_saved": 0,
+                    "optimization_applied": "fallback_basic_assembly",
+                    "cache_efficiency": 0.0,
+                    "total_optimization_time_seconds": time.time() - start_time,
+                },
+                "sdk_integration": (
+                    "fallback" if PROMPT_OPTIMIZATION_AVAILABLE else "unavailable"
+                ),
+            }
+
+        except Exception as e:
+            self.logger.error(f"Optimized context retrieval failed: {e}")
+            # Ultimate fallback
+            return {
+                "context": {"error": str(e)},
+                "optimized_prompt": f"🎯 {persona} | Strategic Leadership\n\n{query}",
+                "optimization_metrics": {
+                    "cache_hits": 0,
+                    "cache_misses": 0,
+                    "tokens_saved": 0,
+                    "optimization_applied": "error_fallback",
+                    "cache_efficiency": 0.0,
+                    "total_optimization_time_seconds": time.time() - start_time,
+                },
+                "sdk_integration": "error",
+                "session_id": session_id,
+                "timestamp": time.time(),
+            }
 
     def store_conversation_outcome(
         self,
