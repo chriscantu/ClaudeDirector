@@ -259,7 +259,7 @@ class CacheManager(BaseManager):
             from .prompt_cache_optimizer import SDKInspiredPromptCacheOptimizer
 
             self.prompt_optimizer = SDKInspiredPromptCacheOptimizer(
-                cache_manager=self, cache_ttl=3600, enable_metrics=True
+                cache_manager=self, enable_metrics=True
             )
             self.logger.info("SDK-inspired prompt optimizer initialized")
         except ImportError as e:

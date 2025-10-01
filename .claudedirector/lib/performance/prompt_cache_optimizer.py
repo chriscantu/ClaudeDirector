@@ -37,6 +37,10 @@ from enum import Enum
 # Import existing cache infrastructure (DRY compliance)
 try:
     from .cache_manager import get_cache_manager, CacheManager, CacheLevel
+    from ..config.performance_config import (
+        get_prompt_caching_config,
+        PROMPT_CACHING_CONFIG,
+    )
 except ImportError:
     # Fallback for test environments
     import sys
@@ -44,6 +48,10 @@ except ImportError:
 
     sys.path.insert(0, str(Path(__file__).parent))
     from cache_manager import get_cache_manager, CacheManager, CacheLevel
+    from config.performance_config import (
+        get_prompt_caching_config,
+        PROMPT_CACHING_CONFIG,
+    )
 
 
 class PromptSegmentType(Enum):
@@ -103,7 +111,7 @@ class SDKInspiredPromptCacheOptimizer:
     def __init__(
         self,
         cache_manager: Optional[CacheManager] = None,
-        cache_ttl: int = 3600,
+        cache_ttl: Optional[int] = None,
         enable_metrics: bool = True,
     ):
         """
@@ -111,12 +119,15 @@ class SDKInspiredPromptCacheOptimizer:
 
         Args:
             cache_manager: Existing cache manager to extend (DRY compliance)
-            cache_ttl: Default cache TTL in seconds (1 hour default)
+            cache_ttl: Default cache TTL in seconds (uses config default if None)
             enable_metrics: Enable performance metrics tracking
         """
         # BLOAT_PREVENTION: Reuse existing cache infrastructure
         self.cache_manager = cache_manager or get_cache_manager()
-        self.cache_ttl = cache_ttl
+
+        # Configuration-driven values (no hard-coding)
+        config = get_prompt_caching_config()
+        self.cache_ttl = cache_ttl or config.default_cache_ttl_seconds
         self.enable_metrics = enable_metrics
 
         # Prompt-specific cache storage (local optimization layer)
@@ -133,9 +144,9 @@ class SDKInspiredPromptCacheOptimizer:
             "latency_saved_ms": 0.0,
         }
 
-        # Cache effectiveness tracking
-        self.baseline_assembly_time_ms = 150.0  # Baseline without caching
-        self.cached_assembly_time_ms = 100.0  # Target with caching (33% improvement)
+        # Cache effectiveness tracking (configuration-driven)
+        self.baseline_assembly_time_ms = config.baseline_assembly_time_ms
+        self.cached_assembly_time_ms = config.target_assembly_time_ms
 
         self.logger = logging.getLogger(__name__)
         self.logger.info(
@@ -145,7 +156,7 @@ class SDKInspiredPromptCacheOptimizer:
         )
 
     def cache_persona_template(
-        self, persona: str, template: str, estimated_tokens: int = 2000
+        self, persona: str, template: str, estimated_tokens: Optional[int] = None
     ) -> str:
         """
         Cache persona system prompt template
@@ -157,11 +168,15 @@ class SDKInspiredPromptCacheOptimizer:
         Args:
             persona: Persona name (diego, martin, rachel, etc.)
             template: Full persona system prompt template
-            estimated_tokens: Estimated token count for metrics
+            estimated_tokens: Estimated token count (uses config default if None)
 
         Returns:
             cache_key: Key for retrieving cached template
         """
+        # Use configuration default if not specified
+        if estimated_tokens is None:
+            estimated_tokens = get_prompt_caching_config().persona_template_tokens
+
         cache_key = self._generate_cache_key(f"persona_{persona}")
 
         entry = PromptCacheEntry(
@@ -181,7 +196,10 @@ class SDKInspiredPromptCacheOptimizer:
         return cache_key
 
     def cache_framework_context(
-        self, framework: str, context: Dict[str, Any], estimated_tokens: int = 300
+        self,
+        framework: str,
+        context: Dict[str, Any],
+        estimated_tokens: Optional[int] = None,
     ) -> str:
         """
         Cache strategic framework context
@@ -193,11 +211,15 @@ class SDKInspiredPromptCacheOptimizer:
         Args:
             framework: Framework name (team_topologies, wrap, etc.)
             context: Framework context and patterns
-            estimated_tokens: Estimated token count for metrics
+            estimated_tokens: Estimated token count (uses config default if None)
 
         Returns:
             cache_key: Key for retrieving cached context
         """
+        # Use configuration default if not specified
+        if estimated_tokens is None:
+            estimated_tokens = get_prompt_caching_config().framework_context_tokens
+
         cache_key = self._generate_cache_key(f"framework_{framework}")
 
         # Convert context dict to cacheable string
@@ -220,7 +242,7 @@ class SDKInspiredPromptCacheOptimizer:
         return cache_key
 
     def cache_system_instructions(
-        self, instructions: str, estimated_tokens: int = 1500
+        self, instructions: str, estimated_tokens: Optional[int] = None
     ) -> str:
         """
         Cache system instructions (ClaudeDirector base prompts)
@@ -230,11 +252,15 @@ class SDKInspiredPromptCacheOptimizer:
 
         Args:
             instructions: System-level instructions
-            estimated_tokens: Estimated token count for metrics
+            estimated_tokens: Estimated token count (uses config default if None)
 
         Returns:
             cache_key: Key for retrieving cached instructions
         """
+        # Use configuration default if not specified
+        if estimated_tokens is None:
+            estimated_tokens = get_prompt_caching_config().system_instructions_tokens
+
         cache_key = self._generate_cache_key("system_instructions")
 
         entry = PromptCacheEntry(
@@ -364,7 +390,8 @@ class SDKInspiredPromptCacheOptimizer:
         assembly_time_ms = (time.time() - start_time) * 1000
 
         # Estimate latency saved (cache hits reduce DB/file I/O)
-        latency_saved_ms = cache_hits * 15.0  # ~15ms per cache hit vs DB fetch
+        config = get_prompt_caching_config()
+        latency_saved_ms = cache_hits * config.latency_saved_per_cache_hit_ms
 
         # Update aggregate metrics
         self.metrics["tokens_saved_estimated"] += tokens_saved
