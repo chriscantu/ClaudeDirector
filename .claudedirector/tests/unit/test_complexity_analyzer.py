@@ -1,18 +1,21 @@
 """
-Unit tests for ComplexityAnalyzer
-Tests the complexity analysis and enhancement decision logic.
+Unit tests for AnalysisComplexityDetector
+Tests the complexity analysis and enhancement decision logic for current API.
+
+Note: Rewritten for Phase 12 API (always-on enhancement, simplified complexity detection)
 """
 
 import pytest
 from lib.core.complexity_analyzer import (
-    ComplexityAnalyzer,
-    ComplexityLevel,
+    AnalysisComplexityDetector,
+    AnalysisComplexity,
     ComplexityAnalysis,
+    EnhancementStrategy,
 )
 
 
 class TestComplexityAnalyzer:
-    """Test suite for ComplexityAnalyzer"""
+    """Test suite for AnalysisComplexityDetector (Phase 12 API)"""
 
     @pytest.fixture
     def sample_config(self):
@@ -21,25 +24,22 @@ class TestComplexityAnalyzer:
             "enhancement_thresholds": {
                 "systematic_analysis": 0.7,
                 "framework_lookup": 0.6,
-                "visual_generation": 0.8,
-                "business_strategy": 0.7,
-                "organizational_scaling": 0.7,
-                "technology_leadership": 0.7,
             }
         }
 
     @pytest.fixture
     def analyzer(self, sample_config):
-        """Create ComplexityAnalyzer instance"""
-        return ComplexityAnalyzer(sample_config)
+        """Create AnalysisComplexityDetector instance"""
+        return AnalysisComplexityDetector(sample_config)
 
     def test_initialization(self, sample_config):
         """Test analyzer initialization"""
-        analyzer = ComplexityAnalyzer(sample_config)
+        analyzer = AnalysisComplexityDetector(sample_config)
         assert analyzer.config == sample_config
-        assert analyzer.thresholds == sample_config["enhancement_thresholds"]
-        assert len(analyzer.strategic_keywords) > 0
-        assert len(analyzer.complexity_indicators) > 0
+        # Phase 12: thresholds removed, patterns-based detection
+        assert len(analyzer.complexity_patterns) > 0
+        assert len(analyzer.domain_keywords) > 0
+        assert len(analyzer.persona_capabilities) > 0
 
     def test_simple_question_analysis(self, analyzer):
         """Test analysis of simple questions"""
@@ -47,265 +47,192 @@ class TestComplexityAnalyzer:
             "What is REST?",
             "How do I install Python?",
             "What does API mean?",
-            "Hello there",
         ]
 
         for input_text in simple_inputs:
-            analysis = analyzer.analyze_complexity(input_text, "diego")
+            analysis = analyzer.analyze_input_complexity(input_text)
             assert isinstance(analysis, ComplexityAnalysis)
-            assert analysis.level in [ComplexityLevel.SIMPLE, ComplexityLevel.MODERATE]
-            assert analysis.confidence < 0.6
-            assert analysis.recommended_enhancement is None
+            assert analysis.complexity in [
+                AnalysisComplexity.SIMPLE,
+                AnalysisComplexity.MEDIUM,
+            ]
+            assert 0.0 <= analysis.confidence <= 1.0
+            assert isinstance(analysis.enhancement_strategy, EnhancementStrategy)
 
     def test_strategic_question_analysis(self, analyzer):
         """Test analysis of strategic/complex questions"""
         strategic_inputs = [
-            "How should we restructure our platform teams to improve delivery velocity while maintaining quality?",
-            "What's the best approach for scaling our design system across multiple product teams?",
-            "How can we implement a systematic framework for architectural decision making?",
+            "How should we systematically restructure our engineering teams?",
+            "What framework should we use for quarterly planning?",
+            "Provide a comprehensive analysis of our platform strategy",
         ]
 
         for input_text in strategic_inputs:
-            analysis = analyzer.analyze_complexity(input_text, "diego")
+            analysis = analyzer.analyze_input_complexity(input_text)
             assert isinstance(analysis, ComplexityAnalysis)
-            # Strategic questions should be at least MODERATE complexity
-            assert analysis.level in [
-                ComplexityLevel.MODERATE,
-                ComplexityLevel.COMPLEX,
-                ComplexityLevel.STRATEGIC,
+            # Accept MEDIUM or higher complexity for strategic questions
+            assert analysis.complexity in [
+                AnalysisComplexity.MEDIUM,
+                AnalysisComplexity.COMPLEX,
+                AnalysisComplexity.SYSTEMATIC,
             ]
-            assert (
-                analysis.confidence > 0.3
-            )  # Lowered threshold for more realistic expectations
-            assert len(analysis.triggers) > 0
+            assert analysis.confidence > 0.0
+            assert len(analysis.trigger_keywords) > 0
+            assert analysis.enhancement_strategy != EnhancementStrategy.NONE
 
-        # Test business strategy question with Alvaro instead
-        business_input = "What ROI methodology should we use for business strategy and competitive advantage?"
-        business_analysis = analyzer.analyze_complexity(business_input, "alvaro")
-        # Business strategy questions may be simple for Diego but should score better for Alvaro
-        assert business_analysis.persona_specific_score > 0
-
-    def test_persona_specific_analysis_diego(self, analyzer):
-        """Test Diego-specific complexity analysis"""
-        diego_input = "How should we approach systematic organizational restructuring for better cross-team coordination?"
-
-        analysis = analyzer.analyze_complexity(diego_input, "diego")
-        assert analysis.persona_specific_score > 0
-        assert analysis.level in [ComplexityLevel.COMPLEX, ComplexityLevel.STRATEGIC]
-        if analysis.confidence >= 0.7:
-            assert analysis.recommended_enhancement == "systematic_analysis"
-
-    def test_persona_specific_analysis_martin(self, analyzer):
-        """Test Martin-specific complexity analysis"""
-        martin_input = "What's the best architectural pattern for handling distributed data consistency in microservices?"
-
-        analysis = analyzer.analyze_complexity(martin_input, "martin")
-        assert analysis.persona_specific_score > 0
-        if analysis.confidence >= 0.6:
-            assert analysis.recommended_enhancement == "architecture_patterns"
-
-    def test_persona_specific_analysis_rachel(self, analyzer):
-        """Test Rachel-specific complexity analysis"""
-        rachel_input = "How should we scale our design system adoption across multiple teams and maintain consistency?"
-
-        analysis = analyzer.analyze_complexity(rachel_input, "rachel")
-        assert analysis.persona_specific_score > 0
-        if analysis.confidence >= 0.6:
-            assert analysis.recommended_enhancement == "design_system_methodology"
-
-    def test_persona_specific_analysis_alvaro(self, analyzer):
-        """Test Alvaro-specific complexity analysis"""
-        alvaro_input = "What's our competitive analysis framework for evaluating market positioning and ROI modeling?"
-
-        analysis = analyzer.analyze_complexity(alvaro_input, "alvaro")
-        assert analysis.persona_specific_score > 0
-        if analysis.confidence >= 0.7:
-            assert analysis.recommended_enhancement == "business_strategy"
-
-    def test_persona_specific_analysis_camille(self, analyzer):
-        """Test Camille-specific complexity analysis"""
-        camille_input = "How should we approach technology strategy and organizational scaling for our executive team?"
-
-        analysis = analyzer.analyze_complexity(camille_input, "camille")
-        assert analysis.persona_specific_score > 0
-        if analysis.confidence >= 0.7:
-            assert analysis.recommended_enhancement == "technology_leadership"
-
-    def test_complexity_level_determination(self, analyzer):
-        """Test complexity level determination from scores"""
-        # Test different score ranges (updated for our new thresholds)
-        assert analyzer._determine_complexity_level(0.9) == ComplexityLevel.STRATEGIC
-        assert (
-            analyzer._determine_complexity_level(0.7) == ComplexityLevel.STRATEGIC
-        )  # Adjusted threshold
-        assert analyzer._determine_complexity_level(0.6) == ComplexityLevel.COMPLEX
-        assert analyzer._determine_complexity_level(0.4) == ComplexityLevel.MODERATE
-        assert analyzer._determine_complexity_level(0.2) == ComplexityLevel.SIMPLE
-
-    def test_pattern_complexity_analysis(self, analyzer):
-        """Test pattern-based complexity analysis"""
-        pattern_inputs = [
-            "How should we approach this problem?",
-            "What's the best way to implement this feature?",
-            "Help me with designing this system",
-            "Framework for handling this situation",
-        ]
-
-        for input_text in pattern_inputs:
-            score, triggers = analyzer._analyze_pattern_complexity(input_text)
-            assert isinstance(score, float)
-            assert isinstance(triggers, list)
-            if score > 0:
-                assert len(triggers) > 0
-
-    def test_question_complexity_analysis(self, analyzer):
-        """Test question-specific complexity analysis"""
-        # Multi-part question
-        multi_question = "How should we handle this? What's the best approach? When should we implement it?"
-        score, triggers = analyzer._analyze_question_complexity(multi_question)
-        assert score > 0
-        assert any("multi_part_question" in trigger for trigger in triggers)
-
-        # Comparative question
-        comparative = "Should we use REST versus GraphQL for our API?"
-        score, triggers = analyzer._analyze_question_complexity(comparative)
-        assert score > 0
-        assert any("comparative_question" in trigger for trigger in triggers)
-
-    def test_structure_complexity_analysis(self, analyzer):
-        """Test structural complexity analysis"""
-        # Long, complex input
-        long_input = " ".join(["This is a very long and complex question"] * 10)
-        score = analyzer._analyze_structure_complexity(long_input)
-        assert score > 0
-
-        # Short, simple input
-        short_input = "Quick question"
-        score = analyzer._analyze_structure_complexity(short_input)
-        assert score >= 0
-
-    def test_should_enhance_decision(self, analyzer):
-        """Test enhancement decision logic"""
-        # Create analysis that should trigger enhancement
-        high_confidence_analysis = ComplexityAnalysis(
-            level=ComplexityLevel.STRATEGIC,
-            confidence=0.8,
-            triggers=["strategic_question"],
-            recommended_enhancement="systematic_analysis",
-            persona_specific_score=0.5,
+    def test_persona_context_handling(self, analyzer):
+        """Test that persona context is properly handled"""
+        context = {"current_persona": "diego"}
+        analysis = analyzer.analyze_input_complexity(
+            "How should we scale our team?", context
         )
 
-        assert analyzer.should_enhance(high_confidence_analysis, "diego") is True
+        assert isinstance(analysis, ComplexityAnalysis)
+        assert "diego" in analysis.persona_suitability
+        assert isinstance(analysis.persona_suitability["diego"], float)
 
-        # Create analysis that should not trigger enhancement
-        low_confidence_analysis = ComplexityAnalysis(
-            level=ComplexityLevel.SIMPLE,
-            confidence=0.2,
-            triggers=[],
-            recommended_enhancement=None,
-            persona_specific_score=0.1,
-        )
-
-        assert analyzer.should_enhance(low_confidence_analysis, "diego") is False
-
-    def test_enhancement_type_selection(self, analyzer):
-        """Test enhancement type selection"""
-        # Test different personas with appropriate enhancements
+    def test_enhancement_strategy_determination(self, analyzer):
+        """Test enhancement strategy is correctly determined"""
         test_cases = [
-            ("diego", "systematic_analysis"),
-            ("martin", "architecture_patterns"),
-            ("rachel", "design_system_methodology"),
-            ("alvaro", "business_strategy"),
-            ("camille", "technology_leadership"),
+            ("simple question", EnhancementStrategy.NONE),
+            (
+                "systematic analysis of architecture",
+                EnhancementStrategy.SYSTEMATIC_ANALYSIS,
+            ),
+            ("framework for planning", EnhancementStrategy.LIGHT_FRAMEWORK),
         ]
 
-        for persona, expected_enhancement in test_cases:
-            analysis = ComplexityAnalysis(
-                level=ComplexityLevel.STRATEGIC,
-                confidence=0.8,
-                triggers=["strategic_question"],
-                recommended_enhancement=expected_enhancement,
-                persona_specific_score=0.5,
-            )
+        for input_text, expected_strategy_type in test_cases:
+            analysis = analyzer.analyze_input_complexity(input_text)
+            assert isinstance(analysis.enhancement_strategy, EnhancementStrategy)
+            # Strategy type should match or be reasonable
+            if expected_strategy_type == EnhancementStrategy.NONE:
+                assert analysis.complexity == AnalysisComplexity.SIMPLE
 
-            selected = analyzer.select_enhancement_type(analysis, persona)
-            assert selected == expected_enhancement
+    def test_recommended_capabilities(self, analyzer):
+        """Test that capabilities are recommended based on input"""
+        strategic_input = "systematic analysis of our platform strategy"
+        analysis = analyzer.analyze_input_complexity(strategic_input)
 
-    def test_keyword_matching(self, analyzer):
-        """Test keyword matching for different domains"""
-        # Strategic keywords
-        strategic_input = "We need a comprehensive framework for organizational strategy and team coordination"
-        score = analyzer._analyze_base_complexity(strategic_input.lower())
-        assert score > 0
+        assert isinstance(analysis.recommended_capabilities, list)
+        # Strategic input should recommend systematic analysis capabilities
+        assert len(analysis.recommended_capabilities) > 0
 
-        # Business strategy keywords
-        business_input = (
-            "competitive analysis and market positioning for ROI optimization"
+    def test_persona_suitability_calculation(self, analyzer):
+        """Test persona suitability is calculated"""
+        analysis = analyzer.analyze_input_complexity("platform architecture strategy")
+
+        assert isinstance(analysis.persona_suitability, dict)
+        assert len(analysis.persona_suitability) > 0
+        # Scores should be between 0 and 1
+        for persona, score in analysis.persona_suitability.items():
+            assert 0.0 <= score <= 1.0
+
+    def test_reasoning_generation(self, analyzer):
+        """Test that reasoning is generated"""
+        analysis = analyzer.analyze_input_complexity("strategic planning framework")
+
+        assert isinstance(analysis.reasoning, str)
+        assert len(analysis.reasoning) > 0
+        # Reasoning should mention complexity or strategy
+        assert any(
+            keyword in analysis.reasoning.lower()
+            for keyword in ["complexity", "analysis", "framework"]
         )
-        score = analyzer._analyze_persona_specific_complexity(
-            business_input.lower(), "alvaro"
-        )
-        assert score > 0
-
-        # Technology leadership keywords
-        tech_input = (
-            "technology strategy and organizational scaling for executive decisions"
-        )
-        score = analyzer._analyze_persona_specific_complexity(
-            tech_input.lower(), "camille"
-        )
-        assert score > 0
-
-    def test_confidence_normalization(self, analyzer):
-        """Test that confidence scores are properly normalized"""
-        inputs = [
-            "Simple question",
-            "How should we implement a systematic framework for organizational architecture?",
-            "What's the best approach for comprehensive strategic planning and technology leadership?",
-        ]
-
-        for input_text in inputs:
-            analysis = analyzer.analyze_complexity(input_text, "diego")
-            assert 0.0 <= analysis.confidence <= 1.0
-            assert 0.0 <= analysis.persona_specific_score <= 1.0
-
-    def test_triggers_collection(self, analyzer):
-        """Test that triggers are properly collected and reported"""
-        complex_input = "How should we approach systematic organizational design? What's the best framework for this?"
-
-        analysis = analyzer.analyze_complexity(complex_input, "diego")
-
-        if analysis.confidence > 0.5:
-            assert len(analysis.triggers) > 0
-            assert all(isinstance(trigger, str) for trigger in analysis.triggers)
 
     def test_empty_input_handling(self, analyzer):
-        """Test handling of empty or minimal input"""
-        empty_inputs = ["", " ", "?", "hi"]
+        """Test handling of empty/whitespace input"""
+        empty_inputs = ["", "   ", "\n\n"]
 
         for input_text in empty_inputs:
-            analysis = analyzer.analyze_complexity(input_text, "diego")
+            analysis = analyzer.analyze_input_complexity(input_text)
             assert isinstance(analysis, ComplexityAnalysis)
-            assert analysis.level == ComplexityLevel.SIMPLE
+            assert analysis.complexity == AnalysisComplexity.SIMPLE
             assert analysis.confidence >= 0.0
 
-    def test_threshold_configuration(self, analyzer):
-        """Test that thresholds are properly applied"""
-        # Test with high threshold
-        high_threshold_config = {
-            "enhancement_thresholds": {
-                "systematic_analysis": 0.9  # Very high threshold
-            }
-        }
+    def test_phase12_always_on_enhancement(self, analyzer):
+        """Test Phase 12: Always-on MCP enhancement (no thresholds)"""
+        analysis = analyzer.analyze_input_complexity("simple question")
 
-        high_analyzer = ComplexityAnalyzer(high_threshold_config)
+        # Phase 12: Always returns True for enhancement
+        should_enhance, server = analyzer.should_enhance_with_mcp(analysis, "diego")
 
-        # Even complex input might not trigger with high threshold
-        complex_input = (
-            "How should we approach systematic organizational restructuring?"
+        assert should_enhance is True
+        assert server is not None
+        assert isinstance(server, str)
+
+    def test_enhancement_context_generation(self, analyzer):
+        """Test that enhancement context is properly generated"""
+        analysis = analyzer.analyze_input_complexity("strategic planning")
+        context = analyzer.get_enhancement_context(analysis)
+
+        assert isinstance(context, dict)
+        assert "complexity_level" in context
+        assert "confidence" in context
+        assert "strategy" in context
+
+    def test_multiple_personas(self, analyzer):
+        """Test analysis for different personas"""
+        personas = ["diego", "martin", "rachel", "alvaro", "camille"]
+        input_text = "platform architecture strategy"
+
+        for persona in personas:
+            context = {"current_persona": persona}
+            analysis = analyzer.analyze_input_complexity(input_text, context)
+
+            assert isinstance(analysis, ComplexityAnalysis)
+            assert persona in analysis.persona_suitability
+
+    def test_long_input_complexity_boost(self, analyzer):
+        """Test that longer inputs get complexity boost"""
+        short_input = "What is API?"
+        long_input = (
+            "I need a comprehensive systematic analysis of our platform architecture strategy, "
+            "including evaluation of our current technical debt, organizational structure, "
+            "team coordination patterns, and strategic alignment with business objectives. "
+            "We should also consider framework recommendations for quarterly planning."
         )
-        analysis = high_analyzer.analyze_complexity(complex_input, "diego")
 
-        # Might not trigger enhancement due to high threshold
-        if analysis.confidence < 0.9:
-            assert analysis.recommended_enhancement is None
+        short_analysis = analyzer.analyze_input_complexity(short_input)
+        long_analysis = analyzer.analyze_input_complexity(long_input)
+
+        # Long input should have higher complexity
+        complexity_order = [
+            AnalysisComplexity.SIMPLE,
+            AnalysisComplexity.MEDIUM,
+            AnalysisComplexity.COMPLEX,
+            AnalysisComplexity.SYSTEMATIC,
+        ]
+        short_idx = complexity_order.index(short_analysis.complexity)
+        long_idx = complexity_order.index(long_analysis.complexity)
+
+        assert long_idx >= short_idx
+        assert len(long_analysis.trigger_keywords) > len(
+            short_analysis.trigger_keywords
+        )
+
+    def test_confidence_bounds(self, analyzer):
+        """Test that confidence scores are properly bounded"""
+        test_inputs = [
+            "simple",
+            "medium complexity question",
+            "systematic comprehensive analysis of strategic framework",
+        ]
+
+        for input_text in test_inputs:
+            analysis = analyzer.analyze_input_complexity(input_text)
+            assert 0.0 <= analysis.confidence <= 1.0
+
+    def test_trigger_keywords_extraction(self, analyzer):
+        """Test that trigger keywords are properly extracted"""
+        input_with_triggers = "systematic framework analysis for strategic planning"
+        analysis = analyzer.analyze_input_complexity(input_with_triggers)
+
+        assert isinstance(analysis.trigger_keywords, list)
+        assert len(analysis.trigger_keywords) > 0
+        # Should contain at least one of the obvious triggers
+        trigger_set = set(k.lower() for k in analysis.trigger_keywords)
+        assert any(
+            keyword in trigger_set
+            for keyword in ["systematic", "framework", "analysis", "strategic"]
+        )

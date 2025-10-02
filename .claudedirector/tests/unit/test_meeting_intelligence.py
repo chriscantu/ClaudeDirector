@@ -17,7 +17,7 @@ class TestMeetingIntelligence:
         """Test meeting intelligence initialization with configuration"""
         mock_config.database_path = temp_db
 
-        with patch("claudedirector.intelligence.meeting.MeetingIntelligenceManager"):
+        with patch("lib.intelligence.meeting.MeetingIntelligenceManager"):
             meeting_ai = MeetingIntelligence(config=mock_config)
 
             assert meeting_ai.config == mock_config

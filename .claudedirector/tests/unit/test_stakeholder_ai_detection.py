@@ -39,9 +39,9 @@ class TestStakeholderAIDetection(unittest.TestCase):
         self.mock_config.enable_caching = False
         self.mock_config.enable_parallel_processing = False
 
-    @patch("claudedirector.intelligence.stakeholder.LocalStakeholderAI")
-    @patch("claudedirector.intelligence.stakeholder.IntelligentStakeholderDetector")
-    @patch("claudedirector.intelligence.stakeholder.StakeholderEngagementEngine")
+    @patch("lib.intelligence.stakeholder.LocalStakeholderAI")
+    @patch("lib.intelligence.stakeholder.IntelligentStakeholderDetector")
+    @patch("lib.intelligence.stakeholder.StakeholderEngagementEngine")
     def test_stakeholder_intelligence_initialization(
         self, mock_engagement, mock_detector, mock_ai
     ):
@@ -67,9 +67,9 @@ class TestStakeholderAIDetection(unittest.TestCase):
         mock_detector.assert_called_once()
         mock_engagement.assert_called_once()
 
-    @patch("claudedirector.intelligence.stakeholder.LocalStakeholderAI")
-    @patch("claudedirector.intelligence.stakeholder.IntelligentStakeholderDetector")
-    @patch("claudedirector.intelligence.stakeholder.StakeholderEngagementEngine")
+    @patch("lib.intelligence.stakeholder.LocalStakeholderAI")
+    @patch("lib.intelligence.stakeholder.IntelligentStakeholderDetector")
+    @patch("lib.intelligence.stakeholder.StakeholderEngagementEngine")
     def test_detect_stakeholders_high_confidence(
         self, mock_engagement, mock_detector, mock_ai
     ):
@@ -103,9 +103,9 @@ class TestStakeholderAIDetection(unittest.TestCase):
             results[0]["confidence"], self.mock_config.stakeholder_auto_create_threshold
         )
 
-    @patch("claudedirector.intelligence.stakeholder.LocalStakeholderAI")
-    @patch("claudedirector.intelligence.stakeholder.IntelligentStakeholderDetector")
-    @patch("claudedirector.intelligence.stakeholder.StakeholderEngagementEngine")
+    @patch("lib.intelligence.stakeholder.LocalStakeholderAI")
+    @patch("lib.intelligence.stakeholder.IntelligentStakeholderDetector")
+    @patch("lib.intelligence.stakeholder.StakeholderEngagementEngine")
     def test_detect_stakeholders_medium_confidence(
         self, mock_engagement, mock_detector, mock_ai
     ):
@@ -144,9 +144,9 @@ class TestStakeholderAIDetection(unittest.TestCase):
             results[0]["confidence"], self.mock_config.stakeholder_auto_create_threshold
         )
 
-    @patch("claudedirector.intelligence.stakeholder.LocalStakeholderAI")
-    @patch("claudedirector.intelligence.stakeholder.IntelligentStakeholderDetector")
-    @patch("claudedirector.intelligence.stakeholder.StakeholderEngagementEngine")
+    @patch("lib.intelligence.stakeholder.LocalStakeholderAI")
+    @patch("lib.intelligence.stakeholder.IntelligentStakeholderDetector")
+    @patch("lib.intelligence.stakeholder.StakeholderEngagementEngine")
     def test_detect_stakeholders_low_confidence(
         self, mock_engagement, mock_detector, mock_ai
     ):
@@ -180,9 +180,9 @@ class TestStakeholderAIDetection(unittest.TestCase):
                 self.mock_config.stakeholder_profiling_threshold,
             )
 
-    @patch("claudedirector.intelligence.stakeholder.LocalStakeholderAI")
-    @patch("claudedirector.intelligence.stakeholder.IntelligentStakeholderDetector")
-    @patch("claudedirector.intelligence.stakeholder.StakeholderEngagementEngine")
+    @patch("lib.intelligence.stakeholder.LocalStakeholderAI")
+    @patch("lib.intelligence.stakeholder.IntelligentStakeholderDetector")
+    @patch("lib.intelligence.stakeholder.StakeholderEngagementEngine")
     def test_stakeholder_detection_error_handling(
         self, mock_engagement, mock_detector, mock_ai
     ):
@@ -204,9 +204,9 @@ class TestStakeholderAIDetection(unittest.TestCase):
                 "Test input", {"source": "test"}
             )
 
-    @patch("claudedirector.intelligence.stakeholder.LocalStakeholderAI")
-    @patch("claudedirector.intelligence.stakeholder.IntelligentStakeholderDetector")
-    @patch("claudedirector.intelligence.stakeholder.StakeholderEngagementEngine")
+    @patch("lib.intelligence.stakeholder.LocalStakeholderAI")
+    @patch("lib.intelligence.stakeholder.IntelligentStakeholderDetector")
+    @patch("lib.intelligence.stakeholder.StakeholderEngagementEngine")
     def test_stakeholder_profile_creation(
         self, mock_engagement, mock_detector, mock_ai
     ):

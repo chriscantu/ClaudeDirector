@@ -302,7 +302,7 @@ class TestTemplateDiscoveryEngine(unittest.TestCase):
         """Test graceful handling when config file doesn't exist"""
         mock_exists.return_value = False
 
-        with patch("claudedirector.core.template_engine.logger") as mock_logger:
+        with patch("lib.core.template_engine.logger") as mock_logger:
             engine = TemplateDiscoveryEngine()
             mock_logger.warning.assert_called_once()
             self.assertEqual(len(engine.templates), 0)

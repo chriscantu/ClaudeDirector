@@ -552,13 +552,23 @@ class AnalysisComplexityDetector:
         Returns:
             Tuple of (True, recommended_server) - always enhance
         """
-        # PHASE 12: Always-on enhancement - import persona mapping from unified engine
-        from ..personas.unified_persona_engine import UnifiedPersonaEngine
+        # PHASE 12: Always-on enhancement - use built-in persona-to-server mapping
+        # BLOAT_PREVENTION: Inline mapping to avoid importing bloated engine
+        persona_server_mapping = {
+            "diego": "sequential",  # systematic_analysis
+            "martin": "context7",  # architecture_patterns
+            "rachel": "context7",  # design_methodology
+            "camille": "sequential",  # strategic_technology
+            "alvaro": "sequential",  # business_strategy
+            "sofia": "sequential",  # vendor_strategy
+            "elena": "context7",  # compliance_strategy
+            "marcus": "context7",  # platform_adoption
+            "david": "sequential",  # financial_planning
+            "berny": "sequential",  # ai_ml_strategy
+        }
 
         # Get persona's primary MCP server
-        recommended_server = UnifiedPersonaEngine.PERSONA_SERVER_MAPPING.get(
-            persona, "sequential"
-        )
+        recommended_server = persona_server_mapping.get(persona, "sequential")
 
         # Always enhance with persona's primary server
         return True, recommended_server

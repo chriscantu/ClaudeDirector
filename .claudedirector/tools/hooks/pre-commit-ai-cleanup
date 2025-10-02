@@ -362,8 +362,9 @@ class AICleanupEnforcer:
                 py_file.startswith("test_")
                 and len(content.split("\n")) > self.size_thresholds["test_files"]
             ):
+                line_count = len(content.split("\n"))
                 violations.append(
-                    f"🧪 EXCESSIVE TEST: {py_file} ({len(content.split('\n'))} lines) exceeds test threshold"
+                    f"🧪 EXCESSIVE TEST: {py_file} ({line_count} lines) exceeds test threshold"
                 )
 
             # Check for comment-to-code ratio (too many comments = AI verbosity)

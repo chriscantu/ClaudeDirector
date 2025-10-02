@@ -3,8 +3,7 @@ Utility modules for ClaudeDirector
 Performance optimization, caching, and processing utilities
 """
 
-from .cache import CacheManager
-from .memory import MemoryOptimizer
 from .parallel import ParallelProcessor
+from . import formatting
 
-__all__ = ["ParallelProcessor", "CacheManager", "MemoryOptimizer"]
+__all__ = ["ParallelProcessor", "formatting"]
