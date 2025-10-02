@@ -26,7 +26,7 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 try:
-    from claudedirector.lib.ai_intelligence.decision_orchestrator import (
+    from lib.ai_intelligence.decision_orchestrator import (
         DecisionIntelligenceOrchestrator,
         DecisionContext,
         DecisionIntelligenceResult,

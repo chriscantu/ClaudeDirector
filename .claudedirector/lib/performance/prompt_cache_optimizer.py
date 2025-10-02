@@ -42,13 +42,26 @@ try:
         PROMPT_CACHING_CONFIG,
     )
 except ImportError:
-    # Fallback for test environments
+    # Fallback for test environments with absolute imports
     import sys
     from pathlib import Path
 
-    sys.path.insert(0, str(Path(__file__).parent))
-    from cache_manager import get_cache_manager, CacheManager, CacheLevel
-    from config.performance_config import (
+    # Add .claudedirector to sys.path for absolute imports
+    _claudedirector_root = Path(__file__).resolve().parent.parent.parent
+    if str(_claudedirector_root) not in sys.path:
+        sys.path.insert(0, str(_claudedirector_root))
+
+    # Absolute imports from .claudedirector
+    from lib.performance.cache_manager import (
+        get_cache_manager,
+        CacheManager,
+        CacheLevel,
+    )
+
+    # Import from canonical config location
+    _config_root = _claudedirector_root / "config"
+    sys.path.insert(0, str(_config_root))
+    from performance_config import (
         get_prompt_caching_config,
         PROMPT_CACHING_CONFIG,
     )
