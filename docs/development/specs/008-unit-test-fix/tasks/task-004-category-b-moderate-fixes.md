@@ -79,11 +79,44 @@ Tests that require multiple components to be mocked/configured correctly.
 
 ## Approach
 
+### **Phase 0: Pre-Implementation Architecture Validation** (30 minutes)
+**Purpose**: Ensure compliance with TESTING_ARCHITECTURE.md and BLOAT_PREVENTION_SYSTEM.md
+
+1. **Validate test architecture consistency**:
+   ```python
+   from .claudedirector.tests.p0_enforcement.run_mandatory_p0_tests import P0TestEnforcer
+   enforcer = P0TestEnforcer()
+
+   # Ensure test architecture is consistent
+   if not enforcer.validate_test_files_exist():
+       raise ArchitectureViolation("Test file structure inconsistent")
+   ```
+
+2. **Scan for test utility duplication**:
+   ```bash
+   # Check existing test utilities (BLOAT_PREVENTION compliance)
+   python .claudedirector/tools/architecture/bloat_prevention_system.py .claudedirector/tests/
+
+   # Inventory existing fixtures in conftest.py
+   grep -r "^def \|^class " .claudedirector/tests/conftest.py
+   ```
+
+3. **Document reusable components**:
+   - List existing test utilities to reuse
+   - Identify gaps where new utilities are needed
+   - Justify any new utility creation
+
+4. **Validate PROJECT_STRUCTURE compliance**:
+   - Confirm all tests in `.claudedirector/tests/unit/`
+   - Check no tests in wrong directories
+   - Verify test naming conventions
+
 ### **Phase 1: Triage & Analysis** (2 hours)
-1. **Run full test suite** and capture detailed failure output
-2. **Categorize each failure** into B1, B2, B3, or B4
-3. **Identify common patterns** (e.g., all tests in one file use old API)
-4. **Prioritize by impact** (fix files with most failures first)
+1. **Validate test architecture** using P0TestEnforcer (REQUIRED)
+2. **Run full test suite** and capture detailed failure output
+3. **Categorize each failure** into B1, B2, B3, or B4
+4. **Identify common patterns** (e.g., all tests in one file use old API)
+5. **Prioritize by impact** (fix files with most failures first)
 
 ### **Phase 2: Systematic Fixes** (6-8 hours)
 Fix tests systematically by category:
@@ -94,9 +127,12 @@ Fix tests systematically by category:
 3. Verify test logic still validates correct behavior
 
 #### **B2: Mock Updates** (2-3 hours)
-1. Review production implementations
-2. Update mocks to match current signatures
-3. Update return values to match UnifiedResponse patterns
+1. **FIRST: Check existing mock patterns** in conftest.py (DRY compliance)
+2. **REUSE existing mocks** where possible
+3. Review production implementations for new mocks needed
+4. Update mocks to match current signatures
+5. Update return values to match UnifiedResponse patterns
+6. **Document new mocks** and justify why existing ones don't work
 
 #### **B3: Assertion Updates** (1-2 hours)
 1. Review business logic changes
@@ -108,11 +144,43 @@ Fix tests systematically by category:
 2. Update test fixtures to match current data structures
 3. Ensure proper cleanup/teardown
 
-### **Phase 3: Validation** (2 hours)
-1. **Run all unit tests**: Verify 250+ passing (82%+ pass rate)
-2. **Run P0 tests**: Ensure 42/42 still passing
-3. **Review changes**: Ensure no test logic was lost
-4. **Documentation**: Update CATEGORY-B-COMPLETION.md
+### **Phase 3: Validation & Integration** (2-3 hours)
+**Purpose**: Unified test runner integration and environment parity validation
+
+1. **Run unified test suite** (REQUIRED - TESTING_ARCHITECTURE.md compliance):
+   ```python
+   # Use unified test runner (not manual pytest)
+   python .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py --unit-tests
+   ```
+
+2. **Verify pass rate**: Confirm 250+ passing (82%+ pass rate)
+
+3. **Validate environment parity**:
+   - Local results match expected CI behavior
+   - Test discovery is consistent
+   - No "works locally, fails in CI" risks
+
+4. **Run bloat prevention validation**:
+   ```bash
+   python .claudedirector/tools/architecture/bloat_prevention_system.py .claudedirector/tests/
+   ```
+
+5. **P0 test validation** (42/42 must pass):
+   ```bash
+   python .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py
+   ```
+
+6. **Update P0 registry** (if needed):
+   - Add unit test suite integrity to `p0_test_definitions.yaml`
+   - Document pass rate requirements
+
+7. **Review changes**: Ensure no test logic was lost
+
+8. **Documentation**: Update CATEGORY-B-COMPLETION.md with:
+   - Test architecture validation results
+   - Bloat prevention scan results
+   - Environment parity confirmation
+   - Unified runner integration status
 
 ---
 
@@ -149,10 +217,23 @@ Fix tests systematically by category:
 
 ## Architecture Compliance
 
-- ✅ **DRY**: Reuse existing test utilities and fixtures
+### **TESTING_ARCHITECTURE.md Compliance** (ENFORCED)
+- ✅ **Phase 0**: Validate test architecture consistency using P0TestEnforcer
+- ✅ **Phase 3**: Use unified test runner (not manual pytest) for environment parity
+- ✅ **Integration**: Update p0_test_definitions.yaml if needed
+- ✅ **Unified Runner**: All validation uses `run_mandatory_p0_tests.py`
+
+### **BLOAT_PREVENTION_SYSTEM.md Compliance** (ENFORCED)
+- ✅ **Phase 0**: Scan existing test utilities before creating new ones
+- ✅ **Phase 2**: Reuse existing fixtures and mocks from conftest.py
+- ✅ **Phase 3**: Run bloat prevention validation before commit
+- ✅ **Documentation**: Track all reused vs new utilities
+
+### **Core Principles**
+- ✅ **DRY**: Reuse existing test utilities and fixtures (validated in Phase 0)
 - ✅ **SOLID-SRP**: Each test validates one specific behavior
 - ✅ **PROJECT_STRUCTURE**: All tests remain in `.claudedirector/tests/unit/`
-- ✅ **BLOAT_PREVENTION**: Delete any tests that become obsolete
+- ✅ **Environment Parity**: Local === CI execution (validated in Phase 3)
 
 ---
 
