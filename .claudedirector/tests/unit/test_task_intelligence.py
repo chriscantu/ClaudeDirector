@@ -16,7 +16,7 @@ class TestTaskIntelligence:
         """Test task intelligence initialization with configuration"""
         mock_config.database_path = temp_db
 
-        with patch("claudedirector.intelligence.task.IntelligentTaskDetector"), patch(
+        with patch("lib.intelligence.task.IntelligentTaskDetector"), patch(
             "claudedirector.intelligence.task.StrategicTaskManager"
         ):
             task_ai = TaskIntelligence(config=mock_config)
@@ -51,7 +51,7 @@ class TestTaskIntelligence:
         with patch(
             "claudedirector.intelligence.task.IntelligentTaskDetector",
             return_value=mock_detector,
-        ), patch("claudedirector.intelligence.task.StrategicTaskManager"):
+        ), patch("lib.intelligence.task.StrategicTaskManager"):
             task_ai = TaskIntelligence(config=mock_config)
 
             context = {
@@ -122,7 +122,7 @@ class TestTaskIntelligence:
             },
         ]
 
-        with patch("claudedirector.intelligence.task.IntelligentTaskDetector"), patch(
+        with patch("lib.intelligence.task.IntelligentTaskDetector"), patch(
             "claudedirector.intelligence.task.StrategicTaskManager",
             return_value=mock_task_manager,
         ):
@@ -151,7 +151,7 @@ class TestTaskIntelligence:
             }
         ]
 
-        with patch("claudedirector.intelligence.task.IntelligentTaskDetector"), patch(
+        with patch("lib.intelligence.task.IntelligentTaskDetector"), patch(
             "claudedirector.intelligence.task.StrategicTaskManager",
             return_value=mock_task_manager,
         ):
@@ -171,7 +171,7 @@ class TestTaskIntelligence:
         mock_task_manager = Mock()
         mock_task_manager.update_task_status.return_value = True
 
-        with patch("claudedirector.intelligence.task.IntelligentTaskDetector"), patch(
+        with patch("lib.intelligence.task.IntelligentTaskDetector"), patch(
             "claudedirector.intelligence.task.StrategicTaskManager",
             return_value=mock_task_manager,
         ):
@@ -192,7 +192,7 @@ class TestTaskIntelligence:
         with patch(
             "claudedirector.intelligence.task.IntelligentTaskDetector",
             return_value=mock_detector,
-        ), patch("claudedirector.intelligence.task.StrategicTaskManager"):
+        ), patch("lib.intelligence.task.StrategicTaskManager"):
             task_ai = TaskIntelligence(config=mock_config)
 
             with pytest.raises(AIDetectionError) as exc_info:
@@ -239,7 +239,7 @@ class TestTaskIntelligence:
         with patch(
             "claudedirector.intelligence.task.IntelligentTaskDetector",
             return_value=mock_detector,
-        ), patch("claudedirector.intelligence.task.StrategicTaskManager"):
+        ), patch("lib.intelligence.task.StrategicTaskManager"):
             task_ai = TaskIntelligence(config=mock_config)
 
             content = (

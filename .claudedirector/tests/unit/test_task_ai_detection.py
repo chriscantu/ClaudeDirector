@@ -37,8 +37,8 @@ class TestTaskAIDetection(unittest.TestCase):
         self.mock_config.enable_caching = False
         self.mock_config.enable_parallel_processing = False
 
-    @patch("claudedirector.intelligence.task.IntelligentTaskDetector")
-    @patch("claudedirector.intelligence.task.StrategicTaskManager")
+    @patch("lib.intelligence.task.IntelligentTaskDetector")
+    @patch("lib.intelligence.task.StrategicTaskManager")
     def test_task_intelligence_initialization(self, mock_manager, mock_detector):
         """Test TaskIntelligence initializes correctly."""
         # Setup mocks
@@ -59,8 +59,8 @@ class TestTaskAIDetection(unittest.TestCase):
         mock_detector.assert_called_once()
         mock_manager.assert_called_once()
 
-    @patch("claudedirector.intelligence.task.IntelligentTaskDetector")
-    @patch("claudedirector.intelligence.task.StrategicTaskManager")
+    @patch("lib.intelligence.task.IntelligentTaskDetector")
+    @patch("lib.intelligence.task.StrategicTaskManager")
     def test_high_priority_task_detection(self, mock_manager, mock_detector):
         """Test detection of high-priority tasks."""
         # Setup mocks
@@ -89,8 +89,8 @@ class TestTaskAIDetection(unittest.TestCase):
             True, "Task intelligence initialized and API method called successfully"
         )
 
-    @patch("claudedirector.intelligence.task.IntelligentTaskDetector")
-    @patch("claudedirector.intelligence.task.StrategicTaskManager")
+    @patch("lib.intelligence.task.IntelligentTaskDetector")
+    @patch("lib.intelligence.task.StrategicTaskManager")
     def test_task_confidence_thresholds(self, mock_manager, mock_detector):
         """Test task detection confidence threshold logic."""
         # Setup mocks

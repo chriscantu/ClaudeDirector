@@ -35,7 +35,7 @@ except ImportError:
     PYTEST_AVAILABLE = False
 
 try:
-    from claudedirector.lib.ai_intelligence.framework_detector import (
+    from lib.ai_intelligence.framework_detector import (
         EnhancedFrameworkDetection,
         FrameworkRelevance,
         FrameworkSuggestion,
@@ -43,17 +43,17 @@ try:
         EnhancedDetectionResult,
         create_enhanced_framework_detection,
     )
-    from claudedirector.lib.transparency.framework_detection import (
+    from lib.transparency.framework_detection import (
         FrameworkDetectionMiddleware,
         FrameworkUsage,
     )
-    from claudedirector.lib.ai_intelligence.framework_detector import (
+    from lib.ai_intelligence.framework_detector import (
         ConversationMemoryEngine,
         ConversationContext,
     )
 
     # MCPEnhancedFrameworkEngine removed - functionality consolidated
-    from claudedirector.lib.transparency.integrated_transparency import (
+    from lib.transparency.integrated_transparency import (
         IntegratedTransparencySystem,
     )
 except (ImportError, TypeError, AttributeError) as e:

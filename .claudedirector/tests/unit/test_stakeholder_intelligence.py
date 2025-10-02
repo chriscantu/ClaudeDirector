@@ -18,9 +18,9 @@ class TestStakeholderIntelligence:
         """Test stakeholder intelligence initialization with configuration"""
         mock_config.database_path = temp_db
 
-        with patch("claudedirector.intelligence.stakeholder.LocalStakeholderAI"), patch(
+        with patch("lib.intelligence.stakeholder.LocalStakeholderAI"), patch(
             "claudedirector.intelligence.stakeholder.IntelligentStakeholderDetector"
-        ), patch("claudedirector.intelligence.stakeholder.StakeholderEngagementEngine"):
+        ), patch("lib.intelligence.stakeholder.StakeholderEngagementEngine"):
             stakeholder_ai = StakeholderIntelligence(config=mock_config)
 
             assert stakeholder_ai.config == mock_config
@@ -31,9 +31,9 @@ class TestStakeholderIntelligence:
         """Test initialization with performance features disabled"""
         mock_config.database_path = temp_db
 
-        with patch("claudedirector.intelligence.stakeholder.LocalStakeholderAI"), patch(
+        with patch("lib.intelligence.stakeholder.LocalStakeholderAI"), patch(
             "claudedirector.intelligence.stakeholder.IntelligentStakeholderDetector"
-        ), patch("claudedirector.intelligence.stakeholder.StakeholderEngagementEngine"):
+        ), patch("lib.intelligence.stakeholder.StakeholderEngagementEngine"):
             stakeholder_ai = StakeholderIntelligence(
                 config=mock_config, enable_performance=False
             )
@@ -89,7 +89,7 @@ class TestStakeholderIntelligence:
         mock_cache_manager = Mock()
         mock_cache_manager.get.return_value = None  # Cache miss
 
-        with patch("claudedirector.intelligence.stakeholder.LocalStakeholderAI"), patch(
+        with patch("lib.intelligence.stakeholder.LocalStakeholderAI"), patch(
             "claudedirector.intelligence.stakeholder.IntelligentStakeholderDetector",
             return_value=mock_detector,
         ), patch(
@@ -152,10 +152,10 @@ class TestStakeholderIntelligence:
             "Processing error"
         )
 
-        with patch("claudedirector.intelligence.stakeholder.LocalStakeholderAI"), patch(
+        with patch("lib.intelligence.stakeholder.LocalStakeholderAI"), patch(
             "claudedirector.intelligence.stakeholder.IntelligentStakeholderDetector",
             return_value=mock_detector,
-        ), patch("claudedirector.intelligence.stakeholder.StakeholderEngagementEngine"):
+        ), patch("lib.intelligence.stakeholder.StakeholderEngagementEngine"):
             stakeholder_ai = StakeholderIntelligence(
                 config=mock_config, enable_performance=False
             )
@@ -195,7 +195,7 @@ class TestStakeholderIntelligence:
         mock_cache_manager = Mock()
         mock_cache_manager.get.return_value = cached_result  # Cache hit
 
-        with patch("claudedirector.intelligence.stakeholder.LocalStakeholderAI"), patch(
+        with patch("lib.intelligence.stakeholder.LocalStakeholderAI"), patch(
             "claudedirector.intelligence.stakeholder.IntelligentStakeholderDetector"
         ), patch(
             "claudedirector.intelligence.stakeholder.StakeholderEngagementEngine"
@@ -223,7 +223,7 @@ class TestStakeholderIntelligence:
             "errors": 0,
         }
 
-        with patch("claudedirector.intelligence.stakeholder.LocalStakeholderAI"), patch(
+        with patch("lib.intelligence.stakeholder.LocalStakeholderAI"), patch(
             "claudedirector.intelligence.stakeholder.IntelligentStakeholderDetector"
         ), patch(
             "claudedirector.intelligence.stakeholder.StakeholderEngagementEngine"
