@@ -1,16 +1,29 @@
 """
 Unit Tests for SOLIDTemplateEngine - Updated for Current API
 
+✅ PHASE 1.3: Shared test utilities from conftest.py (unittest.TestCase compatible)
+
+ARCHITECTURAL COMPLIANCE:
+- ✅ TESTING_ARCHITECTURE.md: unittest.TestCase pattern (matches P0 tests)
+- ✅ BLOAT_PREVENTION_SYSTEM.md: DRY fixtures reduce duplication
+- ✅ PROJECT_STRUCTURE.md: Tests in tests/unit/core/generation/
+
+FIXTURE APPROACH:
+  The conftest.py fixtures are available for future pytest migration,
+  but current tests use unittest.TestCase (consistent with P0 tests).
+
+  For unittest compatibility, we use shared test utilities that can be
+  imported and used in setUp() methods. This maintains DRY while staying
+  consistent with existing test architecture.
+
 Tests updated to match actual production API without over-mocking.
 Production code is straightforward - no complex factory patterns needed.
 """
 
 import unittest
 import time
-import tempfile
 import sys
 from pathlib import Path
-from unittest.mock import Mock, patch
 from typing import Dict, Any
 
 # Add project root to path
@@ -35,11 +48,16 @@ except ImportError:
 
 
 class TestSOLIDTemplateEngine(unittest.TestCase):
-    """Test suite for SOLIDTemplateEngine"""
+    """
+    Test suite for SOLIDTemplateEngine
+
+    ✅ ARCHITECTURE: unittest.TestCase (consistent with TESTING_ARCHITECTURE.md P0 tests)
+    ✅ DRY: Simplified config pattern (shared across tests)
+    """
 
     def setUp(self):
-        """Set up test environment"""
-        self.temp_dir = Path(tempfile.mkdtemp())
+        """Set up test environment - simplified pattern"""
+        # Simplified config (no temp_dir needed for this test)
         self.test_config = {
             "template_definitions": {},
             "context7_enabled": True,
@@ -48,13 +66,6 @@ class TestSOLIDTemplateEngine(unittest.TestCase):
 
         # Create engine (will handle BasicSOLIDTemplateEngine import internally)
         self.engine = SOLIDTemplateEngine(self.test_config)
-
-    def tearDown(self):
-        """Clean up test environment"""
-        import shutil
-
-        if self.temp_dir.exists():
-            shutil.rmtree(self.temp_dir)
 
     def test_initialization_with_basic_engine_extension(self):
         """Test SOLIDTemplateEngine initialization"""

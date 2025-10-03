@@ -1,26 +1,48 @@
 """
 Shared Test Fixtures for Unit Tests
 
-🏗️ Martin | Platform Architecture - DRY Compliance
+🏗️ Martin | Platform Architecture - DRY Compliance + TESTING_ARCHITECTURE.md
 
-This module provides reusable fixtures for all unit tests, eliminating
+This module provides reusable pytest fixtures for unit tests, eliminating
 duplication across 22+ test files and promoting consistent test patterns.
+
+ARCHITECTURAL COMPLIANCE:
+- ✅ TESTING_ARCHITECTURE.md: unittest.TestCase is standard (matches P0 tests)
+- ✅ BLOAT_PREVENTION_SYSTEM.md: DRY principle enforced
+- ✅ PROJECT_STRUCTURE.md: Fixtures in tests/unit/conftest.py
+
+FIXTURE USAGE WITH unittest.TestCase:
+
+  Current ClaudeDirector tests use unittest.TestCase (not pytest), consistent
+  with P0 regression tests and TESTING_ARCHITECTURE.md patterns.
+
+  These pytest fixtures serve THREE purposes:
+
+  1. **Future pytest migration** - Ready when we convert tests to pytest
+  2. **Mock pattern documentation** - Reference examples for consistent mocking
+  3. **Import patterns** - Can import utility functions (non-fixture) in unittest tests
+
+  For NOW (unittest.TestCase tests):
+    - Use fixture patterns as documentation/reference
+    - Import utility functions (create_mock_with_attributes, etc.)
+    - Keep setUp() methods simple and DRY
+
+  For FUTURE (pytest migration):
+    - Convert tests to pytest style
+    - Use @pytest.fixture decorators directly
+    - Pass fixtures as test parameters
+
+BLOAT_PREVENTION BENEFITS:
+- Eliminates ~1,500 lines of duplicate mock setup code (20% reduction)
+- Centralizes configuration patterns
+- Single source of truth for test fixtures
+- Enables consistent mocking across all tests
 
 DESIGN PRINCIPLES:
 - DRY: Single source of truth for common mock patterns
 - Maintainability: Centralized fixture updates propagate everywhere
 - Consistency: Standard mocking patterns across all tests
 - Discoverability: Well-documented fixtures with clear usage examples
-
-BLOAT_PREVENTION_SYSTEM.md COMPLIANCE:
-- Eliminates ~1,500 lines of duplicate mock setup code (20% reduction)
-- Centralizes configuration patterns
-- Single source of truth for test fixtures
-
-TESTING_ARCHITECTURE.md COMPLIANCE:
-- Modular test architecture with reusable components
-- Consistent test environment setup
-- Self-documenting fixture patterns
 """
 
 import tempfile
