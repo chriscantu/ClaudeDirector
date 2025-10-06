@@ -811,7 +811,15 @@ class MCPIntegrationManager:
 
     def _classify_query_pattern(self, query: str) -> QueryPattern:
         """Simple rule-based query pattern classification - no ML dependencies."""
+        import re
+
         query_lower = query.lower()
+
+        # Helper function for word boundary matching
+        def contains_word(text: str, word: str) -> bool:
+            """Check if word exists with word boundaries (avoids substring matches like 'ui' in 'guide')"""
+            pattern = r"\b" + re.escape(word) + r"\b"
+            return bool(re.search(pattern, text))
 
         # Strategic analysis patterns
         strategic_keywords = [
@@ -825,7 +833,7 @@ class MCPIntegrationManager:
             "team",
             "organization",
         ]
-        if any(keyword in query_lower for keyword in strategic_keywords):
+        if any(contains_word(query_lower, keyword) for keyword in strategic_keywords):
             return QueryPattern.STRATEGIC_ANALYSIS
 
         # UI component patterns
@@ -840,7 +848,7 @@ class MCPIntegrationManager:
             "style",
             "css",
         ]
-        if any(keyword in query_lower for keyword in ui_keywords):
+        if any(contains_word(query_lower, keyword) for keyword in ui_keywords):
             return QueryPattern.UI_COMPONENT
 
         # Technical documentation patterns
@@ -854,7 +862,7 @@ class MCPIntegrationManager:
             "tutorial",
             "reference",
         ]
-        if any(keyword in query_lower for keyword in tech_keywords):
+        if any(contains_word(query_lower, keyword) for keyword in tech_keywords):
             return QueryPattern.TECHNICAL_QUESTION
 
         # Testing automation patterns
@@ -867,7 +875,7 @@ class MCPIntegrationManager:
             "browser",
             "visual",
         ]
-        if any(keyword in query_lower for keyword in test_keywords):
+        if any(contains_word(query_lower, keyword) for keyword in test_keywords):
             return QueryPattern.TESTING_AUTOMATION
 
         # Default to general query (Sequential server)
