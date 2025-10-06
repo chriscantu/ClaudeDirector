@@ -114,6 +114,60 @@ class TestStructureAwarePlacementEngine(unittest.TestCase):
         # Initialize engine
         self.engine = StructureAwarePlacementEngine(self.test_config)
 
+        # FIX: Mock component patterns since no YAML config file exists
+        # Without config, all components default to CORE_FOUNDATIONAL
+        # Order matters - more specific patterns first to avoid false matches
+        self.engine._component_patterns = {
+            # Validation patterns (most specific first)
+            "compliance": ComponentCategory.VALIDATION,
+            "prevention": ComponentCategory.VALIDATION,
+            "validator": ComponentCategory.VALIDATION,
+            # AI Intelligence patterns
+            "intelligence": ComponentCategory.AI_INTELLIGENCE,
+            "orchestrator": ComponentCategory.AI_INTELLIGENCE,
+            "decision": ComponentCategory.AI_INTELLIGENCE,
+            "framework": ComponentCategory.AI_INTELLIGENCE,
+            # Generation patterns
+            "template": ComponentCategory.GENERATION,
+            "placement": ComponentCategory.GENERATION,
+            # Config patterns
+            "config": ComponentCategory.CONFIG,
+            # Core foundational patterns (least specific)
+            "database": ComponentCategory.CORE_FOUNDATIONAL,
+            "processor": ComponentCategory.CORE_FOUNDATIONAL,
+            # Generic "engine" pattern last (catches template_engine, placement_engine, etc.)
+            "engine": ComponentCategory.GENERATION,
+        }
+
+        # FIX: Mock placement rules since no YAML config provides them
+        # These rules define where each component category should be placed
+        self.engine._placement_rules = {
+            ComponentCategory.GENERATION: PlacementRule(
+                category=ComponentCategory.GENERATION,
+                base_path=".claudedirector/lib/core/generation",
+                patterns=["*_template*.py", "*_placement*.py"],
+                description="Generation components",
+            ),
+            ComponentCategory.VALIDATION: PlacementRule(
+                category=ComponentCategory.VALIDATION,
+                base_path=".claudedirector/lib/core/validation",
+                patterns=["*_validation*.py", "*_compliance*.py"],
+                description="Validation components",
+            ),
+            ComponentCategory.AI_INTELLIGENCE: PlacementRule(
+                category=ComponentCategory.AI_INTELLIGENCE,
+                base_path=".claudedirector/lib/ai_intelligence",
+                patterns=["*_intelligence*.py", "*_orchestrator*.py"],
+                description="AI Intelligence components",
+            ),
+            ComponentCategory.CORE_FOUNDATIONAL: PlacementRule(
+                category=ComponentCategory.CORE_FOUNDATIONAL,
+                base_path=".claudedirector/lib/core",
+                patterns=["*.py"],
+                description="Core foundational components",
+            ),
+        }
+
     def tearDown(self):
         """Clean up test environment"""
         import shutil
@@ -373,25 +427,29 @@ class TestStructureAwarePlacementEngine(unittest.TestCase):
 
     def test_placement_result_structure(self):
         """Test PlacementResult data structure validation"""
-        # Create a mock placement result
+        # Create a mock placement result with correct field names
         test_result = PlacementResult(
-            file_path=Path(".claudedirector/lib/core/generation/test.py"),
+            recommended_path=".claudedirector/lib/core/generation/test.py",
             category=ComponentCategory.GENERATION,
-            rule_applied=self.engine._placement_rules[ComponentCategory.GENERATION],
-            confidence_score=0.95,
+            confidence=0.95,
+            alternatives=[".claudedirector/lib/core/test.py"],
+            validation_errors=[],
+            warnings=[],
             placement_time_ms=150.0,
         )
 
         # Verify result structure
-        self.assertIsInstance(test_result.file_path, Path)
+        self.assertIsInstance(test_result.recommended_path, str)
         self.assertEqual(test_result.category, ComponentCategory.GENERATION)
-        self.assertIsInstance(test_result.rule_applied, PlacementRule)
-        self.assertIsInstance(test_result.confidence_score, float)
+        self.assertIsInstance(test_result.confidence, float)
+        self.assertIsInstance(test_result.alternatives, list)
+        self.assertIsInstance(test_result.validation_errors, list)
+        self.assertIsInstance(test_result.warnings, list)
         self.assertIsInstance(test_result.placement_time_ms, float)
 
-        # Verify confidence score is valid
-        self.assertGreaterEqual(test_result.confidence_score, 0.0)
-        self.assertLessEqual(test_result.confidence_score, 1.0)
+        # Verify confidence is valid
+        self.assertGreaterEqual(test_result.confidence, 0.0)
+        self.assertLessEqual(test_result.confidence, 1.0)
 
 
 class TestStructureAwarePlacementEngineIntegration(unittest.TestCase):
