@@ -117,17 +117,23 @@ class TestSDKErrorCategorization:
         # Categorize different types of errors
         self.manager.categorize_sdk_error(Exception("Rate limit exceeded"))
         self.manager.categorize_sdk_error(Exception("Rate limit exceeded"))
-        self.manager.categorize_sdk_error(Exception("Connection timeout"))
+        self.manager.categorize_sdk_error(
+            Exception("Connection timeout")
+        )  # Now TIMEOUT category
         self.manager.categorize_sdk_error(Exception("Invalid API key"))
 
         stats = self.manager.get_sdk_error_stats()
         error_counts = stats["sdk_error_categorization"]["error_counts_by_category"]
 
         assert error_counts["rate_limit"] == 2
-        assert error_counts["transient"] == 1
+        assert (
+            error_counts["transient"] == 0
+        )  # FIX: Connection timeout is now TIMEOUT, not TRANSIENT
         assert error_counts["permanent"] == 1
         assert error_counts["context_limit"] == 0
-        assert error_counts["timeout"] == 0
+        assert (
+            error_counts["timeout"] == 1
+        )  # FIX: Connection timeout correctly categorized as TIMEOUT
 
     def test_should_retry_sdk_error(self):
         """Test retry decision based on SDK error categorization"""
@@ -154,9 +160,12 @@ class TestSDKErrorCategorization:
         """Test SDK error stats extend BaseManager status"""
         stats = self.manager.get_sdk_error_stats()
 
-        # Should include BaseManager status
-        assert "cache_stats" in stats  # From BaseManager
-        assert "metrics" in stats  # From BaseManager
+        # Should include BaseManager status (from get_status())
+        assert "cache_stats" in stats  # From BaseManager.get_status()
+        assert (
+            "performance" in stats
+        )  # FIX: BaseManager.get_status() returns "performance", not "metrics"
+        assert "error_stats" in stats  # From BaseManager.get_status()
 
         # Should include SDK-specific stats
         assert "sdk_error_categorization" in stats
@@ -223,9 +232,11 @@ class TestSDKEnhancedManagerIntegration:
             mock_manage.assert_called_once_with("test_op", "arg1", key="value")
 
     def test_execute_operation_not_implemented(self):
-        """Test that _execute_operation raises NotImplementedError"""
-        with pytest.raises(NotImplementedError, match="Subclass must implement"):
-            self.manager._execute_operation("test_operation")
+        """Test that _execute_operation logs warning and returns None (default behavior)"""
+        # FIX: Production behavior changed - now logs warning and returns None (not exception)
+        # This allows SDKEnhancedManager to be instantiated directly for testing/SDK-only use
+        result = self.manager._execute_operation("test_operation")
+        assert result is None  # Default implementation returns None
 
 
 class TestSDKEnhancedManagerFactory:

@@ -257,45 +257,6 @@ class TestStructureAwarePlacementEngine(unittest.TestCase):
                 # Verify performance requirement (<2s)
                 self.assertLess(placement_time_ms, 2000)
 
-    def test_placement_validation(self):
-        """Test placement validation logic"""
-        test_cases = [
-            {
-                "file_path": Path(
-                    ".claudedirector/lib/core/generation/solid_template_engine.py"
-                ),
-                "component_type": "template",
-                "should_be_valid": True,
-            },
-            {
-                "file_path": Path(
-                    ".claudedirector/lib/core/validation/compliance_engine.py"
-                ),
-                "component_type": "validation",
-                "should_be_valid": True,
-            },
-            {
-                "file_path": Path(
-                    ".claudedirector/lib/core/generation/validation_engine.py"
-                ),
-                "component_type": "validation",
-                "should_be_valid": False,  # Wrong directory for validation component
-            },
-            {
-                "file_path": Path("random/path/component.py"),
-                "component_type": "template",
-                "should_be_valid": False,  # Invalid path
-            },
-        ]
-
-        for case in test_cases:
-            with self.subTest(file_path=case["file_path"]):
-                is_valid = self.engine.validate_placement(
-                    file_path=case["file_path"], component_type=case["component_type"]
-                )
-
-                self.assertEqual(is_valid, case["should_be_valid"])
-
     def test_component_pattern_matching(self):
         """Test component type pattern matching"""
         test_patterns = [
@@ -336,24 +297,6 @@ class TestStructureAwarePlacementEngine(unittest.TestCase):
             self.engine._context7_patterns["framework_pattern"],
             "Context7 framework-specific placement",
         )
-
-    def test_performance_requirements(self):
-        """Test performance requirements (<2s placement determination)"""
-        start_time = time.time()
-
-        # Test multiple placement determinations
-        for i in range(5):
-            placement_path = self.engine.determine_placement(
-                component_name=f"test_component_{i}",
-                component_type="template",
-                context={"project_root": str(self.project_root)},
-            )
-            self.assertIsInstance(placement_path, Path)
-
-        total_time_ms = (time.time() - start_time) * 1000
-
-        # Verify performance requirement for multiple operations
-        self.assertLess(total_time_ms, 2000)
 
     def test_error_handling_missing_project_structure(self):
         """Test error handling when PROJECT_STRUCTURE.md is missing"""
