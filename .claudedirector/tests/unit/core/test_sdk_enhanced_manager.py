@@ -43,11 +43,12 @@ class TestSDKErrorCategorization:
     def test_transient_error_categorization(self):
         """Test transient error detection"""
         test_cases = [
-            Exception("Connection timeout"),
+            # NOTE: "Connection timeout" removed - it's a TIMEOUT, not TRANSIENT
             Exception("Network error occurred"),
             Exception("HTTP 502 Bad Gateway"),
             Exception("Service temporarily unavailable"),
             Exception("Connection reset by peer"),
+            Exception("Connection refused"),
         ]
 
         for error in test_cases:
