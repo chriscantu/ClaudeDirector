@@ -283,7 +283,8 @@ class TestSDKEnhancedManagerArchitecturalCompliance:
 
         # Should NOT duplicate BaseManager functionality
         # (BaseManager methods should be inherited, not reimplemented)
-        assert not hasattr(SDKEnhancedManager, "_execute_with_retry")  # Inherited only
+        # Check that _execute_with_retry is NOT defined in SDKEnhancedManager's __dict__
+        assert "_execute_with_retry" not in SDKEnhancedManager.__dict__
 
     def test_open_closed_principle(self):
         """Test OCP: Extends BaseManager without modification"""
@@ -300,17 +301,19 @@ class TestSDKEnhancedManagerArchitecturalCompliance:
     def test_no_duplication_of_base_manager_logic(self):
         """Test that no BaseManager logic is duplicated"""
         # Check that retry logic is inherited, not duplicated
-        import inspect
 
-        # Should not have _execute_with_retry in SDKEnhancedManager
-        sdk_methods = [
-            name
-            for name, _ in inspect.getmembers(SDKEnhancedManager, inspect.isfunction)
-        ]
+        # Should NOT have _execute_with_retry defined in SDKEnhancedManager
+        # (Check __dict__ to exclude inherited methods)
+        sdk_methods = list(SDKEnhancedManager.__dict__.keys())
         assert "_execute_with_retry" not in sdk_methods
 
         # Should have it available through inheritance
         assert hasattr(self.manager, "_execute_with_retry")
+
+        # Verify it's actually from BaseManager
+        from lib.core.base_manager import BaseManager
+
+        assert hasattr(BaseManager, "_execute_with_retry")
 
     def test_graceful_degradation(self):
         """Test graceful degradation if SDK categorization fails"""
