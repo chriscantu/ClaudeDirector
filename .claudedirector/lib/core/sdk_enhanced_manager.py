@@ -180,36 +180,41 @@ class SDKEnhancedManager(BaseManager):
         Returns:
             Any: Operation result
         """
+        # First attempt - check if error is retryable
+        try:
+            return self._execute_operation(operation, *args, **kwargs)
+        except Exception as e:
+            # NEW: Add SDK error categorization
+            error_category = self.categorize_sdk_error(e)
 
-        def sdk_enhanced_operation():
-            """Wrapper that adds SDK error categorization"""
-            try:
-                # Execute the actual operation (delegated to subclass)
-                return self._execute_operation(operation, *args, **kwargs)
-            except Exception as e:
-                # NEW: Add SDK error categorization
-                error_category = self.categorize_sdk_error(e)
+            # Log SDK error category for transparency
+            self.logger.info(
+                "SDK error categorized",
+                error_category=error_category.value,
+                error_message=str(e),
+                operation=operation,
+            )
 
-                # Log SDK error category for transparency
-                self.logger.info(
-                    "SDK error categorized",
-                    error_category=error_category.value,
-                    error_message=str(e),
-                    operation=operation,
+            # Check if we should retry based on SDK category
+            if not self.should_retry_sdk_error(e):
+                self.logger.warning(
+                    f"Non-retryable error detected ({error_category.value}), not retrying: {e}"
                 )
-
-                # Check if we should retry based on SDK category
-                if not self.should_retry_sdk_error(e):
-                    self.logger.warning(
-                        f"Non-retryable error detected ({error_category.value}), not retrying: {e}"
-                    )
-                    raise
-
-                # Re-raise for BaseManager retry logic to handle
+                # Re-raise immediately without retry for non-retryable errors
                 raise
 
-        # REUSE: BaseManager._execute_with_retry (no duplication)
-        return self._execute_with_retry(sdk_enhanced_operation)
+            # For retryable errors, use BaseManager retry logic
+            def sdk_enhanced_operation():
+                """Wrapper for retryable operations"""
+                try:
+                    return self._execute_operation(operation, *args, **kwargs)
+                except Exception as retry_error:
+                    # Re-categorize on each retry for stats
+                    self.categorize_sdk_error(retry_error)
+                    raise
+
+            # REUSE: BaseManager._execute_with_retry for retryable errors only
+            return self._execute_with_retry(sdk_enhanced_operation)
 
     def get_sdk_error_stats(self) -> Dict[str, Any]:
         """NEW: Get SDK-specific error statistics"""

@@ -151,15 +151,15 @@ class SDKErrorHandlingConfig:
 
         if self.transient_patterns is None:
             self.transient_patterns = [
-                "timeout",
-                "connection",
+                # NOTE: Don't include "timeout" or "connection" here - conflicts with timeout_patterns
+                "connection reset",  # Specific connection issue (order matters - check this first!)
+                "connection refused",  # Specific connection issue
                 "network",
                 "502",
                 "503",
                 "504",
                 "temporary failure",
                 "service unavailable",
-                "connection reset",
             ]
 
         if self.permanent_patterns is None:
@@ -171,7 +171,8 @@ class SDKErrorHandlingConfig:
                 "403",
                 "forbidden",
                 "invalid_request",
-                "bad_request",
+                "bad_request",  # Matches "bad_request"
+                "bad request",  # FIX: Also match "bad request" (with space)
                 "400",
             ]
 
