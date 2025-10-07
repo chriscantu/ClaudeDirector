@@ -364,3 +364,82 @@ def sample_unified_context():
             "confidence": 0.88,
         },
     }
+
+
+# ============================================================================
+# CONFIGURATION FIXTURES (Phase 6: Fix Category C Errors)
+# ============================================================================
+
+
+@pytest.fixture
+def mock_config():
+    """
+    Mock ClaudeDirectorConfig for context engineering tests.
+
+    Provides a mock configuration object compatible with the current
+    ClaudeDirectorConfig API (no database_path in __init__).
+
+    Phase 6 Fix: Tests were using outdated `database_path` parameter.
+    Current API uses `config_file` parameter only.
+    """
+    mock = Mock()
+
+    # Current ClaudeDirectorConfig API - config_file parameter
+    mock.config_file = None
+
+    # Database path as property (not __init__ parameter)
+    mock.database_path = None
+
+    # Common config properties
+    mock.thresholds = Mock()
+    mock.enums = Mock()
+    mock.security = Mock()
+    mock.messages = Mock()
+    mock.paths = Mock()
+
+    # Backwards compatibility for dict-like access
+    mock.get = Mock(return_value=None)
+
+    return mock
+
+
+@pytest.fixture
+def temp_db(tmp_path):
+    """
+    Temporary database path for testing.
+
+    Creates a temporary database file path for tests that need
+    database isolation.
+
+    Phase 6 Fix: Provides database path as property, not __init__ parameter.
+    """
+    db_path = tmp_path / "test_strategic_memory.db"
+    return str(db_path)
+
+
+@pytest.fixture
+def sample_meeting_content():
+    """
+    Sample meeting content for meeting intelligence tests.
+    """
+    return """
+    # Weekly 1:1 with VP Engineering
+
+    ## Participants
+    - Sarah Chen (VP Engineering)
+    - John Smith (Engineering Director)
+
+    ## Agenda
+    1. Platform scaling strategy
+    2. Team structure optimization
+    3. Q4 resource planning
+
+    ## Action Items
+    - [ ] Sarah: Review platform architecture proposal by Friday
+    - [ ] John: Present team topology recommendation next week
+    - [ ] Sarah: Schedule follow-up on budget allocation
+
+    ## Stakeholders Mentioned
+    - Alice Johnson (Product VP)
+    - Bob Williams (CTO)
+    """
