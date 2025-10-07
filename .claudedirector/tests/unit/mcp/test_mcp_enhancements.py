@@ -14,7 +14,7 @@ from pathlib import Path
 lib_path = Path(__file__).parent.parent.parent / "lib"
 sys.path.insert(0, str(lib_path))
 
-from mcp.mcp_integration_manager import (
+from lib.mcp.mcp_integration_manager import (
     MCPIntegrationManager,
     QueryPattern,
     MCPServerType,
@@ -60,7 +60,11 @@ class TestMCPEnhancements(unittest.TestCase):
         ]
         for query in ui_queries:
             pattern = self.manager._classify_query_pattern(query)
-            self.assertEqual(pattern, QueryPattern.UI_COMPONENT)
+            self.assertEqual(
+                pattern,
+                QueryPattern.UI_COMPONENT,
+                f"Query '{query}' classified as {pattern.value}, expected ui_component",
+            )
 
         # Test testing automation patterns
         test_queries = [

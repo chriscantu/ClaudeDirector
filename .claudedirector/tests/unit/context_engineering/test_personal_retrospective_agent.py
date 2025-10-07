@@ -77,7 +77,9 @@ class TestPersonalRetrospectiveAgent(unittest.TestCase):
 
         self.assertTrue(result.success)
         self.assertIn("Personal Retrospective Agent", result.message)
-        self.assertIn("3-Question Framework", result.message)
+        self.assertIn(
+            "4-Question Framework", result.message
+        )  # FIX: Production has 4 questions (added rating)
 
     def test_unknown_command(self):
         """Test unknown command handling"""
@@ -119,13 +121,18 @@ class TestPersonalRetrospectiveAgent(unittest.TestCase):
         self.assertTrue(result.success)
         self.assertIn("Question 3:", result.message)
 
-        # Answer question 3 (completes retrospective)
+        # Answer question 3
         result = self.agent.process_request(
             {
                 "user_id": user_id,
                 "user_input": "Focus on immediate implementation over extensive analysis",
             }
         )
+        self.assertTrue(result.success)
+        self.assertIn("Question 4:", result.message)  # FIX: Production has 4 questions
+
+        # Answer question 4 (rating - completes retrospective)
+        result = self.agent.process_request({"user_id": user_id, "user_input": "8"})
         self.assertTrue(result.success)
         self.assertIn("✅ Retrospective completed", result.message)
         self.assertNotIn(user_id, self.agent.active_sessions)  # Session cleaned up

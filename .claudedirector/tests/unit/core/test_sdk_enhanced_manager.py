@@ -43,11 +43,12 @@ class TestSDKErrorCategorization:
     def test_transient_error_categorization(self):
         """Test transient error detection"""
         test_cases = [
-            Exception("Connection timeout"),
+            # NOTE: "Connection timeout" removed - it's a TIMEOUT, not TRANSIENT
             Exception("Network error occurred"),
             Exception("HTTP 502 Bad Gateway"),
             Exception("Service temporarily unavailable"),
             Exception("Connection reset by peer"),
+            Exception("Connection refused"),
         ]
 
         for error in test_cases:
@@ -116,17 +117,23 @@ class TestSDKErrorCategorization:
         # Categorize different types of errors
         self.manager.categorize_sdk_error(Exception("Rate limit exceeded"))
         self.manager.categorize_sdk_error(Exception("Rate limit exceeded"))
-        self.manager.categorize_sdk_error(Exception("Connection timeout"))
+        self.manager.categorize_sdk_error(
+            Exception("Connection timeout")
+        )  # Now TIMEOUT category
         self.manager.categorize_sdk_error(Exception("Invalid API key"))
 
         stats = self.manager.get_sdk_error_stats()
         error_counts = stats["sdk_error_categorization"]["error_counts_by_category"]
 
         assert error_counts["rate_limit"] == 2
-        assert error_counts["transient"] == 1
+        assert (
+            error_counts["transient"] == 0
+        )  # FIX: Connection timeout is now TIMEOUT, not TRANSIENT
         assert error_counts["permanent"] == 1
         assert error_counts["context_limit"] == 0
-        assert error_counts["timeout"] == 0
+        assert (
+            error_counts["timeout"] == 1
+        )  # FIX: Connection timeout correctly categorized as TIMEOUT
 
     def test_should_retry_sdk_error(self):
         """Test retry decision based on SDK error categorization"""
@@ -153,9 +160,12 @@ class TestSDKErrorCategorization:
         """Test SDK error stats extend BaseManager status"""
         stats = self.manager.get_sdk_error_stats()
 
-        # Should include BaseManager status
-        assert "cache_stats" in stats  # From BaseManager
-        assert "metrics" in stats  # From BaseManager
+        # Should include BaseManager status (from get_status())
+        assert "cache_stats" in stats  # From BaseManager.get_status()
+        assert (
+            "performance" in stats
+        )  # FIX: BaseManager.get_status() returns "performance", not "metrics"
+        assert "error_stats" in stats  # From BaseManager.get_status()
 
         # Should include SDK-specific stats
         assert "sdk_error_categorization" in stats
@@ -222,9 +232,11 @@ class TestSDKEnhancedManagerIntegration:
             mock_manage.assert_called_once_with("test_op", "arg1", key="value")
 
     def test_execute_operation_not_implemented(self):
-        """Test that _execute_operation raises NotImplementedError"""
-        with pytest.raises(NotImplementedError, match="Subclass must implement"):
-            self.manager._execute_operation("test_operation")
+        """Test that _execute_operation logs warning and returns None (default behavior)"""
+        # FIX: Production behavior changed - now logs warning and returns None (not exception)
+        # This allows SDKEnhancedManager to be instantiated directly for testing/SDK-only use
+        result = self.manager._execute_operation("test_operation")
+        assert result is None  # Default implementation returns None
 
 
 class TestSDKEnhancedManagerFactory:
@@ -282,7 +294,8 @@ class TestSDKEnhancedManagerArchitecturalCompliance:
 
         # Should NOT duplicate BaseManager functionality
         # (BaseManager methods should be inherited, not reimplemented)
-        assert not hasattr(SDKEnhancedManager, "_execute_with_retry")  # Inherited only
+        # Check that _execute_with_retry is NOT defined in SDKEnhancedManager's __dict__
+        assert "_execute_with_retry" not in SDKEnhancedManager.__dict__
 
     def test_open_closed_principle(self):
         """Test OCP: Extends BaseManager without modification"""
@@ -299,17 +312,19 @@ class TestSDKEnhancedManagerArchitecturalCompliance:
     def test_no_duplication_of_base_manager_logic(self):
         """Test that no BaseManager logic is duplicated"""
         # Check that retry logic is inherited, not duplicated
-        import inspect
 
-        # Should not have _execute_with_retry in SDKEnhancedManager
-        sdk_methods = [
-            name
-            for name, _ in inspect.getmembers(SDKEnhancedManager, inspect.isfunction)
-        ]
+        # Should NOT have _execute_with_retry defined in SDKEnhancedManager
+        # (Check __dict__ to exclude inherited methods)
+        sdk_methods = list(SDKEnhancedManager.__dict__.keys())
         assert "_execute_with_retry" not in sdk_methods
 
         # Should have it available through inheritance
         assert hasattr(self.manager, "_execute_with_retry")
+
+        # Verify it's actually from BaseManager
+        from lib.core.base_manager import BaseManager
+
+        assert hasattr(BaseManager, "_execute_with_retry")
 
     def test_graceful_degradation(self):
         """Test graceful degradation if SDK categorization fails"""

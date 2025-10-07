@@ -4,7 +4,7 @@
 Comprehensive plan to fix all broken unit tests, address architectural violations, and enable comprehensive pre-commit coverage.
 
 **Date**: October 2025
-**Status**: Phase 1 & 2 Complete, Phase 3 In Progress (Option A - Architectural Cleanup)
+**Status**: Phase 1, 2, 2.5, & 5 Complete ✅ - Category C Pending
 
 ---
 
@@ -49,7 +49,7 @@ Comprehensive plan to fix all broken unit tests, address architectural violation
 
 **Tasks**:
 - See `tasks/task-002-categorize-failing-tests.md`
-- See `tasks/task-004-category-b-moderate-fixes.md` (In Progress)
+- See `tasks/task-004-category-b-moderate-fixes.md` ✅ **COMPLETE**
 - See `tasks/task-005-category-c-error-fixes.md` (Pending)
 
 ---
@@ -76,7 +76,40 @@ Comprehensive plan to fix all broken unit tests, address architectural violation
 
 ---
 
-### **Phase 3: Enable All-Unit-Tests Hook (P1)** ⏱️ 1 hour
+### **Phase 5: Category B Test Fixes** ⏱️ 2 hours ✅ **COMPLETE**
+**Objective**: Fix all remaining Category B test failures (moderate complexity)
+
+**Status**: 100% Complete - 0 failures remaining (down from 10)
+
+**Completed Work**:
+- ✅ **6 tests fixed** (2 personal retrospective + 3 SDK Enhanced Manager + 1 template commands)
+- ✅ **14 zombie tests deleted** (10 stakeholder/task AI detection + 2 placement engine + 2 MCP weekly reporter)
+- ✅ **1 production bug fixed** (MCP query classification - word boundary matching)
+- ✅ **Pass rate improved**: 73% → 79% (206/262 passing)
+- ✅ **P0 integrity maintained**: 42/42 passing (100%)
+
+**Key Achievements**:
+- All Category B failures resolved
+- Zombie test cleanup improved architectural compliance
+- Production bug discovered and fixed during testing
+
+**Documentation**: See `PHASE5-PROGRESS-SUMMARY.md` for comprehensive breakdown
+
+---
+
+### **Phase 6: Category C Error Fixes** ⏱️ 2-3 hours (NEXT)
+**Objective**: Fix remaining 29 error tests (import/collection failures)
+
+**Tasks**:
+- See `tasks/task-005-category-c-error-fixes.md`
+
+**Deliverables**:
+- All collection errors resolved
+- 100% unit test collection success
+
+---
+
+### **Phase 7: Enable All-Unit-Tests Hook (P1)** ⏱️ 1 hour
 **Objective**: Enable comprehensive pre-commit test coverage
 
 **Tasks**:

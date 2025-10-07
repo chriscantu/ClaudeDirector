@@ -78,6 +78,9 @@ class DatabaseManager(BaseManager):
                 enable_caching=True,
                 enable_logging=True,
                 performance_tracking=True,
+                timeout_seconds=30,  # FIX: Add missing required field
+                max_retries=3,  # FIX: Add missing required field
+                cache_ttl_seconds=3600,  # FIX: Add missing required field
                 custom_config={
                     "db_path": db_path,
                     "connection_timeout": 30.0,
@@ -192,8 +195,8 @@ class DatabaseManager(BaseManager):
         """
         if not hasattr(self._local, "connection") or self._local.connection is None:
             try:
-                # Get timeout from config
-                timeout = self.config.get_nested("connection_timeout", 30.0)
+                # Get timeout from config (FIX: use default= keyword argument)
+                timeout = self.config.get_nested("connection_timeout", default=30.0)
 
                 self._local.connection = sqlite3.connect(
                     self.db_path,
@@ -202,10 +205,10 @@ class DatabaseManager(BaseManager):
                 )
 
                 # Configure database based on config settings
-                if self.config.get_nested("enable_foreign_keys", True):
+                if self.config.get_nested("enable_foreign_keys", default=True):
                     self._local.connection.execute("PRAGMA foreign_keys = ON")
 
-                if self.config.get_nested("enable_wal", True):
+                if self.config.get_nested("enable_wal", default=True):
                     self._local.connection.execute("PRAGMA journal_mode = WAL")
                     self._local.connection.execute("PRAGMA synchronous = NORMAL")
 
