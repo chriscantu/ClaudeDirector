@@ -445,8 +445,9 @@ class TestTemplateCommandsIntegration(unittest.TestCase):
 
     def test_default_engine_creation(self):
         """Test that default engine is created when none provided"""
+        # FIX: Patch path must match import path (lib.p1_features, not claudedirector.p1_features)
         with patch(
-            "claudedirector.p1_features.template_commands.TemplateDiscoveryEngine"
+            "lib.p1_features.template_commands.TemplateDiscoveryEngine"
         ) as mock_engine_class:
             mock_instance = Mock()
             mock_engine_class.return_value = mock_instance
