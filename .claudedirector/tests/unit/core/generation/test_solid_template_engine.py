@@ -26,25 +26,18 @@ import sys
 from pathlib import Path
 from typing import Dict, Any
 
-# Add project root to path
-PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.parent
-sys.path.insert(0, str(PROJECT_ROOT))
+# Add .claudedirector/lib to path for imports
+#  Path: .claudedirector/tests/unit/core/generation/test_solid_template_engine.py
+#  4 parents up → .claudedirector/, then append /lib
+LIB_PATH = Path(__file__).parent.parent.parent.parent / "lib"
+sys.path.insert(0, str(LIB_PATH))
 
-try:
-    from lib.core.generation.solid_template_engine import (
-        SOLIDTemplateEngine,
-        SOLIDPrinciple,
-        TemplateContext,
-        GenerationResult,
-    )
-except ImportError:
-    sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
-    from lib.core.generation.solid_template_engine import (
-        SOLIDTemplateEngine,
-        SOLIDPrinciple,
-        TemplateContext,
-        GenerationResult,
-    )
+from lib.core.generation.solid_template_engine import (
+    SOLIDTemplateEngine,
+    SOLIDPrinciple,
+    TemplateContext,
+    GenerationResult,
+)
 
 
 class TestSOLIDTemplateEngine(unittest.TestCase):
