@@ -10,7 +10,6 @@ existing ClaudeDirector infrastructure instead of reimplementing functionality.
 REUSES EXISTING INFRASTRUCTURE (DRY Compliance):
 - test_utils.imports: Module availability checking and safe imports
 - HybridInstallationManager: Package installation and command execution
-- framework_detector: Framework detection and import pattern analysis
 - RealMCPIntegrationHelper: MCP server coordination
 - MCPEnhancedDecisionPipeline: Complex resolution strategy analysis
 
@@ -18,7 +17,6 @@ ELIMINATES DUPLICATION:
 - AST import analysis (delegated to enhanced test_utils.imports)
 - Package manager configuration (uses HybridInstallationManager directly)
 - Module availability checking (reuses existing importlib patterns)
-- Framework pattern matching (leverages existing framework_detector)
 
 GITHUB SPEC-KIT PATTERNS:
 - Executable Specifications: Orchestration that drives actual infrastructure
@@ -70,26 +68,10 @@ except ImportError:
         create_hybrid_installation_manager,
     )
 
-# REUSE: Framework detection infrastructure - optional with graceful fallback
-try:
-    from ai_intelligence.framework_detector import (
-        EnhancedFrameworkDetection,
-        create_enhanced_framework_detection,
-    )
-
-    FRAMEWORK_DETECTOR_AVAILABLE = True
-except ImportError:
-    try:
-        from .framework_detector import (
-            EnhancedFrameworkDetection,
-            create_enhanced_framework_detection,
-        )
-
-        FRAMEWORK_DETECTOR_AVAILABLE = True
-    except ImportError:
-        EnhancedFrameworkDetection = None
-        create_enhanced_framework_detection = None
-        FRAMEWORK_DETECTOR_AVAILABLE = False
+# Framework detection has been removed - functionality consolidated into analytics_processor
+FRAMEWORK_DETECTOR_AVAILABLE = False
+EnhancedFrameworkDetection = None
+create_enhanced_framework_detection = None
 
 # REUSE: MCP integration infrastructure
 try:
@@ -173,7 +155,6 @@ class MCPMissingModulesOrchestrator:
     ELIMINATES 800+ LINES OF DUPLICATION by leveraging:
     - test_utils.imports: Module checking (was 60 lines in detection engine)
     - HybridInstallationManager: Installation (was 200+ lines in resolver)
-    - framework_detector: Pattern analysis (was 100+ lines in detection engine)
     - MCP infrastructure: Already exists for strategic analysis
 
     ARCHITECTURE COMPLIANCE:
@@ -192,7 +173,6 @@ class MCPMissingModulesOrchestrator:
     def __init__(
         self,
         installation_manager: Optional[HybridInstallationManager] = None,
-        framework_detector: Optional[EnhancedFrameworkDetection] = None,
         mcp_helper: Optional[RealMCPIntegrationHelper] = None,
         decision_pipeline: Optional[MCPEnhancedDecisionPipeline] = None,
     ):
@@ -201,7 +181,6 @@ class MCPMissingModulesOrchestrator:
 
         Args:
             installation_manager: REUSE existing HybridInstallationManager
-            framework_detector: REUSE existing framework detection
             mcp_helper: REUSE existing MCP server integration
             decision_pipeline: REUSE existing MCP decision pipeline
         """
@@ -220,11 +199,6 @@ class MCPMissingModulesOrchestrator:
                 str(config_path)
             )
 
-        self.framework_detector = framework_detector or (
-            create_enhanced_framework_detection()
-            if FRAMEWORK_DETECTOR_AVAILABLE
-            else None
-        )
         self.mcp_helper = mcp_helper
         self.decision_pipeline = decision_pipeline
 
@@ -239,7 +213,6 @@ class MCPMissingModulesOrchestrator:
         logger.info(
             "mcp_missing_modules_orchestrator_initialized",
             installation_manager_available=True,
-            framework_detector_available=FRAMEWORK_DETECTOR_AVAILABLE,
             mcp_available=MCP_AVAILABLE,
             infrastructure_reuse="DRY_COMPLIANT",
         )
@@ -257,7 +230,6 @@ class MCPMissingModulesOrchestrator:
         LEVERAGES EXISTING INFRASTRUCTURE instead of reimplementation:
         - Uses test_utils.imports for module checking (not AST reimplementation)
         - Uses HybridInstallationManager for installation (not parallel system)
-        - Uses framework_detector for pattern analysis (not duplicate patterns)
         """
         start_time = time.time()
 
@@ -273,10 +245,7 @@ class MCPMissingModulesOrchestrator:
             # STEP 1: Module detection using EXISTING test_utils.imports
             missing_modules = await self._detect_missing_modules_lightweight(file_path)
 
-            # STEP 2: Framework analysis using EXISTING framework_detector
-            framework_context = await self._analyze_framework_context(file_path)
-
-            # STEP 3: MCP enhancement using EXISTING decision pipeline
+            # STEP 2: MCP enhancement using EXISTING decision pipeline
             strategic_insights = []
             recommendations = []
             mcp_enhanced = False
@@ -284,7 +253,7 @@ class MCPMissingModulesOrchestrator:
             if use_mcp_enhancement and self.mcp_helper and len(missing_modules) > 1:
                 try:
                     strategic_analysis = await self._perform_mcp_strategic_analysis(
-                        missing_modules, framework_context, transparency_context
+                        missing_modules, transparency_context
                     )
                     if strategic_analysis:
                         strategic_insights = strategic_analysis.get("insights", [])
@@ -401,80 +370,9 @@ class MCPMissingModulesOrchestrator:
 
         return missing_modules
 
-    async def _analyze_framework_context(self, file_path: str) -> Dict[str, Any]:
-        """
-        🏗️ Martin: Framework analysis using EXISTING framework_detector
-
-        ELIMINATES duplicate framework pattern matching by leveraging existing infrastructure
-        """
-        framework_context = {}
-
-        try:
-            if not FRAMEWORK_DETECTOR_AVAILABLE or not self.framework_detector:
-                # Graceful fallback - simple pattern detection
-                framework_context = self._simple_framework_detection(file_path)
-            else:
-                # Use EXISTING framework detection instead of reimplementing patterns
-                with open(file_path, "r", encoding="utf-8") as f:
-                    content = f.read()
-
-                # Leverage existing framework detector
-                detection_result = (
-                    await self.framework_detector.detect_frameworks_with_context(
-                        content, {"file_path": file_path}
-                    )
-                )
-
-                if hasattr(detection_result, "detected_frameworks"):
-                    framework_context = {
-                        "frameworks": detection_result.detected_frameworks,
-                        "analysis_quality": getattr(
-                            detection_result, "confidence_score", 0.8
-                        ),
-                    }
-
-        except Exception as e:
-            logger.warning(
-                "framework_context_analysis_failed",
-                file_path=file_path,
-                error=str(e),
-            )
-
-        return framework_context
-
-    def _simple_framework_detection(self, file_path: str) -> Dict[str, Any]:
-        """Simple framework detection fallback when full detector unavailable"""
-        frameworks = []
-
-        try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                content = f.read()
-
-            # Simple pattern matching for common frameworks
-            framework_patterns = {
-                "react": ["import React", "from 'react'", 'from "react"'],
-                "vue": ["import Vue", "from 'vue'", 'from "vue"'],
-                "django": ["from django", "import django"],
-                "fastapi": ["from fastapi", "import fastapi"],
-                "flask": ["from flask", "import flask"],
-            }
-
-            for framework, patterns in framework_patterns.items():
-                if any(pattern in content for pattern in patterns):
-                    frameworks.append(framework)
-
-            return {
-                "frameworks": frameworks,
-                "analysis_quality": 0.6,  # Lower confidence for simple detection
-            }
-
-        except Exception:
-            return {"frameworks": [], "analysis_quality": 0.0}
-
     async def _perform_mcp_strategic_analysis(
         self,
         missing_modules: List[MissingModuleInfo],
-        framework_context: Dict[str, Any],
         transparency_context: Optional[TransparencyContext],
     ) -> Optional[Dict[str, Any]]:
         """
@@ -488,18 +386,16 @@ class MCPMissingModulesOrchestrator:
         try:
             # Create decision context using existing patterns
             module_names = [m.module_name for m in missing_modules]
-            frameworks = framework_context.get("frameworks", [])
 
             decision_context = DecisionContext(
                 message=f"Strategic module resolution analysis for {len(module_names)} missing modules",
                 stakeholder_scope="development_team",
                 persona="martin",  # Technical architecture persona
                 complexity=DecisionComplexity.MODERATE,
-                detected_frameworks=frameworks,
+                detected_frameworks=[],
                 metadata={
                     "analysis_type": "orchestrated_module_resolution",
                     "missing_modules": module_names,
-                    "framework_context": framework_context,
                     "infrastructure_approach": "DRY_compliant_reuse",
                 },
             )
@@ -622,7 +518,6 @@ class MCPMissingModulesOrchestrator:
 # Factory function for easy integration following existing patterns
 def create_mcp_missing_modules_orchestrator(
     installation_manager: Optional[HybridInstallationManager] = None,
-    framework_detector: Optional[EnhancedFrameworkDetection] = None,
     mcp_helper: Optional[RealMCPIntegrationHelper] = None,
     decision_pipeline: Optional[MCPEnhancedDecisionPipeline] = None,
 ) -> MCPMissingModulesOrchestrator:
@@ -633,7 +528,6 @@ def create_mcp_missing_modules_orchestrator(
     """
     orchestrator = MCPMissingModulesOrchestrator(
         installation_manager=installation_manager,
-        framework_detector=framework_detector,
         mcp_helper=mcp_helper,
         decision_pipeline=decision_pipeline,
     )
@@ -641,7 +535,6 @@ def create_mcp_missing_modules_orchestrator(
     logger.info(
         "mcp_missing_modules_orchestrator_created",
         installation_manager_available=True,
-        framework_detector_available=True,
         mcp_available=MCP_AVAILABLE,
         architecture_approach="DRY_compliant_infrastructure_reuse",
         code_reduction="80_percent_less_than_original_implementation",
