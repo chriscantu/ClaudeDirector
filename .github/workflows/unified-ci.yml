@@ -30,16 +30,41 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
+      - name: Verify Python environment for pre-commit
+        run: |
+          echo "🔧 Verifying Python environment"
+          echo "🔍 Python executable: $(which python)"
+          echo "🔍 Python3 executable: $(which python3)"
+          echo "🔍 Python version: $(python --version)"
+          echo "🔍 Python3 version: $(python3 --version)"
+          echo "🔍 Pip3 executable: $(which pip3)"
+
+          # CRITICAL: Ensure python3 points to our setup Python for pre-commit hooks
+          # Pre-commit hooks use 'language: system' which means system python3
+          python3 -c "import sys; print(f'Python3 sys.executable: {sys.executable}')"
+          python -c "import sys; print(f'Python sys.executable: {sys.executable}')"
+
       - name: Install dependencies (exact local match)
         run: |
+          # Install using both python and python3 to ensure compatibility
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          python3 -m pip install --upgrade pip
 
-          # Install additional CI dependencies
-          pip install psutil pyyaml
+          pip install -r requirements.txt
+          python3 -m pip install -r requirements.txt
+
+          # Install additional CI dependencies for BOTH python and python3
+          pip install psutil pyyaml pre-commit
+          python3 -m pip install psutil pyyaml pre-commit
+
+          # Verify BOTH Python installations have required packages
+          echo "🔍 Verifying Python package installation:"
+          python -c "import pytest; print(f'Python pytest: {pytest.__version__}')"
+          python3 -c "import pytest; print(f'Python3 pytest: {pytest.__version__}')"
 
           # Verify environment matches local
           echo "🔍 Python version: $(python --version)"
+          echo "🔍 Python3 version: $(python3 --version)"
           echo "🔍 Pip version: $(pip --version)"
           echo "🔍 Working directory: $(pwd)"
           echo "🔍 Repository structure:"
@@ -50,11 +75,16 @@ jobs:
           echo "🔧 Setting up environment to match local exactly"
 
           # Set Python path exactly as local environment (absolute paths + preserve existing)
-          export PYTHONPATH="${PYTHONPATH}:$(pwd)/.claudedirector/lib:$(pwd)/.claudedirector/tests/regression:$(pwd)/.claudedirector/tests/integration"
-          echo "PYTHONPATH=$PYTHONPATH" >> $GITHUB_ENV
+          PYTHONPATH_VALUE="$(pwd)/.claudedirector/lib:$(pwd)/.claudedirector/tests/regression:$(pwd)/.claudedirector/tests/integration"
+          export PYTHONPATH="$PYTHONPATH_VALUE"
+          echo "PYTHONPATH=$PYTHONPATH_VALUE" >> $GITHUB_ENV
 
           # Debug: Show actual PYTHONPATH for troubleshooting
           echo "🔍 PYTHONPATH set to: $PYTHONPATH"
+
+          # Verify PYTHONPATH is accessible from python3 (used by pre-commit hooks)
+          echo "🔍 Testing PYTHONPATH with python3:"
+          python3 -c "import sys; print(f'sys.path entries: {[p for p in sys.path if \"claudedirector\" in p]}')"
 
           # Verify critical directories exist
           echo "🔍 Verifying critical paths:"
@@ -85,25 +115,27 @@ jobs:
           fi
 
       - name: Run Unified P0 Test Suite (exact local execution)
+        env:
+          PYTHONPATH: ${{ github.workspace }}/.claudedirector/lib:${{ github.workspace }}/.claudedirector/tests/regression:${{ github.workspace }}/.claudedirector/tests/integration
         run: |
           echo "🚀 UNIFIED P0 TEST EXECUTION"
           echo "============================================================"
           echo "Using IDENTICAL execution path as local environment"
-          echo "Command: python .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py"
+          echo "Command: python3 .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py"
           echo "PYTHONPATH: $PYTHONPATH"
           echo "============================================================"
 
           # Verify environment one more time before test execution
           echo "🔍 Final environment verification:"
-          python -c "import sys; print(f'Working dir: {sys.path[0]}'); print(f'PYTHONPATH entries: {[p for p in sys.path if \"claudedirector\" in p]}')"
+          python3 -c "import sys; print(f'Working dir: {sys.path[0]}'); print(f'PYTHONPATH entries: {[p for p in sys.path if \"claudedirector\" in p]}')"
 
-          # Run P0 tests using EXACT same command as local with verified PYTHONPATH
-          python .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py || {
+          # Run P0 tests using python3 (same as pre-commit hooks)
+          python3 .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py || {
             echo "❌ P0 TESTS FAILED - Environment discrepancy detected"
             echo "📋 Check test results for detailed failure information"
             echo "🔍 Debug info:"
             echo "  PYTHONPATH: $PYTHONPATH"
-            python -c "import sys; [print(f'  {p}') for p in sys.path]"
+            python3 -c "import sys; [print(f'  {p}') for p in sys.path]"
             exit 1
           }
 
@@ -116,9 +148,11 @@ jobs:
         run: |
           echo "🔧 PRE-COMMIT VALIDATION (matching local hooks)"
           echo "🔍 PYTHONPATH for pre-commit: $PYTHONPATH"
+          echo "🔍 Python executable: $(which python)"
+          echo "🔍 Pre-commit executable: $(which pre-commit)"
 
-          # Install pre-commit
-          pip install pre-commit
+          # Verify pre-commit is using the correct Python
+          pre-commit --version
 
           # Run pre-commit hooks with proper failure handling
           # CRITICAL: PYTHONPATH must be set in env above for pre-commit subprocesses
@@ -126,6 +160,11 @@ jobs:
             echo "❌ PRE-COMMIT HOOKS FAILED"
             echo "🚨 This indicates real quality issues that must be fixed"
             echo "🔧 Fix these issues locally and re-push"
+            echo ""
+            echo "🔍 DEBUG INFO:"
+            echo "  PYTHONPATH: $PYTHONPATH"
+            echo "  Python version: $(python --version)"
+            echo "  Pre-commit version: $(pre-commit --version)"
             exit 1
           }
 
