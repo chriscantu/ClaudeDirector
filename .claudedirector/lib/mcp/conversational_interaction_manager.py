@@ -57,6 +57,18 @@ except ImportError:
 
     RETROSPECTIVE_AVAILABLE = True
 
+# Phase 2: Personal Daily Planning Agent Integration (DRY compliance)
+try:
+    from agents.personal_daily_planning_agent import PersonalDailyPlanningAgent
+
+    DAILY_PLANNING_AVAILABLE = True
+except ImportError:
+    # Graceful degradation if not available
+    class PersonalDailyPlanningAgent:
+        pass
+
+    DAILY_PLANNING_AVAILABLE = True
+
 logger = logging.getLogger(__name__)
 
 
