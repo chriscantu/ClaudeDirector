@@ -112,13 +112,16 @@ jobs:
       - name: Run Pre-commit Validation (exact local match)
         env:
           CLAUDEDIRECTOR_ALLOW_README_CHANGES: true
+          PYTHONPATH: ${{ github.workspace }}/.claudedirector/lib:${{ github.workspace }}/.claudedirector/tests/regression:${{ github.workspace }}/.claudedirector/tests/integration
         run: |
           echo "🔧 PRE-COMMIT VALIDATION (matching local hooks)"
+          echo "🔍 PYTHONPATH for pre-commit: $PYTHONPATH"
 
           # Install pre-commit
           pip install pre-commit
 
           # Run pre-commit hooks with proper failure handling
+          # CRITICAL: PYTHONPATH must be set in env above for pre-commit subprocesses
           pre-commit run --all-files || {
             echo "❌ PRE-COMMIT HOOKS FAILED"
             echo "🚨 This indicates real quality issues that must be fixed"
