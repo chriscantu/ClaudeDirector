@@ -59,6 +59,8 @@ jobs:
         ls -la data/ || echo "No data directory yet"
 
     - name: Run P0 Protection Gate
+      env:
+        PYTHONPATH: ${{ github.workspace }}/.claudedirector/lib:${{ github.workspace }}/.claudedirector/tests/regression:${{ github.workspace }}/.claudedirector/tests/integration
       run: |
         echo "🛡️ MANDATORY P0 PROTECTION GATE"
         echo "================================="
@@ -69,11 +71,15 @@ jobs:
         python .claudedirector/tools/p0_protection/mandatory_p0_gates.py "CI/CD Pipeline"
 
     - name: P0 Test Execution
+      env:
+        PYTHONPATH: ${{ github.workspace }}/.claudedirector/lib:${{ github.workspace }}/.claudedirector/tests/regression:${{ github.workspace }}/.claudedirector/tests/integration
       run: |
         echo "🧪 Running mandatory P0 test suite..."
         python .claudedirector/tests/p0_enforcement/run_mandatory_p0_tests.py
 
     - name: P0 Results Validation
+      env:
+        PYTHONPATH: ${{ github.workspace }}/.claudedirector/lib:${{ github.workspace }}/.claudedirector/tests/regression:${{ github.workspace }}/.claudedirector/tests/integration
       run: |
         echo "📊 Validating P0 results..."
         echo "🔍 PYTHONPATH: $PYTHONPATH"
