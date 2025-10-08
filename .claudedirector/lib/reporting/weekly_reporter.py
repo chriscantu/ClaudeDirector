@@ -48,13 +48,17 @@ except ImportError:
         MCPEnhancementResult = None
         MCP_BRIDGE_AVAILABLE = False
 
-# Configure logging
+# Configure logging with safe file path
+# Use project root for log file to avoid permission issues in CI
+_project_root = Path(__file__).parent.parent.parent
+_log_path = _project_root / "weekly_report.log"
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
         logging.StreamHandler(sys.stdout),
-        logging.FileHandler("weekly_report.log"),
+        logging.FileHandler(_log_path),
     ],
 )
 logger = logging.getLogger(__name__)

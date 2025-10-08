@@ -31,28 +31,19 @@ from pathlib import Path
 from unittest.mock import Mock, patch, MagicMock
 from typing import Dict, Any, Optional
 
-# Add project root to path for imports
-PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.parent
-sys.path.insert(0, str(PROJECT_ROOT))
+# Add .claudedirector/lib to path for imports
+#  Path: .claudedirector/tests/unit/core/generation/test_structure_aware_placement_engine.py
+#  4 parents up → .claudedirector/, then append /lib
+LIB_PATH = Path(__file__).parent.parent.parent.parent / "lib"
+sys.path.insert(0, str(LIB_PATH))
 
-try:
-    from .claudedirector.lib.core.generation.structure_aware_placement_engine import (
-        StructureAwarePlacementEngine,
-        ComponentCategory,
-        PlacementRule,
-        PlacementResult,
-    )
-    from .claudedirector.lib.core.unified_factory import UnifiedFactory, ComponentType
-except ImportError:
-    # Fallback for test environment
-    sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
-    from lib.core.generation.structure_aware_placement_engine import (
-        StructureAwarePlacementEngine,
-        ComponentCategory,
-        PlacementRule,
-        PlacementResult,
-    )
-    from lib.core.unified_factory import UnifiedFactory, ComponentType
+from lib.core.generation.structure_aware_placement_engine import (
+    StructureAwarePlacementEngine,
+    ComponentCategory,
+    PlacementRule,
+    PlacementResult,
+)
+from lib.core.unified_factory import UnifiedFactory, ComponentType
 
 
 class TestStructureAwarePlacementEngine(unittest.TestCase):
