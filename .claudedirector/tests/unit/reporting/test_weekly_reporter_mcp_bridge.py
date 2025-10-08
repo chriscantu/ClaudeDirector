@@ -27,25 +27,18 @@ from pathlib import Path
 from unittest.mock import Mock, patch, AsyncMock
 from typing import Dict, Any, List
 
-# Add project root to path
-PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.parent
-sys.path.insert(0, str(PROJECT_ROOT))
+# Add .claudedirector/lib to path for imports
+#  Path: .claudedirector/tests/unit/reporting/test_weekly_reporter_mcp_bridge.py
+#  4 parents up → .claudedirector/, then append /lib
+LIB_PATH = Path(__file__).parent.parent.parent.parent / "lib"
+sys.path.insert(0, str(LIB_PATH))
 
-try:
-    from lib.reporting.weekly_reporter_mcp_bridge import (
-        WeeklyReporterMCPBridge,
-        MCPEnhancementResult,
-        create_weekly_reporter_mcp_bridge,
-    )
-    from lib.reporting.weekly_reporter import StrategicAnalyzer, JiraIssue
-except ImportError:
-    sys.path.insert(0, str(PROJECT_ROOT / ".claudedirector"))
-    from lib.reporting.weekly_reporter_mcp_bridge import (
-        WeeklyReporterMCPBridge,
-        MCPEnhancementResult,
-        create_weekly_reporter_mcp_bridge,
-    )
-    from lib.reporting.weekly_reporter import StrategicAnalyzer, JiraIssue
+from lib.reporting.weekly_reporter_mcp_bridge import (
+    WeeklyReporterMCPBridge,
+    MCPEnhancementResult,
+    create_weekly_reporter_mcp_bridge,
+)
+from lib.reporting.weekly_reporter import StrategicAnalyzer, JiraIssue
 
 
 class TestWeeklyReporterMCPBridge(unittest.TestCase):
