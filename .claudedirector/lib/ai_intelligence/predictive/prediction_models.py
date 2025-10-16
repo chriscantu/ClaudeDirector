@@ -20,6 +20,8 @@ class ChallengeType(Enum):
     COMMUNICATION_BREAKDOWN = "communication_breakdown"
     STRATEGIC_MISALIGNMENT = "strategic_misalignment"
     TALENT_RETENTION = "talent_retention"
+    # Spec 002 FR2: Project Success Predictions (MCP Server Enhancement)
+    PROJECT_SUCCESS = "project_success"
 
 
 class PredictionModels:
@@ -72,6 +74,23 @@ class PredictionModels:
                     "complexity_growth",
                     "slower_bug_fixes",
                     "feature_velocity_decline",
+                ],
+            },
+            # Spec 002 FR2: Project Success Prediction Indicators
+            ChallengeType.PROJECT_SUCCESS: {
+                "team_velocity_trend": 0.15,  # Positive trend required
+                "stakeholder_satisfaction_min": 0.75,  # High satisfaction needed
+                "scope_stability_threshold": 0.85,  # Minimal scope changes
+                "quality_metrics_min": 0.80,  # Strong quality indicators
+                "timeline_adherence_min": 0.90,  # On-track delivery
+                "team_morale_min": 0.70,  # Healthy team dynamics
+                "key_signals": [
+                    "consistent_velocity",
+                    "stakeholder_alignment",
+                    "stable_scope",
+                    "high_quality",
+                    "on_schedule",
+                    "team_health",
                 ],
             },
         }
