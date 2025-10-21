@@ -4,7 +4,7 @@ ROI Modeling Engine - Spec 002 FR2 MCP Server Enhancement
 Provides platform investment and strategic initiative ROI predictions.
 
 BLOAT_PREVENTION Compliance:
-- NEW capability (no duplication - ROI modeling doesn't exist elsewhere)
+- Uses shared InvestmentType enum (eliminates duplication with roi_investment_tracker)
 - Integrates with existing prediction_models.py patterns
 - Follows PROJECT_STRUCTURE.md (lib/ai_intelligence/predictive/)
 - Extends existing predictive capabilities without duplication
@@ -19,17 +19,9 @@ from datetime import datetime, timedelta
 from enum import Enum
 import logging
 
-
-class InvestmentType(Enum):
-    """Types of platform investments for ROI modeling"""
-
-    PLATFORM_INFRASTRUCTURE = "platform_infrastructure"
-    DEVELOPER_TOOLING = "developer_tooling"
-    AUTOMATION = "automation"
-    TECHNICAL_DEBT_REDUCTION = "technical_debt_reduction"
-    TEAM_EXPANSION = "team_expansion"
-    TRAINING_DEVELOPMENT = "training_development"
-    PROCESS_IMPROVEMENT = "process_improvement"
+# Import shared InvestmentType to eliminate duplication
+# Path: lib/ai_intelligence/predictive/ -> lib/p0_features/shared/models/
+from p0_features.shared.models.investment_types import InvestmentType
 
 
 class ROITimeframe(Enum):
@@ -104,8 +96,18 @@ class ROIModelingEngine:
                 "confidence": 0.90,
                 "typical_payback_months": 6,
             },
+            InvestmentType.DEVELOPER_TOOLS: {  # Tracker system alias
+                "baseline_roi": 3.0,  # 300% ROI (same as DEVELOPER_TOOLING)
+                "confidence": 0.90,
+                "typical_payback_months": 6,
+            },
             InvestmentType.AUTOMATION: {
                 "baseline_roi": 4.0,  # 400% ROI
+                "confidence": 0.88,
+                "typical_payback_months": 9,
+            },
+            InvestmentType.AUTOMATION_SYSTEMS: {  # Tracker system alias
+                "baseline_roi": 4.0,  # 400% ROI (same as AUTOMATION)
                 "confidence": 0.88,
                 "typical_payback_months": 9,
             },
@@ -128,6 +130,27 @@ class ROIModelingEngine:
                 "baseline_roi": 3.5,  # 350% ROI
                 "confidence": 0.92,
                 "typical_payback_months": 4,
+            },
+            # Additional investment types from unified enum (with reasonable defaults)
+            InvestmentType.ANALYTICS_CAPABILITIES: {
+                "baseline_roi": 2.7,  # 270% ROI
+                "confidence": 0.82,
+                "typical_payback_months": 10,
+            },
+            InvestmentType.SECURITY_IMPROVEMENTS: {
+                "baseline_roi": 2.0,  # 200% ROI (risk mitigation)
+                "confidence": 0.78,
+                "typical_payback_months": 16,
+            },
+            InvestmentType.COLLABORATION_TOOLS: {
+                "baseline_roi": 2.4,  # 240% ROI
+                "confidence": 0.85,
+                "typical_payback_months": 7,
+            },
+            InvestmentType.MONITORING_OBSERVABILITY: {
+                "baseline_roi": 3.2,  # 320% ROI
+                "confidence": 0.87,
+                "typical_payback_months": 8,
             },
         }
 

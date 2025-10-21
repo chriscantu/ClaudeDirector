@@ -3,6 +3,10 @@ ROI Investment Tracker Data Models
 
 Alvaro's comprehensive investment tracking data structures.
 Extracted from monolithic tracker for SOLID compliance.
+
+BLOAT_PREVENTION Compliance:
+- Uses shared InvestmentType enum (eliminates duplication with roi_modeling)
+- Maintains backward compatibility via InvestmentCategory alias
 """
 
 from typing import Dict, List, Optional
@@ -11,17 +15,11 @@ from enum import Enum
 from datetime import datetime
 from decimal import Decimal
 
+# Import shared InvestmentType to eliminate duplication
+from ....shared.models.investment_types import InvestmentType
 
-class InvestmentCategory(Enum):
-    """Categories of platform investments"""
-
-    PLATFORM_INFRASTRUCTURE = "platform_infrastructure"
-    DEVELOPER_TOOLS = "developer_tools"
-    ANALYTICS_CAPABILITIES = "analytics_capabilities"
-    AUTOMATION_SYSTEMS = "automation_systems"
-    SECURITY_IMPROVEMENTS = "security_improvements"
-    COLLABORATION_TOOLS = "collaboration_tools"
-    MONITORING_OBSERVABILITY = "monitoring_observability"
+# Backward compatibility: InvestmentCategory is now an alias for InvestmentType
+InvestmentCategory = InvestmentType
 
 
 class InvestmentStatus(Enum):
