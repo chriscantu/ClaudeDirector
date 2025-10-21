@@ -221,9 +221,10 @@ class ROIInvestmentTracker(InvestmentTrackerInterface):
 
 
 # Maintain backward compatibility by exporting original classes
+# Note: InvestmentCategory is now an alias for shared InvestmentType
 __all__ = [
     "ROIInvestmentTracker",
-    "InvestmentCategory",
+    "InvestmentCategory",  # Alias for InvestmentType (backward compatibility)
     "InvestmentStatus",
     "ROICalculationMethod",
     "InvestmentProposal",
