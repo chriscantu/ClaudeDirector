@@ -185,8 +185,9 @@ class StrategicAnalyzer:
     """
     Analyzes story strategic impact and business value
     
-    BLOAT_PREVENTION: Reused from weekly_reporter.py without modification.
+    BLOAT_PREVENTION: Extracted from weekly_reporter.py with core functionality.
     This is the foundation for strategic analysis - no duplication.
+    Advanced MCP/Monte Carlo features remain in weekly_reporter.py for now.
     """
     
     def __init__(self, config: Optional[Dict[str, Any]] = None):
@@ -235,6 +236,245 @@ class StrategicAnalyzer:
             score.add_score(1, f"🔗 Highly Connected ({issue.links} links)")
         
         return score
+    
+    def extract_business_value(self, raw_issue: Dict[str, Any]) -> str:
+        """Extract and format business value from Jira issue"""
+        try:
+            description = raw_issue.get("fields", {}).get("description")
+            project_name = (
+                raw_issue.get("fields", {}).get("project", {}).get("name", "")
+            )
+            
+            # Handle Jira's rich text format (dict) vs plain text
+            if isinstance(description, dict):
+                # Extract text from Atlassian Document Format (ADF)
+                business_value = self._extract_text_from_adf(description)
+            elif isinstance(description, str) and description.strip():
+                business_value = (
+                    description.strip()[:200] + "..."
+                    if len(description) > 200
+                    else description.strip()
+                )
+            else:
+                # Generate context-based business value based on project
+                business_value = self._generate_context_business_value(project_name)
+            
+            # Ensure proper formatting
+            business_value = business_value.strip()
+            if business_value and not business_value[0].isupper():
+                business_value = business_value[0].upper() + business_value[1:]
+            
+            if business_value and not business_value.endswith((".", "!", "?")):
+                business_value += "."
+            
+            return (
+                business_value
+                or "Strategic platform initiative with organizational impact."
+            )
+        
+        except Exception as e:
+            logger.warning(f"Error extracting business value: {e}")
+            return "Strategic platform initiative - see issue for detailed business impact."
+    
+    def _extract_text_from_adf(self, adf_content: Dict[str, Any]) -> str:
+        """Extract plain text from Atlassian Document Format"""
+        
+        def extract_text(node):
+            if isinstance(node, dict):
+                if node.get("type") == "text":
+                    return node.get("text", "")
+                elif "content" in node:
+                    return " ".join(extract_text(child) for child in node["content"])
+            elif isinstance(node, list):
+                return " ".join(extract_text(child) for child in node)
+            return ""
+        
+        text = extract_text(adf_content).strip()
+        return text[:200] + "..." if len(text) > 200 else text
+    
+    def _generate_context_business_value(self, project_name: str) -> str:
+        """Generate contextual business value based on project type"""
+        project_contexts = {
+            "Web Platform": "Improves platform engineering capabilities and developer experience across the organization",
+            "Web Design Systems": "Improves brand consistency and design system adoption across product suite",
+            "Experience Services": "Optimizes user experience workflows and service delivery efficiency",
+            "Hubs": "Advances platform integration capabilities and user workflow consolidation",
+            "Globalizers": "Enables international market expansion and localization capabilities",
+            "Onboarding": "Streamlines user onboarding experience and activation workflows",
+        }
+        return project_contexts.get(
+            project_name,
+            "Strategic platform initiative with cross-organizational impact",
+        )
+    
+    def analyze_initiative(
+        self, raw_issue: Dict[str, Any], child_stories: List[JiraIssue] = None
+    ) -> Initiative:
+        """Convert raw Jira epic into strategic initiative with business context"""
+        fields = raw_issue.get("fields", {})
+        summary = fields.get("summary", "")
+        
+        # Detect initiative level
+        level = self._detect_initiative_level(summary)
+        
+        # Generate business context based on initiative type
+        business_context = self._generate_initiative_business_context(summary, fields)
+        
+        # Calculate progress from child stories
+        progress_pct = self._calculate_progress_percentage(child_stories or [])
+        
+        # Generate status description
+        status_desc = self._generate_status_description(
+            fields.get("status", {}).get("name", ""), progress_pct
+        )
+        
+        # Extract team impact
+        team_impact = self._extract_team_impact(summary, fields)
+        
+        return Initiative(
+            key=raw_issue.get("key", ""),
+            title=self._clean_initiative_title(summary),
+            level=level,
+            progress_pct=progress_pct,
+            status_desc=status_desc,
+            business_context=business_context,
+            team_impact=team_impact,
+            project=fields.get("project", {}).get("name", ""),
+            status=fields.get("status", {}).get("name", ""),
+            child_stories=child_stories or [],
+        )
+    
+    def _detect_initiative_level(self, summary: str) -> str:
+        """Detect L0, L1, L2 initiative level from summary"""
+        if "L0:" in summary or "Layer 0" in summary:
+            return "L0"
+        elif "L2:" in summary or "Layer 2" in summary:
+            return "L2"
+        elif "L1:" in summary or "Layer 1" in summary:
+            return "L1"
+        else:
+            # Infer from content
+            compliance_keywords = ["FedRAMP", "compliance", "security", "audit", "risk"]
+            platform_keywords = ["platform", "v1", "developer", "build", "tool"]
+            
+            if any(
+                keyword.lower() in summary.lower() for keyword in compliance_keywords
+            ):
+                return "L0"
+            elif any(
+                keyword.lower() in summary.lower() for keyword in platform_keywords
+            ):
+                return "L2"
+            else:
+                return "Strategic"
+    
+    def _generate_initiative_business_context(
+        self, summary: str, fields: Dict[str, Any]
+    ) -> str:
+        """Generate executive business context for initiative"""
+        initiative_contexts = {
+            # L0 - Foundational/Compliance
+            "FedRAMP": "Required to address security vulnerabilities and maintain compliance for government clients",
+            "security": "Critical security risk mitigation to protect customer data and maintain compliance",
+            "compliance": "Regulatory compliance initiative to meet industry standards and audit requirements",
+            # L2 - Platform/Capabilities
+            "Hammer": "Platform build tool enabling faster local and production builds with standard technologies",
+            "build": "Developer productivity enhancement reducing build times and improving development velocity",
+            "International": "Market expansion enablement through localization infrastructure and multi-region support",
+            "Admin": "Platform administration capabilities improving operational efficiency and user management",
+            "Explore": "Product discovery and filtering capabilities enabling better user experience and product adoption",
+        }
+        
+        summary_lower = summary.lower()
+        for keyword, context in initiative_contexts.items():
+            if keyword.lower() in summary_lower:
+                return context
+        
+        # Fallback to description or generic
+        description = fields.get("description", "")
+        if isinstance(description, dict):
+            desc_text = self._extract_text_from_adf(description)
+        else:
+            desc_text = str(description) if description else ""
+        
+        if desc_text and len(desc_text) > 20:
+            return desc_text[:150] + "..." if len(desc_text) > 150 else desc_text
+        
+        return "Strategic platform initiative advancing organizational capabilities and competitive positioning"
+    
+    def _calculate_progress_percentage(self, child_stories: List[JiraIssue]) -> int:
+        """Calculate completion percentage from child stories"""
+        if not child_stories:
+            return 0
+        
+        completed_statuses = ["Done", "Closed", "Resolved", "Released"]
+        completed_count = sum(
+            1 for story in child_stories if story.status in completed_statuses
+        )
+        
+        if len(child_stories) == 0:
+            return 0
+        
+        return int((completed_count / len(child_stories)) * 100)
+    
+    def _generate_status_description(self, status: str, progress_pct: int) -> str:
+        """Generate executive status description"""
+        if status == "Done" or status == "Completed":
+            return "Released with minimal impact to teams"
+        elif status == "In Progress":
+            if progress_pct >= 80:
+                return "Releasing this week"
+            elif progress_pct >= 60:
+                return f"Team {progress_pct}% complete with rollout"
+            else:
+                return "Active development in progress"
+        elif status == "In Review":
+            return "Final review and release preparation"
+        else:
+            return "Planning and discovery phase"
+    
+    def _extract_team_impact(self, summary: str, fields: Dict[str, Any]) -> str:
+        """Extract team impact language from initiative"""
+        impact_indicators = {
+            "minimal impact": "minimal impact to teams",
+            "breaking": "requires team coordination for migration",
+            "migration": "coordinated team migration effort",
+            "rollout": "phased rollout across teams",
+        }
+        
+        summary_lower = summary.lower()
+        description = str(fields.get("description", "")).lower()
+        combined_text = f"{summary_lower} {description}"
+        
+        for indicator, impact in impact_indicators.items():
+            if indicator in combined_text:
+                return impact
+        
+        return "standard team adoption process"
+    
+    def _clean_initiative_title(self, summary: str) -> str:
+        """Clean up initiative title for executive presentation"""
+        # Remove Jira formatting and technical prefixes
+        cleaned = (
+            summary.replace("[Web Platform]", "")
+            .replace("Layer 0 -", "L0 -")
+            .replace("Layer 2 -", "L2 -")
+        )
+        cleaned = cleaned.strip()
+        
+        # Standardize common initiative names
+        if "Hammer" in cleaned and "1.0" in cleaned:
+            return "Hammer V1"
+        elif "FedRAMP" in cleaned:
+            return "FedRAMP Follow up"
+        elif "International" in cleaned and "Locale" in cleaned:
+            return "International Locale Enablement"
+        elif "Admin" in cleaned and "Pages" in cleaned:
+            return "Admin Pages Migration"
+        elif "***REMOVED*** Explore" in cleaned:
+            return "***REMOVED*** Explore Full Product Life Cycle"
+        
+        return cleaned
 
 
 class JiraReporter:
