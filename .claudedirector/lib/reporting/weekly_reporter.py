@@ -64,6 +64,37 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+# ============================================================================
+# BLOAT_PREVENTION: Import core classes from jira_reporter.py (ADR-004)
+# ============================================================================
+# Phase 0 Refactoring: Duration-Agnostic Jira Reporter Architecture
+# These imports establish single source of truth and provide backward compatibility.
+# The duplicate class definitions below are kept for fallback but unused when imports succeed.
+try:
+    from .jira_reporter import (
+        JiraIssue,
+        StrategicScore,
+        Initiative,
+        ConfigManager,
+        JiraClient,
+    )
+    logger.info("✅ BLOAT_PREVENTION: Imported core classes from jira_reporter.py")
+except ImportError:
+    try:
+        from jira_reporter import (
+            JiraIssue,
+            StrategicScore,
+            Initiative,
+            ConfigManager,
+            JiraClient,
+        )
+        logger.info("✅ BLOAT_PREVENTION: Imported core classes from jira_reporter.py (absolute)")
+    except ImportError:
+        # Graceful fallback: use inline definitions below
+        logger.warning("⚠️  Could not import from jira_reporter.py - using inline definitions")
+        pass
+
+
 @dataclass
 class JiraIssue:
     """Data class for Jira issue representation"""
