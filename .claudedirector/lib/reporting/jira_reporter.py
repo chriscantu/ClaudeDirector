@@ -293,19 +293,14 @@ class StrategicAnalyzer:
         return text[:200] + "..." if len(text) > 200 else text
     
     def _generate_context_business_value(self, project_name: str) -> str:
-        """Generate contextual business value based on project type"""
-        project_contexts = {
-            "Web Platform": "Improves platform engineering capabilities and developer experience across the organization",
-            "Web Design Systems": "Improves brand consistency and design system adoption across product suite",
-            "Experience Services": "Optimizes user experience workflows and service delivery efficiency",
-            "Hubs": "Advances platform integration capabilities and user workflow consolidation",
-            "Globalizers": "Enables international market expansion and localization capabilities",
-            "Onboarding": "Streamlines user onboarding experience and activation workflows",
-        }
-        return project_contexts.get(
-            project_name,
-            "Strategic platform initiative with cross-organizational impact",
-        )
+        """
+        Generate contextual business value based on project type
+        
+        SECURITY: Generic fallback only - no hardcoded team/project names
+        Project-specific contexts should be configured externally via config files
+        """
+        # Generic business value - no PII or company-specific data
+        return "Strategic platform initiative with cross-organizational impact"
     
     def analyze_initiative(
         self, raw_issue: Dict[str, Any], child_stories: List[JiraIssue] = None
@@ -371,18 +366,23 @@ class StrategicAnalyzer:
     def _generate_initiative_business_context(
         self, summary: str, fields: Dict[str, Any]
     ) -> str:
-        """Generate executive business context for initiative"""
+        """
+        Generate executive business context for initiative
+        
+        SECURITY: Generic patterns only - no company-specific initiative names
+        """
+        # Generic keyword-based patterns (no company-specific names)
         initiative_contexts = {
-            # L0 - Foundational/Compliance
-            "FedRAMP": "Required to address security vulnerabilities and maintain compliance for government clients",
+            # L0 - Foundational/Compliance (generic security/compliance patterns)
             "security": "Critical security risk mitigation to protect customer data and maintain compliance",
             "compliance": "Regulatory compliance initiative to meet industry standards and audit requirements",
-            # L2 - Platform/Capabilities
-            "Hammer": "Platform build tool enabling faster local and production builds with standard technologies",
+            "audit": "Audit readiness and compliance validation initiative",
+            # L2 - Platform/Capabilities (generic capability patterns)
             "build": "Developer productivity enhancement reducing build times and improving development velocity",
-            "International": "Market expansion enablement through localization infrastructure and multi-region support",
-            "Admin": "Platform administration capabilities improving operational efficiency and user management",
-            "Explore": "Product discovery and filtering capabilities enabling better user experience and product adoption",
+            "platform": "Platform capability advancement improving organizational efficiency",
+            "tool": "Tooling improvement enabling better developer experience and productivity",
+            "international": "Market expansion enablement through localization infrastructure",
+            "localization": "Localization capability enhancement for international market support",
         }
         
         summary_lower = summary.lower()
@@ -453,26 +453,19 @@ class StrategicAnalyzer:
         return "standard team adoption process"
     
     def _clean_initiative_title(self, summary: str) -> str:
-        """Clean up initiative title for executive presentation"""
-        # Remove Jira formatting and technical prefixes
+        """
+        Clean up initiative title for executive presentation
+        
+        SECURITY: Generic cleaning only - no hardcoded initiative names
+        Initiative-specific formatting should be configured externally
+        """
+        # Remove generic Jira formatting and technical prefixes
         cleaned = (
-            summary.replace("[Web Platform]", "")
-            .replace("Layer 0 -", "L0 -")
+            summary.replace("Layer 0 -", "L0 -")
             .replace("Layer 2 -", "L2 -")
+            .replace("Layer 1 -", "L1 -")
         )
         cleaned = cleaned.strip()
-        
-        # Standardize common initiative names
-        if "Hammer" in cleaned and "1.0" in cleaned:
-            return "Hammer V1"
-        elif "FedRAMP" in cleaned:
-            return "FedRAMP Follow up"
-        elif "International" in cleaned and "Locale" in cleaned:
-            return "International Locale Enablement"
-        elif "Admin" in cleaned and "Pages" in cleaned:
-            return "Admin Pages Migration"
-        elif "***REMOVED*** Explore" in cleaned:
-            return "***REMOVED*** Explore Full Product Life Cycle"
         
         return cleaned
 
