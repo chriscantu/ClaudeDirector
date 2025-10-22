@@ -155,6 +155,10 @@ jira-epics-*.json
 weekly-report-config.yaml
 weekly-report-*.md
 
+# Environment files with credentials (configs directory)
+leadership-workspace/configs/.env
+leadership-workspace/configs/*.env
+
 # === OS GENERATED FILES ===
 # Operating system generated files
 Thumbs.db
