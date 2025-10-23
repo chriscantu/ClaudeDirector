@@ -210,21 +210,21 @@ class EnhancedJiraClient(JiraClient):
 class EnhancedStrategicAnalyzer(BaseStrategicAnalyzer):
     """
     Enhanced Strategic Analyzer with MCP integration, Monte Carlo forecasting, and dependency analysis
-    
+
     BLOAT_PREVENTION: Extends BaseStrategicAnalyzer from jira_reporter.py
     Adds Phase 2 enhancements:
     - Real MCP integration for Strategic reasoning and Context7 benchmarking
     - Monte Carlo cycle time forecasting
     - Cross-team dependency detection
     - Advanced initiative analysis
-    
+
     This eliminates ~500 lines of duplication while preserving enhanced functionality.
     """
 
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         # Initialize base class
         super().__init__(config)
-        
+
         self.jira_base_url = os.getenv("JIRA_BASE_URL", "https://***REMOVED***")
 
         # Real MCP Integration (BLOAT_PREVENTION: REUSE existing infrastructure)
@@ -236,7 +236,9 @@ class EnhancedStrategicAnalyzer(BaseStrategicAnalyzer):
                 self.mcp_bridge = create_weekly_reporter_mcp_bridge(self.config)
                 logger.info("EnhancedStrategicAnalyzer: Real MCP integration enabled")
             except Exception as e:
-                logger.warning(f"EnhancedStrategicAnalyzer: MCP integration failed: {e}")
+                logger.warning(
+                    f"EnhancedStrategicAnalyzer: MCP integration failed: {e}"
+                )
                 self.mcp_bridge = None
 
     def calculate_strategic_impact(self, issue: JiraIssue) -> StrategicScore:
