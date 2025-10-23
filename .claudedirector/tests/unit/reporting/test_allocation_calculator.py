@@ -158,15 +158,13 @@ class TestAllocationCalculatorBasics:
         from lib.reporting.allocation_calculator import AllocationCalculator
         from lib.reporting.jira_reporter import JiraClient
         from unittest.mock import MagicMock
-        
+
         jira_client = MagicMock(spec=JiraClient)
         start_date = datetime(2025, 1, 1)
         end_date = datetime(2025, 3, 31)
-        
+
         return AllocationCalculator(
-            jira_client=jira_client,
-            start_date=start_date,
-            end_date=end_date
+            jira_client=jira_client, start_date=start_date, end_date=end_date
         )
 
     def _create_calculator_with_test_data(
@@ -324,15 +322,13 @@ class TestCrossProjectHierarchyTraversal:
         from lib.reporting.allocation_calculator import AllocationCalculator
         from lib.reporting.jira_reporter import JiraClient
         from unittest.mock import MagicMock
-        
+
         jira_client = MagicMock(spec=JiraClient)
         start_date = datetime(2025, 1, 1)
         end_date = datetime(2025, 3, 31)
-        
+
         return AllocationCalculator(
-            jira_client=jira_client,
-            start_date=start_date,
-            end_date=end_date
+            jira_client=jira_client, start_date=start_date, end_date=end_date
         )
 
 
@@ -428,15 +424,13 @@ class TestVelocityImpactCalculation:
         from lib.reporting.allocation_calculator import AllocationCalculator
         from lib.reporting.jira_reporter import JiraClient
         from unittest.mock import MagicMock
-        
+
         jira_client = MagicMock(spec=JiraClient)
         start_date = datetime(2025, 1, 1)
         end_date = datetime(2025, 3, 31)
-        
+
         return AllocationCalculator(
-            jira_client=jira_client,
-            start_date=start_date,
-            end_date=end_date
+            jira_client=jira_client, start_date=start_date, end_date=end_date
         )
 
     def _create_calculator_with_l2_stories(self, l2_story_count: int, period_days: int):
@@ -444,15 +438,13 @@ class TestVelocityImpactCalculation:
         from lib.reporting.allocation_calculator import AllocationCalculator
         from lib.reporting.jira_reporter import JiraClient
         from unittest.mock import MagicMock
-        
+
         jira_client = MagicMock(spec=JiraClient)
         start_date = datetime(2025, 1, 1)
         end_date = datetime(2025, 1, 1) + timedelta(days=period_days)
-        
+
         return AllocationCalculator(
-            jira_client=jira_client,
-            start_date=start_date,
-            end_date=end_date
+            jira_client=jira_client, start_date=start_date, end_date=end_date
         )
 
 
