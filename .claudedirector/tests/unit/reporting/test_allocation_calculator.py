@@ -12,7 +12,7 @@ Test Coverage:
 """
 
 import pytest
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List, Dict
 
 
@@ -30,11 +30,11 @@ class TestAllocationCalculatorBasics:
     def test_calculator_creation_with_jira_client(self):
         """AllocationCalculator should accept JiraClient and date range"""
         from lib.reporting.allocation_calculator import AllocationCalculator
-        from lib.reporting.jira_reporter import JiraClient, ConfigManager
+        from lib.reporting.jira_reporter import JiraClient
+        from unittest.mock import MagicMock
 
-        # Mock config
-        config = ConfigManager("leadership-workspace/configs/weekly-report-config.yaml")
-        jira_client = JiraClient(config.get_jira_config())
+        # Mock JiraClient (don't need real config in tests)
+        jira_client = MagicMock(spec=JiraClient)
 
         start_date = datetime(2025, 1, 1)
         end_date = datetime(2025, 3, 31)
@@ -155,15 +155,27 @@ class TestAllocationCalculatorBasics:
     # Helper methods for creating test data
     def _create_mock_calculator(self):
         """Create a mock calculator for basic testing"""
-        # Will be implemented when AllocationCalculator is created
-        pass
+        from lib.reporting.allocation_calculator import AllocationCalculator
+        from lib.reporting.jira_reporter import JiraClient
+        from unittest.mock import MagicMock
+        
+        jira_client = MagicMock(spec=JiraClient)
+        start_date = datetime(2025, 1, 1)
+        end_date = datetime(2025, 3, 31)
+        
+        return AllocationCalculator(
+            jira_client=jira_client,
+            start_date=start_date,
+            end_date=end_date
+        )
 
     def _create_calculator_with_test_data(
         self, l0_stories: int, l1_stories: int, l2_stories: int, other_stories: int
     ):
         """Create calculator pre-populated with test data"""
-        # Will be implemented when AllocationCalculator is created
-        pass
+        # For TDD RED phase, just return a mock calculator
+        # GREEN phase will implement actual test data population
+        return self._create_mock_calculator()
 
 
 class TestCrossProjectHierarchyTraversal:
@@ -309,8 +321,19 @@ class TestCrossProjectHierarchyTraversal:
     # Helper methods
     def _create_calculator_with_cross_project_data(self):
         """Create calculator with mock cross-project hierarchy"""
-        # Will be implemented when AllocationCalculator is created
-        pass
+        from lib.reporting.allocation_calculator import AllocationCalculator
+        from lib.reporting.jira_reporter import JiraClient
+        from unittest.mock import MagicMock
+        
+        jira_client = MagicMock(spec=JiraClient)
+        start_date = datetime(2025, 1, 1)
+        end_date = datetime(2025, 3, 31)
+        
+        return AllocationCalculator(
+            jira_client=jira_client,
+            start_date=start_date,
+            end_date=end_date
+        )
 
 
 class TestVelocityImpactCalculation:
@@ -402,11 +425,35 @@ class TestVelocityImpactCalculation:
         actual_velocity: float,
     ):
         """Create calculator with mock velocity data"""
-        pass
+        from lib.reporting.allocation_calculator import AllocationCalculator
+        from lib.reporting.jira_reporter import JiraClient
+        from unittest.mock import MagicMock
+        
+        jira_client = MagicMock(spec=JiraClient)
+        start_date = datetime(2025, 1, 1)
+        end_date = datetime(2025, 3, 31)
+        
+        return AllocationCalculator(
+            jira_client=jira_client,
+            start_date=start_date,
+            end_date=end_date
+        )
 
     def _create_calculator_with_l2_stories(self, l2_story_count: int, period_days: int):
         """Create calculator with mock L2 stories for velocity calculation"""
-        pass
+        from lib.reporting.allocation_calculator import AllocationCalculator
+        from lib.reporting.jira_reporter import JiraClient
+        from unittest.mock import MagicMock
+        
+        jira_client = MagicMock(spec=JiraClient)
+        start_date = datetime(2025, 1, 1)
+        end_date = datetime(2025, 1, 1) + timedelta(days=period_days)
+        
+        return AllocationCalculator(
+            jira_client=jira_client,
+            start_date=start_date,
+            end_date=end_date
+        )
 
 
 class TestBLOATPrevention:
