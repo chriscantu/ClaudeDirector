@@ -159,6 +159,10 @@ weekly-report-*.md
 leadership-workspace/configs/.env
 leadership-workspace/configs/*.env
 
+# Jira allocation config (actual, not template)
+leadership-workspace/configs/jira-allocation-config.yaml
+.claudedirector/config/jira-allocation-config.yaml
+
 # === OS GENERATED FILES ===
 # Operating system generated files
 Thumbs.db
