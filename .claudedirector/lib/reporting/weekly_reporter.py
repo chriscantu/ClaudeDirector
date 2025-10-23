@@ -90,10 +90,14 @@ except ImportError:
             JiraClient,
         )
 
-        logger.info("✅ BLOAT_PREVENTION: Imported core classes from jira_reporter.py (absolute)")
+        logger.info(
+            "✅ BLOAT_PREVENTION: Imported core classes from jira_reporter.py (absolute)"
+        )
     except ImportError:
         # Graceful fallback: use inline definitions below
-        logger.warning("⚠️  Could not import from jira_reporter.py - using inline definitions")
+        logger.warning(
+            "⚠️  Could not import from jira_reporter.py - using inline definitions"
+        )
         pass
 
 
@@ -137,7 +141,9 @@ class EnhancedJiraClient(JiraClient):
             start_date = end_date - timedelta(days=months * 30)
 
             # REUSE existing JQL patterns - build upon proven query structure
-            project_filter = " OR ".join([f"project = {project}" for project in team_projects])
+            project_filter = " OR ".join(
+                [f"project = {project}" for project in team_projects]
+            )
             historical_jql = f"""
                 ({project_filter}) AND
                 status = Done AND
@@ -180,7 +186,9 @@ class EnhancedJiraClient(JiraClient):
 
                 # Safety check to prevent excessive API calls
                 if len(historical_issues) >= 1000:
-                    logger.warning(f"Historical data collection reached limit of 1000 issues")
+                    logger.warning(
+                        f"Historical data collection reached limit of 1000 issues"
+                    )
                     break
 
             logger.info(
@@ -230,7 +238,9 @@ class StrategicAnalyzer:
             score.add_score(2, "🟡 High Priority")
 
         # Cross-project indicators
-        cross_project_patterns = r"(UIS-|UXI-|HUBS-|WES-|FSGD-|shared|platform|design.system)"
+        cross_project_patterns = (
+            r"(UIS-|UXI-|HUBS-|WES-|FSGD-|shared|platform|design.system)"
+        )
         if re.search(cross_project_patterns, issue.summary, re.IGNORECASE):
             score.add_score(2, "🌐 Cross-Project Impact")
 
@@ -271,7 +281,9 @@ class StrategicAnalyzer:
         """Extract and format business value from Jira issue"""
         try:
             description = raw_issue.get("fields", {}).get("description")
-            project_name = raw_issue.get("fields", {}).get("project", {}).get("name", "")
+            project_name = (
+                raw_issue.get("fields", {}).get("project", {}).get("name", "")
+            )
 
             # Handle Jira's rich text format (dict) vs plain text
             if isinstance(description, dict):
@@ -295,7 +307,10 @@ class StrategicAnalyzer:
             if business_value and not business_value.endswith((".", "!", "?")):
                 business_value += "."
 
-            return business_value or "Strategic platform initiative with organizational impact."
+            return (
+                business_value
+                or "Strategic platform initiative with organizational impact."
+            )
 
         except Exception as e:
             logger.warning(f"Error extracting business value: {e}")
@@ -382,14 +397,20 @@ class StrategicAnalyzer:
             compliance_keywords = ["FedRAMP", "compliance", "security", "audit", "risk"]
             platform_keywords = ["platform", "v1", "developer", "build", "tool"]
 
-            if any(keyword.lower() in summary.lower() for keyword in compliance_keywords):
+            if any(
+                keyword.lower() in summary.lower() for keyword in compliance_keywords
+            ):
                 return "L0"
-            elif any(keyword.lower() in summary.lower() for keyword in platform_keywords):
+            elif any(
+                keyword.lower() in summary.lower() for keyword in platform_keywords
+            ):
                 return "L2"
             else:
                 return "Strategic"
 
-    def _generate_initiative_business_context(self, summary: str, fields: Dict[str, Any]) -> str:
+    def _generate_initiative_business_context(
+        self, summary: str, fields: Dict[str, Any]
+    ) -> str:
         """Generate executive business context for initiative"""
         initiative_contexts = {
             # L0 - Foundational/Compliance
@@ -427,7 +448,9 @@ class StrategicAnalyzer:
             return 0
 
         completed_statuses = ["Done", "Closed", "Resolved", "Released"]
-        completed_count = sum(1 for story in child_stories if story.status in completed_statuses)
+        completed_count = sum(
+            1 for story in child_stories if story.status in completed_statuses
+        )
 
         if len(child_stories) == 0:
             return 0
@@ -512,10 +535,14 @@ class StrategicAnalyzer:
         cycle_time_data = self._sequential_analyze_historical_cycles(historical_data)
 
         # SEQUENTIAL STEP 3: Monte Carlo simulation (UNCHANGED - statistical foundation)
-        completion_prob = self._sequential_monte_carlo_simulation(issue, cycle_time_data)
+        completion_prob = self._sequential_monte_carlo_simulation(
+            issue, cycle_time_data
+        )
 
         # SEQUENTIAL STEP 4: Risk assessment (UNCHANGED)
-        risk_analysis = self._sequential_risk_assessment(issue, base_score, cycle_time_data)
+        risk_analysis = self._sequential_risk_assessment(
+            issue, base_score, cycle_time_data
+        )
 
         # SEQUENTIAL STEP 5: Timeline prediction (UNCHANGED)
         timeline_forecast = self._sequential_timeline_prediction(issue, cycle_time_data)
@@ -528,12 +555,18 @@ class StrategicAnalyzer:
         # Base statistical result (PRESERVED)
         base_result = {
             "completion_probability": completion_prob,
-            "confidence_interval": self._calculate_monte_carlo_confidence(cycle_time_data),
+            "confidence_interval": self._calculate_monte_carlo_confidence(
+                cycle_time_data
+            ),
             "risk_factors": risk_analysis,
             "timeline_forecast": timeline_forecast,
             "simulation_runs": 10000,  # Monte Carlo simulation iterations
-            "cycle_time_percentiles": self._calculate_cycle_time_percentiles(cycle_time_data),
-            "sequential_reasoning": self._generate_reasoning_trail(issue, cycle_time_data),
+            "cycle_time_percentiles": self._calculate_cycle_time_percentiles(
+                cycle_time_data
+            ),
+            "sequential_reasoning": self._generate_reasoning_trail(
+                issue, cycle_time_data
+            ),
             "analysis_methodology": "Real MCP Sequential + Monte Carlo",  # UPDATED
         }
 
@@ -554,14 +587,18 @@ class StrategicAnalyzer:
                 {
                     "mcp_enhanced": False,
                     "mcp_fallback_reason": (
-                        mcp_enhancement.error_message if mcp_enhancement else "MCP disabled"
+                        mcp_enhancement.error_message
+                        if mcp_enhancement
+                        else "MCP disabled"
                     ),
                 }
             )
 
         return base_result
 
-    def _sequential_analyze_historical_cycles(self, historical_data: List[Dict]) -> List[float]:
+    def _sequential_analyze_historical_cycles(
+        self, historical_data: List[Dict]
+    ) -> List[float]:
         """Sequential Step 2: Systematic cycle time analysis with structured reasoning"""
         cycle_times = []
 
@@ -574,7 +611,9 @@ class StrategicAnalyzer:
                 if created_str and resolved_str:
                     # Parse Jira datetime format
                     created = datetime.fromisoformat(created_str.replace("Z", "+00:00"))
-                    resolved = datetime.fromisoformat(resolved_str.replace("Z", "+00:00"))
+                    resolved = datetime.fromisoformat(
+                        resolved_str.replace("Z", "+00:00")
+                    )
 
                     # Calculate cycle time in days
                     cycle_time_days = (resolved - created).total_seconds() / (24 * 3600)
@@ -654,13 +693,17 @@ class StrategicAnalyzer:
 
         # Risk factor 3: Cross-project dependencies
         if any("Cross-Project" in indicator for indicator in base_score.indicators):
-            risk_factors.append("Cross-project dependencies may cause coordination delays")
+            risk_factors.append(
+                "Cross-project dependencies may cause coordination delays"
+            )
             risk_score += 1
 
         return {
             "risk_factors": risk_factors,
             "risk_score": risk_score,
-            "risk_level": ("High" if risk_score >= 3 else "Medium" if risk_score >= 1 else "Low"),
+            "risk_level": (
+                "High" if risk_score >= 3 else "Medium" if risk_score >= 1 else "Low"
+            ),
         }
 
     def _sequential_timeline_prediction(
@@ -694,7 +737,9 @@ class StrategicAnalyzer:
             return {"confidence": "Low - insufficient data"}
 
         data_points = len(cycle_time_data)
-        confidence_level = "High" if data_points >= 50 else "Medium" if data_points >= 20 else "Low"
+        confidence_level = (
+            "High" if data_points >= 50 else "Medium" if data_points >= 20 else "Low"
+        )
 
         return {
             "confidence_level": confidence_level,
@@ -741,7 +786,9 @@ class StrategicAnalyzer:
         Context7 Integration: Official Jira link analysis patterns for enterprise coordination
         """
         # SEQUENTIAL STEP 1: REUSE existing cross-project pattern detection
-        cross_project_issues = [i for i in issues if self._is_cross_project(i)]  # Existing logic
+        cross_project_issues = [
+            i for i in issues if self._is_cross_project(i)
+        ]  # Existing logic
 
         # SEQUENTIAL STEP 2: Systematic dependency graph construction
         dependency_graph = self._sequential_build_dependency_graph(cross_project_issues)
@@ -766,10 +813,14 @@ class StrategicAnalyzer:
 
     def _is_cross_project(self, issue: JiraIssue) -> bool:
         """REUSE existing cross-project detection logic (DRY compliance)"""
-        cross_project_patterns = r"(UIS-|UXI-|HUBS-|WES-|FSGD-|shared|platform|design.system)"
+        cross_project_patterns = (
+            r"(UIS-|UXI-|HUBS-|WES-|FSGD-|shared|platform|design.system)"
+        )
         return bool(re.search(cross_project_patterns, issue.summary, re.IGNORECASE))
 
-    def _sequential_build_dependency_graph(self, cross_project_issues: List[JiraIssue]) -> Dict:
+    def _sequential_build_dependency_graph(
+        self, cross_project_issues: List[JiraIssue]
+    ) -> Dict:
         """Sequential Step 2: Systematic dependency graph construction"""
         dependency_graph = {"nodes": [], "edges": [], "teams": set(), "projects": set()}
 
@@ -822,7 +873,9 @@ class StrategicAnalyzer:
                         "project": node["project"],
                         "status": node["status"],
                         "link_count": node["links"],
-                        "blocking_potential": ("High" if node["links"] >= 5 else "Medium"),
+                        "blocking_potential": (
+                            "High" if node["links"] >= 5 else "Medium"
+                        ),
                         "impact_assessment": self._assess_blocking_impact(node),
                     }
                 )
@@ -835,7 +888,9 @@ class StrategicAnalyzer:
             "projects_involved": projects_in_path,
             "teams_involved": teams_in_path,
             "coordination_complexity": (
-                "High" if teams_in_path >= 4 else "Medium" if teams_in_path >= 2 else "Low"
+                "High"
+                if teams_in_path >= 4
+                else "Medium" if teams_in_path >= 2 else "Low"
             ),
             "estimated_coordination_overhead": f"{teams_in_path * 15}% of team capacity",
         }
@@ -880,7 +935,9 @@ class StrategicAnalyzer:
         return {
             "bottlenecks": coordination_bottlenecks,
             "coordination_score": self._calculate_coordination_score(teams, projects),
-            "recommended_actions": self._generate_coordination_recommendations(teams, projects),
+            "recommended_actions": self._generate_coordination_recommendations(
+                teams, projects
+            ),
         }
 
     def _sequential_generate_mitigations(self, blocking_analysis: Dict) -> List[Dict]:
@@ -892,7 +949,9 @@ class StrategicAnalyzer:
 
         # Mitigation 1: Address high-impact blocking issues
         high_impact_blocks = [
-            issue for issue in blocking_issues if issue.get("blocking_potential") == "High"
+            issue
+            for issue in blocking_issues
+            if issue.get("blocking_potential") == "High"
         ]
         if high_impact_blocks:
             mitigation_strategies.append(
@@ -963,7 +1022,9 @@ class StrategicAnalyzer:
         else:
             return "Low - Minimal blocking potential"
 
-    def _calculate_coordination_score(self, teams: List[str], projects: List[str]) -> Dict:
+    def _calculate_coordination_score(
+        self, teams: List[str], projects: List[str]
+    ) -> Dict:
         """Calculate a coordination complexity score"""
         team_factor = len(teams) * 2  # Teams require more coordination than projects
         project_factor = len(projects)
@@ -1000,9 +1061,13 @@ class StrategicAnalyzer:
             recommendations.append("Define clear escalation paths for blocking issues")
 
         if len(projects) >= 2:
-            recommendations.append(f"Define API contracts between {len(projects)} projects")
+            recommendations.append(
+                f"Define API contracts between {len(projects)} projects"
+            )
             recommendations.append("Implement integration testing strategy")
-            recommendations.append("Create shared documentation for cross-project interfaces")
+            recommendations.append(
+                "Create shared documentation for cross-project interfaces"
+            )
 
         recommendations.append("Monitor coordination overhead metrics weekly")
 
@@ -1065,16 +1130,24 @@ class StrategicAnalyzer:
 
             # Merge Sequential enhancement
             if sequential_enhancement and not sequential_enhancement.fallback_used:
-                combined_result.reasoning_trail.extend(sequential_enhancement.reasoning_trail)
-                combined_result.executive_summary = sequential_enhancement.executive_summary
+                combined_result.reasoning_trail.extend(
+                    sequential_enhancement.reasoning_trail
+                )
+                combined_result.executive_summary = (
+                    sequential_enhancement.executive_summary
+                )
                 combined_result.risk_factors.extend(sequential_enhancement.risk_factors)
-                combined_result.processing_time += sequential_enhancement.processing_time
+                combined_result.processing_time += (
+                    sequential_enhancement.processing_time
+                )
                 combined_result.fallback_used = False
                 combined_result.error_message = None
 
             # Merge Context7 enhancement
             if context7_enhancement and not context7_enhancement.fallback_used:
-                combined_result.industry_context.update(context7_enhancement.industry_context)
+                combined_result.industry_context.update(
+                    context7_enhancement.industry_context
+                )
                 combined_result.processing_time += context7_enhancement.processing_time
                 combined_result.fallback_used = False
                 combined_result.error_message = None
@@ -1134,7 +1207,9 @@ class ReportGenerator:
             strategic_parent_query = self.config.get_jql_query("strategic_parent_epics")
             if strategic_parent_query:
                 raw_initiatives = self.jira.fetch_issues(strategic_parent_query)
-                initiatives = [self.analyzer.analyze_initiative(issue) for issue in raw_initiatives]
+                initiatives = [
+                    self.analyzer.analyze_initiative(issue) for issue in raw_initiatives
+                ]
 
             # Fetch epic data (fallback)
             epic_query = self.config.get_jql_query("weekly_executive_epics")
@@ -1148,10 +1223,14 @@ class ReportGenerator:
             strategic_issues = []
             if strategic_query:
                 raw_strategic = self.jira.fetch_issues(strategic_query)
-                strategic_issues = [self._convert_raw_issue(issue) for issue in raw_strategic]
+                strategic_issues = [
+                    self._convert_raw_issue(issue) for issue in raw_strategic
+                ]
 
             # Generate report content
-            report_content = self._build_report_content(epic_issues, strategic_issues, initiatives)
+            report_content = self._build_report_content(
+                epic_issues, strategic_issues, initiatives
+            )
 
             # Write report
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
@@ -1179,7 +1258,9 @@ class ReportGenerator:
                 if fields.get("assignee")
                 else "Unassigned"
             ),
-            parent_key=(fields.get("parent", {}).get("key") if fields.get("parent") else None),
+            parent_key=(
+                fields.get("parent", {}).get("key") if fields.get("parent") else None
+            ),
             watchers=fields.get("watchers", {}).get("watchCount", 0),
             links=len(fields.get("issuelinks", [])),
             business_value=self.analyzer.extract_business_value(raw_issue),
@@ -1200,7 +1281,9 @@ class ReportGenerator:
         sections.append(self._build_header())
 
         # Executive Summary
-        sections.append(self._build_executive_summary_with_initiatives(initiatives, epic_issues))
+        sections.append(
+            self._build_executive_summary_with_initiatives(initiatives, epic_issues)
+        )
 
         # L0/L2 Strategic Initiative Updates (Primary - matching manual format)
         sections.append(self._build_initiative_updates(initiatives))
@@ -1214,7 +1297,9 @@ class ReportGenerator:
             sections.append(self._build_strategic_analysis(strategic_issues))
 
         # Strategic Impact & Resource Allocation
-        sections.append(self._build_strategic_impact_with_initiatives(initiatives, epic_issues))
+        sections.append(
+            self._build_strategic_impact_with_initiatives(initiatives, epic_issues)
+        )
 
         # Executive Recommendations
         sections.append(self._build_recommendations())
@@ -1291,7 +1376,9 @@ class ReportGenerator:
 
                 # Build header with parent initiative if available
                 if issue.parent_key:
-                    parent_url = f"{self.analyzer.jira_base_url}/browse/{issue.parent_key}"
+                    parent_url = (
+                        f"{self.analyzer.jira_base_url}/browse/{issue.parent_key}"
+                    )
                     header = f"#### [{issue.parent_key}]({parent_url}) : [{issue.key}]({jira_url}) - {issue.summary}"
                 else:
                     header = f"#### ✅ [{issue.key}]({jira_url}) - {issue.summary}"
@@ -1303,7 +1390,9 @@ class ReportGenerator:
                         resolved_dt = datetime.fromisoformat(
                             issue.resolved_date.replace("Z", "+00:00")
                         )
-                        completion_date = f"- **Completed**: {resolved_dt.strftime('%Y-%m-%d')}\n"
+                        completion_date = (
+                            f"- **Completed**: {resolved_dt.strftime('%Y-%m-%d')}\n"
+                        )
                     except (ValueError, AttributeError):
                         completion_date = ""
 
@@ -1361,15 +1450,16 @@ class ReportGenerator:
                 # Check if we can get MCP-enhanced completion probability analysis
                 mcp_indicator = ""
                 try:
-                    if hasattr(self.analyzer, "mcp_bridge") and self.analyzer.mcp_bridge:
-                        completion_analysis = self.analyzer.calculate_completion_probability(
-                            issue, []
+                    if (
+                        hasattr(self.analyzer, "mcp_bridge")
+                        and self.analyzer.mcp_bridge
+                    ):
+                        completion_analysis = (
+                            self.analyzer.calculate_completion_probability(issue, [])
                         )
                         if completion_analysis.get("mcp_enhanced", False):
                             mcp_enhanced_count += 1
-                            mcp_indicator = (
-                                "\n- **Analysis Enhancement**: 🤖 MCP Sequential Thinking Applied"
-                            )
+                            mcp_indicator = "\n- **Analysis Enhancement**: 🤖 MCP Sequential Thinking Applied"
                             if completion_analysis.get("mcp_reasoning_trail"):
                                 reasoning_preview = (
                                     completion_analysis["mcp_reasoning_trail"][:1]
@@ -1377,9 +1467,7 @@ class ReportGenerator:
                                     else []
                                 )
                                 if reasoning_preview:
-                                    mcp_indicator += (
-                                        f"\n- **Strategic Insight**: {reasoning_preview[0]}"
-                                    )
+                                    mcp_indicator += f"\n- **Strategic Insight**: {reasoning_preview[0]}"
                         elif completion_analysis.get("mcp_enhanced", False) == False:
                             mcp_indicator = "\n- **Analysis Enhancement**: 📊 Statistical Monte Carlo (MCP: Fallback)"
                 except Exception:
@@ -1393,7 +1481,9 @@ class ReportGenerator:
                         resolved_dt = datetime.fromisoformat(
                             issue.resolved_date.replace("Z", "+00:00")
                         )
-                        completion_date = f"- **Completed**: {resolved_dt.strftime('%Y-%m-%d')}\n"
+                        completion_date = (
+                            f"- **Completed**: {resolved_dt.strftime('%Y-%m-%d')}\n"
+                        )
                     except (ValueError, AttributeError):
                         completion_date = ""
 
@@ -1472,7 +1562,9 @@ class ReportGenerator:
     def _build_strategic_impact(self, epic_issues: List[JiraIssue]) -> str:
         """Build strategic impact and resource allocation section"""
         epic_count = len(epic_issues)
-        project_count = len(set(issue.project for issue in epic_issues)) if epic_issues else 0
+        project_count = (
+            len(set(issue.project for issue in epic_issues)) if epic_issues else 0
+        )
 
         velocity_assessment = (
             "Consistent execution capability"
@@ -1516,7 +1608,9 @@ class ReportGenerator:
     ) -> str:
         """Build executive summary with initiative focus"""
         active_initiatives = [
-            i for i in initiatives if i.status in ["In Progress", "In Review", "Completed"]
+            i
+            for i in initiatives
+            if i.status in ["In Progress", "In Review", "Completed"]
         ]
         l0_count = len([i for i in active_initiatives if i.level == "L0"])
         l2_count = len([i for i in active_initiatives if i.level == "L2"])
@@ -1573,9 +1667,7 @@ class ReportGenerator:
 
             for initiative in team_initiatives:
                 # Format like manual report: "L2 - Hammer V1: Hammer releasing this week enabling faster builds"
-                title_with_level = (
-                    f"**{initiative.level} - {initiative.title}**: {initiative.business_context}"
-                )
+                title_with_level = f"**{initiative.level} - {initiative.title}**: {initiative.business_context}"
                 if (
                     initiative.status_desc
                     and initiative.status_desc != "Active development in progress"
@@ -1606,7 +1698,9 @@ class ReportGenerator:
     ) -> str:
         """Build strategic impact section with initiative focus"""
         active_initiatives = [
-            i for i in initiatives if i.status in ["In Progress", "In Review", "Completed"]
+            i
+            for i in initiatives
+            if i.status in ["In Progress", "In Review", "Completed"]
         ]
         initiative_count = len(active_initiatives)
         project_count = len(set(i.project for i in initiatives)) if initiatives else 0
@@ -1689,7 +1783,9 @@ def main():
         default="leadership-workspace/configs/weekly-report-config.yaml",
         help="Path to configuration file",
     )
-    parser.add_argument("--output", help="Output file path (auto-generated if not specified)")
+    parser.add_argument(
+        "--output", help="Output file path (auto-generated if not specified)"
+    )
     parser.add_argument(
         "--dry-run",
         action="store_true",
