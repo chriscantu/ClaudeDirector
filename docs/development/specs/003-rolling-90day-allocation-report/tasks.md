@@ -1,6 +1,6 @@
 # Rolling 90-Day Team Allocation Report - Task Breakdown
 
-**Spec-Kit Format v1.0** | **Status**: Ready for Implementation | **Owner**: Martin | Platform Architecture
+**Spec-Kit Format v1.0** | **Status**: Phase 2.1 COMPLETE (PR #178 MERGED) | **Owner**: Martin | Platform Architecture
 
 ---
 
@@ -15,25 +15,33 @@ This document breaks down the implementation plan into specific, actionable task
 - **File paths** specified for each task
 - **Test-first approach** (write tests before implementation)
 
+**Current Status**:
+- ✅ **Phase 0**: COMPLETE (ADR-004 refactoring)
+- ✅ **Phase 1**: COMPLETE (Security + Data Models)
+- ✅ **Phase 2.1**: COMPLETE (AllocationCalculator - 18/18 tests passing)
+- 🎯 **Phase 2.2+**: See spec `004-allocation-report-generation` (PR #179)
+
 ---
 
-## 🎯 **Phase 0: Architectural Refactoring** (2 days)
+## ✅ **Phase 0: Architectural Refactoring** - COMPLETE
 
-### **User Story 0.1: Duration-Agnostic Jira Reporter**
+### **User Story 0.1: Duration-Agnostic Jira Reporter** ✅
+
+**Status**: ✅ COMPLETE - Merged in PR #178
 
 **Goal**: Refactor `weekly_reporter.py` → `jira_reporter.py` with duration as parameter
 
 **Success Criteria**:
-- [ ] `jira_reporter.py` created with duration parameter
-- [ ] `weekly_reporter.py` imports from `jira_reporter` (backward compatible)
-- [ ] `/generate-weekly-report` command still works
-- [ ] All P0 tests passing (42/42)
+- ✅ `jira_reporter.py` created with duration parameter
+- ✅ `weekly_reporter.py` imports from `jira_reporter` (backward compatible)
+- ✅ `/generate-weekly-report` command still works
+- ✅ All P0 tests passing (41/41)
 
 ---
 
-#### **Task 0.1.1: Create duration-agnostic JiraReporter base class**
+#### **Task 0.1.1: Create duration-agnostic JiraReporter base class** ✅
 
-**Status**: 🔴 RED (Write Tests First)
+**Status**: ✅ COMPLETE (PR #178)
 
 **Dependencies**: None
 
@@ -79,9 +87,9 @@ This document breaks down the implementation plan into specific, actionable task
 
 ---
 
-#### **Task 0.1.2: Extract core classes from weekly_reporter to jira_reporter**
+#### **Task 0.1.2: Extract core classes from weekly_reporter to jira_reporter** ✅
 
-**Status**: 🔴 RED (Write Tests First)
+**Status**: ✅ COMPLETE (PR #178)
 
 **Dependencies**: Task 0.1.1
 
@@ -111,9 +119,9 @@ This document breaks down the implementation plan into specific, actionable task
 
 ---
 
-#### **Task 0.1.3: Parameterize hardcoded "weekly" references**
+#### **Task 0.1.3: Parameterize hardcoded "weekly" references** ✅
 
-**Status**: 🔴 RED (Write Tests First)
+**Status**: ✅ COMPLETE (PR #178)
 
 **Dependencies**: Task 0.1.2
 
@@ -152,9 +160,9 @@ This document breaks down the implementation plan into specific, actionable task
 
 ---
 
-#### **Task 0.1.4: Update weekly_reporter.py for backward compatibility**
+#### **Task 0.1.4: Update weekly_reporter.py for backward compatibility** ✅
 
-**Status**: 🟢 GREEN (Implementation)
+**Status**: ✅ COMPLETE (PR #178)
 
 **Dependencies**: Task 0.1.3
 
@@ -201,9 +209,9 @@ This document breaks down the implementation plan into specific, actionable task
 
 ---
 
-#### **Task 0.1.5: Rename MCP bridge for consistency**
+#### **Task 0.1.5: Rename MCP bridge for consistency** ✅
 
-**Status**: 🟢 GREEN (Implementation)
+**Status**: ✅ COMPLETE (PR #178)
 
 **Dependencies**: Task 0.1.4
 
@@ -220,9 +228,9 @@ This document breaks down the implementation plan into specific, actionable task
 
 ---
 
-#### **Task 0.1.6: Run P0 test suite validation**
+#### **Task 0.1.6: Run P0 test suite validation** ✅
 
-**Status**: 🧪 TEST (Validation)
+**Status**: ✅ COMPLETE (PR #178 - 41/41 P0 tests passing)
 
 **Dependencies**: Task 0.1.5
 
@@ -427,24 +435,28 @@ This document breaks down the implementation plan into specific, actionable task
 
 ---
 
-## 🔄 **Phase 2: Core Allocation Logic** (3 days)
+## ✅ **Phase 2.1: Core Allocation Logic** - COMPLETE
 
-### **User Story 2.1: Allocation Calculator**
+### **User Story 2.1: Allocation Calculator** ✅
+
+**Status**: ✅ COMPLETE - Merged in PR #178
 
 **Goal**: Calculate team allocation % across L0/L1/L2 work
 
 **Success Criteria**:
-- [ ] L0/L1/L2 detection matches manual Jira queries (±5% accuracy)
-- [ ] Allocation percentages always sum to 100%
-- [ ] Handles edge cases (empty data, single issue type)
-- [ ] Unit test coverage >95%
-- [ ] ZERO duplication (REUSE StrategicAnalyzer)
+- ✅ L0/L1/L2 detection matches manual Jira queries (±5% accuracy)
+- ✅ Allocation percentages always sum to 100%
+- ✅ Handles edge cases (empty data, single issue type)
+- ✅ Unit test coverage 100% (18/18 tests passing)
+- ✅ ZERO duplication (REUSE StrategicAnalyzer patterns)
+- ✅ Context7 velocity patterns (Google SRE, Spotify, Netflix)
+- ✅ Cross-project hierarchy traversal
 
 ---
 
-#### **Task 2.1.1: [P] Create AllocationCalculator class with hierarchy traversal**
+#### **Task 2.1.1: [P] Create AllocationCalculator class with hierarchy traversal** ✅
 
-**Status**: 🔴 RED (Write Tests First)
+**Status**: ✅ COMPLETE (PR #178 - 18/18 tests GREEN)
 
 **Dependencies**: Phase 1 complete
 
@@ -635,7 +647,22 @@ This document breaks down the implementation plan into specific, actionable task
 
 ---
 
-## 📊 **Phase 3: Report Generation** (3 days)
+## 🎯 **Phase 2.2+: Report Generation & CLI**
+
+**Status**: 🚀 In Progress - See spec `004-allocation-report-generation` (PR #179)
+
+**Remaining Work:**
+- Phase 2.2: AllocationReportGenerator (markdown output)
+- Phase 2.3: CLI integration (`/generate-allocation-report`)
+- Phase 3: Historical trend analysis
+- Phase 4: L1→L2 connection mapping
+- Phase 5: Multi-team comparisons
+
+**All subsequent phases moved to:** `docs/development/specs/004-allocation-report-generation/`
+
+---
+
+## 📊 **Phase 3: Report Generation** (MOVED TO SPEC 004)
 
 ### **User Story 3.1: Allocation Report Generator**
 
