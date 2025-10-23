@@ -47,10 +47,10 @@ This document breaks down the implementation plan into specific, actionable task
    # tests/unit/reporting/test_jira_reporter.py
    def test_duration_label_weekly():
        assert JiraReporter._get_duration_label(7) == "Weekly"
-   
+
    def test_duration_label_90day():
        assert JiraReporter._get_duration_label(90) == "90-Day"
-   
+
    def test_duration_parameter_defaults_to_7():
        reporter = JiraReporter(config)
        assert reporter.duration_days == 7
@@ -64,7 +64,7 @@ This document breaks down the implementation plan into specific, actionable task
            self.config = config
            self.duration_days = duration_days
            self.duration_label = self._get_duration_label(duration_days)
-       
+
        def _get_duration_label(self, days: int) -> str:
            if days == 7: return "Weekly"
            elif days == 90: return "90-Day"
@@ -127,12 +127,12 @@ This document breaks down the implementation plan into specific, actionable task
    def test_log_file_uses_generic_name():
        # Should be jira_report.log not weekly_report.log
        assert log_path.name == "jira_report.log"
-   
+
    def test_report_header_uses_duration_label():
        reporter = JiraReporter(config, duration_days=90)
        header = reporter._build_header()
        assert "90-Day Executive Report" in header
-   
+
    def test_jql_uses_duration_days():
        reporter = JiraReporter(config, duration_days=90)
        jql = reporter._build_jql_date_filter()
@@ -168,7 +168,7 @@ This document breaks down the implementation plan into specific, actionable task
    def test_weekly_reporter_imports_from_jira_reporter():
        from .weekly_reporter import JiraClient
        assert JiraClient is not None
-   
+
    def test_generate_weekly_report_command_works():
        result = generate_weekly_report(config_path, output_path)
        assert result.exists()
@@ -187,7 +187,7 @@ This document breaks down the implementation plan into specific, actionable task
        StrategicScore,
        Initiative
    )
-   
+
    def generate_weekly_report(config_path: str, output_path: str):
        """Legacy function - use JiraReporter directly"""
        config = ConfigManager(config_path)
@@ -305,9 +305,9 @@ This document breaks down the implementation plan into specific, actionable task
    jql_queries:
      # Rolling 90-day allocation queries
      allocation_completed_work: 'project in (...) AND type != Epic AND status CHANGED TO Done AFTER -{duration}d AND status != "Honorably Discharged" AND parent is not EMPTY ORDER BY parent, project, priority DESC'
-     
+
      allocation_parent_epics: 'project in (...) AND type = Epic AND issueFunction in hasSubtasks() AND (status CHANGED TO Done AFTER -{duration}d OR status in ("In Progress", "In Review")) ORDER BY parent, status'
-     
+
      allocation_l0_l1_l2_initiatives: 'project = "Procore Initiatives" AND (summary ~ "L0:|L1:|L2:" OR labels in ("L0", "L1", "L2")) AND type = Epic AND (status CHANGED TO Done AFTER -{duration}d OR status in ("In Progress", "In Review")) ORDER BY labels, status'
    ```
 
@@ -331,12 +331,12 @@ This document breaks down the implementation plan into specific, actionable task
        with open('leadership-workspace/configs/weekly-report-config.template.yaml') as f:
            content = f.read()
        assert '@' not in content or '${' in content  # Only placeholders
-   
+
    def test_template_config_has_no_api_tokens():
        with open('leadership-workspace/configs/weekly-report-config.template.yaml') as f:
            content = f.read()
        assert 'ATATT' not in content  # No real Jira tokens
-   
+
    def test_actual_config_is_gitignored():
        gitignore = open('.gitignore').read()
        assert 'weekly-report-config.yaml' in gitignore
@@ -383,11 +383,11 @@ This document breaks down the implementation plan into specific, actionable task
            total_issues=100, l2_velocity_actual=4.0, l2_velocity_projected=10.0
        )
        assert 99.9 <= allocation.total_percentage <= 100.1
-   
+
    def test_allocation_rejects_invalid_percentages():
        with pytest.raises(ValueError):
            TeamAllocation(..., l0_pct=50, l1_pct=50, l2_pct=50, other_pct=0)
-   
+
    def test_allocation_has_type_hints():
        assert TeamAllocation.__annotations__['l0_pct'] == float
    ```
@@ -397,7 +397,7 @@ This document breaks down the implementation plan into specific, actionable task
    from dataclasses import dataclass
    from datetime import datetime
    from typing import Tuple
-   
+
    @dataclass
    class TeamAllocation:
        team_name: str
@@ -409,12 +409,12 @@ This document breaks down the implementation plan into specific, actionable task
        total_issues: int
        l2_velocity_actual: float
        l2_velocity_projected: float
-       
+
        def __post_init__(self):
            total = self.l0_pct + self.l1_pct + self.l2_pct + self.other_pct
            if not (99.9 <= total <= 100.1):
                raise ValueError(f"Allocation must sum to 100%, got {total}%")
-       
+
        @property
        def total_percentage(self) -> float:
            return self.l0_pct + self.l1_pct + self.l2_pct + self.other_pct
@@ -459,24 +459,24 @@ This document breaks down the implementation plan into specific, actionable task
        issue = JiraIssue(key="UIS-1234", parent="UIS-1000", ...)
        epic = JiraIssue(key="UIS-1000", parent="PI-14632", ...)
        initiative = JiraIssue(key="PI-14632", summary="L0: FedRAMP", project="Procore Initiatives", ...)
-       
+
        calculator = AllocationCalculator(analyzer, jira_client)
        level = calculator._get_initiative_level(issue)
        assert level == "L0"
-   
+
    def test_detect_l1_via_parent_chain():
        # Test L1 detection
        pass
-   
+
    def test_detect_l2_via_parent_chain():
        # Test L2 detection
        pass
-   
+
    def test_orphaned_work_returns_other():
        issue = JiraIssue(key="UIS-1234", parent=None, ...)
        level = calculator._get_initiative_level(issue)
        assert level == "Other"
-   
+
    def test_epic_caching_avoids_duplicate_api_calls():
        # Test that same epic only fetched once
        pass
@@ -485,13 +485,13 @@ This document breaks down the implementation plan into specific, actionable task
 2. **GREEN**: Implement `AllocationCalculator`
    ```python
    from .jira_reporter import StrategicAnalyzer, JiraIssue, JiraClient
-   
+
    class AllocationCalculator:
        def __init__(self, strategic_analyzer: StrategicAnalyzer, jira_client: JiraClient):
            self.analyzer = strategic_analyzer
            self.jira = jira_client
            self._epic_cache = {}
-       
+
        def _get_initiative_level(self, issue: JiraIssue) -> str:
            """Traverse CROSS-PROJECT hierarchy"""
            if issue.type != "Epic" and issue.parent:
@@ -506,7 +506,7 @@ This document breaks down the implementation plan into specific, actionable task
                        if "L2:" in initiative.summary or "L2" in initiative.labels:
                            return "L2"
            return "Other"
-       
+
        def _fetch_epic_cached(self, epic_key: str):
            if epic_key not in self._epic_cache:
                self._epic_cache[epic_key] = self.jira.fetch_issue(epic_key)
@@ -544,11 +544,11 @@ This document breaks down the implementation plan into specific, actionable task
        assert allocation.l1_pct == 25.0  # 1/4
        assert allocation.l2_pct == 25.0  # 1/4
        assert allocation.other_pct == 0.0
-   
+
    def test_allocation_always_sums_to_100():
        allocation = calculator.calculate_team_allocation(issues, start, end)
        assert 99.9 <= allocation.total_percentage <= 100.1
-   
+
    def test_empty_issues_handles_gracefully():
        allocation = calculator.calculate_team_allocation([], start, end)
        assert allocation is not None
@@ -561,16 +561,16 @@ This document breaks down the implementation plan into specific, actionable task
        start_date: datetime, end_date: datetime
    ) -> TeamAllocation:
        filtered = self._filter_by_date_range(team_issues, start_date, end_date)
-       
+
        l0_issues = [i for i in filtered if self._get_initiative_level(i) == "L0"]
        l1_issues = [i for i in filtered if self._get_initiative_level(i) == "L1"]
        l2_issues = [i for i in filtered if self._get_initiative_level(i) == "L2"]
        other_issues = [i for i in filtered if self._get_initiative_level(i) == "Other"]
-       
+
        total = len(filtered)
        if total == 0:
            return self._empty_allocation()
-       
+
        return TeamAllocation(
            team_name=team_issues[0].project if team_issues else "Unknown",
            date_range=(start_date, end_date),
@@ -608,7 +608,7 @@ This document breaks down the implementation plan into specific, actionable task
        l2_issues = [JiraIssue(...) for _ in range(4)]
        velocity = calculator._calculate_velocity(l2_issues, start_90d_ago, end_today)
        assert 0.3 <= velocity <= 0.35
-   
+
    def test_projected_velocity_if_100_percent_l2():
        # If team had 40% L2 actual, projected is 2.5x higher
        allocation = calculator.calculate_team_allocation(issues, start, end)
@@ -621,7 +621,7 @@ This document breaks down the implementation plan into specific, actionable task
        days = (end - start).days
        weeks = days / 7.0
        return len(issues) / weeks if weeks > 0 else 0.0
-   
+
    def _calculate_projected_velocity(self, total_issues: int, start: datetime, end: datetime) -> float:
        days = (end - start).days
        weeks = days / 7.0
@@ -665,18 +665,18 @@ This document breaks down the implementation plan into specific, actionable task
    def test_generate_allocation_report_end_to_end():
        config = ConfigManager('configs/test-config.yaml')
        generator = AllocationReportGenerator(config, jira_client, analyzer)
-       
+
        output = generator.generate_allocation_report(
            start_date=datetime.now() - timedelta(days=90),
            end_date=datetime.now(),
            output_path='reports/test-allocation.md'
        )
-       
+
        assert output.exists()
        content = output.read_text()
        assert '90-Day Team Allocation Report' in content
        assert 'L0:' in content and 'L1:' in content and 'L2:' in content
-   
+
    def test_report_generation_performance():
        start = time.time()
        generator.generate_allocation_report(...)
@@ -688,28 +688,28 @@ This document breaks down the implementation plan into specific, actionable task
    ```python
    from .jira_reporter import JiraClient, StrategicAnalyzer, ConfigManager, JiraReporter
    from .allocation_calculator import AllocationCalculator
-   
+
    class AllocationReportGenerator:
        def __init__(self, config: ConfigManager, jira_client: JiraClient, analyzer: StrategicAnalyzer):
            self.config = config
            self.jira = jira_client
            self.analyzer = analyzer
            self.calculator = AllocationCalculator(analyzer, jira_client)
-       
+
        def generate_allocation_report(self, start_date: datetime, end_date: datetime, output_path: str) -> str:
            # Fetch issues in range
            issues = self._fetch_issues_in_range(start_date, end_date)
-           
+
            # Calculate allocations per team
            allocations = self._calculate_team_allocations(issues, start_date, end_date)
-           
+
            # Build markdown report
            report_content = self._build_markdown_report(allocations)
-           
+
            # Save report
            with open(output_path, 'w') as f:
                f.write(report_content)
-           
+
            return output_path
    ```
 
@@ -735,11 +735,11 @@ This document breaks down the implementation plan into specific, actionable task
        total_issues = sum(a.total_issues for a in allocations)
        avg_l0 = sum(a.l0_pct for a in allocations) / len(allocations)
        avg_l2 = sum(a.l2_pct for a in allocations) / len(allocations)
-       
+
        crisis_teams = [a for a in allocations if a.l0_pct > 60]
-       
+
        return f"""# 90-Day Team Allocation Report
-       
+
 **Period**: {start_date.strftime('%Y-%m-%d')} to {end_date.strftime('%Y-%m-%d')}
 
 ## 🎯 Executive Summary
@@ -811,7 +811,7 @@ This document breaks down the implementation plan into specific, actionable task
                l2_parent = self._find_l2_parent(l1)
                if l2_parent:
                    connections.append((l1, l2_parent))
-       
+
        return f"""## 🔗 L1→L2 Connections
 
 **Enabling Work Supporting Strategic Initiatives**:
@@ -857,7 +857,7 @@ This document breaks down the implementation plan into specific, actionable task
        ], capture_output=True)
        assert result.returncode == 0
        assert 'allocation-report-' in result.stdout.decode()
-   
+
    def test_cli_custom_date_range():
        result = subprocess.run([
            'python', '.claudedirector/lib/reporting/allocation_cli.py',
@@ -871,7 +871,7 @@ This document breaks down the implementation plan into specific, actionable task
    ```python
    import argparse
    from datetime import datetime, timedelta
-   
+
    def main():
        parser = argparse.ArgumentParser(
            description='Generate rolling team allocation report'
@@ -881,9 +881,9 @@ This document breaks down the implementation plan into specific, actionable task
        parser.add_argument('--start-date', type=str)
        parser.add_argument('--end-date', type=str)
        parser.add_argument('--output', type=str)
-       
+
        args = parser.parse_args()
-       
+
        # Calculate date range
        if args.start_date and args.end_date:
            start = datetime.strptime(args.start_date, '%Y-%m-%d')
@@ -891,18 +891,18 @@ This document breaks down the implementation plan into specific, actionable task
        else:
            end = datetime.now()
            start = end - timedelta(days=args.days)
-       
+
        # Generate report
        config = ConfigManager(args.config)
        jira_client = JiraClient(config.get_jira_config())
        analyzer = StrategicAnalyzer(config)
        generator = AllocationReportGenerator(config, jira_client, analyzer)
-       
+
        output = args.output or f'leadership-workspace/reports/allocation-report-{datetime.now().strftime("%Y-%m-%d")}.md'
        result = generator.generate_allocation_report(start, end, output)
-       
+
        print(f"✅ Allocation report generated: {result}")
-   
+
    if __name__ == '__main__':
        main()
    ```
@@ -926,29 +926,29 @@ This document breaks down the implementation plan into specific, actionable task
 1. Create Cursor command wrapper:
    ```markdown
    # Generate Allocation Report
-   
+
    Generate rolling team allocation report showing L0/L1/L2 distribution.
-   
+
    ## Usage
-   
+
    `/generate-allocation-report [options]`
-   
+
    ## Options
-   
+
    - `--days 90` - Rolling window (default: 90)
    - `--start-date YYYY-MM-DD` - Custom start date
    - `--end-date YYYY-MM-DD` - Custom end date
    - `--output path/to/report.md` - Custom output path
-   
+
    ## Examples
-   
+
    ```bash
    # Default 90-day window
    /generate-allocation-report
-   
+
    # Custom 60-day window
    /generate-allocation-report --days 60
-   
+
    # Specific date range
    /generate-allocation-report --start-date 2025-01-01 --end-date 2025-03-31
    ```
@@ -1013,7 +1013,7 @@ This document breaks down the implementation plan into specific, actionable task
    ```bash
    # macOS
    brew install git-secrets
-   
+
    # Configure
    git secrets --install
    git secrets --register-aws
@@ -1109,4 +1109,3 @@ This document breaks down the implementation plan into specific, actionable task
 **Next Step**: Execute Phase 0, Task 0.1.1 (Create duration-agnostic JiraReporter base class)
 
 **Command**: Proceed with TDD implementation following task order
-

@@ -44,4 +44,3 @@ Executive report showing platform team allocation across L0 (keep-the-lights-on)
 ## Next Steps
 
 Awaiting user approval to proceed with implementation.
-
