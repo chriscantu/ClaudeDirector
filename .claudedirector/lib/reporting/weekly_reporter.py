@@ -77,6 +77,7 @@ try:
         Initiative,
         ConfigManager,
         JiraClient,
+        StrategicAnalyzer as BaseStrategicAnalyzer,
     )
 
     logger.info("✅ BLOAT_PREVENTION: Imported core classes from jira_reporter.py")
@@ -88,6 +89,7 @@ except ImportError:
             Initiative,
             ConfigManager,
             JiraClient,
+            StrategicAnalyzer as BaseStrategicAnalyzer,
         )
 
         logger.info(
@@ -108,9 +110,10 @@ except ImportError:
 # - JiraIssue, StrategicScore, Initiative (dataclasses)
 # - ConfigManager (YAML configuration)
 # - JiraClient (Jira API base functionality)
+# - StrategicAnalyzer (BASE version, imported as BaseStrategicAnalyzer)
 #
 # This eliminates 232 lines of duplication and establishes single source of truth.
-# Only enhanced/weekly-specific functionality remains below.
+# Enhanced versions (EnhancedJiraClient, EnhancedStrategicAnalyzer) extend base classes below.
 # ============================================================================
 
 
@@ -204,15 +207,24 @@ class EnhancedJiraClient(JiraClient):
             raise
 
 
-class StrategicAnalyzer:
+class EnhancedStrategicAnalyzer(BaseStrategicAnalyzer):
     """
-    Analyzes story strategic impact and business value
-
-    Enhanced with real MCP integration for Strategic reasoning and Context7 benchmarking
-    BLOAT_PREVENTION: REUSES existing MCPIntegrationManager, no duplicate MCP logic
+    Enhanced Strategic Analyzer with MCP integration, Monte Carlo forecasting, and dependency analysis
+    
+    BLOAT_PREVENTION: Extends BaseStrategicAnalyzer from jira_reporter.py
+    Adds Phase 2 enhancements:
+    - Real MCP integration for Strategic reasoning and Context7 benchmarking
+    - Monte Carlo cycle time forecasting
+    - Cross-team dependency detection
+    - Advanced initiative analysis
+    
+    This eliminates ~500 lines of duplication while preserving enhanced functionality.
     """
 
     def __init__(self, config: Optional[Dict[str, Any]] = None):
+        # Initialize base class
+        super().__init__(config)
+        
         self.jira_base_url = os.getenv("JIRA_BASE_URL", "https://***REMOVED***")
 
         # Real MCP Integration (BLOAT_PREVENTION: REUSE existing infrastructure)
@@ -222,9 +234,9 @@ class StrategicAnalyzer:
         if MCP_BRIDGE_AVAILABLE and self.config.get("enable_mcp_integration", False):
             try:
                 self.mcp_bridge = create_weekly_reporter_mcp_bridge(self.config)
-                logger.info("StrategicAnalyzer: Real MCP integration enabled")
+                logger.info("EnhancedStrategicAnalyzer: Real MCP integration enabled")
             except Exception as e:
-                logger.warning(f"StrategicAnalyzer: MCP integration failed: {e}")
+                logger.warning(f"EnhancedStrategicAnalyzer: MCP integration failed: {e}")
                 self.mcp_bridge = None
 
     def calculate_strategic_impact(self, issue: JiraIssue) -> StrategicScore:
@@ -1188,7 +1200,7 @@ class ReportGenerator:
         self,
         config: ConfigManager,
         jira_client: JiraClient,
-        analyzer: StrategicAnalyzer,
+        analyzer: Union[BaseStrategicAnalyzer, EnhancedStrategicAnalyzer],
     ):
         self.config = config
         self.jira = jira_client
@@ -1821,9 +1833,9 @@ def main():
         config = ConfigManager(str(config_path))
         jira_client = JiraClient(config.get_jira_config())
 
-        # Pass config to StrategicAnalyzer for MCP integration
+        # Pass config to EnhancedStrategicAnalyzer for MCP integration
         analyzer_config = config.config.get("mcp_integration", {})
-        analyzer = StrategicAnalyzer(analyzer_config)
+        analyzer = EnhancedStrategicAnalyzer(analyzer_config)
         generator = ReportGenerator(config, jira_client, analyzer)
 
         # Generate output path if not specified
@@ -1850,6 +1862,13 @@ def main():
 
             traceback.print_exc()
         return 1
+
+
+# ============================================================================
+# Backward Compatibility Alias
+# ============================================================================
+# For any external code that references StrategicAnalyzer from this module
+StrategicAnalyzer = EnhancedStrategicAnalyzer
 
 
 if __name__ == "__main__":
