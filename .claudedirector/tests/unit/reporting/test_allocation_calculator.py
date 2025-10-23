@@ -171,9 +171,74 @@ class TestAllocationCalculatorBasics:
         self, l0_stories: int, l1_stories: int, l2_stories: int, other_stories: int
     ):
         """Create calculator pre-populated with test data"""
-        # For TDD RED phase, just return a mock calculator
-        # GREEN phase will implement actual test data population
-        return self._create_mock_calculator()
+        from lib.reporting.allocation_calculator import AllocationCalculator
+        from lib.reporting.jira_reporter import JiraClient
+        from unittest.mock import MagicMock
+
+        jira_client = MagicMock(spec=JiraClient)
+        start_date = datetime(2025, 1, 1)
+        end_date = datetime(2025, 3, 31)
+
+        # Create mock issues with proper parent hierarchy
+        mock_issues = []
+
+        # L0 stories (with L0 parent epic)
+        for i in range(l0_stories):
+            mock_issues.append(
+                {
+                    "key": f"WEB-L0-{i}",
+                    "fields": {
+                        "summary": f"L0 Story {i}",
+                        "parent": {
+                            "key": f"WEB-EPIC-L0",
+                            "fields": {"summary": "L0: Operational Work"},
+                        },
+                    },
+                }
+            )
+
+        # L1 stories (with L1 parent epic)
+        for i in range(l1_stories):
+            mock_issues.append(
+                {
+                    "key": f"WEB-L1-{i}",
+                    "fields": {
+                        "summary": f"L1 Story {i}",
+                        "parent": {
+                            "key": f"WEB-EPIC-L1",
+                            "fields": {"summary": "L1: Enabling Work"},
+                        },
+                    },
+                }
+            )
+
+        # L2 stories (with L2 parent epic)
+        for i in range(l2_stories):
+            mock_issues.append(
+                {
+                    "key": f"WEB-L2-{i}",
+                    "fields": {
+                        "summary": f"L2 Story {i}",
+                        "parent": {
+                            "key": f"WEB-EPIC-L2",
+                            "fields": {"summary": "L2: Strategic Initiative"},
+                        },
+                    },
+                }
+            )
+
+        # Other stories (no parent)
+        for i in range(other_stories):
+            mock_issues.append(
+                {"key": f"WEB-OTHER-{i}", "fields": {"summary": f"Other Story {i}"}}
+            )
+
+        # Mock the fetch_issues method to return our test data
+        jira_client.fetch_issues.return_value = mock_issues
+
+        return AllocationCalculator(
+            jira_client=jira_client, start_date=start_date, end_date=end_date
+        )
 
 
 class TestCrossProjectHierarchyTraversal:
@@ -327,9 +392,96 @@ class TestCrossProjectHierarchyTraversal:
         start_date = datetime(2025, 1, 1)
         end_date = datetime(2025, 3, 31)
 
-        return AllocationCalculator(
+        # Create mock issues with cross-project parent hierarchy
+        # Story → Epic (team project) → Initiative (Procore Initiatives project)
+        mock_issues = [
+            # WEB-1234: Story → Epic → L0 Initiative (cross-project)
+            {
+                "key": "WEB-1234",
+                "fields": {
+                    "summary": "Fix prod issue",
+                    "parent": {
+                        "key": "WEB-1000",
+                        "fields": {
+                            "summary": "Operational Epic",
+                            "parent": {
+                                "key": "PI-14632",
+                                "fields": {
+                                    "summary": "L0: FedRAMP Compliance Follow-up",
+                                    "labels": ["L0", "compliance"],
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            # WEB-5678: Story → Epic → L2 Initiative (cross-project)
+            {
+                "key": "WEB-5678",
+                "fields": {
+                    "summary": "Build platform capability",
+                    "parent": {
+                        "key": "WEB-2000",
+                        "fields": {
+                            "summary": "Platform Epic",
+                            "parent": {
+                                "key": "PI-20000",
+                                "fields": {
+                                    "summary": "L2: Platform v2",
+                                    "labels": ["L2", "platform", "strategic"],
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            # WEB-3000: Story → Epic → L1 Initiative
+            {
+                "key": "WEB-3000",
+                "fields": {
+                    "summary": "Enable platform feature",
+                    "parent": {
+                        "key": "WEB-1500",
+                        "fields": {
+                            "summary": "Enabling Epic",
+                            "parent": {
+                                "key": "PI-15000",
+                                "fields": {
+                                    "summary": "L1: Enabling Platform v2",
+                                    "labels": ["L1"],
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            # WEB-9999: Orphaned story (no parent)
+            {
+                "key": "WEB-9999",
+                "fields": {"summary": "Ad-hoc work"},
+            },
+            # WEB-4000: Story → Epic (no strategic parent)
+            {
+                "key": "WEB-4000",
+                "fields": {
+                    "summary": "Regular work",
+                    "parent": {
+                        "key": "WEB-3000",
+                        "fields": {"summary": "Regular Epic"},
+                    },
+                },
+            },
+        ]
+
+        jira_client.fetch_issues.return_value = mock_issues
+
+        calculator = AllocationCalculator(
             jira_client=jira_client, start_date=start_date, end_date=end_date
         )
+        # Pre-populate cache for classify_story tests
+        calculator._cached_issues = mock_issues
+
+        return calculator
 
 
 class TestVelocityImpactCalculation:
@@ -429,6 +581,53 @@ class TestVelocityImpactCalculation:
         start_date = datetime(2025, 1, 1)
         end_date = datetime(2025, 3, 31)
 
+        # Calculate story counts from percentages
+        # Assume 100 total stories for easy percentage calculation
+        total_stories = 100
+        l0_count = int(l0_pct)
+        l2_count = int(l2_pct)
+        other_count = total_stories - l0_count - l2_count
+
+        mock_issues = []
+
+        # L0 stories
+        for i in range(l0_count):
+            mock_issues.append(
+                {
+                    "key": f"WEB-L0-{i}",
+                    "fields": {
+                        "summary": f"L0 Story {i}",
+                        "parent": {
+                            "key": "WEB-EPIC-L0",
+                            "fields": {"summary": "L0: Operational"},
+                        },
+                    },
+                }
+            )
+
+        # L2 stories
+        for i in range(l2_count):
+            mock_issues.append(
+                {
+                    "key": f"WEB-L2-{i}",
+                    "fields": {
+                        "summary": f"L2 Story {i}",
+                        "parent": {
+                            "key": "WEB-EPIC-L2",
+                            "fields": {"summary": "L2: Strategic"},
+                        },
+                    },
+                }
+            )
+
+        # Other stories
+        for i in range(other_count):
+            mock_issues.append(
+                {"key": f"WEB-OTHER-{i}", "fields": {"summary": f"Other Story {i}"}}
+            )
+
+        jira_client.fetch_issues.return_value = mock_issues
+
         return AllocationCalculator(
             jira_client=jira_client, start_date=start_date, end_date=end_date
         )
@@ -442,6 +641,24 @@ class TestVelocityImpactCalculation:
         jira_client = MagicMock(spec=JiraClient)
         start_date = datetime(2025, 1, 1)
         end_date = datetime(2025, 1, 1) + timedelta(days=period_days)
+
+        # Create L2 stories
+        mock_issues = []
+        for i in range(l2_story_count):
+            mock_issues.append(
+                {
+                    "key": f"WEB-L2-{i}",
+                    "fields": {
+                        "summary": f"L2 Story {i}",
+                        "parent": {
+                            "key": "WEB-EPIC-L2",
+                            "fields": {"summary": "L2: Strategic Initiative"},
+                        },
+                    },
+                }
+            )
+
+        jira_client.fetch_issues.return_value = mock_issues
 
         return AllocationCalculator(
             jira_client=jira_client, start_date=start_date, end_date=end_date
