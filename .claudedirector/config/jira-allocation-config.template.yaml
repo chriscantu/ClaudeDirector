@@ -1,0 +1,103 @@
+# Jira Allocation Report Configuration Template
+# ClaudeDirector - Rolling 90-Day Team Allocation Report
+#
+# SECURITY: Copy this to your leadership-workspace/configs/ and customize
+# DO NOT commit actual config with real project names or credentials
+
+## Jira Integration Settings
+jira:
+  # Jira instance configuration
+  base_url: "${JIRA_BASE_URL}"  # Environment variable
+  api_version: "3"
+
+  # Authentication
+  auth:
+    email: "${JIRA_EMAIL}"  # Environment variable
+    api_token: "${JIRA_API_TOKEN}"  # Environment variable
+
+## Rolling 90-Day Allocation Report JQL Queries
+jql_queries:
+  # Query 1: Completed work items (stories) in rolling window
+  # Used to calculate team allocation percentages by parent epic
+  # Duration placeholder: {duration} will be replaced with days (e.g., 90)
+  allocation_completed_work: |
+    project in ("[PROJECT-1]", "[PROJECT-2]", "[PROJECT-3]")
+    AND type != Epic
+    AND status CHANGED TO Done AFTER -{duration}d
+    AND status != "Honorably Discharged"
+    AND parent is not EMPTY
+    ORDER BY parent, project, priority DESC
+
+  # Query 2: Parent epics (team-level epics)
+  # Fetches team epics that link to L0/L1/L2 initiatives
+  allocation_parent_epics: |
+    project in ("[PROJECT-1]", "[PROJECT-2]", "[PROJECT-3]")
+    AND type = Epic
+    AND issueFunction in hasSubtasks()
+    AND (status CHANGED TO Done AFTER -{duration}d OR status in ("In Progress", "In Review"))
+    ORDER BY parent, status
+
+  # Query 3: L0/L1/L2 strategic initiatives (cross-project parents)
+  # CRITICAL: These live in your strategic initiatives project (e.g., "Procore Initiatives")
+  # Detection: "L0:", "L1:", "L2:" prefix in summary OR labels
+  allocation_l0_l1_l2_initiatives: |
+    project = "[STRATEGIC-INITIATIVES-PROJECT]"
+    AND (summary ~ "L0:|L1:|L2:" OR labels in ("L0", "L1", "L2"))
+    AND type = Epic
+    AND (status CHANGED TO Done AFTER -{duration}d OR status in ("In Progress", "In Review"))
+    ORDER BY labels, status
+
+## Team Configuration
+teams:
+  # CUSTOMIZE: Replace with your actual teams
+  team1:
+    name: "[Team 1 Name]"
+    jira_project: "[PROJECT-KEY-1]"
+    team_lead: "[Team Lead Name]"
+    focus_areas:
+      - "[Focus Area 1]"
+      - "[Focus Area 2]"
+
+  team2:
+    name: "[Team 2 Name]"
+    jira_project: "[PROJECT-KEY-2]"
+    team_lead: "[Team Lead Name]"
+    focus_areas:
+      - "[Focus Area 1]"
+      - "[Focus Area 2]"
+
+## Report Configuration
+report:
+  # Default report duration (days)
+  default_duration: 90  # 90-day rolling window
+
+  # Date range options
+  custom_start_date: null  # Optional: YYYY-MM-DD format
+  custom_end_date: null    # Optional: YYYY-MM-DD format
+
+  # Output configuration
+  output_directory: "leadership-workspace/reports"
+  report_format: "markdown"  # Options: markdown, json, html
+
+  # Allocation thresholds
+  l0_warning_threshold: 60  # Warn if L0 work exceeds 60%
+  l2_minimum_threshold: 20  # Warn if L2 work below 20%
+
+  # Velocity impact calculation
+  velocity_impact:
+    enable: true
+    baseline_period_days: 90  # Historical baseline for comparison
+
+## Setup Instructions
+# 1. Copy this file to: leadership-workspace/configs/jira-allocation-config.yaml
+# 2. Replace all [PLACEHOLDER] values with your actual:
+#    - Project keys (e.g., "WEB", "DESIGN", "PLATFORM")
+#    - Strategic initiatives project name
+#    - Team names and leads
+# 3. Set environment variables:
+#    export JIRA_BASE_URL="https://[YOUR-COMPANY].atlassian.net"
+#    export JIRA_EMAIL="[YOUR-EMAIL]@[YOUR-COMPANY].com"
+#    export JIRA_API_TOKEN="[YOUR-TOKEN]"
+# 4. Test with: /generate-allocation-report
+#
+# SECURITY: Never commit the actual config file - only this template!

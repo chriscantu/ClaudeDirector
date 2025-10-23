@@ -29,8 +29,12 @@
 #### **Credentials & Secrets**
 - `*.key`, `*.pem`, `*.p12`, `*.pfx`
 - Files containing `password`, `credential`, `secret`
-- `.env` files (except `.env.template`)
+- `.env` files (except `.env.template` or `env.template`)
 - API keys, tokens, connection strings
+- **ALWAYS use environment variables** for credentials:
+  - `JIRA_API_TOKEN`, `JIRA_EMAIL`, `JIRA_BASE_URL`
+  - Set in shell config (~/.zshrc, ~/.bashrc) or `.env` file (gitignored)
+  - Use `${VAR}` placeholders in committed config templates
 
 #### **Strategic Data**
 - Board presentation materials
