@@ -101,4 +101,3 @@ report:
 # 4. Test with: /generate-allocation-report
 #
 # SECURITY: Never commit the actual config file - only this template!
-
